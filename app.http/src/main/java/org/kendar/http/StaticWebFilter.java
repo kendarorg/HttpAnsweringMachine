@@ -3,6 +3,7 @@ package org.kendar.http;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.MimeChecker;
 
 import java.io.File;
 import java.net.URI;
@@ -60,12 +61,25 @@ public abstract class StaticWebFilter implements FilteringClass {
 
     private void renderFile(Path fullPath, Response response) {
         try {
-            File ff=fullPath.toFile();
             String mimeType = Files.probeContentType(fullPath);
-            response.setResponse(Files.readAllBytes(fullPath));
+            if (mimeType == null) {
+                if(fullPath.toString().endsWith(".js")){
+                    mimeType ="text/javascript";
+                }else if(fullPath.toString().endsWith(".css")){
+                    mimeType ="text/css";
+                }else if(fullPath.toString().endsWith(".htm")||fullPath.toString().endsWith(".html")){
+                    mimeType ="text/html";
+                }
+            }
+            response.setBinaryResponse(MimeChecker.isBinary(mimeType,null));
+            if(response.isBinaryResponse()) {
+                response.setResponse(Files.readAllBytes(fullPath));
+            }else{
+                response.setResponse(Files.readString(fullPath));
+            }
             response.getHeaders().put("Content-Type",mimeType);
             response.setStatusCode(200);
-            response.setBinaryResponse(true);
+
 
         } catch (Exception e) {
             e.printStackTrace();

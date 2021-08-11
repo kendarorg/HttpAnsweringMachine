@@ -18,16 +18,17 @@ import java.util.HashMap;
 @Component
 @HttpTypeFilter(hostAddress = "${replayer.address:replayer.local.org}",
         blocking = true)
-public class ReplayerApi implements FilteringClass {
+public class ReplayerApi2 implements FilteringClass {
     private ReplayerStatus replayerStatus;
     private ObjectMapper mapper = new ObjectMapper();
 
-    public ReplayerApi(ReplayerStatus replayerStatus){
+    public ReplayerApi2(ReplayerStatus replayerStatus){
         this.replayerStatus = replayerStatus;
     }
 
 
-    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =ReplayerStatus.API,method = "GET")
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress =ReplayerStatus.API,method = "GET")
     public boolean getCurrentStatus(Request request, Response response){
         var map = new HashMap<String,String>();
         map.put("status",replayerStatus.getReplayerState().toString());
