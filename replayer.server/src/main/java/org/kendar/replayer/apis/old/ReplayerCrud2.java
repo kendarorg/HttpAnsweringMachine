@@ -1,4 +1,4 @@
-package org.kendar.replayer.apis;
+package org.kendar.replayer.apis.old;
 
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;

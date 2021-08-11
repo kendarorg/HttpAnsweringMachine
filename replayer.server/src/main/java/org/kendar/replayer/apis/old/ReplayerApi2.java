@@ -1,4 +1,4 @@
-package org.kendar.replayer.apis;
+package org.kendar.replayer.apis.old;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
