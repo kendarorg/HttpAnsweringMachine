@@ -8,6 +8,7 @@ import java.util.List;
 public class ReplayerResult {
     private List<ReplayerRow> rows = new ArrayList<>();
     private List<String> errors = new ArrayList<>();
+    private String description;
     public void add(ReplayerRow row) {
         getRows().add(row);
     }
@@ -30,5 +31,13 @@ public class ReplayerResult {
 
     public void setErrors(List<String> errors) {
         this.errors = errors;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
