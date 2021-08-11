@@ -71,15 +71,15 @@ public class ReplayerStatus {
 
     public void restartRecording() throws IOException {
         state = ReplayerState.RECORDING;
-        dataset.save();
     }
 
     public void pauseRecording() {
         state = ReplayerState.PAUSED_RECORDING;
     }
 
-    public void stopAndSave() {
+    public void stopAndSave() throws IOException {
         state = ReplayerState.NONE;
+        dataset.save();
 
     }
 }

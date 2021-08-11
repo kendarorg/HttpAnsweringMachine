@@ -47,13 +47,13 @@ public class ReplayerDataset {
                 var rowValue = staticRow.getValue();
                 partialResult.add(rowValue);
             }
-            staticData.clear();
+
             while (!dynamicData.isEmpty()) {
                 // consume element
                 var rowValue = dynamicData.poll();
                 partialResult.add(rowValue);
             }
-            dynamicData.clear();
+            
             while (!errors.isEmpty()) {
                 // consume element
                 result.addError(errors.poll());
