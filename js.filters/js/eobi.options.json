@@ -1,0 +1,13 @@
+{
+    "method" : "OPTIONS",
+    "hostAddress" : "",
+    "hostRegexp" : "/(warp.eu-west-1.tsaws.infocert.it|onboardingcl.infocert.it)/i",
+    "pathAddress": "",
+    "pathRegexp": "/\/(cern|worm|oreo|chas|gattaca|digital-sign-product-configurator)/i",
+    "phase": "PRE_RENDER",
+    "requires": [
+        "eobi.options/runner.js"
+    ],
+    "blocking": true,
+    "priority": 100
+}

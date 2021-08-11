@@ -1,0 +1,13 @@
+{
+    "method" : "POST",
+    "hostAddress" : "ernst.tsint.infocert.it",
+    "hostRegexp" : "",
+    "pathAddress": "/ernst/template/outcome",
+    "pathRegexp": "",
+    "phase": "PRE_RENDER",
+    "requires": [
+        "testcertificate/runner.js"
+    ],
+    "blocking": false,
+    "priority": 100
+}

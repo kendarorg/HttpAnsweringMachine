@@ -1,0 +1,24 @@
+# every value can be changed from command line by preceding the option with --
+# see https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-command-line-args
+# example:
+#   java -jar fake_oidc.jar --server.port=8100 -server.ssl.key-store=mykeystore.p12 --oidc.user.password=bflmpsvz
+
+server:
+  port: 8090
+  ssl:
+    key-store-type: pkcs12
+    # create your own keystore with:
+    #  openssl pkcs12 -export -name "mycert" -inkey key.pem -in cert.pem -certfile chain.pem -out mykeystore.p12
+    key-store: classpath:keystore.p12
+    key-store-password: password
+oidc:
+  tokenExpirationSeconds: 36000
+  user:
+    logname: "perun"
+    password: "test"
+    sub: "perun1"
+    name: "Master Perun"
+    given_name: "Master"
+    family_name: "Perun"
+    preferred_username: "perun"
+    email: "perun@cesnet.cz"

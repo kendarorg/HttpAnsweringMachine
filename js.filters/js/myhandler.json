@@ -1,0 +1,14 @@
+{
+    "method" : "GET",
+    "hostAddress" : "js.test.org",
+    "hostRegexp" : "",
+    "pathAddress": "/test",
+    "pathRegexp": "",
+    "phase": "PRE_RENDER",
+    "requires": [
+        "myhandler/runner.js",
+        "myhandler/fuffa.js"
+    ],
+    "blocking": true,
+    "priority": 100
+}

@@ -1,0 +1,104 @@
+# Must be at least a first level domain
+localhost.name=www.local.org
+localhost.logging.request=true
+localhost.logging.request.full=true
+localhost.logging.response=true
+localhost.logging.response.full=true
+localhost.logging.path=recording
+localhost.logging.static=false
+localhost.logging.dynamic=true
+
+############# HTTPS SECTION #############
+
+https.enabled=true
+#https.port=443
+#https.backlog=10
+#https.useCachedExecutor=true
+
+#https.certificates.path=certificates.properties
+
+https.certificates.cnname=C=US,O=Local Development,CN=local.org
+https.certificate.2=*.test.org
+https.certificate.3=test.org
+https.certificate.4=*.local.org
+https.certificate.5=local.org
+
+#https.certificates.cnname=CN=localdev.it,O=Local Development, C=US
+#https.certificate.0=*.google.com
+#https.certificate.1=*.kendar.org
+
+############# HTTPS SECTION #############
+
+http.enabled=true
+#http.port=80
+#http:backlog=10
+#http.useCachedExecutor=true
+
+############# DNS SECTION #############
+
+dns.enabled=true
+#dns.port=53
+#dns.path=dns.properties
+# dns.extraServers default: 8.8.8.8,8.8.4.4
+dns.extraServers=127.0.0.11,10.136.49.21,10.110.49.21,8.8.8.8,8.8.4.4
+
+dns.resolve.0=@/([0-9a-zA-Z]+).local.org/ 127.0.0.1
+dns.resolve.1=@/([0-9a-zA-Z]+).test.org/ 127.0.0.1
+
+############# DEBUG FORWARD SECTION #############
+
+# The protocol to force on output for https
+#https.forwardProtocol=https
+# The port to force on output for https
+#https.forwardPort=-1
+
+
+# The protocol to force on output for http
+# Can force to https for debug purposes to avoid
+# generating local certificates for "one shot" requests
+#http.forwardProtocol=http
+# The port to force on output for http (can be set
+# to 443 to force output on https
+#http.forwardPort=-1
+
+############ DERBY PORT #############
+
+derby.enable=true
+#derby.port=1527
+#derby.root.user=root
+#derby.root.password=root
+#derby.path=derbydata
+
+############# REPLAYER SECTION ############
+
+replayer.address=replayer.local.org
+replayer.path:replayer.server/web
+replayer.data:replayerdata
+#replayer.db=replayer
+
+
+############# SIMPLEPROXY SECTION #############
+
+#simpleproxy.path=simpleproxy.properties
+simpleproxy.0.when=https://redirect.test.org/google
+simpleproxy.0.where=https://www.google.com
+simpleproxy.0.test=www.google.com
+
+simpleproxy.1.when=https://redirect.test.org/baeldung
+simpleproxy.1.where=https://www.baeldung.com
+simpleproxy.1.test=www.baeldung.com
+
+############# JSFILTERS SECTION #############
+
+jsfilter.path=jsplugins
+
+############# OIDC SECTION #############
+
+oidc.address=odic.local.org
+#oidc.token.expiration=86400
+
+############## STATIC SERVERS ###########
+
+#staticserver.path=staticserver.properties
+staticserver.0.address=static.oidc.org
+staticserver.0.path=staticserver
