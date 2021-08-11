@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @HttpTypeFilter(hostAddress = "${replayer.address:replayer.local.org}",
         blocking = true)
-public class ReplayerCrud  implements FilteringClass {
+public class ReplayerCrud2 implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,pathAddress = ReplayerStatus.RECORDINGS+"/{id}",method = "DELETE")
     public boolean resetRecording(Request request, Response response){
         return true;
