@@ -52,13 +52,13 @@ public class ReplayerAPIContent implements FilteringClass {
 
         for (var singleLine : datasetContent.getStaticRequests()) {
             if (extracted(res, line, requestOrResponse, singleLine)) {
-                dataset.save();
+                dataset.saveMods();
                 return true;
             }
         }
         for (var singleLine : datasetContent.getDynamicRequests()) {
             if (extracted(res, line, requestOrResponse, singleLine)) {
-                dataset.save();
+                dataset.saveMods();
                 return true;
             }
         }
@@ -120,13 +120,13 @@ public class ReplayerAPIContent implements FilteringClass {
 
         for (var singleLine : datasetContent.getStaticRequests()) {
             if (deleted(res, line, requestOrResponse, singleLine)) {
-                dataset.save();
+                dataset.saveMods();
                 return true;
             }
         }
         for (var singleLine : datasetContent.getDynamicRequests()) {
             if (deleted(res, line, requestOrResponse, singleLine)) {
-                dataset.save();
+                dataset.saveMods();
                 return true;
             }
         }
@@ -152,13 +152,13 @@ public class ReplayerAPIContent implements FilteringClass {
 
         for (var singleLine : datasetContent.getStaticRequests()) {
             if (updated(res, line, requestOrResponse, singleLine,file)) {
-                dataset.save();
+                dataset.saveMods();
                 return true;
             }
         }
         for (var singleLine : datasetContent.getDynamicRequests()) {
             if (updated(res, line, requestOrResponse, singleLine,file)) {
-                dataset.save();
+                dataset.saveMods();
                 return true;
             }
         }
@@ -167,21 +167,20 @@ public class ReplayerAPIContent implements FilteringClass {
         return false;
     }
     private boolean updated(Response res, int line, String requestOrResponse, ReplayerRow singleLine, MultipartPart file) {
-        this is an error
         if (singleLine.getId() == line) {
             if ("request".equalsIgnoreCase(requestOrResponse)) {
-                res.setHeader("Content-Type", singleLine.getRequest().getHeader("Content-Type"));
-                if (singleLine.getRequest().isBinaryRequest()) {
-                    res.setResponse(singleLine.getRequest().getRequestBytes());
+                if (file.getByteData()!=null) {
+                    singleLine.getRequest().setBinaryRequest(true);
+                    singleLine.getRequest().setRequestBytes(file.getByteData());
                 } else {
-                    res.setResponse(singleLine.getRequest().getRequestText());
+                    singleLine.getRequest().setRequestText(file.getStringData());
                 }
             } else if ("response".equalsIgnoreCase(requestOrResponse)) {
-                res.setHeader("Content-Type", singleLine.getResponse().getHeader("Content-Type"));
-                if (singleLine.getResponse().isBinaryResponse()) {
-                    res.setResponse(singleLine.getResponse().getResponseBytes());
+                if (file.getByteData()!=null) {
+                    singleLine.getResponse().setBinaryResponse(true);
+                    singleLine.getResponse().setResponseBytes(file.getByteData());
                 } else {
-                    res.setResponse(singleLine.getResponse().getResponseText());
+                    singleLine.getResponse().setResponseText(file.getStringData());
                 }
             }
             return true;

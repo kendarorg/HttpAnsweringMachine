@@ -83,7 +83,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
                 var passedLine = mapper.readValue((String)req.getRequest(), ListAllRecordLine.class);
                 ReplayerRow row = convertToRow(passedLine);
                 dataset.update(row);
-                dataset.save();
+                dataset.saveMods();
                 return true;
             }
         }
@@ -106,7 +106,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
         var passedLine = mapper.readValue((String)req.getRequest(), ListAllRecordLine.class);
         ReplayerRow row = convertToRow(passedLine);
         dataset.add(row);
-        dataset.save();
+        dataset.saveMods();
         return false;
     }
 
@@ -121,13 +121,14 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
         var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
         dataset.delete(line);
-        dataset.save();
+        dataset.saveMods();
         res.setStatusCode(404);
         res.setResponse("Missing id "+id+" with line "+line);
         return false;
     }
 
     private ReplayerRow convertToRow(ListAllRecordLine passedLine) {
+        //TODO Missing
         return null;
     }
 }

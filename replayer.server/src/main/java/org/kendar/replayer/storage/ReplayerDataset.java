@@ -248,4 +248,8 @@ public class ReplayerDataset {
 
     public void add(ReplayerRow row) {
     }
+
+    public void saveMods() {
+
+    }
 }
