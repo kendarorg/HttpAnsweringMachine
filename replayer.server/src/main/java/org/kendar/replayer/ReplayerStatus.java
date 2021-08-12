@@ -1,6 +1,7 @@
 package org.kendar.replayer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -25,10 +26,12 @@ public class ReplayerStatus {
     @Value("${replayer.data:replayerdata}")
     private String replayerData;
     private LoggerBuilder loggerBuilder;
+    private DataReorganizer dataReorganizer;
 
-    public ReplayerStatus(LoggerBuilder loggerBuilder){
+    public ReplayerStatus(LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer){
 
         this.loggerBuilder = loggerBuilder;
+        this.dataReorganizer = dataReorganizer;
     }
 
     public void startRecording( String id,String description) throws IOException {
@@ -38,7 +41,7 @@ public class ReplayerStatus {
         }
         if(state!=ReplayerState.NONE)return;
         state = ReplayerState.RECORDING;
-        dataset = new ReplayerDataset(id,rootPath.toString(),description,loggerBuilder);
+        dataset = new ReplayerDataset(id,rootPath.toString(),description,loggerBuilder,dataReorganizer);
     }
 
     private static final String MAIN_FILE ="runall.json";
@@ -111,7 +114,7 @@ public class ReplayerStatus {
         }
         if(state!=ReplayerState.NONE)return;
         state = ReplayerState.REPLAYING;
-        dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder);
+        dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
         dataset.load();
     }
 

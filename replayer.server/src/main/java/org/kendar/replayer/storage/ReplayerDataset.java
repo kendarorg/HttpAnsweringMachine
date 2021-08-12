@@ -3,6 +3,7 @@ package org.kendar.replayer.storage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.http.SerializableRequest;
 import org.kendar.servers.http.SerializableResponse;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ReplayerDataset {
     private static final String MAIN_FILE ="runall.json";
     private final Logger logger;
+    private DataReorganizer dataReorganizer;
     private ObjectMapper mapper = new ObjectMapper();
     private ConcurrentLinkedQueue<ReplayerRow> dynamicData = new ConcurrentLinkedQueue<>();
     private ConcurrentHashMap<String,ReplayerRow> staticData = new ConcurrentHashMap<>();
@@ -35,12 +37,15 @@ public class ReplayerDataset {
     private String replayerDataDir;
     private String description;
     private ReplayerResult replayerResult;
+    private ConcurrentHashMap<Integer,Object> states = new ConcurrentHashMap<>();
 
-    public ReplayerDataset(String name, String replayerDataDir, String description, LoggerBuilder loggerBuilder){
+    public ReplayerDataset(String name, String replayerDataDir, String description, LoggerBuilder loggerBuilder,
+                           DataReorganizer dataReorganizer){
         this.name = name;
         this.replayerDataDir = replayerDataDir;
         this.description = description;
         this.logger = loggerBuilder.build(ReplayerDataset.class);
+        this.dataReorganizer = dataReorganizer;
     }
 
     public void save() throws IOException {
@@ -68,7 +73,7 @@ public class ReplayerDataset {
             }
 
             result.setDescription(description);
-            reorganizeData(result,partialResult);
+            dataReorganizer.reorganizeData(result,partialResult);
             var allDataString = mapper.writeValueAsString(result);
             var stringPath = rootPath + File.separator + name+".json";
             FileWriter myWriter = new FileWriter(stringPath);
@@ -149,134 +154,88 @@ public class ReplayerDataset {
         replayerResult = mapper.readValue(stringPath.toFile(),ReplayerResult.class);
     }
 
-    private void groupMultipleRequests(ArrayList<ReplayerRow> source, HashMap<String, List<ReplayerRow>> byRequest, HashMap<String, List<ReplayerRow>> byRequestResponse) {
-        for (var row : source) {
-            var byRequestDs = calculateDataResult(row,true);
-            var byRequestResponseDs = calculateDataResult(row,true);
-            if(!byRequest.containsKey(byRequestDs)){
-                byRequest.put(byRequestDs,new ArrayList<>());
-            }
-            byRequest.get(byRequestDs).add(row);
-
-            if(!byRequestResponse.containsKey(byRequestResponseDs)){
-                byRequestResponse.put(byRequestResponseDs,new ArrayList<>());
-            }
-            byRequest.get(byRequestResponseDs).add(row);
-        }
-    }
-
-    private void reorganizeData(ReplayerResult destination, ArrayList<ReplayerRow> source) {
-        var requestGroups = new HashMap<String, List<ReplayerRow>>();
-        var requestResponseGroups = new HashMap<String,List<ReplayerRow>>();
-        groupMultipleRequests(source, requestGroups, requestResponseGroups);
-
-        var staticIndexes = setupStaticIndexes(requestGroups, requestResponseGroups);
-
-        var toStaticizeIndexes=new ArrayList<ReplayerRow>();
-        //This will be removed
-        var toDeduplicateIndexes=new ArrayList<ReplayerRow>();
-        var singleStatefulIndex=new ArrayList<ReplayerRow>();
-        organizeByNewDiscoveredType(requestGroups, staticIndexes, toStaticizeIndexes, toDeduplicateIndexes, singleStatefulIndex);
-
-        for(var item: singleStatefulIndex){
-            item.getRequest().setStaticRequest(false);
-            destination.getDynamicRequests().add(item);
-        }
-        for(var item: toStaticizeIndexes){
-            item.getRequest().setStaticRequest(true);
-            destination.getStaticRequests().add(item);
-        }
-    }
-
-    private void organizeByNewDiscoveredType(HashMap<String, List<ReplayerRow>> requestGroups, ArrayList<List<ReplayerRow>> staticIndexes, ArrayList<ReplayerRow> toStaticizeIndexes, ArrayList<ReplayerRow> toDeduplicateIndexes, ArrayList<ReplayerRow> singleStatefulIndex) {
-        for(var request : requestGroups.entrySet()){
-            var requestIndexes = request.getValue();
-            boolean isMatching = false;
-            for(var staticIndex: staticIndexes){
-                //Find matching static requests
-                if(containsTheSameIndexes(requestIndexes,staticIndex)){
-                    isMatching = true;
-                    //The first one should become static
-                    toStaticizeIndexes.add(staticIndex.get(0));
-                    if(staticIndex.size()>0){
-                        //The other will be removed (as duplicates)
-                        for(int i=1;i<staticIndex.size();i++){
-                            toDeduplicateIndexes.add(staticIndex.get(i));
-                        }
-                    }
-                    break;
+    private ReplayerRow findStaticMatch(Request sreq,String contentHash) {
+        var matchingQuery = -1;
+        ReplayerRow founded =null;
+        for (var row :replayerResult.getStaticRequests()) {
+            var rreq = row.getRequest();
+            if(!sreq.getPath().equals(rreq.getPath()))continue;
+            if(!sreq.getHost().equals(rreq.getHost()))continue;
+            var matchedQuery = matchQuery(rreq.getQuery(), sreq.getQuery());
+            if(rreq.isBinaryRequest()== sreq.isBinaryRequest()){
+                if(row.getRequestHash().equalsIgnoreCase(contentHash)){
+                    matchedQuery+=20;
                 }
             }
-            if(!isMatching){
-                //They will become stateful
-                for(int i=1;i<requestIndexes.size();i++){
-                    singleStatefulIndex.add(requestIndexes.get(i));
-                }
+
+            if(matchedQuery> matchingQuery){
+                matchingQuery =matchedQuery;
+                founded = row;
             }
         }
+        return founded;
     }
 
-    private ArrayList<List<ReplayerRow>> setupStaticIndexes(HashMap<String, List<ReplayerRow>> requestGroups, HashMap<String, List<ReplayerRow>> requestResponseGroups) {
-        var staticIndexes = new ArrayList<List<ReplayerRow>>();
-        for(var request: requestGroups.entrySet()){
-            var requestIndexes = request.getValue();
-            for(var requestResponse: requestResponseGroups.entrySet()){
-                var requestResponseIndexes = requestResponse.getValue();
-                //If the request only is able to discern the API (request ids=request/response ids
-                if(containsTheSameIndexes(requestIndexes,requestResponseIndexes)){
-                    staticIndexes.add(requestIndexes);
-                    break;
-                }
+    private ReplayerRow findDynamicMatch(Request sreq) {
+        var matchingQuery = -1;
+        ReplayerRow founded =null;
+        for (var row :replayerResult.getDynamicRequests()) {
+            var rreq = row.getRequest();
+            //Avoid already running stuffs
+            if(states.contains(row.getId()))continue;
+            if(!sreq.getPath().equals(rreq.getPath()))continue;
+            if(!sreq.getHost().equals(rreq.getHost()))continue;
+            var matchedQuery = matchQuery(rreq.getQuery(), sreq.getQuery());
+            if(rreq.isBinaryRequest()== sreq.isBinaryRequest()){
+                matchedQuery+=1;
             }
-        }
-        return staticIndexes;
-    }
 
-    private boolean containsTheSameIndexes(List<ReplayerRow> left, List<ReplayerRow> right) {
-        for(var leftItem :left){
-            var found = false;
-            for(var rightItem :right){
-                if(rightItem.getId()==leftItem.getId()){
-                    found=true;
-                    break;
-                }
-            }
-            if(!found){
-                return false;
+            if(matchedQuery> matchingQuery){
+                matchingQuery =matchedQuery;
+                founded = row;
             }
         }
-        for(var rightItem :right){
-            var found = false;
-            for(var leftItem :left){
-                if(rightItem.getId()==leftItem.getId()){
-                    found=true;
-                    break;
-                }
-            }
-            if(!found){
-                return false;
-            }
+        if(founded!=null){
+            states.put(founded.getId(),"");
         }
-        return true;
-    }
-
-    public  String calculateDataResult(ReplayerRow row, boolean byRequestOnly) {
-        var req= row.getRequest();
-        var result = req.getHost()+"|"+req.getPath();
-        if(req.getQuery()!=null) {
-            SortedSet<String> keys = new TreeSet<>(req.getQuery().keySet());
-            for (var q : keys) {
-                result += "|" + q + "=" + req.getQuery().get(q);
-            }
-        }
-        result+="|"+row.getRequestHash();
-        if(!byRequestOnly){
-            result+="|"+row.getResponseHash();
-        }
-        return result;
+        return founded;
     }
 
     public SerializableResponse findResponse(Request req) {
-        return null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            var contentHash = calculateMd5(req.getRequest(),md);
+            ReplayerRow founded = findStaticMatch(req,contentHash);
+            if (founded != null) {
+                return founded.getResponse();
+            }
+            founded = findDynamicMatch(req);
+            if (founded != null) {
+                return founded.getResponse();
+            }
+            return null;
+        }catch (Exception ex){
+            logger.error("ERror!",ex);
+            return null;
+        }
+    }
+
+    private int matchQuery(Map<String, String> left, Map<String, String> right) {
+        var result = 0;
+        for (var leftItem:left.entrySet()) {
+            for (var rightItem:right.entrySet()) {
+                if(leftItem.getKey().equalsIgnoreCase(rightItem.getKey())){
+                    result++;
+                    if(leftItem.getValue()==null){
+                        if(rightItem.getValue()==null){
+                            result++;
+                        }
+                    }else if(leftItem.getValue().equalsIgnoreCase(rightItem.getValue())){
+                        result++;
+                    }
+                }
+            }
+        }
+        return result;
     }
 }

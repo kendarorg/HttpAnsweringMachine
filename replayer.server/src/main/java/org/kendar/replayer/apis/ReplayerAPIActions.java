@@ -50,7 +50,7 @@ public class ReplayerAPIActions implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/recording/{id}/replay/{action}",
             method = "GET")
-    public boolean replaying(Request req, Response res){
+    public boolean replaying(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var action = req.getPathParameter("action");
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
