@@ -3,11 +3,9 @@ package org.kendar.replayer.storage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
-import org.kendar.servers.http.SerializableRequest;
 import org.kendar.servers.http.SerializableResponse;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -145,13 +143,14 @@ public class ReplayerDataset {
 
 
 
-    public void load() throws IOException {
+    public ReplayerResult load() throws IOException {
         var rootPath = Path.of(replayerDataDir);
         if(!Files.isDirectory(rootPath)){
             Files.createDirectory(rootPath);
         }
         var stringPath = Path.of(rootPath + File.separator + name+".json");
         replayerResult = mapper.readValue(stringPath.toFile(),ReplayerResult.class);
+        return replayerResult;
     }
 
     private ReplayerRow findStaticMatch(Request sreq,String contentHash) {
