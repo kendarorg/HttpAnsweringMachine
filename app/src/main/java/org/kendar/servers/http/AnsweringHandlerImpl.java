@@ -196,19 +196,19 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         logger.info(host+requestUri.toString());
 
         Request request = null;
-        if(httpExchange instanceof HttpsExchange){
-            request = Request.fromExchange(httpExchange,httpsForwardProtocol,httpsForwardPort);
-        }else{
-            request = Request.fromExchange(httpExchange,httpForwardProtocol,httpForwardPort);
-        }
-
-        handleOverwriteHost(request, httpExchange);
-
-        if (handleSpecialRequests(httpExchange, request)) {
-            return;
-        }
         Response response = new Response();
         try {
+            if(httpExchange instanceof HttpsExchange){
+                request = Request.fromExchange(httpExchange,httpsForwardProtocol,httpsForwardPort);
+            }else{
+                request = Request.fromExchange(httpExchange,httpForwardProtocol,httpForwardPort);
+            }
+
+            handleOverwriteHost(request, httpExchange);
+
+            if (handleSpecialRequests(httpExchange, request)) {
+                return;
+            }
 
             if(filteringClassesHandler.handle(HttpFilterType.PRE_RENDER,request,response,connManager)){
                 sendResponse(response,httpExchange);
@@ -245,11 +245,20 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
 
         }catch(Exception ex){
-            throw new IOException(ex.getMessage(),ex);
+            try {
+                logger.error("ERROR HANDLING HTTP REQUEST ", ex);
+                response.addHeader("X-Exception-Type", ex.getClass().getName());
+                response.addHeader("X-Exception-Message", ex.getMessage());
+                response.addHeader("X-Exception-PrevStatusCode", Integer.toString(response.getStatusCode()));
+                response.setStatusCode(500);
+                sendResponse(response, httpExchange);
+            }catch (Exception xx){
+
+            }
         }finally {
             try {
                 filteringClassesHandler.handle(HttpFilterType.POST_RENDER,request,response,connManager);
-            } catch (InvocationTargetException|IllegalAccessException e) {
+            } catch (Exception e) {
                 logger.error("ERROR CALLING POST RENDER ",e);
             }
         }

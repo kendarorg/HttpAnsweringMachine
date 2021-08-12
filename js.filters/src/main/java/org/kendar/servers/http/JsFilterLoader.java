@@ -62,7 +62,8 @@ public class JsFilterLoader implements CustomFilters {
 
     public List<FilterDescriptor> loadFilters() {
         var result = new ArrayList<FilterDescriptor>();
-        https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
+        String currentPath = "";
+        //https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
         try {
             File f = null;
             var realPath=jsFilterPath;
@@ -80,26 +81,29 @@ public class JsFilterLoader implements CustomFilters {
                 // For each pathname in the pathnames array
                 for (String pathname : pathnames) {
                     var fullPath = realPath+ File.separator+pathname;
+                    currentPath= fullPath;
                     var newFile = new File(fullPath);
                     if(newFile.isFile()){
                         var data = Files.readString(Path.of(fullPath));
                         var filterDescriptor = mapper.readValue(data, JsFilterDescriptor.class);
                         filterDescriptor.setRoot(realPath);
                         precompileFilter(filterDescriptor);
-                        var executor = new JsFilterExecutor(filterDescriptor,this,loggerBuilder);
-                        result.add(new FilterDescriptor(executor,environment));
+                        var executor = new JsFilterExecutor(filterDescriptor,this,loggerBuilder,filterDescriptor.getId());
+                        var fd = new FilterDescriptor(executor,environment);
+                        fd.setEnabled(filterDescriptor.isEnabled());
+                        result.add(fd);
                     }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error compiling js filter "+currentPath,e);
         }
         return result;
     }
 
     private static final SandboxClassShutter sandboxClassShutter = new SandboxClassShutter();
 
-    private void precompileFilter(JsFilterDescriptor filterDescriptor) throws IOException {
+    private void precompileFilter(JsFilterDescriptor filterDescriptor) throws Exception {
         String scriptSrc = "var globalFilterResult=runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON));\n" +
                 "globalResult.put('request', JSON.stringify(globalFilterResult.request));\n"+
                 "globalResult.put('response', JSON.stringify(globalFilterResult.response));\n"+
@@ -117,7 +121,11 @@ public class JsFilterLoader implements CustomFilters {
         try {
             Scriptable currentScope = getNewScope(cx);
             filterDescriptor.setSource(scriptSrc);
-            filterDescriptor.setScript(cx.compileString(scriptSrc,"my_script_id", 1, null));
+            filterDescriptor.setScript(cx.compileString(scriptSrc, "my_script_id", 1, null));
+        }catch (Exception ex){
+            logger.error("Error compiling script");
+            logger.error(scriptSrc);
+            throw new Exception(ex);
         } finally {
             Context.exit();
         }

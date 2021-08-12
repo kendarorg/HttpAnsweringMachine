@@ -21,6 +21,11 @@ import java.nio.file.Paths;
 @Component
 @HttpTypeFilter(hostAddress = "*")
 public class RequestResponseFileLogging  implements FilteringClass {
+
+    @Override
+    public String getId() {
+        return "org.kendar.servers.http.RequestResponseFileLogging";
+    }
     @Value("${localhost.logging.request:false}")
     private boolean logRequest = false;
     @Value("${localhost.logging.response:false}")

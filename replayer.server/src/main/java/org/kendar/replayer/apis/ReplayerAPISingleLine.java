@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
         blocking = true)
 public class ReplayerAPISingleLine implements FilteringClass {
 
+    @Override
+    public String getId() {
+        return "org.kendar.replayer.apis.ReplayerAPISingleLine";
+    }
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/recording/{id}/line/{line}",
             method = "GET")

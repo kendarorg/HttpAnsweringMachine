@@ -12,6 +12,11 @@ public class ReplayerWeb extends StaticWebFilter {
     private String path;
 
     @Override
+    public String getId() {
+        return "org.kendar.replayer.ReplayerWeb";
+    }
+
+    @Override
     protected String getPath() {
         return path;
     }

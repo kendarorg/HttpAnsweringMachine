@@ -17,7 +17,7 @@ public class JsFilterExecutor extends GenericFilterExecutor {
     private JsFilterDescriptor filterDescriptor;
     private JsFilterLoader jsFilterLoader;
 
-    public JsFilterExecutor(JsFilterDescriptor filterDescriptor, JsFilterLoader jsFilterLoader, LoggerBuilder loggerBuilder) {
+    public JsFilterExecutor(JsFilterDescriptor filterDescriptor, JsFilterLoader jsFilterLoader, LoggerBuilder loggerBuilder,String id) {
         super(filterDescriptor.getPriority(),
                 filterDescriptor.getMethod(),
                 filterDescriptor.isBlocking(),filterDescriptor.isBlocking(),
@@ -25,6 +25,7 @@ public class JsFilterExecutor extends GenericFilterExecutor {
                 filterDescriptor.getHostRegexp(),filterDescriptor.getPathRegexp(),
 
                 HttpFilterType.valueOf(filterDescriptor.getPhase()),null,null);
+        setId(id);
         this.logger = loggerBuilder.build(JsFilterExecutor.class);
         this.filterDescriptor = filterDescriptor;
         this.jsFilterLoader = jsFilterLoader;

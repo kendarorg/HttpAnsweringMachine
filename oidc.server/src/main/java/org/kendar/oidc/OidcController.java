@@ -37,6 +37,10 @@ import java.util.*;
 @Component
 @HttpTypeFilter(hostAddress = "${oidc.address:oidc.local.org}",blocking = true)
 public class OidcController implements FilteringClass {
+    @Override
+    public String getId() {
+        return "org.kendar.oidc.OidcController";
+    }
 
     @Value("${oidc.token.expiration:86400}")
     private int tokenExpirationSeconds;

@@ -11,8 +11,8 @@ public class ReplayerRow {
     private Calendar timestamp = Calendar.getInstance();
     private SerializableRequest request;
     private SerializableResponse response;
-    private ReplayerFileData requestFile;
-    private ReplayerFileData responseFile;
+    private String requestHash;
+    private String responseHash;
     private int id;
 
     public Calendar getTimestamp() {
@@ -39,27 +39,27 @@ public class ReplayerRow {
         this.response = response;
     }
 
-    public ReplayerFileData getRequestFile() {
-        return requestFile;
-    }
-
-    public void setRequestFile(ReplayerFileData requestFile) {
-        this.requestFile = requestFile;
-    }
-
-    public ReplayerFileData getResponseFile() {
-        return responseFile;
-    }
-
-    public void setResponseFile(ReplayerFileData responseFile) {
-        this.responseFile = responseFile;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
 
     public int getId() {
         return id;
+    }
+
+    public String getRequestHash() {
+        return requestHash;
+    }
+
+    public void setRequestHash(String requestHash) {
+        this.requestHash = requestHash;
+    }
+
+    public String getResponseHash() {
+        return responseHash;
+    }
+
+    public void setResponseHash(String responseHash) {
+        this.responseHash = responseHash;
     }
 }

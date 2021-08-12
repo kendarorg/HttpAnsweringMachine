@@ -3,6 +3,9 @@ package org.kendar.replayer.storage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.http.SerializableResponse;
+import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
@@ -21,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReplayerDataset {
     private static final String MAIN_FILE ="runall.json";
+    private final Logger logger;
     private ObjectMapper mapper = new ObjectMapper();
     private ConcurrentLinkedQueue<ReplayerRow> dynamicData = new ConcurrentLinkedQueue<>();
     private ConcurrentHashMap<String,ReplayerRow> staticData = new ConcurrentHashMap<>();
@@ -29,10 +33,14 @@ public class ReplayerDataset {
 
     private String name;
     private String replayerDataDir;
+    private String description;
+    private ReplayerResult replayerResult;
 
-    public ReplayerDataset(String name,String replayerDataDir){
+    public ReplayerDataset(String name, String replayerDataDir, String description, LoggerBuilder loggerBuilder){
         this.name = name;
         this.replayerDataDir = replayerDataDir;
+        this.description = description;
+        this.logger = loggerBuilder.build(ReplayerDataset.class);
     }
 
     public void save() throws IOException {
@@ -53,38 +61,34 @@ public class ReplayerDataset {
                 var rowValue = dynamicData.poll();
                 partialResult.add(rowValue);
             }
-            
+
             while (!errors.isEmpty()) {
                 // consume element
                 result.addError(errors.poll());
             }
-            errors.clear();
+
+            result.setDescription(description);
             reorganizeData(result,partialResult);
             var allDataString = mapper.writeValueAsString(result);
-            var stringPath = rootPath + File.separator + MAIN_FILE;
+            var stringPath = rootPath + File.separator + name+".json";
             FileWriter myWriter = new FileWriter(stringPath);
             myWriter.write(allDataString);
             myWriter.close();
         }
     }
 
-
-    private void reorganizeData(ReplayerResult destination, ArrayList<ReplayerRow> source) {
-        //group by r_method,r_path,r_query,r_request_text,r_request_bin,r_response_text,r_response_bin order by r_path desc
-        //group by r_method,r_path,r_query,r_request_text,r_request_bin                                order by r_path desc
-    }
-
     public void add(Request req, Response res){
+        var path = req.getHost()+req.getPath();
         try {
 
 
             MessageDigest md = MessageDigest.getInstance("MD5");
             String responseHash = null;
-            var path = req.getHost()+req.getPath();
+
             if(req.isStaticRequest() && staticData.contains(path)){
                 var alreadyPresent = staticData.get(path);
                 responseHash=calculateMd5(res.getResponse(),md);
-                if(!responseHash.equalsIgnoreCase(alreadyPresent.getResponseFile().getMd5())){
+                if(!responseHash.equalsIgnoreCase(alreadyPresent.getResponseHash())){
                     errors.add("Static request was dynamic "+path);
                     throw new Exception("Static request was dynamic "+path);
                 }
@@ -97,9 +101,8 @@ public class ReplayerDataset {
             replayerRow.setId(counter.getAndIncrement());
             replayerRow.setRequest(Request.toSerializable(req));
             replayerRow.setResponse(Response.toSerializable(res));
-            replayerRow.setRequestFile(new ReplayerFileData("PATH",calculateMd5(req.getRequest(),md)));
-            replayerRow.setResponseFile(new ReplayerFileData("PATH",responseHash));
-            writeDataFiles(Path.of(replayerDataDir), replayerRow);
+            replayerRow.setRequestHash(calculateMd5(req.getRequest(),md));
+            replayerRow.setResponseHash(responseHash);
 
             if(req.isStaticRequest()){
                 staticData.put(path,replayerRow);
@@ -109,40 +112,13 @@ public class ReplayerDataset {
             //ADD the crap
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            logger.error("Error recording request "+path,e);
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("Error recording request "+path,e);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private void writeDataFiles(Path rootPath, ReplayerRow rowValue) throws IOException {
-        var rowId = rowValue.getId();
-        if(!rowValue.getRequestFile().getMd5().equalsIgnoreCase("0")){
-            var stringPath = rootPath + File.separator + rowId + ".request";
-            var requestPath = Path.of(stringPath);
-            if(rowValue.getRequest().isBinaryRequest()) {
-                Files.write(requestPath, rowValue.getRequest().getRequestBytes());
-            }else{
-                FileWriter myWriter = new FileWriter(stringPath);
-                myWriter.write(rowValue.getRequest().getRequestText());
-                myWriter.close();
-            }
-            rowValue.getRequest().setRequestBytes(null);
-            rowValue.getRequest().setRequestText(null);
-        }
-        if(!rowValue.getResponseFile().getMd5().equalsIgnoreCase("0")){
-            var stringPath = rootPath + File.separator + rowId + ".response";
-            var requestPath = Path.of(stringPath);
-            if(rowValue.getResponse().isBinaryResponse()) {
-                Files.write(requestPath, rowValue.getResponse().getResponseBytes());
-            }else{
-                FileWriter myWriter = new FileWriter(stringPath);
-                myWriter.write(rowValue.getResponse().getResponseText());
-                myWriter.close();
-            }
-            rowValue.getResponse().setResponseBytes(null);
-            rowValue.getResponse().setResponseText(null);
+            logger.error("Error recording request "+path,e);
         }
     }
 
@@ -160,5 +136,26 @@ public class ReplayerDataset {
         byte[] digest = md.digest();
         BigInteger bigInt = new BigInteger(1,digest);
         return bigInt.toString(16);
+    }
+
+
+
+    public void load() throws IOException {
+        var rootPath = Path.of(replayerDataDir);
+        if(!Files.isDirectory(rootPath)){
+            Files.createDirectory(rootPath);
+        }
+        var stringPath = Path.of(rootPath + File.separator + name+".json");
+        replayerResult = mapper.readValue(stringPath.toFile(),ReplayerResult.class);
+    }
+
+    public SerializableResponse findResponse(Request req) {
+        return null;
+    }
+    
+    private void reorganizeData(ReplayerResult destination, ArrayList<ReplayerRow> source) {
+        destination.setRows(source);
+        //group by r_method,r_path,r_query,r_request_text,r_request_bin,r_response_text,r_response_bin order by r_path desc
+        //group by r_method,r_path,r_query,r_request_text,r_request_bin                                order by r_path desc
     }
 }
