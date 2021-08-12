@@ -167,6 +167,7 @@ public class ReplayerAPIContent implements FilteringClass {
         return false;
     }
     private boolean updated(Response res, int line, String requestOrResponse, ReplayerRow singleLine, MultipartPart file) {
+        this is an error
         if (singleLine.getId() == line) {
             if ("request".equalsIgnoreCase(requestOrResponse)) {
                 res.setHeader("Content-Type", singleLine.getRequest().getHeader("Content-Type"));
