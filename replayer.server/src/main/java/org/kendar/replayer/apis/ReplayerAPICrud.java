@@ -10,6 +10,7 @@ import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.servers.http.Request;
+import org.kendar.servers.http.RequestUtils;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -85,6 +87,24 @@ public class ReplayerAPICrud implements FilteringClass {
             pathAddress = "/api/recording",
             method = "POST")
     public boolean uploadRecording(Request req, Response res){
+        for(var mp :req.getMultipartData()){
+            //var contendDisposition = RequestUtils.parseContentDisposition(mp.getHeader("Content-Disposition"));
+            if(!mp.isFile()) continue;
+            var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData,mp.getFileName()));
+            try {
+
+                if(mp.getByteData()!=null) {
+                    Files.write(rootPath, mp.getByteData());
+                }else {
+                    FileWriter myWriter = new FileWriter(rootPath.toString());
+                    myWriter.write(mp.getStringData());
+                    myWriter.close();
+                }
+
+            }catch (Exception ex){
+
+            }
+        }
         return false;
     }
 }

@@ -1,35 +1,30 @@
 package org.kendar.servers.http;
 
-import java.util.ArrayList;
+import org.apache.commons.fileupload.FileItem;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MultipartPart {
-    public MultipartPart(List<String> data){
-        StringBuffer buffer = new StringBuffer();
-        boolean header = true;
-        for(String line: data){
-            if(line.length()==0){
-                header=false;
-                continue;
-            }
-            if(header){
-                var headerData = line.split(":",2);
-                headers.put(headerData[0],headerData[1]);
-            }else{
-                if(buffer.length()==0){
-                    buffer.append(line);
-                }else{
-                    buffer.append("\r\n");
-                    buffer.append(line);
-                }
-                this.data = buffer.toString();
-            }
+    private boolean file;
+    private String contentType;
+    private String fileName;
+    private String fieldName;
+    private String stringData;
+    private byte[] byteData;
+
+    public MultipartPart(FileItem fileItem) {
+        this.contentType = fileItem.getContentType();
+        this.file=!fileItem.isFormField();
+        setFieldName(fileItem.getFieldName());
+        if(fileItem.isFormField()){
+            setStringData(fileItem.getString());
+        }else{
+            setByteData(fileItem.get());
+            setFileName(fileItem.getName());
         }
     }
     private Map<String,String> headers = new HashMap<>();
-    private String data = "";
 
     public Map<String, String> getHeaders() {
         return headers;
@@ -39,11 +34,62 @@ public class MultipartPart {
         this.headers = headers;
     }
 
-    public String getData() {
-        return data;
+    public String getHeader(String s) {
+        if(getHeaders().containsKey(s)){
+            return getHeaders().get(s);
+        }
+        for(var kvp : getHeaders().entrySet()){
+            if(kvp.getKey().equalsIgnoreCase(s)){
+                return kvp.getValue();
+            }
+        }
+        return null;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
+    public String getStringData() {
+        return stringData;
+    }
+
+    public void setStringData(String stringData) {
+        this.stringData = stringData;
+    }
+
+    public byte[] getByteData() {
+        return byteData;
+    }
+
+    public void setByteData(byte[] byteData) {
+        this.byteData = byteData;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public boolean isFile() {
+        return file;
+    }
+
+    public void setFile(boolean b){
+        file=b;
     }
 }

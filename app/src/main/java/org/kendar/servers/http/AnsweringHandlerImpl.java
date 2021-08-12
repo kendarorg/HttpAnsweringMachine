@@ -316,14 +316,20 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
                 MultipartEntityBuilder builder = MultipartEntityBuilder.create();
                 builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
                 for (MultipartPart part : request.getMultipartData()) {
-                    var contentDispositionString = RequestUtils.getFromMap(part.getHeaders(), "Content-Disposition");
-                    var contentDisposition = RequestUtils.parseContentDisposition(contentDispositionString);
-                    if (MimeChecker.isBinary(contentDisposition.get("type"),null)) {
+                    //var contentDispositionString = RequestUtils.getFromMap(part.getHeaders(), "Content-Disposition");
+                    //var contentDisposition = RequestUtils.parseContentDisposition(contentDispositionString);
+                    if (MimeChecker.isBinary(part.getContentType(),null)) {
                         builder.addBinaryBody(
-                                contentDisposition.get("name"), Base64.getDecoder().decode(part.getData()), ContentType.create(contentDisposition.get("type")), contentDisposition.get("filename"));
+                                part.getFieldName(), part.getByteData(),
+                                ContentType.create(part.getContentType()),
+                                part.getFileName());
                     } else {
+                        var type = part.getContentType();
+                        if(type==null){
+                            type="text/plain";
+                        }
                         builder.addTextBody(
-                                contentDisposition.get("name"), part.getData(), ContentType.TEXT_PLAIN);
+                                part.getFieldName(), part.getStringData(),ContentType.create( type));
                     }
                 }
                 HttpEntity entity = builder.build();

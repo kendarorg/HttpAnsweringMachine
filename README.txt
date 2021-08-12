@@ -149,3 +149,12 @@ public class ReplayerDb implements DerbyApplication {
                 new SqlSessionFactoryBuilder().build(configuration);
     }*/
 }
+
+
+
+curl -F 'img_avatar=@favicon.ico' http://replayer.local.org/api/recording
+curl \
+  -F "userid=1" \
+  -F "filecomment=This is an image file" \
+  -F "image=@favicon.ico" \
+  http://replayer.local.org/api/recording
