@@ -12,17 +12,24 @@
             <h3>ADD USER</h3>
             <form action="" id="addUser">
                 <div class="form-group">
-                    <label for="uploadScript">Upload new Script</label>
-                    <input type="file" class="form-control-file" id="uploadScript">
+                    <input class="form-control" name="name" placeholder="Name" required type="text"/>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" name="address" placeholder="Address" required type="text"/>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" max="100" min="10" name="age" placeholder="Age" required type="number"/>
                 </div>
                 <button class="btn btn-primary form-control" type="submit">SUBMIT</button>
             </form>
         </div>
         <div class="col-md-8">
             <h3>USERS</h3>
-            <table class="table table-striped" id="scriptTable">
+            <table class="table table-striped" id="userTable">
                 <tr>
-                    <th colspan="3">Name</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th colspan="3">Age</th>
                 </tr>
             </table>
         </div>
@@ -43,6 +50,6 @@
         </div>
     </div>
 </div>
-<script src="app/app.js"></script>
+<script src="app/testapp.js"></script>
 </body>
 </html>
