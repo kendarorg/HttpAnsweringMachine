@@ -237,4 +237,15 @@ public class ReplayerDataset {
         }
         return result;
     }
+
+    public void update(ReplayerRow row) {
+
+    }
+
+    public void delete(int line) {
+
+    }
+
+    public void add(ReplayerRow row) {
+    }
 }

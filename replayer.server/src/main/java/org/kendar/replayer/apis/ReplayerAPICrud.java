@@ -14,6 +14,7 @@ import org.kendar.servers.http.RequestUtils;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -24,12 +25,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 @Component
 @HttpTypeFilter(hostAddress = "${replayer.address:replayer.local.org}",
         blocking = true)
 public class ReplayerAPICrud implements FilteringClass {
+    private final Logger logger;
     ObjectMapper mapper = new ObjectMapper();
     @Value("${replayer.data:replayerdata}")
     private String replayerData;
@@ -42,6 +43,7 @@ public class ReplayerAPICrud implements FilteringClass {
         this.fileResourcesUtils = fileResourcesUtils;
 
         this.loggerBuilder = loggerBuilder;
+        this.logger = loggerBuilder.build(ReplayerAPICrud.class);
     }
 
     @Override
@@ -86,19 +88,24 @@ public class ReplayerAPICrud implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/recording",
             method = "POST")
-    public boolean uploadRecording(Request req, Response res){
+    public boolean uploadRecording(Request req, Response res) throws Exception {
         for(var mp :req.getMultipartData()){
             //var contendDisposition = RequestUtils.parseContentDisposition(mp.getHeader("Content-Disposition"));
             if(!mp.isFile()) continue;
             var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData,mp.getFileName()));
+            if(!rootPath.toString().toLowerCase(Locale.ROOT).endsWith(".json")){
+                throw new Exception("Can upload only json files!");
+            }
             try {
 
                 if(mp.getByteData()!=null) {
                     Files.write(rootPath, mp.getByteData());
+                    logger.info("Uploaded replayer binary script "+rootPath);
                 }else {
                     FileWriter myWriter = new FileWriter(rootPath.toString());
                     myWriter.write(mp.getStringData());
                     myWriter.close();
+                    logger.info("Uploaded replayer text script "+rootPath);
                 }
 
             }catch (Exception ex){
