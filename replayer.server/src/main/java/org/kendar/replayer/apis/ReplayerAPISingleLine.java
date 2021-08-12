@@ -98,7 +98,6 @@ public class ReplayerAPISingleLine implements FilteringClass {
             method = "POST")
     public boolean addLineData(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
-        var line = Integer.parseInt(req.getPathParameter("line"));
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 

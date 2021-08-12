@@ -151,4 +151,8 @@ public class Response {
     public void setMessages(List<String> messages) {
         this.messages = messages;
     }
+
+    public String getHeader(String s) {
+        return RequestUtils.getFromMap(this.headers,s);
+    }
 }

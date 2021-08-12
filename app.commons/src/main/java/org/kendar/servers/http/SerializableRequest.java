@@ -149,4 +149,8 @@ public class SerializableRequest {
     public void setBinaryRequest(boolean binaryRequest) {
         this.binaryRequest = binaryRequest;
     }
+
+    public String getHeader(String s) {
+        return RequestUtils.getFromMap(this.headers,s);
+    }
 }

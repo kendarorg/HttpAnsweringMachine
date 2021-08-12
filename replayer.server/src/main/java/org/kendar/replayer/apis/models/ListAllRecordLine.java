@@ -2,11 +2,10 @@ package org.kendar.replayer.apis.models;
 
 import org.kendar.replayer.storage.ReplayerRow;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ListAllRecordLine {
-    private final int id;
+    private int id;
     private String protocol;
     private String path;
     private String host;
@@ -19,7 +18,7 @@ public class ListAllRecordLine {
     private int httpCode;
 
     public ListAllRecordLine(ReplayerRow staticLine) {
-        id = staticLine.getId();
+        setId(staticLine.getId());
         setProtocol(staticLine.getRequest().getProtocol());
         setPath(staticLine.getRequest().getPath());
         setHost(staticLine.getRequest().getHost());
@@ -114,5 +113,9 @@ public class ListAllRecordLine {
 
     public void setHttpCode(int httpCode) {
         this.httpCode = httpCode;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
