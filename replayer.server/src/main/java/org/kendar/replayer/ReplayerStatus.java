@@ -6,6 +6,7 @@ import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.http.SerializableResponse;
+import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -27,15 +28,17 @@ public class ReplayerStatus {
     private String replayerData;
     private LoggerBuilder loggerBuilder;
     private DataReorganizer dataReorganizer;
+    private FileResourcesUtils fileResourcesUtils;
 
-    public ReplayerStatus(LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer){
+    public ReplayerStatus(LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer, FileResourcesUtils fileResourcesUtils){
 
         this.loggerBuilder = loggerBuilder;
         this.dataReorganizer = dataReorganizer;
+        this.fileResourcesUtils = fileResourcesUtils;
     }
 
     public void startRecording( String id,String description) throws IOException {
-        var rootPath = buildPath();
+        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
         if(!Files.isDirectory(rootPath)){
             Files.createDirectory(rootPath);
         }
@@ -54,24 +57,7 @@ public class ReplayerStatus {
     }
 
 
-    private Path buildPath(){
-        try {
 
-
-            var fp = new URI(replayerData);
-
-            if(!fp.isAbsolute()){
-                Path currentRelativePath = Paths.get("");
-                String s = currentRelativePath.toAbsolutePath().toString();
-
-                return Path.of(s+ File.separator+ replayerData);
-            }else {
-                return Path.of(replayerData);
-            }
-        } catch (URISyntaxException e) {
-            return null;
-        }
-    }
 
     public boolean replay(Request req, Response res) {
         if(state!=ReplayerState.REPLAYING)return false;
@@ -108,7 +94,7 @@ public class ReplayerStatus {
     }
 
     public void startReplaying(String id) throws IOException {
-        var rootPath = buildPath();
+        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
         if(!Files.isDirectory(rootPath)){
             Files.createDirectory(rootPath);
         }

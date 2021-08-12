@@ -5,6 +5,9 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.utils.FileResourcesUtils;
+import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +24,14 @@ import java.nio.file.Paths;
 @Component
 @HttpTypeFilter(hostAddress = "*")
 public class RequestResponseFileLogging  implements FilteringClass {
+    private final Logger logger;
+    private FileResourcesUtils fileResourcesUtils;
+
+    public RequestResponseFileLogging(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder){
+
+        this.fileResourcesUtils = fileResourcesUtils;
+        this.logger = loggerBuilder.build(RequestResponseFileLogging.class);
+    }
 
     @Override
     public String getId() {
@@ -46,21 +57,12 @@ public class RequestResponseFileLogging  implements FilteringClass {
     @PostConstruct
     public void init(){
         try {
-            URI fp = new URI(logPath);
-            if(logPath.startsWith("/")){
-                logPath=logPath.substring(1);
-            }
-            if(!fp.isAbsolute()){
-                Path currentRelativePath = Paths.get("");
-                String s = currentRelativePath.toAbsolutePath().toString();
-
-                logPath = Path.of(s+ File.separator+logPath).toString();
-            }
+            logPath = fileResourcesUtils.buildPath(logPath);
             var np = Path.of(logPath);
             if(!Files.isDirectory(np)){
                 Files.createDirectory(np);
             }
-        } catch (URISyntaxException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

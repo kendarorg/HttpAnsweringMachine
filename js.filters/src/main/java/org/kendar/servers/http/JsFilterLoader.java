@@ -3,6 +3,7 @@ package org.kendar.servers.http;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.CustomFilters;
 import org.kendar.http.FilterDescriptor;
+import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.mozilla.javascript.ClassShutter;
 import org.mozilla.javascript.Context;
@@ -32,12 +33,14 @@ public class JsFilterLoader implements CustomFilters {
     private Environment environment;
     private Logger logger;
     private LoggerBuilder loggerBuilder;
+    private FileResourcesUtils fileResourcesUtils;
 
-    public JsFilterLoader(Environment environment, LoggerBuilder loggerBuilder){
+    public JsFilterLoader(Environment environment, LoggerBuilder loggerBuilder, FileResourcesUtils fileResourcesUtils){
 
         this.environment = environment;
         this.logger = loggerBuilder.build(JsFilterLoader.class);
         this.loggerBuilder = loggerBuilder;
+        this.fileResourcesUtils = fileResourcesUtils;
         logger.info("JsFilter LOADED");
     }
 
@@ -66,21 +69,13 @@ public class JsFilterLoader implements CustomFilters {
         //https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
         try {
             File f = null;
-            var realPath=jsFilterPath;
-            var fp = new URI(jsFilterPath);
-            if(!fp.isAbsolute()){
-                Path currentRelativePath = Paths.get("");
-                String s = currentRelativePath.toAbsolutePath().toString();
-                f= new File(s+File.separator+jsFilterPath);
-                realPath=s+File.separator+jsFilterPath;
-            }else {
-                f = new File(jsFilterPath);
-            }
+            var realPath=fileResourcesUtils.buildPath(jsFilterPath);
+            f = new File(realPath);
             if(f.exists()) {
                 var pathnames = f.list();
                 // For each pathname in the pathnames array
                 for (String pathname : pathnames) {
-                    var fullPath = realPath+ File.separator+pathname;
+                    var fullPath = fileResourcesUtils.buildPath(realPath,pathname);
                     currentPath= fullPath;
                     var newFile = new File(fullPath);
                     if(newFile.isFile()){
