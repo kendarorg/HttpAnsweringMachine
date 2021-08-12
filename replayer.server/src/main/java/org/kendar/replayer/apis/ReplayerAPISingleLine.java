@@ -5,7 +5,6 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
-import org.kendar.replayer.apis.models.ListAllRecordLine;
 import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerRow;
@@ -76,13 +75,18 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
         var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
         var datasetContent = dataset.load();
-        ListAllRecordList result = new ListAllRecordList(datasetContent,id);
-        for (var singleLine :
-                result.getLines()) {
-            if(singleLine.getId()==line){
-                var passedLine = mapper.readValue((String)req.getRequest(), ListAllRecordLine.class);
-                ReplayerRow row = convertToRow(passedLine);
-                dataset.update(row);
+        for (var destination :datasetContent.getStaticRequests()) {
+            if(destination.getId()==line){
+                var source = mapper.readValue((String)req.getRequest(), ReplayerRow.class);
+                cloneToRow(destination,source);
+                dataset.saveMods();
+                return true;
+            }
+        }
+        for (var destination :datasetContent.getDynamicRequests()) {
+            if(destination.getId()==line){
+                var source = mapper.readValue((String)req.getRequest(), ReplayerRow.class);
+                cloneToRow(destination,source);
                 dataset.saveMods();
                 return true;
             }
@@ -103,9 +107,8 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
         var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
         dataset.load();
-        var passedLine = mapper.readValue((String)req.getRequest(), ListAllRecordLine.class);
-        ReplayerRow row = convertToRow(passedLine);
-        dataset.add(row);
+        var passedLine = mapper.readValue((String)req.getRequest(), ReplayerRow.class);
+        dataset.add(passedLine);
         dataset.saveMods();
         return false;
     }
@@ -127,8 +130,6 @@ public class ReplayerAPISingleLine implements FilteringClass {
         return false;
     }
 
-    private ReplayerRow convertToRow(ListAllRecordLine passedLine) {
-        //TODO Missing
-        return null;
+    private void cloneToRow(ReplayerRow destination, ReplayerRow source) {
     }
 }
