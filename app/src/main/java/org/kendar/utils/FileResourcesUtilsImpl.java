@@ -71,34 +71,43 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
     }
 
     public String buildPath(String ... paths){
+        String returnValue = null;
+        var result = paths[0];
         try {
-            var result = paths[0];
-            for (var i = 0; i < paths.length; i++) {
+            for (var i = 1; i < paths.length; i++) {
+                paths[i] = paths[i].replace("/",File.separator);
+                paths[i] = paths[i].replace("\\",File.separator);
+            }
+            while(result.endsWith("/") || result.endsWith("\\")){
+                result = result.substring(0,result.length()-1);
+            }
+            for (var i = 1; i < paths.length; i++) {
                 if (i > 0) {
                     var cur = paths[i];
-                    if(cur.endsWith("/")){
-                        cur = cur.substring(0,paths[i].length()-1);
+                    while(cur.endsWith("/") || cur.endsWith("\\")){
+                        cur = cur.substring(0,cur.length()-1);
                     }
-                    if (cur.startsWith("/")) {
-                        result += cur;
-                    } else {
-                        result += "/" + cur;
+                    while(cur.startsWith("/")|| cur.startsWith("\\")){
+                        cur = cur.substring(1);
                     }
+                    result += File.separator + cur;
                 }
             }
-            var fp = new URI(result);
+            var fpResult = result.replace('\\','/');
+            var fp = new URI(fpResult);
             if(!fp.isAbsolute()){
-                if(result.startsWith("/")){
+                while(result.startsWith("/")||result.startsWith("\\")){
                     result = result.substring(1);
                 }
                 Path currentRelativePath = Paths.get("");
                 String s = currentRelativePath.toAbsolutePath().toString();
-                return currentRelativePath+File.separator+result;
+                returnValue = s+File.separator+result;
             }else {
-                return result;
+                returnValue = result;
             }
+            return returnValue;
         }catch(Exception ex){
-            return null;
+            return returnValue;
         }
     }
 }

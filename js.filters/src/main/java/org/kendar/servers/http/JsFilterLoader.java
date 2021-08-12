@@ -75,7 +75,7 @@ public class JsFilterLoader implements CustomFilters {
                 var pathnames = f.list();
                 // For each pathname in the pathnames array
                 for (String pathname : pathnames) {
-                    var fullPath = fileResourcesUtils.buildPath(realPath,pathname);
+                    var fullPath = fileResourcesUtils.buildPath(jsFilterPath,pathname);
                     currentPath= fullPath;
                     var newFile = new File(fullPath);
                     if(newFile.isFile()){
