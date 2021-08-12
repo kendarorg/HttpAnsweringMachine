@@ -17,9 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -262,11 +260,23 @@ public class ReplayerDataset {
         return true;
     }
 
-    public SerializableResponse findResponse(Request req) {
-        return null;
-    }
-    
     public  String calculateDataResult(ReplayerRow row, boolean byRequestOnly) {
+        var req= row.getRequest();
+        var result = req.getHost()+"|"+req.getPath();
+        if(req.getQuery()!=null) {
+            SortedSet<String> keys = new TreeSet<>(req.getQuery().keySet());
+            for (var q : keys) {
+                result += "|" + q + "=" + req.getQuery().get(q);
+            }
+        }
+        result+="|"+row.getRequestHash();
+        if(!byRequestOnly){
+            result+="|"+row.getResponseHash();
+        }
+        return result;
+    }
+
+    public SerializableResponse findResponse(Request req) {
         return null;
     }
 }
