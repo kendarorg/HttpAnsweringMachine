@@ -1,0 +1,78 @@
+<html>
+<head>
+    <link href="libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="libs/jquery-3.2.1.min.js"></script>
+    <script src="libs/bootstrap.min.js"></script>
+    <link href="app/app.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-8">
+            <h3>SCRIPT</h3>
+        </div>
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="id">Id</label>
+                <input class="form-control" readonly type="text" name="id" id="id" />
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input class="form-control" type="text" name="description" id="description" />
+            </div>
+        </div>
+        <div class="col-md-8">
+            <table class="table table-striped" id="lineTable">
+                <tr>
+                    <th>Id</th>
+                    <th>Method</th>
+                    <th>Path</th>
+                    <th colspan="3">Response Hash</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="app/app.js"></script>
+<script>
+    var lines = [];
+
+    $.ajax({
+        url: "/api/recording/"+getUrlParameter("id"),
+        type: 'GET',
+        success: function(res) {
+            $("#description").val(res['description']);
+            $("#id").val(res['id']);
+            var fields = ['id','request.method','request.path','responseHash'];
+            //$.each(res["lines"], function(i, line) {
+            for(var v=0;v<res["lines"].length;v++) {
+                var line =res["lines"][v];
+                //tSource,tableId,id,data,fields
+                appendToTable(lines, "lineTable", "id", line, fields);
+            }
+            //});
+        }
+    });
+
+    function editlineTable(lineId) {
+        location.href = "line.html?line="+lineId+"&id="+getUrlParameter("id");
+    }
+
+    function deletelineTable(lineId) {
+        deleteFromTable(lines,"lineTable","id",lineId,"Line",function(id,success,error){
+            $.ajax({
+                url: "/api/recording/"+getUrlParameter("id")+"/line/x" + lineId,
+                type: 'DELETE',
+                success: function (res) {
+                    success();
+                },
+                error:function(res){
+                    error();
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>

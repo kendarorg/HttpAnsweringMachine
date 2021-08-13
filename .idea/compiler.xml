@@ -16,6 +16,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="answer.jdbc" target="11" />
       <module name="http.jdbc" target="11" />
       <module name="starter" target="11" />
     </bytecodeTargetLevel>
@@ -23,6 +24,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="HttpAnsweringMachine" options="-parameters" />
+      <module name="answer.jdbc" options="-parameters" />
       <module name="app" options="-parameters" />
       <module name="app.commons" options="-parameters" />
       <module name="app.http" options="-parameters" />

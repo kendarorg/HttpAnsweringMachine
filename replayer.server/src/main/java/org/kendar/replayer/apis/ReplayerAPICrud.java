@@ -94,7 +94,9 @@ public class ReplayerAPICrud implements FilteringClass {
             if(!mp.isFile()) continue;
             var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData,mp.getFileName()));
             if(!rootPath.toString().toLowerCase(Locale.ROOT).endsWith(".json")){
-                throw new Exception("Can upload only json files!");
+                res.addHeader("Content-type","application/json");
+                res.setStatusCode(500);
+                return false;
             }
             try {
 
@@ -108,8 +110,11 @@ public class ReplayerAPICrud implements FilteringClass {
                     logger.info("Uploaded replayer text script "+rootPath);
                 }
 
+                res.setStatusCode(200);
             }catch (Exception ex){
-
+                res.addHeader("Content-type","application/json");
+                res.setStatusCode(500);
+                return false;
             }
         }
         return false;
