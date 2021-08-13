@@ -25,6 +25,15 @@ h3 {
     letter-spacing: .1em;
 }
 
+
+h4 {
+    background-color: #333;
+    padding: 8px;
+    border-top-right-radius: 15px;
+    font-weight: bolder;
+    letter-spacing: .1em;
+}
+
 .modal-content{
     border-radius: 0;
 }
