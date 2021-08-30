@@ -1,4 +1,14 @@
 
+if (Function.prototype.name === undefined){
+    // Add a custom property to all function values
+    // that actually invokes a method to get the value
+    Object.defineProperty(Function.prototype,'name',{
+        get:function(){
+            return /function ([^(]*)/.exec( this+"" )[1];
+        }
+    });
+}
+
 var getUrlParameter = function(sParam) {
     var sPageURL = window.location.search.substring(1),
         sURLVariables = sPageURL.split('&'),
@@ -15,71 +25,198 @@ var getUrlParameter = function(sParam) {
     return false;
 };
 
+///////////////////////     SIMPLE GRID
 
-var appendToTable = function(tSource,tableId,idField,inputData,fields) {
-
-    var idContent=inputData[idField];
-    for(var i=0;i<tSource.length;i++){
-        var line = tSource[i];
-        if(line[idField]==inputData[idField]){
-            tSource[i]=inputData;
-            for(var v=0;v<fields.length;v++){
-                var index = fields[v];
-                var content = inputData[index];
-                $("#" + tableId + " #" + tableId + "-" + idContent+" #"+index).innerHTML = content;
+class SimpleGrid{
+    data;
+    tableId;
+    idField;
+    fields;
+    deleteFunction;
+    saveFunction;
+    objType;
+    loadFunction;
+    load(){
+        this.loadFunction(this);
+        return this;
+    }
+    constructor(objType,name,idField,fields,loadFunction,editFunction,deleteFunction,saveFunction){
+        this.objType= objType;
+        this.tableId = name;
+        this.editFunction = editFunction;
+        this.deleteFunction = deleteFunction;
+        this.saveFunction = saveFunction;
+        this.loadFunction = loadFunction;
+        this.data = [];
+        this.idField = idField;
+        this.fields = fields;
+    }
+    deleteFromTable(id,callback) {
+        var action = confirm("Are you sure you want to delete this "+this.objType+"?");
+        var msg = this.objType+" deleted successfully!";
+        var msgError = this.objType+" cannot be deleted!";
+        var self = this;
+        this.data.forEach(function(row, i) {
+            if (row[self.idField] == id && action != false) {
+                if(callback==null){
+                    self.data.splice(i, 1);
+                    $("#" + self.tableId + " #" + self.tableId + "-" + id).remove();
+                    flashMessage(msg);
+                }else {
+                    callback(id, function () {
+                        self.data.splice(i, 1);
+                        $("#" + self.tableId + " #" + self.tableId + "-" + id).remove();
+                        flashMessage(msg);
+                    }, function () {
+                        flashMessage(msgError);
+                    });
+                }
             }
-            return;
-        }
+        });
     }
-    tSource.push(inputData);
-    var data = `
-        <tr id="${tableId}-${idContent}">`;
-
-    /*for(var i=0;i<fields.length;i++){
-        var index = fields[i];
-        var content = inputData[index];
-        data+=`<td class="userData" name="${index}">${content}</td>`;
-    }*/
-
-    for(var i=0;i<fields.length;i++){
-        var index = fields[i];
-        var allIndex = fields[i].split(".");
-        var content = inputData;
-        for(var s=0;s<allIndex.length;s++){
-            content = content[allIndex[s]];
+    appendToTable(inputData){
+        var idContent=inputData[this.idField];
+        for(var i=0;i<this.data.length;i++){
+            var line = this.data[i];
+            if(line[this.idField]==inputData[this.idField]){
+                this.data[i]=inputData;
+                for(var v=0;v<this.fields.length;v++){
+                    var index = this.fields[v];
+                    var content = inputData[index];
+                    if(content.length>60)content= content.substr(0,60);
+                    $("#" + this.tableId +
+                        " #" + this.tableId + "-" + idContent+
+                        " #"+index).innerHTML = content;
+                }
+                return;
+            }
         }
-        data+=`<td class="userData" name="${index}">${content}</td>`;
-    }
+        this.data.push(inputData);
+        var toWrite = `
+        <tr id="${this.tableId}-${idContent}">`;
 
+        /*for(var i=0;i<fields.length;i++){
+            var index = fields[i];
+            var content = inputData[index];
+            data+=`<td class="userData" name="${index}">${content}</td>`;
+        }*/
 
-    data+=`<td align="center">
-                <button class="btn btn-success form-control" onClick="edit${tableId}('${idContent}')">EDIT</button>
+        for(var i=0;i<this.fields.length;i++){
+            var index = this.fields[i];
+            var allIndex = this.fields[i].split(".");
+            var content = inputData;
+            for(var s=0;s<allIndex.length;s++){
+                content = content[allIndex[s]];
+            }
+            if(content.length>60)content= content.substr(0,60);
+            toWrite+=`<td class="userData" name="${index}">${content}</td>`;
+        }
+
+        toWrite+=`<td align="center">
+                <button class="btn btn-success form-control" id="${this.tableId}-${idContent}-edit">EDIT</button>
             </td>
             <td align="center">
-                <button class="btn btn-danger form-control" onClick="delete${tableId}('${idContent}')">DELETE</button>
+                <button class="btn btn-danger form-control" id="${this.tableId}-${idContent}-delete">DELETE</button>
             </td>
         </tr>
     `;
-    $("#"+tableId+" > tbody:last-child").append(data);
+        var self = this;
+        $("#"+this.tableId+" > tbody:last-child").append(toWrite);
+        $("#"+this.tableId+"-"+idContent+"-edit").click(function(){ self.editFunction(self,idContent); });
+        $("#"+this.tableId+"-"+idContent+"-delete").click(function(){ self.deleteFunction(self,idContent); });
+    }
 }
 
+///////////////////////     KVP
 
-var deleteFromTable = function(tSource,tableId,idField,id,objType,callback) {
-    var action = confirm("Are you sure you want to delete this "+objType+"?");
-    var msg = objType+" deleted successfully!";
-    var msgError = objType+" cannot be deleted!";
-    tSource.forEach(function(row, i) {
-        if (row[idField] == id && action != false) {
-            callback(id,function(){
-                tSource.splice(i, 1);
-                $("#" + tableId + " #" + tableId + "-" + id).remove();
-                flashMessage(msg);
-            },function(){
-                flashMessage(msgError);
-            });
+
+var editKvp=function(table,id,idField,valueField) {
+    var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
+    var randomIdInput = "INPUT"+Math.floor(Math.random() * 999999999);
+    table.data.forEach(function(value, i) {
+        if (value[idField] == id) {
+            //var encodedValue = value[valueField].replace('"','\\"');
+            $(".modal-title").empty().append(`${table.objType}`);
+            var bodyContent = `
+                <form id="updateUser" action="">
+                    <label for="key">Key</label>
+                    <input class="form-control" type="text" name="key" id=key" readonly value="${value[idField]}"/>
+                `;
+            if(value[valueField].length>60){
+                bodyContent+=`
+                    <label for="value">Value</label>
+                    <textarea class="form-control" rows="6" cols="50" name="value" id="value" />
+                `;
+            }else{
+                bodyContent+=`
+                    <label for="value">Value</label>
+                    <input class="form-control" type="text" name="value"  id="value" />
+                `;
+            }
+            $(".modal-body").empty().append(bodyContent);
+
+            $(".modal-footer").empty().append(`
+                    <button type="button" type="submit" class="btn btn-primary" id="${randomId}" >Save changes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </form>
+            `);
+            $(".modal").modal("toggle");
+            $(".modal").find("#"+randomId).click(function(){ table.saveFunction(table,id); });
+            $(".modal").find("#value").val(value[valueField]);
         }
     });
 }
+
+var updateKvp=function(table,id,idField,valueField) {
+    var msg = table.objType+" updated successfully!";
+    var user = {};
+    user[idField] = id;
+    table.data.forEach(function(user, i) {
+        if (user[idField] == id) {
+            $("#updateUser").children("input").each(function() {
+                var value = $(this).val();
+                var attr = $(this).attr("name");
+                if (attr == idField) {
+                    user[idField] = value;
+                } else if (attr == valueField) {
+                    user[valueField] = value;
+                }
+            });
+            $("#updateUser").children("textarea").each(function() {
+                var value = $(this).val();
+                var attr = $(this).attr("name");
+                if (attr == idField) {
+                    user[idField] = value;
+                } else if (attr == valueField) {
+                    user[valueField] = value;
+                }
+            });
+            table.data.splice(i, 1);
+            table.data.splice(user[idField] - 1, 0, user);
+            $("#"+table.tableId+" #"+table.tableId+"-" + user[idField]).children(".userData").each(function() {
+                var attr = $(this).attr("name");
+                var value = $(this).val();
+                if (attr == idField) {
+                    $(this).text(user[idField]);
+                } else if (attr == valueField) {
+                    var content = user[valueField];
+                    if(content.length>60)content= content.substr(0,60);
+                    $(this).text(content);
+                }
+            });
+            $(".modal").modal("toggle");
+            flashMessage(msg);
+        }
+    });
+}
+
+
+var deleteKvp=function(table,id,idField,valueField) {
+    table.deleteFromTable(id,null);
+}
+
+
+///////////////////////     FLASH MESSAGE
 
 var flashMessage = function(msg) {
     $(".flashMsg").remove();
@@ -87,5 +224,3 @@ var flashMessage = function(msg) {
         <div class="col-sm-12"><div class="flashMsg alert alert-success alert-dismissible fade in" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button> <strong>${msg}</strong></div></div>
     `);
 }
-
-

@@ -36,53 +36,37 @@
 </div>
 <script src="app/app.js"></script>
 <script>
-    var scripts = [];
-    $.ajax({
-        url: "/api/recording",
-        type: 'GET',
-        success: function(res) {
-            $.each(res, function(i, script) {
-                //tSource,tableId,id,data,fields
-                appendToTable(scripts,"scriptTable","data",{data:script},["data"]);
-                appendToTable(scripts,"scriptTable","data",{data:"test"},["data"]);
-                console.log(scripts);
-            });
-        }
-    });
-
-    function editscriptTable(id) {
-        location.href = "script.html?id="+id;
-    }
-
-    function deletescriptTable(id) {
-        deleteFromTable(scripts,"scriptTable","data",id,"Script",function(id,success,error){
+    var scriptsTable = new SimpleGrid("Script","scriptTable","data",["data"],
+        function(table){
             $.ajax({
-                url: "/api/recording/" + id,
-                type: 'DELETE',
-                success: function (res) {
-                    success();
-                },
-                error:function(res){
-                    error();
+                url: "/api/recording",
+                type: 'GET',
+                success: function(res) {
+                    $.each(res, function(i, script) {
+                        //tSource,tableId,id,data,fields
+                        table.appendToTable({data:"test"});
+                        table.appendToTable({data:script});
+                    });
                 }
             });
-        });
-    }
-
-    function appendToScriptTable(script) {
-        scripts.push(script);
-        $("#scriptTable > tbody:last-child").append(`
-        <tr id="script-${script}">
-            <td class="userData" name="name">${script}</td>
-            <td align="center">
-                <button class="btn btn-success form-control" onClick="editScript('${script}')">EDIT</button>
-            </td>
-            <td align="center">
-                <button class="btn btn-danger form-control" onClick="deleteScript('${script}')">DELETE</button>
-            </td>
-        </tr>
-    `);
-    }
+        },
+        function (table,id) {
+            location.href = "script.html?id="+id;
+        },
+        function (table,id) {
+            table.deleteFromTable(id,function(id,success,error){
+                $.ajax({
+                    url: "/api/recording/" + id,
+                    type: 'DELETE',
+                    success: function (res) {
+                        success();
+                    },
+                    error:function(res){
+                        error();
+                    }
+                });
+            });
+        },null).load();
 
     $("#btLoadFile").click(function(){
         document.getElementById("uploadScript").click();

@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="col-md-8">
-            <table class="table table-striped" id="lineTable">
+            <table class="table table-striped" id="linesTable">
                 <tr>
                     <th>Id</th>
                     <th>Method</th>
@@ -41,7 +41,28 @@
 </div>
 <script src="app/app.js"></script>
 <script>
-    var lines = [];
+    var fields = ['id','request.method','request.host','request.path','_queryCalc','response.statusCode',
+        '_responseHashCalc','_requestHashCalc'];
+    var linesTable = new SimpleGrid("Request-Response","linesTable","id",fields,
+        null,
+        function (table,id) {
+            location.href = "line.html?line="+id+"&id="+getUrlParameter("id");
+        },
+        function (table,id) {
+            table.deleteFromTable(id,function(id,success,error){
+                $.ajax({
+                    url: "/api/recording/"+getUrlParameter("id")+"/line/x" + id,
+                    type: 'DELETE',
+                    success: function (res) {
+                        success();
+                    },
+                    error:function(res){
+                        error();
+                    }
+                });
+            });
+        },null);
+
 
     $.ajax({
         url: "/api/recording/"+getUrlParameter("id"),
@@ -49,19 +70,16 @@
         success: function(res) {
             $("#description").val(res['description']);
             $("#id").val(res['id']);
-            var fields = ['id','request.method','request.host','request.path','queryCalc','response.statusCode','responseHashCalc','requestHashCalc'];
-            //$.each(res["lines"], function(i, line) {
             for(var v=0;v<res["lines"].length;v++) {
                 var line =res["lines"][v];
-                line['responseHashCalc']="No";
-                line['requestHashCalc']="No";
-                line['queryCalc']=calculateQuery(line['request']['query']);
-                if(line['responseHash']!="0")line['responseHashCalc']="Yes";
-                if(line['requestHash']!="0")line['requestHashCalc']="Yes";
+                line['_responseHashCalc']="No";
+                line['_requestHashCalc']="No";
+                line['_queryCalc']=calculateQuery(line['request']['query']);
+                if(line['responseHash']!="0")line['_responseHashCalc']="Yes";
+                if(line['requestHash']!="0")line['_requestHashCalc']="Yes";
                 //tSource,tableId,id,data,fields
-                appendToTable(lines, "lineTable", "id", line, fields);
+                linesTable.appendToTable(line);
             }
-            //});
         }
     });
 
@@ -72,25 +90,6 @@
             result+=i+"="+v;
         });
         return result;
-    }
-
-    function editlineTable(lineId) {
-        location.href = "line.html?line="+lineId+"&id="+getUrlParameter("id");
-    }
-
-    function deletelineTable(lineId) {
-        deleteFromTable(lines,"lineTable","id",lineId,"Line",function(id,success,error){
-            $.ajax({
-                url: "/api/recording/"+getUrlParameter("id")+"/line/x" + lineId,
-                type: 'DELETE',
-                success: function (res) {
-                    success();
-                },
-                error:function(res){
-                    error();
-                }
-            });
-        });
     }
 </script>
 </body>

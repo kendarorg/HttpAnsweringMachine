@@ -6,60 +6,60 @@
     <link href="app/app.css" rel="stylesheet"/>
 </head>
 <body>
-<div className="container">
-    <div className="row">
+<div class="container">
+    <div class="row">
 
-        <div className="col-md-8">
+        <div class="col-md-8">
             <h3>LINE</h3>
         </div>
-        <div className="col-md-8">
-            <div className="form-group">
+
+        <div class="col-md-8">
+            <div class="form-group">
                 <label htmlFor="id">Id</label>
-                <input className="form-control" readOnly type="text" name="id" id="id"/>
+                <input class="form-control" readOnly type="text" name="id" id="id"/>
             </div>
-            <div className="form-group">
+            <div class="form-group">
                 <label htmlFor="timestamp">Timestamp</label>
-                <input className="form-control" readOnly type="text" name="timestamp" id="timestamp"/>
+                <input class="form-control" readOnly type="text" name="timestamp" id="timestamp"/>
             </div>
-        </div>
-        <div className="col-md-8">
-            <h3>REQUEST</h3>
-        </div>
-        <div className="col-md-8">
-            <div className="form-group">
+        </div><div class="col-md-8">
+        <h3>REQUEST</h3>
+    </div>
+        <div class="col-md-8">
+            <div class="form-group">
                 <label htmlFor="request_method">Method</label>
-                <input className="form-control" type="text" name="request_method" id="request_method"/>
+                <input class="form-control" type="text" name="request_method" id="request_method"/>
             </div>
-            <div className="form-group">
+            <div class="form-group">
                 <label htmlFor="request_protocol">Protocol</label>
-                <input className="form-control" type="text" name="request_protocol" id="request_protocol"/>
+                <input class="form-control" type="text" name="request_protocol" id="request_protocol"/>
             </div>
-            <div className="form-group">
+            <div class="form-group">
                 <label htmlFor="request_host">Host</label>
-                <input className="form-control" type="text" name="request_host" id="request_host"/>
+                <input class="form-control" type="text" name="request_host" id="request_host"/>
             </div>
-            <div className="form-group">
+            <div class="form-group">
                 <label htmlFor="request_path">Path</label>
-                <input className="form-control" type="text" name="request_path" id="request_path"/>
+                <input class="form-control" type="text" name="request_path" id="request_path"/>
             </div>
         </div>
 
-        <div className="col-md-8">
+        <div class="col-md-8">
             <h4>REQUEST QUERY</h4>
         </div>
-        <div className="col-md-8">
-            <table className="table table-striped" id="request_queryTable">
+        <div class="col-md-8">
+            <table class="table table-striped" id="request_queryTable">
                 <tr>
                     <th>Key</th>
                     <th>Value</th>
                 </tr>
             </table>
         </div>
-        <div className="col-md-8">
+        <div class="col-md-8">
             <h4>REQUEST HEADERS</h4>
         </div>
-        <div className="col-md-8">
-            <table className="table table-striped" id="request_headerTable">
+        <div class="col-md-8">
+            <table class="table table-striped" id="request_headerTable">
                 <tr>
                     <th>Key</th>
                     <th>Value</th>
@@ -67,21 +67,21 @@
             </table>
         </div>
 
-        <div className="col-md-8">
+        <div class="col-md-8">
             <h3>RESPONSE</h3>
         </div>
 
-        <div className="col-md-8">
-            <div className="form-group">
+        <div class="col-md-8">
+            <div class="form-group">
                 <label htmlFor="response_code">Status Code</label>
-                <input className="form-control" type="text" name="response_code" id="response_code"/>
+                <input class="form-control" type="text" name="response_code" id="response_code"/>
             </div>
         </div>
-        <div className="col-md-8">
+        <div class="col-md-8">
             <h4>RESPONSE HEADERS</h4>
         </div>
-        <div className="col-md-8">
-            <table className="table table-striped" id="response_headerTable">
+        <div class="col-md-8">
+            <table class="table table-striped" id="response_headerTable">
                 <tr>
                     <th>Key</th>
                     <th>Value</th>
@@ -90,9 +90,56 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
+<div aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Update User</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
 <script src="app/app.js"></script>
 <script>
-    var requestHeaders = [];
+    var request_headerTable = new SimpleGrid("Request-Headers","request_headerTable","key",["key","value"],
+        null,
+        function (table,id) {
+            editKvp(table,id,"key","value")
+        },
+        function (table,id) {
+            deleteKvp(table,id,"key","value")
+        },
+        function (table,id) {
+            updateKvp(table,id,"key","value")
+        });
+    var request_queryTable = new SimpleGrid("Query","request_queryTable","key",["key","value"],
+        null,
+        function (table,id) {
+            editKvp(table,id,"key","value")
+        },
+        function (table,id) {
+            deleteKvp(table,id,"key","value")
+        },
+        function (table,id) {
+            updateKvp(table,id,"key","value")
+        });
+    var response_headerTable = new SimpleGrid("Response-Headers","response_headerTable","key",["key","value"],
+        null,
+        function (table,id) {
+            editKvp(table,id,"key","value")
+        },
+        function (table,id) {
+            deleteKvp(table,id,"key","value")
+        },
+        function (table,id) {
+            updateKvp(table,id,"key","value")
+        });
 
     $.ajax({
         url: "/api/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line"),
@@ -107,46 +154,24 @@
             $("#request_host").val(res['request']['host']);
             $("#request_path").val(res['request']['path']);
             $.each(res["request"]["headers"], function (i, v) {
-                if(v.length>60)v= v.substr(0,60);
                 var line = {key:i,value:v};
-                appendToTable(requestHeaders, "request_headerTable", "key", line, ["key","value"]);
+                request_headerTable.appendToTable( line);
             });
             $.each(res["request"]["query"], function (i, v) {
-                if(v.length>60)v= v.substr(0,60);
                 var line = {key:i,value:v};
-                appendToTable(requestHeaders, "request_queryTable", "key", line, ["key","value"]);
+                request_queryTable.appendToTable(line);
             });
 
             //Response
             $("#response_code").val(res['response']['statusCode']);
             $.each(res["response"]["headers"], function (i, v) {
-                if(v.length>60)v= v.substr(0,60);
                 var line = {key:i,value:v};
-                appendToTable(requestHeaders, "response_headerTable", "key", line, ["key","value"]);
+                response_headerTable.appendToTable(line);
             });
         }
     });
 
 
-
-    function editlineTable(lineId) {
-        location.href = "line.html?line=" + lineId + "&id=" + getUrlParameter("id");
-    }
-
-    function deletelineTable(lineId) {
-        deleteFromTable(lines, "lineTable", "id", lineId, "Line", function (id, success, error) {
-            $.ajax({
-                url: "/api/recording/" + getUrlParameter("id") + "/line/x" + lineId,
-                type: 'DELETE',
-                success: function (res) {
-                    success();
-                },
-                error: function (res) {
-                    error();
-                }
-            });
-        });
-    }
 </script>
 </body>
 </html>
