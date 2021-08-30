@@ -8,7 +8,11 @@
 <body>
 <div class="container">
     <div class="row">
-
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Back to Scripts</button>
+            <button type="button"  class="btn btn-default" id="backToSingle"  name="backToSingle" >???</button>
+        </div>
         <div class="col-md-8">
             <h3>LINE</h3>
         </div>
@@ -170,6 +174,8 @@
             });
         }
     });
+
+    $("#backToSingle").click(function(){ location.href="script.html?id="+getUrlParameter("id"); }).html("Return to "+getUrlParameter("id")+" Script");
 
 
 </script>

@@ -8,7 +8,7 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-8">
             <h3>ADD SCRIPT</h3>
             <form action="" id="addUser"  method="POST" enctype="" >
                 <div class="form-group">
@@ -28,6 +28,7 @@
             <table class="table table-striped" id="scriptTable">
                 <tr>
                     <th>Name</th>
+                    <th>State</th>
                     <th colspan="2"></th>
                 </tr>
             </table>
@@ -36,7 +37,7 @@
 </div>
 <script src="app/app.js"></script>
 <script>
-    var scriptsTable = new SimpleGrid("Script","scriptTable","data",["data"],
+    var scriptsTable = new SimpleGrid("Script","scriptTable","id",["id","state"],
         function(table){
             $.ajax({
                 url: "/api/recording",
@@ -44,8 +45,8 @@
                 success: function(res) {
                     $.each(res, function(i, script) {
                         //tSource,tableId,id,data,fields
-                        table.appendToTable({data:"test"});
-                        table.appendToTable({data:script});
+                        table.appendToTable({id:"test"});
+                        table.appendToTable(script);
                     });
                 }
             });

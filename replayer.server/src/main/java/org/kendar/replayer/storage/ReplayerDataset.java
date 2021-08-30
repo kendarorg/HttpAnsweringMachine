@@ -46,6 +46,11 @@ public class ReplayerDataset {
         this.dataReorganizer = dataReorganizer;
     }
 
+
+    public String getName() {
+        return name;
+    }
+
     public void save() throws IOException {
         synchronized (this) {
             var result = new ReplayerResult();

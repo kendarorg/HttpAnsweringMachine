@@ -83,6 +83,7 @@ class SimpleGrid{
                 for(var v=0;v<this.fields.length;v++){
                     var index = this.fields[v];
                     var content = inputData[index];
+                    if(content == undefined) content="";
                     if(content.length>60)content= content.substr(0,60);
                     $("#" + this.tableId +
                         " #" + this.tableId + "-" + idContent+
@@ -108,6 +109,7 @@ class SimpleGrid{
             for(var s=0;s<allIndex.length;s++){
                 content = content[allIndex[s]];
             }
+            if(content == undefined) content="";
             if(content.length>60)content= content.substr(0,60);
             toWrite+=`<td class="userData" name="${index}">${content}</td>`;
         }
@@ -200,6 +202,7 @@ var updateKvp=function(table,id,idField,valueField) {
                     $(this).text(user[idField]);
                 } else if (attr == valueField) {
                     var content = user[valueField];
+                    if(content == undefined) content="";
                     if(content.length>60)content= content.substr(0,60);
                     $(this).text(content);
                 }

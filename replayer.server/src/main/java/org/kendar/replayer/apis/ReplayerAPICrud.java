@@ -7,7 +7,9 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.replayer.ReplayerState;
+import org.kendar.replayer.ReplayerStatus;
 import org.kendar.replayer.apis.models.ListAllRecordList;
+import org.kendar.replayer.apis.models.LocalRecording;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.RequestUtils;
@@ -31,6 +33,7 @@ import java.util.Locale;
         blocking = true)
 public class ReplayerAPICrud implements FilteringClass {
     private final Logger logger;
+    private ReplayerStatus replayerStatus;
     ObjectMapper mapper = new ObjectMapper();
     @Value("${replayer.data:replayerdata}")
     private String replayerData;
@@ -38,12 +41,13 @@ public class ReplayerAPICrud implements FilteringClass {
     private FileResourcesUtils fileResourcesUtils;
     private LoggerBuilder loggerBuilder;
 
-    public ReplayerAPICrud(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder){
+    public ReplayerAPICrud(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder, ReplayerStatus replayerStatus){
 
         this.fileResourcesUtils = fileResourcesUtils;
 
         this.loggerBuilder = loggerBuilder;
         this.logger = loggerBuilder.build(ReplayerAPICrud.class);
+        this.replayerStatus = replayerStatus;
     }
 
     @Override
@@ -57,10 +61,17 @@ public class ReplayerAPICrud implements FilteringClass {
         var realPath = fileResourcesUtils.buildPath(replayerData);
         var f = new File(realPath);
         var pathnames = f.list();
-        var listOfItems = new ArrayList<String>();
+        var listOfItems = new ArrayList<LocalRecording>();
+        var currentScript = replayerStatus.getCurrentScript();
         for (var pathname :pathnames) {
             if(pathname.toLowerCase(Locale.ROOT).endsWith(".json")){
-                listOfItems.add(pathname.substring(0,pathname.length()-5));
+                var lr = new LocalRecording();
+                lr.setId(pathname.substring(0,pathname.length()-5));
+                lr.setState(ReplayerState.NONE);
+                if(pathname.toLowerCase(Locale.ROOT).equalsIgnoreCase(currentScript)){
+                    lr.setState(replayerStatus.getStatus());
+                }
+                listOfItems.add(lr);
             }
 
         }

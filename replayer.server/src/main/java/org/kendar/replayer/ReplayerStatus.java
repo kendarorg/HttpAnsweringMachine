@@ -74,6 +74,11 @@ public class ReplayerStatus {
         return state;
     }
 
+    public String getCurrentScript() {
+        if(dataset==null)return null;
+        return dataset.getName();
+    }
+
     public void restartRecording() throws IOException {
         if(state!=ReplayerState.PAUSED_RECORDING)return;
         state = ReplayerState.RECORDING;
