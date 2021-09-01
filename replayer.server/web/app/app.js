@@ -132,15 +132,15 @@ class SimpleGrid{
 ///////////////////////     KVP
 
 
-var editKvp=function(table,id,idField,valueField) {
+var editKvp=function(modal,table,id,idField,valueField) {
     var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
     var randomIdInput = "INPUT"+Math.floor(Math.random() * 999999999);
     table.data.forEach(function(value, i) {
         if (value[idField] == id) {
             //var encodedValue = value[valueField].replace('"','\\"');
-            $(".modal-title").empty().append(`${table.objType}`);
+            $(modal).find(".modal-title").empty().append(`${table.objType}`);
             var bodyContent = `
-                <form id="updateUser" action="">
+                <form id="editKvp" action="">
                     <label for="key">Key</label>
                     <input class="form-control" type="text" name="key" id=key" readonly value="${value[idField]}"/>
                 `;
@@ -155,27 +155,27 @@ var editKvp=function(table,id,idField,valueField) {
                     <input class="form-control" type="text" name="value"  id="value" />
                 `;
             }
-            $(".modal-body").empty().append(bodyContent);
+            $(modal).find(".modal-body").empty().append(bodyContent);
 
-            $(".modal-footer").empty().append(`
+            $(modal).find(".modal-footer").empty().append(`
                     <button type="button" type="submit" class="btn btn-primary" id="${randomId}" >Save changes</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </form>
             `);
-            $(".modal").modal("toggle");
-            $(".modal").find("#"+randomId).click(function(){ table.saveFunction(table,id); });
-            $(".modal").find("#value").val(value[valueField]);
+            $(modal).modal("toggle");
+            $(modal).find("#"+randomId).click(function(){ table.saveFunction(table,id); });
+            $(modal).find("#value").val(value[valueField]);
         }
     });
 }
 
-var updateKvp=function(table,id,idField,valueField) {
+var updateKvp=function(modal,table,id,idField,valueField) {
     var msg = table.objType+" updated successfully!";
     var user = {};
     user[idField] = id;
     table.data.forEach(function(user, i) {
         if (user[idField] == id) {
-            $("#updateUser").children("input").each(function() {
+            $(modal).find("#editKvp").children("input").each(function() {
                 var value = $(this).val();
                 var attr = $(this).attr("name");
                 if (attr == idField) {
@@ -184,7 +184,7 @@ var updateKvp=function(table,id,idField,valueField) {
                     user[valueField] = value;
                 }
             });
-            $("#updateUser").children("textarea").each(function() {
+            $(modal).find("#editKvp").children("textarea").each(function() {
                 var value = $(this).val();
                 var attr = $(this).attr("name");
                 if (attr == idField) {
@@ -207,14 +207,14 @@ var updateKvp=function(table,id,idField,valueField) {
                     $(this).text(content);
                 }
             });
-            $(".modal").modal("toggle");
+            $(modal).modal("toggle");
             flashMessage(msg);
         }
     });
 }
 
 
-var deleteKvp=function(table,id,idField,valueField) {
+var deleteKvp=function(modal,table,id,idField,valueField) {
     table.deleteFromTable(id,null);
 }
 

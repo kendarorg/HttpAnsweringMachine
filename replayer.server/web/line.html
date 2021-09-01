@@ -186,13 +186,13 @@
     var response_headerTable = new SimpleGrid("Response-Headers","response_headerTable","key",["key","value"],
         null,
         function (table,id) {
-            editKvp(table,id,"key","value")
+            editKvp(".modal",table,id,"key","value")
         },
         function (table,id) {
-            deleteKvp(table,id,"key","value")
+            deleteKvp(".modal",table,id,"key","value")
         },
         function (table,id) {
-            updateKvp(table,id,"key","value")
+            updateKvp(".modal",table,id,"key","value")
         });
 
     $.ajax({
