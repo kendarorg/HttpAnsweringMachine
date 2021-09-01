@@ -11,6 +11,7 @@ import org.kendar.replayer.ReplayerStatus;
 import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.apis.models.LocalRecording;
 import org.kendar.replayer.storage.ReplayerDataset;
+import org.kendar.replayer.storage.ReplayerResult;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.RequestUtils;
 import org.kendar.servers.http.Response;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -101,32 +103,48 @@ public class ReplayerAPICrud implements FilteringClass {
             pathAddress = "/api/recording",
             method = "POST")
     public boolean uploadRecording(Request req, Response res) throws Exception {
-        for(var mp :req.getMultipartData()){
-            //var contendDisposition = RequestUtils.parseContentDisposition(mp.getHeader("Content-Disposition"));
-            if(!mp.isFile()) continue;
-            var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData,mp.getFileName()));
-            if(!rootPath.toString().toLowerCase(Locale.ROOT).endsWith(".json")){
-                res.addHeader("Content-type","application/json");
-                res.setStatusCode(500);
-                return false;
-            }
-            try {
 
-                if(mp.getByteData()!=null) {
-                    Files.write(rootPath, mp.getByteData());
-                    logger.info("Uploaded replayer binary script "+rootPath);
-                }else {
-                    FileWriter myWriter = new FileWriter(rootPath.toString());
-                    myWriter.write(mp.getStringData());
-                    myWriter.close();
-                    logger.info("Uploaded replayer text script "+rootPath);
+        if(req.getMultipartData()!=null && req.getMultipartData().size()==0){
+            var scriptName = (String)req.getRequest();
+            var crud = new ReplayerResult();
+            crud.setDescription(scriptName);
+            crud.setDynamicRequests(new ArrayList<>());
+            crud.setStaticRequests(new ArrayList<>());
+            crud.setErrors(new ArrayList<>());
+
+            var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, scriptName+".json"));
+            var resultInFile = mapper.writeValueAsString(crud);
+            Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
+            logger.info("Uploaded replayer binary script " + rootPath);
+            res.setStatusCode(200);
+        }else {
+            for (var mp : req.getMultipartData()) {
+                //var contendDisposition = RequestUtils.parseContentDisposition(mp.getHeader("Content-Disposition"));
+                if (!mp.isFile()) continue;
+                var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, mp.getFileName()));
+                if (!rootPath.toString().toLowerCase(Locale.ROOT).endsWith(".json")) {
+                    res.addHeader("Content-type", "application/json");
+                    res.setStatusCode(500);
+                    return false;
                 }
+                try {
 
-                res.setStatusCode(200);
-            }catch (Exception ex){
-                res.addHeader("Content-type","application/json");
-                res.setStatusCode(500);
-                return false;
+                    if (mp.getByteData() != null) {
+                        Files.write(rootPath, mp.getByteData());
+                        logger.info("Uploaded replayer binary script " + rootPath);
+                    } else {
+                        FileWriter myWriter = new FileWriter(rootPath.toString());
+                        myWriter.write(mp.getStringData());
+                        myWriter.close();
+                        logger.info("Uploaded replayer text script " + rootPath);
+                    }
+
+                    res.setStatusCode(200);
+                } catch (Exception ex) {
+                    res.addHeader("Content-type", "application/json");
+                    res.setStatusCode(500);
+                    return false;
+                }
             }
         }
         return false;
