@@ -9,7 +9,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8">
-            <h3>ADD SCRIPT</h3>
+            <h3>UPLOAD SCRIPT</h3>
             <form action="" id="addUser"  method="POST" enctype="" >
                 <div class="form-group">
                 <button type="button" id="btLoadFile" name="btLoadFile" class="btn btn-default">Open file</button>
@@ -20,6 +20,17 @@
                     </div>
                 <div class="form-group">
                 <button type="button" id="btUploadScript" name="btUploadScript" class="btn btn-default">Upload</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-8">
+            <h3>CREATE RECORDING</h3>
+            <form action="" id="createScript"  method="POST" enctype="" >
+                <div class="form-group">
+                    <input class="form-control" type="text" name="createScriptName" id="createScriptName" />
+                </div>
+                <div class="form-group">
+                    <button type="button" id="createScriptBt" name="createScriptBt" class="btn btn-default">Create</button>
                 </div>
             </form>
         </div>

@@ -66,9 +66,10 @@ public class ReplayerAPICrud implements FilteringClass {
         for (var pathname :pathnames) {
             if(pathname.toLowerCase(Locale.ROOT).endsWith(".json")){
                 var lr = new LocalRecording();
+                var tocheck = pathname.substring(0,pathname.length()-5);
                 lr.setId(pathname.substring(0,pathname.length()-5));
                 lr.setState(ReplayerState.NONE);
-                if(pathname.toLowerCase(Locale.ROOT).equalsIgnoreCase(currentScript)){
+                if(tocheck.toLowerCase(Locale.ROOT).equalsIgnoreCase(currentScript)){
                     lr.setState(replayerStatus.getStatus());
                 }
                 listOfItems.add(lr);

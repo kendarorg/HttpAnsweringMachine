@@ -17,6 +17,21 @@
             <h3>SCRIPT</h3>
         </div>
         <div class="col-md-8">
+            <br>
+            <button id="startrecording" name="startrecording" type="button"  class="btn btn-default" onClick="executeAct('start','recording');">Start Recording</button>
+            <button id="pauserecording" name="pauserecording" type="button"  class="btn btn-default" onClick="executeAct('pause','recording');">Pause Recording</button>
+            <button id="stoprecording" name="stoprecording" type="button"  class="btn btn-default" onClick="executeAct('stop','recording');">Stop Recording</button>
+
+        </div>
+        <div class="col-md-8">
+            <br>
+            <button id="startreplaying" name="startreplaying" type="button"  class="btn btn-default" onClick="executeAct('start','replaying');">Start Replaying</button>
+            <button id="pausereplaying" name="pausereplaying" type="button"  class="btn btn-default" onClick="executeAct('pause','replaying');">Pause Replaying</button>
+            <button id="stopreplaying" name="stopreplaying" type="button"  class="btn btn-default" onClick="executeAct('stop','replaying');">Stop Replaying</button>
+
+        </div>
+        <div class="col-md-8">
+            <br>
             <div class="form-group">
                 <label for="id">Id</label>
                 <input class="form-control" readonly type="text" name="id" id="id" />
@@ -46,7 +61,7 @@
 <script src="app/app.js"></script>
 <script>
     var fields = ['id','request.method','request.host','request.path','_queryCalc','response.statusCode',
-        '_responseHashCalc','_requestHashCalc'];
+        '_requestHashCalc','_responseHashCalc'];
     var linesTable = new SimpleGrid("Request-Response","linesTable","id",fields,
         null,
         function (table,id) {
@@ -68,10 +83,12 @@
         },null);
 
 
+    handleStateButtons(null);
     $.ajax({
         url: "/api/recording/"+getUrlParameter("id"),
         type: 'GET',
         success: function(res) {
+            retrieveScriptStatuses(res["lines"].length);
             $("#description").val(res['description']);
             $("#id").val(res['id']);
             for(var v=0;v<res["lines"].length;v++) {
@@ -94,6 +111,72 @@
             result+=i+"="+v;
         });
         return result;
+    }
+
+    function retrieveScriptStatuses(linesCount){
+        $.ajax({
+            url: "/api/recording",
+            type: 'GET',
+            success: function(res) {
+                var currentId = getUrlParameter("id");
+                var active=null;
+                var current=null;
+                for(var i=0;i<res.length;i++){
+                    var script = res[i];
+                    if(script.state!="NONE" && script.state!=undefined && script.state!=""){
+                        active=script;
+                    }
+                    if(script.id==currentId){
+                        current=script;
+                    }
+                }
+                if(active==null || current.id==active.id){
+                    if(current.state==undefined || current.state==""){
+                        current.state="NONE";
+                    }
+                    handleStateButtons(current.state,linesCount);
+                }
+            }
+        });
+    }
+
+    function executeAct(action,type){
+        var id = getUrlParameter("id");
+        var type = type=="recording"?"record":"replay";
+        var url = "/api/recording/"+id+"/"+type+"/"+action;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(res) {
+                location.reload();
+            }
+        });
+    }
+
+    function handleStateButtons(state,linesCount){
+        var buttons = {"startrecording":false,"pauserecording":false,"stoprecording":false,
+            "startreplaying":false,"pausereplaying":false,"stopreplaying":false};
+        if(state=="NONE"){
+            if(linesCount==0)buttons["startrecording"]=true;
+            if(linesCount>0)buttons["startreplaying"]=true;
+        }else if(state=="RECORDING"){
+            buttons["pauserecording"]=true;
+            buttons["stoprecording"]=true;
+        }else if(state=="PAUSED_RECORDING"){
+            buttons["startrecording"]=true;
+            buttons["stoprecording"]=true;
+        }else if(state=="REPLAYING"){
+            buttons["pausereplaying"]=true;
+            buttons["stopreplaying"]=true;
+        }else if(state=="PAUSED_REPLAYING"){
+            buttons["startreplaying"]=true;
+            buttons["stopreplaying"]=true;
+        }
+        for (var key in buttons) {
+            var visible = buttons[key];
+            if(!visible) $("#"+key).hide();
+            else $("#"+key).show();
+        }
     }
 </script>
 </body>

@@ -30,6 +30,24 @@
         <h3>REQUEST</h3>
     </div>
         <div class="col-md-8">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="request_static" name="request_static">
+                <label class="form-check-label" for="request_static">
+                    Is Static
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="request_soap" name="request_soap">
+                <label class="form-check-label" for="request_soap">
+                    Is Soap
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="request_binary" name="request_binary">
+                <label class="form-check-label" for="request_binary">
+                    Is Binary
+                </label>
+            </div>
             <div class="form-group">
                 <label htmlFor="request_method">Method</label>
                 <input class="form-control" type="text" name="request_method" id="request_method"/>
@@ -37,6 +55,10 @@
             <div class="form-group">
                 <label htmlFor="request_protocol">Protocol</label>
                 <input class="form-control" type="text" name="request_protocol" id="request_protocol"/>
+            </div>
+            <div class="form-group">
+                <label htmlFor="request_port">Port</label>
+                <input class="form-control" type="text" name="request_port" id="request_port"/>
             </div>
             <div class="form-group">
                 <label htmlFor="request_host">Host</label>
@@ -60,6 +82,17 @@
             </table>
         </div>
         <div class="col-md-8">
+            <h4>REQUEST POST PARAMETERS</h4>
+        </div>
+        <div class="col-md-8">
+            <table class="table table-striped" id="request_postTable">
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-8">
             <h4>REQUEST HEADERS</h4>
         </div>
         <div class="col-md-8">
@@ -76,6 +109,12 @@
         </div>
 
         <div class="col-md-8">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="response_binary" name="response_binary">
+                <label class="form-check-label" for="response_binary">
+                    Is Binary
+                </label>
+            </div>
             <div class="form-group">
                 <label htmlFor="response_code">Status Code</label>
                 <input class="form-control" type="text" name="response_code" id="response_code"/>
@@ -133,6 +172,17 @@
         function (table,id) {
             updateKvp(table,id,"key","value")
         });
+    var request_postTable = new SimpleGrid("PostParameters","request_postTable","key",["key","value"],
+        null,
+        function (table,id) {
+            editKvp(table,id,"key","value")
+        },
+        function (table,id) {
+            deleteKvp(table,id,"key","value")
+        },
+        function (table,id) {
+            updateKvp(table,id,"key","value")
+        });
     var response_headerTable = new SimpleGrid("Response-Headers","response_headerTable","key",["key","value"],
         null,
         function (table,id) {
@@ -157,6 +207,10 @@
             $("#request_protocol").val(res['request']['protocol']);
             $("#request_host").val(res['request']['host']);
             $("#request_path").val(res['request']['path']);
+            $("#request_port").val(res['request']['port']);
+            setChecked($("#request_checked"),res['request']['staticRequest']);
+            setChecked($("#request_soap"),res['request']['soapRequest']);
+            setChecked($("#request_binary"),res['request']['binaryRequest']);
             $.each(res["request"]["headers"], function (i, v) {
                 var line = {key:i,value:v};
                 request_headerTable.appendToTable( line);
@@ -165,9 +219,14 @@
                 var line = {key:i,value:v};
                 request_queryTable.appendToTable(line);
             });
+            $.each(res["request"]["postParameters"], function (i, v) {
+                var line = {key:i,value:v};
+                request_postTable.appendToTable(line);
+            });
 
             //Response
             $("#response_code").val(res['response']['statusCode']);
+            setChecked($("#response_binary"),res['response']['binaryResponse']);
             $.each(res["response"]["headers"], function (i, v) {
                 var line = {key:i,value:v};
                 response_headerTable.appendToTable(line);

@@ -227,3 +227,12 @@ var flashMessage = function(msg) {
         <div class="col-sm-12"><div class="flashMsg alert alert-success alert-dismissible fade in" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button> <strong>${msg}</strong></div></div>
     `);
 }
+
+var setChecked = function(jqueryObj,checked){
+    if(checked){
+        jqueryObj.attr('checked', 'checked');
+    }else{
+        jqueryObj.removeAttr('checked');
+    }
+    jqueryObj.attr('value', checked)
+}
