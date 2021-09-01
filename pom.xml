@@ -40,5 +40,7 @@
         <module>replayer.server</module>
         <module>js.filters</module>
         <module>app.http.standardfilters</module>
+        <module>simpledns</module>
+        <module>app.dns</module>
     </modules>
 </project>

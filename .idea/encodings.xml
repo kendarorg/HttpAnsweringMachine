@@ -2,11 +2,13 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/app.commons/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app.dns/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app.http.standardfilters/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app.http/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/js.filters/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/oidc.server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/replayer.server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/simpledns/src/main/java" charset="UTF-8" />
   </component>
 </project>

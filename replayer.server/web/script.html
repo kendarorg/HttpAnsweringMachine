@@ -157,7 +157,7 @@
         var buttons = {"startrecording":false,"pauserecording":false,"stoprecording":false,
             "startreplaying":false,"pausereplaying":false,"stopreplaying":false};
         if(state=="NONE"){
-            buttons["startrecording"]=true;
+            if(linesCount==0)buttons["startrecording"]=true;
             if(linesCount>0)buttons["startreplaying"]=true;
         }else if(state=="RECORDING"){
             buttons["pauserecording"]=true;
