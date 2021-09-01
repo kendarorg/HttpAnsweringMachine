@@ -99,6 +99,20 @@ public class ReplayerAPICrud implements FilteringClass {
         return false;
     }
 
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/recording/{id}",
+            method = "DELETE")
+    public boolean deleteRecordin(Request req, Response res) throws IOException {
+        var id = req.getPathParameter("id");
+        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id+".json"));
+        if(Files.exists(rootPath)){
+            Files.delete(rootPath);
+        }
+        res.setStatusCode(200);
+        return false;
+    }
+
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/recording",
             method = "POST")
