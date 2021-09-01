@@ -78,7 +78,7 @@ public class AnsweringHttpsServer  implements AnsweringServer{
                 public void configure(HttpsParameters params) {
                     try {
                         // initialise the SSL context
-                        SSLContext context = getSSLContext();
+                        SSLContext context = getSslContext();
                         SSLEngine engine = context.createSSLEngine();
                         params.setNeedClientAuth(false);
                         params.setCipherSuites(engine.getEnabledCipherSuites());

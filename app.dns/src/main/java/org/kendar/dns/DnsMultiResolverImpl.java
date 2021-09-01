@@ -64,7 +64,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
                 e.printStackTrace();
             }
         }
-        
+
         for (int i = 0; i < extraServers.length; i++) {
             String server = extraServers[i];
             try {
