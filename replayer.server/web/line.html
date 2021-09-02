@@ -16,6 +16,11 @@
         <div class="col-md-8">
             <h3>LINE</h3>
         </div>
+        <div class="col-md-8">
+            <br>
+            <button id="save" name="save" type="button"  class="btn btn-default" onClick="save();">Save</button>
+
+        </div>
 
         <div class="col-md-8">
             <div class="form-group">
@@ -49,6 +54,12 @@
                 </label>
             </div>
             <div class="form-group">
+                <br>
+                <button id="request_content" name="request_content" type="button"  class="btn btn-default">
+                    Edit Request Data</button>
+
+            </div>
+            <div class="form-group">
                 <label htmlFor="request_method">Method</label>
                 <input class="form-control" type="text" name="request_method" id="request_method"/>
             </div>
@@ -78,6 +89,10 @@
                 <tr>
                     <th>Key</th>
                     <th>Value</th>
+                    <th colspan="2">
+                        <button class="btn btn-danger form-control"
+                                onClick="addRequestQuery();">Add</button>
+                    </th>
                 </tr>
             </table>
         </div>
@@ -114,6 +129,13 @@
                 <label class="form-check-label" for="response_binary">
                     Is Binary
                 </label>
+            </div>
+
+            <div class="form-group">
+                <br>
+                <button id="response_content" name="response_content" type="button"  class="btn btn-default">
+                    Edit Response Data</button>
+
             </div>
             <div class="form-group">
                 <label htmlFor="response_code">Status Code</label>
@@ -208,9 +230,23 @@
             $("#request_host").val(res['request']['host']);
             $("#request_path").val(res['request']['path']);
             $("#request_port").val(res['request']['port']);
-            setChecked($("#request_checked"),res['request']['staticRequest']);
+            setChecked($("#request_static"),res['request']['staticRequest']);
             setChecked($("#request_soap"),res['request']['soapRequest']);
             setChecked($("#request_binary"),res['request']['binaryRequest']);
+            var editContent = "text.html";
+            if(res['request']['binaryRequest']){
+                editContent = "binary.html";
+            }
+            $("#request_content").click(
+                function(){
+                    editContent = "text.html";
+                    if($("#request_binary").prop("checked")){
+                        editContent = "binary.html";
+                    }
+                    location.href=editContent+"?type=response"+
+                    "&id="+getUrlParameter("id")+
+                    "&line="+getUrlParameter("line"); });
+
             $.each(res["request"]["headers"], function (i, v) {
                 var line = {key:i,value:v};
                 request_headerTable.appendToTable( line);
@@ -227,6 +263,17 @@
             //Response
             $("#response_code").val(res['response']['statusCode']);
             setChecked($("#response_binary"),res['response']['binaryResponse']);
+
+            $("#response_content").click(
+                function(){
+                    editContent = "text.html";
+                    if($("#response_binary").prop("checked")){
+                        editContent = "binary.html";
+                    }
+                    location.href=editContent+"?type=request"+
+                    "&id="+getUrlParameter("id")+
+                    "&line="+getUrlParameter("line"); });
+
             $.each(res["response"]["headers"], function (i, v) {
                 var line = {key:i,value:v};
                 response_headerTable.appendToTable(line);
@@ -237,6 +284,46 @@
     $("#backToSingle").click(function(){ location.href="script.html?id="+getUrlParameter("id"); }).html("Return to "+getUrlParameter("id")+" Script");
 
 
+
+    function save(){
+        var id = getUrlParameter("id");
+        var line = getUrlParameter("line");
+        var data = {
+            id:$("#id").val(),
+            timestamp: $("#timestamp").val(),
+            request:{
+                method:$("#request_method").val(),
+                protocol:$("#request_protocol").val(),
+                host:$("#request_host").val(),
+                path:$("#request_path").val(),
+                port:$("#request_port").val(),
+                staticRequest:$("#request_static").prop("checked"),
+                soapRequest:$("#request_soap").prop("checked"),
+                binaryRequest:$("#request_binary").prop("checked"),
+                headers:getKvpData(request_headerTable,"key","value"),
+                query:getKvpData(request_queryTable,"key","value"),
+                postParameters:getKvpData(request_postTable,"key","value"),
+            },
+            response:{
+                statusCode:$("#response_code").val(),
+                binaryResponse:$("#response_binary").prop("checked"),
+                headers:getKvpData(response_headerTable,"key","value"),
+            }
+        };
+        $.ajax({
+            url: 'api/recording/'+id+'/line/'+line,
+            type: 'put',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(response){
+                location.reload();
+            }
+        });
+    }
+
+    function addRequestQuery(){
+        addKvp('.modal',request_queryTable,'key','value');
+    }
 </script>
 </body>
 </html>

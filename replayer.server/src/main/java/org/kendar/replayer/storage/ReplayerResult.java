@@ -1,5 +1,7 @@
 package org.kendar.replayer.storage;
 
+import org.kendar.replayer.apis.models.RedirectFilter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,8 @@ public class ReplayerResult {
     private List<ReplayerRow> dynamicRequests = new ArrayList<>();
     private List<String> errors = new ArrayList<>();
     private String description;
+    private RedirectFilter filter;
+
     public void add(ReplayerRow row) {
         getStaticRequests().add(row);
     }
@@ -46,5 +50,13 @@ public class ReplayerResult {
 
     public void setDynamicRequests(List<ReplayerRow> dynamicRequests) {
         this.dynamicRequests = dynamicRequests;
+    }
+
+    public void setFilter(RedirectFilter filter) {
+        this.filter = filter;
+    }
+
+    public RedirectFilter getFilter() {
+        return filter;
     }
 }

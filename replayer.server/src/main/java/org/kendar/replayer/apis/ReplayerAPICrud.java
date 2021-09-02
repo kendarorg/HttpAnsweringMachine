@@ -10,6 +10,7 @@ import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.ReplayerStatus;
 import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.apis.models.LocalRecording;
+import org.kendar.replayer.apis.models.ScriptData;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerResult;
 import org.kendar.servers.http.Request;
@@ -108,6 +109,28 @@ public class ReplayerAPICrud implements FilteringClass {
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id+".json"));
         if(Files.exists(rootPath)){
             Files.delete(rootPath);
+        }
+        res.setStatusCode(200);
+        return false;
+    }
+
+
+
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/recording/{id}",
+            method = "PUT")
+    public boolean updateRecord(Request req, Response res) throws IOException {
+        var id = req.getPathParameter("id");
+        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id+".json"));
+        if(Files.exists(rootPath)){
+            var fileContent = Files.readString(rootPath);
+            var result = mapper.readValue(fileContent,ReplayerResult.class);
+            var scriptData = mapper.readValue((String)req.getRequest(), ScriptData.class);
+            result.setDescription(scriptData.getDescription());
+            result.setFilter(scriptData.getFilter());
+            var resultInFile = mapper.writeValueAsString(result);
+            Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
         }
         res.setStatusCode(200);
         return false;

@@ -50,8 +50,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
         var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
         var datasetContent = dataset.load();
         ListAllRecordList result = new ListAllRecordList(datasetContent,id);
-        for (var singleLine :
-                result.getLines()) {
+        for (var singleLine :result.getLines()) {
             if(singleLine.getId()==line){
                 res.addHeader("Content-type","application/json");
                 res.setResponse(mapper.writeValueAsString(singleLine));
@@ -131,5 +130,21 @@ public class ReplayerAPISingleLine implements FilteringClass {
     }
 
     private void cloneToRow(ReplayerRow destination, ReplayerRow source) {
+        destination.getResponse().setBinaryResponse(source.getResponse().isBinaryResponse());
+        destination.getResponse().setHeaders(source.getResponse().getHeaders());
+        destination.getResponse().setStatusCode(source.getResponse().getStatusCode());
+
+
+        destination.getRequest().setBinaryRequest(source.getRequest().isBinaryRequest());
+        destination.getRequest().setHeaders(source.getRequest().getHeaders());
+        destination.getRequest().setMethod(source.getRequest().getMethod());
+        destination.getRequest().setProtocol(source.getRequest().getProtocol());
+        destination.getRequest().setQuery(source.getRequest().getQuery());
+        destination.getRequest().setHost(source.getRequest().getHost());
+        destination.getRequest().setPath(source.getRequest().getPath());
+        destination.getRequest().setPort(source.getRequest().getPort());
+        destination.getRequest().setPostParameters(source.getRequest().getPostParameters());
+        destination.getRequest().setStaticRequest(source.getRequest().isStaticRequest());
+        destination.getRequest().setSoapRequest(source.getRequest().isSoapRequest());
     }
 }

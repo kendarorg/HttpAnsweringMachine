@@ -14,9 +14,6 @@
             <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Back to Scripts</button>
         </div>
         <div class="col-md-8">
-            <h3>SCRIPT</h3>
-        </div>
-        <div class="col-md-8">
             <br>
             <button id="startrecording" name="startrecording" type="button"  class="btn btn-default" onClick="executeAct('start','recording');">Start Recording</button>
             <button id="pauserecording" name="pauserecording" type="button"  class="btn btn-default" onClick="executeAct('pause','recording');">Pause Recording</button>
@@ -31,6 +28,14 @@
 
         </div>
         <div class="col-md-8">
+            <h3>SCRIPT</h3>
+        </div>
+        <div class="col-md-8">
+            <br>
+            <button id="save" name="save" type="button"  class="btn btn-default" onClick="save();">Save</button>
+
+        </div>
+        <div class="col-md-8">
             <br>
             <div class="form-group">
                 <label for="id">Id</label>
@@ -39,6 +44,25 @@
             <div class="form-group">
                 <label for="description">Description</label>
                 <input class="form-control" type="text" name="description" id="description" />
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <h4>FILTER</h4>
+        </div>
+        <div class="col-md-8">
+            <br>
+            <div class="form-group">
+                <label for="src">Source</label>
+                <input class="form-control" type="text" name="src" id="src" />
+            </div>
+            <div class="form-group">
+                <label for="dst">Destination</label>
+                <input class="form-control" type="text" name="dst" id="dst" />
+            </div>
+            <div class="form-group">
+                <label for="test">Test</label>
+                <input class="form-control" type="text" name="test" id="test" />
             </div>
         </div>
         <div class="col-md-8">
@@ -90,6 +114,11 @@
         success: function(res) {
             retrieveScriptStatuses(res["lines"].length);
             $("#description").val(res['description']);
+            if(res['filter']!=undefined){
+                $("#dst").val(res['filter']['dst']);
+                $("#src").val(res['filter']['src']);
+                $("#test").val(res['filter']['test']);
+            }
             $("#id").val(res['id']);
             for(var v=0;v<res["lines"].length;v++) {
                 var line =res["lines"][v];
@@ -155,10 +184,11 @@
 
     function handleStateButtons(state,linesCount){
         var buttons = {"startrecording":false,"pauserecording":false,"stoprecording":false,
-            "startreplaying":false,"pausereplaying":false,"stopreplaying":false};
+            "startreplaying":false,"pausereplaying":false,"stopreplaying":false,"save":false};
         if(state=="NONE"){
             if(linesCount==0)buttons["startrecording"]=true;
             if(linesCount>0)buttons["startreplaying"]=true;
+            buttons['save']=true;
         }else if(state=="RECORDING"){
             buttons["pauserecording"]=true;
             buttons["stoprecording"]=true;
@@ -177,6 +207,28 @@
             if(!visible) $("#"+key).hide();
             else $("#"+key).show();
         }
+    }
+
+    function save(){
+        var id = getUrlParameter("id");
+        var data = {
+            id:id,
+            description: $("#description").val(),
+            filter:{
+                dst:$("#dst").val(),
+                src:$("#src").val(),
+                test:$("#test").val(),
+            }
+        };
+        $.ajax({
+            url: 'api/recording/'+id,
+            type: 'put',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(response){
+                location.reload();
+            }
+        });
     }
 </script>
 </body>
