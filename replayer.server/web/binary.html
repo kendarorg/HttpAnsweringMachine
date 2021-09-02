@@ -15,6 +15,20 @@
             <button type="button"  class="btn btn-default" id="backToLine"  name="backToLine" >???</button>
         </div>
         <div class="col-md-8">
+            <div class="form-group">
+                <label htmlFor="id">Id</label>
+                <input class="form-control" readOnly type="text" name="id" id="id"/>
+            </div>
+            <div class="form-group">
+                <label htmlFor="line">Line</label>
+                <input class="form-control" readOnly type="text" name="line" id="line"/>
+            </div>
+            <div class="form-group">
+                <label htmlFor="direction">Direction</label>
+                <input class="form-control" readOnly type="text" name="direction" id="direction"/>
+            </div>
+        </div>
+        <div class="col-md-8">
             <h3>BINARY DATA</h3>
             <form action="" id="addUser"  method="POST" enctype="" >
                 <div class="form-group">
@@ -76,6 +90,9 @@
         }
     });
 
+    $("#id").val(getUrlParameter("id"));
+    $("#line").val(getUrlParameter("line"));
+    $("#direction").val(getUrlParameter("type"));
     $("#createScriptBt").click(function(){
         var name = $('#createScriptName').val();
         $.ajax({
