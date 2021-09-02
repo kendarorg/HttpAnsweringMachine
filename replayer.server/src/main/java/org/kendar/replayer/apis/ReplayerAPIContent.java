@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 @Component
@@ -183,23 +184,25 @@ public class ReplayerAPIContent implements FilteringClass {
     private boolean updated(Response res, int line, String requestOrResponse, ReplayerRow singleLine, MultipartPart file,String data) {
         if (singleLine.getId() == line) {
             if ("request".equalsIgnoreCase(requestOrResponse)) {
-                if (file!=null && file.getByteData()!=null) {
-                    singleLine.getRequest().setBinaryRequest(true);
-                    singleLine.getRequest().setRequestBytes(file.getByteData());
-                } else {
-                    if(file!=null) {
-                        singleLine.getRequest().setRequestText(file.getStringData());
+                if(singleLine.getRequest().isBinaryRequest()){
+                    if (file!=null && file.getByteData()!=null) {
+                        singleLine.getRequest().setRequestBytes(file.getByteData());
+                    }
+                }else{
+                    if (file!=null && file.getByteData()!=null) {
+                        singleLine.getRequest().setRequestText(new String(file.getByteData(), StandardCharsets.UTF_8));
                     }else{
                         singleLine.getRequest().setRequestText(data);
                     }
                 }
             } else if ("response".equalsIgnoreCase(requestOrResponse)) {
-                if (file!=null && file.getByteData()!=null) {
-                    singleLine.getResponse().setBinaryResponse(true);
-                    singleLine.getResponse().setResponseBytes(file.getByteData());
-                } else {
-                    if(file!=null) {
-                        singleLine.getResponse().setResponseText(file.getStringData());
+                if(singleLine.getResponse().isBinaryResponse()){
+                    if (file!=null && file.getByteData()!=null) {
+                        singleLine.getResponse().setResponseBytes(file.getByteData());
+                    }
+                }else{
+                    if (file!=null && file.getByteData()!=null) {
+                        singleLine.getResponse().setResponseText(new String(file.getByteData(), StandardCharsets.UTF_8));
                     }else{
                         singleLine.getResponse().setResponseText(data);
                     }

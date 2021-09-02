@@ -72,7 +72,6 @@
         var fd = new FormData();
         var files = $('#uploadScript')[0].files;
 
-        debugger;
         // Check file selected or not
         if(files.length > 0 ){
             files[0].type="text/html";
@@ -87,11 +86,7 @@
                 contentType: false,
                 processData: false,
                 success: function(response){
-                    if(response != 0){
-                        alert("File Uploaded")
-                    }else{
-                        alert("file not uploaded");
-                    }
+                    location.reload();
                 }
             });
         }else{
