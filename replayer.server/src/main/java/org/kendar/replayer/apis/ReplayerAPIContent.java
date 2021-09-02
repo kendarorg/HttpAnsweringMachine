@@ -151,20 +151,26 @@ public class ReplayerAPIContent implements FilteringClass {
         var id = req.getPathParameter("id");
         var line = Integer.parseInt(req.getPathParameter("line"));
         var requestOrResponse = req.getPathParameter("requestOrResponse");
-        var file = req.getMultipartData().get(0);
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+        MultipartPart file = null;
+        String data = null;
+        if(req.getMultipartData()!=null && req.getMultipartData().size()>0) {
+            file = req.getMultipartData().get(0);
+        }else{
+            data = (String)req.getRequest();
+        }
 
         var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
         var datasetContent = dataset.load();
 
         for (var singleLine : datasetContent.getStaticRequests()) {
-            if (updated(res, line, requestOrResponse, singleLine,file)) {
+            if (updated(res, line, requestOrResponse, singleLine,file,data)) {
                 dataset.saveMods();
                 return true;
             }
         }
         for (var singleLine : datasetContent.getDynamicRequests()) {
-            if (updated(res, line, requestOrResponse, singleLine,file)) {
+            if (updated(res, line, requestOrResponse, singleLine,file,data)) {
                 dataset.saveMods();
                 return true;
             }
@@ -174,21 +180,29 @@ public class ReplayerAPIContent implements FilteringClass {
         return false;
     }
 
-    private boolean updated(Response res, int line, String requestOrResponse, ReplayerRow singleLine, MultipartPart file) {
+    private boolean updated(Response res, int line, String requestOrResponse, ReplayerRow singleLine, MultipartPart file,String data) {
         if (singleLine.getId() == line) {
             if ("request".equalsIgnoreCase(requestOrResponse)) {
-                if (file.getByteData()!=null) {
+                if (file!=null && file.getByteData()!=null) {
                     singleLine.getRequest().setBinaryRequest(true);
                     singleLine.getRequest().setRequestBytes(file.getByteData());
                 } else {
-                    singleLine.getRequest().setRequestText(file.getStringData());
+                    if(file!=null) {
+                        singleLine.getRequest().setRequestText(file.getStringData());
+                    }else{
+                        singleLine.getRequest().setRequestText(data);
+                    }
                 }
             } else if ("response".equalsIgnoreCase(requestOrResponse)) {
-                if (file.getByteData()!=null) {
+                if (file!=null && file.getByteData()!=null) {
                     singleLine.getResponse().setBinaryResponse(true);
                     singleLine.getResponse().setResponseBytes(file.getByteData());
                 } else {
-                    singleLine.getResponse().setResponseText(file.getStringData());
+                    if(file!=null) {
+                        singleLine.getResponse().setResponseText(file.getStringData());
+                    }else{
+                        singleLine.getResponse().setResponseText(data);
+                    }
                 }
             }
             return true;

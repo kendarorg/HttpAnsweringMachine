@@ -31,6 +31,9 @@
                     <label for="free_content">Value</label>
                     <textarea class="form-control" rows="6" cols="50" name="free_content" id="free_content"></textarea>
                 </div>
+                <div class="form-group">
+                    <button type="button" id="btSaveText" name="btSaveText" class="btn btn-default">Save Text</button>
+                </div>
             </form>
         </div>
     </div>
@@ -79,11 +82,11 @@
             alert("Please select a file.");
         }
     });
-
+    var urlData = "api/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/"+getUrlParameter("type");
     $("#createScriptBt").click(function(){
         var name = $('#createScriptName').val();
         $.ajax({
-            url: 'api/recording',
+            url: urlData,
             type: 'post',
             data: name,
             contentType: "text/plain",
@@ -92,7 +95,7 @@
             }
         });
     });
-    var urlData = "api/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/"+getUrlParameter("type");
+
     $.ajax({
         url: urlData,
         type: 'GET',
@@ -106,6 +109,18 @@
     $("#backToLine").click(function(){
         location.href="line.html?id="+getUrlParameter("id")+"&line="+getUrlParameter("line"); })
         .html("Line "+getUrlParameter("line"));
+    $("#btSaveText").click(function(){
+        var name = $('#free_content').val();
+        $.ajax({
+            url: urlData,
+            type: 'post',
+            data: name,
+            contentType: "text/plain",
+            success: function(response){
+                location.reload();
+            }
+        });
+    });
 </script>
 </body>
 </html>
