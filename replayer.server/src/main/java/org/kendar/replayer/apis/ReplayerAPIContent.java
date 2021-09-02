@@ -37,6 +37,8 @@ public class ReplayerAPIContent implements FilteringClass {
     public String getId() {
         return "org.kendar.replayer.apis.ReplayerAPIContent";
     }
+
+
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/recording/{id}/line/{line}/{requestOrResponse}",
             method = "GET")
@@ -51,14 +53,12 @@ public class ReplayerAPIContent implements FilteringClass {
         var datasetContent = dataset.load();
 
         for (var singleLine : datasetContent.getStaticRequests()) {
-            if (extracted(res, line, requestOrResponse, singleLine)) {
-                dataset.saveMods();
+            if (sendBackContent(res, line, requestOrResponse, singleLine)) {
                 return true;
             }
         }
         for (var singleLine : datasetContent.getDynamicRequests()) {
-            if (extracted(res, line, requestOrResponse, singleLine)) {
-                dataset.saveMods();
+            if (sendBackContent(res, line, requestOrResponse, singleLine)) {
                 return true;
             }
         }
@@ -67,10 +67,11 @@ public class ReplayerAPIContent implements FilteringClass {
         return false;
     }
 
-    private boolean extracted(Response res, int line, String requestOrResponse, ReplayerRow singleLine) {
+    private boolean sendBackContent(Response res, int line, String requestOrResponse, ReplayerRow singleLine) {
         if (singleLine.getId() == line) {
             if ("request".equalsIgnoreCase(requestOrResponse)) {
                 res.setHeader("Content-Type", singleLine.getRequest().getHeader("Content-Type"));
+                res.setBinaryResponse(singleLine.getRequest().isBinaryRequest());
                 if (singleLine.getRequest().isBinaryRequest()) {
                     res.setResponse(singleLine.getRequest().getRequestBytes());
                 } else {
@@ -78,11 +79,17 @@ public class ReplayerAPIContent implements FilteringClass {
                 }
             } else if ("response".equalsIgnoreCase(requestOrResponse)) {
                 res.setHeader("Content-Type", singleLine.getResponse().getHeader("Content-Type"));
+                res.setBinaryResponse(singleLine.getResponse().isBinaryResponse());
                 if (singleLine.getResponse().isBinaryResponse()) {
                     res.setResponse(singleLine.getResponse().getResponseBytes());
                 } else {
                     res.setResponse(singleLine.getResponse().getResponseText());
                 }
+            }
+            if(res.isBinaryResponse() && res.getHeader("Content-Type")==null){
+                res.setHeader("Content-Type", "application/octect-stream");
+            }else{
+                res.setHeader("Content-Type", "text/plain");
             }
             return true;
         }
@@ -166,6 +173,7 @@ public class ReplayerAPIContent implements FilteringClass {
         res.setResponse("Missing id "+id+" with line "+line);
         return false;
     }
+
     private boolean updated(Response res, int line, String requestOrResponse, ReplayerRow singleLine, MultipartPart file) {
         if (singleLine.getId() == line) {
             if ("request".equalsIgnoreCase(requestOrResponse)) {

@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-md-8">
             <br>
-            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Back to Scripts</button>
+            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Scripts</button>
             <button type="button"  class="btn btn-default" id="backToSingle"  name="backToSingle" >???</button>
         </div>
         <div class="col-md-8">
@@ -58,6 +58,9 @@
                 <button id="request_content" name="request_content" type="button"  class="btn btn-default">
                     Edit Request Data</button>
 
+                <button id="request_content_download" name="request_content_download" type="button"  class="btn btn-default">
+                    Download Request Data</button>
+
             </div>
             <div class="form-group">
                 <label htmlFor="request_method">Method</label>
@@ -104,6 +107,10 @@
                 <tr>
                     <th>Key</th>
                     <th>Value</th>
+                    <th colspan="2">
+                        <button class="btn btn-danger form-control"
+                                onClick="addRequestPost();">Add</button>
+                    </th>
                 </tr>
             </table>
         </div>
@@ -115,6 +122,10 @@
                 <tr>
                     <th>Key</th>
                     <th>Value</th>
+                    <th colspan="2">
+                        <button class="btn btn-danger form-control"
+                                onClick="addRequestHeader();">Add</button>
+                    </th>
                 </tr>
             </table>
         </div>
@@ -135,7 +146,8 @@
                 <br>
                 <button id="response_content" name="response_content" type="button"  class="btn btn-default">
                     Edit Response Data</button>
-
+                <button id="response_content_download" name="response_content_download" type="button"  class="btn btn-default">
+                    Download Response Data</button>
             </div>
             <div class="form-group">
                 <label htmlFor="response_code">Status Code</label>
@@ -150,6 +162,10 @@
                 <tr>
                     <th>Key</th>
                     <th>Value</th>
+                    <th colspan="2">
+                        <button class="btn btn-danger form-control"
+                                onClick="addResponseHeader();">Add</button>
+                    </th>
                 </tr>
             </table>
         </div>
@@ -270,7 +286,7 @@
                     if($("#response_binary").prop("checked")){
                         editContent = "binary.html";
                     }
-                    location.href=editContent+"?type=request"+
+                    location.href=editContent+"?type=response"+
                     "&id="+getUrlParameter("id")+
                     "&line="+getUrlParameter("line"); });
 
@@ -278,10 +294,31 @@
                 var line = {key:i,value:v};
                 response_headerTable.appendToTable(line);
             });
+
+            if(res["requestHash"]!="0" && res["requestHash"]!=""){
+                $("#request_content_download").show();
+            }else{
+                $("#request_content_download").hide();
+            }
+            if(res["responseHash"]!="0" && res["responseHash"]!=""){
+                $("#response_content_download").show();
+            }else{
+                $("#response_content_download").hide();
+            }
         }
     });
 
-    $("#backToSingle").click(function(){ location.href="script.html?id="+getUrlParameter("id"); }).html("Return to "+getUrlParameter("id")+" Script");
+    $("#request_content_download").click(function(){
+        downloadFile("/api/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/request");
+    });
+
+    $("#response_content_download").click(function(){
+        downloadFile("/api/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/response");
+    });
+
+    $("#backToSingle").click(function(){
+        location.href="script.html?id="+getUrlParameter("id"); })
+        .html(getUrlParameter("id"));
 
 
 
@@ -323,6 +360,18 @@
 
     function addRequestQuery(){
         addKvp('.modal',request_queryTable,'key','value');
+    }
+
+    function addRequestPost(){
+        addKvp('.modal',request_postTable,'key','value');
+    }
+
+    function addRequestHeader(){
+        addKvp('.modal',request_headerTable,'key','value');
+    }
+
+    function addResponseHeader(){
+        addKvp('.modal',response_headerTable,'key','value');
     }
 </script>
 </body>
