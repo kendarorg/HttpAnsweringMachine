@@ -244,39 +244,46 @@ public class ReplayerDataset {
     }
 
     public void delete(int line) {
-        String staticIndex = null;
-        for (var entry :
-                staticData.entrySet()) {
-            if(entry.getValue().getId()==line){
-                staticIndex= entry.getKey();
+        List<ReplayerRow> staticRequests = replayerResult.getStaticRequests();
+        for (int i = 0; i < staticRequests.size(); i++) {
+            ReplayerRow entry = staticRequests.get(i);
+            if(entry.getId()==line){
+                staticRequests.remove(i);
+                return;
             }
         }
-        if(staticIndex == null){
-            ReplayerRow toRemove = null;
-            for(var entry: dynamicData){
-                if(entry.getId()==line){
-                    toRemove = entry;
-                }
+        List<ReplayerRow> dynamicRequests = replayerResult.getDynamicRequests();
+        for (int i = 0; i < dynamicRequests.size(); i++) {
+            ReplayerRow entry = dynamicRequests.get(i);
+            if(entry.getId()==line){
+                dynamicRequests.remove(i);
+                return;
             }
-            if(toRemove!=null){
-                dynamicData.remove(toRemove);
-            }
-        }else{
-            staticData.remove(staticIndex);
         }
     }
 
     public void add(ReplayerRow row) {
-
-        var path = row.getRequest().getHost()+row.getRequest().getPath();
         if(row.getRequest().isStaticRequest()){
-            staticData.put(path,row);
+            replayerResult.getStaticRequests().add(row);
         }else{
-            dynamicData.add(row);
+            replayerResult.getDynamicRequests().add(row);
         }
     }
 
     public void saveMods() throws IOException {
-        save();
+        var partialResult = new ArrayList<ReplayerRow>();
+        for(var item: replayerResult.getDynamicRequests()){
+            partialResult.add(item);
+        }
+        for(var item: replayerResult.getStaticRequests()){
+            partialResult.add(item);
+        }
+        dataReorganizer.reorganizeData(replayerResult,partialResult);
+        var rootPath = Path.of(replayerDataDir);
+        var allDataString = mapper.writeValueAsString(replayerResult);
+        var stringPath = rootPath + File.separator + name+".json";
+        FileWriter myWriter = new FileWriter(stringPath);
+        myWriter.write(allDataString);
+        myWriter.close();
     }
 }

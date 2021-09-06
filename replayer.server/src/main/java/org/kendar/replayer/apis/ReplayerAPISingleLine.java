@@ -6,6 +6,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.replayer.apis.models.ListAllRecordList;
+import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.servers.http.Request;
@@ -25,14 +26,16 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
     private FileResourcesUtils fileResourcesUtils;
     private LoggerBuilder loggerBuilder;
+    private DataReorganizer dataReorganizer;
     ObjectMapper mapper = new ObjectMapper();
     @Value("${replayer.data:replayerdata}")
     private String replayerData;
 
-    public ReplayerAPISingleLine(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder){
+    public ReplayerAPISingleLine(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer){
 
         this.fileResourcesUtils = fileResourcesUtils;
         this.loggerBuilder = loggerBuilder;
+        this.dataReorganizer = dataReorganizer;
     }
     @Override
     public String getId() {
@@ -121,7 +124,8 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
+        dataset.load();
         dataset.delete(line);
         dataset.saveMods();
         res.setStatusCode(404);

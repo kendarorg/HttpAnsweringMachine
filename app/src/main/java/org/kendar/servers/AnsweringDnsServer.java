@@ -1,16 +1,12 @@
 package org.kendar.servers;
 
 import org.kendar.dns.DnsServer;
-import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.xbill.DNS.*;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.concurrent.ConcurrentHashMap;
 
