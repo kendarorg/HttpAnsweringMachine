@@ -50,7 +50,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
         var datasetContent = dataset.load();
         ListAllRecordList result = new ListAllRecordList(datasetContent,id);
         for (var singleLine :result.getLines()) {
@@ -75,7 +75,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
         var datasetContent = dataset.load();
         for (var destination :datasetContent.getStaticRequests()) {
             if(destination.getId()==line){
@@ -107,7 +107,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
         dataset.load();
         var passedLine = mapper.readValue((String)req.getRequest(), ReplayerRow.class);
         dataset.add(passedLine);
