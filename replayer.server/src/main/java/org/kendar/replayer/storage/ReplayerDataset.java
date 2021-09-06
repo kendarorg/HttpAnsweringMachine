@@ -243,18 +243,40 @@ public class ReplayerDataset {
         return result;
     }
 
-    public void update(ReplayerRow row) {
-
-    }
-
     public void delete(int line) {
-
+        String staticIndex = null;
+        for (var entry :
+                staticData.entrySet()) {
+            if(entry.getValue().getId()==line){
+                staticIndex= entry.getKey();
+            }
+        }
+        if(staticIndex == null){
+            ReplayerRow toRemove = null;
+            for(var entry: dynamicData){
+                if(entry.getId()==line){
+                    toRemove = entry;
+                }
+            }
+            if(toRemove!=null){
+                dynamicData.remove(toRemove);
+            }
+        }else{
+            staticData.remove(staticIndex);
+        }
     }
 
     public void add(ReplayerRow row) {
+
+        var path = row.getRequest().getHost()+row.getRequest().getPath();
+        if(row.getRequest().isStaticRequest()){
+            staticData.put(path,row);
+        }else{
+            dynamicData.add(row);
+        }
     }
 
-    public void saveMods() {
-
+    public void saveMods() throws IOException {
+        save();
     }
 }

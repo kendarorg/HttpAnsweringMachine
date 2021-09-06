@@ -94,7 +94,7 @@
         function (table,id) {
             table.deleteFromTable(id,function(id,success,error){
                 $.ajax({
-                    url: "/api/recording/"+getUrlParameter("id")+"/line/x" + id,
+                    url: "/api/recording/"+getUrlParameter("id")+"/line/" + id,
                     type: 'DELETE',
                     success: function (res) {
                         success();
