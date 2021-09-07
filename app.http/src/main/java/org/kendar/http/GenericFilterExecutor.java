@@ -18,12 +18,24 @@ public abstract class GenericFilterExecutor {
     private Method callback;
     private FilteringClass filterClass;
     public abstract boolean run(Request request, Response response);
+    private String id;
+
+    public String getId(){
+        return id;
+    }
+
+    public void setId(String id){
+        this.id = id;
+    }
 
     public GenericFilterExecutor(int priority, String method, boolean methodBlocking,
                                  boolean typeBlocking,
                                  String hostAddress,String pathAddress,
                                  String hostPattern,String pathPattern, HttpFilterType phase,
                                  Method callback, FilteringClass filterClass) {
+        if(filterClass!=null) {
+            this.id = filterClass.getId();
+        }
         this.priority = priority;
         this.method = method;
         this.methodBlocking = methodBlocking;

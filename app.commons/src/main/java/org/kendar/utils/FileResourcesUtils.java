@@ -9,4 +9,5 @@ public interface FileResourcesUtils {
     InputStream getFileFromResourceAsStream(String fileName);
     List<String> getFileFromResourceAsString(String fileName);
     File getFileFromResource(String fileName) throws URISyntaxException;
+    String buildPath(String ... paths);
 }

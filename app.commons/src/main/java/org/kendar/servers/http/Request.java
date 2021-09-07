@@ -1,11 +1,15 @@
 package org.kendar.servers.http;
 
 import com.sun.net.httpserver.HttpExchange;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.kendar.utils.MimeChecker;
 import org.kendar.utils.SimpleStringUtils;
 
+import javax.print.DocFlavor;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -66,7 +70,7 @@ public class Request {
 
     }
 
-    public static Request fromExchange(HttpExchange exchange, String protocol, int forwardPort) throws IOException {
+    public static Request fromExchange(HttpExchange exchange, String protocol, int forwardPort) throws IOException, FileUploadException {
         var result = new Request();
         result.remoteHost = exchange.getRemoteAddress().getHostName();
         result.protocol = protocol.toLowerCase(Locale.ROOT);
@@ -91,15 +95,14 @@ public class Request {
         return result;
     }
 
-    private static void setupOptionalBody(HttpExchange exchange, Request result) throws IOException {
+    private static void setupOptionalBody(HttpExchange exchange, Request result) throws IOException, FileUploadException {
         if(RequestUtils.isMethodWithBody(result)){
             //Calculate body
             if(result.headerContentType.toLowerCase(Locale.ROOT).startsWith("multipart")){
                 Pattern rp = Pattern.compile("boundary", Pattern.CASE_INSENSITIVE);
                 var boundary = SimpleStringUtils.splitByString("boundary=", result.headerContentType)[1];
-                var text = IOUtils.toString(exchange.getRequestBody(),"UTF-8");
-                var splittedText = text.split("\r\n");
-                result.multipartData = RequestUtils.buildMultipart(splittedText,boundary);
+                var data = IOUtils.toByteArray(exchange.getRequestBody());
+                result.multipartData = RequestUtils.buildMultipart(data,boundary,result.getHeader("Content-type"));
                 result.multipart = true;
             }else if(result.headerContentType.toLowerCase(Locale.ROOT).startsWith("application/x-www-form-urlencoded")){
                 var requestText = IOUtils.toString(exchange.getRequestBody(),"UTF-8");

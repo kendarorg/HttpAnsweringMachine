@@ -9,6 +9,8 @@
         "myhandler/runner.js",
         "myhandler/fuffa.js"
     ],
+    "id": "myhandler",
+    "enabled": true,
     "blocking": true,
     "priority": 100
 }

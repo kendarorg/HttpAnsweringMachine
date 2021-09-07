@@ -1,27 +1,31 @@
 package org.kendar.replayer.storage;
 
+import org.kendar.replayer.apis.models.RedirectFilter;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 public class ReplayerResult {
-    private List<ReplayerRow> rows = new ArrayList<>();
+    private List<ReplayerRow> staticRequests = new ArrayList<>();
+    private List<ReplayerRow> dynamicRequests = new ArrayList<>();
     private List<String> errors = new ArrayList<>();
+    private String description;
+    private RedirectFilter filter;
+
     public void add(ReplayerRow row) {
-        getRows().add(row);
+        getStaticRequests().add(row);
     }
 
     public void addError(String error) {
         getErrors().add(error);
     }
 
-    public List<ReplayerRow> getRows() {
-        return rows;
+    public List<ReplayerRow> getStaticRequests() {
+        return staticRequests;
     }
 
-    public void setRows(List<ReplayerRow> rows) {
-        this.rows = rows;
+    public void setStaticRequests(List<ReplayerRow> staticRequests) {
+        this.staticRequests = staticRequests;
     }
 
     public List<String> getErrors() {
@@ -30,5 +34,29 @@ public class ReplayerResult {
 
     public void setErrors(List<String> errors) {
         this.errors = errors;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<ReplayerRow> getDynamicRequests() {
+        return dynamicRequests;
+    }
+
+    public void setDynamicRequests(List<ReplayerRow> dynamicRequests) {
+        this.dynamicRequests = dynamicRequests;
+    }
+
+    public void setFilter(RedirectFilter filter) {
+        this.filter = filter;
+    }
+
+    public RedirectFilter getFilter() {
+        return filter;
     }
 }

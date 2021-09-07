@@ -2,6 +2,7 @@ package org.kendar.servers;
 
 import org.apache.derby.drda.NetworkServerControl;
 import org.kendar.servers.db.DerbyApplication;
+import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,12 +24,15 @@ public class AnsweringDerbyServer implements AnsweringServer{
     private  Logger logger;
     private List<DerbyApplication> applicationList;
     private Environment environment;
+    private FileResourcesUtils fileResourcesUtils;
 
     public AnsweringDerbyServer(LoggerBuilder loggerBuilder,
-                                @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") List<DerbyApplication> applicationList, Environment environment){
+                                @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") List<DerbyApplication> applicationList, Environment environment,
+                                FileResourcesUtils fileResourcesUtils){
         logger = loggerBuilder.build(AnsweringDerbyServer.class);
         this.applicationList = applicationList;
         this.environment = environment;
+        this.fileResourcesUtils = fileResourcesUtils;
     }
     @Value("${derby.port:1527}")
     private int port;
@@ -54,7 +58,7 @@ public class AnsweringDerbyServer implements AnsweringServer{
         try {
             //https://www.vogella.com/tutorials/ApacheDerby/article.html
             Class.forName(derbyDriver);
-            var realDbPath = setupPath();
+            var realDbPath = fileResourcesUtils.buildPath(dbPath);
             System.setProperty("derby.system.home", realDbPath);
             nsc = new NetworkServerControl(InetAddress.getByName("0.0.0.0"), port,rootUser,rootPassword);
             nsc.start(null);
@@ -116,20 +120,7 @@ public class AnsweringDerbyServer implements AnsweringServer{
         }
     }
 
-    private String setupPath() {
-        var realPath=this.dbPath;
-        try {
-            var fp = new URI(this.dbPath);
-            if(!fp.isAbsolute()){
-                Path currentRelativePath = Paths.get("");
-                String s = currentRelativePath.toAbsolutePath().toString();
-                realPath = s+File.separator+this.dbPath;
-            }
-            return realPath;
-        } catch (URISyntaxException e) {
-            return null;
-        }
-    }
+
 
     @Override
     public boolean shouldRun() {

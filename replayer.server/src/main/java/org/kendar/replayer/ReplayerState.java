@@ -3,5 +3,7 @@ package org.kendar.replayer;
 public enum ReplayerState {
     NONE,
     RECORDING,
-    REPLAYING
+    PAUSED_RECORDING,
+    REPLAYING,
+    PAUSED_REPLAYING
 }

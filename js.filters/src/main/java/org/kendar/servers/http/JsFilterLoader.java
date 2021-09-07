@@ -3,6 +3,7 @@ package org.kendar.servers.http;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.CustomFilters;
 import org.kendar.http.FilterDescriptor;
+import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.mozilla.javascript.ClassShutter;
 import org.mozilla.javascript.Context;
@@ -32,12 +33,14 @@ public class JsFilterLoader implements CustomFilters {
     private Environment environment;
     private Logger logger;
     private LoggerBuilder loggerBuilder;
+    private FileResourcesUtils fileResourcesUtils;
 
-    public JsFilterLoader(Environment environment, LoggerBuilder loggerBuilder){
+    public JsFilterLoader(Environment environment, LoggerBuilder loggerBuilder, FileResourcesUtils fileResourcesUtils){
 
         this.environment = environment;
         this.logger = loggerBuilder.build(JsFilterLoader.class);
         this.loggerBuilder = loggerBuilder;
+        this.fileResourcesUtils = fileResourcesUtils;
         logger.info("JsFilter LOADED");
     }
 
@@ -62,44 +65,40 @@ public class JsFilterLoader implements CustomFilters {
 
     public List<FilterDescriptor> loadFilters() {
         var result = new ArrayList<FilterDescriptor>();
-        https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
+        String currentPath = "";
+        //https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
         try {
             File f = null;
-            var realPath=jsFilterPath;
-            var fp = new URI(jsFilterPath);
-            if(!fp.isAbsolute()){
-                Path currentRelativePath = Paths.get("");
-                String s = currentRelativePath.toAbsolutePath().toString();
-                f= new File(s+File.separator+jsFilterPath);
-                realPath=s+File.separator+jsFilterPath;
-            }else {
-                f = new File(jsFilterPath);
-            }
+            var realPath=fileResourcesUtils.buildPath(jsFilterPath);
+            f = new File(realPath);
             if(f.exists()) {
                 var pathnames = f.list();
                 // For each pathname in the pathnames array
                 for (String pathname : pathnames) {
-                    var fullPath = realPath+ File.separator+pathname;
+                    var fullPath = fileResourcesUtils.buildPath(jsFilterPath,pathname);
+                    currentPath= fullPath;
                     var newFile = new File(fullPath);
                     if(newFile.isFile()){
                         var data = Files.readString(Path.of(fullPath));
                         var filterDescriptor = mapper.readValue(data, JsFilterDescriptor.class);
                         filterDescriptor.setRoot(realPath);
                         precompileFilter(filterDescriptor);
-                        var executor = new JsFilterExecutor(filterDescriptor,this,loggerBuilder);
-                        result.add(new FilterDescriptor(executor,environment));
+                        var executor = new JsFilterExecutor(filterDescriptor,this,loggerBuilder,filterDescriptor.getId());
+                        var fd = new FilterDescriptor(executor,environment);
+                        fd.setEnabled(filterDescriptor.isEnabled());
+                        result.add(fd);
                     }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error compiling js filter "+currentPath,e);
         }
         return result;
     }
 
     private static final SandboxClassShutter sandboxClassShutter = new SandboxClassShutter();
 
-    private void precompileFilter(JsFilterDescriptor filterDescriptor) throws IOException {
+    private void precompileFilter(JsFilterDescriptor filterDescriptor) throws Exception {
         String scriptSrc = "var globalFilterResult=runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON));\n" +
                 "globalResult.put('request', JSON.stringify(globalFilterResult.request));\n"+
                 "globalResult.put('response', JSON.stringify(globalFilterResult.response));\n"+
@@ -117,7 +116,11 @@ public class JsFilterLoader implements CustomFilters {
         try {
             Scriptable currentScope = getNewScope(cx);
             filterDescriptor.setSource(scriptSrc);
-            filterDescriptor.setScript(cx.compileString(scriptSrc,"my_script_id", 1, null));
+            filterDescriptor.setScript(cx.compileString(scriptSrc, "my_script_id", 1, null));
+        }catch (Exception ex){
+            logger.error("Error compiling script");
+            logger.error(scriptSrc);
+            throw new Exception(ex);
         } finally {
             Context.exit();
         }

@@ -196,19 +196,19 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         logger.info(host+requestUri.toString());
 
         Request request = null;
-        if(httpExchange instanceof HttpsExchange){
-            request = Request.fromExchange(httpExchange,httpsForwardProtocol,httpsForwardPort);
-        }else{
-            request = Request.fromExchange(httpExchange,httpForwardProtocol,httpForwardPort);
-        }
-
-        handleOverwriteHost(request, httpExchange);
-
-        if (handleSpecialRequests(httpExchange, request)) {
-            return;
-        }
         Response response = new Response();
         try {
+            if(httpExchange instanceof HttpsExchange){
+                request = Request.fromExchange(httpExchange,httpsForwardProtocol,httpsForwardPort);
+            }else{
+                request = Request.fromExchange(httpExchange,httpForwardProtocol,httpForwardPort);
+            }
+
+            handleOverwriteHost(request, httpExchange);
+
+            if (handleSpecialRequests(httpExchange, request)) {
+                return;
+            }
 
             if(filteringClassesHandler.handle(HttpFilterType.PRE_RENDER,request,response,connManager)){
                 sendResponse(response,httpExchange);
@@ -245,11 +245,26 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
 
         }catch(Exception ex){
-            throw new IOException(ex.getMessage(),ex);
+            try {
+                logger.error("ERROR HANDLING HTTP REQUEST ", ex);
+                if(response.getHeader("content-type")==null){
+                    response.addHeader("Content-Type","text/html");
+                }
+                response.addHeader("X-Exception-Type", ex.getClass().getName());
+                response.addHeader("X-Exception-Message", ex.getMessage());
+                response.addHeader("X-Exception-PrevStatusCode", Integer.toString(response.getStatusCode()));
+                response.setStatusCode(500);
+                if(response.getResponse()==null){
+                    response.setResponse(ex.getMessage());
+                }
+                sendResponse(response, httpExchange);
+            }catch (Exception xx){
+
+            }
         }finally {
             try {
                 filteringClassesHandler.handle(HttpFilterType.POST_RENDER,request,response,connManager);
-            } catch (InvocationTargetException|IllegalAccessException e) {
+            } catch (Exception e) {
                 logger.error("ERROR CALLING POST RENDER ",e);
             }
         }
@@ -307,14 +322,20 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
                 MultipartEntityBuilder builder = MultipartEntityBuilder.create();
                 builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
                 for (MultipartPart part : request.getMultipartData()) {
-                    var contentDispositionString = RequestUtils.getFromMap(part.getHeaders(), "Content-Disposition");
-                    var contentDisposition = RequestUtils.parseContentDisposition(contentDispositionString);
-                    if (MimeChecker.isBinary(contentDisposition.get("type"),null)) {
+                    //var contentDispositionString = RequestUtils.getFromMap(part.getHeaders(), "Content-Disposition");
+                    //var contentDisposition = RequestUtils.parseContentDisposition(contentDispositionString);
+                    if (MimeChecker.isBinary(part.getContentType(), null)) {
                         builder.addBinaryBody(
-                                contentDisposition.get("name"), Base64.getDecoder().decode(part.getData()), ContentType.create(contentDisposition.get("type")), contentDisposition.get("filename"));
+                                part.getFieldName(), part.getByteData(),
+                                ContentType.create(part.getContentType()),
+                                part.getFileName());
                     } else {
+                        var type = part.getContentType();
+                        if (type == null) {
+                            type = "text/plain";
+                        }
                         builder.addTextBody(
-                                contentDisposition.get("name"), part.getData(), ContentType.TEXT_PLAIN);
+                                part.getFieldName(), part.getStringData(), ContentType.create(type));
                     }
                 }
                 HttpEntity entity = builder.build();
@@ -350,7 +371,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
     private void sendResponse(Response response, HttpExchange httpExchange) throws IOException {
         byte[] data = new byte[0];
-        var dataLength = -1;
+        var dataLength = 0;
         if(response.getResponse()!=null) {
             if (response.isBinaryResponse()) {
                 data = ((byte[]) response.getResponse());
@@ -384,8 +405,11 @@ Access-Control-Max-Age: 86400
             OutputStream os = httpExchange.getResponseBody();
             os.write(data);
             os.close();
+        }else{
+            OutputStream os = httpExchange.getResponseBody();
+            os.write(new byte[0]);
+            os.close();
         }
-        httpExchange.close();
     }
 
     private HttpRequestBase createFullRequest(Request request, String fullAddress) throws Exception {

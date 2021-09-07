@@ -10,11 +10,18 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 @HttpTypeFilter(hostAddress = "*")
 public class RecordFilter  implements FilteringClass {
+    @Value("${replayer.address:replayer.local.org}")
+    private String localAddress;
+    @Override
+    public String getId() {
+        return "org.kendar.replayer.filters.RecordFilter";
+    }
     private final Logger logger;
     private ReplayerStatus replayerStatus;
 
@@ -23,9 +30,10 @@ public class RecordFilter  implements FilteringClass {
         this.logger = loggerBuilder.build(RecordFilter.class);
     }
 
-    @HttpMethodFilter(phase = HttpFilterType.PRE_RENDER,pathAddress ="*",method = "*")
+    @HttpMethodFilter(phase = HttpFilterType.POST_RENDER,pathAddress ="*",method = "*")
     public boolean record(Request req, Response res){
-        if(replayerStatus.getReplayerState()!= ReplayerState.RECORDING)return false;
+        if(req.getHost().equalsIgnoreCase(localAddress))return false;
+        if(replayerStatus.getStatus()!= ReplayerState.RECORDING)return false;
         try {
             replayerStatus.addRequest(req,res);
         } catch (Exception e) {

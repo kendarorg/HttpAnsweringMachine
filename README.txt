@@ -1,3 +1,12 @@
+Simple Run (all server)
+    java -cp app-1.0-SNAPSHOT.jar \
+        -Djsfilter.path=plugins -Dloader.path=lib/ \
+        -Dloader.main=org.kendar.Main \
+        org.springframework.boot.loader.PropertiesLauncher
+
+Simple Run (dns server only)
+    java -Dother.dns=dns.google,dns.local.com \
+        -jar simpledns-1.0-SNAPSHOT.jar
 
 curl -i -H "X-TEST-OVERWRITE-HOST:https:\\www.kendar.org" -XGET "http://localhost:20080"
 
@@ -149,3 +158,12 @@ public class ReplayerDb implements DerbyApplication {
                 new SqlSessionFactoryBuilder().build(configuration);
     }*/
 }
+
+
+
+curl -F 'img_avatar=@favicon.ico' http://replayer.local.org/api/recording
+curl \
+  -F "userid=1" \
+  -F "filecomment=This is an image file" \
+  -F "image=@favicon.ico" \
+  http://replayer.local.org/api/recording

@@ -1,14 +1,22 @@
 package org.kendar.servers.http;
 
 import com.sun.net.httpserver.Headers;
+import org.apache.commons.fileupload.*;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.portlet.PortletFileUpload;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class RequestUtils {
     public static boolean isMethodWithBody(Request result) {
@@ -89,23 +97,35 @@ public class RequestUtils {
         return result;
     }
 
+    private static String byteListToString(List<Byte> l, Charset charset) {
+        if (l == null) {
+            return "";
+        }
+        byte[] array = new byte[l.size()];
+        int i = 0;
+        for (Byte current : l) {
+            array[i] = current;
+            i++;
+        }
+        return new String(array, charset);
+    }
+
     public static String sanitizePath(Request result) {
         return result.getHost()+result.getPath();
     }
 
-    public static List<MultipartPart> buildMultipart(String[] splittedText, String boundary) {
-        var blocks = new ArrayList<List<String>>();
-        for (String line: splittedText) {
-            if(line.contains(boundary)){
-                blocks.add(new ArrayList<>());
-            }else {
-                blocks.get(blocks.size() - 1).add(line);
-            }
-        }
+    public static List<MultipartPart> buildMultipart(byte[] body, String boundary,String contentType) throws FileUploadException {
+        Charset encoding = UTF_8;
+        RequestContext requestContext = new SimpleRequestContext(encoding, contentType, body);
+        FileUploadBase fileUploadBase = new PortletFileUpload();
+        FileItemFactory fileItemFactory = new DiskFileItemFactory();
+        fileUploadBase.setFileItemFactory(fileItemFactory);
+        fileUploadBase.setHeaderEncoding(encoding.displayName());
+        List<FileItem> fileItems = fileUploadBase.parseRequest(requestContext);
+
         List<MultipartPart> result = new ArrayList<>();
-        for(List<String> block:blocks){
-            if(block.size()==0)continue;
-            result.add(new MultipartPart(block));
+        for(var fileItem :fileItems){
+            result.add(new MultipartPart(fileItem));
         }
         return result;
     }

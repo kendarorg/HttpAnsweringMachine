@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 public class FilterDescriptor {
 
+    private boolean enabled=true;
     private final int priority;
     private final String method;
     private final boolean methodBlocking;
@@ -30,11 +31,17 @@ public class FilterDescriptor {
     private Object filterClass;
     private List<String> pathMatchers = new ArrayList<>();
     private List<String> pathSimpleMatchers = new ArrayList<>();
+    private String id;
+
+    public String getId(){
+        return id;
+    }
 
     public FilterDescriptor(HttpTypeFilter typeFilter, HttpMethodFilter methodFilter, Method callback, FilteringClass filterClass, Environment environment) {
 
         this.callback = callback;
         this.filterClass = filterClass;
+        this.id = filterClass.getId();
         if(typeFilter.hostPattern().length()>0){
             var realHostPattern = getWithEnv(typeFilter.hostPattern(),environment);
             hostPattern = Pattern.compile(realHostPattern);
@@ -64,6 +71,7 @@ public class FilterDescriptor {
             }
         }
         this.filterClass = executor;
+        this.id = executor.getId();
         if(null!= executor.getHostPattern() && executor.getHostPattern().length()>0){
             var realHostPattern = getWithEnv(executor.getHostPattern(),environment);
             hostPattern = Pattern.compile(realHostPattern);
@@ -126,6 +134,7 @@ public class FilterDescriptor {
     }
 
     public boolean matchesHost(String host, Environment env) {
+        if(!enabled)return false;
         if(hostAddress!=null && hostAddress.equalsIgnoreCase("*"))return true;
         if(hostPattern!=null){
             return hostPattern.matcher(host).matches();
@@ -145,6 +154,7 @@ public class FilterDescriptor {
     }
 
     public boolean matchesPath(String path, Environment env,Request request) {
+        if(!enabled)return false;
         if(pathAddress!=null && pathAddress.equalsIgnoreCase("*"))return true;
         if(pathPattern!=null){
             var matcher = pathPattern.matcher(path);
@@ -178,6 +188,7 @@ public class FilterDescriptor {
     }
 
     public boolean execute(Request request, Response response, HttpClientConnectionManager connectionManager) throws InvocationTargetException, IllegalAccessException {
+        if(!enabled) return false;
         if(callback.getParameterCount()==3) {
             return (boolean) callback.invoke(filterClass, request, response, connectionManager);
         }else if(callback.getParameterCount()==2) {
@@ -191,6 +202,7 @@ public class FilterDescriptor {
     }
 
     public boolean isBlocking() {
+        if(!enabled)return false;
         if(this.phase == HttpFilterType.API){
             return true;
         }
@@ -203,5 +215,13 @@ public class FilterDescriptor {
 
     public void setPhase(HttpFilterType phase) {
         this.phase = phase;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

@@ -3,9 +3,12 @@ package org.kendar.utils;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +68,46 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
             //return new File(resource.getFile());
             return new File(resource.toURI());
         }
+    }
 
+    public String buildPath(String ... paths){
+        String returnValue = null;
+        var result = paths[0];
+        try {
+            for (var i = 1; i < paths.length; i++) {
+                paths[i] = paths[i].replace("/",File.separator);
+                paths[i] = paths[i].replace("\\",File.separator);
+            }
+            while(result.endsWith("/") || result.endsWith("\\")){
+                result = result.substring(0,result.length()-1);
+            }
+            for (var i = 1; i < paths.length; i++) {
+                if (i > 0) {
+                    var cur = paths[i];
+                    while(cur.endsWith("/") || cur.endsWith("\\")){
+                        cur = cur.substring(0,cur.length()-1);
+                    }
+                    while(cur.startsWith("/")|| cur.startsWith("\\")){
+                        cur = cur.substring(1);
+                    }
+                    result += File.separator + cur;
+                }
+            }
+            var fpResult = result.replace('\\','/');
+            var fp = new URI(fpResult);
+            if(!fp.isAbsolute()){
+                while(result.startsWith("/")||result.startsWith("\\")){
+                    result = result.substring(1);
+                }
+                Path currentRelativePath = Paths.get("");
+                String s = currentRelativePath.toAbsolutePath().toString();
+                returnValue = s+File.separator+result;
+            }else {
+                returnValue = result;
+            }
+            return returnValue;
+        }catch(Exception ex){
+            return returnValue;
+        }
     }
 }

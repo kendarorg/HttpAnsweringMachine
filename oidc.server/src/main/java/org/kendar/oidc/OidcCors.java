@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 @HttpTypeFilter(hostAddress = "${oidc.address:oidc.local.com}",blocking = true)
 public class OidcCors implements FilteringClass {
+    @Override
+    public String getId() {
+        return "org.kendar.oidc.OidcCors";
+    }
     @HttpMethodFilter(phase = HttpFilterType.PRE_RENDER,
             pathAddress ="*",
             method = "OPTIONS",

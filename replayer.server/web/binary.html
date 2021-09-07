@@ -1,0 +1,112 @@
+<html>
+<head>
+    <link href="libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="libs/jquery-3.2.1.min.js"></script>
+    <script src="libs/bootstrap.min.js"></script>
+    <link href="app/app.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Scripts</button>
+            <button type="button"  class="btn btn-default" id="backToSingle"  name="backToSingle" >???</button>
+            <button type="button"  class="btn btn-default" id="backToLine"  name="backToLine" >???</button>
+        </div>
+        <div class="col-md-8">
+            <div class="form-group">
+                <label htmlFor="id">Id</label>
+                <input class="form-control" readOnly type="text" name="id" id="id"/>
+            </div>
+            <div class="form-group">
+                <label htmlFor="line">Line</label>
+                <input class="form-control" readOnly type="text" name="line" id="line"/>
+            </div>
+            <div class="form-group">
+                <label htmlFor="direction">Direction</label>
+                <input class="form-control" readOnly type="text" name="direction" id="direction"/>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h3>BINARY DATA</h3>
+            <form action="" id="addUser"  method="POST" enctype="" >
+                <div class="form-group">
+                    <button type="button" id="btLoadFile" name="btLoadFile" class="btn btn-default">Open file</button>
+                    <input type="file" style="width:0px;height: 0px;opacity:0;" id="uploadScript" name="uploadScript" >
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="text" name="uploadScriptShow" id="uploadScriptShow" />
+                </div>
+                <div class="form-group">
+                    <button type="button" id="btUploadScript" name="btUploadScript" class="btn btn-default">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="app/app.js"></script>
+<script>
+
+
+    $("#btLoadFile").click(function(){
+        document.getElementById("uploadScript").click();
+    });
+    $("#uploadScript").change(function(){
+        var files = $('#uploadScript')[0].files;
+
+        // Check file selected or not
+        if(files.length > 0 ) {
+            document.getElementById("uploadScriptShow").value =files[0].name;
+        }
+    });
+    $("#btUploadScript").click(function(){
+
+        var fd = new FormData();
+        var files = $('#uploadScript')[0].files;
+
+        // Check file selected or not
+        if(files.length > 0 ){
+            fd.append('file',files[0]);
+            var id = getUrlParameter("id");
+            var line = getUrlParameter("line");
+            var requestOrResponse = getUrlParameter("type");
+            $.ajax({
+                url: 'api/recording/'+id+'/line/'+line+'/'+requestOrResponse,
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    location.reload();
+                }
+            });
+        }else{
+            alert("Please select a file.");
+        }
+    });
+
+    $("#id").val(getUrlParameter("id"));
+    $("#line").val(getUrlParameter("line"));
+    $("#direction").val(getUrlParameter("type"));
+    $("#createScriptBt").click(function(){
+        var name = $('#createScriptName').val();
+        $.ajax({
+            url: 'api/recording',
+            type: 'post',
+            data: name,
+            contentType: "text/plain",
+            success: function(response){
+                location.reload();
+            }
+        });
+    });
+    $("#backToSingle").click(function(){
+        location.href="script.html?id="+getUrlParameter("id"); })
+        .html(getUrlParameter("id"));
+    $("#backToLine").click(function(){
+        location.href="line.html?id="+getUrlParameter("id")+"&line="+getUrlParameter("line"); })
+        .html("Line "+getUrlParameter("line"));
+</script>
+</body>
+</html>

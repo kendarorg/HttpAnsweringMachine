@@ -1,4 +1,4 @@
-package org.kendar.servers.dns;
+package org.kendar.dns;
 
 import org.xbill.DNS.*;
 

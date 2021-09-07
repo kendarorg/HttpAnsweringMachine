@@ -9,6 +9,7 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/answer.jdbc/pom.xml" />
         <option value="$PROJECT_DIR$/http.jdbc/pom.xml" />
         <option value="$PROJECT_DIR$/starter/pom.xml" />
       </set>

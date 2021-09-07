@@ -1,5 +1,6 @@
-package org.kendar.servers.dns;
+package org.kendar.dns;
 
+import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,14 +14,18 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 @Component
-public class DnsMultiResolverImpl implements  DnsMultiResolver{
+public class DnsMultiResolverImpl implements DnsMultiResolver {
     private final ExecutorService executorService = Executors.newFixedThreadPool(20);
     private final Logger logger;
     @Value("${dns.extraServers}")
     private String[] extraServers;
-    @Value("${localhost.name:localhost.dev.it}")
+    private List<String> extraServersReal = new ArrayList<>();
+    @Value("${localhost.name:www.local.org}")
     private String localHostName;
 
     @Value("${dns.logging.query:false}")
@@ -35,6 +40,7 @@ public class DnsMultiResolverImpl implements  DnsMultiResolver{
         this.logger = loggerBuilder.build(DnsMultiResolverImpl.class);
     }
 
+    private Pattern ipPattern = Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
     @PostConstruct
     public void init(){
         String hostsFile="";
@@ -56,6 +62,26 @@ public class DnsMultiResolverImpl implements  DnsMultiResolver{
                 myWriter.close();
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+
+        for (int i = 0; i < extraServers.length; i++) {
+            String server = extraServers[i];
+            try {
+                Matcher matcher = ipPattern.matcher(server);
+                if(matcher.matches()){
+                    extraServersReal.add(server);
+                }else{
+                    var namedDns = resolve(server);
+                    if(namedDns.size()==0){
+                        logger.error("Not found named DNS "+server);
+                    }else {
+                        logger.info("Resolved named DNS "+server+":"+namedDns.get(0));
+                        extraServersReal.add(0,namedDns.get(0));
+                    }
+                }
+            } catch (PatternSyntaxException ex) {
+
             }
         }
     }
@@ -95,8 +121,8 @@ public class DnsMultiResolverImpl implements  DnsMultiResolver{
     public List<String> resolveRemote(String requestedDomain) {
         var data = new HashSet<String>();
         List<Callable<List<String>>> runnables = new ArrayList<>();
-        for(int i = 0; i< extraServers.length; i++){
-            var serverToCall = extraServers[i];
+        for(int i = 0; i< extraServersReal.size(); i++){
+            var serverToCall = extraServersReal.get(i);
             var runnable = new DnsRunnable(serverToCall,requestedDomain);
             runnables.add(runnable);
         }
@@ -162,6 +188,6 @@ public class DnsMultiResolverImpl implements  DnsMultiResolver{
         if(localData.size()>0){
             return localData;
         }
-        return resolveLocal(requestedDomain);
+        return resolveRemote(requestedDomain);
     }
 }
