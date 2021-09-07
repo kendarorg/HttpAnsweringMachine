@@ -278,6 +278,8 @@ public class ReplayerDataset {
         for(var item: replayerResult.getStaticRequests()){
             partialResult.add(item);
         }
+        replayerResult.setStaticRequests(new ArrayList<>());
+        replayerResult.setDynamicRequests(new ArrayList<>());
         dataReorganizer.reorganizeData(replayerResult,partialResult);
         var rootPath = Path.of(replayerDataDir);
         var allDataString = mapper.writeValueAsString(replayerResult);

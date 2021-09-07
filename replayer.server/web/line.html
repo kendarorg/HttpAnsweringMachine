@@ -188,6 +188,7 @@
 </div>
 <script src="app/app.js"></script>
 <script>
+    var defaultSaveAction = "put";
     var request_headerTable = new SimpleGrid("Request-Headers","request_headerTable","key",["key","value"],
         null,
         function (table,id) {
@@ -305,6 +306,17 @@
             }else{
                 $("#response_content_download").hide();
             }
+        },
+        error: function( xhr, textStatus, errorThrown ){
+            if(xhr.status==404) {
+                $("#timestamp").val(Math.floor(Date.now() / 1000));
+                $("#id").val(getUrlParameter("line"));
+                $("#request_content").hide();
+                $("#response_content").hide();
+                $("#request_content_download").hide();
+                $("#response_content_download").hide();
+                defaultSaveAction="post";
+            }
         }
     });
 
@@ -349,7 +361,7 @@
         };
         $.ajax({
             url: 'api/recording/'+id+'/line/'+line,
-            type: 'put',
+            type: defaultSaveAction,
             data: JSON.stringify(data),
             contentType: "application/json",
             success: function(response){

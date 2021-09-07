@@ -19,11 +19,16 @@ public class DataReorganizer {
         var singleStatefulIndex=new ArrayList<ReplayerRow>();
         organizeByNewDiscoveredType(requestGroups, staticIndexes, toStaticizeIndexes, toDeduplicateIndexes, singleStatefulIndex);
 
+        var indexes = new HashSet<Integer>();
         for(var item: singleStatefulIndex){
+            if(indexes.contains(item.getId()))continue;
+            indexes.add(item.getId());
             item.getRequest().setStaticRequest(false);
             destination.getDynamicRequests().add(item);
         }
         for(var item: toStaticizeIndexes){
+            if(indexes.contains(item.getId()))continue;
+            indexes.add(item.getId());
             item.getRequest().setStaticRequest(true);
             destination.getStaticRequests().add(item);
         }

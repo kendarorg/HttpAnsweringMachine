@@ -76,7 +76,10 @@
                     <th>Res.Status</th>
                     <th>Req.Body</th>
                     <th>Res.Body</th>
-                    <th colspan="2"></th>
+                    <th colspan="2">
+                        <button class="btn btn-danger form-control"
+                                onClick="addLine();">Add</button>
+                    </th>
                 </tr>
             </table>
         </div>
@@ -142,6 +145,18 @@
         return result;
     }
 
+    function addLine(){
+        var maxValue = 0;
+        for(var i=0;i<linesTable.data.length;i++){
+            var curr = linesTable.data[i];
+            if(curr['id']>maxValue){
+                maxValue=curr['id'];
+            }
+        }
+        maxValue++;
+        location.href = "line.html?line="+maxValue+"&id="+getUrlParameter("id");
+    }
+
     function retrieveScriptStatuses(linesCount){
         $.ajax({
             url: "/api/recording",
@@ -159,11 +174,13 @@
                         current=script;
                     }
                 }
-                if(active==null || current.id==active.id){
+                if( (active==null || current.id==active.id) && current!=null){
                     if(current.state==undefined || current.state==""){
                         current.state="NONE";
                     }
                     handleStateButtons(current.state,linesCount);
+                }else{
+                    handleStateButtons("NONE",linesCount);
                 }
             }
         });

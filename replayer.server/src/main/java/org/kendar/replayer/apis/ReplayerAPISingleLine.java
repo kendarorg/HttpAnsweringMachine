@@ -100,18 +100,35 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}/line",
+            pathAddress = "/api/recording/{id}/line/{line}",
             method = "POST")
     public boolean addLineData(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
+        var line = Integer.parseInt(req.getPathParameter("line"));
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
         var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
-        dataset.load();
-        var passedLine = mapper.readValue((String)req.getRequest(), ReplayerRow.class);
-        dataset.add(passedLine);
+        var datasetContent = dataset.load();
+        for (var destination :datasetContent.getStaticRequests()) {
+            if(destination.getId()==line){
+                res.setStatusCode(409);
+                res.setResponse("Duplicate id");
+                return true;
+            }
+        }
+        for (var destination :datasetContent.getDynamicRequests()) {
+            if(destination.getId()==line){
+                res.setStatusCode(409);
+                res.setResponse("Duplicate id");
+                return true;
+            }
+        }
+
+        var source = mapper.readValue((String)req.getRequest(), ReplayerRow.class);
+        datasetContent.getDynamicRequests().add(source);
         dataset.saveMods();
+        res.setStatusCode(200);
         return false;
     }
 
@@ -128,8 +145,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
         dataset.load();
         dataset.delete(line);
         dataset.saveMods();
-        res.setStatusCode(404);
-        res.setResponse("Missing id "+id+" with line "+line);
+        res.setStatusCode(200);
         return false;
     }
 

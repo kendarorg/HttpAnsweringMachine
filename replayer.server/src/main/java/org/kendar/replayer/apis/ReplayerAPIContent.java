@@ -5,6 +5,7 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.servers.http.MultipartPart;
@@ -28,14 +29,16 @@ import java.security.NoSuchAlgorithmException;
 public class ReplayerAPIContent implements FilteringClass {
     private FileResourcesUtils fileResourcesUtils;
     private LoggerBuilder loggerBuilder;
+    private DataReorganizer dataReorganizer;
     ObjectMapper mapper = new ObjectMapper();
     @Value("${replayer.data:replayerdata}")
     private String replayerData;
 
-    public ReplayerAPIContent(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder){
+    public ReplayerAPIContent(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer){
 
         this.fileResourcesUtils = fileResourcesUtils;
         this.loggerBuilder = loggerBuilder;
+        this.dataReorganizer = dataReorganizer;
     }
     @Override
     public String getId() {
@@ -53,7 +56,7 @@ public class ReplayerAPIContent implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
         var datasetContent = dataset.load();
 
         for (var singleLine : datasetContent.getStaticRequests()) {
@@ -126,7 +129,7 @@ public class ReplayerAPIContent implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
         var datasetContent = dataset.load();
 
         for (var singleLine : datasetContent.getStaticRequests()) {
@@ -164,7 +167,7 @@ public class ReplayerAPIContent implements FilteringClass {
             data = (String)req.getRequest();
         }
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
         var datasetContent = dataset.load();
 
         for (var singleLine : datasetContent.getStaticRequests()) {
