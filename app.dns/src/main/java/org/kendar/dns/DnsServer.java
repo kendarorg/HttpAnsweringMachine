@@ -56,9 +56,14 @@ public class DnsServer {
                     logger.debug("FOUNDED IP " + ip + " FOR " + requestedDomain);
                     // Add answers as needed
                     response.addRecord(Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.root), Section.ANSWER);
-
                 }
             }
+            //response = new Message(request.getHeader().getID());
+            /*var header = new Header();
+            header.setID(request.getHeader().getID());
+            //header.setOpcode(Opcode.QUERY);
+            header.setRcode(Rcode.NXDOMAIN);
+            response.setHeader(header);*/
 
             byte[] resp = response.toWire();
             //DatagramSocket socket = new DatagramSocket();
@@ -78,8 +83,7 @@ public class DnsServer {
         // Read the request
         DatagramPacket indp = new DatagramPacket(in, UDP_SIZE);
         socket.receive(indp);
-
         //executor.execute(responder);
-        resolveAll(indp,socket,in);
+        resolveAll(indp, socket, in);
     }
 }

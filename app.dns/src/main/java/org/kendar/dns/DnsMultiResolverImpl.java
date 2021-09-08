@@ -92,7 +92,10 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         if(requestedDomain.equalsIgnoreCase("localhost")){
             data.add("127.0.0.1");
             return data;
-        }else if(requestedDomain.equalsIgnoreCase("1.0.0.127.in-addr.arpa")){
+        }else if(requestedDomain.endsWith("in-addr.arpa")){
+            data.add("127.0.0.1");
+            return data;
+        }else if(requestedDomain.endsWith("ip6.arpa")){
             data.add("127.0.0.1");
             return data;
         }else {
@@ -123,6 +126,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         List<Callable<List<String>>> runnables = new ArrayList<>();
         for(int i = 0; i< extraServersReal.size(); i++){
             var serverToCall = extraServersReal.get(i);
+            logger.info(serverToCall+" "+requestedDomain);
             var runnable = new DnsRunnable(serverToCall,requestedDomain);
             runnables.add(runnable);
         }
