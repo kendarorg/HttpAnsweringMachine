@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.*;
@@ -114,7 +115,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         var result = new ArrayList<>(data);
         if(dnsLogginQuery) {
             if(result.size()>0){
-                logger.info("Resloved local "+requestedDomain+result.get(0));
+                logger.info("Resolved local "+requestedDomain+result.get(0));
             }
         }
         return data;
@@ -137,7 +138,17 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
             e.printStackTrace();
         }
         int finished = futures.size();
+        //This method returns the time in millis
+        long timeMilli = new Date().getTime();
+        long timeEnd = timeMilli+500;
         while(finished!=0){
+            if(timeEnd<=new Date().getTime()){
+                //System.out.println("================");
+                for(var current:futures){
+                    current.cancel(true);
+                }
+                break;
+            }
             finished = futures.size();
             for(var current:futures){
                 if(current.isCancelled()) {

@@ -1,6 +1,7 @@
 package org.kendar.dns;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -14,7 +15,6 @@ import org.xbill.DNS.*;
 
 @Component
 public class DnsServer {
-    private static final int MAX_DNS_THREADS = 10;
     private static final int UDP_SIZE = 512;
 
     @Value( "${dns.port:53}" )
@@ -30,16 +30,52 @@ public class DnsServer {
 
     public void run() throws IOException {
         DatagramSocket socket = new DatagramSocket(dnsPort);
-        socket.setSoTimeout(0);
+        //socket.setSoTimeout(0);
         logger.info("Dns server LOADED, port: "+dnsPort);
+        byte[] in = new byte[UDP_SIZE];
+
+        // Read the request
+        DatagramPacket indp = new DatagramPacket(in, UDP_SIZE);
         while (true) {
-            process(socket);
+            indp.setLength(in.length);
+
+            try {
+                socket.receive(indp);
+            } catch (InterruptedIOException e) {
+                continue;
+            }
+            resolveAll(indp,socket, in);
         }
     }
 
+    byte[] buildErrorMessage(Header header, int rcode, Record question) {
+        Message response = new Message();
+        response.setHeader(header);
+        for (int i = 0; i < 4; i++) {
+            response.removeAllRecords(i);
+        }
+        if (rcode == Rcode.SERVFAIL) {
+            response.addRecord(question, Section.QUESTION);
+        }
+        header.setRcode(rcode);
+        return response.toWire();
+    }
 
+    public byte[] formerrMessage(byte[] in) {
+        Header header;
+        try {
+            header = new Header(in);
+        } catch (IOException e) {
+            return null;
+        }
+        return buildErrorMessage(header, Rcode.FORMERR, null);
+    }
 
-    private void resolveAll(DatagramPacket indp, DatagramSocket socket, byte[] in) {
+    public byte[] errorMessage(Message query, int rcode) {
+        return buildErrorMessage(query.getHeader(), rcode, query.getQuestion());
+    }
+
+    private void resolveAll(DatagramPacket indp,DatagramSocket socket, byte[] in) {
         try {
             // Build the response
             Message request = null;
@@ -50,13 +86,16 @@ public class DnsServer {
             response.addRecord(request.getQuestion(), Section.QUESTION);
 
             var ips = this.multiResolver.resolve(requestedDomain);
-
+            byte[] resp = new byte[0];
             if(ips.size()>0) {
                 for (String ip : ips) {
                     logger.debug("FOUNDED IP " + ip + " FOR " + requestedDomain);
                     // Add answers as needed
                     response.addRecord(Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.root), Section.ANSWER);
                 }
+                resp = response.toWire();
+            }else{
+                resp = errorMessage(request, Rcode.NXDOMAIN);
             }
             //response = new Message(request.getHeader().getID());
             /*var header = new Header();
@@ -65,25 +104,12 @@ public class DnsServer {
             header.setRcode(Rcode.NXDOMAIN);
             response.setHeader(header);*/
 
-            byte[] resp = response.toWire();
             //DatagramSocket socket = new DatagramSocket();
             logger.debug("SENDING RESPONSE");
             DatagramPacket outdp = new DatagramPacket(resp, resp.length, indp.getAddress(), indp.getPort());
             socket.send(outdp);
-        } catch (NullPointerException e) {
-            //e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void process(DatagramSocket socket) throws IOException {
-        byte[] in = new byte[UDP_SIZE];
-
-        // Read the request
-        DatagramPacket indp = new DatagramPacket(in, UDP_SIZE);
-        socket.receive(indp);
-        //executor.execute(responder);
-        resolveAll(indp, socket, in);
     }
 }
