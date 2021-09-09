@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.net.ssl.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,6 +24,9 @@ import java.net.InetSocketAddress;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 
 @Component
@@ -47,9 +51,14 @@ public class AnsweringHttpsServer  implements AnsweringServer{
     private boolean useCachedExecutor;
     @Value( "${https.certificates.cnname}" )
     private String cnName;
-    //@Value("${localhost.name:localhost.dev.it}")
-    //private String localHostName;
+;
     private HttpsServer httpsServer;
+
+    private ConcurrentLinkedQueue<String> extraDomains = new ConcurrentLinkedQueue<>();
+
+    public List<String> getExtraDomains(){
+        return Arrays.asList((String[])extraDomains.toArray());
+    }
 
     public AnsweringHttpsServer(LoggerBuilder loggerBuilder, AnsweringHandler handler,
                                 CertificatesManager certificatesManager, Environment environment){
@@ -59,6 +68,17 @@ public class AnsweringHttpsServer  implements AnsweringServer{
         this.environment = environment;
     }
 
+    @PostConstruct
+    protected void postConstruct(){
+        //extraDomains.add(localHostName);
+        for(int i=0;i<1000;i++){
+            var index = "https.certificate."+Integer.toString(i);
+            var certificateDomain = environment.getProperty(index);
+            if(certificateDomain != null){
+                extraDomains.add(certificateDomain);
+            }
+        }
+    }
 
     @Override
     public void run() {
@@ -117,16 +137,9 @@ public class AnsweringHttpsServer  implements AnsweringServer{
     private SSLContext getSslContext() throws Exception {
         var root = certificatesManager.loadRootCertificate("certificates/ca.der","certificates/ca.key");
 
-        var extraDomains = new ArrayList<String>();
-        //extraDomains.add(localHostName);
-        for(int i=0;i<1000;i++){
-            var index = "https.certificate."+Integer.toString(i);
-            var certificateDomain = environment.getProperty(index);
-            if(certificateDomain != null){
-                extraDomains.add(certificateDomain);
-            }
-        }
-        GeneratedCert domain = certificatesManager.createCertificate(cnName,null, root,extraDomains,false);
+
+        GeneratedCert domain = certificatesManager.createCertificate(cnName,null, root,
+                toList(extraDomains),false);
 
         KeyStore ksTemp = KeyStore.getInstance("JKS");
         ksTemp.load(null, null); //Initialize it
@@ -165,6 +178,14 @@ public class AnsweringHttpsServer  implements AnsweringServer{
 
         logger.info("Https certificates generated");
         return ctx;
+    }
+
+    private List<String> toList(ConcurrentLinkedQueue<String> extraDomains) {
+        var result = new ArrayList<String>();
+        for(var item:extraDomains.toArray()){
+            result.add((String)item);
+        }
+        return result;
     }
 
     @Override

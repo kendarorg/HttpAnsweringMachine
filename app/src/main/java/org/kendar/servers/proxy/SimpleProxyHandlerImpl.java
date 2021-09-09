@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -25,12 +26,16 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     private final Logger logger;
     private DnsMultiResolver multiResolver;
     private Environment environment;
-    private List<RemoteServerStatus> proxies = new ArrayList<>();
+    private ConcurrentLinkedQueue<RemoteServerStatus> proxies = new ConcurrentLinkedQueue<>();
 
     public SimpleProxyHandlerImpl(LoggerBuilder loggerBuilder,DnsMultiResolver multiResolver, Environment environment){
         this.multiResolver = multiResolver;
         this.environment = environment;
         logger = loggerBuilder.build(SimpleProxyHandlerImpl.class);
+    }
+
+    public List<RemoteServerStatus> getProxies(){
+        return Arrays.asList((RemoteServerStatus[])proxies.toArray());
     }
     @PostConstruct
     public void init(){
@@ -48,8 +53,9 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
         }
         scheduler.scheduleAtFixedRate(() -> {
             doLog();
-            for (int i=0;i<proxies.size();i++)  {
-                checkRemoteMachines(proxies.get(i));
+            var data = Arrays.asList( proxies.toArray());
+            for (int i = 0; i< data.size();i++)  {
+                checkRemoteMachines((RemoteServerStatus) data.get(i));
             }
 
         },1000,5*60*1000, TimeUnit.MILLISECONDS);
@@ -102,8 +108,9 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
 
     public Request translate(Request source) throws MalformedURLException {
         var realSrc = source.getProtocol()+"://"+source.getHost()+source.getPath();
-        for (int i=0;i<proxies.size();i++)  {
-            var status=proxies.get(i);
+        var data = Arrays.asList( proxies.toArray());
+        for (int i=0;i<data.size();i++)  {
+            var status=(RemoteServerStatus)data.get(i);
             if(realSrc.startsWith(status.getWhen()) && status.isRunning()){
                 realSrc = realSrc.replace(status.getWhen(),status.getWhere());
                 var url = new URL(realSrc);

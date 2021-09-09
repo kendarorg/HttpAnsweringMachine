@@ -33,8 +33,6 @@ public class Main implements CommandLineRunner{
     private static final int MAX_THREADS=10;
     @Autowired
     private ApplicationContext applicationContext;
-    @Autowired
-    private Environment environment;
 
 
     private static Logger logger = LoggerFactory.getLogger(Main.class);
@@ -53,10 +51,7 @@ public class Main implements CommandLineRunner{
     @Override
     public void run(String... args){
         var executor = Executors.newFixedThreadPool(MAX_THREADS);
-        var overriderProperty = System.getProperty("external.property"); //"dns.google";
-        if(overriderProperty!=null && overriderProperty.length()>0 && Files.exists(Path.of(overriderProperty))){
-            loadExternalProperty(overriderProperty);
-        }
+
         applicationContext.getBeansOfType(PropertiesManager.class);
 
         var answeringServers = applicationContext.getBeansOfType(AnsweringServer.class);
@@ -92,26 +87,6 @@ public class Main implements CommandLineRunner{
             } catch (InterruptedException e) {
 
             }
-        }
-    }
-
-    private void loadExternalProperty(String overriderProperty) {
-
-        try {
-            MutablePropertySources propertySources = ((ConfigurableEnvironment) environment).getPropertySources();
-            Map<String, Object> propMap = new HashMap<>();
-            var file = new FileInputStream(overriderProperty);
-            Properties prop = new Properties();
-
-            //load all the properties from this file
-            prop.load(file);
-            for (var singleProperty :prop.entrySet()) {
-                propMap.put((String)singleProperty.getKey(),singleProperty.getValue());
-            }
-            propMap.put("external.property",overriderProperty);
-            propertySources.addFirst(new MapPropertySource("external.property", propMap));
-        }catch(Exception ex){
-
         }
     }
 }

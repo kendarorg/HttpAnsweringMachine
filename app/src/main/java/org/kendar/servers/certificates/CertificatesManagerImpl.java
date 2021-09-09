@@ -75,7 +75,8 @@ public class CertificatesManagerImpl implements CertificatesManager{
     }
 
     @Override
-    public GeneratedCert createCertificate(String cnName, String rootDomain, GeneratedCert issuer, List<String> childDomains, boolean isCA) throws Exception {
+    public GeneratedCert createCertificate(String cnName, String rootDomain, GeneratedCert issuer,
+                                           List<String> childDomains, boolean isCA) throws Exception {
 
 
         // Generate the key-pair with the official Java API's

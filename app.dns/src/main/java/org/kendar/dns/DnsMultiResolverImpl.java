@@ -10,10 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,6 +36,10 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     public DnsMultiResolverImpl(Environment environment, LoggerBuilder loggerBuilder){
         this.environment = environment;
         this.logger = loggerBuilder.build(DnsMultiResolverImpl.class);
+    }
+
+    public List<String> getExtraServers(){
+        return Arrays.asList(extraServers);
     }
 
     private Pattern ipPattern = Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
@@ -127,7 +128,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         List<Callable<List<String>>> runnables = new ArrayList<>();
         for(int i = 0; i< extraServersReal.size(); i++){
             var serverToCall = extraServersReal.get(i);
-            logger.info(serverToCall+" "+requestedDomain);
+            //logger.info(serverToCall+" "+requestedDomain);
             var runnable = new DnsRunnable(serverToCall,requestedDomain);
             runnables.add(runnable);
         }
