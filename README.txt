@@ -1,8 +1,11 @@
 Simple Run (all server)
     java -cp app-1.0-SNAPSHOT.jar \
         -Djsfilter.path=plugins -Dloader.path=lib/ \
-        -Dloader.main=org.kendar.Main \
+        -Dloader.main=org.kendar.Main -jar app-1.0-SNAPSHOT.jar\
         org.springframework.boot.loader.PropertiesLauncher
+
+        java "-Dloader.path=/start/services/answering/libs" -Dloader.main=org.kendar.Main -jar app-1.0-SNAPSHOT.jar \
+        	 org.springframework.boot.loader.PropertiesLauncher &
 
 Simple Run (dns server only)
     java -Dother.dns=dns.google,dns.local.com \

@@ -1,2 +1,3 @@
-#127.0.0.1 ([0-9a-zA-Z]+).local.org
-#127.0.0.1 ([0-9a-zA-Z]+).test.org
+127.0.0.1 www.local.self
+127.0.0.1 replayer.local.self
+127.0.0.1 oidc.local.self
