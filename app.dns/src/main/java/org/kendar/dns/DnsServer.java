@@ -29,6 +29,7 @@ public class DnsServer {
     }
 
     public void run() throws IOException {
+        multiResolver.verify();
         DatagramSocket socket = new DatagramSocket(dnsPort);
         //socket.setSoTimeout(0);
         logger.info("Dns server LOADED, port: "+dnsPort);

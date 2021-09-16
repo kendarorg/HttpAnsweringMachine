@@ -43,7 +43,7 @@ public class DnsRunnable implements Callable<List<String>> {
                 }
             }
         } catch (UnknownHostException | TextParseException e) {
-            return new ArrayList<>();
+            throw new UnknownHostException();
         }
         return result;
     }
