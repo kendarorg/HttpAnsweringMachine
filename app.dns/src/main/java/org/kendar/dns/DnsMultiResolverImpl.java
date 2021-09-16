@@ -39,6 +39,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         this.environment = environment;
         this.logger = loggerBuilder.build(DnsMultiResolverImpl.class);
         this.localHostAddress = getLocalHostLANAddress();
+        System.out.println(localHostAddress);
     }
 
     public List<String> getExtraServers(){
@@ -295,6 +296,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     }
 
     public void verify(){
+        logger.info("Verify Dns servers");
         List<Callable<List<String>>> runnables = new ArrayList<>();
         for(int i = 0; i< extraServersReal.size(); i++){
             var serverToCall = extraServersReal.get(i);

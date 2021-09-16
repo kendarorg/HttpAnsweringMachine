@@ -22,7 +22,9 @@ public abstract class StaticWebFilter implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.STATIC,pathAddress ="*",method = "GET",blocking = false)
     public boolean handle(Request request, Response response){
 
+
         var fullPath = Path.of(fileResourcesUtils.buildPath(getPath(),request.getPath()));
+        System.out.println("HANDLING "+fullPath);
         if(fullPath!=null && Files.exists(fullPath)&& !Files.isDirectory(fullPath)){
             renderFile(fullPath,response);
             return true;
