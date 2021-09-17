@@ -27,6 +27,8 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     @Value("${localhost.name:www.local.org}")
     private String localHostName;
 
+    private ConcurrentHashMap<String,Integer> blockedLoops = new ConcurrentHashMap<>();
+
     @Value("${dns.logging.query:false}")
     private boolean dnsLogginQuery;
     private ConcurrentHashMap<String,List<String>> domains = new ConcurrentHashMap<>();
@@ -315,6 +317,18 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
     @Override
     public List<String> resolveRemote(String requestedDomain) {
+        var computed = 1;
+        if(blockedLoops.containsKey(requestedDomain)){
+            var val = blockedLoops.get(requestedDomain);
+            blockedLoops.put(requestedDomain,val+1);
+            computed = val+1;
+        }else{
+            blockedLoops.put(requestedDomain,computed);
+        }
+        if(computed>4){
+            logger.info("Blocked dns Loop "+requestedDomain);
+            return new ArrayList<>();
+        }
         var data = new HashSet<String>();
         List<Callable<List<String>>> runnables = new ArrayList<>();
         for(int i = 0; i< extraServersReal.size(); i++){
@@ -333,7 +347,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         int finished = futures.size();
         //This method returns the time in millis
         long timeMilli = new Date().getTime();
-        long timeEnd = timeMilli+500;
+        long timeEnd = timeMilli+2000;
         while(finished!=0){
             if(timeEnd<=new Date().getTime()){
                 //System.out.println("================");
