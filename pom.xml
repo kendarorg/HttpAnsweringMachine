@@ -15,6 +15,28 @@
         <version>2.4.0</version>
     </parent>
 
+    <repositories>
+        <!--<repository>
+            <id>central1</id>
+            <name>Central Repository</name>
+            <url>https://repo1.maven.org/maven2/</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>-->
+        <repository>
+            <id>central2</id>
+            <name>Central Repository2</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <!-- https://repo.maven.apache.org/maven2 -->
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -23,7 +45,8 @@
         <commons.io.version>2.6</commons.io.version>
         <jackson.version>2.12.4</jackson.version>
         <dns.java.version>3.4.0</dns.java.version>
-        <bouncycastle.version>1.64</bouncycastle.version>
+        <!--<bouncycastle.version>1.64</bouncycastle.version>-->
+        <bouncycastle.version>1.68</bouncycastle.version>
         <maven.jar.version>3.2.0</maven.jar.version>
         <org.slf4j.version>1.7.30</org.slf4j.version>
         <nimbusds.version>8.19</nimbusds.version>

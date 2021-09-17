@@ -7,6 +7,11 @@ Simple Run (all server)
         java "-Dloader.path=/start/services/answering/libs" -Dloader.main=org.kendar.Main -jar app-1.0-SNAPSHOT.jar \
         	 org.springframework.boot.loader.PropertiesLauncher &
 
+        java "-Dloader.path=/start/services/answering/libs"  -Dloader.main=org.kendar.Main  \
+        	 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005 \
+        	 -Dother.dns=127.0.0.11 -Djdk.tls.acknowledgeCloseNotify=true \
+        	 -jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher &
+
 Simple Run (dns server only)
     java -Dother.dns=dns.google,dns.local.com \
         -jar simpledns-1.0-SNAPSHOT.jar
