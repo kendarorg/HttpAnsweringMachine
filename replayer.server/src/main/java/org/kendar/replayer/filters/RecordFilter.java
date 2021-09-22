@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 @HttpTypeFilter(hostAddress = "*")
 public class RecordFilter  implements FilteringClass {
-    @Value("${replayer.address:replayer.local.org}")
+    @Value("${localhost.name}")
     private String localAddress;
     @Override
     public String getId() {

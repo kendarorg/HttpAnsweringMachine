@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
@@ -26,16 +27,17 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     private final Logger logger;
     private DnsMultiResolver multiResolver;
     private Environment environment;
-    private ConcurrentLinkedQueue<RemoteServerStatus> proxies = new ConcurrentLinkedQueue<>();
+    private AtomicReference<List<RemoteServerStatus>> proxies = new AtomicReference<>();
 
     public SimpleProxyHandlerImpl(LoggerBuilder loggerBuilder,DnsMultiResolver multiResolver, Environment environment){
         this.multiResolver = multiResolver;
         this.environment = environment;
+        proxies.set(new ArrayList<>());
         logger = loggerBuilder.build(SimpleProxyHandlerImpl.class);
     }
 
     public List<RemoteServerStatus> getProxies(){
-        return Arrays.asList((RemoteServerStatus[])proxies.toArray());
+        return proxies.get();
     }
     @PostConstruct
     public void init(){
@@ -45,15 +47,16 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
                 break;
             }
             var data = new RemoteServerStatus(
+                    i,
                     environment.getProperty(index+"when"),
                     environment.getProperty(index+"where"),
                     environment.getProperty(index+"test")
             );
-            proxies.add(data);
+            proxies.get().add(data);
         }
         scheduler.scheduleAtFixedRate(() -> {
             doLog();
-            var data = Arrays.asList( proxies.toArray());
+            var data = Arrays.asList( proxies.get());
             for (int i = 0; i< data.size();i++)  {
                 checkRemoteMachines((RemoteServerStatus) data.get(i));
             }
@@ -108,7 +111,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
 
     public Request translate(Request source) throws MalformedURLException {
         var realSrc = source.getProtocol()+"://"+source.getHost()+source.getPath();
-        var data = Arrays.asList( proxies.toArray());
+        var data = proxies.get();
         for (int i=0;i<data.size();i++)  {
             var status=(RemoteServerStatus)data.get(i);
             if(realSrc.startsWith(status.getWhen()) && status.isRunning()){

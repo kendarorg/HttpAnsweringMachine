@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 @Component
-@HttpTypeFilter(hostAddress = "${replayer.address:replayer.local.org}",
+@HttpTypeFilter(hostAddress = "${localhost.name}",
         blocking = true)
 public class ReplayerAPISingleLine implements FilteringClass {
 
@@ -42,7 +42,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
         return "org.kendar.replayer.apis.ReplayerAPISingleLine";
     }
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}/line/{line}",
+            pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
             method = "GET")
     public boolean retrieveSingleLineData(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
@@ -67,7 +67,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}/line/{line}",
+            pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
             method = "PUT")
     public boolean modifySingleLineData(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
@@ -100,7 +100,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}/line/{line}",
+            pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
             method = "POST")
     public boolean addLineData(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
@@ -133,7 +133,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}/line/{line}",
+            pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
             method = "DELETE")
     public boolean deleteSingleLineData(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");

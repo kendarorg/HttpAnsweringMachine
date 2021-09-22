@@ -24,7 +24,6 @@ public class OidcPropertiesHelper extends PropertiesHelper {
     @Override
     public Map<String, String> getProperties() {
         Map<String,String> result = new HashMap<>();
-        addIfNotNull(result,"oidc.address",environment);
         addIfNotNull(result,"oidc.token.expiration",environment);
         return result;
     }

@@ -1,12 +1,14 @@
 package org.kendar.servers.proxy;
 
 public class RemoteServerStatus {
+    private int id;
     private String when;
     private String where;
     private String test;
     private boolean running = false;
 
-    public RemoteServerStatus(String when, String where, String test) {
+    public RemoteServerStatus(int id,String when, String where, String test) {
+        this.id = id;
         this.when = when;
         this.where = where;
         this.test = test;
@@ -42,5 +44,13 @@ public class RemoteServerStatus {
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

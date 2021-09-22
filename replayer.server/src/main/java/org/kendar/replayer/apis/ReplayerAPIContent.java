@@ -24,7 +24,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 @Component
-@HttpTypeFilter(hostAddress = "${replayer.address:replayer.local.org}",
+@HttpTypeFilter(hostAddress = "${localhost.name}",
         blocking = true)
 public class ReplayerAPIContent implements FilteringClass {
     private FileResourcesUtils fileResourcesUtils;
@@ -47,7 +47,7 @@ public class ReplayerAPIContent implements FilteringClass {
 
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}/line/{line}/{requestOrResponse}",
+            pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
             method = "GET")
     public boolean retrieveContent(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
@@ -120,7 +120,7 @@ public class ReplayerAPIContent implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}/line/{line}/{requestOrResponse}",
+            pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
             method = "DELETE")
     public boolean deleteConent(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
@@ -152,7 +152,7 @@ public class ReplayerAPIContent implements FilteringClass {
 
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}/line/{line}/{requestOrResponse}",
+            pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
             method = "POST")
     public boolean modifyConent(Request req, Response res) throws IOException, NoSuchAlgorithmException {
         var id = req.getPathParameter("id");

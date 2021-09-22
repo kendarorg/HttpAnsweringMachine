@@ -97,7 +97,7 @@
         function (table,id) {
             table.deleteFromTable(id,function(id,success,error){
                 $.ajax({
-                    url: "/api/recording/"+getUrlParameter("id")+"/line/" + id,
+                    url: "/api/plugins/replayer/recording/"+getUrlParameter("id")+"/line/" + id,
                     type: 'DELETE',
                     success: function (res) {
                         success();
@@ -112,7 +112,7 @@
 
     handleStateButtons(null);
     $.ajax({
-        url: "/api/recording/"+getUrlParameter("id"),
+        url: "/api/plugins/replayer/recording/"+getUrlParameter("id"),
         type: 'GET',
         success: function(res) {
             retrieveScriptStatuses(res["lines"].length);
@@ -159,7 +159,7 @@
 
     function retrieveScriptStatuses(linesCount){
         $.ajax({
-            url: "/api/recording",
+            url: "/api/plugins/replayer/recording",
             type: 'GET',
             success: function(res) {
                 var currentId = getUrlParameter("id");
@@ -189,7 +189,7 @@
     function executeAct(action,type){
         var id = getUrlParameter("id");
         var type = type=="recording"?"record":"replay";
-        var url = "/api/recording/"+id+"/"+type+"/"+action;
+        var url = "/api/plugins/replayer/recording/"+id+"/"+type+"/"+action;
         $.ajax({
             url: url,
             type: 'GET',
@@ -238,7 +238,7 @@
             }
         };
         $.ajax({
-            url: 'api/recording/'+id,
+            url: '/api/plugins/replayer/recording/'+id,
             type: 'put',
             data: JSON.stringify(data),
             contentType: "application/json",

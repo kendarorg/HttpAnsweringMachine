@@ -80,7 +80,7 @@
             var line = getUrlParameter("line");
             var requestOrResponse = getUrlParameter("type");
             $.ajax({
-                url: 'api/recording/'+id+'/line/'+line+'/'+requestOrResponse,
+                url: '/api/plugins/replayer/recording/'+id+'/line/'+line+'/'+requestOrResponse,
                 type: 'post',
                 data: fd,
                 contentType: false,
@@ -93,7 +93,7 @@
             alert("Please select a file.");
         }
     });
-    var urlData = "api/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/"+getUrlParameter("type");
+    var urlData = "/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/"+getUrlParameter("type");
     $("#createScriptBt").click(function(){
         var name = $('#createScriptName').val();
         $.ajax({

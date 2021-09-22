@@ -24,7 +24,6 @@ public class ReplayerPropertiesHelper extends PropertiesHelper {
     @Override
     public Map<String, String> getProperties() {
         Map<String,String> result = new HashMap<>();
-        addIfNotNull(result,"replayer.address",environment);
         addIfNotNull(result,"replayer.path",environment);
         addIfNotNull(result,"replayer.data",environment);
         addIfNotNull(result,"replayer.db",environment);

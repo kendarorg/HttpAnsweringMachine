@@ -235,7 +235,7 @@
         });
 
     $.ajax({
-        url: "/api/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line"),
+        url: "/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line"),
         type: 'GET',
         success: function (res) {
             $("#timestamp").val(res['timestamp']);
@@ -321,11 +321,11 @@
     });
 
     $("#request_content_download").click(function(){
-        downloadFile("/api/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/request");
+        downloadFile("/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/request");
     });
 
     $("#response_content_download").click(function(){
-        downloadFile("/api/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/response");
+        downloadFile("/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/response");
     });
 
     $("#backToSingle").click(function(){
@@ -360,7 +360,7 @@
             }
         };
         $.ajax({
-            url: 'api/recording/'+id+'/line/'+line,
+            url: '/api/plugins/replayer/recording/'+id+'/line/'+line,
             type: defaultSaveAction,
             data: JSON.stringify(data),
             contentType: "application/json",

@@ -169,9 +169,9 @@ public class ReplayerDb implements DerbyApplication {
 
 
 
-curl -F 'img_avatar=@favicon.ico' http://replayer.local.org/api/recording
+curl -F 'img_avatar=@favicon.ico' http://replayer.local.org/api/plugins/replayer/recording
 curl \
   -F "userid=1" \
   -F "filecomment=This is an image file" \
   -F "image=@favicon.ico" \
-  http://replayer.local.org/api/recording
+  http://replayer.local.org/api/plugins/replayer/recording

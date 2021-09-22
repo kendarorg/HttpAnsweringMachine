@@ -35,7 +35,7 @@ import java.text.ParseException;
 import java.util.*;
 
 @Component
-@HttpTypeFilter(hostAddress = "${oidc.address:oidc.local.org}",blocking = true)
+@HttpTypeFilter(hostAddress = "${localhost.name}",blocking = true)
 public class OidcController implements FilteringClass {
     @Override
     public String getId() {
@@ -44,7 +44,7 @@ public class OidcController implements FilteringClass {
 
     @Value("${oidc.token.expiration:86400}")
     private int tokenExpirationSeconds;
-    @Value("${oidc.address:oidc.local.com}")
+    @Value("${localhost.name}")
     private  String serverAddress;
     private Logger log;
 
@@ -62,12 +62,12 @@ public class OidcController implements FilteringClass {
     public static final int STATUS_FOUND = 302;
 
 
-    public static final String METADATA_ENDPOINT = "/.well-known/openid-configuration";
-    public static final String AUTHORIZATION_ENDPOINT = "/authorize";
-    public static final String TOKEN_ENDPOINT = "/token";
-    public static final String USERINFO_ENDPOINT = "/userinfo";
-    public static final String JWKS_ENDPOINT = "/jwks";
-    public static final String INTROSPECTION_ENDPOINT = "/introspect";
+    public static final String METADATA_ENDPOINT = "/api/plugins/oidc/.well-known/openid-configuration";
+    public static final String AUTHORIZATION_ENDPOINT = "/api/plugins/oidc/authorize";
+    public static final String TOKEN_ENDPOINT = "/api/plugins/oidc/token";
+    public static final String USERINFO_ENDPOINT = "/api/plugins/oidc/userinfo";
+    public static final String JWKS_ENDPOINT = "/api/plugins/oidc/jwks";
+    public static final String INTROSPECTION_ENDPOINT = "/api/plugins/oidc/introspect";
 
     private JWSSigner signer;
     private JWKSet publicJWKSet;
@@ -96,7 +96,7 @@ public class OidcController implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =METADATA_ENDPOINT,method = "GET")
     public boolean metadata(/*UriComponentsBuilder uriBuilder,*/ Request req, Response res) {
         log.info("called " + METADATA_ENDPOINT + " from {}", req.getRemoteHost());
-        String urlPrefix = "https://"+serverAddress;
+        String urlPrefix = "https://"+serverAddress+"/api/plugins/oidc";
         Map<String, Object> m = new LinkedHashMap<>();
         // https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
         // https://tools.ietf.org/html/rfc8414#section-2
@@ -294,7 +294,7 @@ public class OidcController implements FilteringClass {
             if (user.getLogname().equals(login) && user.getPassword().equals(password)) {
                 log.info("password for user {} is correct", login);
                 Set<String> responseType = setFromSpaceSeparatedString(response_type);
-                String iss = "https://"+serverAddress +"/";//uriBuilder.replacePath("/").build().encode().toUriString();
+                String iss = "https://"+serverAddress +"/api/plugins/oidc/";//uriBuilder.replacePath("/").build().encode().toUriString();
                 if (responseType.contains("token")) {
                     // implicit flow
                     log.info("using implicit flow");

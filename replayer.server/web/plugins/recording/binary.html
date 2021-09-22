@@ -72,7 +72,7 @@
             var line = getUrlParameter("line");
             var requestOrResponse = getUrlParameter("type");
             $.ajax({
-                url: 'api/recording/'+id+'/line/'+line+'/'+requestOrResponse,
+                url: '/api/plugins/replayer/recording/'+id+'/line/'+line+'/'+requestOrResponse,
                 type: 'post',
                 data: fd,
                 contentType: false,
@@ -92,7 +92,7 @@
     $("#createScriptBt").click(function(){
         var name = $('#createScriptName').val();
         $.ajax({
-            url: 'api/recording',
+            url: '/api/plugins/replayer/recording',
             type: 'post',
             data: name,
             contentType: "text/plain",

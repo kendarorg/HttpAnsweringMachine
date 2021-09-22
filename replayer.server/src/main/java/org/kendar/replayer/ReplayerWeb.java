@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-@HttpTypeFilter(hostAddress = "${replayer.address:replayer.local.org}")
+@HttpTypeFilter(hostAddress = "${localhost.name}")
 public class ReplayerWeb extends StaticWebFilter {
     @Value("${replayer.path:web}")
     private String path;

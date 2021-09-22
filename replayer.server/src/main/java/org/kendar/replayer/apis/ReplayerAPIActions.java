@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-@HttpTypeFilter(hostAddress = "${replayer.address:replayer.local.org}",
+@HttpTypeFilter(hostAddress = "${localhost.name}",
         blocking = true)
 public class ReplayerAPIActions implements FilteringClass {
 
@@ -28,7 +28,7 @@ public class ReplayerAPIActions implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}/record/{action}",
+            pathAddress = "/api/plugins/replayer/recording/{id}/record/{action}",
             method = "GET")
     public boolean recording(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
@@ -48,7 +48,7 @@ public class ReplayerAPIActions implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}/replay/{action}",
+            pathAddress = "/api/plugins/replayer/recording/{id}/replay/{action}",
             method = "GET")
     public boolean replaying(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");

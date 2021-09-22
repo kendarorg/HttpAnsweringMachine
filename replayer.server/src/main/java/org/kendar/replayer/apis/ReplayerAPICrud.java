@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 @Component
-@HttpTypeFilter(hostAddress = "${replayer.address:replayer.local.org}",
+@HttpTypeFilter(hostAddress = "${localhost.name}",
         blocking = true)
 public class ReplayerAPICrud implements FilteringClass {
     private final Logger logger;
@@ -58,7 +58,7 @@ public class ReplayerAPICrud implements FilteringClass {
         return "org.kendar.replayer.apis.ReplayerAPICrud";
     }
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording",
+            pathAddress = "/api/plugins/replayer/recording",
             method = "GET")
     public boolean listAllLocalRecordings(Request req, Response res) throws JsonProcessingException {
         var realPath = fileResourcesUtils.buildPath(replayerData);
@@ -85,7 +85,7 @@ public class ReplayerAPICrud implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}",
+            pathAddress = "/api/plugins/replayer/recording/{id}",
             method = "GET")
     public boolean listAllRecordingSteps(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
@@ -102,7 +102,7 @@ public class ReplayerAPICrud implements FilteringClass {
 
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}",
+            pathAddress = "/api/plugins/replayer/recording/{id}",
             method = "DELETE")
     public boolean deleteRecordin(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
@@ -118,7 +118,7 @@ public class ReplayerAPICrud implements FilteringClass {
 
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording/{id}",
+            pathAddress = "/api/plugins/replayer/recording/{id}",
             method = "PUT")
     public boolean updateRecord(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
@@ -137,7 +137,7 @@ public class ReplayerAPICrud implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/recording",
+            pathAddress = "/api/plugins/replayer/recording",
             method = "POST")
     public boolean uploadRecording(Request req, Response res) throws Exception {
 
