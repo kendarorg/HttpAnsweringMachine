@@ -1,5 +1,6 @@
 package org.kendar.dns;
 
+import org.kendar.servers.dns.DnsServerDescriptor;
 import org.kendar.utils.PropertiesHelper;
 import org.kendar.utils.PropertiesManager;
 import org.springframework.context.ApplicationContext;
@@ -49,9 +50,10 @@ public class DnsPropertiesHelper extends PropertiesHelper {
         Map<String,String> result = new HashMap<>();
         var answeringHttpsServer = applicationContext.getBean(DnsMultiResolverImpl.class);
         //addIfNotNull(result,"simpleproxy.path",environment);
-        List<String> extraDomains = answeringHttpsServer.getExtraServers();
+        List<DnsServerDescriptor> extraDomains = answeringHttpsServer.getExtraServers();
         for (int i = 0; i < extraDomains.size(); i++) {
-            result.put("dns.resolve."+i,extraDomains.get(i));
+            var storedName = extraDomains.get(i).getName()!=null?extraDomains.get(i).getName():extraDomains.get(i).getIp();
+            result.put("dns.resolve."+i,storedName);
         }
 
         return result;
