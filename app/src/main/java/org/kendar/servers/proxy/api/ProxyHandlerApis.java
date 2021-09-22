@@ -60,7 +60,7 @@ public class ProxyHandlerApis  implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/proxyes/{id}",
-            method = "PUT")
+            method = "DELETE")
     public boolean removeProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
         var id = Integer.parseInt(req.getPathParameter("id"));
@@ -93,6 +93,31 @@ public class ProxyHandlerApis  implements FilteringClass {
             clone.setWhere(newData.getWhere());
             newList.add(clone);
         }
+        simpleProxyHandler.setProxies(newList);
+        res.setStatusCode(200);
+        return false;
+    }
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/proxyes/swap/{id1}/{id2}",
+            method = "PUT")
+    public boolean swapProxy(Request req, Response res) throws JsonProcessingException {
+        var proxyes = simpleProxyHandler.getProxies();
+        var id1 = Integer.parseInt(req.getPathParameter("id1"));
+        var id2 = Integer.parseInt(req.getPathParameter("id2"));
+        res.addHeader("Content-type", "application/json");
+        var newList = new ArrayList<RemoteServerStatus>();
+        var id1Index=-1;
+        var id2Index = -1;
+        for (int i = 0; i < proxyes.size(); i++) {
+            var clone = proxyes.get(i).clone();
+            if(proxyes.get(i).getId()==id1)id1Index=i;
+            if(proxyes.get(i).getId()==id2)id2Index=i;
+            newList.add(clone);
+        }
+        var id1Clone = proxyes.get(id1Index).clone();
+        proxyes.set(id1Index,proxyes.get(id2Index));
+        proxyes.set(id2Index,id1Clone);
         simpleProxyHandler.setProxies(newList);
         res.setStatusCode(200);
         return false;
