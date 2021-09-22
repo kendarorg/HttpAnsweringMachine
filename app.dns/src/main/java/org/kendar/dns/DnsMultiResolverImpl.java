@@ -80,7 +80,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
                 if(matcher.matches()){
                     extraServersReal.add(server);
                 }else{
-                    var namedDns = resolve(server);
+                    var namedDns = resolve(server,false);
                     if(namedDns.size()==0){
                         logger.error("Not found named DNS "+server);
                     }else {
@@ -316,18 +316,20 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     }
 
     @Override
-    public List<String> resolveRemote(String requestedDomain) {
+    public List<String> resolveRemote(String requestedDomain,boolean fromLocalHost) {
         var computed = 1;
-        if(blockedLoops.containsKey(requestedDomain)){
-            var val = blockedLoops.get(requestedDomain);
-            blockedLoops.put(requestedDomain,val+1);
-            computed = val+1;
-        }else{
-            blockedLoops.put(requestedDomain,computed);
-        }
-        if(computed>4){
-            logger.info("Blocked dns Loop "+requestedDomain);
-            return new ArrayList<>();
+        if(fromLocalHost) {
+            if (blockedLoops.containsKey(requestedDomain)) {
+                var val = blockedLoops.get(requestedDomain);
+                blockedLoops.put(requestedDomain, val + 1);
+                computed = val + 1;
+            } else {
+                blockedLoops.put(requestedDomain, computed);
+            }
+            if(computed>4){
+                logger.info("Blocked dns Loop "+requestedDomain);
+                return new ArrayList<>();
+            }
         }
         var data = new HashSet<String>();
         List<Callable<List<String>>> runnables = new ArrayList<>();
@@ -401,7 +403,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     }
 
     @Override
-    public List<String> resolve(String requestedDomain) {
+    public List<String> resolve(String requestedDomain,boolean fromLocalhost) {
         if(domains.containsKey(requestedDomain)){
             return domains.get(requestedDomain);
         }
@@ -410,6 +412,6 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         if(localData.size()>0){
             return localData;
         }
-        return resolveRemote(requestedDomain);
+        return resolveRemote(requestedDomain,fromLocalhost);
     }
 }

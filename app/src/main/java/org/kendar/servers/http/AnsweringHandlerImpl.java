@@ -96,7 +96,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
                 if(domains.containsKey(host)){
                     hosts = domains.get(host);
                 }else {
-                    hosts = multiResolver.resolveRemote(host);
+                    hosts = multiResolver.resolveRemote(host,false);
                 }
                 var address = new InetAddress[hosts.size()];
                 for(int i=0;i< hosts.size();i++){

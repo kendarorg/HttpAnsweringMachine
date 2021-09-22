@@ -73,7 +73,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     }
 
     private void checkRemoteMachines(RemoteServerStatus value) {
-        var data = multiResolver.resolveRemote(value.getTest());
+        var data = multiResolver.resolveRemote(value.getTest(),false);
         if(data!=null && data.size()>0){
             try {
                 var inetAddress = InetAddress.getByName(data.get(0));

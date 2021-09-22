@@ -54,7 +54,7 @@ public class CustomHttpConectionBuilderImpl implements CustomHttpConectionBuilde
         this.dnsResolver = new SystemDefaultDnsResolver() {
             @Override
             public InetAddress[] resolve(final String host) throws UnknownHostException {
-                var hosts = dnsMultiResolver.resolve(host);
+                var hosts = dnsMultiResolver.resolve(host,false);
                 var address = new InetAddress[hosts.size()];
                 for(int i=0;i< hosts.size();i++){
                     address[i] = InetAddress.getByName(hosts.get(i));

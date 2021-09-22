@@ -85,8 +85,9 @@ public class DnsServer {
             String requestedDomain = request.getQuestion().getName().toString(true);
             logger.debug("Requested domain "+requestedDomain);
             response.addRecord(request.getQuestion(), Section.QUESTION);
+            var fromLocalHost = indp.getAddress().toString().contains("127.0.0.1");
 
-            var ips = this.multiResolver.resolve(requestedDomain);
+            var ips = this.multiResolver.resolve(requestedDomain,fromLocalHost);
             byte[] resp = new byte[0];
             if(ips.size()>0) {
                 for (String ip : ips) {
