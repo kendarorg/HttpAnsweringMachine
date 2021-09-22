@@ -39,6 +39,15 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     public List<RemoteServerStatus> getProxies(){
         return proxies.get();
     }
+
+    @Override
+    public void setProxies(List<RemoteServerStatus> proxyes) {
+        for (int i = 0; i< proxyes.size();i++)  {
+            checkRemoteMachines((RemoteServerStatus) proxyes.get(i));
+        }
+        proxies.set(proxyes);
+    }
+
     @PostConstruct
     public void init(){
         for(int i=0;i<1000;i++){

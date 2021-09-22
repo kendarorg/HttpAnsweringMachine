@@ -9,4 +9,6 @@ public interface SimpleProxyHandler {
     Request translate(Request source) throws MalformedURLException;
     boolean ping(String host);
     List<RemoteServerStatus> getProxies();
+
+    void setProxies(List<RemoteServerStatus> proxyes);
 }

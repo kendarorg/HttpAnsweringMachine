@@ -53,4 +53,8 @@ public class RemoteServerStatus {
     public void setId(int id) {
         this.id = id;
     }
+
+    public RemoteServerStatus clone(){
+        return new RemoteServerStatus(this.id,this.when,this.where,this.test);
+    }
 }
