@@ -84,10 +84,13 @@ public class ProxyHandlerApis  implements FilteringClass {
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<RemoteServerStatus>();
         var newData = mapper.readValue((String)req.getRequest(),RemoteServerStatus.class);
-        res.addHeader("Content-type", "application/json");
+
         for(var item:proxyes){
             var clone = item.clone();
-            if(clone.getId()!=id){newList.add(clone);}
+            if(clone.getId()!=id){
+                newList.add(clone);
+                continue;
+            }
             clone.setTest(newData.getTest());
             clone.setWhen(newData.getWhen());
             clone.setWhere(newData.getWhere());
@@ -132,7 +135,7 @@ public class ProxyHandlerApis  implements FilteringClass {
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<RemoteServerStatus>();
         var newData = mapper.readValue((String)req.getRequest(),RemoteServerStatus.class);
-        res.addHeader("Content-type", "application/json");
+
         var maxValue = -1;
         for(var item:proxyes){
             newList.add( item.clone());

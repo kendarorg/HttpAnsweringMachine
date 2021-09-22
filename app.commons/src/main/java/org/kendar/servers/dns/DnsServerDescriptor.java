@@ -3,7 +3,7 @@ package org.kendar.servers.dns;
 public class DnsServerDescriptor {
     private String ip;
     private String name;
-    private boolean enabled;
+    private boolean enabled =true;
 
     public String getIp() {
         return ip;
@@ -27,5 +27,13 @@ public class DnsServerDescriptor {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public DnsServerDescriptor clone(){
+        var result = new DnsServerDescriptor();
+        result.setEnabled(this.isEnabled());
+        result.setIp(this.getIp());
+        result.setName(this.getName());
+        return result;
     }
 }
