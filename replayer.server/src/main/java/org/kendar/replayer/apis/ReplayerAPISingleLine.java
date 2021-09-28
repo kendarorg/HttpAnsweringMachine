@@ -9,6 +9,7 @@ import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerRow;
+import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
@@ -24,18 +25,21 @@ import java.nio.file.Path;
         blocking = true)
 public class ReplayerAPISingleLine implements FilteringClass {
 
-    private FileResourcesUtils fileResourcesUtils;
-    private LoggerBuilder loggerBuilder;
-    private DataReorganizer dataReorganizer;
+    private final FileResourcesUtils fileResourcesUtils;
+    private final LoggerBuilder loggerBuilder;
+    private final DataReorganizer dataReorganizer;
+    private Md5Tester md5Tester;
     ObjectMapper mapper = new ObjectMapper();
     @Value("${replayer.data:replayerdata}")
     private String replayerData;
 
-    public ReplayerAPISingleLine(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer){
+    public ReplayerAPISingleLine(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder,
+                                 DataReorganizer dataReorganizer, Md5Tester md5Tester){
 
         this.fileResourcesUtils = fileResourcesUtils;
         this.loggerBuilder = loggerBuilder;
         this.dataReorganizer = dataReorganizer;
+        this.md5Tester = md5Tester;
     }
     @Override
     public String getId() {
@@ -50,18 +54,18 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer,md5Tester);
         var datasetContent = dataset.load();
         ListAllRecordList result = new ListAllRecordList(datasetContent,id);
         for (var singleLine :result.getLines()) {
             if(singleLine.getId()==line){
                 res.addHeader("Content-type","application/json");
-                res.setResponse(mapper.writeValueAsString(singleLine));
+                res.setResponseText(mapper.writeValueAsString(singleLine));
                 return true;
             }
         }
         res.setStatusCode(404);
-        res.setResponse("Missing id "+id+" with line "+line);
+        res.setResponseText("Missing id "+id+" with line "+line);
 
         return false;
     }
@@ -75,11 +79,11 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer,md5Tester);
         var datasetContent = dataset.load();
         for (var destination :datasetContent.getStaticRequests()) {
             if(destination.getId()==line){
-                var source = mapper.readValue((String)req.getRequest(), ReplayerRow.class);
+                var source = mapper.readValue((String)req.getRequestText(), ReplayerRow.class);
                 cloneToRow(destination,source);
                 dataset.saveMods();
                 return true;
@@ -87,14 +91,14 @@ public class ReplayerAPISingleLine implements FilteringClass {
         }
         for (var destination :datasetContent.getDynamicRequests()) {
             if(destination.getId()==line){
-                var source = mapper.readValue((String)req.getRequest(), ReplayerRow.class);
+                var source = mapper.readValue((String)req.getRequestText(), ReplayerRow.class);
                 cloneToRow(destination,source);
                 dataset.saveMods();
                 return true;
             }
         }
         res.setStatusCode(404);
-        res.setResponse("Missing id "+id+" with line "+line);
+        res.setResponseText("Missing id "+id+" with line "+line);
         return false;
     }
 
@@ -108,24 +112,24 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer,md5Tester);
         var datasetContent = dataset.load();
         for (var destination :datasetContent.getStaticRequests()) {
             if(destination.getId()==line){
                 res.setStatusCode(409);
-                res.setResponse("Duplicate id");
+                res.setResponseText("Duplicate id");
                 return true;
             }
         }
         for (var destination :datasetContent.getDynamicRequests()) {
             if(destination.getId()==line){
                 res.setStatusCode(409);
-                res.setResponse("Duplicate id");
+                res.setResponseText("Duplicate id");
                 return true;
             }
         }
 
-        var source = mapper.readValue((String)req.getRequest(), ReplayerRow.class);
+        var source = mapper.readValue((String)req.getRequestText(), ReplayerRow.class);
         datasetContent.getDynamicRequests().add(source);
         dataset.saveMods();
         res.setStatusCode(200);
@@ -141,7 +145,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer,md5Tester);
         dataset.load();
         dataset.delete(line);
         dataset.saveMods();

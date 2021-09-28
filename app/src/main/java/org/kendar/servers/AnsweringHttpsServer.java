@@ -36,9 +36,9 @@ public class AnsweringHttpsServer  implements AnsweringServer{
     private static final String KEYSTORE_INSTANCE_TYPE = "JKS";
     private static final String CERTIFICATE_TYPE = "SunX509";
     private final Logger logger;
-    private AnsweringHandler handler;
-    private CertificatesManager certificatesManager;
-    private Environment environment;
+    private final AnsweringHandler handler;
+    private final CertificatesManager certificatesManager;
+    private final Environment environment;
     private boolean running =false;
 
     @Value( "${https.port:443}" )
@@ -54,7 +54,7 @@ public class AnsweringHttpsServer  implements AnsweringServer{
 ;
     private HttpsServer httpsServer;
 
-    private ConcurrentLinkedQueue<String> extraDomains = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<String> extraDomains = new ConcurrentLinkedQueue<>();
 
     public List<String> getExtraDomains(){
         return Arrays.asList((String[])extraDomains.toArray());
@@ -152,6 +152,7 @@ public class AnsweringHttpsServer  implements AnsweringServer{
         keyStoreTs.load(new ByteArrayInputStream(bOut.toByteArray()), "passphrase".toCharArray());
 
         // now lets do the same with the keystore
+        //noinspection DuplicatedCode
         KeyStore ksTemp2 = KeyStore.getInstance("JKS");
         ksTemp2.load(null, null); //Initialize it
         ksTemp2.setCertificateEntry("Alias", domain.certificate);

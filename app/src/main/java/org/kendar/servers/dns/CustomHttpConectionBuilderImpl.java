@@ -1,48 +1,35 @@
 package org.kendar.servers.dns;
 
-import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.DnsResolver;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.apache.http.impl.conn.DefaultHttpClientConnectionOperator;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.PropertiesManager;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.xbill.DNS.*;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class CustomHttpConectionBuilderImpl implements CustomHttpConectionBuilder{
 
     private final Logger logger;
-    private DnsMultiResolver dnsMultiResolver;
+    private final DnsMultiResolver dnsMultiResolver;
     private PropertiesManager propertiesManager;
 
     private HttpClientConnectionManager connManager;
     private SystemDefaultDnsResolver dnsResolver;
 
 
-    public CustomHttpConectionBuilderImpl(LoggerBuilder loggerBuilder, DnsMultiResolver  dnsMultiResolver){
+    public CustomHttpConectionBuilderImpl(LoggerBuilder loggerBuilder, DnsMultiResolver  dnsMultiResolver,
+                                          PropertiesManager propertiesManager){
         this.logger = loggerBuilder.build(CustomHttpConectionBuilderImpl.class);
         this.dnsMultiResolver = dnsMultiResolver;
         this.propertiesManager = propertiesManager;

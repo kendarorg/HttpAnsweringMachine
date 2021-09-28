@@ -23,7 +23,7 @@ public class RecordFilter  implements FilteringClass {
         return "org.kendar.replayer.filters.RecordFilter";
     }
     private final Logger logger;
-    private ReplayerStatus replayerStatus;
+    private final ReplayerStatus replayerStatus;
 
     public RecordFilter(ReplayerStatus replayerStatus, LoggerBuilder loggerBuilder){
         this.replayerStatus = replayerStatus;

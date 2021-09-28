@@ -19,7 +19,7 @@ import java.util.ArrayList;
 @HttpTypeFilter(hostAddress = "${localhost.name}",
         blocking = true)
 public class ProxyHandlerApis  implements FilteringClass {
-    private SimpleProxyHandler simpleProxyHandler;
+    private final SimpleProxyHandler simpleProxyHandler;
     ObjectMapper mapper = new ObjectMapper();
 
     public ProxyHandlerApis(SimpleProxyHandler simpleProxyHandler){
@@ -36,7 +36,7 @@ public class ProxyHandlerApis  implements FilteringClass {
     public boolean getProxies(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
         res.addHeader("Content-type", "application/json");
-        res.setResponse(mapper.writeValueAsString(proxyes));
+        res.setResponseText(mapper.writeValueAsString(proxyes));
         return false;
     }
 
@@ -50,7 +50,7 @@ public class ProxyHandlerApis  implements FilteringClass {
         for(var item:proxyes){
             if(item.getId()==id){
 
-                res.setResponse(mapper.writeValueAsString(item));
+                res.setResponseText(mapper.writeValueAsString(item));
                 return false;
             }
         }
@@ -70,7 +70,7 @@ public class ProxyHandlerApis  implements FilteringClass {
             if(item.getId()==id){continue;}
             newList.add(item);
         }
-        simpleProxyHandler.setProxies(proxyes);
+        simpleProxyHandler.setProxies(newList);
         res.setStatusCode(200);
         return false;
     }
@@ -83,7 +83,7 @@ public class ProxyHandlerApis  implements FilteringClass {
         var id = Integer.parseInt(req.getPathParameter("id"));
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<RemoteServerStatus>();
-        var newData = mapper.readValue((String)req.getRequest(),RemoteServerStatus.class);
+        var newData = mapper.readValue((String)req.getRequestText(),RemoteServerStatus.class);
 
         for(var item:proxyes){
             var clone = item.clone();
@@ -131,10 +131,9 @@ public class ProxyHandlerApis  implements FilteringClass {
             method = "POST")
     public boolean addProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
-        var id = Integer.parseInt(req.getPathParameter("id"));
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<RemoteServerStatus>();
-        var newData = mapper.readValue((String)req.getRequest(),RemoteServerStatus.class);
+        var newData = mapper.readValue((String)req.getRequestText(),RemoteServerStatus.class);
 
         var maxValue = -1;
         for(var item:proxyes){

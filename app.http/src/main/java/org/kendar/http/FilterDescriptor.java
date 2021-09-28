@@ -28,10 +28,10 @@ public class FilterDescriptor {
     private Pattern pathPattern;
     private HttpFilterType phase;
     private Method callback;
-    private Object filterClass;
+    private final Object filterClass;
     private List<String> pathMatchers = new ArrayList<>();
-    private List<String> pathSimpleMatchers = new ArrayList<>();
-    private String id;
+    private final List<String> pathSimpleMatchers = new ArrayList<>();
+    private final String id;
 
     public String getId(){
         return id;
@@ -65,7 +65,7 @@ public class FilterDescriptor {
 
     public FilterDescriptor(GenericFilterExecutor executor,Environment environment) {
         for(var method:executor.getClass().getMethods()){
-            if(method.getName()=="run"){
+            if(method.getName().equalsIgnoreCase("run")){
                 this.callback = method;
                 break;
             }
@@ -142,7 +142,7 @@ public class FilterDescriptor {
         return host.equalsIgnoreCase(hostAddress);
     }
 
-    private static Pattern namedGroupsPattern = Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9]*)>");
+    private static final Pattern namedGroupsPattern = Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9]*)>");
 
     private static List<String> getNamedGroupCandidates(String regex) {
         Set<String> matchedGroups = new TreeSet<>();
@@ -162,7 +162,7 @@ public class FilterDescriptor {
                 for(int i=0;i<pathMatchers.size();i++) {
                     var group = matcher.group(pathMatchers.get(i));
                     if(group!=null) {
-                        request.getPathParameters().put(pathMatchers.get(i),group);
+                        request.addPathParameter(pathMatchers.get(i),group);
                     }
                 }
                 return true;
@@ -177,7 +177,7 @@ public class FilterDescriptor {
                 var partPath = explPath[i];
                 if(partTemplate.startsWith("*")){
                     partTemplate = partTemplate.substring(1);
-                    request.getPathParameters().put(partTemplate,partPath);
+                    request.addPathParameter(partTemplate,partPath);
                 }else if(!partTemplate.equalsIgnoreCase(partPath)){
                     return false;
                 }

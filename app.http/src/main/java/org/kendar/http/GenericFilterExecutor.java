@@ -6,17 +6,17 @@ import org.kendar.servers.http.Response;
 import java.lang.reflect.Method;
 
 public abstract class GenericFilterExecutor {
-    private int priority;
-    private String method;
-    private boolean methodBlocking;
-    private boolean typeBlocking;
-    private String hostAddress;
-    private String pathAddress;
-    private String hostPattern;
-    private String pathPattern;
-    private HttpFilterType phase;
-    private Method callback;
-    private FilteringClass filterClass;
+    private final int priority;
+    private final String method;
+    private final boolean methodBlocking;
+    private final boolean typeBlocking;
+    private final String hostAddress;
+    private final String pathAddress;
+    private final String hostPattern;
+    private final String pathPattern;
+    private final HttpFilterType phase;
+    private final Method callback;
+    private final FilteringClass filterClass;
     public abstract boolean run(Request request, Response response);
     private String id;
 

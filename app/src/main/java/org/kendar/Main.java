@@ -35,7 +35,7 @@ public class Main implements CommandLineRunner{
     private ApplicationContext applicationContext;
 
 
-    private static Logger logger = LoggerFactory.getLogger(Main.class);
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
 

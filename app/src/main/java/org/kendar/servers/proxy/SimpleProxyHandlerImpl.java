@@ -25,9 +25,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Logger logger;
-    private DnsMultiResolver multiResolver;
-    private Environment environment;
-    private AtomicReference<List<RemoteServerStatus>> proxies = new AtomicReference<>();
+    private final DnsMultiResolver multiResolver;
+    private final Environment environment;
+    private final AtomicReference<List<RemoteServerStatus>> proxies = new AtomicReference<>();
 
     public SimpleProxyHandlerImpl(LoggerBuilder loggerBuilder,DnsMultiResolver multiResolver, Environment environment){
         this.multiResolver = multiResolver;
@@ -108,8 +108,6 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
             @SuppressWarnings("deprecation") String str = dis.readLine();
             if(str.equals("Hello")) {
                 pingable = true;
-            } else {
-                pingable = false;
             }
             t.close();
             return pingable;

@@ -1,7 +1,5 @@
 package org.kendar;
 
-import org.kendar.dns.DnsServer;
-import org.kendar.servers.AnsweringServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

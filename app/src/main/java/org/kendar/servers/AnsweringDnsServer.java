@@ -16,11 +16,11 @@ public class AnsweringDnsServer implements AnsweringServer {
 
     private boolean running =false;
     private final Logger logger;
-    private DnsServer dnsServer;
+    private final DnsServer dnsServer;
     @Value( "${dns.enabled:true}" )
     private boolean enabled;
 
-    private ConcurrentHashMap<String,String> missingRecords = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,String> missingRecords = new ConcurrentHashMap<>();
 
     public AnsweringDnsServer(LoggerBuilder loggerBuilder, DnsServer dnsServer){
         this.logger = loggerBuilder.build(AnsweringDnsServer.class);
@@ -38,11 +38,9 @@ public class AnsweringDnsServer implements AnsweringServer {
 
         try {
             dnsServer.run();
-        } catch (SocketException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             running=false;
         }
 

@@ -15,7 +15,7 @@ public class MimeChecker {
         return true;
     }
 
-    private static String[] STATIC_FILES ={
+    private static final String[] STATIC_FILES ={
             ".jpg",".jpeg",".ico",".png",".gif",
             ".woff2",".woff",".otf",".ttf",".eot",
             ".zip",".pdf",".tif",".svg",".tar",".gz",".tgz",".rar",

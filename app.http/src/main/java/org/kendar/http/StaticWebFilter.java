@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public abstract class StaticWebFilter implements FilteringClass {
-    private FileResourcesUtils fileResourcesUtils;
+    private final FileResourcesUtils fileResourcesUtils;
 
     public StaticWebFilter(FileResourcesUtils fileResourcesUtils){
         this.fileResourcesUtils = fileResourcesUtils;
@@ -19,7 +19,7 @@ public abstract class StaticWebFilter implements FilteringClass {
 
 
 
-    @HttpMethodFilter(phase = HttpFilterType.STATIC,pathAddress ="*",method = "GET",blocking = false)
+    @HttpMethodFilter(phase = HttpFilterType.STATIC,pathAddress ="*",method = "GET")
     public boolean handle(Request request, Response response){
 
 
@@ -40,7 +40,7 @@ public abstract class StaticWebFilter implements FilteringClass {
             return true;
         }
         response.setStatusCode(404);
-        response.setResponse("Page not found: "+request.getPath());
+        response.setResponseText("Page not found: "+request.getPath());
         return true;
     }
 
@@ -58,11 +58,11 @@ public abstract class StaticWebFilter implements FilteringClass {
             }
             response.setBinaryResponse(MimeChecker.isBinary(mimeType,null));
             if(response.isBinaryResponse()) {
-                response.setResponse(Files.readAllBytes(fullPath));
+                response.setResponseBytes(Files.readAllBytes(fullPath));
             }else{
-                response.setResponse(Files.readString(fullPath));
+                response.setResponseText(Files.readString(fullPath));
             }
-            response.getHeaders().put("Content-Type",mimeType);
+            response.addHeader("Content-Type",mimeType);
             response.setStatusCode(200);
 
 

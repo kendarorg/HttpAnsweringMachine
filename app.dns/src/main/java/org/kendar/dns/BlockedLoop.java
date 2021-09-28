@@ -6,6 +6,6 @@ public class BlockedLoop {
         this.count = 1;
         this.timestamp = timestamp;
     }
-    public int count =1;
+    public int count;
     public long timestamp;
 }

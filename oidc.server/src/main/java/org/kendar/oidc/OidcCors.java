@@ -20,11 +20,11 @@ public class OidcCors implements FilteringClass {
             method = "OPTIONS",
             blocking = true)
     public boolean cors(Request req, Response res) {
-        res.getHeaders().put("access-control-allow-credentials","false");
-        res.getHeaders().put("access-control-allow-headers","*");
-        res.getHeaders().put("access-control-allow-methods","*");
-        res.getHeaders().put("access-control-allow-origin","*");
-        res.getHeaders().put("content-length","0");
+        res.addHeader("access-control-allow-credentials","false");
+        res.addHeader("access-control-allow-headers","*");
+        res.addHeader("access-control-allow-methods","*");
+        res.addHeader("access-control-allow-origin","*");
+        res.addHeader("content-length","0");
         res.setStatusCode(200);
         return false;
     }

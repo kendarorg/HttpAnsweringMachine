@@ -46,7 +46,7 @@ public class OidcController implements FilteringClass {
     private int tokenExpirationSeconds;
     @Value("${localhost.name}")
     private  String serverAddress;
-    private Logger log;
+    private final Logger log;
 
     public OidcController(LoggerBuilder loggerBuilder){
         log = loggerBuilder.build(OidcController.class);
@@ -123,7 +123,7 @@ public class OidcController implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =JWKS_ENDPOINT,method = "GET")
     public boolean jwks(Request req, Response res) {
         log.info("called " + JWKS_ENDPOINT + " from {}", req.getRemoteHost());
-        res.setResponse(publicJWKSet.toString());
+        res.setResponseText(publicJWKSet.toString());
         return false;
     }
 
@@ -132,13 +132,13 @@ public class OidcController implements FilteringClass {
      */
     @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =USERINFO_ENDPOINT,method = "GET")
     public boolean userinfo(Request req, Response res) {
-        var auth = req.getRequestParam("Authorization");
-        var access_token = req.getRequestParam("access_token");
+        var auth = req.getRequestParameter("Authorization");
+        var access_token = req.getRequestParameter("access_token");
         log.info("called " + USERINFO_ENDPOINT + " from {}", req.getRemoteHost());
         if (!auth.startsWith("Bearer ")) {
             if(access_token == null) {
                 res.setStatusCode(STATUS_UNAUTHORIZED);
-                res.setResponse("No token");
+                res.setResponseText("No token");
                 return false;
             }
             auth = access_token;
@@ -148,7 +148,7 @@ public class OidcController implements FilteringClass {
         AccessTokenInfo accessTokenInfo = accessTokens.get(auth);
         if (accessTokenInfo == null) {
             res.setStatusCode(STATUS_UNAUTHORIZED);
-            res.setResponse("access token not found");
+            res.setResponseText("access token not found");
             return false;
         }
         Set<String> scopes = setFromSpaceSeparatedString(accessTokenInfo.scope);
@@ -173,8 +173,8 @@ public class OidcController implements FilteringClass {
      */
     @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =INTROSPECTION_ENDPOINT,method = "POST")
     public boolean introspection(Request req, Response res) {
-        var auth = req.getRequestParam("Authorization");
-        var token = req.getRequestParam("token");
+        var auth = req.getRequestParameter("Authorization");
+        var token = req.getRequestParameter("token");
         log.info("called " + INTROSPECTION_ENDPOINT + " from {}", req.getRemoteHost());
         Map<String, Object> m = new LinkedHashMap<>();
         AccessTokenInfo accessTokenInfo = accessTokens.get(token);
@@ -201,13 +201,13 @@ public class OidcController implements FilteringClass {
      * Provides token endpoint.
      */
     @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =TOKEN_ENDPOINT,method = "POST")
-    public boolean token(Request req, Response res) throws NoSuchAlgorithmException, JOSEException, NoSuchAlgorithmException {
-        var grant_type = req.getRequestParam("grant_type");
-        var code = req.getRequestParam("code");
-        var redirect_uri = req.getRequestParam("redirect_uri");
-        var client_id = req.getRequestParam("client_id");
-        var auth = req.getRequestParam("Authorization");
-        var code_verifier = req.getRequestParam("code_verifier");
+    public boolean token(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
+        var grant_type = req.getRequestParameter("grant_type");
+        var code = req.getRequestParameter("code");
+        var redirect_uri = req.getRequestParameter("redirect_uri");
+        var client_id = req.getRequestParameter("client_id");
+        var auth = req.getRequestParameter("Authorization");
+        var code_verifier = req.getRequestParameter("code_verifier");
         log.info("called " + TOKEN_ENDPOINT + " from {}, grant_type={} code={} redirect_uri={} client_id={}", req.getRemoteHost(), grant_type, code, redirect_uri, client_id);
         if (!"authorization_code".equals(grant_type)) {
             jsonError(res,"unsupported_grant_type", "grant_type is not authorization_code");
@@ -266,16 +266,16 @@ public class OidcController implements FilteringClass {
      */
     @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =AUTHORIZATION_ENDPOINT,method = "GET")
     public boolean authorize(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
-        var client_id = req.getRequestParam("client_id");
-        var redirect_uri = req.getRequestParam("redirect_uri");
-        var response_type = req.getRequestParam("response_type");
-        var scope = req.getRequestParam("scope");
-        var state = req.getRequestParam("state");
-        var nonce = req.getRequestParam("nonce");
-        var code_challenge = req.getRequestParam("code_challenge");
-        var code_challenge_method = req.getRequestParam("code_challenge_method");
-        var response_mode = req.getRequestParam("response_mode");
-        var auth = req.getRequestParam("Authorization");
+        var client_id = req.getRequestParameter("client_id");
+        var redirect_uri = req.getRequestParameter("redirect_uri");
+        var response_type = req.getRequestParameter("response_type");
+        var scope = req.getRequestParameter("scope");
+        var state = req.getRequestParameter("state");
+        var nonce = req.getRequestParameter("nonce");
+        var code_challenge = req.getRequestParameter("code_challenge");
+        var code_challenge_method = req.getRequestParameter("code_challenge_method");
+        var response_mode = req.getRequestParameter("response_mode");
+        var auth = req.getRequestParameter("Authorization");
 
 
         log.info("called " + AUTHORIZATION_ENDPOINT + " from {}, scope={} response_type={} client_id={} redirect_uri={}",
@@ -307,7 +307,7 @@ public class OidcController implements FilteringClass {
                             "&expires_in=" + tokenExpirationSeconds +
                             "&id_token=" + urlencode(id_token);
                     res.setStatusCode(STATUS_FOUND);
-                    res.getHeaders().put("Location",url);
+                    res.addHeader("Location",url);
                 } else if (responseType.contains("code")) {
                     // authorization code flow
                     log.info("using authorization code flow {}", code_challenge!=null ? "with PKCE" : "");
@@ -316,11 +316,11 @@ public class OidcController implements FilteringClass {
                             "code=" + code +
                             "&state=" + urlencode(state);
                     res.setStatusCode(STATUS_FOUND);
-                    res.getHeaders().put("Location",url);
+                    res.addHeader("Location",url);
                 } else {
                     String url = redirect_uri + "#" + "error=unsupported_response_type";
                     res.setStatusCode(STATUS_FOUND);
-                    res.getHeaders().put("Location",url);
+                    res.addHeader("Location",url);
                 }
             } else {
                 log.info("wrong user and password combination");
@@ -393,10 +393,10 @@ public class OidcController implements FilteringClass {
     }
 
     private static Response response401(Response res) {
-        Map<String,String> responseHeaders = new HashMap<>();
-        responseHeaders.put("Content-Type","text/html");
-        responseHeaders.put("WWW-Authenticate", "Basic realm=\"Fake OIDC server\"");
-        res.setResponse("<html><body><h1>401 Unauthorized</h1>Fake OIDC server</body></html>");
+        //Map<String,String> responseHeaders = new HashMap<>();
+        res.addHeader("Content-Type","text/html");
+        res.addHeader("WWW-Authenticate", "Basic realm=\"Fake OIDC server\"");
+        res.setResponseText("<html><body><h1>401 Unauthorized</h1>Fake OIDC server</body></html>");
         res.setStatusCode(STATUS_UNAUTHORIZED);
         return res;
     }
@@ -450,7 +450,7 @@ public class OidcController implements FilteringClass {
         return new HashSet<>(Arrays.asList(s.split(" ")));
     }
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     private Response jsonError(Response res,String error, String error_description) {
         log.warn("error={} error_description={}", error, error_description);
@@ -461,11 +461,11 @@ public class OidcController implements FilteringClass {
     }
 
     private static Response setJsonResponse(int code,Object data,Response res){
-        res.getHeaders().put("Content-Type","application/json");
+        res.addHeader("Content-Type","application/json");
         res.setStatusCode(code);
         try {
             var strData = mapper.writeValueAsString(data);
-            res.setResponse(strData);
+            res.setResponseText(strData);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

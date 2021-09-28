@@ -28,12 +28,12 @@ import java.util.List;
 @Component
 public class JsFilterLoader implements CustomFilters {
     @Value("${jsfilter.path:null}")
-    private String jsFilterPath = null;
+    private final String jsFilterPath = null;
     private ScriptableObject globalScope;
-    private Environment environment;
-    private Logger logger;
-    private LoggerBuilder loggerBuilder;
-    private FileResourcesUtils fileResourcesUtils;
+    private final Environment environment;
+    private final Logger logger;
+    private final LoggerBuilder loggerBuilder;
+    private final FileResourcesUtils fileResourcesUtils;
 
     public JsFilterLoader(Environment environment, LoggerBuilder loggerBuilder, FileResourcesUtils fileResourcesUtils){
 
@@ -45,7 +45,7 @@ public class JsFilterLoader implements CustomFilters {
     }
 
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
 
     public static class SandboxClassShutter implements ClassShutter {

@@ -95,31 +95,25 @@ public class DataReorganizer {
     }
 
     private boolean containsTheSameIndexes(List<ReplayerRow> left, List<ReplayerRow> right) {
-        for(var leftItem :left){
-            var found = false;
-            for(var rightItem :right){
-                if(rightItem.getId()==leftItem.getId()){
-                    found=true;
-                    break;
-                }
-            }
-            if(!found){
-                return false;
-            }
-        }
-        for(var rightItem :right){
-            var found = false;
-            for(var leftItem :left){
-                if(rightItem.getId()==leftItem.getId()){
-                    found=true;
-                    break;
-                }
-            }
-            if(!found){
-                return false;
-            }
-        }
+        if (verifyComparison(left, right)) return false;
+        if (verifyComparison(right, left)) return false;
         return true;
+    }
+
+    private boolean verifyComparison(List<ReplayerRow> left, List<ReplayerRow> right) {
+        for(var leftItem : left){
+            var found = false;
+            for(var rightItem : right){
+                if(rightItem.getId()==leftItem.getId()){
+                    found=true;
+                    break;
+                }
+            }
+            if(!found){
+                return true;
+            }
+        }
+        return false;
     }
 
     public  String calculateDataResult(ReplayerRow row, boolean byRequestOnly) {
@@ -128,7 +122,7 @@ public class DataReorganizer {
         if(req.getQuery()!=null) {
             SortedSet<String> keys = new TreeSet<>(req.getQuery().keySet());
             for (var q : keys) {
-                result += "|" + q + "=" + req.getQuery().get(q);
+                result += "|" + q + "=" + req.getQuery(q);
             }
         }
         result+="|"+row.getRequestHash();

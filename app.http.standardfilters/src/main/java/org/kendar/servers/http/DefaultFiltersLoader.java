@@ -17,11 +17,10 @@ import java.util.List;
 @Component
 public class DefaultFiltersLoader implements CustomFilters {
     private final Logger logger;
-    private List<FilteringClass> filteringClassList;
-    private Environment environment;
+    private final List<FilteringClass> filteringClassList;
+    private final Environment environment;
 
-    public DefaultFiltersLoader(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-                                        List<FilteringClass> filteringClassList,
+    public DefaultFiltersLoader(List<FilteringClass> filteringClassList,
                                 Environment environment, LoggerBuilder loggerBuilder){
 
         this.filteringClassList = filteringClassList;
@@ -48,9 +47,7 @@ public class DefaultFiltersLoader implements CustomFilters {
         var result = new ArrayList<FilterDescriptor>();
         for (var filterClass :filteringClassList) {
             if(!hasFilterType(filterClass)) continue;
-            for (FilterDescriptor ds: getAnnotatedMethods(filterClass,environment)) {
-                result.add(ds);
-            }
+            result.addAll(getAnnotatedMethods(filterClass, environment));
         }
 
         logger.info("Standard filters LOADED");

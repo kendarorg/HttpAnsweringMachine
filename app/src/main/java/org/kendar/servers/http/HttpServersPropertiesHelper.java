@@ -1,6 +1,5 @@
 package org.kendar.servers.http;
 
-import org.kendar.servers.AnsweringHttpsServer;
 import org.kendar.utils.PropertiesHelper;
 import org.kendar.utils.PropertiesManager;
 import org.springframework.context.ApplicationContext;
@@ -8,12 +7,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
 public class HttpServersPropertiesHelper extends PropertiesHelper {
-    private Environment environment;
+    private final Environment environment;
 
     public HttpServersPropertiesHelper(Environment environment, ApplicationContext applicationContext){
         this.environment = environment;
@@ -21,7 +19,7 @@ public class HttpServersPropertiesHelper extends PropertiesHelper {
     }
 
     private String staticServersPath;
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
     @Override
     public void loadProperties(Map<String, Object> propMap, PropertiesManager propertiesManager) {

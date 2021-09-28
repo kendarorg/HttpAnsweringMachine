@@ -1,9 +1,10 @@
 package org.kendar.replayer.storage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
-import org.kendar.servers.http.SerializableResponse;
+import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 
@@ -24,26 +25,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ReplayerDataset {
     private static final String MAIN_FILE ="runall.json";
     private final Logger logger;
-    private DataReorganizer dataReorganizer;
-    private ObjectMapper mapper = new ObjectMapper();
-    private ConcurrentLinkedQueue<ReplayerRow> dynamicData = new ConcurrentLinkedQueue<>();
-    private ConcurrentHashMap<String,ReplayerRow> staticData = new ConcurrentHashMap<>();
-    private ConcurrentLinkedQueue<String> errors = new ConcurrentLinkedQueue<>();
-    private AtomicInteger counter = new AtomicInteger(0);
+    private final DataReorganizer dataReorganizer;
+    private Md5Tester md5Tester;
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final ConcurrentLinkedQueue<ReplayerRow> dynamicData = new ConcurrentLinkedQueue<>();
+    private final ConcurrentHashMap<String,ReplayerRow> staticData = new ConcurrentHashMap<>();
+    private final ConcurrentLinkedQueue<String> errors = new ConcurrentLinkedQueue<>();
+    private final AtomicInteger counter = new AtomicInteger(0);
 
-    private String name;
-    private String replayerDataDir;
-    private String description;
+    private final String name;
+    private final String replayerDataDir;
+    private final String description;
     private ReplayerResult replayerResult;
-    private ConcurrentHashMap<Integer,Object> states = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer,Object> states = new ConcurrentHashMap<>();
 
     public ReplayerDataset(String name, String replayerDataDir, String description, LoggerBuilder loggerBuilder,
-                           DataReorganizer dataReorganizer){
+                           DataReorganizer dataReorganizer, Md5Tester md5Tester){
         this.name = name;
         this.replayerDataDir = replayerDataDir;
         this.description = description;
         this.logger = loggerBuilder.build(ReplayerDataset.class);
         this.dataReorganizer = dataReorganizer;
+        this.md5Tester = md5Tester;
     }
 
 
@@ -85,17 +88,20 @@ public class ReplayerDataset {
         }
     }
 
-    public void add(Request req, Response res){
+    public void add(Request req, Response res) throws IOException {
         var path = req.getHost()+req.getPath();
         try {
 
-
-            MessageDigest md = MessageDigest.getInstance("MD5");
             String responseHash = null;
 
-            if(req.isStaticRequest() && staticData.contains(path)){
+            if(req.isStaticRequest() && staticData.containsKey(path)){
                 var alreadyPresent = staticData.get(path);
-                responseHash=calculateMd5(res.getResponse(),md);
+                if(res.isBinaryResponse()){
+                    responseHash=md5Tester.calculateMd5(res.getResponseBytes());
+                }else{
+                    responseHash=md5Tester.calculateMd5(res.getResponseText());
+                }
+
                 if(!responseHash.equalsIgnoreCase(alreadyPresent.getResponseHash())){
                     errors.add("Static request was dynamic "+path);
                     throw new Exception("Static request was dynamic "+path);
@@ -103,13 +109,19 @@ public class ReplayerDataset {
                 return;
             }
             var replayerRow = new ReplayerRow();
-            if(responseHash==null){
-                responseHash = calculateMd5(res.getResponse(),md);
+            if(res.isBinaryResponse()){
+                responseHash = md5Tester.calculateMd5(res.getResponseBytes());
+            }else{
+                responseHash = md5Tester.calculateMd5(res.getResponseText());
             }
             replayerRow.setId(counter.getAndIncrement());
-            replayerRow.setRequest(Request.toSerializable(req));
-            replayerRow.setResponse(Response.toSerializable(res));
-            replayerRow.setRequestHash(calculateMd5(req.getRequest(),md));
+            replayerRow.setRequest(req);
+            replayerRow.setResponse(res);
+            if(req.isBinaryRequest()) {
+                replayerRow.setRequestHash(md5Tester.calculateMd5(req.getRequestBytes()));
+            }else{
+                replayerRow.setRequestHash(md5Tester.calculateMd5(req.getRequestText()));
+            }
             replayerRow.setResponseHash(responseHash);
 
             if(req.isStaticRequest()){
@@ -118,33 +130,13 @@ public class ReplayerDataset {
                 dynamicData.add(replayerRow);
             }
             //ADD the crap
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            logger.error("Error recording request "+path,e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.error("Error recording request "+path,e);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("Error recording request "+path,e);
         }
     }
 
-    private String calculateMd5(Object data, MessageDigest md) {
-        if(data==null){
-            return "0";
-        }
-        if(data instanceof String){
-            if(((String)data).length()==0) return "0";
-            md.update(((String)data).getBytes(StandardCharsets.UTF_8));
-        }else{
-            if(((byte[])data).length==0) return "0";
-            md.update((byte[])data);
-        }
-        byte[] digest = md.digest();
-        BigInteger bigInt = new BigInteger(1,digest);
-        return bigInt.toString(16);
-    }
+
 
 
 
@@ -205,10 +197,15 @@ public class ReplayerDataset {
         return founded;
     }
 
-    public SerializableResponse findResponse(Request req) {
+    public Response findResponse(Request req) {
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            var contentHash = calculateMd5(req.getRequest(),md);
+
+            String contentHash = null;
+            if(req.isBinaryRequest()){
+                contentHash = md5Tester.calculateMd5(req.getRequestBytes());
+            }else{
+                contentHash = md5Tester.calculateMd5(req.getRequestText());
+            }
             ReplayerRow founded = findStaticMatch(req,contentHash);
             if (founded != null) {
                 return founded.getResponse();
@@ -272,12 +269,8 @@ public class ReplayerDataset {
 
     public void saveMods() throws IOException {
         var partialResult = new ArrayList<ReplayerRow>();
-        for(var item: replayerResult.getDynamicRequests()){
-            partialResult.add(item);
-        }
-        for(var item: replayerResult.getStaticRequests()){
-            partialResult.add(item);
-        }
+        partialResult.addAll(replayerResult.getDynamicRequests());
+        partialResult.addAll(replayerResult.getStaticRequests());
         replayerResult.setStaticRequests(new ArrayList<>());
         replayerResult.setDynamicRequests(new ArrayList<>());
         dataReorganizer.reorganizeData(replayerResult,partialResult);

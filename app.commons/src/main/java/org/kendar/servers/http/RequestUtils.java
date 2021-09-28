@@ -4,13 +4,10 @@ import com.sun.net.httpserver.Headers;
 import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.portlet.PortletFileUpload;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.entity.ContentType;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +21,7 @@ public class RequestUtils {
                 result.getMethod().equalsIgnoreCase("PUT") ||
                 result.getMethod().equalsIgnoreCase("PATCH");
     }
+
     public static String getFromMap(Map<String, String> map, String index) {
 
         if(map.containsKey(index)){
@@ -35,6 +33,17 @@ public class RequestUtils {
             }
         }
         return null;
+    }
+
+    public static void addToMap(Map<String, String> map, String key,String value) {
+
+        for (var entry: map.entrySet()) {
+            if(entry.getKey().equalsIgnoreCase(key)){
+                map.put(entry.getKey(),value);
+                return;
+            }
+        }
+        map.put(key,value);
     }
 
     public static String removeFromMap(Map<String, String> map, String index) {

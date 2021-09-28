@@ -24,7 +24,7 @@ public class DnsMappingsApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/mappings",
             method = "GET")
-    public boolean getDnsMappings(Request req, Response res) throws JsonProcessingException {
+    public boolean getDnsMappings(Request req, Response res) {
         //var proxyes = simpleProxyHandler.getProxies();
         res.addHeader("Content-type", "application/json");
         //res.setResponse(mapper.writeValueAsString(proxyes));

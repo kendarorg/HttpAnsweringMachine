@@ -20,7 +20,7 @@ import java.util.*;
 @HttpTypeFilter(hostAddress = "${localhost.name}",
         blocking = true)
 public class PropertiesController implements FilteringClass {
-    private Environment environment;
+    private final Environment environment;
     ObjectMapper mapper = new ObjectMapper();
 
     public PropertiesController(Environment environment){
@@ -48,10 +48,10 @@ public class PropertiesController implements FilteringClass {
         if(req.getQuery("asfile")!=null){
             Collections.sort(result);
             res.addHeader("Content-type", "text/plain");
-            res.setResponse(String.join("\n",result));
+            res.setResponseText(String.join("\n",result));
         }else {
             res.addHeader("Content-type", "application/json");
-            res.setResponse(mapper.writeValueAsString(map));
+            res.setResponseText(mapper.writeValueAsString(map));
         }
         return true;
     }

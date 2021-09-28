@@ -39,7 +39,6 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -56,13 +55,14 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     public static final String TEST_EXPECT_100 = "X-TEST-EXPECT-100";
     public static final String TEST_OVERWRITE_HOST = "X-TEST-OVERWRITE-HOST";
     public static final String BLOCK_RECURSION = "X-BLOCK-RECURSIVE";
-    private Logger logger;
+    private final Logger logger;
     private SystemDefaultDnsResolver dnsResolver;
-    private DnsMultiResolver multiResolver;
-    private FilteringClassesHandler filteringClassesHandler;
-    private SimpleProxyHandler simpleProxyHandler;
+    private final DnsMultiResolver multiResolver;
+    private final FilteringClassesHandler filteringClassesHandler;
+    private final SimpleProxyHandler simpleProxyHandler;
+    private final RequestResponseBuilder requestResponseBuilder;
     private PoolingHttpClientConnectionManager connManager;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
     @Value("${https.forwardProtocol:https}")
     private String httpsForwardProtocol="https";
     @Value("${http.forwardProtocol:http}")
@@ -75,16 +75,18 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     @Value("${dns.logging.query:false}")
     private boolean dnsLogginQuery;
 
-    private ConcurrentHashMap<String,List<String>> domains = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,List<String>> domains = new ConcurrentHashMap<>();
 
     public AnsweringHandlerImpl(LoggerBuilder loggerBuilder, DnsMultiResolver multiResolver,
                                 FilteringClassesHandler filteringClassesHandler,
-                                SimpleProxyHandler simpleProxyHandler){
+                                SimpleProxyHandler simpleProxyHandler,
+                                RequestResponseBuilder requestResponseBuilder){
         this.logger = loggerBuilder.build(AnsweringHttpsServer.class);
         this.multiResolver = multiResolver;
         this.filteringClassesHandler = filteringClassesHandler;
         this.simpleProxyHandler = simpleProxyHandler;
 
+        this.requestResponseBuilder = requestResponseBuilder;
     }
 
     @PostConstruct
@@ -190,7 +192,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     }
 
     @Override
-    public void handle(HttpExchange httpExchange) throws IOException {
+    public void handle(HttpExchange httpExchange) {
         var requestUri = httpExchange.getRequestURI();
         var host = httpExchange.getRequestHeaders().getFirst("Host");
         logger.info(host+requestUri.toString());
@@ -199,9 +201,9 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         Response response = new Response();
         try {
             if(httpExchange instanceof HttpsExchange){
-                request = Request.fromExchange(httpExchange,httpsForwardProtocol,httpsForwardPort);
+                request = requestResponseBuilder.fromExchange(httpExchange,httpsForwardProtocol,httpsForwardPort);
             }else{
-                request = Request.fromExchange(httpExchange,httpForwardProtocol,httpForwardPort);
+                request = requestResponseBuilder.fromExchange(httpExchange,httpForwardProtocol,httpForwardPort);
             }
 
             handleOverwriteHost(request, httpExchange);
@@ -254,8 +256,9 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
                 response.addHeader("X-Exception-Message", ex.getMessage());
                 response.addHeader("X-Exception-PrevStatusCode", Integer.toString(response.getStatusCode()));
                 response.setStatusCode(500);
-                if(response.getResponse()==null){
-                    response.setResponse(ex.getMessage());
+                if(!requestResponseBuilder.hasBody(response)){
+                    response.setResponseText(ex.getMessage());
+                    response.setBinaryResponse(false);
                 }
                 sendResponse(response, httpExchange);
             }catch (Exception xx){
@@ -283,7 +286,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         return false;
     }
 
-    private static HttpRequestRetryHandler requestRetryHandler = (exception, executionCount, context) -> {
+    private static final HttpRequestRetryHandler requestRetryHandler = (exception, executionCount, context) -> {
         if (executionCount == 1) {
             return false;
         } else {
@@ -318,12 +321,10 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
                 }
                 UrlEncodedFormEntity entity = new UrlEncodedFormEntity(form, Consts.UTF_8);
                 ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
-            } else if (request.isMultipart()) {
+            } else if (requestResponseBuilder.isMultipart(request)) {
                 MultipartEntityBuilder builder = MultipartEntityBuilder.create();
                 builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
                 for (MultipartPart part : request.getMultipartData()) {
-                    //var contentDispositionString = RequestUtils.getFromMap(part.getHeaders(), "Content-Disposition");
-                    //var contentDisposition = RequestUtils.parseContentDisposition(contentDispositionString);
                     if (MimeChecker.isBinary(part.getContentType(), null)) {
                         builder.addBinaryBody(
                                 part.getFieldName(), part.getByteData(),
@@ -340,16 +341,16 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
                 }
                 HttpEntity entity = builder.build();
                 ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
-            } else if (request.hasBody()) {
+            } else if (requestResponseBuilder.hasBody(request)) {
                 HttpEntity entity;
                 if (request.isBinaryRequest()) {
                     entity = new ByteArrayEntity(
-                            (byte[]) request.getRequest(),
+                            (byte[]) request.getRequestBytes(),
                             ContentType.create(request.getHeader("content-type")));
 
                 } else {
                     entity = new StringEntity(
-                            (String) request.getRequest(),
+                            (String) request.getRequestText(),
                             ContentType.create(request.getHeader("content-type")));
 
                 }
@@ -358,7 +359,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
             try {
                 HttpResponse httpResponse = httpClient.execute(fullRequest);
-                Response.fromHttpResponse(httpResponse, response);
+                requestResponseBuilder.fromHttpResponse(httpResponse, response);
             } catch (Exception ex) {
                 response.setStatusCode(404);
             }
@@ -372,11 +373,11 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     private void sendResponse(Response response, HttpExchange httpExchange) throws IOException {
         byte[] data = new byte[0];
         var dataLength = 0;
-        if(response.getResponse()!=null) {
+        if(requestResponseBuilder.hasBody(response)) {
             if (response.isBinaryResponse()) {
-                data = ((byte[]) response.getResponse());
-            } else if(((String) response.getResponse()).length()>0){
-                data = (((String) response.getResponse()).getBytes(StandardCharsets.UTF_8));
+                data = ((byte[]) response.getResponseBytes());
+            } else if(((String) response.getResponseText()).length()>0){
+                data = (((String) response.getResponseText()).getBytes(StandardCharsets.UTF_8));
             }
             if(data.length>0){
                 dataLength = data.length;
@@ -388,15 +389,12 @@ Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE
 Access-Control-Allow-Headers: Content-Type, x-requested-with
 Access-Control-Max-Age: 86400
          */
-        response.getHeaders().put("Access-Control-Allow-Origin","*");
-        response.getHeaders().put("Access-Control-Allow-Methods","*");
-        response.getHeaders().put("Access-Control-Allow-Headers","*");
-        response.getHeaders().put("Access-Control-Max-Age","86400");
+        response.addHeader("Access-Control-Allow-Origin","*");
+        response.addHeader("Access-Control-Allow-Methods","*");
+        response.addHeader("Access-Control-Allow-Headers","*");
+        response.addHeader("Access-Control-Max-Age","86400");
         var duplicate = new HashSet<String>();
         for (var header: response.getHeaders().entrySet()) {
-            var keyLow = header.getKey().toLowerCase(Locale.ROOT);
-            if(duplicate.contains(keyLow))continue;
-            duplicate.add(keyLow);
             httpExchange.getResponseHeaders().add(header.getKey(), header.getValue());
         }
         httpExchange.sendResponseHeaders(response.getStatusCode(), dataLength);

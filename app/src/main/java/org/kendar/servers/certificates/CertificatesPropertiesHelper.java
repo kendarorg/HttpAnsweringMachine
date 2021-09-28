@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Component
 public class CertificatesPropertiesHelper extends PropertiesHelper {
-    private Environment environment;
+    private final Environment environment;
 
     public CertificatesPropertiesHelper(Environment environment, ApplicationContext applicationContext){
         this.environment = environment;
@@ -21,7 +21,7 @@ public class CertificatesPropertiesHelper extends PropertiesHelper {
     }
 
     private String certificatesPath;
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
     @Override
     public void loadProperties(Map<String, Object> propMap, PropertiesManager propertiesManager) {

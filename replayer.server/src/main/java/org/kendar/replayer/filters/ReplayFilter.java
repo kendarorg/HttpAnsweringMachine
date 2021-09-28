@@ -21,7 +21,7 @@ public class ReplayFilter  implements FilteringClass {
     public String getId() {
         return "org.kendar.replayer.filters.RecordFilter";
     }
-    private ReplayerStatus replayerStatus;
+    private final ReplayerStatus replayerStatus;
 
     public ReplayFilter(ReplayerStatus replayerStatus){
         this.replayerStatus = replayerStatus;

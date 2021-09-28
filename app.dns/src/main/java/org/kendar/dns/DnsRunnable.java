@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 public class DnsRunnable implements Callable<List<String>> {
-    private String requestedServer;
-    private String requestedDomain;
+    private final String requestedServer;
+    private final String requestedDomain;
 
     public DnsRunnable(String requestedServer, String requestedDomain) {
         this.requestedServer = requestedServer;

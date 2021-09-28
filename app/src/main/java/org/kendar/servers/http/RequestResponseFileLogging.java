@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 @HttpTypeFilter(hostAddress = "*")
 public class RequestResponseFileLogging  implements FilteringClass {
     private final Logger logger;
-    private FileResourcesUtils fileResourcesUtils;
+    private final FileResourcesUtils fileResourcesUtils;
 
     public RequestResponseFileLogging(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder){
 
@@ -38,13 +38,13 @@ public class RequestResponseFileLogging  implements FilteringClass {
         return "org.kendar.servers.http.RequestResponseFileLogging";
     }
     @Value("${localhost.logging.request:false}")
-    private boolean logRequest = false;
+    private final boolean logRequest = false;
     @Value("${localhost.logging.response:false}")
-    private boolean logResponse = false;
+    private final boolean logResponse = false;
     @Value("${localhost.logging.request.full:false}")
-    private boolean logRequestFull = false;
+    private final boolean logRequestFull = false;
     @Value("${localhost.logging.response.full:false}")
-    private boolean logResponseFull = false;
+    private final boolean logResponseFull = false;
     @Value("${localhost.logging.path:recording}")
     private String logPath;
     @Value("${localhost.logging.static:false}")
@@ -67,15 +67,13 @@ public class RequestResponseFileLogging  implements FilteringClass {
         }
     }
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
     @HttpMethodFilter(phase = HttpFilterType.POST_RENDER,pathAddress ="*",method = "*")
-    public boolean doLog(Request req, Response res){
-        if(req.isStaticRequest() && !logStaticRequests) return false;
-        if(req.isStaticRequest() && !logDynamicRequests) return false;
+    public boolean doLog(Request serReq, Response serRes){
+        if(serReq.isStaticRequest() && !logStaticRequests) return false;
+        if(serReq.isStaticRequest() && !logDynamicRequests) return false;
 
 
-        var serReq = Request.toSerializable(req);
-        var serRes = Response.toSerializable(res);
         if(!logRequestFull){
             serReq.setRequestText(null);
             serReq.setRequestBytes(null);
@@ -85,7 +83,7 @@ public class RequestResponseFileLogging  implements FilteringClass {
             serRes.setResponseBytes(null);
         }
         var extension = getOptionalExtension(serReq.getPath());
-        var filePath = logPath+File.separator+ cleanUp(req.getMs()+"_"+serReq.getHost()+"_"+serReq.getPath());
+        var filePath = logPath+File.separator+ cleanUp(serReq.getMs()+"_"+serReq.getHost()+"_"+serReq.getPath());
         if(extension!=null){
             filePath+="."+extension;
         }

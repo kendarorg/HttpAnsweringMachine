@@ -19,8 +19,8 @@ public class DnsServer {
 
     @Value( "${dns.port:53}" )
     private int dnsPort;
-    private Logger logger;
-    private DnsMultiResolver multiResolver;
+    private final Logger logger;
+    private final DnsMultiResolver multiResolver;
 
     public DnsServer(LoggerBuilder loggerBuilder, DnsMultiResolver multiResolver){
 
@@ -99,14 +99,6 @@ public class DnsServer {
             }else{
                 resp = errorMessage(request, Rcode.NXDOMAIN);
             }
-            //response = new Message(request.getHeader().getID());
-            /*var header = new Header();
-            header.setID(request.getHeader().getID());
-            //header.setOpcode(Opcode.QUERY);
-            header.setRcode(Rcode.NXDOMAIN);
-            response.setHeader(header);*/
-
-            //DatagramSocket socket = new DatagramSocket();
             logger.debug("SENDING RESPONSE");
             DatagramPacket outdp = new DatagramPacket(resp, resp.length, indp.getAddress(), indp.getPort());
             socket.send(outdp);

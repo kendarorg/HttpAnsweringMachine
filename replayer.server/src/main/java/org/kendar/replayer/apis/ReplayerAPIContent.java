@@ -8,6 +8,7 @@ import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerRow;
+import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.http.MultipartPart;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -27,18 +28,21 @@ import java.security.NoSuchAlgorithmException;
 @HttpTypeFilter(hostAddress = "${localhost.name}",
         blocking = true)
 public class ReplayerAPIContent implements FilteringClass {
-    private FileResourcesUtils fileResourcesUtils;
-    private LoggerBuilder loggerBuilder;
-    private DataReorganizer dataReorganizer;
+    private final FileResourcesUtils fileResourcesUtils;
+    private final LoggerBuilder loggerBuilder;
+    private final DataReorganizer dataReorganizer;
+    private Md5Tester md5Tester;
     ObjectMapper mapper = new ObjectMapper();
     @Value("${replayer.data:replayerdata}")
     private String replayerData;
 
-    public ReplayerAPIContent(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer){
+    public ReplayerAPIContent(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder,
+                              DataReorganizer dataReorganizer, Md5Tester md5Tester){
 
         this.fileResourcesUtils = fileResourcesUtils;
         this.loggerBuilder = loggerBuilder;
         this.dataReorganizer = dataReorganizer;
+        this.md5Tester = md5Tester;
     }
     @Override
     public String getId() {
@@ -56,7 +60,7 @@ public class ReplayerAPIContent implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer,md5Tester);
         var datasetContent = dataset.load();
 
         for (var singleLine : datasetContent.getStaticRequests()) {
@@ -70,33 +74,33 @@ public class ReplayerAPIContent implements FilteringClass {
             }
         }
         res.setStatusCode(404);
-        res.setResponse("Missing id "+id+" with line "+line);
+        res.setResponseText("Missing id "+id+" with line "+line);
         return false;
     }
 
     private boolean sendBackContent(Response res, int line, String requestOrResponse, ReplayerRow singleLine) {
         if (singleLine.getId() == line) {
             if ("request".equalsIgnoreCase(requestOrResponse)) {
-                res.setHeader("Content-Type", singleLine.getRequest().getHeader("Content-Type"));
+                res.addHeader("Content-Type", singleLine.getRequest().getHeader("Content-Type"));
                 res.setBinaryResponse(singleLine.getRequest().isBinaryRequest());
                 if (singleLine.getRequest().isBinaryRequest()) {
-                    res.setResponse(singleLine.getRequest().getRequestBytes());
+                    res.setResponseBytes(singleLine.getRequest().getRequestBytes());
                 } else {
-                    res.setResponse(singleLine.getRequest().getRequestText());
+                    res.setResponseText(singleLine.getRequest().getRequestText());
                 }
             } else if ("response".equalsIgnoreCase(requestOrResponse)) {
-                res.setHeader("Content-Type", singleLine.getResponse().getHeader("Content-Type"));
+                res.addHeader("Content-Type", singleLine.getResponse().getHeader("Content-Type"));
                 res.setBinaryResponse(singleLine.getResponse().isBinaryResponse());
                 if (singleLine.getResponse().isBinaryResponse()) {
-                    res.setResponse(singleLine.getResponse().getResponseBytes());
+                    res.setResponseBytes(singleLine.getResponse().getResponseBytes());
                 } else {
-                    res.setResponse(singleLine.getResponse().getResponseText());
+                    res.setResponseText(singleLine.getResponse().getResponseText());
                 }
             }
             if(res.isBinaryResponse() && res.getHeader("Content-Type")==null){
-                res.setHeader("Content-Type", "application/octect-stream");
+                res.addHeader("Content-Type", "application/octect-stream");
             }else{
-                res.setHeader("Content-Type", "text/plain");
+                res.addHeader("Content-Type", "text/plain");
             }
             return true;
         }
@@ -129,7 +133,7 @@ public class ReplayerAPIContent implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer,md5Tester);
         var datasetContent = dataset.load();
 
         for (var singleLine : datasetContent.getStaticRequests()) {
@@ -145,7 +149,7 @@ public class ReplayerAPIContent implements FilteringClass {
             }
         }
         res.setStatusCode(404);
-        res.setResponse("Missing id "+id+" with line "+line);
+        res.setResponseText("Missing id "+id+" with line "+line);
         return false;
     }
 
@@ -164,10 +168,10 @@ public class ReplayerAPIContent implements FilteringClass {
         if(req.getMultipartData()!=null && req.getMultipartData().size()>0) {
             file = req.getMultipartData().get(0);
         }else{
-            data = (String)req.getRequest();
+            data = (String)req.getRequestText();
         }
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer,md5Tester);
         var datasetContent = dataset.load();
 
         for (var singleLine : datasetContent.getStaticRequests()) {
@@ -183,26 +187,11 @@ public class ReplayerAPIContent implements FilteringClass {
             }
         }
         res.setStatusCode(404);
-        res.setResponse("Missing id "+id+" with line "+line);
+        res.setResponseText("Missing id "+id+" with line "+line);
         return false;
     }
 
-    private String calculateMd5(Object data) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        if(data==null){
-            return "0";
-        }
-        if(data instanceof String){
-            if(((String)data).length()==0) return "0";
-            md.update(((String)data).getBytes(StandardCharsets.UTF_8));
-        }else{
-            if(((byte[])data).length==0) return "0";
-            md.update((byte[])data);
-        }
-        byte[] digest = md.digest();
-        BigInteger bigInt = new BigInteger(1,digest);
-        return bigInt.toString(16);
-    }
+
 
 
     private boolean updated(Response res, int line, String requestOrResponse, ReplayerRow singleLine, MultipartPart file,String data) throws NoSuchAlgorithmException {
@@ -211,30 +200,30 @@ public class ReplayerAPIContent implements FilteringClass {
                 if(singleLine.getRequest().isBinaryRequest()){
                     if (file!=null && file.getByteData()!=null) {
                         singleLine.getRequest().setRequestBytes(file.getByteData());
-                        singleLine.setRequestHash(calculateMd5(file.getByteData()));
+                        singleLine.setRequestHash(md5Tester.calculateMd5(file.getByteData()));
                     }
                 }else{
                     if (file!=null && file.getByteData()!=null) {
                         singleLine.getRequest().setRequestText(new String(file.getByteData(), StandardCharsets.UTF_8));
-                        singleLine.setRequestHash(calculateMd5(file.getByteData()));
+                        singleLine.setRequestHash(md5Tester.calculateMd5(file.getByteData()));
                     }else{
                         singleLine.getRequest().setRequestText(data);
-                        singleLine.setRequestHash(calculateMd5(data.getBytes(StandardCharsets.UTF_8)));
+                        singleLine.setRequestHash(md5Tester.calculateMd5(data.getBytes(StandardCharsets.UTF_8)));
                     }
                 }
             } else if ("response".equalsIgnoreCase(requestOrResponse)) {
                 if(singleLine.getResponse().isBinaryResponse()){
                     if (file!=null && file.getByteData()!=null) {
                         singleLine.getResponse().setResponseBytes(file.getByteData());
-                        singleLine.setResponseHash(calculateMd5(file.getByteData()));
+                        singleLine.setResponseHash(md5Tester.calculateMd5(file.getByteData()));
                     }
                 }else{
                     if (file!=null && file.getByteData()!=null) {
                         singleLine.getResponse().setResponseText(new String(file.getByteData(), StandardCharsets.UTF_8));
-                        singleLine.setResponseHash(calculateMd5(file.getByteData()));
+                        singleLine.setResponseHash(md5Tester.calculateMd5(file.getByteData()));
                     }else{
                         singleLine.getResponse().setResponseText(data);
-                        singleLine.setResponseHash(calculateMd5(data.getBytes(StandardCharsets.UTF_8)));
+                        singleLine.setResponseHash(md5Tester.calculateMd5(data.getBytes(StandardCharsets.UTF_8)));
                     }
                 }
             }

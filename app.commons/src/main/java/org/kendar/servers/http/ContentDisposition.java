@@ -643,28 +643,24 @@ public class ContentDisposition {
         }
 
         @Override
-        @SuppressWarnings("deprecation")
         public Builder size(Long size) {
             this.size = size;
             return this;
         }
 
         @Override
-        @SuppressWarnings("deprecation")
         public Builder creationDate(String creationDate) {
             this.creationDate = creationDate;
             return this;
         }
 
         @Override
-        @SuppressWarnings("deprecation")
         public Builder modificationDate(String modificationDate) {
             this.modificationDate = modificationDate;
             return this;
         }
 
         @Override
-        @SuppressWarnings("deprecation")
         public Builder readDate(String readDate) {
             this.readDate = readDate;
             return this;

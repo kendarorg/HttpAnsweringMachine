@@ -1,16 +1,14 @@
 package org.kendar.replayer.storage;
 
 import org.kendar.servers.http.Request;
-import org.kendar.servers.http.SerializableRequest;
-import org.kendar.servers.http.SerializableResponse;
+import org.kendar.servers.http.Response;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class ReplayerRow {
     private Calendar timestamp = Calendar.getInstance();
-    private SerializableRequest request;
-    private SerializableResponse response;
+    private Request request;
+    private Response response;
     private String requestHash;
     private String responseHash;
     private int id;
@@ -23,19 +21,19 @@ public class ReplayerRow {
         this.timestamp = timestamp;
     }
 
-    public SerializableRequest getRequest() {
+    public Request getRequest() {
         return request;
     }
 
-    public void setRequest(SerializableRequest request) {
+    public void setRequest(Request request) {
         this.request = request;
     }
 
-    public SerializableResponse getResponse() {
+    public Response getResponse() {
         return response;
     }
 
-    public void setResponse(SerializableResponse response) {
+    public void setResponse(Response response) {
         this.response = response;
     }
 

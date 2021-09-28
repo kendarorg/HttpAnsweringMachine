@@ -19,7 +19,7 @@ import java.util.ArrayList;
         blocking = true)
 public class DnsServersApis implements FilteringClass {
     ObjectMapper mapper = new ObjectMapper();
-    private DnsMultiResolver dnsMultiResolver;
+    private final DnsMultiResolver dnsMultiResolver;
 
     public DnsServersApis(DnsMultiResolver dnsMultiResolver){
 
@@ -37,7 +37,7 @@ public class DnsServersApis implements FilteringClass {
     public boolean getExtraServers(Request req, Response res) throws JsonProcessingException {
         var dnsServeres = dnsMultiResolver.getExtraServers();
         res.addHeader("Content-type", "application/json");
-        res.setResponse(mapper.writeValueAsString(dnsServeres));
+        res.setResponseText(mapper.writeValueAsString(dnsServeres));
         return false;
     }
 
@@ -51,7 +51,7 @@ public class DnsServersApis implements FilteringClass {
         for(var item:dnsServeres){
             if(item.getIp().equalsIgnoreCase(ip)){
 
-                res.setResponse(mapper.writeValueAsString(item));
+                res.setResponseText(mapper.writeValueAsString(item));
                 return false;
             }
         }
@@ -62,7 +62,7 @@ public class DnsServersApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/servers/{ip}",
             method = "DELETE")
-    public boolean removeDnsServer(Request req, Response res) throws JsonProcessingException {
+    public boolean removeDnsServer(Request req, Response res) {
         var dnsServeres = dnsMultiResolver.getExtraServers();
         var id = (req.getPathParameter("ip"));
         res.addHeader("Content-type", "application/json");
@@ -71,7 +71,7 @@ public class DnsServersApis implements FilteringClass {
             if(item.getIp().equalsIgnoreCase(id)){continue;}
             newList.add(item);
         }
-        dnsMultiResolver.setExtraServers(dnsServeres);
+        dnsMultiResolver.setExtraServers(newList);
         res.setStatusCode(200);
         return false;
     }
@@ -84,7 +84,7 @@ public class DnsServersApis implements FilteringClass {
         var ip = (req.getPathParameter("ip"));
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<DnsServerDescriptor>();
-        var newData = mapper.readValue((String)req.getRequest(),DnsServerDescriptor.class);
+        var newData = mapper.readValue((String)req.getRequestText(),DnsServerDescriptor.class);
         for(var item:dnsServeres){
             var clone = item.clone();
             if(!clone.getIp().equalsIgnoreCase(ip)){
@@ -104,7 +104,7 @@ public class DnsServersApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/servers/swap/{ip1}/{ip2}",
             method = "PUT")
-    public boolean swapDnsServer(Request req, Response res) throws JsonProcessingException {
+    public boolean swapDnsServer(Request req, Response res) {
         var dnsServeres = dnsMultiResolver.getExtraServers();
         var ip1 = (req.getPathParameter("ip1"));
         var ip2 = (req.getPathParameter("ip2"));
@@ -134,7 +134,7 @@ public class DnsServersApis implements FilteringClass {
         var id = (req.getPathParameter("id"));
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<DnsServerDescriptor>();
-        var newData = mapper.readValue((String)req.getRequest(),DnsServerDescriptor.class);
+        var newData = mapper.readValue((String)req.getRequestText(),DnsServerDescriptor.class);
 
         for(var item:dnsServeres){
             newList.add( item.clone());

@@ -26,7 +26,7 @@ public class ForwardRequestsTest {
         var env = new EnvironmentImpl();
         var multiResolver = new DnsMultiResolverImpl(env,loggerBuilder);
         var simpleProxy = new SimpleProxyHandlerImpl(loggerBuilder,multiResolver,env);
-        var answerer = new AnsweringHandlerImpl(loggerBuilder,multiResolver,null,simpleProxy);
+        var answerer = new AnsweringHandlerImpl(loggerBuilder,multiResolver,null,simpleProxy,null);
         var server = new AnsweringHttpServer(loggerBuilder,answerer);
         server.setPort(20084);
 
@@ -44,8 +44,6 @@ public class ForwardRequestsTest {
         InputStream in = responseEntity.getContent();
 
         String body = IOUtils.toString(in, StandardCharsets.UTF_8);
-        //System.out.println(body);
-        //Assert.assertEquals(body,"{\"headers\":{\"Accept-encoding\":\"gzip,deflate\",\"Content-type\":\"application/x-www-form-urlencoded; charset=UTF-8\",\"Connection\":\"Keep-Alive\",\"Host\":\"localhost:20080\",\"Content-length\":\"25\",\"User-agent\":\"Apache-HttpClient/4.5.13 (Java/11.0.2)\"},\"query\":{},\"postParameters\":{\"foo\":\"bar\",\"employee\":\"John Doe\"},\"host\":\"localhost\",\"path\":\"/fuffa\",\"port\":20080,\"protocol\":\"http\",\"staticRequest\":false,\"binaryRequest\":false,\"soapRequest\":false,\"headerContentType\":\"application/x-www-form-urlencoded; charset=UTF-8\",\"headerSoapAction\":null,\"headerAuthorization\":null,\"basicUsername\":null,\"basicPassword\":null,\"method\":\"POST\",\"sanitizedPath\":\"localhost/fuffa\",\"multipart\":false,\"multipartData\":[],\"request\":null}");
         server.stop();
         Assert.assertTrue(body.contains("twitter"));
         Assert.assertTrue(body.contains("Microsoft"));

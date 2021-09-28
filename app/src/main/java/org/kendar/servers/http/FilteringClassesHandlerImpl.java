@@ -13,11 +13,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Component
 public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
-    private List<CustomFilters> customFilterLoaders;
-    private Environment environment;
-    private HashMap<HttpFilterType, ConcurrentLinkedQueue<FilterDescriptor>> filters = new HashMap<>();
-    private ConcurrentHashMap<String,FilterDescriptor> filtersById = new ConcurrentHashMap<>();
-    class PrioritySorter implements Comparator<FilterDescriptor>
+    private final List<CustomFilters> customFilterLoaders;
+    private final Environment environment;
+    private final HashMap<HttpFilterType, ConcurrentLinkedQueue<FilterDescriptor>> filters = new HashMap<>();
+    private final ConcurrentHashMap<String,FilterDescriptor> filtersById = new ConcurrentHashMap<>();
+    static class PrioritySorter implements Comparator<FilterDescriptor>
     {
         @Override
         public int compare(FilterDescriptor o1, FilterDescriptor o2) {
@@ -25,8 +25,7 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
         }
     }
 
-    public FilteringClassesHandlerImpl(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-                                               List<CustomFilters> customFilterLoaders,Environment environment){
+    public FilteringClassesHandlerImpl(List<CustomFilters> customFilterLoaders,Environment environment){
 
         this.customFilterLoaders = customFilterLoaders;
         this.environment = environment;
@@ -44,18 +43,12 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
         filters.put(HttpFilterType.POST_CALL,new ConcurrentLinkedQueue<>());
         filters.put(HttpFilterType.POST_RENDER,new ConcurrentLinkedQueue<>());
 
-            for (var filterLoader : customFilterLoaders) {
-                for (var ds : filterLoader.loadFilters()) {
-                    filters.get(ds.getPhase()).add(ds);
-                    filtersById.put(ds.getId(), ds);
-                }
-            }
-
-        /*var prioritySorter = new PrioritySorter();
-        for (var filterList :
-                filters.entrySet()) {
-            filterList.getValue().sort(prioritySorter);
-        }*/
+    for (var filterLoader : customFilterLoaders) {
+        for (var ds : filterLoader.loadFilters()) {
+            filters.get(ds.getPhase()).add(ds);
+            filtersById.put(ds.getId(), ds);
+        }
+    }
     }
 
     @Override

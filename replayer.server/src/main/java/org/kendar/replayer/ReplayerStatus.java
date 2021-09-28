@@ -3,21 +3,17 @@ package org.kendar.replayer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
+import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
-import org.kendar.servers.http.SerializableResponse;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Component
 public class ReplayerStatus {
@@ -26,15 +22,18 @@ public class ReplayerStatus {
     private ReplayerState state = ReplayerState.NONE;
     @Value("${replayer.data:replayerdata}")
     private String replayerData;
-    private LoggerBuilder loggerBuilder;
-    private DataReorganizer dataReorganizer;
-    private FileResourcesUtils fileResourcesUtils;
+    private final LoggerBuilder loggerBuilder;
+    private final DataReorganizer dataReorganizer;
+    private final FileResourcesUtils fileResourcesUtils;
+    private Md5Tester md5Tester;
 
-    public ReplayerStatus(LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer, FileResourcesUtils fileResourcesUtils){
+    public ReplayerStatus(LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer,
+                          FileResourcesUtils fileResourcesUtils, Md5Tester md5Tester){
 
         this.loggerBuilder = loggerBuilder;
         this.dataReorganizer = dataReorganizer;
         this.fileResourcesUtils = fileResourcesUtils;
+        this.md5Tester = md5Tester;
     }
 
     public void startRecording( String id,String description) throws IOException {
@@ -44,11 +43,11 @@ public class ReplayerStatus {
         }
         if(state!=ReplayerState.NONE)return;
         state = ReplayerState.RECORDING;
-        dataset = new ReplayerDataset(id,rootPath.toString(),description,loggerBuilder,dataReorganizer);
+        dataset = new ReplayerDataset(id,rootPath.toString(),description,loggerBuilder,dataReorganizer,md5Tester);
     }
 
     private static final String MAIN_FILE ="runall.json";
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
 
     public void addRequest(Request req, Response res) throws Exception {
@@ -61,9 +60,16 @@ public class ReplayerStatus {
 
     public boolean replay(Request req, Response res) {
         if(state!=ReplayerState.REPLAYING)return false;
-        SerializableResponse response = dataset.findResponse(req);
+        Response response = dataset.findResponse(req);
         if(response!=null){
-            Response.fromSerializable(res,response);
+            res.setBinaryResponse(response.isBinaryResponse());
+            if(response.isBinaryResponse()){
+                res.setResponseBytes(response.getResponseBytes());
+            }else{
+                res.setResponseText(response.getResponseText());
+            }
+            res.setHeaders(response.getHeaders());
+            res.setStatusCode(response.getStatusCode());
             return true;
         }
         return false;
@@ -105,7 +111,7 @@ public class ReplayerStatus {
         }
         if(state!=ReplayerState.NONE)return;
         state = ReplayerState.REPLAYING;
-        dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer);
+        dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer,md5Tester);
         dataset.load();
     }
 

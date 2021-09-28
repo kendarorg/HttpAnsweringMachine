@@ -82,16 +82,14 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
                 result = result.substring(0,result.length()-1);
             }
             for (var i = 1; i < paths.length; i++) {
-                if (i > 0) {
-                    var cur = paths[i];
-                    while(cur.endsWith("/") || cur.endsWith("\\")){
-                        cur = cur.substring(0,cur.length()-1);
-                    }
-                    while(cur.startsWith("/")|| cur.startsWith("\\")){
-                        cur = cur.substring(1);
-                    }
-                    result += File.separator + cur;
+                var cur = paths[i];
+                while(cur.endsWith("/") || cur.endsWith("\\")){
+                    cur = cur.substring(0,cur.length()-1);
                 }
+                while(cur.startsWith("/")|| cur.startsWith("\\")){
+                    cur = cur.substring(1);
+                }
+                result += File.separator + cur;
             }
             var fpResult = result.replace('\\','/');
             var fp = new URI(fpResult);
@@ -107,7 +105,7 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
             }
             return returnValue;
         }catch(Exception ex){
-            return returnValue;
+            return null;
         }
     }
 }

@@ -26,20 +26,21 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     private final String localHostAddress;
     @Value("${dns.extraServers:8.8.8.8}")
     private String[] extraServers;
+    @Value("${dns.blocker}")
+    private String[] blocker;
     //private List<String> extraServersReal = new ArrayList<>();
-    private AtomicReference<List<DnsServerDescriptor>> extraServersReal = new AtomicReference<>();
+    private final AtomicReference<List<DnsServerDescriptor>> extraServersReal = new AtomicReference<>();
     @Value("${localhost.name:www.local.org}")
     private String localHostName;
 
-    private ConcurrentHashMap<String,BlockedLoop> blockedLoops = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,BlockedLoop> blockedLoops = new ConcurrentHashMap<>();
 
     @Value("${dns.logging.query:false}")
     private boolean dnsLogginQuery;
-    private ConcurrentHashMap<String,List<String>> domains = new ConcurrentHashMap<>();
-    private Set<String> uncallable = new HashSet<>();
+    private final ConcurrentHashMap<String,List<String>> domains = new ConcurrentHashMap<>();
 
-    private List<PatternItem> dnsRecords = new ArrayList<>();
-    private Environment environment;
+    private final List<PatternItem> dnsRecords = new ArrayList<>();
+    private final Environment environment;
 
     public DnsMultiResolverImpl(Environment environment, LoggerBuilder loggerBuilder){
         this.environment = environment;
@@ -56,7 +57,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         extraServersReal.set(extraServers);
     }
 
-    private Pattern ipPattern = Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
+    private final Pattern ipPattern = Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
     @PostConstruct
     public void init(){
         String hostsFile="";
@@ -199,26 +200,28 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
 
     public void verify(){
-        /*logger.info("Verify Dns servers");
-        List<Callable<List<String>>> runnables = new ArrayList<>();
-        for(int i = 0; i< extraServersReal.size(); i++){
-            var serverToCall = extraServersReal.get(i);
 
-            try {
-                testDnsServer(serverToCall);
-            }catch(Exception ex){
-                //Ignore localhost server when not working
-                if(serverToCall.startsWith("127")||serverToCall.equalsIgnoreCase(localHostAddress)){
-                    uncallable.add(serverToCall);
-                    logger.info("Inhibited DNS Server "+serverToCall);
-                }
-            }
-        }*/
     }
 
     @Override
     public List<String> resolveRemote(String requestedDomain,boolean fromLocalHost) {
-
+        var shouldBlock = false;
+        for (var blocked : this.blocker) {
+            if(blocked.endsWith("*")){
+                if(requestedDomain.startsWith(blocked.substring(0,blocked.length()-1))){
+                    shouldBlock = true;
+                }
+            }else if(blocked.startsWith("*")){
+                if(requestedDomain.endsWith(blocked.substring(1))){
+                    shouldBlock = true;
+                }
+            }else if(requestedDomain.contains(blocked)){
+                shouldBlock = true;
+            }
+            if(shouldBlock){
+                return new ArrayList<>();
+            }
+        }
         if(fromLocalHost) {
             BlockedLoop loop=null;
             if (blockedLoops.containsKey(requestedDomain)) {
@@ -244,8 +247,6 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         var extraServersList = getExtraServers();
         for(int i = 0; i< extraServersList.size(); i++){
             var serverToCall = extraServersList.get(i);
-            if(uncallable.contains(serverToCall.getIp())) continue;
-            //logger.info(serverToCall+" "+requestedDomain);
             var runnable = new DnsRunnable(serverToCall.getIp(),requestedDomain);
             runnables.add(runnable);
         }

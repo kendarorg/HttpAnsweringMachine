@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Component
 public class SimpleProxyPropertiesHelper extends PropertiesHelper {
-    private Environment environment;
+    private final Environment environment;
 
     public SimpleProxyPropertiesHelper(Environment environment, ApplicationContext applicationContext){
         this.environment = environment;
@@ -21,7 +21,7 @@ public class SimpleProxyPropertiesHelper extends PropertiesHelper {
     }
 
     private String simpleProxyPath;
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
     @Override
     public void loadProperties(Map<String, Object> propMap, PropertiesManager propertiesManager) {

@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Component
 public class OidcPropertiesHelper extends PropertiesHelper {
-    private Environment environment;
+    private final Environment environment;
 
     public OidcPropertiesHelper(Environment environment, ApplicationContext applicationContext){
         this.environment = environment;

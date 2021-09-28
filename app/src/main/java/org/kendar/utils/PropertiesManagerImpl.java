@@ -19,8 +19,8 @@ import java.util.Properties;
 @Component
 public class PropertiesManagerImpl implements PropertiesManager{
     @Autowired
-    private Environment environment;
-    private List<PropertiesHelper> propertiesHelperList;
+    private final Environment environment;
+    private final List<PropertiesHelper> propertiesHelperList;
 
     public PropertiesManagerImpl(Environment environment, List<PropertiesHelper> propertiesHelperList){
         this.environment = environment;
@@ -47,13 +47,15 @@ public class PropertiesManagerImpl implements PropertiesManager{
                 prop.setProperty(kvp.getKey(),kvp.getValue());
             }
         }
-        try (OutputStream output = new FileOutputStream(overriderProperty)) {
-            // save properties to project root folder
-            prop.store(output, null);
-            System.out.println(prop);
+        if(overriderProperty!=null) {
+            try (OutputStream output = new FileOutputStream(overriderProperty)) {
+                // save properties to project root folder
+                prop.store(output, null);
+                System.out.println(prop);
 
-        } catch (IOException io) {
-            io.printStackTrace();
+            } catch (IOException io) {
+                io.printStackTrace();
+            }
         }
     }
 
@@ -62,7 +64,7 @@ public class PropertiesManagerImpl implements PropertiesManager{
         if(overriderProperty==null || overriderProperty.length()==0){
             overriderProperty = "external.properties";
         }
-        if(overriderProperty==null || overriderProperty.length()==0 || !Files.exists(Path.of(overriderProperty))){
+        if(!Files.exists(Path.of(overriderProperty))){
             overriderProperty=null;
         }
         return overriderProperty;

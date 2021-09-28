@@ -4,9 +4,9 @@ import java.util.regex.Pattern;
 
 public class PatternItem {
     private Pattern compile;
-    private String ip;
+    private final String ip;
     private String name;
-    private String matcher;
+    private final String matcher;
 
     public PatternItem(String dns, String ip) {
         if(dns.startsWith("@")){

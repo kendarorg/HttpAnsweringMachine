@@ -11,8 +11,8 @@ import java.util.Map;
 
 @Component
 public class DerbyPropertiesHelper extends PropertiesHelper {
-    private Environment environment;
-    private ApplicationContext applicationContext;
+    private final Environment environment;
+    private final ApplicationContext applicationContext;
 
     public DerbyPropertiesHelper(Environment environment, ApplicationContext applicationContext){
         this.environment = environment;

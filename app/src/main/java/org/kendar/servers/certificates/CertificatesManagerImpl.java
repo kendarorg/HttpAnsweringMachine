@@ -35,7 +35,7 @@ import java.util.List;
 @Component
 public class CertificatesManagerImpl implements CertificatesManager{
     private final Logger logger;
-    private FileResourcesUtils fileResourcesUtils;
+    private final FileResourcesUtils fileResourcesUtils;
     private GeneratedCert caCertificate;
 
     public CertificatesManagerImpl(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder){
@@ -57,7 +57,7 @@ public class CertificatesManagerImpl implements CertificatesManager{
     }
 
     @Override
-    public GeneratedCert loadRootCertificate(String derFile, String keyFile) throws CertificateException, IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public GeneratedCert loadRootCertificate(String derFile, String keyFile) throws CertificateException, IOException {
         var caStream = fileResourcesUtils.getFileFromResourceAsStream(derFile);
         var certificateFactory = CertificateFactory.getInstance("X.509");
         var certificate = (X509Certificate)certificateFactory.generateCertificate(caStream);
@@ -86,8 +86,6 @@ public class CertificatesManagerImpl implements CertificatesManager{
 
         // If you issue more than just test certificates, you might want a decent serial number schema ^.^
         BigInteger serialNumber = BigInteger.valueOf(System.currentTimeMillis());
-        //String x = UUID.randomUUID().toString().replaceAll("-","");
-        //BigInteger serialNumber = new BigInteger(x, 16);
         Instant now = Instant.now();
         Instant validFrom = now.minus(360, ChronoUnit.DAYS);
         Instant validUntil = now.plus(10 * 360, ChronoUnit.DAYS);

@@ -9,25 +9,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Component
 public class AnsweringDerbyServer implements AnsweringServer{
     public void isSystem(){};
-    private  Logger logger;
-    private List<DerbyApplication> applicationList;
-    private Environment environment;
-    private FileResourcesUtils fileResourcesUtils;
+    private final Logger logger;
+    private final List<DerbyApplication> applicationList;
+    private final Environment environment;
+    private final FileResourcesUtils fileResourcesUtils;
 
     public AnsweringDerbyServer(LoggerBuilder loggerBuilder,
-                                @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") List<DerbyApplication> applicationList, Environment environment,
+                                List<DerbyApplication> applicationList, Environment environment,
                                 FileResourcesUtils fileResourcesUtils){
         logger = loggerBuilder.build(AnsweringDerbyServer.class);
         this.applicationList = applicationList;
@@ -38,7 +36,7 @@ public class AnsweringDerbyServer implements AnsweringServer{
     private int port;
     private boolean running =false;
     @Value( "${derby.enabled:true}" )
-    private boolean enabled =true;
+    private final boolean enabled =true;
     @Value("${derby.root.user:root")
     private String rootUser;
     @Value("${derby.root.password:root")
@@ -54,7 +52,7 @@ public class AnsweringDerbyServer implements AnsweringServer{
         if(running)return;
         if(!enabled)return;
         running=true;
-        NetworkServerControl nsc = null;
+        NetworkServerControl nsc;
         try {
             //https://www.vogella.com/tutorials/ApacheDerby/article.html
             Class.forName(derbyDriver);

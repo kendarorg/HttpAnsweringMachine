@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Component
 public class ReplayerPropertiesHelper extends PropertiesHelper {
-    private Environment environment;
+    private final Environment environment;
 
     public ReplayerPropertiesHelper(Environment environment, ApplicationContext applicationContext){
         this.environment = environment;

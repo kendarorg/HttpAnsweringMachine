@@ -14,16 +14,16 @@ import java.util.concurrent.Executors;
 public class AnsweringHttpServer implements AnsweringServer {
     public void isSystem(){};
     private final Logger logger;
-    private AnsweringHandler handler;
+    private final AnsweringHandler handler;
     private boolean running =false;
     @Value( "${http.enabled:true}" )
-    private boolean enabled =true;
+    private final boolean enabled =true;
     @Value( "${http.backlog:50}" )
     private int backlog;
     @Value( "${http.port:80}" )
     private int port;
     @Value( "${http.useCachedExecutor:true}" )
-    private boolean useCachedExecutor = false;
+    private final boolean useCachedExecutor = false;
     private HttpServer httpServer;
 
 

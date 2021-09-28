@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Component
 public class JsFilterPropertiesHelper extends PropertiesHelper {
-    private Environment environment;
+    private final Environment environment;
 
     public JsFilterPropertiesHelper(Environment environment, ApplicationContext applicationContext){
         this.environment = environment;

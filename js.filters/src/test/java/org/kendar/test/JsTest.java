@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JsTest {
-    private static String contextFoo ="// Define the Foo module\n" +
+    private static final String contextFoo ="// Define the Foo module\n" +
             "var Foo = (function() {\n" +
             "   function fib(n) {\n" +
             "       if(n <= 1) return n;\n" +
@@ -42,7 +42,7 @@ public class JsTest {
         }
     }*/
 
-    private static String scriptSource="result.put('result', fib(NUM_CONST).toString());\n" +
+    private static final String scriptSource="result.put('result', fib(NUM_CONST).toString());\n" +
             "function fib(n) {\n" +
             " if(n <= 1) return n;\n" +
             "return fib(n-1) + fib(n-2);\n" +
@@ -82,7 +82,7 @@ public class JsTest {
         }
     }
 
-    public Script compileNoResult(String src) throws IOException{
+    public Script compileNoResult(String src) {
         Context cx = Context.enter();
         cx.setOptimizationLevel(9);
         cx.setLanguageVersion(Context.VERSION_1_8);
@@ -101,7 +101,7 @@ public class JsTest {
     }
 
 
-    public void execute(String src) throws IOException {
+    public void execute(String src) {
         Context cx = Context.enter();
         cx.setOptimizationLevel(9);
         cx.setLanguageVersion(Context.VERSION_1_8);
@@ -123,7 +123,7 @@ public class JsTest {
         }
     }
 
-    private static int NUM_CONST = 20;
+    private static final int NUM_CONST = 20;
     private Scriptable getNewScope(Context cx) {
         //global scope lazy initialization
         if (globalScope == null) {

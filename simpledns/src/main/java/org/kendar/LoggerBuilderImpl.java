@@ -9,11 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class LoggerBuilderImpl implements LoggerBuilder {
-    private ConcurrentHashMap<String,Logger> loggers = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,Logger> loggers = new ConcurrentHashMap<>();
     @Override
     public Logger build(Class<?> toLogClass) {
-        return loggers.computeIfAbsent(toLogClass.getCanonicalName(),s -> {
-            return LoggerFactory.getLogger(toLogClass);
-        });
+        return loggers.computeIfAbsent(toLogClass.getCanonicalName(),s -> LoggerFactory.getLogger(toLogClass));
     }
 }

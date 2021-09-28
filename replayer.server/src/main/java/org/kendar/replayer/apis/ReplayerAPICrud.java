@@ -13,6 +13,7 @@ import org.kendar.replayer.apis.models.LocalRecording;
 import org.kendar.replayer.apis.models.ScriptData;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerResult;
+import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.RequestUtils;
 import org.kendar.servers.http.Response;
@@ -36,21 +37,23 @@ import java.util.Locale;
         blocking = true)
 public class ReplayerAPICrud implements FilteringClass {
     private final Logger logger;
-    private ReplayerStatus replayerStatus;
+    private final ReplayerStatus replayerStatus;
+    private Md5Tester md5Tester;
     ObjectMapper mapper = new ObjectMapper();
     @Value("${replayer.data:replayerdata}")
     private String replayerData;
 
-    private FileResourcesUtils fileResourcesUtils;
-    private LoggerBuilder loggerBuilder;
+    private final FileResourcesUtils fileResourcesUtils;
+    private final LoggerBuilder loggerBuilder;
 
-    public ReplayerAPICrud(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder, ReplayerStatus replayerStatus){
+    public ReplayerAPICrud(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder, ReplayerStatus replayerStatus, Md5Tester md5Tester){
 
         this.fileResourcesUtils = fileResourcesUtils;
 
         this.loggerBuilder = loggerBuilder;
         this.logger = loggerBuilder.build(ReplayerAPICrud.class);
         this.replayerStatus = replayerStatus;
+        this.md5Tester = md5Tester;
     }
 
     @Override
@@ -70,7 +73,7 @@ public class ReplayerAPICrud implements FilteringClass {
             if(pathname.toLowerCase(Locale.ROOT).endsWith(".json")){
                 var lr = new LocalRecording();
                 var tocheck = pathname.substring(0,pathname.length()-5);
-                lr.setId(pathname.substring(0,pathname.length()-5));
+                lr.setId(tocheck);
                 lr.setState(ReplayerState.NONE);
                 if(tocheck.toLowerCase(Locale.ROOT).equalsIgnoreCase(currentScript)){
                     lr.setState(replayerStatus.getStatus());
@@ -80,7 +83,7 @@ public class ReplayerAPICrud implements FilteringClass {
 
         }
         res.addHeader("Content-type","application/json");
-        res.setResponse(mapper.writeValueAsString(listOfItems));
+        res.setResponseText(mapper.writeValueAsString(listOfItems));
         return false;
     }
 
@@ -92,11 +95,11 @@ public class ReplayerAPICrud implements FilteringClass {
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null);
+        var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,null,md5Tester);
         var datasetContent = dataset.load();
         ListAllRecordList result = new ListAllRecordList(datasetContent,id);
         res.addHeader("Content-type","application/json");
-        res.setResponse(mapper.writeValueAsString(result));
+        res.setResponseText(mapper.writeValueAsString(result));
         return false;
     }
 
@@ -126,7 +129,7 @@ public class ReplayerAPICrud implements FilteringClass {
         if(Files.exists(rootPath)){
             var fileContent = Files.readString(rootPath);
             var result = mapper.readValue(fileContent,ReplayerResult.class);
-            var scriptData = mapper.readValue((String)req.getRequest(), ScriptData.class);
+            var scriptData = mapper.readValue((String)req.getRequestText(), ScriptData.class);
             result.setDescription(scriptData.getDescription());
             result.setFilter(scriptData.getFilter());
             var resultInFile = mapper.writeValueAsString(result);
@@ -142,7 +145,7 @@ public class ReplayerAPICrud implements FilteringClass {
     public boolean uploadRecording(Request req, Response res) throws Exception {
 
         if(req.getMultipartData()!=null && req.getMultipartData().size()==0){
-            var scriptName = (String)req.getRequest();
+            var scriptName = (String)req.getRequestText();
             var crud = new ReplayerResult();
             crud.setDescription(scriptName);
             crud.setDynamicRequests(new ArrayList<>());
