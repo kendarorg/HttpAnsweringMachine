@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.net.*;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,7 +31,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     @Value("${localhost.name:www.local.org}")
     private String localHostName;
 
-    private ConcurrentHashMap<String,Integer> blockedLoops = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String,BlockedLoop> blockedLoops = new ConcurrentHashMap<>();
 
     @Value("${dns.logging.query:false}")
     private boolean dnsLogginQuery;
@@ -217,19 +218,26 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
     @Override
     public List<String> resolveRemote(String requestedDomain,boolean fromLocalHost) {
-        var computed = 1;
+
         if(fromLocalHost) {
+            BlockedLoop loop=null;
             if (blockedLoops.containsKey(requestedDomain)) {
-                var val = blockedLoops.get(requestedDomain);
-                blockedLoops.put(requestedDomain, val + 1);
-                computed = val + 1;
+                loop = blockedLoops.get(requestedDomain);
+                var currentTime = Calendar.getInstance().getTimeInMillis();
+                if(currentTime > (loop.timestamp+60*1000)) {
+                    blockedLoops.remove(requestedDomain);
+                }else{
+                    loop.count++;
+                    if (loop.count > 4) {
+                        logger.info("Blocked dns Loop " + requestedDomain);
+                        return new ArrayList<>();
+                    }
+                }
             } else {
-                blockedLoops.put(requestedDomain, computed);
+                blockedLoops.put(requestedDomain,
+                        new BlockedLoop(Calendar.getInstance().getTimeInMillis()));
             }
-            if(computed>4){
-                logger.info("Blocked dns Loop "+requestedDomain);
-                return new ArrayList<>();
-            }
+
         }
         var data = new HashSet<String>();
         List<Callable<List<String>>> runnables = new ArrayList<>();
