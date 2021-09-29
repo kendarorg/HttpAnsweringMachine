@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.net.*;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,8 +31,6 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     private final AtomicReference<List<DnsServerDescriptor>> extraServersReal = new AtomicReference<>();
     @Value("${localhost.name:www.local.org}")
     private String localHostName;
-
-    private final ConcurrentHashMap<String,BlockedLoop> blockedLoops = new ConcurrentHashMap<>();
 
     @Value("${dns.logging.query:false}")
     private boolean dnsLogginQuery;
@@ -205,43 +202,10 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
     @Override
     public List<String> resolveRemote(String requestedDomain,boolean fromLocalHost) {
-        var shouldBlock = false;
-        for (var blocked : this.blocker) {
-            if(blocked.endsWith("*")){
-                if(requestedDomain.startsWith(blocked.substring(0,blocked.length()-1))){
-                    shouldBlock = true;
-                }
-            }else if(blocked.startsWith("*")){
-                if(requestedDomain.endsWith(blocked.substring(1))){
-                    shouldBlock = true;
-                }
-            }else if(requestedDomain.contains(blocked)){
-                shouldBlock = true;
-            }
-            if(shouldBlock){
-                return new ArrayList<>();
-            }
+        if(isBlockedDomainQuery(requestedDomain)){
+            return new ArrayList<>();
         }
-        if(fromLocalHost) {
-            BlockedLoop loop=null;
-            if (blockedLoops.containsKey(requestedDomain)) {
-                loop = blockedLoops.get(requestedDomain);
-                var currentTime = Calendar.getInstance().getTimeInMillis();
-                if(currentTime > (loop.timestamp+60*1000)) {
-                    blockedLoops.remove(requestedDomain);
-                }else{
-                    loop.count++;
-                    if (loop.count > 4) {
-                        logger.info("Blocked dns Loop " + requestedDomain);
-                        return new ArrayList<>();
-                    }
-                }
-            } else {
-                blockedLoops.put(requestedDomain,
-                        new BlockedLoop(Calendar.getInstance().getTimeInMillis()));
-            }
 
-        }
         var data = new HashSet<String>();
         List<Callable<List<String>>> runnables = new ArrayList<>();
         var extraServersList = getExtraServers();
@@ -310,6 +274,27 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
             }
         }
         return result;
+    }
+
+    private boolean isBlockedDomainQuery(String requestedDomain) {
+        var shouldBlock = false;
+        for (var blocked : this.blocker) {
+            if(blocked.endsWith("*")){
+                if(requestedDomain.startsWith(blocked.substring(0,blocked.length()-1))){
+                    shouldBlock = true;
+                }
+            }else if(blocked.startsWith("*")){
+                if(requestedDomain.endsWith(blocked.substring(1))){
+                    shouldBlock = true;
+                }
+            }else if(requestedDomain.contains(blocked)){
+                shouldBlock = true;
+            }
+            if(shouldBlock){
+                break;
+            }
+        }
+        return shouldBlock;
     }
 
     @Override

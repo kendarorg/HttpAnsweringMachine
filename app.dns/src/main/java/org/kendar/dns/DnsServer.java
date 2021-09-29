@@ -5,6 +5,12 @@ import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.LoggerBuilder;
@@ -76,6 +82,8 @@ public class DnsServer {
         return buildErrorMessage(query.getHeader(), rcode, query.getQuestion());
     }
 
+    private ConcurrentHashMap<String,Integer> loopBlocker = new ConcurrentHashMap<>();
+
     private void resolveAll(DatagramPacket indp,DatagramSocket socket, byte[] in) {
         try {
             // Build the response
@@ -84,10 +92,21 @@ public class DnsServer {
             Message response = new Message(request.getHeader().getID());
             String requestedDomain = request.getQuestion().getName().toString(true);
             logger.debug("Requested domain "+requestedDomain);
+
+            List<String> ips = new ArrayList<>();
+
+
             response.addRecord(request.getQuestion(), Section.QUESTION);
             var fromLocalHost = indp.getAddress().toString().contains("127.0.0.1");
 
-            var ips = this.multiResolver.resolve(requestedDomain,fromLocalHost);
+            if(fromLocalHost) {
+                if(!requestedDomain.equals(requestedDomain.toUpperCase(Locale.ROOT))){
+                    ips = this.multiResolver.resolve(requestedDomain.toUpperCase(Locale.ROOT), fromLocalHost);
+                }
+            }else{
+                ips = this.multiResolver.resolve(requestedDomain, fromLocalHost);
+            }
+
             byte[] resp = new byte[0];
             if(ips.size()>0) {
                 for (String ip : ips) {
