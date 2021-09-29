@@ -24,14 +24,14 @@ public class CertitificatesGeneratorTest {
     @Test
     public void loadRootCertificate() throws Exception {
         var loggerBuilder = new LoggerBuilderImpl();
-        var resourcesLoader = new FileResourcesUtilsImpl();
+        var resourcesLoader = new FileResourcesUtilsImpl(loggerBuilder);
         var target = new CertificatesManagerImpl(resourcesLoader,loggerBuilder);
         var root = target.loadRootCertificate("certificates/ca.der","certificates/ca.key");
     }
     @Test
     public void generateFromRoot() throws Exception {
         var loggerBuilder = new LoggerBuilderImpl();
-        var resourcesLoader = new FileResourcesUtilsImpl();
+        var resourcesLoader = new FileResourcesUtilsImpl(loggerBuilder);
         var target = new CertificatesManagerImpl(resourcesLoader,loggerBuilder);
         var root = target.loadRootCertificate("certificates/ca.der","certificates/ca.key");
         var extraDomains = new ArrayList<String>();
@@ -47,7 +47,7 @@ public class CertitificatesGeneratorTest {
     @Test
     public void exportCertificate() throws Exception {
         var loggerBuilder = new LoggerBuilderImpl();
-        var resourcesLoader = new FileResourcesUtilsImpl();
+        var resourcesLoader = new FileResourcesUtilsImpl(loggerBuilder);
         var target = new CertificatesManagerImpl(resourcesLoader,loggerBuilder);
         var root = target.loadRootCertificate("certificates/ca.der","certificates/ca.key");
         var encodedBytes = root.certificate.getEncoded();
@@ -61,7 +61,7 @@ public class CertitificatesGeneratorTest {
     @Test
     public void generateMultiple() throws Exception {
         var loggerBuilder = new LoggerBuilderImpl();
-        var resourcesLoader = new FileResourcesUtilsImpl();
+        var resourcesLoader = new FileResourcesUtilsImpl(loggerBuilder);
         var target = new CertificatesManagerImpl(resourcesLoader,loggerBuilder);
         var root = target.loadRootCertificate("certificates/ca.der","certificates/ca.key");
         var extraDomains = new ArrayList<String>();
@@ -83,7 +83,7 @@ public class CertitificatesGeneratorTest {
     @Test
     public void generateMultiple2() throws Exception {
         var loggerBuilder = new LoggerBuilderImpl();
-        var resourcesLoader = new FileResourcesUtilsImpl();
+        var resourcesLoader = new FileResourcesUtilsImpl(loggerBuilder);
         var target = new CertificatesManagerImpl(resourcesLoader,loggerBuilder);
         var root = target.loadRootCertificate("certificates/ca.der","certificates/ca.key");
         var extraDomains = new ArrayList<String>();

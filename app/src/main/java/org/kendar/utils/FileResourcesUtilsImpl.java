@@ -1,5 +1,6 @@
 package org.kendar.utils;
 
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -13,6 +14,11 @@ import java.util.stream.Stream;
 
 @Component
 public class FileResourcesUtilsImpl implements FileResourcesUtils {
+    private final Logger logger;
+
+    public FileResourcesUtilsImpl(LoggerBuilder loggerBuilder){
+        logger = loggerBuilder.build(FileResourcesUtilsImpl.class);
+    }
     // get a file from the resources folder
     // works everywhere, IDEA, unit test and JAR file.
     public InputStream getFileFromResourceAsStream(String fileName) {
@@ -105,6 +111,7 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
             }
             return returnValue;
         }catch(Exception ex){
+            logger.error(ex.getMessage(),ex);
             return null;
         }
     }
@@ -132,6 +139,7 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
 
             return result;
         }catch(Exception ex){
+            logger.error(ex.getMessage(),ex);
             return null;
         }
     }
