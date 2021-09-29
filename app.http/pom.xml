@@ -34,6 +34,13 @@
             <version>${apache.http.version}</version>
 
         </dependency>
+        <dependency>
+            <!--  Only bundled with java 1.6+ -->
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+            <version>1.0</version>
+
+        </dependency>
     </dependencies>
 
     <properties>

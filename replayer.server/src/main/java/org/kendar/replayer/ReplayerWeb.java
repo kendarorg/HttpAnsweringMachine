@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 @HttpTypeFilter(hostAddress = "${localhost.name}")
 public class ReplayerWeb extends StaticWebFilter {
-    @Value("${replayer.path:web}")
+    @Value("${replayer.path:*web}")
     private String path;
 
     public ReplayerWeb(FileResourcesUtils fileResourcesUtils) {
