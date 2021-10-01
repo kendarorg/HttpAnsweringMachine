@@ -19,7 +19,7 @@ Now all requests to https://www.google.com will be intercepted by the system
 
 ## On a single docker instance
 
-Supposed you can add the system as a second service on the docker image (see [Single Docker Installation](docs/dockersingle))
+Supposed you can add the system as a second service on the docker image (see [Single Docker Installation](docs/dockersingle.md))
 
 Using a docker system, you will need to add the 127.0.0.1 dns server to the docker machine
 With docker command
@@ -57,7 +57,7 @@ Now every request will go through the system
 ## On a docker system
 
 Supposing to have a running dockerfile instance in which runs the system (let's say main.local.self), you
-should set the DNS to main.local.self for its installation see [Running in docker](docs/docker)  .
+should set the DNS to main.local.self for its installation see [Running in docker](docs/docker.md)  .
 
 Of course when you do this you can't (easily) know in advance the address of main.local.self. For this reason
 you can install on the machine needing to use the system a simple dns proxy. the simpledns.jar

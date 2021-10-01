@@ -106,8 +106,8 @@ will obtain a zip file containing the data.
 Now you can browse to [https://www.local.test/api/health](https://www.local.test/api/health) (mind the 
 HTTPS! ) and you will not receive any security warning
 
-* [Proxy module](docs/proxy)
-* [Running in docker single instance](docs/dockersingle)
-* [Running in docker](docs/docker)
-* [Http/s hijack module](docs/https)
-* [Js plugins](docs/js)
+* [Proxy module](docs/proxy.md)
+* [Running in docker single instance](docs/dockersingle.md)
+* [Running in docker](docs/docker.md)
+* [Http/s hijack module](docs/https.md)
+* [Js plugins](docs/js.md)
