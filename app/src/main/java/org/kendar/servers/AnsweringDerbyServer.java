@@ -35,7 +35,7 @@ public class AnsweringDerbyServer implements AnsweringServer{
     @Value("${derby.port:1527}")
     private int port;
     private boolean running =false;
-    @Value( "${derby.enabled:true}" )
+    @Value( "${derby.enabled:false}" )
     private final boolean enabled =true;
     @Value("${derby.root.user:root")
     private String rootUser;

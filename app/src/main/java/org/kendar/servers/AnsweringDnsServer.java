@@ -17,7 +17,7 @@ public class AnsweringDnsServer implements AnsweringServer {
     private boolean running =false;
     private final Logger logger;
     private final DnsServer dnsServer;
-    @Value( "${dns.enabled:true}" )
+    @Value( "${dns.enabled:false}" )
     private boolean enabled;
 
     private final ConcurrentHashMap<String,String> missingRecords = new ConcurrentHashMap<>();

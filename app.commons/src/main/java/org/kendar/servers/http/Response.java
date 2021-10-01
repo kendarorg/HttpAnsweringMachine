@@ -8,7 +8,7 @@ public class Response {
     private byte[] responseBytes;
     private String responseText;
     private HashMap<String, String> headers = new HashMap<>();
-    private int statusCode;
+    private int statusCode = 200;
     private boolean binaryResponse;
 
     private List<String> messages = new ArrayList<>();

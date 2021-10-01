@@ -1,8 +1,8 @@
 Simple Run (all server)
-    java -cp app-1.0-SNAPSHOT.jar \
-        -Djsfilter.path=plugins -Dloader.path=lib/ \
-        -Dloader.main=org.kendar.Main -jar app-1.0-SNAPSHOT.jar\
-        org.springframework.boot.loader.PropertiesLauncher
+java -cp app-1.0-SNAPSHOT.jar \
+-Djsfilter.path=plugins -Dloader.path=lib/ \
+-Dloader.main=org.kendar.Main -jar app-1.0-SNAPSHOT.jar\
+org.springframework.boot.loader.PropertiesLauncher
 
         java "-Dloader.path=/start/services/answering/libs" -Dloader.main=org.kendar.Main -jar app-1.0-SNAPSHOT.jar \
         	 org.springframework.boot.loader.PropertiesLauncher &
@@ -13,8 +13,8 @@ Simple Run (all server)
         	 -jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher &
 
 Simple Run (dns server only)
-    java -Dother.dns=dns.google,dns.local.com \
-        -jar simpledns-1.0-SNAPSHOT.jar
+java -Dother.dns=dns.google,dns.local.com \
+-jar simpledns-1.0-SNAPSHOT.jar
 
 curl -i -H "X-TEST-OVERWRITE-HOST:https:\\www.kendar.org" -XGET "http://localhost:20080"
 
@@ -63,16 +63,16 @@ Those are the c:\Windows\System32\Drivers\etc\hosts entries
 
 @Component
 public class ReplayerDb implements DerbyApplication {
-    private Logger logger;
-    private Environment environment;
-    @Value("${replayer.db:replayer}")
-    private String dbName;
-    @Value("${derby.port:1527}")
-    private int dbPort;
-    @Value("${derby.root.user:root}")
-    private String user;
-    @Value("${derby.root.password:root}")
-    private String password;
+private Logger logger;
+private Environment environment;
+@Value("${replayer.db:replayer}")
+private String dbName;
+@Value("${derby.port:1527}")
+private int dbPort;
+@Value("${derby.root.user:root}")
+private String user;
+@Value("${derby.root.password:root}")
+private String password;
 
     public ReplayerDb(LoggerBuilder loggerBuilder, Environment environment){
         logger = loggerBuilder.build(ReplayerDb.class);
@@ -171,7 +171,7 @@ public class ReplayerDb implements DerbyApplication {
 
 curl -F 'img_avatar=@favicon.ico' http://replayer.local.org/api/plugins/replayer/recording
 curl \
-  -F "userid=1" \
-  -F "filecomment=This is an image file" \
-  -F "image=@favicon.ico" \
-  http://replayer.local.org/api/plugins/replayer/recording
+-F "userid=1" \
+-F "filecomment=This is an image file" \
+-F "image=@favicon.ico" \
+http://replayer.local.org/api/plugins/replayer/recording

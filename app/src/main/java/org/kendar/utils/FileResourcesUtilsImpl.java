@@ -37,6 +37,22 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
     }
 
     @Override
+    public byte[] getFileFromResourceAsByteArray(String fileName) throws IOException {
+        var initialStream = getFileFromResourceAsStream(fileName);
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nRead;
+        byte[] data = new byte[1024];
+        while ((nRead = initialStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+
+        buffer.flush();
+        byte[] byteArray = buffer.toByteArray();
+        buffer.close();
+        return byteArray;
+    }
+
+    @Override
     public List<String> getFileFromResourceAsString(String fileName) {
         var result = new ArrayList<String>();
         var is = getFileFromResourceAsStream(fileName);

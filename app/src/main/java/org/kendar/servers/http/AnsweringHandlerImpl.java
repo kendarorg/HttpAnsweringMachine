@@ -399,14 +399,20 @@ Access-Control-Max-Age: 86400
         }
         httpExchange.sendResponseHeaders(response.getStatusCode(), dataLength);
 
-        if(dataLength>0) {
-            OutputStream os = httpExchange.getResponseBody();
-            os.write(data);
-            os.close();
-        }else{
-            OutputStream os = httpExchange.getResponseBody();
-            os.write(new byte[0]);
-            os.close();
+        try {
+            if (dataLength > 0) {
+                OutputStream os = httpExchange.getResponseBody();
+                os.write(data);
+                os.flush();
+                os.close();
+            } else {
+                OutputStream os = httpExchange.getResponseBody();
+                os.write(new byte[0]);
+                os.flush();
+                os.close();
+            }
+        }catch(Exception ex){
+            logger.error(ex.getMessage(),ex);
         }
     }
 

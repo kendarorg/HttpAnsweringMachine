@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface FileResourcesUtils {
     InputStream getFileFromResourceAsStream(String fileName);
+    byte[] getFileFromResourceAsByteArray(String fileName) throws IOException;
     List<String> getFileFromResourceAsString(String fileName);
     File getFileFromResource(String fileName) throws URISyntaxException;
     String buildPath(String ... paths);
