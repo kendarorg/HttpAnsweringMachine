@@ -16,6 +16,8 @@ sections.
 * test: When the address is reachable use the proxy, when not reachable simply forward the 
 request to when
 
+<pre>
     simpleproxy.0.when=https://www.local.test/myapp
     simpleproxy.0.where=https://localhost:8020/app
     simpleproxy.0.test=localhost:8020
+</pre>
