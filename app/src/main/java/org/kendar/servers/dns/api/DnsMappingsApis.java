@@ -32,6 +32,7 @@ public class DnsMappingsApis implements FilteringClass {
             pathAddress = "/api/dns/mappings",
             method = "GET",id="1000a4b4-277d-11ec-9621-0242ac130002")
     public boolean getDnsMappings(Request req, Response res) {
+        dnsMultiResolver.getExtraServers()
         //var proxyes = simpleProxyHandler.getProxies();
         res.addHeader("Content-type", "application/json");
         //res.setResponse(mapper.writeValueAsString(proxyes));
