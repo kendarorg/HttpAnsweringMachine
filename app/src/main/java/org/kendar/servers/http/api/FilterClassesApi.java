@@ -3,20 +3,16 @@ package org.kendar.servers.http.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.FilteringClass;
-import org.kendar.http.FilteringClassesHandler;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
-import org.kendar.servers.AnsweringHttpsServer;
-import org.kendar.servers.http.FilterConfig;
-import org.kendar.servers.http.FilteringClassesHandlerImpl;
+import org.kendar.servers.http.api.model.FilterDto;
+import org.kendar.servers.http.configurations.FilterConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -93,7 +89,7 @@ public class FilterClassesApi  implements FilteringClass {
         var listOfItems = config.filters.get(phase);
         for(var i=0;i<listOfItems.size();i++){
             var item = listOfItems.get(i);
-            var desc = new FilterDto(item.getId(),item.getTypeFilter(),item.getMethodFilter());
+            var desc = new FilterDto(i,item.getId(),item.getTypeFilter(),item.getMethodFilter());
             result.add(desc);
         }
 

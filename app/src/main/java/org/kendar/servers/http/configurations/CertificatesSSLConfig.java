@@ -1,5 +1,6 @@
-package org.kendar.servers.http;
+package org.kendar.servers.http.configurations;
 
+import org.kendar.servers.http.configurations.CertificatesConfiguration;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.atomic.AtomicReference;

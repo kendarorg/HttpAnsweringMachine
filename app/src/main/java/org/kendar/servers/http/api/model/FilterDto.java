@@ -1,4 +1,4 @@
-package org.kendar.servers.http.api;
+package org.kendar.servers.http.api.model;
 
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
@@ -13,9 +13,11 @@ public class FilterDto {
     private final String pathPattern;
     private final HttpFilterType phase;
     private final boolean blocking;
+    private int index;
     private final String id;
 
-    public FilterDto(String id,HttpTypeFilter type, HttpMethodFilter method) {
+    public FilterDto(int index,String id,HttpTypeFilter type, HttpMethodFilter method) {
+        this.index = index;
         this.id = id;
         blocking = type.blocking()||method.blocking();
         hostAddress = type.hostAddress();
@@ -61,5 +63,9 @@ public class FilterDto {
 
     public String getId() {
         return id;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }

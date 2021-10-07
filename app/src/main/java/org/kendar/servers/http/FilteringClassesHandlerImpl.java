@@ -2,15 +2,14 @@ package org.kendar.servers.http;
 
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.kendar.http.*;
+import org.kendar.servers.http.configurations.FilterConfig;
+import org.kendar.servers.http.configurations.FiltersConfiguration;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class FilteringClassesHandlerImpl implements FilteringClassesHandler {

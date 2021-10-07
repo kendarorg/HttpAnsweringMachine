@@ -1,4 +1,4 @@
-package org.kendar.servers.http;
+package org.kendar.servers.http.configurations;
 
 import java.util.ArrayList;
 import java.util.Calendar;
