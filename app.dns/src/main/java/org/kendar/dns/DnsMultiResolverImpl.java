@@ -201,12 +201,6 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         return data;
     }
 
-
-
-    public void verify(){
-
-    }
-
     @Override
     public List<String> resolveRemote(String requestedDomain,boolean fromLocalHost) {
         if(isBlockedDomainQuery(requestedDomain)){
