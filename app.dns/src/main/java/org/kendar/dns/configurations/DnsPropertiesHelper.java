@@ -1,4 +1,4 @@
-package org.kendar.dns.configuration;
+package org.kendar.dns.configurations;
 
 import org.kendar.dns.DnsMultiResolverImpl;
 import org.kendar.servers.dns.DnsServerDescriptor;

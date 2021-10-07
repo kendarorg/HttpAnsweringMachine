@@ -1,6 +1,6 @@
 package org.kendar.dns;
 
-import org.kendar.dns.configuration.DnsConfiguration;
+import org.kendar.dns.configurations.DnsConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.dns.DnsServerDescriptor;
 import org.kendar.utils.LoggerBuilder;
