@@ -10,13 +10,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
+    class FiltersConfiguration{
+        public HashMap<HttpFilterType,List<FilterDescriptor>> filters = new HashMap<>();
+        public HashMap<String,FilterDescriptor> filtersById = new HashMap<>();
+    }
     private final List<CustomFilters> customFilterLoaders;
     private final Environment environment;
-    private final HashMap<HttpFilterType, ConcurrentLinkedQueue<FilterDescriptor>> filters = new HashMap<>();
-    private final ConcurrentHashMap<String,FilterDescriptor> filtersById = new ConcurrentHashMap<>();
+    private final AtomicReference<FiltersConfiguration> filtersConfiguration;
+
     static class PrioritySorter implements Comparator<FilterDescriptor>
     {
         @Override
@@ -26,35 +31,39 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
     }
 
     public FilteringClassesHandlerImpl(List<CustomFilters> customFilterLoaders,Environment environment){
-
         this.customFilterLoaders = customFilterLoaders;
         this.environment = environment;
+        var config = new FiltersConfiguration();
+        filtersConfiguration =  new AtomicReference<>(config);
     }
 
 
 
     @PostConstruct
     public void init(){
-        filters.put(HttpFilterType.NONE,new ConcurrentLinkedQueue<>());
-        filters.put(HttpFilterType.PRE_RENDER,new ConcurrentLinkedQueue<>());
-        filters.put(HttpFilterType.API,new ConcurrentLinkedQueue<>());
-        filters.put(HttpFilterType.STATIC,new ConcurrentLinkedQueue<>());
-        filters.put(HttpFilterType.PRE_CALL,new ConcurrentLinkedQueue<>());
-        filters.put(HttpFilterType.POST_CALL,new ConcurrentLinkedQueue<>());
-        filters.put(HttpFilterType.POST_RENDER,new ConcurrentLinkedQueue<>());
+        var config = new FiltersConfiguration();
+        filtersConfiguration.set(config);
+        config.filters.put(HttpFilterType.NONE,new ArrayList<>());
+        config.filters.put(HttpFilterType.PRE_RENDER,new ArrayList<>());
+        config.filters.put(HttpFilterType.API,new ArrayList<>());
+        config.filters.put(HttpFilterType.STATIC,new ArrayList<>());
+        config.filters.put(HttpFilterType.PRE_CALL,new ArrayList<>());
+        config.filters.put(HttpFilterType.POST_CALL,new ArrayList<>());
+        config.filters.put(HttpFilterType.POST_RENDER,new ArrayList<>());
 
-    for (var filterLoader : customFilterLoaders) {
-        for (var ds : filterLoader.loadFilters()) {
-            filters.get(ds.getPhase()).add(ds);
-            filtersById.put(ds.getId(), ds);
+        for (var filterLoader : customFilterLoaders) {
+            for (var ds : filterLoader.loadFilters()) {
+                config.filters.get(ds.getPhase()).add(ds);
+                config.filtersById.put(ds.getId(), ds);
+            }
         }
-    }
     }
 
     @Override
     public boolean handle(HttpFilterType filterType, Request request, Response response, HttpClientConnectionManager connectionManager) throws InvocationTargetException, IllegalAccessException {
-        if(!filters.containsKey(filterType)) return false;
-        for(var filterEntry: filters.get(filterType)){
+        var config = filtersConfiguration.get();
+        if(!config.filters.containsKey(filterType)) return false;
+        for(var filterEntry: config.filters.get(filterType)){
             if(!filterEntry.isEnabled())continue;
             if(!methodMatches(filterEntry,request))continue;
             if(!filterMathches(filterEntry,request))continue;

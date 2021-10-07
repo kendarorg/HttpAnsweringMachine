@@ -44,3 +44,5 @@ public class GoogleFilter  implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.POST_RENDER,pathAddress ="/test",method = "POST")
     public boolean record(Request req, Response res){
 </pre>
+
+Inside the function you can then elaborate the request and response as you please

@@ -20,12 +20,9 @@ public class AnsweringDnsServer implements AnsweringServer {
     @Value( "${dns.enabled:false}" )
     private boolean enabled;
 
-    private final ConcurrentHashMap<String,String> missingRecords = new ConcurrentHashMap<>();
-
     public AnsweringDnsServer(LoggerBuilder loggerBuilder, DnsServer dnsServer){
         this.logger = loggerBuilder.build(AnsweringDnsServer.class);
         this.dnsServer = dnsServer;
-
     }
 
 
@@ -43,7 +40,6 @@ public class AnsweringDnsServer implements AnsweringServer {
         } finally {
             running=false;
         }
-
     }
 
 

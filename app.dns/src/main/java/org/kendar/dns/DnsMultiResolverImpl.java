@@ -17,48 +17,58 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 @Component
 public class DnsMultiResolverImpl implements DnsMultiResolver {
+    class DnsConfiguration{
+        public List<DnsServerDescriptor> servers = new ArrayList<>();
+        public List<String> blocker = new ArrayList<>();
+        public List<PatternItem> dnsRecords = new ArrayList<>();
+        public HashMap<String,HashSet<String>> domains = new HashMap<>();
+    }
+    private AtomicReference<DnsConfiguration> dnsConfiguration;
     private final ExecutorService executorService = Executors.newFixedThreadPool(20);
     private final Logger logger;
     private final String localHostAddress;
-    @Value("${dns.extraServers:8.8.8.8}")
-    private String[] extraServers;
-    @Value("${dns.blocker}")
-    private String[] blocker;
+    //@Value("${dns.extraServers:8.8.8.8}")
+    //private String[] extraServers;
+    //@Value("${dns.blocker}")
+    //private String[] blocker;
     //private List<String> extraServersReal = new ArrayList<>();
-    private final AtomicReference<List<DnsServerDescriptor>> extraServersReal = new AtomicReference<>();
+    //private final AtomicReference<List<DnsServerDescriptor>> extraServersReal = new AtomicReference<>();
     @Value("${localhost.name:www.local.org}")
     private String localHostName;
 
     @Value("${dns.logging.query:false}")
     private boolean dnsLogginQuery;
-    private final ConcurrentHashMap<String,List<String>> domains = new ConcurrentHashMap<>();
+    //private final ConcurrentHashMap<String,List<String>> domains = new ConcurrentHashMap<>();
 
-    private final List<PatternItem> dnsRecords = new ArrayList<>();
+    //private final List<PatternItem> dnsRecords = new ArrayList<>();
     private final Environment environment;
 
     public DnsMultiResolverImpl(Environment environment, LoggerBuilder loggerBuilder){
         this.environment = environment;
         this.logger = loggerBuilder.build(DnsMultiResolverImpl.class);
         this.localHostAddress = getLocalHostLANAddress();
-        extraServersReal.set(new ArrayList<>());
+        var config = new DnsConfiguration();
+        dnsConfiguration = new AtomicReference<>(config);
     }
 
     public List<DnsServerDescriptor> getExtraServers(){
-        return extraServersReal.get();
+        return dnsConfiguration.get().servers;
     }
 
     public void setExtraServers(List<DnsServerDescriptor>  extraServers){
-        extraServersReal.set(extraServers);
+        dnsConfiguration.get().servers = extraServers;
     }
 
     private final Pattern ipPattern = Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
     @PostConstruct
     public void init(){
+        var config = new DnsConfiguration();
         String hostsFile="";
-        dnsRecords.add(new PatternItem(localHostName,localHostAddress));
+        config.dnsRecords.add(new PatternItem(localHostName,localHostAddress));
         for(int i=0;i<1000;i++){
             var index = "dns.resolve."+Integer.toString(i);
             var dns = environment.getProperty(index);
@@ -66,7 +76,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
                 var parts= dns.split("\\s+");
                 var pi = new PatternItem(parts[0],parts[1]);
                 hostsFile += pi.writeHostsLine()+"\n";
-                dnsRecords.add(pi);
+                config.dnsRecords.add(pi);
             }
         }
         if(hostsFile.length()>0){
@@ -79,17 +89,18 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
             }
         }
 
-        var extraServersRealList = new ArrayList<DnsServerDescriptor>();
-        extraServersReal.set(extraServersRealList);
+        var extraServers = environment.getProperty("dns.extraServers")!=null?
+                environment.getProperty("dns.extraServers").split(","):
+                new String[]{"8.8.8.8"};
         for (int i = 0; i < extraServers.length; i++) {
-            String server = extraServers[i];
+            String server = extraServers[i].trim();
             try {
                 Matcher matcher = ipPattern.matcher(server);
                 if(matcher.matches()){
                     var desc = new DnsServerDescriptor();
                     desc.setIp(server);
                     desc.setEnabled(true);
-                    extraServersRealList.add(desc);
+                    config.servers.add(desc);
                 }else{
                     var namedDns = resolve(server,false);
                     if(namedDns.size()==0){
@@ -101,7 +112,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
                         desc.setName(server);
                         desc.setIp(namedDns.get(0));
                         desc.setEnabled(true);
-                        extraServersRealList.add(0,desc);
+                        config.servers.add(0,desc);
                     }
                 }
             } catch (PatternSyntaxException ex) {
@@ -157,6 +168,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
     @Override
     public List<String> resolveLocal(String requestedDomain) {
+        var config = dnsConfiguration.get();
         var data = new ArrayList<String>();
         if(requestedDomain.equalsIgnoreCase("localhost")){
             data.add("127.0.0.1");
@@ -168,8 +180,8 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
             data.add("127.0.0.1");
             return data;
         }else {
-            for (int i = 0; i < dnsRecords.size(); i++) {
-                var item = dnsRecords.get(i);
+            for (int i = 0; i < config.dnsRecords.size(); i++) {
+                var item = config.dnsRecords.get(i);
                 if (item.match(requestedDomain)) {
                     if(dnsLogginQuery) {
                         logger.info("Pattern " + item.getIp());
@@ -224,6 +236,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         //This method returns the time in millis
         long timeMilli = new Date().getTime();
         long timeEnd = timeMilli+2000;
+        var config = dnsConfiguration.get();
         while(finished!=0){
             if(timeEnd<=new Date().getTime()){
                 //System.out.println("================");
@@ -255,9 +268,9 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
                         }
                         futures.clear();
                         if(data.size()>0) {
-                            domains.put(requestedDomain, new ArrayList<>(data));
-                        }else if(domains.containsKey(requestedDomain)){
-                            domains.remove(requestedDomain);
+                            config.domains.put(requestedDomain, new HashSet<>(data));
+                        }else if(config.domains.containsKey(requestedDomain)){
+                            config.domains.remove(requestedDomain);
                         }
                         return new ArrayList<>(data);
                     } catch (Exception e) {
@@ -277,8 +290,9 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     }
 
     private boolean isBlockedDomainQuery(String requestedDomain) {
+        var config = dnsConfiguration.get();
         var shouldBlock = false;
-        for (var blocked : this.blocker) {
+        for (var blocked : config.blocker) {
             if(blocked.endsWith("*")){
                 if(requestedDomain.startsWith(blocked.substring(0,blocked.length()-1))){
                     shouldBlock = true;
@@ -299,8 +313,9 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
     @Override
     public List<String> resolve(String requestedDomain,boolean fromLocalhost) {
-        if(domains.containsKey(requestedDomain)){
-            return domains.get(requestedDomain);
+        var config = dnsConfiguration.get();
+        if(config.domains.containsKey(requestedDomain)){
+            return config.domains.get(requestedDomain).stream().collect(Collectors.toList());
         }
 
         var localData = resolveLocal(requestedDomain);
