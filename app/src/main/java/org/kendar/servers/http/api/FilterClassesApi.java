@@ -96,4 +96,28 @@ public class FilterClassesApi  implements FilteringClass {
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(result));
     }
+
+
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/filters/{phase}/{id}",
+            method = "GET")
+    public void getFilterId(Request req, Response res) throws JsonProcessingException {
+        var stringPhase = req.getPathParameter("phase");
+        var id = Integer.parseInt(req.getPathParameter("id"));
+        var phase = HttpFilterType.valueOf(stringPhase.toUpperCase(Locale.ROOT));
+        var config = filteringClassesHandler.get();
+        FilterDto result = null;
+        var listOfItems = config.filters.get(phase);
+        for(var i=0;i<listOfItems.size();i++){
+            var item = listOfItems.get(i);
+            if(i==id){
+                result = new FilterDto(i,item.getId(),item.getTypeFilter(),item.getMethodFilter());
+                break;
+            }
+        }
+
+        res.addHeader("Content-type", "application/json");
+        res.setResponseText(mapper.writeValueAsString(result));
+    }
 }
