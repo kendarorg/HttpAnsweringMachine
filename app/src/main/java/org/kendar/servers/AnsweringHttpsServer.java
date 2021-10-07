@@ -68,6 +68,14 @@ public class AnsweringHttpsServer  implements AnsweringServer{
         return certificatesConfiguration.get().extraDomains;
     }
 
+    public void setExtraDomains(List<String> extraDomains){
+        var oldConfig = certificatesConfiguration.get();
+        var newConfig = new CertificatesConfiguration();
+        newConfig.cname = oldConfig.cname;
+        newConfig.extraDomains = extraDomains;
+        certificatesConfiguration.set(newConfig);
+    }
+
     public AnsweringHttpsServer(LoggerBuilder loggerBuilder, AnsweringHandler handler,
                                 CertificatesManager certificatesManager, Environment environment){
         this.logger = loggerBuilder.build(AnsweringHttpsServer.class);

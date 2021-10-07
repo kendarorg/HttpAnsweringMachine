@@ -43,7 +43,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     @Override
     public void setProxies(List<RemoteServerStatus> proxyes) {
         for (int i = 0; i< proxyes.size();i++)  {
-            checkRemoteMachines((RemoteServerStatus) proxyes.get(i));
+            checkRemoteMachines(proxyes.get(i));
         }
         proxies.set(proxyes);
     }
@@ -56,7 +56,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
                 break;
             }
             var data = new RemoteServerStatus(
-                    i,
+                    environment.getProperty(index+"id"),
                     environment.getProperty(index+"when"),
                     environment.getProperty(index+"where"),
                     environment.getProperty(index+"test")

@@ -1,13 +1,15 @@
 package org.kendar.servers.proxy;
 
+import java.util.UUID;
+
 public class RemoteServerStatus {
-    private int id;
+    private String id;
     private String when;
     private String where;
     private String test;
     private boolean running = false;
 
-    public RemoteServerStatus(int id,String when, String where, String test) {
+    public RemoteServerStatus(String id, String when, String where, String test) {
         this.id = id;
         this.when = when;
         this.where = where;
@@ -46,11 +48,11 @@ public class RemoteServerStatus {
         this.running = running;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

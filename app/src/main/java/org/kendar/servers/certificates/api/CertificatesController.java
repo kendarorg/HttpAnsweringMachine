@@ -1,6 +1,5 @@
-package org.kendar.servers.http.api;
+package org.kendar.servers.certificates.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
@@ -36,7 +35,7 @@ public class CertificatesController implements FilteringClass {
     }
     @Override
     public String getId() {
-        return "org.kendar.servers.http.api.CertificatesController";
+        return "org.kendar.servers.certificates.api.CertificatesController";
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
@@ -48,7 +47,10 @@ public class CertificatesController implements FilteringClass {
         var result = new ArrayList<String>();
         for(var resource : resources.keySet()){
             var path = Path.of(resource);
-            result.add(path.getFileName().toString());
+            var stringPath = path.getFileName().toString();
+            var byteContent = fileResourcesUtils.getFileFromResourceAsByteArray("certificates/"+stringPath);
+            if(byteContent.length==0)continue; //avoid directories
+            result.add(stringPath);
         }
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(result));

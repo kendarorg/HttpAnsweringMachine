@@ -39,6 +39,8 @@ public class SimpleProxyPropertiesHelper extends PropertiesHelper {
                         propMap.put(index+"where",where);
                         var test = prop.getProperty(index+"test");
                         propMap.put(index+"test",test);
+                        var id = prop.getProperty(index+"id");
+                        propMap.put(index+"where",id);
                     }else{
                         break;
                     }
@@ -56,9 +58,10 @@ public class SimpleProxyPropertiesHelper extends PropertiesHelper {
         var answeringHttpsServer = applicationContext.getBean(SimpleProxyHandlerImpl.class);
         //addIfNotNull(result,"simpleproxy.path",environment);
         List<RemoteServerStatus> extraDomains = answeringHttpsServer.getProxies();
-        extraDomains.sort((remoteServerStatus, t1) -> t1.getId());
+        //extraDomains.sort((remoteServerStatus, t1) -> t1.getId());
         for (int i = 0; i < extraDomains.size(); i++) {
             RemoteServerStatus extraDomain = extraDomains.get(i);
+            result.put("simpleproxy."+i+".id",extraDomain.getId());
             result.put("simpleproxy."+i+".when",extraDomain.getWhen());
             result.put("simpleproxy."+i+".where",extraDomain.getWhere());
             result.put("simpleproxy."+i+".test",extraDomain.getTest());

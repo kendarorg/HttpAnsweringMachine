@@ -42,14 +42,14 @@ public class DnsServersApis implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/dns/servers/{ip}",
+            pathAddress = "/api/dns/servers/{name}",
             method = "GET")
     public boolean getDnsServer(Request req, Response res) throws JsonProcessingException {
         var dnsServeres = dnsMultiResolver.getExtraServers();
-        var ip = req.getPathParameter("ip");
+        var name = req.getPathParameter("name");
         res.addHeader("Content-type", "application/json");
         for(var item:dnsServeres){
-            if(item.getIp().equalsIgnoreCase(ip)){
+            if(item.getName().equalsIgnoreCase(name)){
 
                 res.setResponseText(mapper.writeValueAsString(item));
                 return false;
@@ -60,15 +60,15 @@ public class DnsServersApis implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/dns/servers/{ip}",
+            pathAddress = "/api/dns/servers/{name}",
             method = "DELETE")
     public boolean removeDnsServer(Request req, Response res) {
         var dnsServeres = dnsMultiResolver.getExtraServers();
-        var id = (req.getPathParameter("ip"));
+        var name = (req.getPathParameter("name"));
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<DnsServerDescriptor>();
         for(var item:dnsServeres){
-            if(item.getIp().equalsIgnoreCase(id)){continue;}
+            if(item.getName().equalsIgnoreCase(name)){continue;}
             newList.add(item);
         }
         dnsMultiResolver.setExtraServers(newList);
@@ -77,11 +77,11 @@ public class DnsServersApis implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/dns/servers/{id}",
+            pathAddress = "/api/dns/servers/{name}",
             method = "PUT")
     public boolean updateDnsServer(Request req, Response res) throws JsonProcessingException {
         var dnsServeres = dnsMultiResolver.getExtraServers();
-        var ip = (req.getPathParameter("ip"));
+        var ip = (req.getPathParameter("name"));
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<DnsServerDescriptor>();
         var newData = mapper.readValue((String)req.getRequestText(),DnsServerDescriptor.class);
@@ -102,20 +102,20 @@ public class DnsServersApis implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/dns/servers/swap/{ip1}/{ip2}",
+            pathAddress = "/api/dns/servers/swap/{name1}/{name2}",
             method = "PUT")
     public boolean swapDnsServer(Request req, Response res) {
         var dnsServeres = dnsMultiResolver.getExtraServers();
-        var ip1 = (req.getPathParameter("ip1"));
-        var ip2 = (req.getPathParameter("ip2"));
+        var name1 = (req.getPathParameter("name1"));
+        var name2 = (req.getPathParameter("name2"));
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<DnsServerDescriptor>();
         var id1Index=-1;
         var id2Index = -1;
         for (int i = 0; i < dnsServeres.size(); i++) {
             var clone = dnsServeres.get(i).clone();
-            if(dnsServeres.get(i).getIp().equalsIgnoreCase(ip1))id1Index=i;
-            if(dnsServeres.get(i).getIp().equalsIgnoreCase(ip2))id2Index=i;
+            if(dnsServeres.get(i).getName().equalsIgnoreCase(name1))id1Index=i;
+            if(dnsServeres.get(i).getName().equalsIgnoreCase(name2))id2Index=i;
             newList.add(clone);
         }
         var id1Clone = dnsServeres.get(id1Index).clone();
@@ -129,14 +129,14 @@ public class DnsServersApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/servers",
             method = "POST")
-    public boolean addDnsServer(Request req, Response res) throws JsonProcessingException {
+    public boolean addDnsServer(Request req, Response res) throws Exception {
         var dnsServeres = dnsMultiResolver.getExtraServers();
-        var id = (req.getPathParameter("id"));
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<DnsServerDescriptor>();
         var newData = mapper.readValue((String)req.getRequestText(),DnsServerDescriptor.class);
 
         for(var item:dnsServeres){
+            if(item.getName().equalsIgnoreCase(newData.getName()))throw new Exception("Duplicate dns resolution");
             newList.add( item.clone());
         }
         newList.add(newData);

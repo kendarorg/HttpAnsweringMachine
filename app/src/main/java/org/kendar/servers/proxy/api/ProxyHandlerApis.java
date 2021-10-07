@@ -45,11 +45,10 @@ public class ProxyHandlerApis  implements FilteringClass {
             method = "GET")
     public boolean getProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
-        var id = Integer.parseInt(req.getPathParameter("id"));
+        var id = req.getPathParameter("id");
         res.addHeader("Content-type", "application/json");
         for(var item:proxyes){
-            if(item.getId()==id){
-
+            if(item.getId().equalsIgnoreCase(id)){
                 res.setResponseText(mapper.writeValueAsString(item));
                 return false;
             }
@@ -63,11 +62,11 @@ public class ProxyHandlerApis  implements FilteringClass {
             method = "DELETE")
     public boolean removeProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
-        var id = Integer.parseInt(req.getPathParameter("id"));
+        var id = req.getPathParameter("id");
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<RemoteServerStatus>();
         for(var item:proxyes){
-            if(item.getId()==id){continue;}
+            if(item.getId().equalsIgnoreCase(id)){continue;}
             newList.add(item);
         }
         simpleProxyHandler.setProxies(newList);
@@ -80,14 +79,14 @@ public class ProxyHandlerApis  implements FilteringClass {
             method = "PUT")
     public boolean updateProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
-        var id = Integer.parseInt(req.getPathParameter("id"));
+        var id = req.getPathParameter("id");
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<RemoteServerStatus>();
         var newData = mapper.readValue((String)req.getRequestText(),RemoteServerStatus.class);
 
         for(var item:proxyes){
             var clone = item.clone();
-            if(clone.getId()!=id){
+            if(!clone.getId().equalsIgnoreCase(id)){
                 newList.add(clone);
                 continue;
             }
@@ -106,16 +105,16 @@ public class ProxyHandlerApis  implements FilteringClass {
             method = "PUT")
     public boolean swapProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
-        var id1 = Integer.parseInt(req.getPathParameter("id1"));
-        var id2 = Integer.parseInt(req.getPathParameter("id2"));
+        var id1 = req.getPathParameter("id1");
+        var id2 = req.getPathParameter("id2");
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<RemoteServerStatus>();
         var id1Index=-1;
         var id2Index = -1;
         for (int i = 0; i < proxyes.size(); i++) {
             var clone = proxyes.get(i).clone();
-            if(proxyes.get(i).getId()==id1)id1Index=i;
-            if(proxyes.get(i).getId()==id2)id2Index=i;
+            if(proxyes.get(i).getId().equalsIgnoreCase(id1))id1Index=i;
+            if(proxyes.get(i).getId().equalsIgnoreCase(id2))id2Index=i;
             newList.add(clone);
         }
         var id1Clone = proxyes.get(id1Index).clone();
@@ -132,16 +131,8 @@ public class ProxyHandlerApis  implements FilteringClass {
     public boolean addProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
         res.addHeader("Content-type", "application/json");
-        var newList = new ArrayList<RemoteServerStatus>();
+        var newList = new ArrayList<>(proxyes);
         var newData = mapper.readValue((String)req.getRequestText(),RemoteServerStatus.class);
-
-        var maxValue = -1;
-        for(var item:proxyes){
-            newList.add( item.clone());
-            maxValue= Math.max(item.getId(),maxValue);
-        }
-        maxValue++;
-        newData.setId(maxValue);
         newList.add(newData);
         simpleProxyHandler.setProxies(newList);
         res.setStatusCode(200);
