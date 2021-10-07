@@ -46,11 +46,16 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 
 @Component
 public class AnsweringHandlerImpl implements AnsweringHandler {
+    class ResolvedDomain{
+        public HashSet<String> domains = new HashSet<>();
+        public long timestamp = Calendar.getInstance().getTimeInMillis();
+    }
     public static final String MIRROR_REQUEST_HEADER = "X-MIRROR-REQUEST";
     public static final String TEST_EXPECT_100 = "X-TEST-EXPECT-100";
     public static final String TEST_OVERWRITE_HOST = "X-TEST-OVERWRITE-HOST";
@@ -75,7 +80,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     @Value("${dns.logging.query:false}")
     private boolean dnsLogginQuery;
 
-    private final ConcurrentHashMap<String,List<String>> domains = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,ResolvedDomain> domains = new ConcurrentHashMap<>();
 
     public AnsweringHandlerImpl(LoggerBuilder loggerBuilder, DnsMultiResolver multiResolver,
                                 FilteringClassesHandler filteringClassesHandler,
@@ -94,12 +99,25 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         this.dnsResolver = new SystemDefaultDnsResolver() {
             @Override
             public InetAddress[] resolve(final String host) throws UnknownHostException {
+                ResolvedDomain descriptor;
+                var currentTime = Calendar.getInstance().getTimeInMillis();
                 List<String> hosts;
                 if(domains.containsKey(host)){
-                    hosts = domains.get(host);
+                    descriptor = domains.get(host);
+                    if((descriptor.timestamp+10*60*1000)<currentTime){
+                        domains.remove(host);
+                        hosts = multiResolver.resolveRemote(host,false);
+                        descriptor = new ResolvedDomain();
+                        descriptor.domains.addAll(hosts);
+                        domains.put(host,descriptor);
+                    }
                 }else {
                     hosts = multiResolver.resolveRemote(host,false);
+                    descriptor = new ResolvedDomain();
+                    descriptor.domains.addAll(hosts);
+                    domains.put(host,descriptor);
                 }
+                hosts = descriptor.domains.stream().collect(Collectors.toList());
                 var address = new InetAddress[hosts.size()];
                 for(int i=0;i< hosts.size();i++){
                     address[i] = InetAddress.getByName(hosts.get(i));
