@@ -94,6 +94,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
                 if(matcher.matches()){
                     var desc = new DnsServerDescriptor();
                     desc.setIp(server);
+                    desc.setName(server);
                     desc.setEnabled(true);
                     config.servers.add(desc);
                 }else{
@@ -114,6 +115,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
             }
         }
+        dnsConfiguration.set(config);
     }
 
     private String getLocalHostLANAddress()  {
