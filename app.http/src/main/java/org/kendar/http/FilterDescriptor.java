@@ -41,8 +41,7 @@ public class FilterDescriptor {
     }
 
     public FilterDescriptor(HttpTypeFilter typeFilter, HttpMethodFilter methodFilter, Method callback, FilteringClass filterClass, Environment environment) {
-        this.typeFilter = typeFilter;
-        this.methodFilter = methodFilter;
+
 
         this.callback = callback;
         this.filterClass = filterClass;
@@ -66,6 +65,8 @@ public class FilterDescriptor {
             pathAddress = getWithEnv(methodFilter.pathAddress(),environment);
             setupPathSimpleMatchers();
         }
+        this.typeFilter = buildTypeFilter();
+        this.methodFilter = buildMethodFilter();
     }
 
     public FilterDescriptor( GenericFilterExecutor executor,Environment environment) {
@@ -128,6 +129,7 @@ public class FilterDescriptor {
 
             @Override
             public String pathPattern() {
+                if(loc.pathPattern==null) return null;
                 return loc.pathPattern.toString();
             }
 
@@ -159,6 +161,7 @@ public class FilterDescriptor {
 
             @Override
             public String hostPattern() {
+                if(loc.hostPattern==null) return null;
                 return loc.hostPattern.toString();
             }
 

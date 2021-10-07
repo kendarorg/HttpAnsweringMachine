@@ -52,40 +52,41 @@ import static java.util.stream.Collectors.joining;
 
 @Component
 public class AnsweringHandlerImpl implements AnsweringHandler {
-    class ResolvedDomain{
-        public HashSet<String> domains = new HashSet<>();
-        public long timestamp = Calendar.getInstance().getTimeInMillis();
-    }
     public static final String MIRROR_REQUEST_HEADER = "X-MIRROR-REQUEST";
     public static final String TEST_EXPECT_100 = "X-TEST-EXPECT-100";
     public static final String TEST_OVERWRITE_HOST = "X-TEST-OVERWRITE-HOST";
     public static final String BLOCK_RECURSION = "X-BLOCK-RECURSIVE";
+    private static final HttpRequestRetryHandler requestRetryHandler = (exception, executionCount, context) -> {
+        if (executionCount == 1) {
+            return false;
+        } else {
+            return true;
+        }
+    };
     private final Logger logger;
-    private SystemDefaultDnsResolver dnsResolver;
     private final DnsMultiResolver multiResolver;
     private final FilteringClassesHandler filteringClassesHandler;
     private final SimpleProxyHandler simpleProxyHandler;
     private final RequestResponseBuilder requestResponseBuilder;
-    private PoolingHttpClientConnectionManager connManager;
     private final ObjectMapper mapper = new ObjectMapper();
+    private final ConcurrentHashMap<String, ResolvedDomain> domains = new ConcurrentHashMap<>();
+    private SystemDefaultDnsResolver dnsResolver;
+    private PoolingHttpClientConnectionManager connManager;
     @Value("${https.forwardProtocol:https}")
-    private String httpsForwardProtocol="https";
+    private String httpsForwardProtocol = "https";
     @Value("${http.forwardProtocol:http}")
-    private String httpForwardProtocol="http";
+    private String httpForwardProtocol = "http";
     @Value("${https.forwardPort:-1}")
-    private int httpsForwardPort=-1;
+    private int httpsForwardPort = -1;
     @Value("${http.forwardPort:-1}")
-    private int httpForwardPort=-1;
-
+    private int httpForwardPort = -1;
     @Value("${dns.logging.query:false}")
     private boolean dnsLogginQuery;
-
-    private final ConcurrentHashMap<String,ResolvedDomain> domains = new ConcurrentHashMap<>();
 
     public AnsweringHandlerImpl(LoggerBuilder loggerBuilder, DnsMultiResolver multiResolver,
                                 FilteringClassesHandler filteringClassesHandler,
                                 SimpleProxyHandler simpleProxyHandler,
-                                RequestResponseBuilder requestResponseBuilder){
+                                RequestResponseBuilder requestResponseBuilder) {
         this.logger = loggerBuilder.build(AnsweringHttpsServer.class);
         this.multiResolver = multiResolver;
         this.filteringClassesHandler = filteringClassesHandler;
@@ -95,31 +96,31 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         this.dnsResolver = new SystemDefaultDnsResolver() {
             @Override
             public InetAddress[] resolve(final String host) throws UnknownHostException {
                 ResolvedDomain descriptor;
                 var currentTime = Calendar.getInstance().getTimeInMillis();
                 List<String> hosts;
-                if(domains.containsKey(host)){
+                if (domains.containsKey(host)) {
                     descriptor = domains.get(host);
-                    if((descriptor.timestamp+10*60*1000)<currentTime){
+                    if ((descriptor.timestamp + 10 * 60 * 1000) < currentTime) {
                         domains.remove(host);
-                        hosts = multiResolver.resolveRemote(host,false);
+                        hosts = multiResolver.resolveRemote(host, false);
                         descriptor = new ResolvedDomain();
                         descriptor.domains.addAll(hosts);
-                        domains.put(host,descriptor);
+                        domains.put(host, descriptor);
                     }
-                }else {
-                    hosts = multiResolver.resolveRemote(host,false);
+                } else {
+                    hosts = multiResolver.resolveRemote(host, false);
                     descriptor = new ResolvedDomain();
                     descriptor.domains.addAll(hosts);
-                    domains.put(host,descriptor);
+                    domains.put(host, descriptor);
                 }
                 hosts = descriptor.domains.stream().collect(Collectors.toList());
                 var address = new InetAddress[hosts.size()];
-                for(int i=0;i< hosts.size();i++){
+                for (int i = 0; i < hosts.size(); i++) {
                     address[i] = InetAddress.getByName(hosts.get(i));
                 }
                 return address;
@@ -137,25 +138,25 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         this.connManager.setMaxTotal(100);
     }
 
-    private void mirrrorRequest(Request request, HttpExchange httpExchange){
+    private void mirrrorRequest(Request request, HttpExchange httpExchange) {
         try {
             String myObjectInJson = mapper.writeValueAsString(request);
-            httpExchange.getResponseHeaders().put("Access-Control-Allow-Origin",Collections.singletonList( "*"));
+            httpExchange.getResponseHeaders().put("Access-Control-Allow-Origin", Collections.singletonList("*"));
             httpExchange.sendResponseHeaders(200, myObjectInJson.getBytes().length);
 
             OutputStream os = httpExchange.getResponseBody();
             os.write(myObjectInJson.getBytes());
             os.close();
             httpExchange.close();
-        }catch(Exception ex){
-            logger.error("Error mirroring request ",ex);
+        } catch (Exception ex) {
+            logger.error("Error mirroring request ", ex);
         }
     }
 
     private boolean testExpect100(Request request, HttpExchange httpExchange) {
         String expect100 = request.getHeader(TEST_EXPECT_100);
-        if(expect100!=null){
-            mirrrorRequest(request,httpExchange);
+        if (expect100 != null) {
+            mirrrorRequest(request, httpExchange);
             return true;
         }
         return false;
@@ -163,16 +164,16 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
     private void handleOverwriteHost(Request request, HttpExchange httpExchange) {
         String overwriteHost = request.getHeader(TEST_OVERWRITE_HOST);
-        if(overwriteHost!=null){
+        if (overwriteHost != null) {
             try {
                 URL url = new URL(overwriteHost);
                 request.setProtocol(url.getProtocol().toLowerCase(Locale.ROOT));
                 request.setHost(url.getHost());
-                if(url.getPort()==-1 && request.getProtocol().equalsIgnoreCase("https")){
+                if (url.getPort() == -1 && request.getProtocol().equalsIgnoreCase("https")) {
                     request.setPort(443);
-                }else if(url.getPort()==-1 && request.getProtocol().equalsIgnoreCase("http")){
+                } else if (url.getPort() == -1 && request.getProtocol().equalsIgnoreCase("http")) {
                     request.setPort(80);
-                }else if(url.getPort()>0) {
+                } else if (url.getPort() > 0) {
                     request.setPort(url.getPort());
                 }
             } catch (MalformedURLException e) {
@@ -183,13 +184,13 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
     private boolean blockRecursive(Request request, HttpExchange httpExchange) throws IOException {
         String isRecursive = request.getHeader(BLOCK_RECURSION);
-        if(isRecursive==null){
+        if (isRecursive == null) {
             return false;
         }
         String fullAddress = buildFullAddress(request);
 
-        if(fullAddress.equalsIgnoreCase(isRecursive)){
-            var error= "Recursive call to "+isRecursive;
+        if (fullAddress.equalsIgnoreCase(isRecursive)) {
+            var error = "Recursive call to " + isRecursive;
             var data = error.getBytes();
             httpExchange.sendResponseHeaders(500, data.length);
             OutputStream os = httpExchange.getResponseBody();
@@ -200,10 +201,10 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         return false;
     }
 
-    public boolean mirrorData(Request request, HttpExchange httpExchange){
+    public boolean mirrorData(Request request, HttpExchange httpExchange) {
         String isMirror = request.getHeader(MIRROR_REQUEST_HEADER);
-        if(isMirror!=null){
-            mirrrorRequest(request,httpExchange);
+        if (isMirror != null) {
+            mirrrorRequest(request, httpExchange);
             return true;
         }
         return false;
@@ -213,15 +214,15 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     public void handle(HttpExchange httpExchange) {
         var requestUri = httpExchange.getRequestURI();
         var host = httpExchange.getRequestHeaders().getFirst("Host");
-        logger.info(host+requestUri.toString());
+        logger.info(host + requestUri.toString());
 
         Request request = null;
         Response response = new Response();
         try {
-            if(httpExchange instanceof HttpsExchange){
-                request = requestResponseBuilder.fromExchange(httpExchange,httpsForwardProtocol,httpsForwardPort);
-            }else{
-                request = requestResponseBuilder.fromExchange(httpExchange,httpForwardProtocol,httpForwardPort);
+            if (httpExchange instanceof HttpsExchange) {
+                request = requestResponseBuilder.fromExchange(httpExchange, httpsForwardProtocol, httpsForwardPort);
+            } else {
+                request = requestResponseBuilder.fromExchange(httpExchange, httpForwardProtocol, httpForwardPort);
             }
 
             handleOverwriteHost(request, httpExchange);
@@ -230,87 +231,85 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
                 return;
             }
 
-            if(filteringClassesHandler.handle(HttpFilterType.PRE_RENDER,request,response,connManager)){
-                sendResponse(response,httpExchange);
+            if (filteringClassesHandler.handle(HttpFilterType.PRE_RENDER, request, response, connManager)) {
+                sendResponse(response, httpExchange);
                 return;
             }
 
-            if(filteringClassesHandler.handle(HttpFilterType.API,request,response,connManager)){
+            if (filteringClassesHandler.handle(HttpFilterType.API, request, response, connManager)) {
                 //ALWAYS WHEN CALLED
-                sendResponse(response,httpExchange);
+                sendResponse(response, httpExchange);
                 return;
             }
 
-            if(filteringClassesHandler.handle(HttpFilterType.STATIC,request,response,connManager)){
+            if (filteringClassesHandler.handle(HttpFilterType.STATIC, request, response, connManager)) {
                 //ALWAYS WHEN CALLED
-                sendResponse(response,httpExchange);
+                sendResponse(response, httpExchange);
                 return;
             }
 
             request = simpleProxyHandler.translate(request);
 
-            if(filteringClassesHandler.handle(HttpFilterType.PRE_CALL,request,response,connManager)){
-                sendResponse(response,httpExchange);
+            if (filteringClassesHandler.handle(HttpFilterType.PRE_CALL, request, response, connManager)) {
+                sendResponse(response, httpExchange);
                 return;
             }
 
             callExternalSite(httpExchange, request, response);
 
-            if(filteringClassesHandler.handle(HttpFilterType.POST_CALL,request,response,connManager)){
-                sendResponse(response,httpExchange);
+            if (filteringClassesHandler.handle(HttpFilterType.POST_CALL, request, response, connManager)) {
+                sendResponse(response, httpExchange);
                 return;
             }
 
-            sendResponse(response,httpExchange);
+            sendResponse(response, httpExchange);
 
 
-        }catch(Exception ex){
+        } catch (RuntimeException rex) {
+            handleException(httpExchange, response, rex);
+        } catch (Exception ex) {
+            handleException(httpExchange, response, ex);
+        } finally {
             try {
-                logger.error("ERROR HANDLING HTTP REQUEST ", ex);
-                if(response.getHeader("content-type")==null){
-                    response.addHeader("Content-Type","text/html");
-                }
-                response.addHeader("X-Exception-Type", ex.getClass().getName());
-                response.addHeader("X-Exception-Message", ex.getMessage());
-                response.addHeader("X-Exception-PrevStatusCode", Integer.toString(response.getStatusCode()));
-                response.setStatusCode(500);
-                if(!requestResponseBuilder.hasBody(response)){
-                    response.setResponseText(ex.getMessage());
-                    response.setBinaryResponse(false);
-                }
-                sendResponse(response, httpExchange);
-            }catch (Exception xx){
-
-            }
-        }finally {
-            try {
-                filteringClassesHandler.handle(HttpFilterType.POST_RENDER,request,response,connManager);
+                filteringClassesHandler.handle(HttpFilterType.POST_RENDER, request, response, connManager);
             } catch (Exception e) {
-                logger.error("ERROR CALLING POST RENDER ",e);
+                logger.error("ERROR CALLING POST RENDER ", e);
             }
+        }
+    }
+
+    private void handleException(HttpExchange httpExchange, Response response, Exception ex) {
+        try {
+            logger.error("ERROR HANDLING HTTP REQUEST ", ex);
+            if (response.getHeader("content-type") == null) {
+                response.addHeader("Content-Type", "text/html");
+            }
+            response.addHeader("X-Exception-Type", ex.getClass().getName());
+            response.addHeader("X-Exception-Message", ex.getMessage());
+            response.addHeader("X-Exception-PrevStatusCode", Integer.toString(response.getStatusCode()));
+            response.setStatusCode(500);
+            if (!requestResponseBuilder.hasBody(response)) {
+                response.setResponseText(ex.getMessage());
+                response.setBinaryResponse(false);
+            }
+            sendResponse(response, httpExchange);
+        } catch (Exception xx) {
+
         }
     }
 
     private boolean handleSpecialRequests(HttpExchange httpExchange, Request request) throws IOException {
-        if(mirrorData(request, httpExchange)){
+        if (mirrorData(request, httpExchange)) {
             return true;
         }
-        if(testExpect100(request, httpExchange)){
+        if (testExpect100(request, httpExchange)) {
             return true;
         }
-        if(blockRecursive(request, httpExchange)){
+        if (blockRecursive(request, httpExchange)) {
             return true;
         }
         return false;
     }
-
-    private static final HttpRequestRetryHandler requestRetryHandler = (exception, executionCount, context) -> {
-        if (executionCount == 1) {
-            return false;
-        } else {
-            return true;
-        }
-    };
 
     private void callExternalSite(HttpExchange httpExchange, Request request, Response response) throws Exception {
 
@@ -381,8 +380,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
             } catch (Exception ex) {
                 response.setStatusCode(404);
             }
-        }finally {
-            if(fullRequest!=null){
+        } finally {
+            if (fullRequest != null) {
                 fullRequest.releaseConnection();
             }
         }
@@ -391,13 +390,13 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     private void sendResponse(Response response, HttpExchange httpExchange) throws IOException {
         byte[] data = new byte[0];
         var dataLength = 0;
-        if(requestResponseBuilder.hasBody(response)) {
+        if (requestResponseBuilder.hasBody(response)) {
             if (response.isBinaryResponse()) {
                 data = ((byte[]) response.getResponseBytes());
-            } else if(((String) response.getResponseText()).length()>0){
+            } else if (((String) response.getResponseText()).length() > 0) {
                 data = (((String) response.getResponseText()).getBytes(StandardCharsets.UTF_8));
             }
-            if(data.length>0){
+            if (data.length > 0) {
                 dataLength = data.length;
             }
         }
@@ -407,12 +406,12 @@ Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE
 Access-Control-Allow-Headers: Content-Type, x-requested-with
 Access-Control-Max-Age: 86400
          */
-        response.addHeader("Access-Control-Allow-Origin","*");
-        response.addHeader("Access-Control-Allow-Methods","*");
-        response.addHeader("Access-Control-Allow-Headers","*");
-        response.addHeader("Access-Control-Max-Age","86400");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Methods", "*");
+        response.addHeader("Access-Control-Allow-Headers", "*");
+        response.addHeader("Access-Control-Max-Age", "86400");
         var duplicate = new HashSet<String>();
-        for (var header: response.getHeaders().entrySet()) {
+        for (var header : response.getHeaders().entrySet()) {
             httpExchange.getResponseHeaders().add(header.getKey(), header.getValue());
         }
         httpExchange.sendResponseHeaders(response.getStatusCode(), dataLength);
@@ -429,38 +428,38 @@ Access-Control-Max-Age: 86400
                 os.flush();
                 os.close();
             }
-        }catch(Exception ex){
-            logger.error(ex.getMessage(),ex);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
         }
     }
 
     private HttpRequestBase createFullRequest(Request request, String fullAddress) throws Exception {
-        if(request.getMethod().equalsIgnoreCase("POST")){
+        if (request.getMethod().equalsIgnoreCase("POST")) {
             return new HttpPost(fullAddress);
-        }else if(request.getMethod().equalsIgnoreCase("PUT")){
+        } else if (request.getMethod().equalsIgnoreCase("PUT")) {
             return new HttpPut(fullAddress);
-        }else if(request.getMethod().equalsIgnoreCase("PATCH")){
+        } else if (request.getMethod().equalsIgnoreCase("PATCH")) {
             return new HttpPatch(fullAddress);
-        }else if(request.getMethod().equalsIgnoreCase("GET")){
+        } else if (request.getMethod().equalsIgnoreCase("GET")) {
             return new HttpGet(fullAddress);
-        }else if(request.getMethod().equalsIgnoreCase("DELETE")){
+        } else if (request.getMethod().equalsIgnoreCase("DELETE")) {
             return new HttpDelete(fullAddress);
-        }else if(request.getMethod().equalsIgnoreCase("HEAD")){
+        } else if (request.getMethod().equalsIgnoreCase("HEAD")) {
             return new HttpHead(fullAddress);
-        }else if(request.getMethod().equalsIgnoreCase("OPTIONS")){
+        } else if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
             return new HttpOptions(fullAddress);
-        }else if(request.getMethod().equalsIgnoreCase("TRACE")){
+        } else if (request.getMethod().equalsIgnoreCase("TRACE")) {
             return new HttpTrace(fullAddress);
-        }else{
-            logger.error("MISSING METHOD "+request.getMethod()+" on "+fullAddress);
-            throw new Exception("MISSING METHOD "+request.getMethod()+" on "+fullAddress);
+        } else {
+            logger.error("MISSING METHOD " + request.getMethod() + " on " + fullAddress);
+            throw new Exception("MISSING METHOD " + request.getMethod() + " on " + fullAddress);
         }
     }
 
     private String buildFullAddress(Request request) {
 
         String port = "";
-        if(request.getPort()!=-1) {
+        if (request.getPort() != -1) {
             if (request.getPort() != 443 && request.getProtocol().equalsIgnoreCase("https")) {
                 port = ":" + Integer.toString(request.getPort());
             }
@@ -469,18 +468,18 @@ Access-Control-Max-Age: 86400
                 port = ":" + Integer.toString(request.getPort());
             }
         }
-        return request.getProtocol()+"://"+request.getHost()+port+request.getPath()+buildFullQuery(request);
+        return request.getProtocol() + "://" + request.getHost() + port + request.getPath() + buildFullQuery(request);
     }
 
     private String buildFullQuery(Request request) {
-        if(request.getQuery().size()==0) return "";
+        if (request.getQuery().size() == 0) return "";
         return "?" + request.getQuery().entrySet()
                 .stream()
                 .map(e -> {
                     try {
-                        return e.getKey()+"="+java.net.URLEncoder.encode(e.getValue(), "UTF-8").replace(" ", "%20");
+                        return e.getKey() + "=" + java.net.URLEncoder.encode(e.getValue(), "UTF-8").replace(" ", "%20");
                     } catch (UnsupportedEncodingException unsupportedEncodingException) {
-                        return e.getKey()+"="+e.getValue();
+                        return e.getKey() + "=" + e.getValue();
                     }
                 })
                 .collect(joining("&"));
@@ -505,6 +504,11 @@ Access-Control-Max-Age: 86400
 
     public void setHttpForwardPort(int httpForwardPort) {
         this.httpForwardPort = httpForwardPort;
+    }
+
+    class ResolvedDomain {
+        public HashSet<String> domains = new HashSet<>();
+        public long timestamp = Calendar.getInstance().getTimeInMillis();
     }
 
 }

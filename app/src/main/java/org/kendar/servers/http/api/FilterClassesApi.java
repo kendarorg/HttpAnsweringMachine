@@ -13,6 +13,7 @@ import org.kendar.servers.http.FilteringClassesHandlerImpl;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -24,11 +25,14 @@ import java.util.Locale;
         blocking = true)
 public class FilterClassesApi  implements FilteringClass {
     private FilterConfig filteringClassesHandler;
+    private Environment environment;
 
-    public FilterClassesApi(FilterConfig filtersConfiguration){
+    public FilterClassesApi(FilterConfig filtersConfiguration, Environment environment){
 
         this.filteringClassesHandler = filtersConfiguration;
+        this.environment = environment;
     }
+
 
     ObjectMapper mapper = new ObjectMapper();
     public class FilterType{
@@ -89,7 +93,7 @@ public class FilterClassesApi  implements FilteringClass {
         var listOfItems = config.filters.get(phase);
         for(var i=0;i<listOfItems.size();i++){
             var item = listOfItems.get(i);
-            var desc = new FilterDto(item.getTypeFilter(),item.getMethodFilter());
+            var desc = new FilterDto(item.getId(),item.getTypeFilter(),item.getMethodFilter());
             result.add(desc);
         }
 
