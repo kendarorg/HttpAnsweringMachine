@@ -55,7 +55,19 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     }
 
     public void setExtraServers(List<DnsServerDescriptor>  extraServers){
-        dnsConfiguration.get().servers = extraServers;
+        var cloned = dnsConfiguration.get().copy();
+        cloned.servers = extraServers;
+        dnsConfiguration.set(cloned);
+    }
+
+    public List<PatternItem> getDnsRecords(){
+        return dnsConfiguration.get().dnsRecords;
+    }
+
+    public void setDnsRecords(List<PatternItem>  dnsRecords){
+        var cloned = dnsConfiguration.get().copy();
+        cloned.dnsRecords = dnsRecords;
+        dnsConfiguration.set(cloned);
     }
 
     private final Pattern ipPattern = Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");

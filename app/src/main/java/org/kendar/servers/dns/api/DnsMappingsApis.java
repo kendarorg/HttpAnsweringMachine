@@ -2,6 +2,7 @@ package org.kendar.servers.dns.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.dns.DnsMultiResolverImpl;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
@@ -15,10 +16,10 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "${localhost.name}",
         blocking = true)
 public class DnsMappingsApis implements FilteringClass {
-    private final DnsMultiResolver dnsMultiResolver;
+    private final DnsMultiResolverImpl dnsMultiResolver;
     ObjectMapper mapper = new ObjectMapper();
 
-    public DnsMappingsApis(DnsMultiResolver dnsMultiResolver) {
+    public DnsMappingsApis(DnsMultiResolverImpl dnsMultiResolver) {
 
         this.dnsMultiResolver = dnsMultiResolver;
     }
@@ -31,11 +32,10 @@ public class DnsMappingsApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/mappings",
             method = "GET",id="1000a4b4-277d-11ec-9621-0242ac130002")
-    public boolean getDnsMappings(Request req, Response res) {
-        dnsMultiResolver.getExtraServers()
-        //var proxyes = simpleProxyHandler.getProxies();
+    public boolean getDnsMappings(Request req, Response res) throws JsonProcessingException {
+        var records = dnsMultiResolver.getDnsRecords();
         res.addHeader("Content-type", "application/json");
-        //res.setResponse(mapper.writeValueAsString(proxyes));
+        res.setResponseText(mapper.writeValueAsString(records));
         return false;
     }
 }

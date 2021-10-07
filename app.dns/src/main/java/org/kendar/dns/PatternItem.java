@@ -32,6 +32,10 @@ public class PatternItem {
         return matcher;
     }
 
+    public String getName() {
+        return matcher;
+    }
+
     public String writeHostsLine() {
         if(compile!=null){
             return "#"+ip+" "+matcher;
