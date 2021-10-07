@@ -1,4 +1,4 @@
-package org.kendar.servers.http;
+package org.kendar.servers.http.configurations;
 
 import org.kendar.utils.PropertiesHelper;
 import org.kendar.utils.PropertiesManager;

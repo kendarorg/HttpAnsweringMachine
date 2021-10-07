@@ -1,5 +1,6 @@
 package org.kendar.dns;
 
+import org.kendar.dns.configuration.DnsConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.dns.DnsServerDescriptor;
 import org.kendar.utils.LoggerBuilder;
@@ -21,12 +22,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class DnsMultiResolverImpl implements DnsMultiResolver {
-    class DnsConfiguration{
-        public List<DnsServerDescriptor> servers = new ArrayList<>();
-        public List<String> blocker = new ArrayList<>();
-        public List<PatternItem> dnsRecords = new ArrayList<>();
-        public HashMap<String,HashSet<String>> domains = new HashMap<>();
-    }
     private AtomicReference<DnsConfiguration> dnsConfiguration;
     private final ExecutorService executorService = Executors.newFixedThreadPool(20);
     private final Logger logger;

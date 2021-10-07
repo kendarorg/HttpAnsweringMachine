@@ -1,6 +1,8 @@
-package org.kendar.servers.proxy;
+package org.kendar.servers.proxy.configurations;
 
 import org.kendar.servers.AnsweringHttpsServer;
+import org.kendar.servers.proxy.RemoteServerStatus;
+import org.kendar.servers.proxy.SimpleProxyHandlerImpl;
 import org.kendar.utils.PropertiesHelper;
 import org.kendar.utils.PropertiesManager;
 import org.springframework.context.ApplicationContext;

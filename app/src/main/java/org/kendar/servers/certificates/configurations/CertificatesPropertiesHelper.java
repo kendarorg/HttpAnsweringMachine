@@ -1,4 +1,4 @@
-package org.kendar.servers.certificates;
+package org.kendar.servers.certificates.configurations;
 
 import org.kendar.servers.AnsweringHttpsServer;
 import org.kendar.utils.PropertiesHelper;
