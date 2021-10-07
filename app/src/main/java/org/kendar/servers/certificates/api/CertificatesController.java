@@ -48,9 +48,11 @@ public class CertificatesController implements FilteringClass {
         for(var resource : resources.keySet()){
             var path = Path.of(resource);
             var stringPath = path.getFileName().toString();
-            var byteContent = fileResourcesUtils.getFileFromResourceAsByteArray("certificates/"+stringPath);
-            if(byteContent.length==0)continue; //avoid directories
-            result.add(stringPath);
+            try {
+                var byteContent = fileResourcesUtils.getFileFromResourceAsByteArray("certificates/" + stringPath);
+                if (byteContent.length == 0) continue; //avoid directories
+                result.add(stringPath);
+            }catch(Exception ex){}
         }
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(result));

@@ -14,13 +14,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
-    class FiltersConfiguration{
-        public HashMap<HttpFilterType,List<FilterDescriptor>> filters = new HashMap<>();
-        public HashMap<String,FilterDescriptor> filtersById = new HashMap<>();
-    }
     private final List<CustomFilters> customFilterLoaders;
     private final Environment environment;
-    private final AtomicReference<FiltersConfiguration> filtersConfiguration;
+    private final FilterConfig filtersConfiguration;
 
     static class PrioritySorter implements Comparator<FilterDescriptor>
     {
@@ -30,11 +26,17 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
         }
     }
 
-    public FilteringClassesHandlerImpl(List<CustomFilters> customFilterLoaders,Environment environment){
+    public HashMap<HttpFilterType,List<FilterDescriptor>> getConfiguration(){
+        return filtersConfiguration.get().filters;
+    }
+    public void setConfiguration(HashMap<HttpFilterType,List<FilterDescriptor>> config){
+        //filtersConfiguration.set(config);
+    }
+
+    public FilteringClassesHandlerImpl(List<CustomFilters> customFilterLoaders,Environment environment,FilterConfig filtersConfiguration){
         this.customFilterLoaders = customFilterLoaders;
         this.environment = environment;
-        var config = new FiltersConfiguration();
-        filtersConfiguration =  new AtomicReference<>(config);
+        this.filtersConfiguration =  filtersConfiguration;
     }
 
 
@@ -42,7 +44,6 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
     @PostConstruct
     public void init(){
         var config = new FiltersConfiguration();
-        filtersConfiguration.set(config);
         config.filters.put(HttpFilterType.NONE,new ArrayList<>());
         config.filters.put(HttpFilterType.PRE_RENDER,new ArrayList<>());
         config.filters.put(HttpFilterType.API,new ArrayList<>());
@@ -57,6 +58,7 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
                 config.filtersById.put(ds.getId(), ds);
             }
         }
+        filtersConfiguration.set(config);
     }
 
     @Override

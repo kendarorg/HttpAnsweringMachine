@@ -7,6 +7,7 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.core.env.Environment;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class FilterDescriptor {
     private Pattern hostPattern;
     private Pattern pathPattern;
     private HttpFilterType phase;
+    private HttpTypeFilter typeFilter;
+    private HttpMethodFilter methodFilter;
     private Method callback;
     private final Object filterClass;
     private List<String> pathMatchers = new ArrayList<>();
@@ -38,6 +41,8 @@ public class FilterDescriptor {
     }
 
     public FilterDescriptor(HttpTypeFilter typeFilter, HttpMethodFilter methodFilter, Method callback, FilteringClass filterClass, Environment environment) {
+        this.typeFilter = typeFilter;
+        this.methodFilter = methodFilter;
 
         this.callback = callback;
         this.filterClass = filterClass;
@@ -63,7 +68,9 @@ public class FilterDescriptor {
         }
     }
 
-    public FilterDescriptor(GenericFilterExecutor executor,Environment environment) {
+    public FilterDescriptor( GenericFilterExecutor executor,Environment environment) {
+
+
         for(var method:executor.getClass().getMethods()){
             if(method.getName().equalsIgnoreCase("run")){
                 this.callback = method;
@@ -91,6 +98,85 @@ public class FilterDescriptor {
             pathAddress = getWithEnv(executor.getPathAddress(),environment);
             setupPathSimpleMatchers();
         }
+        this.typeFilter = buildTypeFilter();
+        this.methodFilter = buildMethodFilter();
+    }
+
+    private HttpMethodFilter buildMethodFilter() {
+        var loc = this;
+        return new HttpMethodFilter(){
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return null;
+            }
+
+            @Override
+            public HttpFilterType phase() {
+                return loc.phase;
+            }
+
+            @Override
+            public boolean blocking() {
+                return loc.methodBlocking;
+            }
+
+            @Override
+            public String pathAddress() {
+                return loc.pathAddress;
+            }
+
+            @Override
+            public String pathPattern() {
+                return loc.pathPattern.toString();
+            }
+
+            @Override
+            public String method() {
+                return loc.method;
+            }
+
+            @Override
+            public String name() {
+                return "";
+            }
+        };
+    }
+
+    private HttpTypeFilter buildTypeFilter() {
+        var loc = this;
+        return new HttpTypeFilter(){
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return null;
+            }
+
+            @Override
+            public String hostAddress() {
+                return loc.hostAddress;
+            }
+
+            @Override
+            public String hostPattern() {
+                return loc.hostPattern.toString();
+            }
+
+            @Override
+            public String name() {
+                return "";
+            }
+
+            @Override
+            public int priority() {
+                return loc.priority;
+            }
+
+            @Override
+            public boolean blocking() {
+                return loc.typeBlocking;
+            }
+        };
     }
 
     private void setupPathSimpleMatchers() {
@@ -189,14 +275,18 @@ public class FilterDescriptor {
 
     public boolean execute(Request request, Response response, HttpClientConnectionManager connectionManager) throws InvocationTargetException, IllegalAccessException {
         if(!enabled) return false;
+        Object result = null;
         if(callback.getParameterCount()==3) {
-            return (boolean) callback.invoke(filterClass, request, response, connectionManager);
+            result = callback.invoke(filterClass, request, response, connectionManager);
         }else if(callback.getParameterCount()==2) {
-            return (boolean) callback.invoke(filterClass, request, response);
+            result = callback.invoke(filterClass, request, response);
         }else if(callback.getParameterCount()==1) {
-            return (boolean) callback.invoke(filterClass, request);
+            result = callback.invoke(filterClass, request);
         }else if(callback.getParameterCount()==0) {
-            return (boolean) callback.invoke(filterClass);
+            result = callback.invoke(filterClass);
+        }
+        if(callback.getReturnType() == boolean.class){
+            return (boolean) result;
         }
         return false;
     }
@@ -223,5 +313,21 @@ public class FilterDescriptor {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public HttpTypeFilter getTypeFilter() {
+        return typeFilter;
+    }
+
+    public void setTypeFilter(HttpTypeFilter typeFilter) {
+        this.typeFilter = typeFilter;
+    }
+
+    public HttpMethodFilter getMethodFilter() {
+        return methodFilter;
+    }
+
+    public void setMethodFilter(HttpMethodFilter methodFilter) {
+        this.methodFilter = methodFilter;
     }
 }

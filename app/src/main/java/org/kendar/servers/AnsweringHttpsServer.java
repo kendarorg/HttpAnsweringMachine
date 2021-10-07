@@ -10,6 +10,8 @@ import com.sun.net.httpserver.HttpsServer;
 import org.kendar.servers.certificates.CertificatesManager;
 import org.kendar.servers.certificates.GeneratedCert;
 import org.kendar.servers.http.AnsweringHandler;
+import org.kendar.servers.http.CertificatesSSLConfig;
+import org.kendar.servers.http.CertificatesConfiguration;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,15 +26,14 @@ import java.net.InetSocketAddress;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class AnsweringHttpsServer  implements AnsweringServer{
+    private final CertificatesSSLConfig certificatesConfiguration;
+
     public void isSystem(){};
     private static final String SSL_CONTEXT_TYPE = "TLS";
     private static final String KEYSTORE_INSTANCE_TYPE = "JKS";
@@ -56,13 +57,9 @@ public class AnsweringHttpsServer  implements AnsweringServer{
 ;
     private HttpsServer httpsServer;
 
-    class CertificatesConfiguration{
-        public String cname;
-        public List<String> extraDomains = new ArrayList<>();
-        public long timestamp = Calendar.getInstance().getTimeInMillis();
-    }
+
     //private final ConcurrentLinkedQueue<String> extraDomains = new ConcurrentLinkedQueue<>();
-    private final AtomicReference<CertificatesConfiguration> certificatesConfiguration;
+
 
     public List<String> getExtraDomains(){
         return certificatesConfiguration.get().extraDomains;
@@ -77,20 +74,19 @@ public class AnsweringHttpsServer  implements AnsweringServer{
     }
 
     public AnsweringHttpsServer(LoggerBuilder loggerBuilder, AnsweringHandler handler,
-                                CertificatesManager certificatesManager, Environment environment){
+                                CertificatesManager certificatesManager, Environment environment,
+                                CertificatesSSLConfig certificatesConfiguration){
         this.logger = loggerBuilder.build(AnsweringHttpsServer.class);
         this.handler = handler;
         this.certificatesManager = certificatesManager;
         this.environment = environment;
-        var config = new CertificatesConfiguration();
-        certificatesConfiguration = new AtomicReference<>(config);
+        this.certificatesConfiguration = certificatesConfiguration;
     }
 
     @PostConstruct
     protected void postConstruct(){
         //extraDomains.add(localHostName);
         var config = new CertificatesConfiguration();
-        certificatesConfiguration.set(config);
         for(int i=0;i<1000;i++){
             var index = "https.certificate."+Integer.toString(i);
             var certificateDomain = environment.getProperty(index);
@@ -98,6 +94,8 @@ public class AnsweringHttpsServer  implements AnsweringServer{
                 config.extraDomains.add(certificateDomain);
             }
         }
+        config.cname =environment.getProperty("https.certificates.cnname");
+        certificatesConfiguration.set(config);
     }
 
     @Override

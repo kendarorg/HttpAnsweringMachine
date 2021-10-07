@@ -6,7 +6,7 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
-import org.kendar.servers.AnsweringHttpsServer;
+import org.kendar.servers.http.CertificatesSSLConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
@@ -18,11 +18,13 @@ import java.util.ArrayList;
         blocking = true)
 public class SSLController implements FilteringClass {
     ObjectMapper mapper = new ObjectMapper();
-    private AnsweringHttpsServer answeringHttpsServer;
+    private CertificatesSSLConfig answeringHttpsServer;
 
-    public SSLController(AnsweringHttpsServer answeringHttpsServer){
-        this.answeringHttpsServer = answeringHttpsServer;
+    public SSLController(CertificatesSSLConfig applicationContext){
+
+        this.answeringHttpsServer = applicationContext;
     }
+
 
     @Override
     public String getId() {
@@ -33,7 +35,7 @@ public class SSLController implements FilteringClass {
             pathAddress = "/api/ssl",
             method = "GET")
     public boolean getExtraServers(Request req, Response res) throws JsonProcessingException {
-        var dnsServeres = answeringHttpsServer.getExtraDomains();
+        var dnsServeres = answeringHttpsServer.get().extraDomains;
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(dnsServeres));
         return false;
@@ -43,7 +45,8 @@ public class SSLController implements FilteringClass {
             pathAddress = "/api/ssl/{name}",
             method = "DELETE")
     public boolean removeDnsServer(Request req, Response res) {
-        var dnsServeres = answeringHttpsServer.getExtraDomains();
+        var cloned = answeringHttpsServer.get().copy();
+        var dnsServeres = cloned.extraDomains;
         var name = req.getPathParameter("name");
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<String>();
@@ -51,7 +54,8 @@ public class SSLController implements FilteringClass {
             if(item.equalsIgnoreCase(name)){continue;}
             newList.add(item);
         }
-        answeringHttpsServer.setExtraDomains(newList);
+        cloned.extraDomains = newList;
+        answeringHttpsServer.set(cloned);
         res.setStatusCode(200);
         return false;
     }
@@ -60,7 +64,8 @@ public class SSLController implements FilteringClass {
             pathAddress = "/api/ssl/swap/{name1}/{name2}",
             method = "PUT")
     public boolean swapDnsServer(Request req, Response res) {
-        var dnsServeres = answeringHttpsServer.getExtraDomains();
+        var cloned = answeringHttpsServer.get().copy();
+        var dnsServeres = cloned.extraDomains;
         var name1 = (req.getPathParameter("name1"));
         var name2 = (req.getPathParameter("name2"));
         res.addHeader("Content-type", "application/json");
@@ -76,7 +81,8 @@ public class SSLController implements FilteringClass {
         var id1Clone = dnsServeres.get(id1Index)+"";
         dnsServeres.set(id1Index,dnsServeres.get(id2Index));
         dnsServeres.set(id2Index,id1Clone);
-        answeringHttpsServer.setExtraDomains(newList);
+        cloned.extraDomains = newList;
+        answeringHttpsServer.set(cloned);
         res.setStatusCode(200);
         return false;
     }
@@ -85,7 +91,8 @@ public class SSLController implements FilteringClass {
             pathAddress = "/api/ssl/{name}",
             method = "POST")
     public boolean addDnsServer(Request req, Response res) throws Exception {
-        var dnsServeres = answeringHttpsServer.getExtraDomains();
+        var cloned = answeringHttpsServer.get().copy();
+        var dnsServeres = cloned.extraDomains;
         var newData = req.getPathParameter("name");
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<String>();
@@ -94,7 +101,8 @@ public class SSLController implements FilteringClass {
             newList.add( item);
         }
         newList.add(newData);
-        answeringHttpsServer.setExtraDomains(newList);
+        cloned.extraDomains = newList;
+        answeringHttpsServer.set(cloned);
         res.setStatusCode(200);
         return false;
     }
