@@ -25,9 +25,11 @@ import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class AnsweringHttpsServer  implements AnsweringServer{
@@ -49,15 +51,21 @@ public class AnsweringHttpsServer  implements AnsweringServer{
     private boolean enabled;
     @Value( "${https.useCachedExecutor:true}" )
     private boolean useCachedExecutor;
-    @Value( "${https.certificates.cnname}" )
-    private String cnName;
+    //@Value( "${https.certificates.cnname}" )
+    //private String cnName;
 ;
     private HttpsServer httpsServer;
 
-    private final ConcurrentLinkedQueue<String> extraDomains = new ConcurrentLinkedQueue<>();
+    class CertificatesConfiguration{
+        public String cname;
+        public List<String> extraDomains = new ArrayList<>();
+        public long timestamp = Calendar.getInstance().getTimeInMillis();
+    }
+    //private final ConcurrentLinkedQueue<String> extraDomains = new ConcurrentLinkedQueue<>();
+    private final AtomicReference<CertificatesConfiguration> certificatesConfiguration;
 
     public List<String> getExtraDomains(){
-        return Arrays.asList((String[])extraDomains.toArray());
+        return certificatesConfiguration.get().extraDomains;
     }
 
     public AnsweringHttpsServer(LoggerBuilder loggerBuilder, AnsweringHandler handler,
@@ -66,16 +74,20 @@ public class AnsweringHttpsServer  implements AnsweringServer{
         this.handler = handler;
         this.certificatesManager = certificatesManager;
         this.environment = environment;
+        var config = new CertificatesConfiguration();
+        certificatesConfiguration = new AtomicReference<>(config);
     }
 
     @PostConstruct
     protected void postConstruct(){
         //extraDomains.add(localHostName);
+        var config = new CertificatesConfiguration();
+        certificatesConfiguration.set(config);
         for(int i=0;i<1000;i++){
             var index = "https.certificate."+Integer.toString(i);
             var certificateDomain = environment.getProperty(index);
             if(certificateDomain != null){
-                extraDomains.add(certificateDomain);
+                config.extraDomains.add(certificateDomain);
             }
         }
     }
@@ -136,10 +148,10 @@ public class AnsweringHttpsServer  implements AnsweringServer{
 
     private SSLContext getSslContext() throws Exception {
         var root = certificatesManager.loadRootCertificate("certificates/ca.der","certificates/ca.key");
+        var config = certificatesConfiguration.get();
 
-
-        GeneratedCert domain = certificatesManager.createCertificate(cnName,null, root,
-                toList(extraDomains),false);
+        GeneratedCert domain = certificatesManager.createCertificate(config.cname,null, root,
+                config.extraDomains,false);
 
         KeyStore ksTemp = KeyStore.getInstance("JKS");
         ksTemp.load(null, null); //Initialize it
