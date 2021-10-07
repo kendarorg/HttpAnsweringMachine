@@ -45,10 +45,10 @@ public class DnsServersApis implements FilteringClass {
             pathAddress = "/api/dns/servers/{name}",
             method = "GET")
     public boolean getDnsServer(Request req, Response res) throws JsonProcessingException {
-        var dnsServeres = dnsMultiResolver.getExtraServers();
+        var dnsServers = dnsMultiResolver.getExtraServers();
         var name = req.getPathParameter("name");
         res.addHeader("Content-type", "application/json");
-        for(var item:dnsServeres){
+        for(var item:dnsServers){
             if(item.getName().equalsIgnoreCase(name)){
 
                 res.setResponseText(mapper.writeValueAsString(item));
@@ -80,12 +80,12 @@ public class DnsServersApis implements FilteringClass {
             pathAddress = "/api/dns/servers/{name}",
             method = "PUT")
     public boolean updateDnsServer(Request req, Response res) throws JsonProcessingException {
-        var dnsServeres = dnsMultiResolver.getExtraServers();
+        var dnsServers = dnsMultiResolver.getExtraServers();
         var ip = (req.getPathParameter("name"));
         res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<DnsServerDescriptor>();
         var newData = mapper.readValue((String)req.getRequestText(),DnsServerDescriptor.class);
-        for(var item:dnsServeres){
+        for(var item:dnsServers){
             var clone = item.clone();
             if(!clone.getIp().equalsIgnoreCase(ip)){
                 newList.add(clone);
