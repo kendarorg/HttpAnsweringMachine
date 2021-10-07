@@ -93,7 +93,7 @@ public class OidcController implements FilteringClass {
     /**
      * Provides OIDC metadata. See the spec at https://openid.net/specs/openid-connect-discovery-1_0.html
      */
-    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =METADATA_ENDPOINT,method = "GET")
+    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =METADATA_ENDPOINT,method = "GET",id="1facdaa6-277f-11ec-9621-0242ac1afe002")
     public boolean metadata(/*UriComponentsBuilder uriBuilder,*/ Request req, Response res) {
         log.info("called " + METADATA_ENDPOINT + " from {}", req.getRemoteHost());
         String urlPrefix = "https://"+serverAddress+"/api/plugins/oidc";
@@ -120,7 +120,7 @@ public class OidcController implements FilteringClass {
     /**
      * Provides JSON Web Key Set containing the public part of the key used to sign ID tokens.
      */
-    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =JWKS_ENDPOINT,method = "GET")
+    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =JWKS_ENDPOINT,method = "GET",id="2000daa6-277f-11ec-9621-0242ac1afe002")
     public boolean jwks(Request req, Response res) {
         log.info("called " + JWKS_ENDPOINT + " from {}", req.getRemoteHost());
         res.setResponseText(publicJWKSet.toString());
@@ -130,7 +130,7 @@ public class OidcController implements FilteringClass {
     /**
      * Provides claims about a user. Requires a valid access token.
      */
-    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =USERINFO_ENDPOINT,method = "GET")
+    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =USERINFO_ENDPOINT,method = "GET",id="2001daa6-277f-11ec-9621-0242ac1afe002")
     public boolean userinfo(Request req, Response res) {
         var auth = req.getRequestParameter("Authorization");
         var access_token = req.getRequestParameter("access_token");
@@ -171,7 +171,7 @@ public class OidcController implements FilteringClass {
     /**
      * Provides information about a supplied access token.
      */
-    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =INTROSPECTION_ENDPOINT,method = "POST")
+    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =INTROSPECTION_ENDPOINT,method = "POST",id="2002daa6-277f-11ec-9621-0242ac1afe002")
     public boolean introspection(Request req, Response res) {
         var auth = req.getRequestParameter("Authorization");
         var token = req.getRequestParameter("token");
@@ -200,7 +200,7 @@ public class OidcController implements FilteringClass {
     /**
      * Provides token endpoint.
      */
-    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =TOKEN_ENDPOINT,method = "POST")
+    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =TOKEN_ENDPOINT,method = "POST",id="2003daa6-277f-11ec-9621-0242ac1afe002")
     public boolean token(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
         var grant_type = req.getRequestParameter("grant_type");
         var code = req.getRequestParameter("code");
@@ -264,7 +264,7 @@ public class OidcController implements FilteringClass {
     /**
      * Provides authorization endpoint.
      */
-    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =AUTHORIZATION_ENDPOINT,method = "GET")
+    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =AUTHORIZATION_ENDPOINT,method = "GET",id="2004daa6-277f-11ec-9621-0242ac1afe002")
     public boolean authorize(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
         var client_id = req.getRequestParameter("client_id");
         var redirect_uri = req.getRequestParameter("redirect_uri");

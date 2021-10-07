@@ -8,6 +8,7 @@ import org.kendar.servers.http.Response;
 import org.springframework.core.env.Environment;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.IncompleteAnnotationException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class FilterDescriptor {
     private final Object filterClass;
     private List<String> pathMatchers = new ArrayList<>();
     private final List<String> pathSimpleMatchers = new ArrayList<>();
-    private final String id;
+    private String id;
 
     public String getId(){
         return id;
@@ -42,10 +43,14 @@ public class FilterDescriptor {
 
     public FilterDescriptor(HttpTypeFilter typeFilter, HttpMethodFilter methodFilter, Method callback, FilteringClass filterClass, Environment environment) {
 
-
+        this.id = methodFilter.id();
         this.callback = callback;
         this.filterClass = filterClass;
-        this.id = filterClass.getId();
+        try {
+            this.id = methodFilter.id();
+        }catch(IncompleteAnnotationException ex){
+            System.out.println(ex);
+        }
         if(typeFilter.hostPattern().length()>0){
             var realHostPattern = getWithEnv(typeFilter.hostPattern(),environment);
             hostPattern = Pattern.compile(realHostPattern);
@@ -141,6 +146,11 @@ public class FilterDescriptor {
             @Override
             public String name() {
                 return "";
+            }
+
+            @Override
+            public String id() {
+                return loc.getId();
             }
         };
     }

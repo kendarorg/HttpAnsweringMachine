@@ -47,7 +47,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
     }
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
-            method = "GET")
+            method = "GET",id="5000daa6-277f-11ec-9621-0242ac1afe002")
     public boolean retrieveSingleLineData(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var line = Integer.parseInt(req.getPathParameter("line"));
@@ -72,7 +72,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
-            method = "PUT")
+            method = "PUT",id="5001daa6-277f-11ec-9621-0242ac1afe002")
     public boolean modifySingleLineData(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var line = Integer.parseInt(req.getPathParameter("line"));
@@ -105,7 +105,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
-            method = "POST")
+            method = "POST",id="5002daa6-277f-11ec-9621-0242ac1afe002")
     public boolean addLineData(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var line = Integer.parseInt(req.getPathParameter("line"));
@@ -138,7 +138,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
-            method = "DELETE")
+            method = "DELETE",id="5003daa6-277f-11ec-9621-0242ac1afe002")
     public boolean deleteSingleLineData(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var line = Integer.parseInt(req.getPathParameter("line"));

@@ -68,7 +68,7 @@ public class RequestResponseFileLogging  implements FilteringClass {
     }
 
     private static final ObjectMapper mapper = new ObjectMapper();
-    @HttpMethodFilter(phase = HttpFilterType.POST_RENDER,pathAddress ="*",method = "*")
+    @HttpMethodFilter(phase = HttpFilterType.POST_RENDER,pathAddress ="*",method = "*",id="1001a4b4-277d-11ec-9621-0242ac130002")
     public boolean doLog(Request serReq, Response serRes){
         if(serReq.isStaticRequest() && !logStaticRequests) return false;
         if(serReq.isStaticRequest() && !logDynamicRequests) return false;

@@ -62,7 +62,7 @@ public class ReplayerAPICrud implements FilteringClass {
     }
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording",
-            method = "GET")
+            method = "GET",id="4000daa6-277f-11ec-9621-0242ac1afe002")
     public boolean listAllLocalRecordings(Request req, Response res) throws JsonProcessingException {
         var realPath = fileResourcesUtils.buildPath(replayerData);
         var f = new File(realPath);
@@ -89,7 +89,7 @@ public class ReplayerAPICrud implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}",
-            method = "GET")
+            method = "GET",id="4001daa6-277f-11ec-9621-0242ac1afe002")
     public boolean listAllRecordingSteps(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
 
@@ -106,7 +106,7 @@ public class ReplayerAPICrud implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}",
-            method = "DELETE")
+            method = "DELETE",id="4002daa6-277f-11ec-9621-0242ac1afe002")
     public boolean deleteRecordin(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id+".json"));
@@ -122,7 +122,7 @@ public class ReplayerAPICrud implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}",
-            method = "PUT")
+            method = "PUT",id="4003daa6-277f-11ec-9621-0242ac1afe002")
     public boolean updateRecord(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id+".json"));
@@ -141,7 +141,7 @@ public class ReplayerAPICrud implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording",
-            method = "POST")
+            method = "POST",id="4004daa6-277f-11ec-9621-0242ac1afe002")
     public boolean uploadRecording(Request req, Response res) throws Exception {
 
         if(req.getMultipartData()!=null && req.getMultipartData().size()==0){

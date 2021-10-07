@@ -40,7 +40,7 @@ public class CertificatesController implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/certificates",
-            method = "GET")
+            method = "GET",id="1012a4b4-277d-11ec-9621-0242ac130002")
     public boolean listAllCertificates(Request req, Response res) throws IOException, URISyntaxException {
         var resources = fileResourcesUtils.loadResources(this,"certificates");
 
@@ -78,7 +78,7 @@ application/x-pkcs7-certreqresp     .p7r
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/certificates/{file}",
-            method = "GET")
+            method = "GET",id="1014a4b4-277d-11ec-9621-0242ac130002")
     public boolean getSingleCertificate(Request req, Response res) throws IOException, URISyntaxException {
         var resources = fileResourcesUtils.loadResources(this,"certificates");
         var name = req.getPathParameter("file");

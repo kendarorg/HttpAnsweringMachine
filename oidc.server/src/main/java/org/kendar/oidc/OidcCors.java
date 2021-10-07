@@ -18,7 +18,7 @@ public class OidcCors implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.PRE_RENDER,
             pathAddress ="*",
             method = "OPTIONS",
-            blocking = true)
+            blocking = true,id="6000daa6-277f-11ec-9621-0242ac1afe002")
     public boolean cors(Request req, Response res) {
         res.addHeader("access-control-allow-credentials","false");
         res.addHeader("access-control-allow-headers","*");

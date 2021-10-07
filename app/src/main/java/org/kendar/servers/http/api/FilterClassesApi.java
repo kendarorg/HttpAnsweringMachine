@@ -64,7 +64,7 @@ public class FilterClassesApi  implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/filters",
-            method = "GET")
+            method = "GET",id="e907a4b4-277d-11ec-9621-0242ac130002")
     public void listPhases(Request req, Response res) throws JsonProcessingException {
         var result = new ArrayList<FilterType>();
         result.add(new FilterType(0,HttpFilterType.NONE));
@@ -80,7 +80,7 @@ public class FilterClassesApi  implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/filters/{phase}",
-            method = "GET")
+            method = "GET",id="e907a4b4-277d-11ec-9621-0242ac130003")
     public void getFiltersForPhase(Request req, Response res) throws JsonProcessingException {
         var stringPhase = req.getPathParameter("phase");
         var phase = HttpFilterType.valueOf(stringPhase.toUpperCase(Locale.ROOT));
@@ -89,7 +89,7 @@ public class FilterClassesApi  implements FilteringClass {
         var listOfItems = config.filters.get(phase);
         for(var i=0;i<listOfItems.size();i++){
             var item = listOfItems.get(i);
-            var desc = new FilterDto(i,item.getId(),item.getTypeFilter(),item.getMethodFilter());
+            var desc = new FilterDto(item.getId(),item.getTypeFilter(),item.getMethodFilter());
             result.add(desc);
         }
 
@@ -101,18 +101,18 @@ public class FilterClassesApi  implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/filters/{phase}/{id}",
-            method = "GET")
+            method = "GET",id="e907a4b4-277d-11ec-9621-0242ac130004")
     public void getFilterId(Request req, Response res) throws JsonProcessingException {
         var stringPhase = req.getPathParameter("phase");
-        var id = Integer.parseInt(req.getPathParameter("id"));
+        var id = req.getPathParameter("id");
         var phase = HttpFilterType.valueOf(stringPhase.toUpperCase(Locale.ROOT));
         var config = filteringClassesHandler.get();
         FilterDto result = null;
         var listOfItems = config.filters.get(phase);
         for(var i=0;i<listOfItems.size();i++){
             var item = listOfItems.get(i);
-            if(i==id){
-                result = new FilterDto(i,item.getId(),item.getTypeFilter(),item.getMethodFilter());
+            if(item.getId().equalsIgnoreCase(id)){
+                result = new FilterDto(item.getId(),item.getTypeFilter(),item.getMethodFilter());
                 break;
             }
         }

@@ -29,7 +29,7 @@ public class ReplayerAPIActions implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/record/{action}",
-            method = "GET")
+            method = "GET",id="3000daa6-277f-11ec-9621-0242ac1afe002")
     public boolean recording(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var action = req.getPathParameter("action");
@@ -49,7 +49,7 @@ public class ReplayerAPIActions implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/replay/{action}",
-            method = "GET")
+            method = "GET",id="3001daa6-277f-11ec-9621-0242ac1afe002")
     public boolean replaying(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var action = req.getPathParameter("action");

@@ -33,7 +33,7 @@ public class SSLController implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/ssl",
-            method = "GET")
+            method = "GET",id="1008a4b4-277d-11ec-9621-0242ac130002")
     public boolean getExtraServers(Request req, Response res) throws JsonProcessingException {
         var dnsServeres = answeringHttpsServer.get().extraDomains;
         res.addHeader("Content-type", "application/json");
@@ -43,7 +43,7 @@ public class SSLController implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/ssl/{name}",
-            method = "DELETE")
+            method = "DELETE",id="1009a4b4-277d-11ec-9621-0242ac130002")
     public boolean removeDnsServer(Request req, Response res) {
         var cloned = answeringHttpsServer.get().copy();
         var dnsServeres = cloned.extraDomains;
@@ -62,7 +62,7 @@ public class SSLController implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/ssl/swap/{name1}/{name2}",
-            method = "PUT")
+            method = "PUT",id="1010a4b4-277d-11ec-9621-0242ac130002")
     public boolean swapDnsServer(Request req, Response res) {
         var cloned = answeringHttpsServer.get().copy();
         var dnsServeres = cloned.extraDomains;
@@ -89,7 +89,7 @@ public class SSLController implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/ssl/{name}",
-            method = "POST")
+            method = "POST",id="1011a4b4-277d-11ec-9621-0242ac130002")
     public boolean addDnsServer(Request req, Response res) throws Exception {
         var cloned = answeringHttpsServer.get().copy();
         var dnsServeres = cloned.extraDomains;

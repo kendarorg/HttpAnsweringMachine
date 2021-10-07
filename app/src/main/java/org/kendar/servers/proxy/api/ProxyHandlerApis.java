@@ -32,7 +32,7 @@ public class ProxyHandlerApis  implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/proxyes",
-            method = "GET")
+            method = "GET",id="1015a4b4-277d-11ec-9621-0242ac130002")
     public boolean getProxies(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
         res.addHeader("Content-type", "application/json");
@@ -42,7 +42,7 @@ public class ProxyHandlerApis  implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/proxyes/{id}",
-            method = "GET")
+            method = "GET",id="1016a4b4-277d-11ec-9621-0242ac130002")
     public boolean getProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
         var id = req.getPathParameter("id");
@@ -59,7 +59,7 @@ public class ProxyHandlerApis  implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/proxyes/{id}",
-            method = "DELETE")
+            method = "DELETE",id="1017a4b4-277d-11ec-9621-0242ac130002")
     public boolean removeProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
         var id = req.getPathParameter("id");
@@ -76,7 +76,7 @@ public class ProxyHandlerApis  implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/proxyes/{id}",
-            method = "PUT")
+            method = "PUT",id="1018a4b4-277d-11ec-9621-0242ac130002")
     public boolean updateProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
         var id = req.getPathParameter("id");
@@ -102,7 +102,7 @@ public class ProxyHandlerApis  implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/proxyes/swap/{id1}/{id2}",
-            method = "PUT")
+            method = "PUT",id="1019a4b4-277d-11ec-9621-0242ac130002")
     public boolean swapProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
         var id1 = req.getPathParameter("id1");
@@ -127,7 +127,7 @@ public class ProxyHandlerApis  implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/proxyes",
-            method = "POST")
+            method = "POST",id="1020a4b4-277d-11ec-9621-0242ac130002")
     public boolean addProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
         res.addHeader("Content-type", "application/json");

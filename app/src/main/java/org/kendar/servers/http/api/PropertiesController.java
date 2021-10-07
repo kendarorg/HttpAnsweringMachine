@@ -30,7 +30,7 @@ public class PropertiesController implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/properties",
-            method = "GET")
+            method = "GET",id="1021a4b4-277d-11ec-9621-0242ac130002")
     public boolean getProperties(Request req, Response res) throws JsonProcessingException {
 
         List<String> result = new ArrayList<>();

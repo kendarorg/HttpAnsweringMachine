@@ -33,7 +33,7 @@ public class DnsServersApis implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/servers",
-            method = "GET")
+            method = "GET",id="1002a4b4-277d-11ec-9621-0242ac130002")
     public boolean getExtraServers(Request req, Response res) throws JsonProcessingException {
         var dnsServeres = dnsMultiResolver.getExtraServers();
         res.addHeader("Content-type", "application/json");
@@ -43,7 +43,7 @@ public class DnsServersApis implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/servers/{name}",
-            method = "GET")
+            method = "GET",id="1003a4b4-277d-11ec-9621-0242ac130002")
     public boolean getDnsServer(Request req, Response res) throws JsonProcessingException {
         var dnsServers = dnsMultiResolver.getExtraServers();
         var name = req.getPathParameter("name");
@@ -61,7 +61,7 @@ public class DnsServersApis implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/servers/{name}",
-            method = "DELETE")
+            method = "DELETE",id="1004a4b4-277d-11ec-9621-0242ac130002")
     public boolean removeDnsServer(Request req, Response res) {
         var dnsServeres = dnsMultiResolver.getExtraServers();
         var name = (req.getPathParameter("name"));
@@ -78,7 +78,7 @@ public class DnsServersApis implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/servers/{name}",
-            method = "PUT")
+            method = "PUT",id="1005a4b4-277d-11ec-9621-0242ac130002")
     public boolean updateDnsServer(Request req, Response res) throws JsonProcessingException {
         var dnsServers = dnsMultiResolver.getExtraServers();
         var ip = (req.getPathParameter("name"));
@@ -103,7 +103,7 @@ public class DnsServersApis implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/servers/swap/{name1}/{name2}",
-            method = "PUT")
+            method = "PUT",id="1006a4b4-277d-11ec-9621-0242ac130002")
     public boolean swapDnsServer(Request req, Response res) {
         var dnsServeres = dnsMultiResolver.getExtraServers();
         var name1 = (req.getPathParameter("name1"));
@@ -128,7 +128,7 @@ public class DnsServersApis implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/servers",
-            method = "POST")
+            method = "POST",id="1007a4b4-277d-11ec-9621-0242ac130002")
     public boolean addDnsServer(Request req, Response res) throws Exception {
         var dnsServeres = dnsMultiResolver.getExtraServers();
         res.addHeader("Content-type", "application/json");

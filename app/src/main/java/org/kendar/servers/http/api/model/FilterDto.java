@@ -13,12 +13,10 @@ public class FilterDto {
     private final String pathPattern;
     private final HttpFilterType phase;
     private final boolean blocking;
-    private int index;
     private final String id;
 
-    public FilterDto(int index,String id,HttpTypeFilter type, HttpMethodFilter method) {
-        this.index = index;
-        this.id = id;
+    public FilterDto(String id,HttpTypeFilter type, HttpMethodFilter method) {
+        this.id = method.id();
         blocking = type.blocking()||method.blocking();
         hostAddress = type.hostAddress();
         hostPattern = type.hostPattern();
@@ -65,7 +63,4 @@ public class FilterDto {
         return id;
     }
 
-    public int getIndex() {
-        return index;
-    }
 }

@@ -52,7 +52,7 @@ public class ReplayerAPIContent implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
-            method = "GET")
+            method = "GET",id="3004daa6-277f-11ec-9621-0242ac1afe002")
     public boolean retrieveContent(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var line = Integer.parseInt(req.getPathParameter("line"));
@@ -125,7 +125,7 @@ public class ReplayerAPIContent implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
-            method = "DELETE")
+            method = "DELETE",id="3005daa6-277f-11ec-9621-0242ac1afe002")
     public boolean deleteConent(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var line = Integer.parseInt(req.getPathParameter("line"));
@@ -157,7 +157,7 @@ public class ReplayerAPIContent implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
-            method = "POST")
+            method = "POST",id="3006daa6-277f-11ec-9621-0242ac1afe002")
     public boolean modifyConent(Request req, Response res) throws IOException, NoSuchAlgorithmException {
         var id = req.getPathParameter("id");
         var line = Integer.parseInt(req.getPathParameter("line"));

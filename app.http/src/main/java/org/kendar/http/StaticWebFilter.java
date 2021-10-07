@@ -39,7 +39,7 @@ public abstract class StaticWebFilter implements FilteringClass {
     }
 
 
-    @HttpMethodFilter(phase = HttpFilterType.STATIC,pathAddress ="*",method = "GET")
+    @HttpMethodFilter(phase = HttpFilterType.STATIC,pathAddress ="*",method = "GET",id="a907a4b4-277d-11ec-9621-0242ac130002")
     public boolean handle(Request request, Response response) throws IOException {
         var realPath = getPath();
         if(isResource(getPath())){

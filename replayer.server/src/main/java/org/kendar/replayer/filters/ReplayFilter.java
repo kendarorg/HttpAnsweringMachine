@@ -26,7 +26,7 @@ public class ReplayFilter  implements FilteringClass {
     public ReplayFilter(ReplayerStatus replayerStatus){
         this.replayerStatus = replayerStatus;
     }
-    @HttpMethodFilter(phase = HttpFilterType.PRE_RENDER,pathAddress ="*",method = "*")
+    @HttpMethodFilter(phase = HttpFilterType.PRE_RENDER,pathAddress ="*",method = "*",id="8000daa6-277f-11ec-9621-0242ac1afe002")
     public boolean replay(Request req, Response res){
         if(req.getHost().equalsIgnoreCase(localAddress))return false;
         if(replayerStatus.getStatus()!= ReplayerState.REPLAYING)return false;
