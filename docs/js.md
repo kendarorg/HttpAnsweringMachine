@@ -45,7 +45,7 @@ the output, when false all the subsequent filters will be executed
         "myhandler/runner.js",
         "myhandler/fuffa.js"
     ],
-    "id": "myhandler",
+    "id": "uniqueIdentifier",
     "enabled": true,
     "blocking": true,
     "priority": 100
