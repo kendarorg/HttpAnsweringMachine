@@ -2,8 +2,8 @@ The phases to which filters can be applied are
 
 * NONE: The filter will never be executed
 * PRE_RENDER
-* API: Here are all the API calls, blocker
-* STATIC: Here are rendered the static pages, blocker
+* API: Here are all the API calls, all calls are blocking
+* STATIC: Here  the static pages are rendered, all calls are blocking
 * Proxy translation [see the proxy](proxy.md)
 * PRE_CALL: Before the call to the external sites
 * Call external site. If nothing happened the call is forwarded to the external site
