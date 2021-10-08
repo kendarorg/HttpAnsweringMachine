@@ -50,22 +50,24 @@ was then ported to Spring Boot and was added a true UI.
 
 * [Basic local configuration](docs/local/basic.md)
 
-### Basic functions  
+## Basic functions  
 
 * [The phases](docs/lifecyvle.md)
-* [Java plugins](docs/java.md)
 * [Proxy module](docs/proxy.md)
 * [Http/s hijack module](docs/https.md)
 * [Static pages](docs/static.md)
 * [Dns server](docs/dns.md)
 
-### Rest APIs
+## Rest APIs
 
-### Plugins
+## Plugins
 
 * [OIDC](docs/plugins/oidc.md)
 * [Replayer](docs/plugins/replayer.md)
-* [Js plugins](docs/plugins/js.md)
+* [Custom Java plugins](docs/plugins/java.md)
+    * [Java filters](docs/plugins/java/jfilters.md)
+    * [Java pages](docs/plugins/java/jstatic.md)
+* [Js filters](docs/plugins/js.md)
 * [Derby](docs/plugins/derby.md)
 * [Custom server plugins](docs/plugins/customserver.md)
 
