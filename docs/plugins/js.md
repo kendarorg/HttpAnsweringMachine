@@ -1,12 +1,10 @@
 It is possible to add javascript plugins to intercept and/or modify the requests and responses
 
-## Js Plugins
-
 First should be defined a directory where to store the js plugins, relative to the jar
 
     jsfilter.path=jsplugins
 
-### Directory structure
+## Directory structure
 
 Inside this there is the following file structure
 
@@ -15,7 +13,7 @@ Inside this there is the following file structure
         entrypoint.js
         lib.js
 
-### Filter descriptor
+## Filter descriptor
 
 The myFilter.json is the descriptor of the plugin. The various parts are
 
@@ -32,6 +30,13 @@ The myFilter.json is the descriptor of the plugin. The various parts are
 the output, when false all the subsequent filters will be executed
 * priority: the priority of the filter
 * method: the http method (or * for any)
+
+This filter will intercept all the requests to
+
+    GET js.test.org/test
+
+...and run the runFilter function on it. Obviously you should follow the
+instruction on [Https hijacking module](../https.md) to se tup the dns
 
 <pre>
 {
@@ -52,7 +57,7 @@ the output, when false all the subsequent filters will be executed
 }
 </pre>
 
-### Example filter 
+## Filter implementation
 
 A unique function run filter must be present between all js files
 
@@ -67,6 +72,7 @@ The result must be an object containing
 * response: the response even if not modified
 * continue: weather should continue with the next filters
 
+This filter will return a specific response test with the current data
 <pre>
 function runFilter(request,response){
     var today = new Date().toISOString();

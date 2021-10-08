@@ -2,7 +2,7 @@
 
 Simply copy the main jar where you want with the "libs" folder at the same level. It works with Java 11!!
 
-### external.properties
+### Http and Https configuration
 
 Prepare a basic configuration in an "external.properties" file in the same dir of the Jar
 
@@ -10,7 +10,8 @@ The name for which the server will respond
 
     localhost.name=www.local.test
 
-The http/s configuration, this will be generated at runtime
+The http/s configuration, this will be generated at runtime. For the https certificates see
+the [Https configuration page](../https.md)
 
     http.enabled=true
     https.enabled=true
@@ -18,24 +19,43 @@ The http/s configuration, this will be generated at runtime
     https.certificate.0=*.local.test
     https.certificate.1=local.test
 
-### Hosts file
+### DNS Resolution
 
-Running locally you should map the DNS names to localhost in the hosts file.
+You have two options. Hosts file or the embedded dns server. [See the DNS page for further info](../dns.md)
+
+#### Hosts
 
 Under Windows run notepad as administrator and add the following at the end of
-"C:\Windows\System32\drivers\etc\hosts" file
+"C:\Windows\System32\drivers\etc\hosts" file, under *nix "/etc/hosts"
 
     127.0.0.1 www.local.test
 
+#### Local DNS Server
+
+First you need to enable the local dns on external.properties file. Remind that this approach probably 
+wont work if you are running a VPN client! It does not work (for me) with OpenVPN client and 
+GlobalProtect. 
+
+    dns.enabled=false
+
 ### Run and verify
 
-Then run
+Then run the following command
 
     java "-Dloader.path=/start/services/answering/libs" \
         -Djdk.tls.acknowledgeCloseNotify=true \
         -Dloader.main=org.kendar.Main  \
         -jar app-1.0-SNAPSHOT.jar \
-        org.springframework.boot.loader.PropertiesLauncher &
+        org.springframework.boot.loader.PropertiesLauncher
+
+The loader.main is a specific Spring Boot variables to force the loading of
+local application.properties file together with the PropertiesLauncher.
+
+The loader path (that must be a full path) tells the application where to find
+the external plugins to load
+
+The jdk.tls.acknowledgeCloseNotify, is a fix for a specific problem with TLS that
+can be encontered on several JDKs ( see on [Stackoverflow](https://stackoverflow.com/questions/54687831/changes-in-sslengine-usage-when-going-up-to-tlsv1-3) ) 
 
 And go with any browser on [http://www.local.test/api/health](http://www.local.test/api/health)
 

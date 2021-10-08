@@ -46,12 +46,30 @@ debug against real environments. Then i added an oidc server, and looking at oth
 like Traffic Parrot the recording replaying was inserted as feature. To speed up stuffs it 
 was then ported to Spring Boot and was added a true UI.
 
+## Configurations
 
-* [Basic configuration](docs/basic.md)
-* [Http/s hijack module](docs/https.md)
-* [Proxy module](docs/proxy.md)
+* [Basic local configuration](docs/local/basic.md)
+
+### Basic functions  
+
 * [The phases](docs/lifecyvle.md)
-* [Js plugins](docs/js.md)
 * [Java plugins](docs/java.md)
+* [Proxy module](docs/proxy.md)
+* [Http/s hijack module](docs/https.md)
+* [Static pages](docs/static.md)
+* [Dns server](docs/dns.md)
+
+### Rest APIs
+
+### Plugins
+
+* [OIDC](docs/plugins/oidc.md)
+* [Replayer](docs/plugins/replayer.md)
+* [Js plugins](docs/plugins/js.md)
+* [Derby](docs/plugins/derby.md)
+* [Custom server plugins](docs/plugins/customserver.md)
+
+=====================
+  
 * [Running in docker single instance](docs/dockersingle.md)
 * [Running in docker](docs/docker.md)
