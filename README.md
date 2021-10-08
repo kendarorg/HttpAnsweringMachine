@@ -64,12 +64,12 @@ was then ported to Spring Boot and was added a true UI.
 
 * [OIDC](docs/plugins/oidc.md)
 * [Replayer](docs/plugins/replayer.md)
-* [Custom Java plugins](docs/plugins/java.md)
-    * [Java filters](docs/plugins/java/jfilters.md)
-    * [Java pages](docs/plugins/java/jstatic.md)
 * [Js filters](docs/plugins/js.md)
 * [Derby](docs/plugins/derby.md)
-* [Custom server plugins](docs/plugins/customserver.md)
+* [Custom Java plugins](docs/plugins/java.md)
+  * [Java filters](docs/plugins/java/jfilters.md)
+  * [Java pages](docs/plugins/java/jstatic.md)
+  * [Java server](docs/plugins/java/jserver.md)
 
 =====================
   

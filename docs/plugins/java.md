@@ -18,3 +18,4 @@ The jar and the dependencies should be placed into the [libs directory](../local
 
 * [Filters](java/jfilters.md)
 * [Static pages](java/jstatic.md)
+* [Servers](java/jserver.md)
