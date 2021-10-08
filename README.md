@@ -49,6 +49,7 @@ was then ported to Spring Boot and was added a true UI.
 ## Configurations
 
 * [Basic local configuration](docs/local/basic.md)
+* [Logging](docs/logging.md)
 
 ## Basic functions  
 
