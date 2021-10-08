@@ -49,7 +49,7 @@ To start it you can use the following command line to start the service
         -jar simpledns-1.0-SNAPSHOT.jar
 
 This way you could start the image as with the single instance described before adding the 127.0.0.1 as
-dns server. The simpledns will take care of resolving the value of main.local.self with the preceeding
+dns server. The simpledns will take care of resolving the value of main.local.self with the preceding
 dns server.
 
 Notice the 127.0.0.11 address that is the default DNS address used inside the container
