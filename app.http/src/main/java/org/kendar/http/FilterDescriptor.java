@@ -349,4 +349,7 @@ public class FilterDescriptor {
     public CustomFiltersLoader getLoader() {
         return loader;
     }
+
+    public void setId(String id) {
+    }
 }

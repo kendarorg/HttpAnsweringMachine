@@ -209,8 +209,25 @@ public class FilterClassesApi  implements FilteringClass {
         res.setResponseText(mapper.writeValueAsString(result));
     }
 
+
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/filters/{phase}/{id}",
+            pathAddress = "/api/filtersloaders/{loader}",
+            method = "GET",id="e967a4b4-277d-41ecr9621y0242ac130004")
+    public void getFiltersLoadersFilters(Request req, Response res) throws JsonProcessingException {
+        var config = filteringClassesHandler.get();
+        var loader = req.getPathParameter("loader");
+        var result = new ArrayList<FilterDto>();
+        for(var item :config.filtersById.values()){
+            if(item.getLoader().getClass().getSimpleName().equalsIgnoreCase(loader)) {
+                result.add(new FilterDto(item.isEnabled(), item.getTypeFilter(), item.getMethodFilter()));
+            }
+        }
+        res.addHeader("Content-type", "application/json");
+        res.setResponseText(mapper.writeValueAsString(result));
+    }
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/filters/{phase}",
             method = "POST",id="e967a4b4-2xxxx-44ec-9621-0242ac130004")
     public void addFilter(Request req, Response res) throws Exception {
         var overwrite = false;
@@ -219,7 +236,7 @@ public class FilterClassesApi  implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/filters/{phase}/{id}",
-            method = "PUT",id="e967a4b4-2xxxx-44ec-9621-0242ac130004")
+            method = "PUT",id="e967a4b4-2xxxx-44ec-9621-02g2ac130004")
     public void updateFilter(Request req, Response res) throws Exception {
         var overwrite = true;
         uploadNewScript(req, res, overwrite);
@@ -246,15 +263,30 @@ public class FilterClassesApi  implements FilteringClass {
             fileData = mp.getByteData();
         }
         FilterDescriptor item = requiredLoader.get().loadFilterFile(fileName,fileData, overwrite);
+        if(item.getId()!=id){
+            throw new Exception("Filter ids not matching for update "+fileName);
+        }
         if(item==null){
             throw new Exception("Unable to add filter "+fileName);
         }
-        if(config.filtersById.containsKey(item.getId())){
+        if(config.filtersById.containsKey(item.getId()) && !overwrite){
             throw new Exception("Duplicate filter");
         }
 
         config.filtersById.put(item.getId(),item);
-        config.filters.get(phase).add(item);
+        var overwritten = false;
+        for(var i=0;i<config.filters.get(phase).size();i++){
+            var founded = config.filters.get(phase).get(i);
+            if(founded.getId()==item.getId()){
+                config.filters.get(phase).set(i,item);
+                overwritten =true;
+                break;
+            }
+        }
+        if(!overwritten) {
+            config.filters.get(phase).add(item);
+        }
+        filteringClassesHandler.set(config);
 
         var result = new FilterDto(item.isEnabled(),item.getTypeFilter(),item.getMethodFilter());
         res.addHeader("Content-type", "application/json");
