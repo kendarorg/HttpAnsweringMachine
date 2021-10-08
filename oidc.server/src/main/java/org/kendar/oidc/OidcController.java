@@ -91,6 +91,75 @@ public class OidcController implements FilteringClass {
     }
 
     /**
+     * Provides authorization endpoint. And check the credentials
+     */
+    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =AUTHORIZATION_ENDPOINT,method = "GET",id="2004daa6-277f-11ec-9621-0242ac1afe002")
+    public boolean authorize(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
+        var client_id = req.getRequestParameter("client_id");
+        var redirect_uri = req.getRequestParameter("redirect_uri");
+        var response_type = req.getRequestParameter("response_type");
+        var scope = req.getRequestParameter("scope");
+        var state = req.getRequestParameter("state");
+        var nonce = req.getRequestParameter("nonce");
+        var code_challenge = req.getRequestParameter("code_challenge");
+        var code_challenge_method = req.getRequestParameter("code_challenge_method");
+        var response_mode = req.getRequestParameter("response_mode");
+        var auth = req.getRequestParameter("Authorization");
+
+
+        log.info("called " + AUTHORIZATION_ENDPOINT + " from {}, scope={} response_type={} client_id={} redirect_uri={}",
+                req.getRemoteHost(), scope, response_type, client_id, redirect_uri);
+        //KENDAR REMOVED AUTH NEED
+        /*if (auth == null) {
+            log.info("user and password not provided");
+            return response401();
+        } else */{
+            //String[] creds = new String(Base64.getDecoder().decode(auth.split(" ")[1])).split(":", 2);
+            String login = "test";//creds[0];
+            String password = "test";//creds[1];
+            User user = new User();//serverProperties.getUser();
+            user.setLogname(login);
+            user.setPassword(password);
+            if (user.getLogname().equals(login) && user.getPassword().equals(password)) {
+                log.info("password for user {} is correct", login);
+                Set<String> responseType = setFromSpaceSeparatedString(response_type);
+                String iss = "https://"+serverAddress +"/api/plugins/oidc/";//uriBuilder.replacePath("/").build().encode().toUriString();
+                if (responseType.contains("token")) {
+                    // implicit flow
+                    log.info("using implicit flow");
+                    String access_token = createAccessToken(iss, user, client_id, scope);
+                    String id_token = createIdToken(iss, user, client_id, nonce, access_token);
+                    String url = redirect_uri + "#" +
+                            "access_token=" + urlencode(access_token) +
+                            "&token_type=Bearer" +
+                            "&state=" + urlencode(state) +
+                            "&expires_in=" + tokenExpirationSeconds +
+                            "&id_token=" + urlencode(id_token);
+                    res.setStatusCode(STATUS_FOUND);
+                    res.addHeader("Location",url);
+                } else if (responseType.contains("code")) {
+                    // authorization code flow
+                    log.info("using authorization code flow {}", code_challenge!=null ? "with PKCE" : "");
+                    String code = createAuthorizationCode(code_challenge, code_challenge_method, client_id, redirect_uri, user, iss, scope, nonce);
+                    String url = redirect_uri + "?" +
+                            "code=" + code +
+                            "&state=" + urlencode(state);
+                    res.setStatusCode(STATUS_FOUND);
+                    res.addHeader("Location",url);
+                } else {
+                    String url = redirect_uri + "#" + "error=unsupported_response_type";
+                    res.setStatusCode(STATUS_FOUND);
+                    res.addHeader("Location",url);
+                }
+            } else {
+                log.info("wrong user and password combination");
+                response401(res);
+            }
+        }
+        return false;
+    }
+
+    /**
      * Provides OIDC metadata. See the spec at https://openid.net/specs/openid-connect-discovery-1_0.html
      */
     @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =METADATA_ENDPOINT,method = "GET",id="1facdaa6-277f-11ec-9621-0242ac1afe002")
@@ -260,75 +329,6 @@ public class OidcController implements FilteringClass {
         return false;
     }
 
-
-    /**
-     * Provides authorization endpoint.
-     */
-    @HttpMethodFilter(phase = HttpFilterType.API,pathAddress =AUTHORIZATION_ENDPOINT,method = "GET",id="2004daa6-277f-11ec-9621-0242ac1afe002")
-    public boolean authorize(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
-        var client_id = req.getRequestParameter("client_id");
-        var redirect_uri = req.getRequestParameter("redirect_uri");
-        var response_type = req.getRequestParameter("response_type");
-        var scope = req.getRequestParameter("scope");
-        var state = req.getRequestParameter("state");
-        var nonce = req.getRequestParameter("nonce");
-        var code_challenge = req.getRequestParameter("code_challenge");
-        var code_challenge_method = req.getRequestParameter("code_challenge_method");
-        var response_mode = req.getRequestParameter("response_mode");
-        var auth = req.getRequestParameter("Authorization");
-
-
-        log.info("called " + AUTHORIZATION_ENDPOINT + " from {}, scope={} response_type={} client_id={} redirect_uri={}",
-                req.getRemoteHost(), scope, response_type, client_id, redirect_uri);
-        //KENDAR REMOVED AUTH NEED
-        /*if (auth == null) {
-            log.info("user and password not provided");
-            return response401();
-        } else */{
-            //String[] creds = new String(Base64.getDecoder().decode(auth.split(" ")[1])).split(":", 2);
-            String login = "test";//creds[0];
-            String password = "test";//creds[1];
-            User user = new User();//serverProperties.getUser();
-            user.setLogname(login);
-            user.setPassword(password);
-            if (user.getLogname().equals(login) && user.getPassword().equals(password)) {
-                log.info("password for user {} is correct", login);
-                Set<String> responseType = setFromSpaceSeparatedString(response_type);
-                String iss = "https://"+serverAddress +"/api/plugins/oidc/";//uriBuilder.replacePath("/").build().encode().toUriString();
-                if (responseType.contains("token")) {
-                    // implicit flow
-                    log.info("using implicit flow");
-                    String access_token = createAccessToken(iss, user, client_id, scope);
-                    String id_token = createIdToken(iss, user, client_id, nonce, access_token);
-                    String url = redirect_uri + "#" +
-                            "access_token=" + urlencode(access_token) +
-                            "&token_type=Bearer" +
-                            "&state=" + urlencode(state) +
-                            "&expires_in=" + tokenExpirationSeconds +
-                            "&id_token=" + urlencode(id_token);
-                    res.setStatusCode(STATUS_FOUND);
-                    res.addHeader("Location",url);
-                } else if (responseType.contains("code")) {
-                    // authorization code flow
-                    log.info("using authorization code flow {}", code_challenge!=null ? "with PKCE" : "");
-                    String code = createAuthorizationCode(code_challenge, code_challenge_method, client_id, redirect_uri, user, iss, scope, nonce);
-                    String url = redirect_uri + "?" +
-                            "code=" + code +
-                            "&state=" + urlencode(state);
-                    res.setStatusCode(STATUS_FOUND);
-                    res.addHeader("Location",url);
-                } else {
-                    String url = redirect_uri + "#" + "error=unsupported_response_type";
-                    res.setStatusCode(STATUS_FOUND);
-                    res.addHeader("Location",url);
-                }
-            } else {
-                log.info("wrong user and password combination");
-                response401(res);
-            }
-        }
-        return false;
-    }
 
     private String createAuthorizationCode(String code_challenge, String code_challenge_method, String client_id, String redirect_uri, User user, String iss, String scope, String nonce) {
         byte[] bytes = new byte[16];
