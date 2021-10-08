@@ -86,7 +86,7 @@ public class DnsServersApis implements FilteringClass {
         var newList = new ArrayList<DnsServerDescriptor>();
         var newData = mapper.readValue((String)req.getRequestText(),DnsServerDescriptor.class);
         for(var item:dnsServers){
-            var clone = item.clone();
+            var clone = item.copy();
             if(!clone.getIp().equalsIgnoreCase(ip)){
                 newList.add(clone);
                 continue;
@@ -113,12 +113,12 @@ public class DnsServersApis implements FilteringClass {
         var id1Index=-1;
         var id2Index = -1;
         for (int i = 0; i < dnsServeres.size(); i++) {
-            var clone = dnsServeres.get(i).clone();
+            var clone = dnsServeres.get(i).copy();
             if(dnsServeres.get(i).getName().equalsIgnoreCase(name1))id1Index=i;
             if(dnsServeres.get(i).getName().equalsIgnoreCase(name2))id2Index=i;
             newList.add(clone);
         }
-        var id1Clone = dnsServeres.get(id1Index).clone();
+        var id1Clone = dnsServeres.get(id1Index).copy();
         dnsServeres.set(id1Index,dnsServeres.get(id2Index));
         dnsServeres.set(id2Index,id1Clone);
         dnsMultiResolver.setExtraServers(newList);
@@ -137,7 +137,7 @@ public class DnsServersApis implements FilteringClass {
 
         for(var item:dnsServeres){
             if(item.getName().equalsIgnoreCase(newData.getName()))throw new Exception("Duplicate dns resolution");
-            newList.add( item.clone());
+            newList.add( item.copy());
         }
         newList.add(newData);
         dnsMultiResolver.setExtraServers(newList);

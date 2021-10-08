@@ -29,7 +29,7 @@ public class DnsServerDescriptor {
         this.enabled = enabled;
     }
 
-    public DnsServerDescriptor clone(){
+    public DnsServerDescriptor copy(){
         var result = new DnsServerDescriptor();
         result.setEnabled(this.isEnabled());
         result.setIp(this.getIp());

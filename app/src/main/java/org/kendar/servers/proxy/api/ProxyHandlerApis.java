@@ -85,7 +85,7 @@ public class ProxyHandlerApis  implements FilteringClass {
         var newData = mapper.readValue((String)req.getRequestText(),RemoteServerStatus.class);
 
         for(var item:proxyes){
-            var clone = item.clone();
+            var clone = item.copy();
             if(!clone.getId().equalsIgnoreCase(id)){
                 newList.add(clone);
                 continue;
@@ -112,12 +112,12 @@ public class ProxyHandlerApis  implements FilteringClass {
         var id1Index=-1;
         var id2Index = -1;
         for (int i = 0; i < proxyes.size(); i++) {
-            var clone = proxyes.get(i).clone();
+            var clone = proxyes.get(i).copy();
             if(proxyes.get(i).getId().equalsIgnoreCase(id1))id1Index=i;
             if(proxyes.get(i).getId().equalsIgnoreCase(id2))id2Index=i;
             newList.add(clone);
         }
-        var id1Clone = proxyes.get(id1Index).clone();
+        var id1Clone = proxyes.get(id1Index).copy();
         proxyes.set(id1Index,proxyes.get(id2Index));
         proxyes.set(id2Index,id1Clone);
         simpleProxyHandler.setProxies(newList);
