@@ -18,13 +18,14 @@ On each method whose signature must be
     
     boolean [methodName](Request req, Response res)
 
-Can be added the HttpMethodFilter annotation
+You should then add the HttpMethodFilter annotation
 
 * phase: the [phase](docs/lifecyvle.md) for the filter
 * pathAddress: the exact path (or * for any)
 * pathPattern: the Java regexp for the path
 * method: the http method (or * for any)
 * name: a specific name
+* id: an unique identifier string  
 * blocking: true/false. When blocking the filter result will be sent directly to
   the output, when false all the subsequent filters will be executed
   
@@ -41,8 +42,9 @@ public class GoogleFilter  implements FilteringClass {
         return "GoogleFilter";
     }
 
-    @HttpMethodFilter(phase = HttpFilterType.POST_RENDER,pathAddress ="/test",method = "POST")
+    @HttpMethodFilter(phase = HttpFilterType.POST_RENDER,pathAddress ="/test",method = "POST",id="12354")
     public boolean record(Request req, Response res){
+
 </pre>
 
 Inside the function you can then elaborate the request and response as you please
