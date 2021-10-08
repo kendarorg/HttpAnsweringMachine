@@ -1,5 +1,7 @@
 This server is based on [Fake OIDC Server on github](https://github.com/CESNET/fake-oidc-serve)
 
+The authorize APIs always return "authorized"
+
 ## Apis
 
 It exposes the follwing APIs
