@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 @Component
 public class JsFilterLoader implements CustomFiltersLoader {
@@ -113,7 +112,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
     }
 
     @Override
-    public FilterDescriptor loadFilterFile(String fileName, byte[] fileData) {
+    public FilterDescriptor loadFilterFile(String fileName, byte[] fileData, boolean overwrite) {
         try {
             String jsonDescriptor = null;
             var fullStringPath = fileResourcesUtils.buildPath(jsFilterPath);
@@ -141,6 +140,9 @@ public class JsFilterLoader implements CustomFiltersLoader {
                     }
 
                     // write file content
+                    if(newFile.exists() && !overwrite){
+                        throw new IOException("Already existing!!");
+                    }
                     FileOutputStream fos = new FileOutputStream(newFile);
                     int len;
                     while ((len = zis.read(buffer)) > 0) {

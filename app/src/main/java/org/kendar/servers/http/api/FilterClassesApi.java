@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Component
 @HttpTypeFilter(hostAddress = "${localhost.name}",
@@ -195,10 +196,36 @@ public class FilterClassesApi  implements FilteringClass {
         res.setResponseText(mapper.writeValueAsString(result));
     }
 
+
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/filtersloaders",
+            method = "GET",id="e967a4b4-277d-41ecr9621-0242ac130004")
+    public void getFiltersLoaders(Request req, Response res) throws JsonProcessingException {
+        var result= context.getBeansOfType(CustomFiltersLoader.class).
+                values().stream().map(customFiltersLoader ->
+                customFiltersLoader.getClass().getSimpleName()).collect(Collectors.toList());
+        res.addHeader("Content-type", "application/json");
+        res.setResponseText(mapper.writeValueAsString(result));
+    }
+
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/filters/{phase}/{id}",
             method = "POST",id="e967a4b4-2xxxx-44ec-9621-0242ac130004")
     public void addFilter(Request req, Response res) throws Exception {
+        var overwrite = false;
+        uploadNewScript(req, res, overwrite);
+    }
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/filters/{phase}/{id}",
+            method = "PUT",id="e967a4b4-2xxxx-44ec-9621-0242ac130004")
+    public void updateFilter(Request req, Response res) throws Exception {
+        var overwrite = true;
+        uploadNewScript(req, res, overwrite);
+    }
+
+    private void uploadNewScript(Request req, Response res, boolean overwrite) throws Exception {
         var loader = req.getQuery("loader");
         var stringPhase = req.getPathParameter("phase");
         var id = req.getPathParameter("id");
@@ -218,7 +245,10 @@ public class FilterClassesApi  implements FilteringClass {
             fileName = mp.getFileName();
             fileData = mp.getByteData();
         }
-        FilterDescriptor item = requiredLoader.get().loadFilterFile(fileName,fileData);
+        FilterDescriptor item = requiredLoader.get().loadFilterFile(fileName,fileData, overwrite);
+        if(item==null){
+            throw new Exception("Unable to add filter "+fileName);
+        }
         if(config.filtersById.containsKey(item.getId())){
             throw new Exception("Duplicate filter");
         }

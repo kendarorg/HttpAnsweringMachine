@@ -55,7 +55,7 @@ public class DefaultFiltersLoader implements CustomFiltersLoader {
     }
 
     @Override
-    public FilterDescriptor loadFilterFile(String fileName, byte[] fileData) {
+    public FilterDescriptor loadFilterFile(String fileName, byte[] fileData, boolean overwrite) {
         return null;
     }
 }
