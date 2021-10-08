@@ -17,7 +17,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 @Component
@@ -210,7 +209,16 @@ public class FilterClassesApi  implements FilteringClass {
                 customFiltersLoader.getClass().getSimpleName().equalsIgnoreCase(loader)).
                 findFirst();
         var config = filteringClassesHandler.get().copy();
-        FilterDescriptor item = requiredLoader.get().loadFromRequest(req);
+
+        String fileName = null;
+        byte[] fileData = null;
+        for (var mp : req.getMultipartData()) {
+            //var contendDisposition = RequestUtils.parseContentDisposition(mp.getHeader("Content-Disposition"));
+            if (!mp.isFile()) continue;
+            fileName = mp.getFileName();
+            fileData = mp.getByteData();
+        }
+        FilterDescriptor item = requiredLoader.get().loadFilterFile(fileName,fileData);
         if(config.filtersById.containsKey(item.getId())){
             throw new Exception("Duplicate filter");
         }

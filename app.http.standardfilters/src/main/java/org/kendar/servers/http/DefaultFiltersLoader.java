@@ -55,7 +55,7 @@ public class DefaultFiltersLoader implements CustomFiltersLoader {
     }
 
     @Override
-    public FilterDescriptor loadFromRequest(Request req) {
+    public FilterDescriptor loadFilterFile(String fileName, byte[] fileData) {
         return null;
     }
 }

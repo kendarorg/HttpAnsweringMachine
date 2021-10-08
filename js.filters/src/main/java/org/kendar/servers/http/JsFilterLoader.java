@@ -14,12 +14,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 @Component
 public class JsFilterLoader implements CustomFiltersLoader {
@@ -73,17 +76,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
                 for (String pathname : pathnames) {
                     var fullPath = fileResourcesUtils.buildPath(jsFilterPath,pathname);
                     currentPath= fullPath;
-                    var newFile = new File(fullPath);
-                    if(newFile.isFile()){
-                        var data = Files.readString(Path.of(fullPath));
-                        var filterDescriptor = mapper.readValue(data, JsFilterDescriptor.class);
-                        filterDescriptor.setRoot(realPath);
-                        precompileFilter(filterDescriptor);
-                        var executor = new JsFilterExecutor(filterDescriptor,this,loggerBuilder,filterDescriptor.getId());
-                        var fd = new FilterDescriptor(this,executor,environment);
-                        fd.setEnabled(filterDescriptor.isEnabled());
-                        result.add(fd);
-                    }
+                    loadSinglePlugin(result, realPath, fullPath);
                 }
             }
         } catch (Exception e) {
@@ -92,8 +85,86 @@ public class JsFilterLoader implements CustomFiltersLoader {
         return result;
     }
 
+    private void loadSinglePlugin(ArrayList<FilterDescriptor> result, String realPath, String fullPath) throws Exception {
+        var newFile = new File(fullPath);
+        if(newFile.isFile()){
+            var data = Files.readString(Path.of(fullPath));
+            var filterDescriptor = mapper.readValue(data, JsFilterDescriptor.class);
+            filterDescriptor.setRoot(realPath);
+            precompileFilter(filterDescriptor);
+            var executor = new JsFilterExecutor(filterDescriptor,this,loggerBuilder,filterDescriptor.getId());
+            var fd = new FilterDescriptor(this,executor,environment);
+            fd.setEnabled(filterDescriptor.isEnabled());
+            result.add(fd);
+        }
+    }
+
+    public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+        File destFile = new File(destinationDir, zipEntry.getName());
+
+        String destDirPath = destinationDir.getCanonicalPath();
+        String destFilePath = destFile.getCanonicalPath();
+
+        if (!destFilePath.startsWith(destDirPath + File.separator)) {
+            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+        }
+
+        return destFile;
+    }
+
     @Override
-    public FilterDescriptor loadFromRequest(Request req) {
+    public FilterDescriptor loadFilterFile(String fileName, byte[] fileData) {
+        try {
+            String jsonDescriptor = null;
+            var fullStringPath = fileResourcesUtils.buildPath(jsFilterPath);
+            var realPath=new File(fullStringPath);
+            byte[] buffer = new byte[1024];
+            var input = new ByteArrayInputStream(fileData);
+            ZipInputStream zis = new ZipInputStream(input);
+            ZipEntry zipEntry = zis.getNextEntry();
+            while (zipEntry != null) {
+                File newFile = newFile(realPath, zipEntry);
+                var path = Path.of(zipEntry.toString());
+                if(path.getParent()==null && !zipEntry.isDirectory() &&
+                        zipEntry.toString().toLowerCase().endsWith(".json")){
+                    jsonDescriptor=zipEntry.toString();
+                }
+                if (zipEntry.isDirectory()) {
+                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                        throw new IOException("Failed to create directory " + newFile);
+                    }
+                } else {
+                    // fix for Windows-created archives
+                    File parent = newFile.getParentFile();
+                    if (!parent.isDirectory() && !parent.mkdirs()) {
+                        throw new IOException("Failed to create directory " + parent);
+                    }
+
+                    // write file content
+                    FileOutputStream fos = new FileOutputStream(newFile);
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.close();
+                }
+                zipEntry = zis.getNextEntry();
+            }
+            zis.closeEntry();
+            zis.close();
+
+            if(jsonDescriptor!=null){
+                var fullPath = fileResourcesUtils.buildPath(jsFilterPath,jsonDescriptor);
+                var result = new ArrayList<FilterDescriptor>();
+                var localRealPath=fileResourcesUtils.buildPath(jsFilterPath);
+                loadSinglePlugin(result, localRealPath, fullPath);
+                return result.get(0);
+            }
+        }catch (IOException ex){
+            throw new RuntimeException(ex.getMessage(),ex);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
