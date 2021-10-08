@@ -128,7 +128,7 @@ public class DnsServersApis implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/servers",
-            method = "POST",id="1007a4b4-277d-11ec-9621-0242ac130002")
+            method = "POST",id="1007a4b5-277d-11ec-9621-0242ac130002")
     public boolean addDnsServer(Request req, Response res) throws Exception {
         var dnsServeres = dnsMultiResolver.getExtraServers();
         res.addHeader("Content-type", "application/json");

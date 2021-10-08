@@ -13,7 +13,7 @@ import java.util.*;
 
 @Component
 public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
-    private final List<CustomFilters> customFilterLoaders;
+    private final List<CustomFiltersLoader> customFilterLoaders;
     private final Environment environment;
     private final FilterConfig filtersConfiguration;
 
@@ -32,7 +32,7 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
         //filtersConfiguration.set(config);
     }
 
-    public FilteringClassesHandlerImpl(List<CustomFilters> customFilterLoaders,Environment environment,FilterConfig filtersConfiguration){
+    public FilteringClassesHandlerImpl(List<CustomFiltersLoader> customFilterLoaders, Environment environment, FilterConfig filtersConfiguration){
         this.customFilterLoaders = customFilterLoaders;
         this.environment = environment;
         this.filtersConfiguration =  filtersConfiguration;
@@ -51,10 +51,16 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
         config.filters.put(HttpFilterType.POST_CALL,new ArrayList<>());
         config.filters.put(HttpFilterType.POST_RENDER,new ArrayList<>());
 
+        var duplicateIds = new HashSet<>();
         for (var filterLoader : customFilterLoaders) {
             for (var ds : filterLoader.loadFilters()) {
                 config.filters.get(ds.getPhase()).add(ds);
-                config.filtersById.put(ds.getId(), ds);
+                var id = ds.getId();
+                if(duplicateIds.contains(id)){
+                    throw new RuntimeException("Duplicate filter id "+id);
+                }
+                duplicateIds.add(id);
+                config.filtersById.put(id, ds);
             }
         }
         filtersConfiguration.set(config);

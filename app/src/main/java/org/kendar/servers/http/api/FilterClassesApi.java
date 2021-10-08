@@ -89,15 +89,13 @@ public class FilterClassesApi  implements FilteringClass {
         var listOfItems = config.filters.get(phase);
         for(var i=0;i<listOfItems.size();i++){
             var item = listOfItems.get(i);
-            var desc = new FilterDto(item.getId(),item.getTypeFilter(),item.getMethodFilter());
+            var desc = new FilterDto(item.isEnabled(),item.getTypeFilter(),item.getMethodFilter());
             result.add(desc);
         }
 
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(result));
     }
-
-
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/filters/{phase}/{id}",
@@ -112,7 +110,77 @@ public class FilterClassesApi  implements FilteringClass {
         for(var i=0;i<listOfItems.size();i++){
             var item = listOfItems.get(i);
             if(item.getId().equalsIgnoreCase(id)){
-                result = new FilterDto(item.getId(),item.getTypeFilter(),item.getMethodFilter());
+                result = new FilterDto(item.isEnabled(),item.getTypeFilter(),item.getMethodFilter());
+                break;
+            }
+        }
+
+        res.addHeader("Content-type", "application/json");
+        res.setResponseText(mapper.writeValueAsString(result));
+    }
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/filters/{phase}/{id}",
+            method = "DELETE",id="e9rea4b4-277d-11ec-9621-0242ac130004")
+    public void removeFilterById(Request req, Response res) throws JsonProcessingException {
+        var stringPhase = req.getPathParameter("phase");
+        var id = req.getPathParameter("id");
+        var phase = HttpFilterType.valueOf(stringPhase.toUpperCase(Locale.ROOT));
+        var config = filteringClassesHandler.get().copy();
+        FilterDto result = null;
+        var listOfItems = config.filters.get(phase);
+        for(var i=0;i<listOfItems.size();i++){
+            var item = listOfItems.get(i);
+            if(item.getId().equalsIgnoreCase(id)){
+                listOfItems.remove(i);
+                config.filtersById.remove(item.getId());
+                break;
+            }
+        }
+        filteringClassesHandler.set(config);
+
+        res.addHeader("Content-type", "application/json");
+        res.setResponseText(mapper.writeValueAsString(result));
+    }
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/filters/{phase}/{id}/status",
+            method = "PUT",id="e967a4b4-277d-11ec-9621-0242ac130004")
+    public void enableFilterById(Request req, Response res) throws JsonProcessingException {
+        var enabled = Boolean.valueOf(req.getQuery("enabled"));
+        var stringPhase = req.getPathParameter("phase");
+        var id = req.getPathParameter("id");
+        var phase = HttpFilterType.valueOf(stringPhase.toUpperCase(Locale.ROOT));
+        var config = filteringClassesHandler.get();
+
+        var listOfItems = config.filters.get(phase);
+        for(var i=0;i<listOfItems.size();i++){
+            var item = listOfItems.get(i);
+            if(item.getId().equalsIgnoreCase(id)){
+                item.setEnabled(enabled);
+                break;
+            }
+        }
+
+        res.addHeader("Content-type", "application/json");
+        res.setResponseText("");
+    }
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/filters/{phase}/{id}/status",
+            method = "GET",id="e967a4b4-277d-44ec-9621-0242ac130004")
+    public void getStatusById(Request req, Response res) throws JsonProcessingException {
+        var enabled = Boolean.valueOf(req.getQuery("enabled"));
+        var stringPhase = req.getPathParameter("phase");
+        var id = req.getPathParameter("id");
+        var phase = HttpFilterType.valueOf(stringPhase.toUpperCase(Locale.ROOT));
+        var config = filteringClassesHandler.get();
+        var result = "false";
+        var listOfItems = config.filters.get(phase);
+        for(var i=0;i<listOfItems.size();i++){
+            var item = listOfItems.get(i);
+            if(item.getId().equalsIgnoreCase(id)){
+                result =item.isEnabled()?"true":"false";
                 break;
             }
         }

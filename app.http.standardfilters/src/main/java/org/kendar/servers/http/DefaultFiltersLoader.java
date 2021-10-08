@@ -1,6 +1,6 @@
 package org.kendar.servers.http;
 
-import org.kendar.http.CustomFilters;
+import org.kendar.http.CustomFiltersLoader;
 import org.kendar.http.FilterDescriptor;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.annotations.HttpMethodFilter;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class DefaultFiltersLoader implements CustomFilters {
+public class DefaultFiltersLoader implements CustomFiltersLoader {
     private final Logger logger;
     private final List<FilteringClass> filteringClassList;
     private final Environment environment;

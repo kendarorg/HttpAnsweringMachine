@@ -15,11 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 public class FilterDescriptor {
 
-    private boolean enabled=true;
+    private AtomicBoolean enabled=new AtomicBoolean(true);
     private final int priority;
     private final String method;
     private final boolean methodBlocking;
@@ -233,7 +234,7 @@ public class FilterDescriptor {
     }
 
     public boolean matchesHost(String host, Environment env) {
-        if(!enabled)return false;
+        if(!enabled.get())return false;
         if(hostAddress!=null && hostAddress.equalsIgnoreCase("*"))return true;
         if(hostPattern!=null){
             return hostPattern.matcher(host).matches();
@@ -253,7 +254,7 @@ public class FilterDescriptor {
     }
 
     public boolean matchesPath(String path, Environment env,Request request) {
-        if(!enabled)return false;
+        if(!enabled.get())return false;
         if(pathAddress!=null && pathAddress.equalsIgnoreCase("*"))return true;
         if(pathPattern!=null){
             var matcher = pathPattern.matcher(path);
@@ -287,7 +288,7 @@ public class FilterDescriptor {
     }
 
     public boolean execute(Request request, Response response, HttpClientConnectionManager connectionManager) throws InvocationTargetException, IllegalAccessException {
-        if(!enabled) return false;
+        if(!enabled.get()) return false;
         Object result = null;
         if(callback.getParameterCount()==3) {
             result = callback.invoke(filterClass, request, response, connectionManager);
@@ -305,7 +306,7 @@ public class FilterDescriptor {
     }
 
     public boolean isBlocking() {
-        if(!enabled)return false;
+        if(!enabled.get())return false;
         if(this.phase == HttpFilterType.API){
             return true;
         }
@@ -321,11 +322,11 @@ public class FilterDescriptor {
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return enabled.get();
     }
 
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        this.enabled.set(enabled);
     }
 
     public HttpTypeFilter getTypeFilter() {

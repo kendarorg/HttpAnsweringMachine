@@ -1,7 +1,7 @@
 package org.kendar.servers.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.kendar.http.CustomFilters;
+import org.kendar.http.CustomFiltersLoader;
 import org.kendar.http.FilterDescriptor;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
@@ -15,18 +15,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @Component
-public class JsFilterLoader implements CustomFilters {
+public class JsFilterLoader implements CustomFiltersLoader {
     @Value("${jsfilter.path:null}")
     private final String jsFilterPath = null;
     private ScriptableObject globalScope;

@@ -13,9 +13,11 @@ public class FilterDto {
     private final String pathPattern;
     private final HttpFilterType phase;
     private final boolean blocking;
+    private boolean enabled;
     private final String id;
 
-    public FilterDto(String id,HttpTypeFilter type, HttpMethodFilter method) {
+    public FilterDto(boolean enabled,HttpTypeFilter type, HttpMethodFilter method) {
+        this.enabled = enabled;
         this.id = method.id();
         blocking = type.blocking()||method.blocking();
         hostAddress = type.hostAddress();
@@ -63,4 +65,11 @@ public class FilterDto {
         return id;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 }

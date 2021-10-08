@@ -2,6 +2,6 @@ package org.kendar.http;
 
 import java.util.List;
 
-public interface CustomFilters {
+public interface CustomFiltersLoader {
     List<FilterDescriptor> loadFilters();
 }
