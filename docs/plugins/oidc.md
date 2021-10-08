@@ -6,11 +6,11 @@ It exposes the follwing APIs
 
 * /api/plugins/odic
     * /.well-known/openid-configuration: This URL returns a JSON listing of the OpenID/OAuth endpoints, supported scopes and claims, public keys used to sign the tokens, and other details
-    * /authorize: Authorization endpoint. This will be called to verify the user
-    * /token: Token endpoint
-    * /userinfo: User info endpoint
-    * /jwks: jwks endpoint
-    * /introspect: introspection endpoint
+    * /authorize: which uses HTTP Basic Auth for asking for username and password
+    * /token: for exchanging authorization code for access token
+    * /userinfo: that provides data about the user
+    * /jwks: providing JSON Web Key Set for validating cryptographic signature of id_token
+    * /introspect: that provides access token introspection
 
 <!--
         //KENDAR REMOVED AUTH NEED
