@@ -2,6 +2,8 @@ package org.kendar.servers.http.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.http.CustomFiltersLoader;
+import org.kendar.http.FilterDescriptor;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
@@ -10,10 +12,12 @@ import org.kendar.servers.http.api.model.FilterDto;
 import org.kendar.servers.http.configurations.FilterConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @Component
@@ -22,11 +26,14 @@ import java.util.Locale;
 public class FilterClassesApi  implements FilteringClass {
     private FilterConfig filteringClassesHandler;
     private Environment environment;
+    private ApplicationContext context;
 
-    public FilterClassesApi(FilterConfig filtersConfiguration, Environment environment){
+    public FilterClassesApi(FilterConfig filtersConfiguration, Environment environment,
+                            ApplicationContext context){
 
         this.filteringClassesHandler = filtersConfiguration;
         this.environment = environment;
+        this.context = context;
     }
 
 
@@ -185,6 +192,33 @@ public class FilterClassesApi  implements FilteringClass {
             }
         }
 
+        res.addHeader("Content-type", "application/json");
+        res.setResponseText(mapper.writeValueAsString(result));
+    }
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/filters/{phase}/{id}",
+            method = "POST",id="e967a4b4-2xxxx-44ec-9621-0242ac130004")
+    public void addFilter(Request req, Response res) throws Exception {
+        var loader = req.getQuery("loader");
+        var stringPhase = req.getPathParameter("phase");
+        var id = req.getPathParameter("id");
+        var phase = HttpFilterType.valueOf(stringPhase.toUpperCase(Locale.ROOT));
+
+        var requiredLoader= context.getBeansOfType(CustomFiltersLoader.class).
+                values().stream().filter(customFiltersLoader ->
+                customFiltersLoader.getClass().getSimpleName().equalsIgnoreCase(loader)).
+                findFirst();
+        var config = filteringClassesHandler.get().copy();
+        FilterDescriptor item = requiredLoader.get().loadFromRequest(req);
+        if(config.filtersById.containsKey(item.getId())){
+            throw new Exception("Duplicate filter");
+        }
+
+        config.filtersById.put(item.getId(),item);
+        config.filters.get(phase).add(item);
+
+        var result = new FilterDto(item.isEnabled(),item.getTypeFilter(),item.getMethodFilter());
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(result));
     }

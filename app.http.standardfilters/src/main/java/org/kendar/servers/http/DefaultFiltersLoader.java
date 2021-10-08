@@ -32,13 +32,13 @@ public class DefaultFiltersLoader implements CustomFiltersLoader {
         return cl.getClass().getAnnotation(HttpTypeFilter.class)!=null;
     }
 
-    private static List<FilterDescriptor> getAnnotatedMethods(FilteringClass cl,Environment environment) {
+    private List<FilterDescriptor> getAnnotatedMethods(FilteringClass cl,Environment environment) {
         var result = new ArrayList<FilterDescriptor>();
         var typeFilter = cl.getClass().getAnnotation(HttpTypeFilter.class);
         for (Method m: cl.getClass().getMethods()) {
             var methodFilter = m.getAnnotation(HttpMethodFilter.class);
             if(methodFilter==null) continue;
-            result.add(new FilterDescriptor(typeFilter,methodFilter,m,cl,environment));
+            result.add(new FilterDescriptor(this,typeFilter,methodFilter,m,cl,environment));
         }
         return result;
     }
@@ -52,5 +52,10 @@ public class DefaultFiltersLoader implements CustomFiltersLoader {
 
         logger.info("Standard filters LOADED");
         return result;
+    }
+
+    @Override
+    public FilterDescriptor loadFromRequest(Request req) {
+        return null;
     }
 }

@@ -36,14 +36,15 @@ public class FilterDescriptor {
     private final Object filterClass;
     private List<String> pathMatchers = new ArrayList<>();
     private final List<String> pathSimpleMatchers = new ArrayList<>();
+    private CustomFiltersLoader loader;
     private String id;
 
     public String getId(){
         return id;
     }
 
-    public FilterDescriptor(HttpTypeFilter typeFilter, HttpMethodFilter methodFilter, Method callback, FilteringClass filterClass, Environment environment) {
-
+    public FilterDescriptor(CustomFiltersLoader loader,HttpTypeFilter typeFilter, HttpMethodFilter methodFilter, Method callback, FilteringClass filterClass, Environment environment) {
+        this.loader = loader;
         this.id = methodFilter.id();
         this.callback = callback;
         this.filterClass = filterClass;
@@ -75,8 +76,8 @@ public class FilterDescriptor {
         this.methodFilter = buildMethodFilter();
     }
 
-    public FilterDescriptor( GenericFilterExecutor executor,Environment environment) {
-
+    public FilterDescriptor(CustomFiltersLoader loader, GenericFilterExecutor executor,Environment environment) {
+        this.loader = loader;
 
         for(var method:executor.getClass().getMethods()){
             if(method.getName().equalsIgnoreCase("run")){
@@ -343,5 +344,9 @@ public class FilterDescriptor {
 
     public void setMethodFilter(HttpMethodFilter methodFilter) {
         this.methodFilter = methodFilter;
+    }
+
+    public CustomFiltersLoader getLoader() {
+        return loader;
     }
 }

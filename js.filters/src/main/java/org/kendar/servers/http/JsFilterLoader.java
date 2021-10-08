@@ -80,7 +80,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
                         filterDescriptor.setRoot(realPath);
                         precompileFilter(filterDescriptor);
                         var executor = new JsFilterExecutor(filterDescriptor,this,loggerBuilder,filterDescriptor.getId());
-                        var fd = new FilterDescriptor(executor,environment);
+                        var fd = new FilterDescriptor(this,executor,environment);
                         fd.setEnabled(filterDescriptor.isEnabled());
                         result.add(fd);
                     }
@@ -90,6 +90,11 @@ public class JsFilterLoader implements CustomFiltersLoader {
             logger.error("Error compiling js filter "+currentPath,e);
         }
         return result;
+    }
+
+    @Override
+    public FilterDescriptor loadFromRequest(Request req) {
+        return null;
     }
 
     private static final SandboxClassShutter sandboxClassShutter = new SandboxClassShutter();
