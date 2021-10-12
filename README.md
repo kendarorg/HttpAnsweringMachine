@@ -37,6 +37,8 @@ The AnsweringMachine is built to overcome this troubles
 * Can be controlled via REST APIs to load scenarios (recordings)
 * More configurable than wiremock
 * Can use all the real configurations without changes via the Https/DNS hijacking
+* Can be used an alternative dns server on docker, supposed you add on the machines
+connecting to it the [Special DNS Server](docs/dnsserver.md)
 
 ## History 
 
@@ -48,8 +50,9 @@ was then ported to Spring Boot and was added a true UI.
 
 ## Configurations
 
-* [Basic local configuration](docs/local/basic.md)
+* [Basic local configuration](docs/basic.md)
 * [Logging](docs/logging.md)
+* [Docker configuration](docs/docker.md)
 
 ## Basic functions  
 
@@ -72,6 +75,9 @@ was then ported to Spring Boot and was added a true UI.
   * [Java pages](docs/plugins/java/jstatic.md)
   * [Java server](docs/plugins/java/jserver.md)
 
+## Utils
+
+* [Special DNS Server](docs/dnsserver.md) Add DNS servers with their...DNS name
 =====================
   
 * [Running in docker single instance](docs/dockersingle.md)
