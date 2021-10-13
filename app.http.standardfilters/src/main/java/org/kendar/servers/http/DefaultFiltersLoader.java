@@ -3,6 +3,7 @@ package org.kendar.servers.http;
 import org.kendar.http.CustomFiltersLoader;
 import org.kendar.http.FilterDescriptor;
 import org.kendar.http.FilteringClass;
+import org.kendar.http.StaticWebFilter;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.utils.LoggerBuilder;
@@ -17,15 +18,18 @@ import java.util.List;
 @Component
 public class DefaultFiltersLoader implements CustomFiltersLoader {
     private final Logger logger;
+    private PluginsAddressesRecorder pluginsAddressesRecorder;
     private final List<FilteringClass> filteringClassList;
     private final Environment environment;
 
     public DefaultFiltersLoader(List<FilteringClass> filteringClassList,
-                                Environment environment, LoggerBuilder loggerBuilder){
+                                Environment environment, LoggerBuilder loggerBuilder,
+                                PluginsAddressesRecorder pluginsAddressesRecorder){
 
         this.filteringClassList = filteringClassList;
         this.environment = environment;
         logger = loggerBuilder.build(DefaultFiltersLoader.class);
+        this.pluginsAddressesRecorder = pluginsAddressesRecorder;
     }
 
     private static boolean hasFilterType(FilteringClass cl){
@@ -38,6 +42,10 @@ public class DefaultFiltersLoader implements CustomFiltersLoader {
         for (Method m: cl.getClass().getMethods()) {
             var methodFilter = m.getAnnotation(HttpMethodFilter.class);
             if(methodFilter==null) continue;
+            if(cl instanceof StaticWebFilter){
+                var swf =(StaticWebFilter)cl;
+                pluginsAddressesRecorder.addPluginAddress(swf.getAddress(),swf.getDescription());
+            }
             result.add(new FilterDescriptor(this,typeFilter,methodFilter,m,cl,environment));
         }
         return result;

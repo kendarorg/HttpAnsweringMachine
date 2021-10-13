@@ -55,6 +55,9 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
         for (var filterLoader : customFilterLoaders) {
             for (var ds : filterLoader.loadFilters()) {
                 config.filters.get(ds.getPhase()).add(ds);
+                if(ds.getId().equalsIgnoreCase("null")){
+                    ds.setId("null:"+UUID.randomUUID().toString());
+                }
                 var id = ds.getId();
                 if(duplicateIds.contains(id)){
                     throw new RuntimeException("Duplicate filter id "+id);

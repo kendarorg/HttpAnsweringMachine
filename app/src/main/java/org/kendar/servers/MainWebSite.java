@@ -1,4 +1,4 @@
-package org.kendar.replayer;
+package org.kendar.servers;
 
 import org.kendar.http.StaticWebFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
@@ -8,26 +8,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @HttpTypeFilter(hostAddress = "${localhost.name}")
-public class ReplayerWeb extends StaticWebFilter {
+public class MainWebSite extends StaticWebFilter {
     @Value("${replayer.path:*web}")
     private String path;
-    @Override
-    public String getDescription(){
-        return "Replayer web";
-    }
-    @Override
-    public String getAddress(){
-        return "plugins/recording/index.html";
-    }
 
-
-    public ReplayerWeb(FileResourcesUtils fileResourcesUtils) {
+    public MainWebSite(FileResourcesUtils fileResourcesUtils) {
         super(fileResourcesUtils);
     }
 
     @Override
     public String getId() {
-        return "org.kendar.replayer.ReplayerWeb";
+        return "org.kendar.docker.MainWebSite";
     }
 
     @Override

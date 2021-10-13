@@ -74,6 +74,7 @@ was then ported to Spring Boot and was added a true UI.
   * [Java filters](docs/plugins/java/jfilters.md)
   * [Java pages](docs/plugins/java/jstatic.md)
   * [Java server](docs/plugins/java/jserver.md)
+* [Docker generator](docs/plugins/dockergen.md)
 
 ## Utils
 

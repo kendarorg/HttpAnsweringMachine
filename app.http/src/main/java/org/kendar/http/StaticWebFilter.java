@@ -5,18 +5,12 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.MimeChecker;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.Stream;
 
 public abstract class StaticWebFilter implements FilteringClass {
     private final FileResourcesUtils fileResourcesUtils;
@@ -27,7 +21,8 @@ public abstract class StaticWebFilter implements FilteringClass {
     protected abstract String getPath();
     private HashMap<String, Object> resourceFiles = new HashMap<>();
 
-
+    public String getDescription(){return null;}
+    public String getAddress(){return null;}
 
     @PostConstruct
     public void loadAllStuffs() throws IOException, URISyntaxException {
@@ -39,23 +34,21 @@ public abstract class StaticWebFilter implements FilteringClass {
     }
 
 
-    @HttpMethodFilter(phase = HttpFilterType.STATIC,pathAddress ="*",method = "GET",id="a907a4b4-277d-11ec-9621-0242ac130002")
+    @HttpMethodFilter(phase = HttpFilterType.STATIC,pathAddress ="*",method = "GET",id="null")
     public boolean handle(Request request, Response response) throws IOException {
         var realPath = getPath();
         if(isResource(getPath())){
             realPath = realPath.substring(1);
         }
 
-        if (verifyPath(response, realPath, request.getPath())) return true;
-        if (verifyPath(response, realPath, request.getPath()+"/index.htm")) return true;
-        if (verifyPath(response, realPath, request.getPath()+"/index.html")) return true;
+        if (verifyPathAndRender(response, realPath, request.getPath())) return true;
+        if (verifyPathAndRender(response, realPath, request.getPath()+"/index.htm")) return true;
+        if (verifyPathAndRender(response, realPath, request.getPath()+"/index.html")) return true;
 
-        response.setStatusCode(404);
-        response.setResponseText("Page not found: "+request.getPath());
-        return true;
+        return false;
     }
 
-    private boolean verifyPath(Response response, String realPath, String possibleMatch) {
+    private boolean verifyPathAndRender(Response response, String realPath, String possibleMatch) {
         Path fullPath;
         if(resourceFiles==null || resourceFiles.isEmpty()) {
             fullPath = Path.of(fileResourcesUtils.buildPath(realPath, possibleMatch));
