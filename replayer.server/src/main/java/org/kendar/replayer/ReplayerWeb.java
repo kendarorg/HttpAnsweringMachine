@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 @HttpTypeFilter(hostAddress = "${localhost.name}")
 public class ReplayerWeb extends StaticWebFilter {
-    @Value("${replayer.path:*web}")
-    private String path;
     @Override
     public String getDescription(){
         return "Replayer web";
@@ -32,6 +30,6 @@ public class ReplayerWeb extends StaticWebFilter {
 
     @Override
     protected String getPath() {
-        return path;
+        return "*web";
     }
 }

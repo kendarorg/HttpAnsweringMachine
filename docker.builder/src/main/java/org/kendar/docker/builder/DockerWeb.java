@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 @HttpTypeFilter(hostAddress = "${localhost.name}")
 public class DockerWeb extends StaticWebFilter {
-    @Value("${replayer.path:*web}")
-    private String path;
 
     @Override
     public String getDescription(){
@@ -32,6 +30,6 @@ public class DockerWeb extends StaticWebFilter {
 
     @Override
     protected String getPath() {
-        return path;
+        return "*web";
     }
 }

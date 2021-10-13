@@ -35,8 +35,8 @@
             </form>
         </div>
         <div class="col-md-8">
-            <h3>SCRIPTS</h3>
-            <table class="table table-striped" id="scriptTable">
+            <h3>PLUGINS</h3>
+            <table class="table table-striped" id="pluginsTable">
                 <tr>
                     <th>Name</th>
                     <th>State</th>
@@ -48,10 +48,10 @@
 </div>
 <script src="app/app.js"></script>
 <script>
-    var scriptsTable = new SimpleGrid("Script","scriptTable","id",["id","state"],
+    var scriptsTable = new SimpleGrid("Plugin","pluginsTable","address",["address","description"],
         function(table){
             $.ajax({
-                url: "/api/plugins/replayer/recording",
+                url: "/api/plugins",
                 type: 'GET',
                 success: function(res) {
                     $.each(res, function(i, script) {
@@ -63,21 +63,10 @@
             });
         },
         function (table,id) {
-            location.href = "script.html?id="+id;
+
         },
         function (table,id) {
-            table.deleteFromTable(id,function(id,success,error){
-                $.ajax({
-                    url: "/api/plugins/replayer/recording/" + id,
-                    type: 'DELETE',
-                    success: function (res) {
-                        success();
-                    },
-                    error:function(res){
-                        error();
-                    }
-                });
-            });
+
         },null).load();
 
     $("#btLoadFile").click(function(){

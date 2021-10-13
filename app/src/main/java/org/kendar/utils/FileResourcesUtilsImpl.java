@@ -1,6 +1,7 @@
 package org.kendar.utils;
 
 import org.slf4j.Logger;
+import org.springframework.boot.loader.Launcher;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -10,15 +11,17 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.Stream;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 @Component
 public class FileResourcesUtilsImpl implements FileResourcesUtils {
     private final Logger logger;
 
-    public FileResourcesUtilsImpl(LoggerBuilder loggerBuilder){
+    public FileResourcesUtilsImpl(LoggerBuilder loggerBuilder) {
         logger = loggerBuilder.build(FileResourcesUtilsImpl.class);
     }
+
     // get a file from the resources folder
     // works everywhere, IDEA, unit test and JAR file.
     public InputStream getFileFromResourceAsStream(String fileName) {
@@ -91,7 +94,7 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
         }
     }
 
-    public String buildPath(String ... paths){
+    public String buildPath(String... paths) {
         String returnValue = null;
         var result = paths[0];
         try {
@@ -113,90 +116,140 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
                 result += File.separator + cur;
             }*/
             result = buildPathRelative(paths);
-            var fpResult = result.replace('\\','/');
+            var fpResult = result.replace('\\', '/');
             var fp = new URI(fpResult);
-            if(!fp.isAbsolute()){
-                while(result.startsWith("/")||result.startsWith("\\")){
+            if (!fp.isAbsolute()) {
+                while (result.startsWith("/") || result.startsWith("\\")) {
                     result = result.substring(1);
                 }
                 Path currentRelativePath = Paths.get("");
                 String s = currentRelativePath.toAbsolutePath().toString();
-                returnValue = s+File.separator+result;
-            }else {
+                returnValue = s + File.separator + result;
+            } else {
                 returnValue = result;
             }
             return returnValue;
-        }catch(Exception ex){
-            logger.error(ex.getMessage(),ex);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
             return null;
         }
     }
 
-    public String buildPathRelative(String ... paths){
+    public String buildPathRelative(String... paths) {
         var result = paths[0];
         try {
             for (var i = 1; i < paths.length; i++) {
-                paths[i] = paths[i].replace("/",File.separator);
-                paths[i] = paths[i].replace("\\",File.separator);
+                paths[i] = paths[i].replace("/", File.separator);
+                paths[i] = paths[i].replace("\\", File.separator);
             }
-            while(result.endsWith("/") || result.endsWith("\\")){
-                result = result.substring(0,result.length()-1);
+            while (result.endsWith("/") || result.endsWith("\\")) {
+                result = result.substring(0, result.length() - 1);
             }
             for (var i = 1; i < paths.length; i++) {
                 var cur = paths[i];
-                while(cur.endsWith("/") || cur.endsWith("\\")){
-                    cur = cur.substring(0,cur.length()-1);
+                while (cur.endsWith("/") || cur.endsWith("\\")) {
+                    cur = cur.substring(0, cur.length() - 1);
                 }
-                while(cur.startsWith("/")|| cur.startsWith("\\")){
+                while (cur.startsWith("/") || cur.startsWith("\\")) {
                     cur = cur.substring(1);
                 }
                 result += File.separator + cur;
             }
 
             return result;
-        }catch(Exception ex){
-            logger.error(ex.getMessage(),ex);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
             return null;
         }
     }
 
     @Override
     public HashMap<String, Object> loadResources(Object clazz, String path) throws URISyntaxException, IOException {
-        if(!path.startsWith("/")){
-            path = "/"+path;
+        if (path.startsWith("/")) {
+            path = path.substring(1);
         }
-        var result = new HashMap<String,Object>();
-        URI uri = clazz.getClass().getResource(path).toURI();
+        var result = new HashMap<String, Object>();
+
         var classLoader = clazz.getClass().getClassLoader();
 
-        Path myPath;
-        if (uri.getScheme().equals("jar")) {
-            FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
-            myPath = fileSystem.getPath(path);
-        } else {
-            myPath = Paths.get(uri);
+        final File jarFile = new File(clazz.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+
+        var ress = new ArrayList<String>();
+        if (jarFile.isFile()) {  // Run with JAR file
+            loadFromJar(path, result, classLoader, jarFile, ress);
+        } else { // Run with IDE
+            loadFromClasspathInIDE(path, result, jarFile);
         }
-        Stream<Path> walk = Files.walk(myPath, 10);
-        for (Iterator<Path> it = walk.iterator(); it.hasNext();){
-            var foundedPath = it.next().toString();
-            if(foundedPath.startsWith("/")){
-                foundedPath=foundedPath.substring(1);
-            }
-            result.put(foundedPath, null);
-        }
-        for (var item :result.entrySet()){
+
+        return result;
+    }
+
+    private void loadFromClasspathInIDE(String path, HashMap<String, Object> result, File jarFile) {
+        final URL url = Launcher.class.getResource("/" + path);
+        if (url != null) {
             try {
-                InputStream inputStream = classLoader.getResourceAsStream(item.getKey());
+                final File apps = new File(url.toURI());
+                loadDirFromJar(path, result, jarFile, apps);
+            } catch (URISyntaxException ex) {
+                // never happens
+            }
+        }
+    }
+
+    private void loadFromJar(String path, HashMap<String, Object> result, ClassLoader classLoader, File jarFile, ArrayList<String> ress) throws IOException {
+        final JarFile jar = new JarFile(jarFile);
+        final Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
+        while (entries.hasMoreElements()) {
+            var nextElement = entries.nextElement();
+            final String name = nextElement.getName();
+            if(nextElement.isDirectory())continue;
+            if (name.startsWith(path + "/")) { //filter according to the path
+                ress.add(name);
+            }
+        }
+        jar.close();
+        for(var filePath: ress){
+            try {
+                InputStream inputStream = classLoader.getResourceAsStream(filePath);
                 try (inputStream) {
                     var bytes = inputStream.readAllBytes();
-                    if(bytes.length>0) {
-                        item.setValue(bytes);
+                    if (bytes.length > 0) {
+                        if(filePath.startsWith("/"))filePath=filePath.substring(1);
+                        result.put(filePath,bytes);
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 continue;
             }
         }
-        return result;
+    }
+
+    private void loadDirFromJar(String path, HashMap<String, Object> result, File jarFile, File apps) {
+        for (File app : apps.listFiles()) {
+            if(app.isDirectory()){
+                loadDirFromJar(path,result,jarFile,app);
+            }else{
+                loadSingleFileFromJar(path, result, jarFile, app);
+            }
+        }
+    }
+
+    private void loadSingleFileFromJar(String path, HashMap<String, Object> result, File jarFile, File app) {
+        var filePath = app.getPath();
+        try {
+            var bytes = Files.readAllBytes(Paths.get(app.getPath()));
+            if (bytes.length > 0) {
+                var internalpath = filePath.
+                        replace(jarFile.getPath() , "").
+                        replace("\\","/");
+                if(internalpath.startsWith("/")){
+                    internalpath=internalpath.substring(1);
+                }
+
+                result.put(internalpath, bytes);
+            }
+        }catch(Exception ex){
+
+        }
     }
 }
