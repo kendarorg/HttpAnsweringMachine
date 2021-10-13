@@ -74,7 +74,7 @@ class SimpleGrid{
             }
         });
     }
-    appendToTable(inputData){
+    appendToTable(inputData, addbutton=true){
         var idContent=inputData[this.idField];
         for(var i=0;i<this.data.length;i++){
             var line = this.data[i];
@@ -84,7 +84,10 @@ class SimpleGrid{
                     var index = this.fields[v];
                     var content = inputData[index];
                     if(content == undefined) content="";
-                    if(content.length>60)content= content.substr(0,60);
+                    if(!(index.lastIndexOf("_", 0) === 0)){
+                        if(content.length>60)content= content.substr(0,60);
+                    }
+
                     $("#" + this.tableId +
                         " #" + this.tableId + "-" + idContent+
                         " #"+index).innerHTML = content;
@@ -110,22 +113,33 @@ class SimpleGrid{
                 content = content[allIndex[s]];
             }
             if(content == undefined) content="";
-            if(content.length>60)content= content.substr(0,60);
+            if(!(this.fields[i].lastIndexOf("_", 0) === 0)){
+                if(content.length>60)content= content.substr(0,60);
+            }
             toWrite+=`<td class="userData" name="${index}">${content}</td>`;
         }
 
-        toWrite+=`<td align="center">
+        if(addbutton==true) {
+            toWrite += `<td align="center">
                 <button class="btn btn-success form-control" id="${this.tableId}-${idContent}-edit">EDIT</button>
             </td>
             <td align="center">
                 <button class="btn btn-danger form-control" id="${this.tableId}-${idContent}-delete">DELETE</button>
-            </td>
-        </tr>
-    `;
+            </td>`;
+        }
+
+        toWrite+=`</tr>`;
+    ;
         var self = this;
         $("#"+this.tableId+" > tbody:last-child").append(toWrite);
-        $("#"+this.tableId+"-"+idContent+"-edit").click(function(){ self.editFunction(self,idContent); });
-        $("#"+this.tableId+"-"+idContent+"-delete").click(function(){ self.deleteFunction(self,idContent); });
+        if(addbutton==true) {
+            $("#" + this.tableId + "-" + idContent + "-edit").click(function () {
+                self.editFunction(self, idContent);
+            });
+            $("#" + this.tableId + "-" + idContent + "-delete").click(function () {
+                self.deleteFunction(self, idContent);
+            });
+        }
     }
 }
 

@@ -57,3 +57,22 @@ h4 {
     font-weight: bolder;
     letter-spacing: .2em;
 }
+
+a.unlinked:link {
+    color: white;
+}
+
+/* visited link */
+a.unlinked:visited {
+    color: white;
+}
+
+/* mouse over link */
+a.unlinked:hover {
+    color: white;
+}
+
+/* selected link */
+a.unlinked:active {
+    color: white;
+}
