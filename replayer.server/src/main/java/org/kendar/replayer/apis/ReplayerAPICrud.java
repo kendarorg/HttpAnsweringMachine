@@ -163,7 +163,7 @@ public class ReplayerAPICrud implements FilteringClass {
                 if (!mp.isFile()) continue;
                 var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, mp.getFileName()));
                 if (!rootPath.toString().toLowerCase(Locale.ROOT).endsWith(".json")) {
-                    res.addHeader("Content-type", "application/json");
+
                     res.setStatusCode(500);
                     return false;
                 }
@@ -181,7 +181,8 @@ public class ReplayerAPICrud implements FilteringClass {
 
                     res.setStatusCode(200);
                 } catch (Exception ex) {
-                    res.addHeader("Content-type", "application/json");
+                    res.addHeader("Content-type", "text/plain");
+                    res.setResponseText(ex.getMessage());
                     res.setStatusCode(500);
                     return false;
                 }

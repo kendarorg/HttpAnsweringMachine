@@ -48,7 +48,7 @@ public class SSLController implements FilteringClass {
         var cloned = answeringHttpsServer.get().copy();
         var dnsServeres = cloned.extraDomains;
         var name = req.getPathParameter("name");
-        res.addHeader("Content-type", "application/json");
+
         var newList = new ArrayList<String>();
         for(var item:dnsServeres){
             if(item.equalsIgnoreCase(name)){continue;}
@@ -68,7 +68,7 @@ public class SSLController implements FilteringClass {
         var dnsServeres = cloned.extraDomains;
         var name1 = (req.getPathParameter("name1"));
         var name2 = (req.getPathParameter("name2"));
-        res.addHeader("Content-type", "application/json");
+
         var newList = new ArrayList<String>();
         var id1Index=-1;
         var id2Index = -1;
@@ -94,7 +94,7 @@ public class SSLController implements FilteringClass {
         var cloned = answeringHttpsServer.get().copy();
         var dnsServeres = cloned.extraDomains;
         var newData = req.getPathParameter("name");
-        res.addHeader("Content-type", "application/json");
+
         var newList = new ArrayList<String>();
         for(var item:dnsServeres){
             if(item.equalsIgnoreCase(newData))throw new Exception("Duplicate dns resolution");

@@ -47,10 +47,10 @@ public class DnsServersApis implements FilteringClass {
     public boolean getDnsServer(Request req, Response res) throws JsonProcessingException {
         var dnsServers = dnsMultiResolver.getExtraServers();
         var name = req.getPathParameter("name");
-        res.addHeader("Content-type", "application/json");
         for(var item:dnsServers){
             if(item.getName().equalsIgnoreCase(name)){
 
+                res.addHeader("Content-type", "application/json");
                 res.setResponseText(mapper.writeValueAsString(item));
                 return false;
             }
@@ -65,7 +65,6 @@ public class DnsServersApis implements FilteringClass {
     public boolean removeDnsServer(Request req, Response res) {
         var dnsServeres = dnsMultiResolver.getExtraServers();
         var name = (req.getPathParameter("name"));
-        res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<DnsServerDescriptor>();
         for(var item:dnsServeres){
             if(item.getName().equalsIgnoreCase(name)){continue;}
@@ -82,7 +81,6 @@ public class DnsServersApis implements FilteringClass {
     public boolean updateDnsServer(Request req, Response res) throws JsonProcessingException {
         var dnsServers = dnsMultiResolver.getExtraServers();
         var ip = (req.getPathParameter("name"));
-        res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<DnsServerDescriptor>();
         var newData = mapper.readValue((String)req.getRequestText(),DnsServerDescriptor.class);
         for(var item:dnsServers){
@@ -108,7 +106,6 @@ public class DnsServersApis implements FilteringClass {
         var dnsServeres = dnsMultiResolver.getExtraServers();
         var name1 = (req.getPathParameter("name1"));
         var name2 = (req.getPathParameter("name2"));
-        res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<DnsServerDescriptor>();
         var id1Index=-1;
         var id2Index = -1;
@@ -131,7 +128,6 @@ public class DnsServersApis implements FilteringClass {
             method = "POST",id="1007a4b5-277d-11ec-9621-0242ac130002")
     public boolean addDnsServer(Request req, Response res) throws Exception {
         var dnsServeres = dnsMultiResolver.getExtraServers();
-        res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<DnsServerDescriptor>();
         var newData = mapper.readValue((String)req.getRequestText(),DnsServerDescriptor.class);
 

@@ -461,11 +461,17 @@ public class OidcController implements FilteringClass {
     }
 
     private static Response setJsonResponse(int code,Object data,Response res){
-        res.addHeader("Content-Type","application/json");
+        if(data==null){
+            return res;
+        }
+
         res.setStatusCode(code);
         try {
             var strData = mapper.writeValueAsString(data);
-            res.setResponseText(strData);
+            if(strData.length()>0){
+                res.addHeader("Content-Type","application/json");
+                res.setResponseText(strData);
+            }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

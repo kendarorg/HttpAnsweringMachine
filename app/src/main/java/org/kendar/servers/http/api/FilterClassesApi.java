@@ -169,8 +169,8 @@ public class FilterClassesApi  implements FilteringClass {
             }
         }
 
-        res.addHeader("Content-type", "application/json");
-        res.setResponseText("");
+
+
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
