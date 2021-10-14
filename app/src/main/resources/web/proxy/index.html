@@ -1,0 +1,134 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <button id="addProxy" name="addProxy" type="button"  class="btn btn-default" onClick="addProxy();">Add new</button>
+
+
+        </div>
+        <div class="col-md-8">
+            <h3>Proxyes</h3>
+            <table class="table table-striped" id="proxyesTable">
+                <tr>
+                    <th>Id</th>
+                    <th>When</th>
+                    <th>Where</th>
+                    <th>Test</th>
+                    <th colspan="2"></th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Proxy</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+    var proxyModal = `
+    <label for="when">when</label>
+    <input class="form-control" type="text" name="when"  id="when" />
+    <label for="where">where</label>
+    <input class="form-control" type="text" name="where"  id="where" />
+    <label for="test">test</label>
+    <input class="form-control" type="text" name="test"  id="test" />
+    `;
+    var addProxy = function(){
+        var modal=".modal";
+        var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
+        var target = {
+            id : uuidv4()
+        };
+        var id = target.id;
+        buildGenericModal(modal, scriptsTable, target, "id", proxyModal, randomId,false);
+        $(modal).find("#"+randomId).click(function(){ scriptsTable.saveFunction(scriptsTable,id,true); });
+    }
+    var editProxy=function(table,id) {
+        var modal=".modal";
+        var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
+        var localTable = table;
+        localTable.data.forEach(function(value, i) {
+            if (value["id"] == id) {
+                buildGenericModal(modal, table, value, "id", proxyModal, randomId, true);
+                $(modal).find("#"+randomId).click(function(){ localTable.saveFunction(localTable,id,false); });
+                $(modal).find("#when").val(value["when"]);
+                $(modal).find("#where").val(value["where"]);
+                $(modal).find("#test").val(value["test"]);
+            }
+        });
+    }
+
+    var scriptsTable = new SimpleGrid("Proxyes","proxyesTable","id",["id","when","where","test"],
+        function(table){
+            $.ajax({
+                url: "/api/proxyes",
+                type: 'GET',
+                success: function(res) {
+                    $.each(res, function(i, script) {
+                        table.appendToTable(script);
+                    });
+                }
+            });
+        },
+        function (table,id) {
+            editProxy(table,id)
+        },
+        function (table,id) {
+            table.deleteFromTable(id,function(id,success,error){
+                $.ajax({
+                    url: "/api/proxyes/"+getUrlParameter("id"),
+                    type: 'DELETE',
+                    success: function (res) {
+                        success();
+                    },
+                    error:function(res){
+                        error();
+                    }
+                });
+            });
+        },
+        function (table,id,saveOrUpdate){
+            var modal=".modal";
+            var data = {
+                id: id,
+                when: $(modal).find("#when").val(),
+                where: $(modal).find("#where").val(),
+                test: $(modal).find("#test").val()
+            };
+            $.ajax({
+                url: "/api/proxyes"+(saveOrUpdate?"":"/"+id),
+                type: saveOrUpdate?'POST':'PUT',
+                data:JSON.stringify(data),
+                contentType: "application/json",
+                success: function (res) {
+                    success();
+                },
+                error:function(res){
+                    error();
+                }
+            });
+        }).load();
+
+</script>
+</body>
+</html>

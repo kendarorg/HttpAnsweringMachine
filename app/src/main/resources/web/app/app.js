@@ -147,17 +147,7 @@ class SimpleGrid{
 
 
 function buildKvpModalDialog(modal, table, value, idField, valueField, randomId) {
-    //var encodedValue = value[valueField].replace('"','\\"');
-    $(modal).find(".modal-title").empty().append(`${table.objType}`);
-    var readonly="readonly";
-    if(value[idField]==''){
-        readonly="";
-    }
-    var bodyContent = `
-                <form id="editKvp" action="">
-                    <label for="key">Key</label>
-                    <input class="form-control" type="text" name="key" id="key" ${readonly} value="${value[idField]}"/>
-                `;
+    var bodyContent="";
     if (value[valueField].length > 60) {
         bodyContent += `
                     <label for="value">Value</label>
@@ -169,14 +159,11 @@ function buildKvpModalDialog(modal, table, value, idField, valueField, randomId)
                     <input class="form-control" type="text" name="value"  id="value" />
                 `;
     }
-    $(modal).find(".modal-body").empty().append(bodyContent);
-
-    $(modal).find(".modal-footer").empty().append(`
-                    <button type="button" type="submit" class="btn btn-primary" id="${randomId}" >Save changes</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </form>
-            `);
-    $(modal).modal("toggle");
+    var openAsEdit = false;
+    if(value[idField]==''){
+        openAsEdit = true;
+    }
+    buildGenericModal(modal, table, value, idField, bodyContent, randomId, openAsEdit);
 }
 
 var addKvp=function(modal,table,idField,valueField) {
@@ -189,7 +176,7 @@ var addKvp=function(modal,table,idField,valueField) {
     $(modal).find("#"+randomId).click(function(){
         value[idField]=$(modal).find("#key").val();
         value[valueField]=$(modal).find("#value").val();
-        localTable.saveFunction(localTable,value); });
+        localTable.saveFunction(localTable,value,true); });
     $(modal).find("#value").val(value[valueField]);
 }
 
@@ -200,7 +187,7 @@ var editKvp=function(modal,table,id,idField,valueField) {
     localTable.data.forEach(function(value, i) {
         if (value[idField] == id) {
             buildKvpModalDialog(modal, table, value, idField, valueField, randomId);
-            $(modal).find("#"+randomId).click(function(){ localTable.saveFunction(localTable,id); });
+            $(modal).find("#"+randomId).click(function(){ localTable.saveFunction(localTable,id,false); });
             $(modal).find("#value").val(value[valueField]);
         }
     });
@@ -302,4 +289,41 @@ var  downloadFile= function(urlToSend) {
     };
 
     req.send();
+}
+
+function buildGenericModal(modal, table, value, idField, extraContent, randomId,openAsEdit) {
+    //var encodedValue = value[valueField].replace('"','\\"');
+    $(modal).find(".modal-title").empty().append(`${table.objType}`);
+    var readonly="readonly";
+    if(openAsEdit){
+        readonly="";
+    }
+    var bodyContent = `
+                <form id="editKvp" action="">
+                    <label for="key">Key</label>
+                    <input class="form-control" type="text" name="key" id="key" ${readonly} value="${value[idField]}"/>
+                `;
+    bodyContent+=extraContent;
+    $(modal).find(".modal-body").empty().append(bodyContent);
+
+    $(modal).find(".modal-footer").empty().append(`
+                    <button type="button" type="submit" class="btn btn-primary" id="${randomId}" >Save changes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </form>
+            `);
+    $(modal).modal("toggle");
+}
+
+var uuidv4 = function() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
+var success = function(){
+    alert("Ok");
+}
+
+var error = function(){
+    alert("Error");
 }

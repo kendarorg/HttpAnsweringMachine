@@ -46,9 +46,9 @@ public class ProxyHandlerApis  implements FilteringClass {
     public boolean getProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
         var id = req.getPathParameter("id");
-        res.addHeader("Content-type", "application/json");
         for(var item:proxyes){
             if(item.getId().equalsIgnoreCase(id)){
+                res.addHeader("Content-type", "application/json");
                 res.setResponseText(mapper.writeValueAsString(item));
                 return false;
             }
@@ -63,7 +63,6 @@ public class ProxyHandlerApis  implements FilteringClass {
     public boolean removeProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
         var id = req.getPathParameter("id");
-        res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<RemoteServerStatus>();
         for(var item:proxyes){
             if(item.getId().equalsIgnoreCase(id)){continue;}
@@ -80,7 +79,6 @@ public class ProxyHandlerApis  implements FilteringClass {
     public boolean updateProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
         var id = req.getPathParameter("id");
-        res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<RemoteServerStatus>();
         var newData = mapper.readValue((String)req.getRequestText(),RemoteServerStatus.class);
 
@@ -107,7 +105,6 @@ public class ProxyHandlerApis  implements FilteringClass {
         var proxyes = simpleProxyHandler.getProxies();
         var id1 = req.getPathParameter("id1");
         var id2 = req.getPathParameter("id2");
-        res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<RemoteServerStatus>();
         var id1Index=-1;
         var id2Index = -1;
@@ -130,7 +127,6 @@ public class ProxyHandlerApis  implements FilteringClass {
             method = "POST",id="1020a4b4-277d-11ec-9621-0242ac130002")
     public boolean addProxy(Request req, Response res) throws JsonProcessingException {
         var proxyes = simpleProxyHandler.getProxies();
-        res.addHeader("Content-type", "application/json");
         var newList = new ArrayList<>(proxyes);
         var newData = mapper.readValue((String)req.getRequestText(),RemoteServerStatus.class);
         newList.add(newData);

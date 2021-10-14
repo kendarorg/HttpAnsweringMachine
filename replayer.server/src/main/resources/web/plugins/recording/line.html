@@ -197,7 +197,7 @@
         function (table,id) {
             deleteKvp(".modal",table,id,"key","value")
         },
-        function (table,id) {
+        function (table,id,saveOrUpdate) {
             updateKvp(".modal",table,id,"key","value")
         });
     var request_queryTable = new SimpleGrid("Query","request_queryTable","key",["key","value"],
@@ -208,7 +208,7 @@
         function (table,id) {
             deleteKvp(".modal",table,id,"key","value")
         },
-        function (table,id) {
+        function (table,id,saveOrUpdate) {
             updateKvp(".modal",table,id,"key","value")
         });
     var request_postTable = new SimpleGrid("PostParameters","request_postTable","key",["key","value"],
@@ -219,7 +219,7 @@
         function (table,id) {
             deleteKvp(".modal",table,id,"key","value")
         },
-        function (table,id) {
+        function (table,id,saveOrUpdate) {
             updateKvp(".modal",table,id,"key","value")
         });
     var response_headerTable = new SimpleGrid("Response-Headers","response_headerTable","key",["key","value"],
@@ -230,7 +230,7 @@
         function (table,id) {
             deleteKvp(".modal",table,id,"key","value")
         },
-        function (table,id) {
+        function (table,id,saveOrUpdate) {
             updateKvp(".modal",table,id,"key","value")
         });
 

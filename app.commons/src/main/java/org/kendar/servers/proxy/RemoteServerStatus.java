@@ -9,6 +9,10 @@ public class RemoteServerStatus {
     private String test;
     private boolean running = false;
 
+    public RemoteServerStatus(){
+
+    }
+
     public RemoteServerStatus(String id, String when, String where, String test) {
         this.id = id;
         this.when = when;
