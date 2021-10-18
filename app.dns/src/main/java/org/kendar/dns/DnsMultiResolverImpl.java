@@ -105,6 +105,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
                 Matcher matcher = ipPattern.matcher(server);
                 if(matcher.matches()){
                     var desc = new DnsServerDescriptor();
+                    desc.setId(server.replace(".","_"));
                     desc.setIp(server);
                     desc.setName(server);
                     desc.setEnabled(true);

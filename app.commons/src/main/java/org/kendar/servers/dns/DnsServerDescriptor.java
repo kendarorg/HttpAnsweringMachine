@@ -1,6 +1,7 @@
 package org.kendar.servers.dns;
 
 public class DnsServerDescriptor {
+    private String id;
     private String ip;
     private String name;
     private boolean enabled =true;
@@ -35,5 +36,13 @@ public class DnsServerDescriptor {
         result.setIp(this.getIp());
         result.setName(this.getName());
         return result;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

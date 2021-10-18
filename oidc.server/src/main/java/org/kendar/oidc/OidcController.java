@@ -461,6 +461,7 @@ public class OidcController implements FilteringClass {
     }
 
     private static Response setJsonResponse(int code,Object data,Response res){
+        res.setStatusCode(code);
         if(data==null){
             return res;
         }

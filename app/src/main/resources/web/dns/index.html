@@ -79,15 +79,12 @@
         });
     }
 
-    var scriptsTable = new SimpleGrid("Proxyes","proxyesTable","id",["id","when","where","test","_running"],
+    var scriptsTable = new SimpleGrid("Proxyes","proxyesTable","name",["name","when","where","test"],
         function(table){
             $.ajax({
-                url: "/api/proxyes",
+                url: "/api/dns/servers",
                 type: 'GET',
                 success: function(res) {
-                    for(var v=0;v<res.length;v++) {
-                        res[v]["_running"]=res[v]['running']=="true"?"YES":"NO";
-                    }
                     $.each(res, function(i, script) {
                         table.appendToTable(script);
                     });
