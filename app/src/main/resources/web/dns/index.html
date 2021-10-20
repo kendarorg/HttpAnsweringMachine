@@ -19,9 +19,8 @@
             <table class="table table-striped" id="proxyesTable">
                 <tr>
                     <th>Id</th>
-                    <th>When</th>
-                    <th>Where</th>
-                    <th>Test</th>
+                    <th>Ip</th>
+                    <th>Name</th>
                     <th>Running</th>
                     <th colspan="2"></th>
                 </tr>
@@ -47,12 +46,16 @@
 <script src="/app/app.js"></script>
 <script>
     var proxyModal = `
-    <label for="when">when</label>
-    <input class="form-control" type="text" name="when"  id="when" />
-    <label for="where">where</label>
-    <input class="form-control" type="text" name="where"  id="where" />
-    <label for="test">test</label>
-    <input class="form-control" type="text" name="test"  id="test" />
+    <label for="ip">ip</label>
+    <input class="form-control" type="text" name="ip"  id="ip" />
+    <label for="name">name</label>
+    <input class="form-control" type="text" name="name"  id="name" />
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="enabled" name="enabled">
+        <label class="form-check-label" for="enabled">
+            running
+        </label>
+    </div>
     `;
     var addProxy = function(){
         var modal=".modal";
@@ -72,14 +75,14 @@
             if (value["id"] == id) {
                 buildGenericModal(modal, table, value, "id", proxyModal, randomId, true);
                 $(modal).find("#"+randomId).click(function(){ localTable.saveFunction(localTable,id,false); });
-                $(modal).find("#when").val(value["when"]);
-                $(modal).find("#where").val(value["where"]);
-                $(modal).find("#test").val(value["test"]);
+                $(modal).find("#ip").val(value["ip"]);
+                $(modal).find("#name").val(value["name"]);
+                setChecked($(modal).find("#enabled"),value['enabled']);
             }
         });
     }
 
-    var scriptsTable = new SimpleGrid("Proxyes","proxyesTable","name",["name","when","where","test"],
+    var scriptsTable = new SimpleGrid("Proxyes","proxyesTable","id",["id","ip","name","enabled"],
         function(table){
             $.ajax({
                 url: "/api/dns/servers",

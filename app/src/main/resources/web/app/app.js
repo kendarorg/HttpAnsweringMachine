@@ -295,7 +295,7 @@ function buildGenericModal(modal, table, value, idField, extraContent, randomId,
     //var encodedValue = value[valueField].replace('"','\\"');
     $(modal).find(".modal-title").empty().append(`${table.objType}`);
     var readonly="readonly";
-    if(openAsEdit){
+    if(!openAsEdit){
         readonly="";
     }
     var bodyContent = `
