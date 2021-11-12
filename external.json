@@ -2,7 +2,7 @@
   {
     "id": "dns",
     "system": true,
-    "active": true,
+    "active": false,
     "port": 53,
     "logQueries": false,
     "extraServers": [
@@ -125,8 +125,6 @@
     "user": "root",
     "password": "root",
     "path": "derbydata"
-    /*destination.put("derby.driver","org.apache.derby.jdbc.ClientDriver");
-      destination.put("derby.url","jdbc:derby://localhost:"+ derbyPort);*/
   },
   {
     "id": "oidc.server",

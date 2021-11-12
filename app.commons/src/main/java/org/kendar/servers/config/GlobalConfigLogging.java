@@ -5,7 +5,7 @@ import org.kendar.servers.Copyable;
 public class GlobalConfigLogging implements Copyable<GlobalConfigLogging> {
     private MultilevelLoggingConfig request;
     private MultilevelLoggingConfig response;
-    private boolean path;
+    private String path;
     private boolean statics;
     private boolean dynamic;
 
@@ -25,11 +25,11 @@ public class GlobalConfigLogging implements Copyable<GlobalConfigLogging> {
         this.response = response;
     }
 
-    public boolean isPath() {
+    public String getPath() {
         return path;
     }
 
-    public void setPath(boolean path) {
+    public void setPath(String path) {
         this.path = path;
     }
 

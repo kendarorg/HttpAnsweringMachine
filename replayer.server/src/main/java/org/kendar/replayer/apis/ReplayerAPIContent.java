@@ -5,10 +5,12 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
+import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.MultipartPart;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -33,12 +35,12 @@ public class ReplayerAPIContent implements FilteringClass {
     private final DataReorganizer dataReorganizer;
     private Md5Tester md5Tester;
     ObjectMapper mapper = new ObjectMapper();
-    @Value("${replayer.data:replayerdata}")
     private String replayerData;
 
     public ReplayerAPIContent(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder,
-                              DataReorganizer dataReorganizer, Md5Tester md5Tester){
+                              DataReorganizer dataReorganizer, Md5Tester md5Tester, JsonConfiguration configuration){
 
+        this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.fileResourcesUtils = fileResourcesUtils;
         this.loggerBuilder = loggerBuilder;
         this.dataReorganizer = dataReorganizer;

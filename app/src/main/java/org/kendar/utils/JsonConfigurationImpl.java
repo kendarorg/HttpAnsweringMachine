@@ -43,7 +43,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
             var founded = deserializedConfigurations.get(sanitizedId);
             return (T) founded.deserialized;
         }catch (Exception e){
-            return null;
+            throw new RuntimeException();
         }
     }
 
@@ -69,9 +69,9 @@ public class JsonConfigurationImpl implements JsonConfiguration {
 
     public void loadConfiguration(String fileName) throws Exception {
         var fullConfig = Files.readString(Path.of(fileName));
-        var treeMap = mapper.readTree(fullConfig);
-        while (treeMap.elements().hasNext()) {
-            var pluginRoot = treeMap.elements().next();
+        var treeMap = mapper.readTree(fullConfig).elements();
+        while (treeMap.hasNext()) {
+            var pluginRoot = treeMap.next();
             var id = pluginRoot.get("id").asText().toLowerCase(Locale.ROOT);
             var system = false;
             if(pluginRoot.has("system")){

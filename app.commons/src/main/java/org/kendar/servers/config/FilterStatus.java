@@ -1,22 +1,31 @@
 package org.kendar.servers.config;
 
-public class FilterStatus {
-    private String id;
-    private boolean enabled;
+import org.kendar.servers.Copyable;
 
-    public String getId() {
-        return id;
-    }
+public class FilterStatus implements Copyable<FilterStatus> {
+  private String id;
+  private boolean enabled;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
+
+  public FilterStatus copy() {
+    var result = new FilterStatus();
+    result.id = this.id;
+    result.enabled = this.enabled;
+    return result;
+  }
 }

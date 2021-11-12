@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.utils.Md5Tester;
+import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
@@ -20,7 +21,6 @@ public class ReplayerStatus {
 
     private ReplayerDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
-    @Value("${replayer.data:replayerdata}")
     private String replayerData;
     private final LoggerBuilder loggerBuilder;
     private final DataReorganizer dataReorganizer;
@@ -28,8 +28,9 @@ public class ReplayerStatus {
     private Md5Tester md5Tester;
 
     public ReplayerStatus(LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer,
-                          FileResourcesUtils fileResourcesUtils, Md5Tester md5Tester){
+                          FileResourcesUtils fileResourcesUtils, Md5Tester md5Tester, JsonConfiguration configuration){
 
+        this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.loggerBuilder = loggerBuilder;
         this.dataReorganizer = dataReorganizer;
         this.fileResourcesUtils = fileResourcesUtils;

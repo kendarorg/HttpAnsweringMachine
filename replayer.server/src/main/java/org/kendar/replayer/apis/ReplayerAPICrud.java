@@ -6,6 +6,7 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.ReplayerStatus;
 import org.kendar.replayer.apis.models.ListAllRecordList;
@@ -14,6 +15,7 @@ import org.kendar.replayer.apis.models.ScriptData;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerResult;
 import org.kendar.replayer.utils.Md5Tester;
+import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.RequestUtils;
 import org.kendar.servers.http.Response;
@@ -40,13 +42,14 @@ public class ReplayerAPICrud implements FilteringClass {
     private final ReplayerStatus replayerStatus;
     private Md5Tester md5Tester;
     ObjectMapper mapper = new ObjectMapper();
-    @Value("${replayer.data:replayerdata}")
     private String replayerData;
 
     private final FileResourcesUtils fileResourcesUtils;
     private final LoggerBuilder loggerBuilder;
 
-    public ReplayerAPICrud(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder, ReplayerStatus replayerStatus, Md5Tester md5Tester){
+    public ReplayerAPICrud(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder, ReplayerStatus replayerStatus, Md5Tester md5Tester, JsonConfiguration configuration){
+
+        this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
 
         this.fileResourcesUtils = fileResourcesUtils;
 

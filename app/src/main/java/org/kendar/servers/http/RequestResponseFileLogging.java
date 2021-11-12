@@ -5,6 +5,8 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.config.GlobalConfig;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -25,39 +27,33 @@ import java.nio.file.Paths;
 @HttpTypeFilter(hostAddress = "*")
 public class RequestResponseFileLogging  implements FilteringClass {
     private final Logger logger;
+    private JsonConfiguration configuration;
     private final FileResourcesUtils fileResourcesUtils;
 
-    public RequestResponseFileLogging(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder){
+    public RequestResponseFileLogging(
+      FileResourcesUtils fileResourcesUtils,
+      LoggerBuilder loggerBuilder,
+      JsonConfiguration configuration){
 
         this.fileResourcesUtils = fileResourcesUtils;
         this.logger = loggerBuilder.build(RequestResponseFileLogging.class);
+        this.configuration = configuration;
     }
 
     @Override
     public String getId() {
         return "org.kendar.servers.http.RequestResponseFileLogging";
     }
-    @Value("${localhost.logging.request:false}")
-    private final boolean logRequest = false;
-    @Value("${localhost.logging.response:false}")
-    private final boolean logResponse = false;
-    @Value("${localhost.logging.request.full:false}")
-    private final boolean logRequestFull = false;
-    @Value("${localhost.logging.response.full:false}")
-    private final boolean logResponseFull = false;
-    @Value("${localhost.logging.path:recording}")
+
     private String logPath;
-    @Value("${localhost.logging.static:false}")
-    private boolean logStaticRequests;
-    @Value("${localhost.logging.dynamic:false}")
-    private boolean logDynamicRequests;
 
 
 
     @PostConstruct
     public void init(){
         try {
-            logPath = fileResourcesUtils.buildPath(logPath);
+            var config  = configuration.getConfiguration(GlobalConfig.class);
+            logPath = fileResourcesUtils.buildPath(config.getLogging().getPath());
             var np = Path.of(logPath);
             if(!Files.isDirectory(np)){
                 Files.createDirectory(np);
@@ -70,16 +66,26 @@ public class RequestResponseFileLogging  implements FilteringClass {
     private static final ObjectMapper mapper = new ObjectMapper();
     @HttpMethodFilter(phase = HttpFilterType.POST_RENDER,pathAddress ="*",method = "*",id="1001a4b4-277d-11ec-9621-0242ac130002")
     public boolean doLog(Request serReq, Response serRes){
-        if(serReq.isStaticRequest() && !logStaticRequests) return false;
-        if(serReq.isStaticRequest() && !logDynamicRequests) return false;
+        var config  = configuration.getConfiguration(GlobalConfig.class);
+        var logging = config.getLogging();
+        if(serReq.isStaticRequest() && !logging.isStatics()) return false;
+        if(serReq.isStaticRequest() && !logging.isDynamic()) return false;
 
 
-        if(!logRequestFull){
-            serReq.setRequestText(null);
+        if(!logging.getRequest().isFull()){
+            if(serReq.getRequestText()!=null && logging.getRequest().isBasic()) {
+                serReq.setRequestText(serReq.getRequestText().substring(0,100));
+            }else{
+                serReq.setRequestText(null);
+            }
             serReq.setRequestBytes(null);
         }
-        if(!logResponseFull){
-            serRes.setResponseText(null);
+        if(!logging.getResponse().isFull()){
+            if(serRes.getResponseText()!=null && logging.getRequest().isBasic()) {
+                serRes.setResponseText(serRes.getResponseText().substring(0,100));
+            }else{
+                serRes.setResponseText(null);
+            }
             serRes.setResponseBytes(null);
         }
         var extension = getOptionalExtension(serReq.getPath());

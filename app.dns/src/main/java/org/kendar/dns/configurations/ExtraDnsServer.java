@@ -4,6 +4,7 @@ public class ExtraDnsServer {
     private String id;
     private String address;
     private String resolved;
+    private boolean enabled;
 
     public String getId() {
         return id;
@@ -35,5 +36,13 @@ public class ExtraDnsServer {
 
     public void setResolved(String resolved) {
         this.resolved = resolved;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
