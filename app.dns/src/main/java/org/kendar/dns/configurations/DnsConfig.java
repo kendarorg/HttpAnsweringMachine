@@ -76,7 +76,7 @@ public class DnsConfig extends BaseJsonConfig<DnsConfig> {
             var ext = this.extraServers.get(i);
             result.extraServers.add(ext.copy());
         }
-        return null;
+        return result;
     }
 
     public boolean isLogQueries() {

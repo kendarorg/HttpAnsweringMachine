@@ -3,7 +3,7 @@ package org.kendar.oidc;
 import org.kendar.servers.BaseJsonConfig;
 import org.kendar.servers.config.ConfigAttribute;
 
-@ConfigAttribute(id="oidc")
+@ConfigAttribute(id="oidc.server")
 public class OidcConfig extends BaseJsonConfig<OidcConfig> {
   private int tokenExpiration;
 

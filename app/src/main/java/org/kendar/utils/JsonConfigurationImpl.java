@@ -1,5 +1,6 @@
 package org.kendar.utils;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.annotations.HttpTypeFilter;
@@ -20,6 +21,9 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     class ParsedConfig{
         public Object deserialized;
         public long timestamp;
+    }
+    public JsonConfigurationImpl(){
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
     private ObjectMapper mapper = new ObjectMapper();
     private ConcurrentHashMap<String, JsonNode> configurations = new ConcurrentHashMap<>();

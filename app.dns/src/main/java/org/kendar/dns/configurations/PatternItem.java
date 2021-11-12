@@ -5,6 +5,7 @@ import org.kendar.servers.Copyable;
 import java.util.regex.Pattern;
 
 public class PatternItem implements Copyable<PatternItem> {
+    private String id;
     private String dns;
     private Pattern compile;
     private String ip;
@@ -24,8 +25,12 @@ public class PatternItem implements Copyable<PatternItem> {
             initialized = true;
         }
     }
+    public PatternItem(){
 
-    public PatternItem(String dns, String ip) {
+    }
+
+    public PatternItem(String id,String dns, String ip) {
+        this.id=id;
         this.dns = dns;
         this.ip = ip;
         initialize();
@@ -65,6 +70,14 @@ public class PatternItem implements Copyable<PatternItem> {
     }
 
     public PatternItem copy() {
-        return new PatternItem(dns,ip);
+        return new PatternItem(id,dns,ip);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

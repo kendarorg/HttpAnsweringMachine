@@ -29,7 +29,7 @@
     "resolved": [
       {
         "id": "0",
-        "name": "www.local.test",
+        "dns": "www.local.test",
         "ip": "127.0.0.1"
       }
     ]
@@ -135,7 +135,7 @@
     "path": "jsplugins"
   },
   {
-    "id": "replayer",
+    "id": "replayer.server",
     "path": "replayerdata"
   }
 ]

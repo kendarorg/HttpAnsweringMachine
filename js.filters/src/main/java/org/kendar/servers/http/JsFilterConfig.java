@@ -1,7 +1,9 @@
 package org.kendar.servers.http;
 
 import org.kendar.servers.BaseJsonConfig;
+import org.kendar.servers.config.ConfigAttribute;
 
+@ConfigAttribute(id="js.filters")
 public class JsFilterConfig extends BaseJsonConfig<JsFilterConfig> {
   private String path;
 
