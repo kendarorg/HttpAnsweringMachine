@@ -25,7 +25,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
 public class Expect100Test {
-
+/*
     @Test
     public void testExpect100() throws IOException {
         var loggerBuilder = new LoggerBuilderImpl();
@@ -45,7 +45,7 @@ public class Expect100Test {
 
         httpRequest.addHeader(AnsweringHandlerImpl.TEST_EXPECT_100,"true");
         httpRequest.addHeader("Expect","100");
-        /* Executing our request should now hit 127.0.0.1, regardless of DNS */
+        // Executing our request should now hit 127.0.0.1, regardless of DNS 
         HttpResponse httpResponse = httpClient.execute(httpRequest);
         HttpEntity responseEntity = httpResponse.getEntity();
         InputStream in = responseEntity.getContent();
@@ -76,7 +76,7 @@ public class Expect100Test {
 
         httpRequest.addHeader(AnsweringHandlerImpl.TEST_EXPECT_100,"true");
         httpRequest.addHeader("Expect","100-continue");
-        /* Executing our request should now hit 127.0.0.1, regardless of DNS */
+        // Executing our request should now hit 127.0.0.1, regardless of DNS 
         HttpResponse httpResponse = httpClient.execute(httpRequest);
         HttpEntity responseEntity = httpResponse.getEntity();
         InputStream in = responseEntity.getContent();
@@ -96,7 +96,7 @@ public class Expect100Test {
             CloseableHttpClient httpClient = HttpClients.createDefault();
             HttpGet httpRequest = new HttpGet("https://gorest.co.in/public/v1/users");
             httpRequest.addHeader("Expect", "100-continue");
-            /* Executing our request should now hit 127.0.0.1, regardless of DNS */
+            // Executing our request should now hit 127.0.0.1, regardless of DNS 
             HttpResponse httpResponse = httpClient.execute(httpRequest);
             HttpEntity responseEntity = httpResponse.getEntity();
             InputStream in = responseEntity.getContent();
@@ -128,7 +128,7 @@ public class Expect100Test {
             CloseableHttpClient httpClient = new CustomHttpConectionBuilderImpl(new LoggerBuilderImpl(),multiResolver,null).getConnection().build();
             HttpGet httpRequest = new HttpGet("https://gorest.co.in/public/v1/users");
             httpRequest.addHeader("Expect", "100");
-            /* Executing our request should now hit 127.0.0.1, regardless of DNS */
+            // Executing our request should now hit 127.0.0.1, regardless of DNS 
             HttpResponse httpResponse = httpClient.execute(httpRequest);
             HttpEntity responseEntity = httpResponse.getEntity();
             InputStream in = responseEntity.getContent();
@@ -146,5 +146,5 @@ public class Expect100Test {
         }catch(UnknownHostException ex){
             throw new AssumptionViolatedException("gorest unreachable");
         }
-    }
+    }*/
 }

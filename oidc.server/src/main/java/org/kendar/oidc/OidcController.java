@@ -17,6 +17,8 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
@@ -42,14 +44,16 @@ public class OidcController implements FilteringClass {
         return "org.kendar.oidc.OidcController";
     }
 
-    @Value("${oidc.token.expiration:86400}")
     private int tokenExpirationSeconds;
-    @Value("${localhost.name}")
     private  String serverAddress;
     private final Logger log;
 
-    public OidcController(LoggerBuilder loggerBuilder){
+    public OidcController(LoggerBuilder loggerBuilder, JsonConfiguration configuration){
         log = loggerBuilder.build(OidcController.class);
+        var conf = configuration.getConfiguration(OidcConfig.class);
+        tokenExpirationSeconds = conf.getTokenExpiration();
+        var global = configuration.getConfiguration(GlobalConfig.class);
+        serverAddress = global.getLocalAddress();
     }
 
     @PostConstruct

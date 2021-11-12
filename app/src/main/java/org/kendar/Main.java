@@ -1,9 +1,8 @@
 package org.kendar;
 
 import org.kendar.servers.AnsweringServer;
+import org.kendar.servers.JsonConfiguration;
 import org.kendar.utils.FakeFuture;
-import org.kendar.utils.PropertiesManager;
-import org.kendar.utils.PropertiesManagerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,20 +10,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.MutablePropertySources;
 
-import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
@@ -52,7 +40,12 @@ public class Main implements CommandLineRunner{
     public void run(String... args){
         var executor = Executors.newFixedThreadPool(MAX_THREADS);
 
-        applicationContext.getBeansOfType(PropertiesManager.class);
+        var configuration = applicationContext.getBean(JsonConfiguration.class);
+        try {
+            configuration.loadConfiguration("external.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         var answeringServers = applicationContext.getBeansOfType(AnsweringServer.class);
         Map<AnsweringServer, Future<?>> futures = new HashMap();

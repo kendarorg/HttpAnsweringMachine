@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class CertificatesConfiguration{
+public class  CertificatesConfiguration{
     public String cname;
     public List<String> extraDomains = new ArrayList<>();
     public long timestamp = Calendar.getInstance().getTimeInMillis();

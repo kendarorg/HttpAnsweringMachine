@@ -8,9 +8,9 @@ public class MimeChecker {
             return true;
         }
         var mimeLow = mime.toLowerCase(Locale.ROOT);
-        if(mimeLow.startsWith("text")) return false;
-        if(mimeLow.endsWith("javascript")) return false;
-        if(mimeLow.endsWith("json")) return false;
+        if(mimeLow.contains("text")) return false;
+        if(mimeLow.contains("javascript")) return false;
+        if(mimeLow.contains("json")) return false;
         if(mimeLow.contains("application/x-www-form-urlencoded")) return false;
         return true;
     }

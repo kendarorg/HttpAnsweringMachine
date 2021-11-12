@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultipartTest {
+    /*
     @Test
     public void testSplit(){
 
@@ -107,5 +108,5 @@ public class MultipartTest {
         Assert.assertTrue(body.contains("\"headerContentType\":\"multipart/form-data; boundary="));
         Assert.assertTrue(body.contains("filename=\\\"test.file\\"));
         Assert.assertTrue(body.contains("\"data\":\"testContent\""));
-    }
+    }*/
 }

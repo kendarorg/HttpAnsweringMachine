@@ -2,45 +2,95 @@ package org.kendar.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.servers.BaseJsonConfig;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.config.ConfigAttribute;
+import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class JsonConfigurationImpl implements JsonConfiguration {
+    class ParsedConfig{
+        public Object deserialized;
+        public long timestamp;
+    }
     private ObjectMapper mapper = new ObjectMapper();
     private ConcurrentHashMap<String, JsonNode> configurations = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, ParsedConfig> deserializedConfigurations = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Class,String> mappingStringClasses = new ConcurrentHashMap<>();
 
-    public <T> T getConfiguration(String id, Class<T> aClass) throws Exception {
-        return mapper.treeToValue(configurations.get(id.toLowerCase(Locale.ROOT)), aClass);
+    public <T extends BaseJsonConfig> T getConfiguration(Class<T> aClass) {
+        try {
+            if(!mappingStringClasses.containsKey(aClass)){
+                var attribute = aClass.getAnnotation(ConfigAttribute.class);
+                mappingStringClasses.put(aClass,attribute.id());
+            }
+            var sanitizedId = mappingStringClasses.get(aClass);
+            if (!deserializedConfigurations.containsKey(sanitizedId)) {
+                var parsedObject = mapper.treeToValue(configurations.get(sanitizedId), aClass);
+                var parsedConfig = new ParsedConfig();
+                parsedConfig.deserialized = parsedObject;
+                parsedConfig.timestamp = Calendar.getInstance().getTimeInMillis();
+                deserializedConfigurations.put(sanitizedId, parsedConfig);
+            }
+            var founded = deserializedConfigurations.get(sanitizedId);
+            return (T) founded.deserialized;
+        }catch (Exception e){
+            return null;
+        }
     }
 
-    public void setConfiguration(String id, Object data) throws Exception {
-        var stringValue = mapper.writeValueAsString(data);
-        var treeMap = mapper.readTree(stringValue);
-        configurations.put(id.toLowerCase(Locale.ROOT),treeMap);
+    public void setConfiguration(Object data) {
+        try {
+            var aClass = data.getClass();
+            if(!mappingStringClasses.containsKey(aClass)){
+                var attribute = aClass.getAnnotation(ConfigAttribute.class);
+                mappingStringClasses.put(aClass,attribute.id());
+            }
+            var sanitizedId = mappingStringClasses.get(aClass);
+            var stringValue = mapper.writeValueAsString(data);
+            var treeMap = mapper.readTree(stringValue);
+            configurations.put(sanitizedId, treeMap);
+            var parsedConfig = new ParsedConfig();
+            parsedConfig.deserialized = data;
+            parsedConfig.timestamp = Calendar.getInstance().getTimeInMillis();
+            deserializedConfigurations.put(sanitizedId, parsedConfig);
+        }catch(Exception ex){
+
+        }
     }
 
     public void loadConfiguration(String fileName) throws Exception {
         var fullConfig = Files.readString(Path.of(fileName));
         var treeMap = mapper.readTree(fullConfig);
-        while (treeMap.fieldNames().hasNext()) {
-            var fieldName = treeMap.fieldNames().next().toLowerCase(Locale.ROOT);
-            var configObject = treeMap.get(fieldName);
-            if (fieldName.equalsIgnoreCase("plugins")) {
-                var listOfPlugin = configObject.get("list");
-                while (listOfPlugin.elements().hasNext()) {
-                    var item = listOfPlugin.elements().next();
-                    var id = item.get("id").asText().toLowerCase(Locale.ROOT);
-                    var data = item.get("data");
-                    configurations.put("plugins." + id, data);
-                }
-            } else {
-                configurations.put(fieldName, configObject);
+        while (treeMap.elements().hasNext()) {
+            var pluginRoot = treeMap.elements().next();
+            var id = pluginRoot.get("id").asText().toLowerCase(Locale.ROOT);
+            var system = false;
+            if(pluginRoot.has("system")){
+                system = pluginRoot.get("system").asBoolean();
             }
+            configurations.put(id, pluginRoot);
         }
+    }
+
+    public void saveConfiguration(String fileName) throws Exception {
+        var strings = new ArrayList<String>();
+
+        for (var entry :configurations.entrySet()) {
+            strings.add(mapper.writeValueAsString(entry.getValue()));
+        }
+        var mangledResult = "{"+String.join(",",strings)+"}";
+        var parsedResult = mapper.readTree(mangledResult);
+        var formattedResult = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsedResult);
+        Files.writeString(Path.of(fileName),formattedResult);
     }
 }
 

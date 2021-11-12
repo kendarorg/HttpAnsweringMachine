@@ -1,6 +1,8 @@
 package org.kendar.servers.config;
 
-public class GlobalConfigLogging {
+import org.kendar.servers.Copyable;
+
+public class GlobalConfigLogging implements Copyable<GlobalConfigLogging> {
     private MultilevelLoggingConfig request;
     private MultilevelLoggingConfig response;
     private boolean path;
@@ -45,5 +47,15 @@ public class GlobalConfigLogging {
 
     public void setDynamic(boolean dynamic) {
         this.dynamic = dynamic;
+    }
+
+    @Override public GlobalConfigLogging copy() {
+        var result = new GlobalConfigLogging();
+        result.dynamic = this.dynamic;
+        result.path = this.path;
+        result.request = this.request.copy();
+        result.response = this.response.copy();
+        result.statics = this.statics;
+        return result;
     }
 }

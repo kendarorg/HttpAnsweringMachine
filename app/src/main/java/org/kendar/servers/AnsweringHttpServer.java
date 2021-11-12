@@ -1,10 +1,10 @@
 package org.kendar.servers;
 
 import com.sun.net.httpserver.HttpServer;
+import org.kendar.servers.config.HttpWebServerConfig;
 import org.kendar.servers.http.AnsweringHandler;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
@@ -12,41 +12,40 @@ import java.util.concurrent.Executors;
 
 @Component
 public class AnsweringHttpServer implements AnsweringServer {
+
     public void isSystem(){};
     private final Logger logger;
     private final AnsweringHandler handler;
+    private JsonConfiguration configuration;
     private boolean running =false;
-    @Value( "${http.enabled:true}" )
-    private final boolean enabled =true;
-    @Value( "${http.backlog:50}" )
-    private int backlog;
-    @Value( "${http.port:80}" )
-    private int port;
-    @Value( "${http.useCachedExecutor:true}" )
-    private final boolean useCachedExecutor = false;
     private HttpServer httpServer;
 
 
-    public AnsweringHttpServer(LoggerBuilder loggerBuilder, AnsweringHandler handler){
+    public AnsweringHttpServer(
+      LoggerBuilder loggerBuilder,
+      AnsweringHandler handler,
+      JsonConfiguration configuration){
         this.logger = loggerBuilder.build(AnsweringHttpsServer.class);
         this.handler = handler;
+        this.configuration = configuration;
     }
 
     @Override
     public void run(){
         if(running)return;
-        if(!enabled)return;
+        var config = configuration.getConfiguration( HttpWebServerConfig.class).copy();
+        if(!config.isActive())return;
         running=true;
 
         try {
             // setup the socket address
-            InetSocketAddress address = new InetSocketAddress(port);
+            InetSocketAddress address = new InetSocketAddress(config.getPort());
 
             // initialise the HTTPS server
-            httpServer = HttpServer.create(address, backlog);
+            httpServer = HttpServer.create(address, config.getBacklog());
 
             httpServer.createContext("/", handler);
-            if(useCachedExecutor) {
+            if(config.isUseCachedExecutor()) {
                 httpServer.setExecutor(Executors.newCachedThreadPool());    // creates a cached
             }else {
                 httpServer.setExecutor(null);   // creates a default executor
@@ -54,12 +53,14 @@ public class AnsweringHttpServer implements AnsweringServer {
 
             httpServer.start();
 
-            logger.info("Http server LOADED, port: "+port);
-            while(running){
+            logger.info("Http server LOADED, port: "+ config.getPort());
+            var localConfig = configuration.getConfiguration( HttpWebServerConfig.class);
+            while(running && localConfig.isActive()){
                 Thread.sleep(10000);
+                localConfig = configuration.getConfiguration( HttpWebServerConfig.class);
             }
         } catch (Exception ex) {
-            logger.error("Failed to create HTTP server on port " + port + " of localhost",ex);
+            logger.error("Failed to create HTTP server on port " + config.getPort() + " of localhost",ex);
         }finally {
             running=false;
         }
@@ -67,11 +68,8 @@ public class AnsweringHttpServer implements AnsweringServer {
 
     @Override
     public boolean shouldRun() {
-        return enabled && !running;
-    }
-
-    public void setPort(int port){
-        this.port = port;
+        var localConfig = configuration.getConfiguration( HttpWebServerConfig.class);
+        return localConfig.isActive() && !running;
     }
 
     public void stop(){

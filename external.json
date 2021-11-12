@@ -1,5 +1,102 @@
-{
-  "globals": {
+[
+  {
+    "id": "dns",
+    "system": true,
+    "active": true,
+    "port": 53,
+    "logQueries": false,
+    "extraServers": [
+      {
+        "id": "1",
+        "address": "8.8.4.4",
+        "enabled": true
+      },
+      {
+        "id": "2",
+        "address": "10.136.49.21",
+        "enabled": true
+      },
+      {
+        "id": "3",
+        "address": "10.110.49.21",
+        "enabled": true
+      }
+    ],
+    "blocked": [
+      "wpad.*",
+      "*.trafficmanager.net"
+    ],
+    "resolved": [
+      {
+        "id": "0",
+        "name": "www.local.test",
+        "ip": "127.0.0.1"
+      }
+    ]
+  },
+  {
+    "id": "staticPage",
+    "system": true,
+    "staticPages": [
+      {
+        "id": "0",
+        "address": "static.local.test",
+        "path": "staticServer"
+      }
+    ]
+  },
+  {
+    "id": "proxy",
+    "system": true,
+    "proxies": [
+      {
+        "id": "0",
+        "when": "https://redirect.local.test/google",
+        "where": "https://www.google.com",
+        "test": "www.google.com"
+      },
+      {
+        "id": "1",
+        "when": "https://redirect.local.test/kendar",
+        "where": "https://www.kendar.org",
+        "test": "www.kendar.org"
+      }
+    ]
+  },
+  {
+    "id": "ssl",
+    "system": true,
+    "cname": "C=US,O=Local Development,CN=local.org",
+    "domains": [
+      {
+        "id": "0",
+        "address": "*.local.test"
+      },
+      {
+        "id": "1",
+        "address": "local.test"
+      }
+    ]
+  },
+  {
+    "id": "https",
+    "system": true,
+    "active": true,
+    "port": 443,
+    "backlog": 50,
+    "useCachedExecutor": true
+  },
+  {
+    "id": "http",
+    "system": true,
+    "active": true,
+    "port": 80,
+    "backlog": 50,
+    "useCachedExecutor": true
+  },
+  {
+    "id": "global",
+    "system": true,
     "localAddress": "www.local.test",
     "logging": {
       "request": {
@@ -13,121 +110,34 @@
       "path": false,
       "statics": false,
       "dynamic": false
-    }
-  },
-  "web": {
-    "http": {
-      "active": true,
-      "port": 80,
-      "backlog": 50,
-      "useCachedExecutor": true
-    },
-    "https": {
-      "active": true,
-      "port": 443,
-      "backlog": 50,
-      "useCachedExecutor": true
-    },
-    "ssl": {
-      "cname": "C=US,O=Local Development,CN=local.org",
-      "domains": [
-        {
-          "order": 0,
-          "id": "0",
-          "address": "*.local.test"
-        },
-        {
-          "order": 1,
-          "id": "1",
-          "address": "local.test"
-        }
-      ]
     },
     "filters": [
       {
         "id": "12363272",
         "enabled": false
       }
-    ],
-    "proxies": [
-      {
-        "order": 0,
-        "id": "0",
-        "when": "https://redirect.local.test/google",
-        "where": "https://www.google.com",
-        "test": "www.google.com"
-      },
-      {
-        "order": 1,
-        "id": "1",
-        "when": "https://redirect.local.test/kendar",
-        "where": "https://www.kendar.org",
-        "test": "www.kendar.org"
-      }
-    ],
-    "staticPages": [
-      {
-        "order": 0,
-        "id": "0",
-        "address": "static.local.test",
-        "path": "staticServer"
-      }
     ]
   },
-  "dns": {
-    "active": true,
-    "port": 53,
-    "extraServers": [
-      {
-        "order": 1,
-        "id": "1",
-        "address": "8.8.4.4"
-      },
-      {
-        "order": 2,
-        "id": "2",
-        "address": "10.136.49.21"
-      },
-      {
-        "order": 3,
-        "id": "3",
-        "address": "10.110.49.21"
-      }
-    ],
-    "blocked": [
-      "wpad.*",
-      "*.trafficmanager.net"
-    ],
-    "resolved": [
-      {
-        "order": 0,
-        "id": "0",
-        "name": "www.local.test",
-        "ip": "127.0.0.1"
-      }
-    ]
+  {
+    "id": "derby",
+    "active": false,
+    "port": 1527,
+    "user": "root",
+    "password": "root",
+    "path": "derbydata"
+    /*destination.put("derby.driver","org.apache.derby.jdbc.ClientDriver");
+      destination.put("derby.url","jdbc:derby://localhost:"+ derbyPort);*/
   },
-  "plugins": {
-    "list": [
-      /*{"id": "oidc","path":"oidc.json"},*/
-      {
-        "id": "oidc.server",
-        "data": {
-          "tokenExpiration": 86400
-        }
-      },
-      {
-        "id": "js.filters",
-        "data": {
-          "path": "jsplugins"
-        }
-      },
-      {
-        "id": "replayer",
-        "data": {
-          "path": "replayerdata"
-        }
-      }
-    ]
+  {
+    "id": "oidc.server",
+    "tokenExpiration": 86400
+  },
+  {
+    "id": "js.filters",
+    "path": "jsplugins"
+  },
+  {
+    "id": "replayer",
+    "path": "replayerdata"
   }
-}
+]

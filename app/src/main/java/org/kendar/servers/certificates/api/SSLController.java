@@ -6,7 +6,9 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
-import org.kendar.servers.http.configurations.CertificatesSSLConfig;
+import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.config.SSLConfig;
+import org.kendar.servers.config.SSLDomain;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
@@ -18,11 +20,11 @@ import java.util.ArrayList;
         blocking = true)
 public class SSLController implements FilteringClass {
     ObjectMapper mapper = new ObjectMapper();
-    private CertificatesSSLConfig answeringHttpsServer;
+    private JsonConfiguration configuration;
 
-    public SSLController(CertificatesSSLConfig applicationContext){
+    public SSLController(JsonConfiguration configuration){
 
-        this.answeringHttpsServer = applicationContext;
+        this.configuration = configuration;
     }
 
 
@@ -35,74 +37,70 @@ public class SSLController implements FilteringClass {
             pathAddress = "/api/ssl",
             method = "GET",id="1008a4b4-277d-11ec-9621-0242ac130002")
     public boolean getExtraServers(Request req, Response res) throws JsonProcessingException {
-        var dnsServeres = answeringHttpsServer.get().extraDomains;
+        var domains = configuration.getConfiguration(SSLConfig.class).getDomains();
         res.addHeader("Content-type", "application/json");
-        res.setResponseText(mapper.writeValueAsString(dnsServeres));
+        res.setResponseText(mapper.writeValueAsString(domains));
         return false;
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/ssl/{name}",
+            pathAddress = "/api/ssl/{id}",
             method = "DELETE",id="1009a4b4-277d-11ec-9621-0242ac130002")
     public boolean removeDnsServer(Request req, Response res) {
-        var cloned = answeringHttpsServer.get().copy();
-        var dnsServeres = cloned.extraDomains;
-        var name = req.getPathParameter("name");
+        var cloned = configuration.getConfiguration(SSLConfig.class).copy();
 
-        var newList = new ArrayList<String>();
-        for(var item:dnsServeres){
-            if(item.equalsIgnoreCase(name)){continue;}
+        var name = req.getPathParameter("id");
+
+        ArrayList<SSLDomain> newList = new ArrayList<>();
+        for(var item:cloned.getDomains()){
+            if(item.getId().equalsIgnoreCase(name)){continue;}
             newList.add(item);
         }
-        cloned.extraDomains = newList;
-        answeringHttpsServer.set(cloned);
+        cloned.setDomains(newList);
+        configuration.setConfiguration(cloned);
         res.setStatusCode(200);
         return false;
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/ssl/swap/{name1}/{name2}",
+            pathAddress = "/api/ssl/swap/{id1}/{id2}",
             method = "PUT",id="1010a4b4-277d-11ec-9621-0242ac130002")
     public boolean swapDnsServer(Request req, Response res) {
-        var cloned = answeringHttpsServer.get().copy();
-        var dnsServeres = cloned.extraDomains;
-        var name1 = (req.getPathParameter("name1"));
-        var name2 = (req.getPathParameter("name2"));
+        var cloned = configuration.getConfiguration(SSLConfig.class).copy();
+        var domains = cloned.getDomains();
+        var name1 = (req.getPathParameter("id1"));
+        var name2 = (req.getPathParameter("id2"));
 
-        var newList = new ArrayList<String>();
         var id1Index=-1;
         var id2Index = -1;
-        for (int i = 0; i < dnsServeres.size(); i++) {
-            var clone = dnsServeres.get(i)+"";
-            if(dnsServeres.get(i).equalsIgnoreCase(name1))id1Index=i;
-            if(dnsServeres.get(i).equalsIgnoreCase(name2))id2Index=i;
-            newList.add(clone);
+        for (int i = 0; i < domains.size(); i++) {
+            if(domains.get(i).getId().equalsIgnoreCase(name1))id1Index=i;
+            if(domains.get(i).getId().equalsIgnoreCase(name2))id2Index=i;
         }
-        var id1Clone = dnsServeres.get(id1Index)+"";
-        dnsServeres.set(id1Index,dnsServeres.get(id2Index));
-        dnsServeres.set(id2Index,id1Clone);
-        cloned.extraDomains = newList;
-        answeringHttpsServer.set(cloned);
+        var id1Clone = domains.get(id1Index).copy();
+        domains.set(id1Index,domains.get(id2Index));
+        domains.set(id2Index,id1Clone);
+        configuration.setConfiguration(cloned);
         res.setStatusCode(200);
         return false;
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/ssl/{name}",
+            pathAddress = "/api/ssl",
             method = "POST",id="1011a4b4-277d-11ec-9621-0242ac130002")
     public boolean addDnsServer(Request req, Response res) throws Exception {
-        var cloned = answeringHttpsServer.get().copy();
-        var dnsServeres = cloned.extraDomains;
-        var newData = req.getPathParameter("name");
+        var cloned = configuration.getConfiguration(SSLConfig.class).copy();
+        var newData = mapper.readValue(req.getRequestText(),SSLDomain.class);
+        var domains = cloned.getDomains();
 
-        var newList = new ArrayList<String>();
-        for(var item:dnsServeres){
-            if(item.equalsIgnoreCase(newData))throw new Exception("Duplicate dns resolution");
+        var newList = new ArrayList<SSLDomain>();
+        for(var item:domains){
+            if(item.getId().equalsIgnoreCase(newData.getId()))throw new Exception("Duplicate dns resolution");
             newList.add( item);
         }
         newList.add(newData);
-        cloned.extraDomains = newList;
-        answeringHttpsServer.set(cloned);
+        cloned.setDomains(newList);
+        configuration.setConfiguration(cloned);
         res.setStatusCode(200);
         return false;
     }
