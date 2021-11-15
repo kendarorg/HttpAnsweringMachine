@@ -9,11 +9,14 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}",
@@ -21,10 +24,13 @@ import java.util.ArrayList;
 public class DnsServersApis implements FilteringClass {
     ObjectMapper mapper = new ObjectMapper();
     private final JsonConfiguration configuration;
+    private DnsMultiResolver dnsMultiResolver;
+    private final Pattern ipPattern = Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
 
-    public DnsServersApis(JsonConfiguration configuration){
+    public DnsServersApis(JsonConfiguration configuration, DnsMultiResolver dnsMultiResolver){
 
         this.configuration = configuration;
+        this.dnsMultiResolver = dnsMultiResolver;
     }
 
     @Override
@@ -81,7 +87,7 @@ public class DnsServersApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/servers/{id}",
             method = "PUT",id="1005a4b4-277d-11ec-9621-0242ac130002")
-    public boolean updateDnsServer(Request req, Response res) throws JsonProcessingException {
+    public boolean updateDnsServer(Request req, Response res) throws Exception {
 
         var cloned = configuration.getConfiguration(DnsConfig.class).copy();
         var dnsServers = cloned.getExtraServers();
@@ -95,8 +101,24 @@ public class DnsServersApis implements FilteringClass {
                 continue;
             }
             clone.setAddress(newData.getAddress());
-            clone.setResolved(newData.getResolved());
+            var resolved = newData.getAddress();
+            Matcher ipPatternMatcher = ipPattern.matcher(newData.getAddress());
+            if (!ipPatternMatcher.matches()) {
+                var allResolved = dnsMultiResolver.resolve(newData.getAddress(), true);
+                if (allResolved.isEmpty()) {
+                    res.setStatusCode(500);
+                    res.setResponseText("Unable to resolve " + newData.getAddress());
+                    return false;
+                }
+                resolved = allResolved.get(0);
+            }
+            clone.setResolved(resolved);
             newList.add(clone);
+        }
+
+
+        for(var item:newList){
+            if(item.getResolved().equalsIgnoreCase(newData.getResolved()))throw new Exception("Duplicate dns resolution");
         }
         cloned.setExtraServers(newList);
         configuration.setConfiguration(cloned);
@@ -135,11 +157,28 @@ public class DnsServersApis implements FilteringClass {
         var newList = new ArrayList<ExtraDnsServer>();
         var newData = mapper.readValue((String)req.getRequestText(),ExtraDnsServer.class);
 
+
         for(var item:dnsServeres){
             if(item.getId().equalsIgnoreCase(newData.getId()))throw new Exception("Duplicate dns resolution");
             newList.add( item.copy());
         }
+        var resolved = newData.getAddress();
+        Matcher ipPatternMatcher = ipPattern.matcher(newData.getAddress());
+        if (!ipPatternMatcher.matches()) {
+            var allResolved = dnsMultiResolver.resolve(newData.getAddress(), true);
+            if (allResolved.isEmpty()) {
+                res.setStatusCode(500);
+                res.setResponseText("Unable to resolve " + newData.getAddress());
+                return false;
+            }
+            resolved = allResolved.get(0);
+        }
+        newData.setResolved(resolved);
         newList.add(newData);
+
+        for(var item:newList){
+            if(item.getResolved().equalsIgnoreCase(newData.getResolved()))throw new Exception("Duplicate dns resolution");
+        }
         cloned.setExtraServers(newList);
         configuration.setConfiguration(cloned);
         res.setStatusCode(200);

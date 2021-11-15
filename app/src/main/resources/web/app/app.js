@@ -159,9 +159,9 @@ function buildKvpModalDialog(modal, table, value, idField, valueField, randomId)
                     <input class="form-control" type="text" name="value"  id="value" />
                 `;
     }
-    var openAsEdit = false;
-    if(value[idField]==''){
-        openAsEdit = true;
+    var openAsEdit = true;
+    if(value[idField]=='' || value[idField]===undefined){
+        openAsEdit = false;
     }
     buildGenericModal(modal, table, value, idField, bodyContent, randomId, openAsEdit);
 }
