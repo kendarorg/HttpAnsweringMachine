@@ -3,6 +3,7 @@ package org.kendar.servers.http;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.CustomFiltersLoader;
 import org.kendar.http.FilterDescriptor;
+import org.kendar.servers.JsonConfiguration;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.mozilla.javascript.ClassShutter;
@@ -25,21 +26,24 @@ import java.util.zip.ZipInputStream;
 
 @Component
 public class JsFilterLoader implements CustomFiltersLoader {
-    @Value("${jsfilter.path:null}")
-    private final String jsFilterPath = null;
+    private final JsonConfiguration configuration;
+    private  String jsFilterPath = null;
     private ScriptableObject globalScope;
     private final Environment environment;
     private final Logger logger;
     private final LoggerBuilder loggerBuilder;
     private final FileResourcesUtils fileResourcesUtils;
 
-    public JsFilterLoader(Environment environment, LoggerBuilder loggerBuilder, FileResourcesUtils fileResourcesUtils){
+    public JsFilterLoader(Environment environment, LoggerBuilder loggerBuilder, FileResourcesUtils fileResourcesUtils
+        , JsonConfiguration configuration){
 
         this.environment = environment;
         this.logger = loggerBuilder.build(JsFilterLoader.class);
         this.loggerBuilder = loggerBuilder;
         this.fileResourcesUtils = fileResourcesUtils;
+        jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
         logger.info("JsFilter LOADED");
+        this.configuration = configuration;
     }
 
 
@@ -92,7 +96,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
             filterDescriptor.setRoot(realPath);
             precompileFilter(filterDescriptor);
             var executor = new JsFilterExecutor(filterDescriptor,this,loggerBuilder,filterDescriptor.getId());
-            var fd = new FilterDescriptor(this,executor,environment);
+            var fd = new FilterDescriptor(this,executor,environment,configuration);
             fd.setEnabled(filterDescriptor.isEnabled());
             result.add(fd);
         }

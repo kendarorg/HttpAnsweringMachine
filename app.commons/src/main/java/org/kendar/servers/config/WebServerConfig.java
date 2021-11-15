@@ -1,10 +1,17 @@
 package org.kendar.servers.config;
 
-public class WebServerConfig {
+import org.kendar.servers.BaseJsonConfig;
+
+public abstract class WebServerConfig extends BaseJsonConfig<WebServerConfig> {
     private boolean active;
     private int port;
     private int backlog;
     private boolean useCachedExecutor;
+
+    @Override
+    public boolean isSystem() {
+        return true;
+    }
 
     public boolean isActive() {
         return active;
@@ -37,4 +44,16 @@ public class WebServerConfig {
     public void setUseCachedExecutor(boolean useCachedExecutor) {
         this.useCachedExecutor = useCachedExecutor;
     }
+
+    @Override
+    public WebServerConfig copy() {
+        var result = newInstance();
+        result.active = this.active;
+        result.port = this.port;
+        result.backlog = this.backlog;
+        result.useCachedExecutor = this.useCachedExecutor;
+        return result;
+    }
+
+    protected abstract WebServerConfig newInstance();
 }

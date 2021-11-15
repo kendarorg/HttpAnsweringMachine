@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-@HttpTypeFilter(hostAddress = "${localhost.name}")
+@HttpTypeFilter(hostAddress = "${global.localAddress}")
 public class MainWebSite extends StaticWebFilter {
     public MainWebSite(FileResourcesUtils fileResourcesUtils) {
         super(fileResourcesUtils);

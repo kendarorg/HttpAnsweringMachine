@@ -10,18 +10,18 @@
     <div class="row">
         <div class="col-md-8">
             <br>
-            <button id="addProxy" name="addProxy" type="button"  class="btn btn-default" onClick="addProxy();">Add new</button>
+            <button id="addDns" name="addDns" type="button"  class="btn btn-default" onClick="addDns();">Add new</button>
 
 
         </div>
         <div class="col-md-8">
-            <h3>Proxyes</h3>
-            <table class="table table-striped" id="proxyesTable">
+            <h3>DNS</h3>
+            <table class="table table-striped" id="dnsTable">
                 <tr>
                     <th>Id</th>
-                    <th>Ip</th>
-                    <th>Name</th>
-                    <th>Running</th>
+                    <th>Address</th>
+                    <th>Resolved</th>
+                    <th>Enabled</th>
                     <th colspan="2"></th>
                 </tr>
             </table>
@@ -45,49 +45,49 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
-    var proxyModal = `
-    <label for="ip">ip</label>
-    <input class="form-control" type="text" name="ip"  id="ip" />
-    <label for="name">name</label>
-    <input class="form-control" type="text" name="name"  id="name" />
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="enabled" name="enabled">
-        <label class="form-check-label" for="enabled">
-            running
-        </label>
-    </div>
+    var dnsModal = `
+        <label for="name">address</label>
+        <input class="form-control" type="text" name="address"  id="address" />
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="enabled" name="enabled">
+            <label class="form-check-label" for="enabled">
+                running
+            </label>
+        </div>
     `;
-    var addProxy = function(){
+    var addDns = function(){
         var modal=".modal";
         var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
         var target = {
             id : uuidv4()
         };
         var id = target.id;
-        buildGenericModal(modal, scriptsTable, target, "id", proxyModal, randomId,false);
+        buildGenericModal(modal, scriptsTable, target, "id", dnsModal, randomId,false);
         $(modal).find("#"+randomId).click(function(){ scriptsTable.saveFunction(scriptsTable,id,true); });
     }
-    var editProxy=function(table,id) {
+    var editDns=function(table,id) {
         var modal=".modal";
         var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
         var localTable = table;
         localTable.data.forEach(function(value, i) {
             if (value["id"] == id) {
-                buildGenericModal(modal, table, value, "id", proxyModal, randomId, true);
+                buildGenericModal(modal, table, value, "id", dnsModal, randomId, true);
                 $(modal).find("#"+randomId).click(function(){ localTable.saveFunction(localTable,id,false); });
-                $(modal).find("#ip").val(value["ip"]);
-                $(modal).find("#name").val(value["name"]);
+                $(modal).find("#address").val(value["address"]);
                 setChecked($(modal).find("#enabled"),value['enabled']);
             }
         });
     }
 
-    var scriptsTable = new SimpleGrid("Proxyes","proxyesTable","id",["id","ip","name","enabled"],
+    var scriptsTable = new SimpleGrid("Dns","dnsTable","id",["id","address","resolved","_enabled"],
         function(table){
             $.ajax({
                 url: "/api/dns/servers",
                 type: 'GET',
                 success: function(res) {
+                    for(var v=0;v<res.length;v++) {
+                        res[v]["_enabled"]=res[v]['enabled']?"YES":"NO";
+                    }
                     $.each(res, function(i, script) {
                         table.appendToTable(script);
                     });
@@ -95,12 +95,12 @@
             });
         },
         function (table,id) {
-            editProxy(table,id)
+            editDns(table,id)
         },
         function (table,id) {
             table.deleteFromTable(id,function(id,success,error){
                 $.ajax({
-                    url: "/api/proxyes/"+getUrlParameter("id"),
+                    url: "/api/dns/servers/"+getUrlParameter("id"),
                     type: 'DELETE',
                     success: function (res) {
                         success();
@@ -115,12 +115,11 @@
             var modal=".modal";
             var data = {
                 id: id,
-                when: $(modal).find("#when").val(),
-                where: $(modal).find("#where").val(),
-                test: $(modal).find("#test").val()
+                address: $(modal).find("#address").val(),
+                enabled: $(modal).find("#enabled").val()
             };
             $.ajax({
-                url: "/api/proxyes"+(saveOrUpdate?"":"/"+id),
+                url: "/api/dns/servers"+(saveOrUpdate?"":"/"+id),
                 type: saveOrUpdate?'POST':'PUT',
                 data:JSON.stringify(data),
                 contentType: "application/json",

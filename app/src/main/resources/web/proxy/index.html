@@ -16,7 +16,7 @@
         </div>
         <div class="col-md-8">
             <h3>Proxyes</h3>
-            <table class="table table-striped" id="proxyesTable">
+            <table class="table table-striped" id="proxiesTable">
                 <tr>
                     <th>Id</th>
                     <th>When</th>
@@ -79,14 +79,14 @@
         });
     }
 
-    var scriptsTable = new SimpleGrid("Proxyes","proxyesTable","id",["id","when","where","test","_running"],
+    var scriptsTable = new SimpleGrid("Proxyes","proxiesTable","id",["id","when","where","test","_running"],
         function(table){
             $.ajax({
                 url: "/api/proxyes",
                 type: 'GET',
                 success: function(res) {
                     for(var v=0;v<res.length;v++) {
-                        res[v]["_running"]=res[v]['running']=="true"?"YES":"NO";
+                        res[v]["_running"]=res[v]['running']?"YES":"NO";
                     }
                     $.each(res, function(i, script) {
                         table.appendToTable(script);

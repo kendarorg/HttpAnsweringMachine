@@ -1,17 +1,10 @@
 package org.kendar.dns.configurations;
 
 public class ExtraDnsServer {
-    private int order;
     private String id;
     private String address;
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
+    private String resolved;
+    private boolean enabled;
 
     public String getId() {
         return id;
@@ -27,5 +20,29 @@ public class ExtraDnsServer {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public ExtraDnsServer copy() {
+        var result = new ExtraDnsServer();
+        result.id = this.id;
+        result.address = this.address;
+        result.resolved = this.resolved;
+        return result;
+    }
+
+    public String getResolved() {
+        return resolved;
+    }
+
+    public void setResolved(String resolved) {
+        this.resolved = resolved;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

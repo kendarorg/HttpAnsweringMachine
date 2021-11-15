@@ -3,6 +3,7 @@ package org.kendar.http;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.core.env.Environment;
@@ -34,6 +35,7 @@ public class FilterDescriptor {
     private HttpMethodFilter methodFilter;
     private Method callback;
     private final Object filterClass;
+    private JsonConfiguration jsonConfiguration;
     private List<String> pathMatchers = new ArrayList<>();
     private final List<String> pathSimpleMatchers = new ArrayList<>();
     private CustomFiltersLoader loader;
@@ -43,11 +45,14 @@ public class FilterDescriptor {
         return id;
     }
 
-    public FilterDescriptor(CustomFiltersLoader loader,HttpTypeFilter typeFilter, HttpMethodFilter methodFilter, Method callback, FilteringClass filterClass, Environment environment) {
+    public FilterDescriptor(CustomFiltersLoader loader,HttpTypeFilter typeFilter,
+      HttpMethodFilter methodFilter, Method callback, FilteringClass filterClass,
+      Environment environment, JsonConfiguration jsonConfiguration) {
         this.loader = loader;
         this.id = methodFilter.id();
         this.callback = callback;
         this.filterClass = filterClass;
+        this.jsonConfiguration = jsonConfiguration;
         try {
             this.id = methodFilter.id();
         }catch(IncompleteAnnotationException ex){
@@ -76,8 +81,10 @@ public class FilterDescriptor {
         this.methodFilter = buildMethodFilter();
     }
 
-    public FilterDescriptor(CustomFiltersLoader loader, GenericFilterExecutor executor,Environment environment) {
+    public FilterDescriptor(CustomFiltersLoader loader, GenericFilterExecutor executor,
+      Environment environment, JsonConfiguration jsonConfiguration) {
         this.loader = loader;
+        this.jsonConfiguration = jsonConfiguration;
 
         for(var method:executor.getClass().getMethods()){
             if(method.getName().equalsIgnoreCase("run")){
@@ -220,18 +227,15 @@ public class FilterDescriptor {
         if(data.startsWith("${") && data.endsWith("}")){
             var hostVar = data.substring(0,data.length()-1).substring(2);
             var defaultVar = hostVar.split(":",2);
-            if(defaultVar.length==2) {
-                var real = env.getProperty(defaultVar[0]);
-                if(real==null){
-                    real = defaultVar[1];
-                }
-                return real;
-            }else{
-                return env.getProperty(hostVar);
+            data = env.getProperty(defaultVar[0]);
+            if(data == null){
+                data = jsonConfiguration.getValue(defaultVar[0]);
             }
-        }else {
-            return data;
+            if(data ==null && defaultVar.length==2){
+                data = defaultVar[1];
+            }
         }
+        return data;
     }
 
     public boolean matchesHost(String host, Environment env) {

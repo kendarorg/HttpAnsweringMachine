@@ -9,16 +9,15 @@ import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
 import org.kendar.servers.certificates.CertificatesManager;
 import org.kendar.servers.certificates.GeneratedCert;
+import org.kendar.servers.config.HttpWebServerConfig;
+import org.kendar.servers.config.SSLConfig;
+import org.kendar.servers.config.HttpsWebServerConfig;
 import org.kendar.servers.http.AnsweringHandler;
-import org.kendar.servers.http.configurations.CertificatesSSLConfig;
-import org.kendar.servers.http.configurations.CertificatesConfiguration;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.net.ssl.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,10 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @Component
 public class AnsweringHttpsServer  implements AnsweringServer{
-    private final CertificatesSSLConfig certificatesConfiguration;
+    private final JsonConfiguration configuration;
 
     public void isSystem(){};
     private static final String SSL_CONTEXT_TYPE = "TLS";
@@ -43,74 +43,35 @@ public class AnsweringHttpsServer  implements AnsweringServer{
     private final CertificatesManager certificatesManager;
     private final Environment environment;
     private boolean running =false;
-
-    @Value( "${https.port:443}" )
-    private int port;
-    @Value( "${https.backlog:50}" )
-    private int backlog;
-    @Value( "${https.enabled:true}" )
-    private boolean enabled;
-    @Value( "${https.useCachedExecutor:true}" )
-    private boolean useCachedExecutor;
-    //@Value( "${https.certificates.cnname}" )
-    //private String cnName;
 ;
     private HttpsServer httpsServer;
 
 
-    //private final ConcurrentLinkedQueue<String> extraDomains = new ConcurrentLinkedQueue<>();
-
-
-    public List<String> getExtraDomains(){
-        return certificatesConfiguration.get().extraDomains;
-    }
-
-    public void setExtraDomains(List<String> extraDomains){
-        var oldConfig = certificatesConfiguration.get();
-        var newConfig = new CertificatesConfiguration();
-        newConfig.cname = oldConfig.cname;
-        newConfig.extraDomains = extraDomains;
-        certificatesConfiguration.set(newConfig);
-    }
 
     public AnsweringHttpsServer(LoggerBuilder loggerBuilder, AnsweringHandler handler,
                                 CertificatesManager certificatesManager, Environment environment,
-                                CertificatesSSLConfig certificatesConfiguration){
+                                JsonConfiguration configuration){
         this.logger = loggerBuilder.build(AnsweringHttpsServer.class);
         this.handler = handler;
         this.certificatesManager = certificatesManager;
         this.environment = environment;
-        this.certificatesConfiguration = certificatesConfiguration;
-    }
-
-    @PostConstruct
-    protected void postConstruct(){
-        //extraDomains.add(localHostName);
-        var config = new CertificatesConfiguration();
-        for(int i=0;i<1000;i++){
-            var index = "https.certificate."+Integer.toString(i);
-            var certificateDomain = environment.getProperty(index);
-            if(certificateDomain != null){
-                config.extraDomains.add(certificateDomain);
-            }
-        }
-        config.cname =environment.getProperty("https.certificates.cnname");
-        certificatesConfiguration.set(config);
+        this.configuration = configuration;
     }
 
     @Override
     public void run() {
+        var config = configuration.getConfiguration( HttpsWebServerConfig.class).copy();
         if(running)return;
-        if(!enabled)return;
+        if(!config.isActive())return;
         running=true;
 
         try {
 
             // setup the socket address
-            InetSocketAddress address = new InetSocketAddress(port);
+            InetSocketAddress address = new InetSocketAddress(config.getPort());
 
             // initialise the HTTPS server
-            httpsServer = HttpsServer.create(address, backlog);
+            httpsServer = HttpsServer.create(address, config.getBacklog());
             final SSLContext sslContextInt = getSslContext();
             httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContextInt) {
                 public void configure(HttpsParameters params) {
@@ -134,19 +95,20 @@ public class AnsweringHttpsServer  implements AnsweringServer{
                 }
             });
             httpsServer.createContext("/", handler);
-            if(useCachedExecutor) {
+            if(config.isUseCachedExecutor()) {
                 httpsServer.setExecutor(Executors.newCachedThreadPool());    // creates a cached
             }else {
                 httpsServer.setExecutor(null);   // creates a default executor
             }
             httpsServer.start();
-            logger.info("Https server LOADED, port: "+port);
-            while(running){
+            logger.info("Https server LOADED, port: "+ config.getPort());
+            var localConfig = configuration.getConfiguration( HttpsWebServerConfig.class);
+            while(running && localConfig.isActive()){
                 Thread.sleep(10000);
             }
 
         } catch (Exception ex) {
-            logger.error("Failed to create HTTPS server on port " + port + " of localhost",ex);
+            logger.error("Failed to create HTTPS server on port " + config.getPort() + " of localhost",ex);
         }finally {
             running=false;
         }
@@ -154,10 +116,10 @@ public class AnsweringHttpsServer  implements AnsweringServer{
 
     private SSLContext getSslContext() throws Exception {
         var root = certificatesManager.loadRootCertificate("certificates/ca.der","certificates/ca.key");
-        var config = certificatesConfiguration.get();
 
-        GeneratedCert domain = certificatesManager.createCertificate(config.cname,null, root,
-                config.extraDomains,false);
+        var sslConfig = configuration.getConfiguration(SSLConfig.class);
+        GeneratedCert domain = certificatesManager.createCertificate(sslConfig.getCname(),null, root,
+                sslConfig.getDomains().stream().map(sslDomain -> sslDomain.getAddress()).collect(Collectors.toList()), false);
 
         KeyStore ksTemp = KeyStore.getInstance("JKS");
         ksTemp.load(null, null); //Initialize it
@@ -199,22 +161,10 @@ public class AnsweringHttpsServer  implements AnsweringServer{
         return ctx;
     }
 
-    private List<String> toList(ConcurrentLinkedQueue<String> extraDomains) {
-        var result = new ArrayList<String>();
-        for(var item:extraDomains.toArray()){
-            result.add((String)item);
-        }
-        return result;
-    }
-
     @Override
     public boolean shouldRun() {
-        return enabled && !running;
-    }
-
-
-    public void setPort(int port){
-        this.port = port;
+        var localConfig = configuration.getConfiguration( HttpsWebServerConfig.class);
+        return localConfig.isActive() && !running;
     }
 
     public void stop(){

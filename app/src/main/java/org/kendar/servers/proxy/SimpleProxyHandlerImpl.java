@@ -1,5 +1,6 @@
 package org.kendar.servers.proxy;
 
+import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.Request;
 import org.kendar.utils.LoggerBuilder;
@@ -27,49 +28,35 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     private final Logger logger;
     private final DnsMultiResolver multiResolver;
     private final Environment environment;
-    private final AtomicReference<List<RemoteServerStatus>> proxies = new AtomicReference<>();
+    private JsonConfiguration configuration;
 
-    public SimpleProxyHandlerImpl(LoggerBuilder loggerBuilder,DnsMultiResolver multiResolver, Environment environment){
+    public SimpleProxyHandlerImpl(
+      LoggerBuilder loggerBuilder,
+      DnsMultiResolver multiResolver,
+      Environment environment,
+      JsonConfiguration configuration){
         this.multiResolver = multiResolver;
         this.environment = environment;
-        proxies.set(new ArrayList<>());
+        this.configuration = configuration;
         logger = loggerBuilder.build(SimpleProxyHandlerImpl.class);
     }
 
-    public List<RemoteServerStatus> getProxies(){
-        return proxies.get();
-    }
-
-    @Override
-    public void setProxies(List<RemoteServerStatus> proxyes) {
-        for (int i = 0; i< proxyes.size();i++)  {
-            checkRemoteMachines(proxyes.get(i));
-        }
-        proxies.set(proxyes);
-    }
 
     @PostConstruct
     public void init(){
-        for(int i=0;i<1000;i++){
-            var index = "simpleproxy."+Integer.toString(i)+".";
-            if(environment.getProperty(index+"when")==null){
-                break;
-            }
-            var data = new RemoteServerStatus(
-                    environment.getProperty(index+"id"),
-                    environment.getProperty(index+"when"),
-                    environment.getProperty(index+"where"),
-                    environment.getProperty(index+"test")
-            );
-            proxies.get().add(data);
-        }
+
+
         scheduler.scheduleAtFixedRate(() -> {
             doLog();
-            var data = Arrays.asList( proxies.get());
-            for (int i = 0; i< data.size();i++)  {
-                checkRemoteMachines((RemoteServerStatus) data.get(i));
-            }
+            var config = configuration.getConfiguration(SimpleProxyConfig.class);
 
+            var changed = false;
+            for (int i = 0; i< config.getProxies().size();i++)  {
+                changed= changed||checkRemoteMachines(config.getProxies().get(i));
+            }
+            if(changed) {
+                configuration.setConfiguration(config);
+            }
         },1000,5*60*1000, TimeUnit.MILLISECONDS);
 
         logger.info("Simple proxyes LOADED");
@@ -84,8 +71,9 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
 
     }
 
-    private void checkRemoteMachines(RemoteServerStatus value) {
+    private boolean checkRemoteMachines(RemoteServerStatus value) {
         var data = multiResolver.resolveRemote(value.getTest(),false);
+        var oldStatus = value.isRunning();
         if(data!=null && data.size()>0){
             try {
                 var inetAddress = InetAddress.getByName(data.get(0));
@@ -96,6 +84,8 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
         }else{
             value.setRunning(false);
         }
+        var changed = oldStatus!=value.isRunning();
+        return changed;
     }
 
     public boolean ping(String host){
@@ -118,9 +108,9 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
 
     public Request translate(Request source) throws MalformedURLException {
         var realSrc = source.getProtocol()+"://"+source.getHost()+source.getPath();
-        var data = proxies.get();
-        for (int i=0;i<data.size();i++)  {
-            var status=(RemoteServerStatus)data.get(i);
+        var config = configuration.getConfiguration(SimpleProxyConfig.class);
+        for (int i=0;i<config.getProxies().size();i++)  {
+            var status=config.getProxies().get(i);
             if(realSrc.startsWith(status.getWhen()) && status.isRunning()){
                 realSrc = realSrc.replace(status.getWhen(),status.getWhere());
                 var url = new URL(realSrc);

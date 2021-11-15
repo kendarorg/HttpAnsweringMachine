@@ -1,7 +1,9 @@
 package org.kendar.servers;
 
 import org.apache.derby.drda.NetworkServerControl;
+import org.kendar.dns.configurations.DnsConfig;
 import org.kendar.servers.db.DerbyApplication;
+import org.kendar.servers.db.DerbyServerConfig;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -23,51 +25,45 @@ public class AnsweringDerbyServer implements AnsweringServer{
     private final List<DerbyApplication> applicationList;
     private final Environment environment;
     private final FileResourcesUtils fileResourcesUtils;
+    private JsonConfiguration configuration;
 
     public AnsweringDerbyServer(LoggerBuilder loggerBuilder,
                                 List<DerbyApplication> applicationList, Environment environment,
-                                FileResourcesUtils fileResourcesUtils){
+                                FileResourcesUtils fileResourcesUtils,
+                                JsonConfiguration configuration){
         logger = loggerBuilder.build(AnsweringDerbyServer.class);
         this.applicationList = applicationList;
         this.environment = environment;
         this.fileResourcesUtils = fileResourcesUtils;
+        this.configuration = configuration;
+
     }
-    @Value("${derby.port:1527}")
-    private int port;
+
     private boolean running =false;
-    @Value( "${derby.enabled:false}" )
-    private final boolean enabled =true;
-    @Value("${derby.root.user:root")
-    private String rootUser;
-    @Value("${derby.root.password:root")
-    private String rootPassword;
-    @Value("${derby.path:derbydata}")
-    private String dbPath;
-    @Value("${derby.url:null}")
-    private String derbyBaseUrl;
-    @Value("${derby.driver:null}")
-    private String derbyDriver;
     @Override
     public void run() {
+        var config = configuration.getConfiguration( DerbyServerConfig.class);
         if(running)return;
-        if(!enabled)return;
+        if(!config.isActive())return;
         running=true;
         NetworkServerControl nsc;
         try {
             //https://www.vogella.com/tutorials/ApacheDerby/article.html
-            Class.forName(derbyDriver);
-            var realDbPath = fileResourcesUtils.buildPath(dbPath);
+            Class.forName(config.getDerbyDriver());
+            var realDbPath = fileResourcesUtils.buildPath(config.getPath());
             System.setProperty("derby.system.home", realDbPath);
-            nsc = new NetworkServerControl(InetAddress.getByName("0.0.0.0"), port,rootUser,rootPassword);
+            nsc = new NetworkServerControl(InetAddress.getByName("0.0.0.0"), config.getPort(),
+              config.getUser(),config.getPassword());
             nsc.start(null);
             waitForDerbyStart(nsc);
             initializeApplications();
 
-            logger.info("Derby server LOADED, port: "+port);
-            while(true){
+            logger.info("Derby server LOADED, port: "+config.getPort());
+            while(config.isActive()){
                 try {
                     Thread.sleep(1000);
                     nsc.ping();
+                    config = configuration.getConfiguration( DerbyServerConfig.class);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -122,6 +118,7 @@ public class AnsweringDerbyServer implements AnsweringServer{
 
     @Override
     public boolean shouldRun() {
-        return enabled && !running;
+        var localConfig = configuration.getConfiguration( DerbyServerConfig.class);
+        return localConfig.isActive() && !running;
     }
 }

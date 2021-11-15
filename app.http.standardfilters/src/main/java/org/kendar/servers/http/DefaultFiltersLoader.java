@@ -6,6 +6,7 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.StaticWebFilter;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.servers.JsonConfiguration;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.core.env.Environment;
@@ -19,17 +20,20 @@ import java.util.List;
 public class DefaultFiltersLoader implements CustomFiltersLoader {
     private final Logger logger;
     private PluginsAddressesRecorder pluginsAddressesRecorder;
+    private JsonConfiguration jsonConfiguration;
     private final List<FilteringClass> filteringClassList;
     private final Environment environment;
 
     public DefaultFiltersLoader(List<FilteringClass> filteringClassList,
                                 Environment environment, LoggerBuilder loggerBuilder,
-                                PluginsAddressesRecorder pluginsAddressesRecorder){
+                                PluginsAddressesRecorder pluginsAddressesRecorder,
+                                JsonConfiguration jsonConfiguration){
 
         this.filteringClassList = filteringClassList;
         this.environment = environment;
         logger = loggerBuilder.build(DefaultFiltersLoader.class);
         this.pluginsAddressesRecorder = pluginsAddressesRecorder;
+        this.jsonConfiguration = jsonConfiguration;
     }
 
     private static boolean hasFilterType(FilteringClass cl){
@@ -46,7 +50,7 @@ public class DefaultFiltersLoader implements CustomFiltersLoader {
                 var swf =(StaticWebFilter)cl;
                 pluginsAddressesRecorder.addPluginAddress(swf.getAddress(),swf.getDescription());
             }
-            result.add(new FilterDescriptor(this,typeFilter,methodFilter,m,cl,environment));
+            result.add(new FilterDescriptor(this,typeFilter,methodFilter,m,cl,environment,jsonConfiguration));
         }
         return result;
     }

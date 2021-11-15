@@ -25,13 +25,13 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
     private final static String BASIC_AUTH_SEPARATOR = ":";
 
     @Override
-    public Request fromExchange(HttpExchange exchange, String protocol, int forwardPort) throws IOException, FileUploadException {
+    public Request fromExchange(HttpExchange exchange, String protocol) throws IOException, FileUploadException {
         var result = new Request();
         result.setRemoteHost(exchange.getRemoteAddress().getHostName());
         result.setProtocol(protocol.toLowerCase(Locale.ROOT));
         result.setQuery(RequestUtils.queryToMap(exchange.getRequestURI().getRawQuery()));
         setupRequestHost(exchange, result);
-        setupRequestPort(exchange, forwardPort, result);
+        setupRequestPort(exchange, result);
         result.setPath(exchange.getRequestURI().getPath());
         result.setMethod(exchange.getRequestMethod().toUpperCase(Locale.ROOT));
         result.setHeaders(RequestUtils.headersToMap(exchange.getRequestHeaders()));
@@ -113,21 +113,19 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
         }
     }
 
-    private static void setupRequestPort(HttpExchange exchange, int forwardPort, Request result) {
-        result.setPort(forwardPort);
-        if(forwardPort == -1) {
-            result.setPort(exchange.getRequestURI().getPort());
-            if(result.getPort()<=0){
-                var data = exchange.getRequestHeaders().getFirst("Host").split(":", 2);
-                if (data.length == 2) {
-                    result.setPort(Integer.parseInt(data[1]));
-                }
+    private static void setupRequestPort(HttpExchange exchange, Request result) {
+
+        result.setPort(exchange.getRequestURI().getPort());
+        if(result.getPort()<=0){
+            var data = exchange.getRequestHeaders().getFirst("Host").split(":", 2);
+            if (data.length == 2) {
+                result.setPort(Integer.parseInt(data[1]));
             }
-            if(result.getPort()<=0) {
-                var data = result.getHost().split(":", 2);
-                if (data.length == 2) {
-                    result.setPort(Integer.parseInt(data[1]));
-                }
+        }
+        if(result.getPort()<=0) {
+            var data = result.getHost().split(":", 2);
+            if (data.length == 2) {
+                result.setPort(Integer.parseInt(data[1]));
             }
         }
     }

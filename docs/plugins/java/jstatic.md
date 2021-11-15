@@ -9,10 +9,10 @@ with the following methods
 
 Some annotation must be added too, Component (for Spring Boot) and the HttpTypeFilter,
 specifying the host that will answer. It supports properties replacement with the "$" 
-sign syntax
+sign syntax. The name of variable is the path in json config
 
     @Component
-    @HttpTypeFilter(hostAddress = "${localhost.name}")
+    @HttpTypeFilter(hostAddress = "${global.localAddress}")
 
 Of course you must register the [dns](../../dns.md) and the [certificate](../../https.md)
 

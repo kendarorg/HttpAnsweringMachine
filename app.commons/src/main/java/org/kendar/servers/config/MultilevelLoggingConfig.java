@@ -1,6 +1,8 @@
 package org.kendar.servers.config;
 
-public class MultilevelLoggingConfig {
+import org.kendar.servers.Copyable;
+
+public class MultilevelLoggingConfig implements Copyable<MultilevelLoggingConfig> {
     private boolean basic;
     private boolean full;
 
@@ -18,5 +20,12 @@ public class MultilevelLoggingConfig {
 
     public void setFull(boolean full) {
         this.full = full;
+    }
+
+    @Override public MultilevelLoggingConfig copy() {
+        var result = new MultilevelLoggingConfig();
+        result.basic = this.basic;
+        result.full = this.full;
+        return result;
     }
 }

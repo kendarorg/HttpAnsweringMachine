@@ -3,6 +3,7 @@ package org.kendar.servers.config;
 import java.util.List;
 
 public class WebConfig {
+
     private WebServerConfig https;
     private WebServerConfig http;
     private SSLConfig ssl;

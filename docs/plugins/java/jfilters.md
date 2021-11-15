@@ -9,6 +9,9 @@ inside the libs directory
 The HttpTypeFilter can be configured like the following. All this variables can be set with
 the Spring Boot property style "${propertyfileindex}" and "${propertyfileindex:defaultvalue}"
 
+When dealing with variables inside the json file, the variable names are the -path- of the variables
+No support had been given for array variables
+
 * hostAddress: the exact address (or * for any)
 * hostPattern: the Java regex for the host
 * priority: the priority between the other filters

@@ -1,37 +1,35 @@
 package org.kendar.dns;
 
+import org.kendar.dns.configurations.DnsConfig;
+import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.dns.DnsMultiResolver;
+import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.xbill.DNS.*;
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.kendar.servers.dns.DnsMultiResolver;
-import org.kendar.utils.LoggerBuilder;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.xbill.DNS.*;
 
 @Component
 public class DnsServer {
     private static final int UDP_SIZE = 512;
 
-    @Value( "${dns.port:53}" )
     private int dnsPort;
     private final Logger logger;
     private final DnsMultiResolver multiResolver;
 
-    public DnsServer(LoggerBuilder loggerBuilder, DnsMultiResolver multiResolver){
+    public DnsServer(LoggerBuilder loggerBuilder, DnsMultiResolver multiResolver, JsonConfiguration configuration){
 
         this.logger = loggerBuilder.build(DnsServer.class);
         this.multiResolver = multiResolver;
+        this.dnsPort = configuration.getConfiguration(DnsConfig.class).getPort();
     }
 
     public void run() throws IOException {

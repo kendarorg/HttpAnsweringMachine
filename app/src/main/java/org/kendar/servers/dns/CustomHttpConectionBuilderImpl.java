@@ -9,7 +9,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.kendar.utils.LoggerBuilder;
-import org.kendar.utils.PropertiesManager;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -22,17 +21,14 @@ public class CustomHttpConectionBuilderImpl implements CustomHttpConectionBuilde
 
     private final Logger logger;
     private final DnsMultiResolver dnsMultiResolver;
-    private PropertiesManager propertiesManager;
 
     private HttpClientConnectionManager connManager;
     private SystemDefaultDnsResolver dnsResolver;
 
 
-    public CustomHttpConectionBuilderImpl(LoggerBuilder loggerBuilder, DnsMultiResolver  dnsMultiResolver,
-                                          PropertiesManager propertiesManager){
+    public CustomHttpConectionBuilderImpl(LoggerBuilder loggerBuilder, DnsMultiResolver  dnsMultiResolver){
         this.logger = loggerBuilder.build(CustomHttpConectionBuilderImpl.class);
         this.dnsMultiResolver = dnsMultiResolver;
-        this.propertiesManager = propertiesManager;
     }
 
 

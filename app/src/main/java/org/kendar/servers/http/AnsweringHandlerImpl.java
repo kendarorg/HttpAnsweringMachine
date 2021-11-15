@@ -27,6 +27,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.kendar.http.FilteringClassesHandler;
 import org.kendar.http.HttpFilterType;
 import org.kendar.servers.AnsweringHttpsServer;
+import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.LoggerBuilder;
@@ -72,21 +74,12 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     private final ConcurrentHashMap<String, ResolvedDomain> domains = new ConcurrentHashMap<>();
     private SystemDefaultDnsResolver dnsResolver;
     private PoolingHttpClientConnectionManager connManager;
-    @Value("${https.forwardProtocol:https}")
-    private String httpsForwardProtocol = "https";
-    @Value("${http.forwardProtocol:http}")
-    private String httpForwardProtocol = "http";
-    @Value("${https.forwardPort:-1}")
-    private int httpsForwardPort = -1;
-    @Value("${http.forwardPort:-1}")
-    private int httpForwardPort = -1;
-    @Value("${dns.logging.query:false}")
-    private boolean dnsLogginQuery;
 
     public AnsweringHandlerImpl(LoggerBuilder loggerBuilder, DnsMultiResolver multiResolver,
                                 FilteringClassesHandler filteringClassesHandler,
                                 SimpleProxyHandler simpleProxyHandler,
-                                RequestResponseBuilder requestResponseBuilder) {
+                                RequestResponseBuilder requestResponseBuilder,
+                                JsonConfiguration configuration) {
         this.logger = loggerBuilder.build(AnsweringHttpsServer.class);
         this.multiResolver = multiResolver;
         this.filteringClassesHandler = filteringClassesHandler;
@@ -220,9 +213,9 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         Response response = new Response();
         try {
             if (httpExchange instanceof HttpsExchange) {
-                request = requestResponseBuilder.fromExchange(httpExchange, httpsForwardProtocol, httpsForwardPort);
+                request = requestResponseBuilder.fromExchange(httpExchange, "https");
             } else {
-                request = requestResponseBuilder.fromExchange(httpExchange, httpForwardProtocol, httpForwardPort);
+                request = requestResponseBuilder.fromExchange(httpExchange, "http");
             }
 
             handleOverwriteHost(request, httpExchange);
@@ -488,22 +481,6 @@ Access-Control-Max-Age: 86400
 
     private HttpEntity handleSoapRequest(Request request, HttpExchange httpExchange) {
         return null;
-    }
-
-    public void setHttpsForwardProtocol(String httpsForwardProtocol) {
-        this.httpsForwardProtocol = httpsForwardProtocol;
-    }
-
-    public void setHttpForwardProtocol(String httpForwardProtocol) {
-        this.httpForwardProtocol = httpForwardProtocol;
-    }
-
-    public void setHttpsForwardPort(int httpsForwardPort) {
-        this.httpsForwardPort = httpsForwardPort;
-    }
-
-    public void setHttpForwardPort(int httpForwardPort) {
-        this.httpForwardPort = httpForwardPort;
     }
 
     class ResolvedDomain {
