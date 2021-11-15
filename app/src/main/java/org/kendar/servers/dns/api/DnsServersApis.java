@@ -75,7 +75,10 @@ public class DnsServersApis implements FilteringClass {
         var name = (req.getPathParameter("id"));
         var newList = new ArrayList<ExtraDnsServer>();
         for(var item:dnsServeres){
-            if(item.getId().equalsIgnoreCase(name)){continue;}
+            if(item.getId().equalsIgnoreCase(name)){
+                if(item.isEnv())return false;
+                continue;
+            }
             newList.add(item);
         }
         cloned.setExtraServers(newList);
@@ -91,12 +94,14 @@ public class DnsServersApis implements FilteringClass {
 
         var cloned = configuration.getConfiguration(DnsConfig.class).copy();
         var dnsServers = cloned.getExtraServers();
-        var ip = (req.getPathParameter("id"));
+        var id = (req.getPathParameter("id"));
         var newList = new ArrayList<ExtraDnsServer>();
         var newData = mapper.readValue((String)req.getRequestText(),ExtraDnsServer.class);
+        newData.setEnv(false);
         for(var item:dnsServers){
             var clone = item.copy();
-            if(!clone.getId().equalsIgnoreCase(ip)){
+            if(!clone.getId().equalsIgnoreCase(id)){
+                if(clone.isEnv())return false;
                 newList.add(clone);
                 continue;
             }
@@ -140,6 +145,8 @@ public class DnsServersApis implements FilteringClass {
             if(dnsServeres.get(i).getId().equalsIgnoreCase(name1))id1Index=i;
             if(dnsServeres.get(i).getId().equalsIgnoreCase(name2))id2Index=i;
         }
+        if(dnsServeres.get(id1Index).isEnv())return false;
+        if(dnsServeres.get(id2Index).isEnv())return false;
         var id1Clone = dnsServeres.get(id1Index).copy();
         dnsServeres.set(id1Index,dnsServeres.get(id2Index));
         dnsServeres.set(id2Index,id1Clone);
@@ -156,6 +163,7 @@ public class DnsServersApis implements FilteringClass {
         var dnsServeres = cloned.getExtraServers();
         var newList = new ArrayList<ExtraDnsServer>();
         var newData = mapper.readValue((String)req.getRequestText(),ExtraDnsServer.class);
+        newData.setEnv(false);
 
 
         for(var item:dnsServeres){

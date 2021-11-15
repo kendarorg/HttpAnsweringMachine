@@ -1,5 +1,7 @@
 package org.kendar;
 
+import org.kendar.dns.configurations.DnsConfig;
+import org.kendar.servers.JsonConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -35,14 +37,16 @@ public class SimpleDns implements CommandLineRunner {
 
     @Override
     public void run(String... args){
-        MutablePropertySources propertySources = ((ConfigurableEnvironment)environment).getPropertySources();
-        Map<String,Object> propMap = new HashMap<>();
-        var otherDnss = System.getProperty("other.dns"); //"dns.google";
-        var extraServers = environment.getProperty("dns.extraServers");
-        if(otherDnss!=null && otherDnss.length()>0){
-            extraServers = extraServers+","+otherDnss;
-            propMap.put("dns.extraServers",extraServers);
-            propertySources.addFirst(new MapPropertySource("extraDns", propMap));
+        //MutablePropertySources propertySources = ((ConfigurableEnvironment)environment).getPropertySources();
+        //Map<String,Object> propMap = new HashMap<>();
+        var configuration = applicationContext.getBean(JsonConfiguration.class);
+        try {
+            configuration.loadConfiguration("external.json");
+            var config = configuration.getConfiguration(DnsConfig.class);
+            config.setActive(true);
+            configuration.setConfiguration(config);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         var dnsServer = (org.kendar.dns.DnsServer)applicationContext.getBean(org.kendar.dns.DnsServer.class);

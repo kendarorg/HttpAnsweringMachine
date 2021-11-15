@@ -25,7 +25,8 @@ public class DnsServer {
     private final Logger logger;
     private final DnsMultiResolver multiResolver;
 
-    public DnsServer(LoggerBuilder loggerBuilder, DnsMultiResolver multiResolver, JsonConfiguration configuration){
+    public DnsServer(LoggerBuilder loggerBuilder, DnsMultiResolver multiResolver,
+      JsonConfiguration configuration){
 
         this.logger = loggerBuilder.build(DnsServer.class);
         this.multiResolver = multiResolver;
