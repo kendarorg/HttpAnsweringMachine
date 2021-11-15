@@ -79,12 +79,15 @@
         });
     }
 
-    var scriptsTable = new SimpleGrid("Dns","dnsTable","id",["id","address","resolved","enabled"],
+    var scriptsTable = new SimpleGrid("Dns","dnsTable","id",["id","address","resolved","_enabled"],
         function(table){
             $.ajax({
                 url: "/api/dns/servers",
                 type: 'GET',
                 success: function(res) {
+                    for(var v=0;v<res.length;v++) {
+                        res[v]["_enabled"]=res[v]['enabled']?"YES":"NO";
+                    }
                     $.each(res, function(i, script) {
                         table.appendToTable(script);
                     });

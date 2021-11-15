@@ -176,6 +176,7 @@ import java.util.stream.Collectors;
     var extraServersList = config.getExtraServers();
     for (int i = 0; i < extraServersList.size(); i++) {
       var serverToCall = extraServersList.get(i);
+      if(!serverToCall.isEnabled()) continue;
       var runnable = new DnsRunnable(serverToCall.getResolved(), requestedDomain);
       runnables.add(runnable);
     }

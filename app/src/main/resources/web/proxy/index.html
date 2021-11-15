@@ -86,7 +86,7 @@
                 type: 'GET',
                 success: function(res) {
                     for(var v=0;v<res.length;v++) {
-                        res[v]["_running"]=res[v]['running']=="true"?"YES":"NO";
+                        res[v]["_running"]=res[v]['running']?"YES":"NO";
                     }
                     $.each(res, function(i, script) {
                         table.appendToTable(script);
