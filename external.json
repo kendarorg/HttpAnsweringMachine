@@ -128,14 +128,17 @@
   },
   {
     "id": "oidc.server",
-    "tokenExpiration": 86400
+    "tokenExpiration": 86400,
+    "active": true
   },
   {
     "id": "js.filters",
-    "path": "jsplugins"
+    "path": "jsplugins",
+    "active": true
   },
   {
     "id": "replayer.server",
-    "path": "replayerdata"
+    "path": "replayerdata",
+    "active": true
   }
 ]
