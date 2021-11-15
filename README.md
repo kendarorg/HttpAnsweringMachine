@@ -48,6 +48,38 @@ debug against real environments. Then i added an oidc server, and looking at oth
 like Traffic Parrot the recording replaying was inserted as feature. To speed up stuffs it 
 was then ported to Spring Boot and was added a true UI.
 
+## Conventions
+
+Notice that all configuration values are in fact -paths- inside the external.json file.
+For example "global.logging.request.basic=true" means the following
+
+<pre>
+[
+  {
+    "id": "global",
+    ...
+    "logging": {
+      "request": {
+        "basic": true
+...
+</pre>
+
+In case of arrays "ssl.domains[1].address=local.test" means the following
+
+<pre>
+[
+  {
+    "id": "ssl",
+    ...
+    "domains": [
+      {
+        ...
+      },
+      {
+        ....
+        "address": "local.test"
+</pre>
+
 ## Configurations
 
 * [Basic local configuration](docs/basic.md)

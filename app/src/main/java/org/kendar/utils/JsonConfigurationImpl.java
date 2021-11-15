@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.BaseJsonConfig;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.SpecialJsonConfig;
 import org.kendar.servers.config.ConfigAttribute;
 import org.springframework.stereotype.Component;
 
@@ -59,9 +60,18 @@ public class JsonConfigurationImpl implements JsonConfiguration {
                 mappingStringClasses.put(aClass,attribute.id());
             }
             var sanitizedId = mappingStringClasses.get(aClass);
-            var stringValue = mapper.writeValueAsString(data);
-            var treeMap = mapper.readTree(stringValue);
-            configurations.put(sanitizedId, treeMap);
+
+            if(data instanceof SpecialJsonConfig) {
+                var toSaveData = (SpecialJsonConfig)((BaseJsonConfig) data).copy();
+                toSaveData.preSave();
+                var stringValue = mapper.writeValueAsString(toSaveData);
+                var treeMap = mapper.readTree(stringValue);
+                configurations.put(sanitizedId, treeMap);
+            }else {
+                var stringValue = mapper.writeValueAsString(data);
+                var treeMap = mapper.readTree(stringValue);
+                configurations.put(sanitizedId, treeMap);
+            }
             var parsedConfig = new ParsedConfig();
             parsedConfig.deserialized = data;
             parsedConfig.timestamp = Calendar.getInstance().getTimeInMillis();

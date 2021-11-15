@@ -8,16 +8,16 @@ Prepare a basic configuration in an "external.properties" file in the same dir o
 
 The name for which the server will respond
 
-    localhost.name=www.local.test
+    global.localAddress=www.local.test
 
 The http/s configuration, this will be generated at runtime. For the https certificates see
 the [Https configuration page](../https.md)
 
-    http.enabled=true
-    https.enabled=true
-    https.certificates.cnname=C=US,O=Local Development,CN=local.org
-    https.certificate.0=*.local.test
-    https.certificate.1=local.test
+    http.active=true
+    https.active=true
+    ssl.cnname=C=US,O=Local Development,CN=local.org
+    ssl.domains[0].address=*.local.test
+    ssl.domains[1].address=local.test
 
 ### DNS Resolution
 
@@ -36,7 +36,7 @@ First you need to enable the local dns on external.properties file. Remind that 
 wont work if you are running a VPN client! It does not work (for me) with OpenVPN client and 
 GlobalProtect. 
 
-    dns.enabled=false
+    dns.active=false
 
 ### Run and verify
 

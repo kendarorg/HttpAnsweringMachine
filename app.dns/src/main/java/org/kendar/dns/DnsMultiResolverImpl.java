@@ -1,6 +1,7 @@
 package org.kendar.dns;
 
 import org.kendar.dns.configurations.DnsConfig;
+import org.kendar.dns.configurations.ExtraDnsServer;
 import org.kendar.dns.configurations.PatternItem;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
@@ -60,6 +61,21 @@ import java.util.stream.Collectors;
       }
     }
 
+    for (int i = 0; i < cloned.getExtraServers().size(); i++) {
+      var extraServer = cloned.getExtraServers().get(i);
+      extraServer.setEnv(false);
+    }
+    var otherDnss = System.getProperty("other.dns");
+    if(otherDnss!=null && !otherDnss.isEmpty()){
+      var splitted = otherDnss.split(",");
+      for (var split : splitted) {
+       var newExtra = new ExtraDnsServer();
+       newExtra.setEnv(true);
+       newExtra.setId(UUID.randomUUID().toString());
+       newExtra.setAddress(split);
+       cloned.getExtraServers().add(newExtra);
+      }
+    }
     for (int i = 0; i < cloned.getExtraServers().size(); i++) {
       var extraServer = cloned.getExtraServers().get(i);
       Matcher ipPatternMatcher = ipPattern.matcher(extraServer.getAddress());

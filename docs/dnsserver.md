@@ -30,7 +30,7 @@ adding the certificate generation. The data is 0 based as usual
 
 Now you should enable the DNS server and add the names, as usual the number starts from 0
 
-    dns.enabled=true
+    dns.active=true
     dns.resolve.1=www.google.com 127.0.0.1
 
 Now every request will go through the system

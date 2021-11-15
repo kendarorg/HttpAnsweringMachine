@@ -4,19 +4,21 @@ The application contains a full DNS Server.
 
 It can be enabled inside the external.properties with
 
-    dns.enabled=true
+    dns.active=true
 
 ### Extra servers
 
 This dns server can be used to forward dns requests to other
 dns servers, through the extraServers property
 
-    dns.extraServers=8.8.8.8,my.dns.it
+    dns.extraServers[0]=8.8.8.8
+    dns.extraServers[1]=my.dns.it
 
 You can add dns servers ips or names. For example if you are in a docker instance
 and want a custom dns server like "my.dns.it" you should do something like this
 
-    dns.extraServers=127.0.0.11,my.dns.it
+    dns.extraServers[0]=127.0.0.11
+    dns.extraServers[1]=my.dns.it
 
 This means
 
@@ -37,7 +39,8 @@ with the dns server
 You can block certain DNS requests to have less traffic. Requests to the blocked domain
 will result in a "domain not existent" response from the DNS server
 
-    dns.blocker=wpad.*,*.trafficmanager.net
+    dns.blocker[0]=wpad.*
+    dns.blocker[1]=*.trafficmanager.net
 
 This default example (these should be added in every configurations) tells that domains
 starting with "wpad." or ending with ".trafficmanager.net" will never start a real dns
@@ -50,9 +53,12 @@ request. Please notice that only two forms are allowd
 
 An example is the following
 
-    dns.resolve.0=@([0-9a-zA-Z]+).local.test 127.0.0.1
-    dns.resolve.1=www.google.com 127.0.0.1
-    dns.resolve.2=www.facebook.com 10.11.12.55
+    dns.resolved[0].dns=@([0-9a-zA-Z]+).local.test
+    dns.resolved[0].ip=127.0.0.1
+    dns.resolved[1].dns=www.google.com
+    dns.resolved[1].ip=127.0.0.1
+    dns.resolved[2].dns=www.facebook.com
+    dns.resolved[2].ip=10.0.0.1
 
 Here you can notice that the first regexp matches all domains of the form [name].local.test
 and www.google.com.

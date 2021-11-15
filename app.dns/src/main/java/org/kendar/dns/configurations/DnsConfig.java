@@ -1,13 +1,14 @@
 package org.kendar.dns.configurations;
 
 import org.kendar.servers.BaseJsonConfig;
+import org.kendar.servers.SpecialJsonConfig;
 import org.kendar.servers.config.ConfigAttribute;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @ConfigAttribute(id="dns")
-public class DnsConfig extends BaseJsonConfig<DnsConfig> {
+public class DnsConfig extends BaseJsonConfig<DnsConfig> implements SpecialJsonConfig {
     private boolean active;
     private boolean logQueries;
     private int port;
@@ -85,5 +86,15 @@ public class DnsConfig extends BaseJsonConfig<DnsConfig> {
 
     public void setLogQueries(boolean logQueries) {
         this.logQueries = logQueries;
+    }
+
+    @Override public void preSave() {
+        var newExtraServers = new ArrayList<ExtraDnsServer>();
+        for (int i = 0; i < this.extraServers.size(); i++) {
+            var ext = this.extraServers.get(i);
+            if(ext.isEnv())continue;
+            newExtraServers.add(ext);
+        }
+        this.extraServers = newExtraServers;
     }
 }
