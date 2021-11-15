@@ -37,7 +37,7 @@ import java.text.ParseException;
 import java.util.*;
 
 @Component
-@HttpTypeFilter(hostAddress = "${localhost.name}",blocking = true)
+@HttpTypeFilter(hostAddress = "${global.localAddress}",blocking = true)
 public class OidcController implements FilteringClass {
     @Override
     public String getId() {

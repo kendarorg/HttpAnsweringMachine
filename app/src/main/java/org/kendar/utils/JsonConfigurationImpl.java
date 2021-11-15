@@ -96,5 +96,21 @@ public class JsonConfigurationImpl implements JsonConfiguration {
         var formattedResult = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsedResult);
         Files.writeString(Path.of(fileName),formattedResult);
     }
+
+    @Override public String getValue(String varName) {
+        var splitted = varName.split("\\.");
+        var splittedIndex = 0;
+        if(!configurations.containsKey(splitted[splittedIndex])) return null;
+        var rootNode = configurations.get(splitted[splittedIndex]);
+        splittedIndex++;
+        while(splittedIndex<splitted.length && rootNode!=null){
+            rootNode = rootNode.path(splitted[splittedIndex]);
+            splittedIndex++;
+        }
+        if(rootNode!=null){
+            return rootNode.textValue();
+        }
+        return null;
+    }
 }
 

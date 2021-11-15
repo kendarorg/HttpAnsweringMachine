@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 @Component
-@HttpTypeFilter(hostAddress = "${localhost.name}",
+@HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class ReplayerAPICrud implements FilteringClass {
     private final Logger logger;

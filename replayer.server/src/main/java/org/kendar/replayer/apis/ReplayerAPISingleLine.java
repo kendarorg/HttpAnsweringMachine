@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 @Component
-@HttpTypeFilter(hostAddress = "${localhost.name}",
+@HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class ReplayerAPISingleLine implements FilteringClass {
 

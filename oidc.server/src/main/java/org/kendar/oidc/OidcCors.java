@@ -9,7 +9,7 @@ import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
 
 @Component
-@HttpTypeFilter(hostAddress = "${localhost.name}",blocking = true)
+@HttpTypeFilter(hostAddress = "${global.localAddress}",blocking = true)
 public class OidcCors implements FilteringClass {
     @Override
     public String getId() {

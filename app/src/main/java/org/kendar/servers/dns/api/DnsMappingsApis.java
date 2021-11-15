@@ -13,7 +13,7 @@ import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
 
 @Component
-@HttpTypeFilter(hostAddress = "${localhost.name}",
+@HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class DnsMappingsApis implements FilteringClass {
     private final JsonConfiguration configuration;

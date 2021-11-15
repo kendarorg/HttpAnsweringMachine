@@ -26,6 +26,7 @@ import java.util.zip.ZipInputStream;
 
 @Component
 public class JsFilterLoader implements CustomFiltersLoader {
+    private final JsonConfiguration configuration;
     private  String jsFilterPath = null;
     private ScriptableObject globalScope;
     private final Environment environment;
@@ -42,6 +43,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
         this.fileResourcesUtils = fileResourcesUtils;
         jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
         logger.info("JsFilter LOADED");
+        this.configuration = configuration;
     }
 
 
@@ -94,7 +96,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
             filterDescriptor.setRoot(realPath);
             precompileFilter(filterDescriptor);
             var executor = new JsFilterExecutor(filterDescriptor,this,loggerBuilder,filterDescriptor.getId());
-            var fd = new FilterDescriptor(this,executor,environment);
+            var fd = new FilterDescriptor(this,executor,environment,configuration);
             fd.setEnabled(filterDescriptor.isEnabled());
             result.add(fd);
         }

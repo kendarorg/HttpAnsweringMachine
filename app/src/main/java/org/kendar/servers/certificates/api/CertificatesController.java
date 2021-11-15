@@ -22,7 +22,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Component
-@HttpTypeFilter(hostAddress = "${localhost.name}",
+@HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class CertificatesController implements FilteringClass {
     private FileResourcesUtils fileResourcesUtils;

@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Component
-@HttpTypeFilter(hostAddress = "${localhost.name}",
+@HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class FilterClassesApi  implements FilteringClass {
     private FilterConfig filteringClassesHandler;

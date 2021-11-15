@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 @Component
-@HttpTypeFilter(hostAddress = "${localhost.name}",
+@HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class DnsServersApis implements FilteringClass {
     ObjectMapper mapper = new ObjectMapper();

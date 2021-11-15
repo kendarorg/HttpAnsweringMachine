@@ -60,6 +60,7 @@ Those are the c:\Windows\System32\Drivers\etc\hosts entries
 
 ### SAMPLE OF DB BASED APP
 
+Notice the name of variables are the path inside the json
 
 @Component
 public class ReplayerDb implements DerbyApplication {

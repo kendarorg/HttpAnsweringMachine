@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-@HttpTypeFilter(hostAddress = "${localhost.name}",
+@HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class PropertiesController implements FilteringClass {
     private final Environment environment;

@@ -27,7 +27,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 @Component
-@HttpTypeFilter(hostAddress = "${localhost.name}",
+@HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class ReplayerAPIContent implements FilteringClass {
     private final FileResourcesUtils fileResourcesUtils;
