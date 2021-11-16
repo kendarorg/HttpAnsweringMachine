@@ -8,17 +8,28 @@ Prepare a basic configuration in an "external.properties" file in the same dir o
 
 The name for which the server will respond
 
-    global.localAddress=www.local.test
+    [{  "id":"global",
+        "localAddress":"www.local.test",
+
 
 The http/s configuration, this will be generated at runtime. For the https certificates see
 the [Https configuration page](../https.md)
 
-    http.active=true
-    https.active=true
-    ssl.cnname=C=US,O=Local Development,CN=local.org
-    ssl.domains[0].address=*.local.test
-    ssl.domains[1].address=local.test
-
+    [{  "id":"https",
+        "active":true,
+        ...},
+    {  "id":"http",
+        "active":true,
+        ...},
+    {  "id" : "ssl",
+        "cname":"C=US,O=Local Development,CN=local.org",
+        "domains" : [{
+                "id" :"a",
+                "address":"*.local.test"},
+            {
+                "id" :"b",
+                "address":"local.test"},
+    
 ### DNS Resolution
 
 You have two options. Hosts file or the embedded dns server. [See the DNS page for further info](../dns.md)
@@ -36,7 +47,9 @@ First you need to enable the local dns on external.properties file. Remind that 
 wont work if you are running a VPN client! It does not work (for me) with OpenVPN client and 
 GlobalProtect. 
 
-    dns.active=false
+
+    [{  "id":"dns",
+        "active": false,
 
 ### Run and verify
 

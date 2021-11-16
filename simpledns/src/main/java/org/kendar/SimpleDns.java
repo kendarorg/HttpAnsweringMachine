@@ -2,6 +2,7 @@ package org.kendar;
 
 import org.kendar.dns.configurations.DnsConfig;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.config.GlobalConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -13,6 +14,7 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,9 +43,18 @@ public class SimpleDns implements CommandLineRunner {
         //Map<String,Object> propMap = new HashMap<>();
         var configuration = applicationContext.getBean(JsonConfiguration.class);
         try {
-            configuration.loadConfiguration("external.json");
-            var config = configuration.getConfiguration(DnsConfig.class);
+            DnsConfig config = new DnsConfig();
+            config.setExtraServers(new ArrayList<>());
             config.setActive(true);
+            config.setBlocked(new ArrayList<>());
+            config.getBlocked().add("wpad.*");
+            config.getBlocked().add("*.trafficmanager.net");
+            config.setPort(53);
+
+            GlobalConfig global = new GlobalConfig();
+            global.setLocalAddress("localhost");
+
+            configuration.setConfiguration(global);
             configuration.setConfiguration(config);
         } catch (Exception e) {
             e.printStackTrace();

@@ -7,17 +7,27 @@ Let's suppose we want to intercept all requests to https://www.google.com
 
 First should be added the DNS entry on the external.properties
 
-    dns.resolve.1=www.google.com 127.0.0.1
+    [{  "id":"dns",
+        "active" : true,
+        "resolved":[{
+            "id"  : "0",
+            "ip"  : "127.0.0.1"
+            "dns" : "www.google.com"},
 
 If you are using a hosts file you should add to it the line
 
     www.google.com 127.0.0.1
 
 Then we have to create a certificate for the website, editing the external.properties
-adding the certificate generation. The data is 0 based as usual
+adding the certificate generation. The id must be unique
 
-    https.certificate.2=*.google.com
-    https.certificate.3=google.com
+    [{  "id" : "ssl",
+        "domains" : [{
+                "id" :"a",
+                "address":"*.google.com"},
+            {
+                "id" :"b",
+                "address":"google.com"},
 
 Restart the application
 

@@ -12,12 +12,12 @@ sections.
 * id: a unique identifier string
 * when: Upon receiving a request on this address/port/path
 * then: Call the then address/port/path
-* test: When the address is reachable use the proxy, when not reachable simply forward the 
-request to when
+* test: When the address is reachable use the proxy, when not reachable simply forward the request to when
 
-<pre>
-    simpleproxy.0.id=12345
-    simpleproxy.0.when=https://www.local.test/myapp
-    simpleproxy.0.where=https://localhost:8020/app
-    simpleproxy.0.test=localhost:8020
-</pre>
+
+      {[   "id" : "ssl",
+            "proxy" : [{
+                "id": "0",
+                "when": "https://www.local.test/myapp",
+                "where": "https://localhost:8020/app",
+                "test": "localhost:8020"},
