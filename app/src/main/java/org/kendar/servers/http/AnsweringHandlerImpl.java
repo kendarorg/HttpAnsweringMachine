@@ -80,7 +80,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
                                 SimpleProxyHandler simpleProxyHandler,
                                 RequestResponseBuilder requestResponseBuilder,
                                 JsonConfiguration configuration) {
-        this.logger = loggerBuilder.build(AnsweringHttpsServer.class);
+        this.logger = loggerBuilder.build(AnsweringHandlerImpl.class);
         this.multiResolver = multiResolver;
         this.filteringClassesHandler = filteringClassesHandler;
         this.simpleProxyHandler = simpleProxyHandler;

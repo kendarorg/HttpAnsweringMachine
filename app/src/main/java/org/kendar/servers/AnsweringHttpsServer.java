@@ -77,6 +77,9 @@ public class AnsweringHttpsServer  implements AnsweringServer{
             // initialise the HTTPS server
             httpsServer = HttpsServer.create(address, config.getBacklog());
             final SSLContext sslContextInt = getSslContext(configuration.getConfiguration(SSLConfig.class));
+
+            var sslConfigTimestamp = configuration.getConfigurationTimestamp(SSLConfig.class);
+            sslTimestamp.set(sslConfigTimestamp);
             sslSharedContext.set(sslContextInt);
             httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContextInt) {
                 public void configure(HttpsParameters params) {

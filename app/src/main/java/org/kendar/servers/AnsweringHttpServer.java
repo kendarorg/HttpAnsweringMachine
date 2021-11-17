@@ -25,7 +25,7 @@ public class AnsweringHttpServer implements AnsweringServer {
       LoggerBuilder loggerBuilder,
       AnsweringHandler handler,
       JsonConfiguration configuration){
-        this.logger = loggerBuilder.build(AnsweringHttpsServer.class);
+        this.logger = loggerBuilder.build(AnsweringHttpServer.class);
         this.handler = handler;
         this.configuration = configuration;
     }
