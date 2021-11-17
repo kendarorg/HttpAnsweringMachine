@@ -117,6 +117,10 @@ public class FilterDescriptor {
         this.methodFilter = buildMethodFilter();
     }
 
+    public String getClassId(){
+        return filterClass.getClass().getName();
+    }
+
     private HttpMethodFilter buildMethodFilter() {
         var loc = this;
         return new HttpMethodFilter(){

@@ -10,6 +10,7 @@ import java.util.List;
 public class FiltersConfiguration {
     public HashMap<HttpFilterType, List<FilterDescriptor>> filters = new HashMap<>();
     public HashMap<String,FilterDescriptor> filtersById = new HashMap<>();
+    public HashMap<String,List<FilterDescriptor>> filtersByClass = new HashMap<>();
 
     public FiltersConfiguration copy() {
         var result = new FiltersConfiguration();
@@ -18,6 +19,9 @@ public class FiltersConfiguration {
         }
         for (var item :filtersById.entrySet()) {
             result.filtersById.put(item.getKey(),item.getValue());
+        }
+        for (var item :filtersByClass.entrySet()) {
+            result.filtersByClass.put(item.getKey(),new ArrayList<>(item.getValue()));
         }
         return result;
     }

@@ -31,7 +31,7 @@ public class DnsMappingsApis implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/mappings",
-            method = "GET",id="1000a4b4-277d-11ec-9621-0242ac130002")
+            method = "GET",id="1000a4b4-277d-11ef-9621-0242ac130002")
     public boolean getDnsMappings(Request req, Response res) throws JsonProcessingException {
         var records = configuration.getConfiguration(DnsConfig.class).getResolved();
         res.addHeader("Content-type", "application/json");

@@ -64,6 +64,10 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
                 }
                 duplicateIds.add(id);
                 config.filtersById.put(id, ds);
+                if(!config.filtersByClass.containsKey(ds.getClassId())){
+                    config.filtersByClass.put(ds.getClassId(),new ArrayList<>());
+                }
+                config.filtersByClass.get(ds.getClassId()).add(ds);
             }
         }
         filtersConfiguration.set(config);
