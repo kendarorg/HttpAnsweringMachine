@@ -52,6 +52,16 @@ public class JsonConfigurationImpl implements JsonConfiguration {
         }
     }
 
+    public long getConfigurationTimestamp(Class aClass){
+        if(!mappingStringClasses.containsKey(aClass)){
+            var attribute = (ConfigAttribute)aClass.getAnnotation(ConfigAttribute.class);
+            mappingStringClasses.put(aClass,attribute.id());
+        }
+        var sanitizedId = mappingStringClasses.get(aClass);
+        var item = deserializedConfigurations.get(sanitizedId);
+        return item.timestamp;
+    }
+
     public void setConfiguration(Object data) {
         try {
             var aClass = data.getClass();

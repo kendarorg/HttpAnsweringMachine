@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Component
@@ -58,6 +60,8 @@ public class AnsweringHttpsServer  implements AnsweringServer{
         this.configuration = configuration;
     }
 
+    private AtomicLong sslTimestamp = new AtomicLong(0);
+    private AtomicReference<SSLContext> sslSharedContext = new AtomicReference<>();
     @Override
     public void run() {
         var config = configuration.getConfiguration( HttpsWebServerConfig.class).copy();
@@ -72,12 +76,20 @@ public class AnsweringHttpsServer  implements AnsweringServer{
 
             // initialise the HTTPS server
             httpsServer = HttpsServer.create(address, config.getBacklog());
-            final SSLContext sslContextInt = getSslContext();
+            final SSLContext sslContextInt = getSslContext(configuration.getConfiguration(SSLConfig.class));
+            sslSharedContext.set(sslContextInt);
             httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContextInt) {
                 public void configure(HttpsParameters params) {
                     try {
                         // initialise the SSL context
-                        SSLContext context = sslContextInt;//getSslContext();
+                        SSLContext context = sslSharedContext.get();
+                        var sslConfigTimestamp = configuration.getConfigurationTimestamp(SSLConfig.class);
+                        if(sslConfigTimestamp>sslTimestamp.get()){
+                            var sslConfig = configuration.getConfiguration(SSLConfig.class);
+                            sslTimestamp.set(sslConfigTimestamp);
+                            context = getSslContext(sslConfig);
+                            sslSharedContext.set(context);
+                        }
                         SSLEngine engine = context.createSSLEngine();
                         params.setNeedClientAuth(false);
                         params.setCipherSuites(engine.getEnabledCipherSuites());
@@ -114,10 +126,9 @@ public class AnsweringHttpsServer  implements AnsweringServer{
         }
     }
 
-    private SSLContext getSslContext() throws Exception {
+    private SSLContext getSslContext(SSLConfig sslConfig) throws Exception {
         var root = certificatesManager.loadRootCertificate("certificates/ca.der","certificates/ca.key");
 
-        var sslConfig = configuration.getConfiguration(SSLConfig.class);
         GeneratedCert domain = certificatesManager.createCertificate(sslConfig.getCname(),null, root,
                 sslConfig.getDomains().stream().map(sslDomain -> sslDomain.getAddress()).collect(Collectors.toList()), false);
 

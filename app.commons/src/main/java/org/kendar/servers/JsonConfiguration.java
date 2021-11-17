@@ -10,4 +10,6 @@ public interface JsonConfiguration {
   void saveConfiguration(String fileName) throws Exception;
 
   String getValue(String varName);
+
+  long getConfigurationTimestamp(Class aClass);
 }
