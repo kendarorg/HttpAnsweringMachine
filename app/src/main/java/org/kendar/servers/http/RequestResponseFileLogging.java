@@ -76,7 +76,7 @@ public class RequestResponseFileLogging implements FilteringClass {
     if (serReq.isStaticRequest() && !staticLogger.isDebugEnabled()) return false;
     if (serReq.isStaticRequest() && !dynamicLogger.isDebugEnabled()) return false;
 
-    if (requestLogger.isDebugEnabled()) {
+    if (requestLogger.isDebugEnabled() && serReq.getRequestText()!=null && serReq.getRequestText().length()>100) {
       serReq.setRequestText(serReq.getRequestText().substring(0, 100));
     } else if (requestLogger.isTraceEnabled()) {
     } else {
@@ -84,7 +84,7 @@ public class RequestResponseFileLogging implements FilteringClass {
     }
     serReq.setRequestBytes(null);
 
-    if (responseLogger.isDebugEnabled()) {
+    if (responseLogger.isDebugEnabled() && serRes.getResponseText()!=null && serRes.getResponseText().length()>100) {
       serRes.setResponseText(serRes.getResponseText().substring(0, 100));
     } else if (responseLogger.isTraceEnabled()) {
     } else {

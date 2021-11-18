@@ -101,7 +101,7 @@
     "logging": {
       "logPath": null,
       "logRoundtripsPath": "recording",
-      "logLevel": "DEBUG",
+      "logLevel": "INFO",
       "loggers": {
         "org.kendar.servers.http.Request": "DEBUG",
         "org.kendar.servers.http.Response": "DEBUG",
