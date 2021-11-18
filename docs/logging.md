@@ -27,6 +27,14 @@ The logLevel is the global log level
             "loggers": {
                 "org.kendar.servers.http.Request":"DEBUG",
 
+### Adding logs
+
+You can add as much classes/paths as you like for logging
+as you do in a normal proerties files e.g. to track all requests
+to base HttpServer
+
+    "com.sun.net.httpserver":"DEBUG"
+
 ## Special loggers
 
 * org.kendar.servers.http.Request: To log the requests, just when they come to the server
