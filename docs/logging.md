@@ -4,21 +4,28 @@ Inside the global configuration you can find the logging configuration.
 These works exactly like the standard Log4j log properties, define the
 package or class and the logging level.
 
+Here a map of the log levels:
+
+![Log levels](loglevels.png)
+
+### The configuration
+
 The logPath variables sets the log file location, null means inside the 
 main jar directory
 
 The logRoundtripsPath sets the directory where to store the full static 
 and dynamic requests. If null does not store anything
 
-The 
+The logLevel is the global log level
 
     [{  "id": "global",
         ...
         "logging": {
             "logPath": null,
             "logRoundtripsPath": null,
-            "loggers": [
-                {"org.kendar.servers.http.Request":"DEBUG"},
+            "logLevel": "INFO",
+            "loggers": {
+                "org.kendar.servers.http.Request":"DEBUG",
 
 ## Special loggers
 
