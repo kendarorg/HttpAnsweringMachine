@@ -62,7 +62,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
         return item.timestamp;
     }
 
-    public void setConfiguration(Object data) {
+    public void setConfiguration(Object data,Runnable runnable) {
         try {
             var aClass = data.getClass();
             if(!mappingStringClasses.containsKey(aClass)){
@@ -86,9 +86,13 @@ public class JsonConfigurationImpl implements JsonConfiguration {
             parsedConfig.deserialized = data;
             parsedConfig.timestamp = Calendar.getInstance().getTimeInMillis();
             deserializedConfigurations.put(sanitizedId, parsedConfig);
+            runnable.run();
         }catch(Exception ex){
 
         }
+    }
+    public void setConfiguration(Object data) {
+        setConfiguration(data,null);
     }
 
     public void loadConfiguration(String fileName) throws Exception {
