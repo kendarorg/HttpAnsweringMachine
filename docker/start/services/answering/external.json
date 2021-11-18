@@ -99,16 +99,17 @@
     "system": true,
     "localAddress": "www.local.test",
     "logging": {
-      "logPath": null,
-      "logRoundtripsPath": null,
-      "logLevel": "DEBUG",
-      "loggers": {
-        "org.kendar.servers.http.Request": "DEBUG",
-        "org.kendar.servers.http.Response": "DEBUG",
-        "org.kendar.servers.http.StaticRequest": "DEBUG",
-        "org.kendar.servers.http.DynamicRequest": "DEBUG",
-        "org.kendar.dns.DnsQueries": "DEBUG"
-      }
+      "request": {
+        "basic": false,
+        "full": false
+      },
+      "response": {
+        "basic": false,
+        "full": false
+      },
+      "path": false,
+      "statics": false,
+      "dynamic": false
     },
     "filters": [
       {

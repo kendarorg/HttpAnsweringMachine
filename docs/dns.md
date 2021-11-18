@@ -97,6 +97,18 @@ those names will contain the address exposed by the local machine
 
 Instead for the www.facebook.com DNS entry will be returned the exact ip set
 
+### Logging
+
+Inside the global logger section you can add a special logger
+
+    org.kendar.dns.DnsQueries
+
+Whose values can be
+
+* NONE: no log at all (default)
+* DEBUG: show successful requests
+* TRACE: show even unsuccessful requests
+
 ## Extra servers, JVM Arguments
 
 You can even add extra servers through the JVM arguments with the "other.dns" property 

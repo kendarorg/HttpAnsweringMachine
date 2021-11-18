@@ -2,60 +2,54 @@ package org.kendar.servers.config;
 
 import org.kendar.servers.Copyable;
 
+import java.util.HashMap;
+import org.apache.logging.log4j.Level;
+
 public class GlobalConfigLogging implements Copyable<GlobalConfigLogging> {
-    private MultilevelLoggingConfig request;
-    private MultilevelLoggingConfig response;
-    private String path;
-    private boolean statics;
-    private boolean dynamic;
+    private String logPath;
+    private String logRoundtripsPath;
+    private Level logLevel;
+    private HashMap<String, Level> loggers = new HashMap<>();
 
-    public MultilevelLoggingConfig getRequest() {
-        return request;
-    }
-
-    public void setRequest(MultilevelLoggingConfig request) {
-        this.request = request;
-    }
-
-    public MultilevelLoggingConfig getResponse() {
-        return response;
-    }
-
-    public void setResponse(MultilevelLoggingConfig response) {
-        this.response = response;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public boolean isStatics() {
-        return statics;
-    }
-
-    public void setStatics(boolean statics) {
-        this.statics = statics;
-    }
-
-    public boolean isDynamic() {
-        return dynamic;
-    }
-
-    public void setDynamic(boolean dynamic) {
-        this.dynamic = dynamic;
-    }
 
     @Override public GlobalConfigLogging copy() {
         var result = new GlobalConfigLogging();
-        result.dynamic = this.dynamic;
-        result.path = this.path;
-        result.request = this.request.copy();
-        result.response = this.response.copy();
-        result.statics = this.statics;
+        result.logPath = this.logPath;
+        result.logRoundtripsPath = this.logRoundtripsPath;
+        result.loggers = new HashMap<>(this.loggers);
+        result.logLevel = this.logLevel;
         return result;
+    }
+
+    public String getLogPath() {
+        return logPath;
+    }
+
+    public void setLogPath(String logPath) {
+        this.logPath = logPath;
+    }
+
+    public String getLogRoundtripsPath() {
+        return logRoundtripsPath;
+    }
+
+    public void setLogRoundtripsPath(String logRoundtripsPath) {
+        this.logRoundtripsPath = logRoundtripsPath;
+    }
+
+    public HashMap<String, Level> getLoggers() {
+        return loggers;
+    }
+
+    public void setLoggers(HashMap<String, Level> loggers) {
+        this.loggers = loggers;
+    }
+
+    public Level getLogLevel() {
+        return logLevel;
+    }
+
+    public void setLogLevel(Level logLevel) {
+        this.logLevel = logLevel;
     }
 }

@@ -2,7 +2,9 @@ package org.kendar;
 
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.config.GlobalConfig;
 import org.kendar.utils.FakeFuture;
+import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,73 +15,98 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 @SpringBootApplication
-public class Main implements CommandLineRunner{
-    private static final int MAX_THREADS=10;
-    @Autowired
-    private ApplicationContext applicationContext;
+public class Main implements CommandLineRunner {
+  private static final int MAX_THREADS = 10;
+  private static final Logger logger = LoggerFactory.getLogger(Main.class);
+  @Autowired private ApplicationContext applicationContext;
 
+  public static void main(String[] args) throws Exception {
 
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
-
-    public static void main(String[] args) throws Exception {
-
-        if(System.getProperty("jdk.tls.acknowledgeCloseNotify")==null){
-            //throw new Exception("SHOULD SET -Djdk.tls.acknowledgeCloseNotify=true");
-        }
-
-        SpringApplication app = new SpringApplication(Main.class);
-        app.setLazyInitialization(true);
-        app.run(args);
+    if (System.getProperty("jdk.tls.acknowledgeCloseNotify") == null) {
+      // throw new Exception("SHOULD SET -Djdk.tls.acknowledgeCloseNotify=true");
     }
 
-    @Override
-    public void run(String... args){
-        var executor = Executors.newFixedThreadPool(MAX_THREADS);
+    SpringApplication app = new SpringApplication(Main.class);
+    app.setLazyInitialization(true);
+    app.run(args);
+  }
 
-        var configuration = applicationContext.getBean(JsonConfiguration.class);
+  @Override
+  public void run(String... args) {
+    var executor = Executors.newFixedThreadPool(MAX_THREADS);
+
+    var configuration = loadConfigurationFile();
+    setupLogging(configuration);
+
+    var answeringServers = applicationContext.getBeansOfType(AnsweringServer.class);
+    Map<AnsweringServer, Future<?>> futures = setupFakeFutures(answeringServers);
+    while (true) {
+      intializeRunners(executor, futures);
+      runRunners(executor, futures);
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+
+      }
+    }
+  }
+
+  private Map<AnsweringServer, Future<?>> setupFakeFutures(Map<String, AnsweringServer> answeringServers) {
+    Map<AnsweringServer, Future<?>> futures = new HashMap();
+    for (AnsweringServer answeringServer : answeringServers.values()) {
+      futures.put(answeringServer, new FakeFuture());
+    }
+    return futures;
+  }
+
+  private void runRunners(ExecutorService executor, Map<AnsweringServer, Future<?>> futures) {
+    for (var future : futures.entrySet()) {
+      if (future.getValue().isDone() || future.getValue().isCancelled()) {
+        if (future.getKey().shouldRun()) {
+          Future<?> f = executor.submit(future.getKey());
+          futures.put(future.getKey(), f);
+        }
+      }
+    }
+  }
+
+  private void intializeRunners(ExecutorService executor, Map<AnsweringServer, Future<?>> futures) {
+    for (var future : futures.entrySet()) {
+      if (future.getValue().isDone() || future.getValue().isCancelled()) {
         try {
-            configuration.loadConfiguration("external.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        var answeringServers = applicationContext.getBeansOfType(AnsweringServer.class);
-        Map<AnsweringServer, Future<?>> futures = new HashMap();
-        for(AnsweringServer answeringServer: answeringServers.values()){
-            futures.put(answeringServer, new FakeFuture());
-        }
-        while(true){
-            for(var future : futures.entrySet()){
-                if(future.getValue().isDone()||future.getValue().isCancelled()){
-                    try {
-                        if(future.getKey().getClass().getMethod("isSystem")!=null) {
-                            if (future.getKey().shouldRun()) {
-                                Future<?> f = executor.submit(future.getKey());
-                                futures.put(future.getKey(), f);
-                            }
-                        }
-                    } catch (NoSuchMethodException e) {
-
-                    }
-                }
+          if (future.getKey().getClass().getMethod("isSystem") != null) {
+            if (future.getKey().shouldRun()) {
+              Future<?> f = executor.submit(future.getKey());
+              futures.put(future.getKey(), f);
             }
-            for(var future : futures.entrySet()){
-                if(future.getValue().isDone()||future.getValue().isCancelled()){
-                    if(future.getKey().shouldRun()){
-                        Future<?> f = executor.submit(future.getKey());
-                        futures.put(future.getKey(),f);
-                    }
-                }
-            }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
+          }
+        } catch (NoSuchMethodException e) {
 
-            }
         }
+      }
     }
+  }
+
+  private JsonConfiguration loadConfigurationFile() {
+    var configuration = applicationContext.getBean(JsonConfiguration.class);
+    try {
+      configuration.loadConfiguration("external.json");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return configuration;
+  }
+
+  private void setupLogging(JsonConfiguration configuration) {
+    var loggerBuilder = applicationContext.getBean(LoggerBuilder.class);
+    var globalConfig = configuration.getConfiguration(GlobalConfig.class);
+    for (var logConf : globalConfig.getLogging().getLoggers().entrySet()) {
+      //loggerBuilder.setLevel(logConf.getKey(), logConf.getValue());
+    }
+  }
 }
