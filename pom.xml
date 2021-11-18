@@ -53,7 +53,7 @@
         <rhino.version>1.7.13</rhino.version>
         <apache.derby.version>10.13.1.1</apache.derby.version>
         <mybatis.orm.version>3.5.7</mybatis.orm.version>
-        <log4j.version>2.13.0</log4j.version>
+        <ch.qos.logback.version>1.2.3</ch.qos.logback.version>
     </properties>
 
     <modules>

@@ -100,7 +100,7 @@
     "localAddress": "www.local.test",
     "logging": {
       "logPath": null,
-      "logRoundtripsPath": null,
+      "logRoundtripsPath": "recording",
       "logLevel": "DEBUG",
       "loggers": {
         "org.kendar.servers.http.Request": "DEBUG",

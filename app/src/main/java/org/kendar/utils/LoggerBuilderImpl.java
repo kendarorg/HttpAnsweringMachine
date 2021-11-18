@@ -1,5 +1,7 @@
 package org.kendar.utils;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -33,6 +35,17 @@ public class LoggerBuilderImpl implements LoggerBuilder {
     public void setLevel(Logger logger, Level level) {
         setLevel(logger.getName(),level);
     }*/
+
+    public void setLevel(String loggerName, Level level) {
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+        var logger = loggerContext.getLogger(loggerName);
+        logger.setLevel(level);
+    }
+
+    public void test(){
+
+    }
 
     private final ConcurrentHashMap<String,Logger> loggers = new ConcurrentHashMap<>();
 

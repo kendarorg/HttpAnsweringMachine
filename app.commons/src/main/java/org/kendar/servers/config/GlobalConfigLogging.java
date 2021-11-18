@@ -3,7 +3,7 @@ package org.kendar.servers.config;
 import org.kendar.servers.Copyable;
 
 import java.util.HashMap;
-import org.apache.logging.log4j.Level;
+import ch.qos.logback.classic.Level;
 
 public class GlobalConfigLogging implements Copyable<GlobalConfigLogging> {
     private String logPath;

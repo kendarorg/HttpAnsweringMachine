@@ -106,7 +106,7 @@ public class Main implements CommandLineRunner {
     var loggerBuilder = applicationContext.getBean(LoggerBuilder.class);
     var globalConfig = configuration.getConfiguration(GlobalConfig.class);
     for (var logConf : globalConfig.getLogging().getLoggers().entrySet()) {
-      //loggerBuilder.setLevel(logConf.getKey(), logConf.getValue());
+      loggerBuilder.setLevel(logConf.getKey(), logConf.getValue());
     }
   }
 }
