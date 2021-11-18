@@ -31,12 +31,14 @@ import java.util.stream.Collectors;
   private final Logger logger;
   private final String localHostAddress;
   private final Environment environment;
+  private final Logger logQueries;
   private ConcurrentHashMap<String, HashSet<String>> localDomains = new ConcurrentHashMap<>();
   private PatternItem localDns;
 
   public DnsMultiResolverImpl(Environment environment, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
     this.environment = environment;
     this.logger = loggerBuilder.build(DnsMultiResolverImpl.class);
+    this.logQueries = loggerBuilder.build(DnqQueries.class);
     this.localHostAddress = getLocalHostLANAddress();
     this.configuration = configuration;
     this.globalConfig = configuration.getConfiguration(GlobalConfig.class);
@@ -158,7 +160,7 @@ import java.util.stream.Collectors;
       for (int i = 0; i < config.getResolved().size(); i++) {
         var item = config.getResolved().get(i);
         if (item.match(requestedDomain)) {
-          if (config.isLogQueries()) {
+          if (logQueries.isDebugEnabled() || logQueries.isTraceEnabled()) {
             logger.info("Pattern " + item.getIp());
             logger.info("Request " + requestedDomain);
             logger.info("Ip " + item.getIp());
@@ -173,11 +175,17 @@ import java.util.stream.Collectors;
       }
     }
     var result = new ArrayList<>(data);
-    if (config.isLogQueries()) {
+    if (logQueries.isDebugEnabled() || logQueries.isTraceEnabled()) {
       if (result.size() > 0) {
         logger.info("Resolved local " + requestedDomain + result.get(0));
       }
     }
+    if (logQueries.isTraceEnabled()) {
+      if (result.size() == 0) {
+        logger.info("Unable to resolve locally " + requestedDomain);
+      }
+    }
+
     return data;
   }
 
@@ -251,9 +259,15 @@ import java.util.stream.Collectors;
       }
     }
     var result = new ArrayList<>(data);
-    if (config.isLogQueries()) {
+    if (logQueries.isDebugEnabled() || logQueries.isTraceEnabled()) {
       if (result.size() > 0) {
         logger.info("Resloved remote " + requestedDomain + result.get(0));
+      }
+    }
+
+    if (logQueries.isTraceEnabled()) {
+      if (result.size() == 0) {
+        logger.info("Unable to resolve locally " + requestedDomain);
       }
     }
     return result;

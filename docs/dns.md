@@ -105,7 +105,7 @@ Inside the global logger section you can add a special logger
 
 Whose values can be
 
-* NONE: no log at all (default)
+* OFF: no log at all (default)
 * DEBUG: show successful requests
 * TRACE: show even unsuccessful requests
 

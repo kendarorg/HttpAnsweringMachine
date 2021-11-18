@@ -10,7 +10,6 @@ import java.util.List;
 @ConfigAttribute(id="dns")
 public class DnsConfig extends BaseJsonConfig<DnsConfig> implements SpecialJsonConfig {
     private boolean active;
-    private boolean logQueries;
     private int port;
     private List<ExtraDnsServer> extraServers;
     private List<String> blocked;
@@ -66,7 +65,6 @@ public class DnsConfig extends BaseJsonConfig<DnsConfig> implements SpecialJsonC
         result.active =this.active;
         result.blocked = new ArrayList<>( this.blocked);
         result.port = this.port;
-        result.logQueries = this.logQueries;
         result.resolved = new ArrayList<>();
         for (int i = 0; i < this.resolved.size(); i++) {
             var resol = this.resolved.get(i);
@@ -78,14 +76,6 @@ public class DnsConfig extends BaseJsonConfig<DnsConfig> implements SpecialJsonC
             result.extraServers.add(ext.copy());
         }
         return result;
-    }
-
-    public boolean isLogQueries() {
-        return logQueries;
-    }
-
-    public void setLogQueries(boolean logQueries) {
-        this.logQueries = logQueries;
     }
 
     @Override public void preSave() {
