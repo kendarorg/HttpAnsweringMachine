@@ -103,11 +103,11 @@
       "logRoundtripsPath": "recording",
       "logLevel": "INFO",
       "loggers": {
-        "org.kendar.servers.http.Request": "DEBUG",
-        "org.kendar.servers.http.Response": "DEBUG",
-        "org.kendar.servers.http.StaticRequest": "DEBUG",
-        "org.kendar.servers.http.DynamicRequest": "DEBUG",
-        "org.kendar.dns.DnsQueries": "DEBUG"
+        "org.kendar.servers.http.Request": "OFF",
+        "org.kendar.servers.http.Response": "OFF",
+        "org.kendar.servers.http.StaticRequest": "OFF",
+        "org.kendar.servers.http.DynamicRequest": "OFF",
+        "org.kendar.dns.DnsQueries": "OFF"
       }
     },
     "filters": [
