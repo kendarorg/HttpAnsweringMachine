@@ -1,4 +1,4 @@
 package org.kendar.dns;
 
-public class DnqQueries {
+public class DnsQueries {
 }

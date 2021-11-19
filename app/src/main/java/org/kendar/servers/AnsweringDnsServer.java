@@ -1,8 +1,11 @@
 package org.kendar.servers;
 
+import org.kendar.dns.DnsQueries;
 import org.kendar.dns.DnsServer;
 import org.kendar.dns.configurations.DnsConfig;
 import org.kendar.servers.config.WebServerConfig;
+import org.kendar.servers.http.PluginsInitializer;
+import org.kendar.servers.http.Request;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,10 +28,13 @@ public class AnsweringDnsServer implements AnsweringServer {
     public AnsweringDnsServer(
       LoggerBuilder loggerBuilder,
       DnsServer dnsServer,
-      JsonConfiguration configuration){
+      JsonConfiguration configuration,
+      PluginsInitializer pluginsInitializer){
         this.logger = loggerBuilder.build(AnsweringDnsServer.class);
         this.dnsServer = dnsServer;
         this.configuration = configuration;
+
+        pluginsInitializer.addSpecialLogger(DnsQueries.class.getName(),"DNS Logging (DEBUG,TRACE)");
     }
 
     @Override

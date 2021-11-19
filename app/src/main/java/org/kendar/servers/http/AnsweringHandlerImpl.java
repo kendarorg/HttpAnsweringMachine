@@ -83,7 +83,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
       FilteringClassesHandler filteringClassesHandler,
       SimpleProxyHandler simpleProxyHandler,
       RequestResponseBuilder requestResponseBuilder,
-      JsonConfiguration configuration) {
+      PluginsInitializer pluginsInitializer) {
     this.logger = loggerBuilder.build(AnsweringHandlerImpl.class);
     this.requestLogger = loggerBuilder.build(Request.class);
     this.multiResolver = multiResolver;
@@ -91,6 +91,10 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     this.simpleProxyHandler = simpleProxyHandler;
 
     this.requestResponseBuilder = requestResponseBuilder;
+    pluginsInitializer.addSpecialLogger(Request.class.getName(),"Requests Logging (INFO,DEBUG,TRACE)");
+    pluginsInitializer.addSpecialLogger(Response.class.getName(),"Responses Logging (DEBUG,TRACE)");
+    pluginsInitializer.addSpecialLogger(StaticRequest.class.getName(),"Log static requests as file (DEBUG)");
+    pluginsInitializer.addSpecialLogger(StaticRequest.class.getName(),"Log dynamic requests as file (DEBUG)");
   }
 
   @PostConstruct

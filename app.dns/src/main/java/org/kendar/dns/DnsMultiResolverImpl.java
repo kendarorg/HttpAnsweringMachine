@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
   public DnsMultiResolverImpl(Environment environment, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
     this.environment = environment;
     this.logger = loggerBuilder.build(DnsMultiResolverImpl.class);
-    this.logQueries = loggerBuilder.build(DnqQueries.class);
+    this.logQueries = loggerBuilder.build(DnsQueries.class);
     this.localHostAddress = getLocalHostLANAddress();
     this.configuration = configuration;
     this.globalConfig = configuration.getConfiguration(GlobalConfig.class);

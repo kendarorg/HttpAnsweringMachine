@@ -10,6 +10,7 @@ import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
+import org.kendar.servers.http.PluginsInitializer;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
@@ -23,12 +24,14 @@ import java.util.Locale;
 public class LoggingApi implements FilteringClass {
   private JsonConfiguration configuration;
   private LoggerBuilder loggerBuilder;
+  private PluginsInitializer pluginsInitializer;
   ObjectMapper mapper = new ObjectMapper();
 
-  public LoggingApi(JsonConfiguration configuration, LoggerBuilder loggerBuilder){
+  public LoggingApi(JsonConfiguration configuration, LoggerBuilder loggerBuilder, PluginsInitializer pluginsInitializer){
 
     this.configuration = configuration;
     this.loggerBuilder = loggerBuilder;
+    this.pluginsInitializer = pluginsInitializer;
   }
   public void setLevelOfLog(String logger,Level level){
     var config = configuration.getConfiguration(GlobalConfig.class);
@@ -43,6 +46,18 @@ public class LoggingApi implements FilteringClass {
     var config = configuration.getConfiguration(GlobalConfig.class);
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(config.getLogging().getLoggers()));
+    return false;
+  }
+
+
+
+  @HttpMethodFilter(phase = HttpFilterType.API,
+    pathAddress = "/api/specialloggers",
+    method = "GET",id="1000aab4-277d-a1tf-5621-0242ac130002")
+  public boolean getSpecialLoggers(Request req, Response res) throws JsonProcessingException {
+    var specialLoggers = pluginsInitializer.getSpecialLoggers();
+    res.addHeader("Content-type", "application/json");
+    res.setResponseText(mapper.writeValueAsString(specialLoggers));
     return false;
   }
 

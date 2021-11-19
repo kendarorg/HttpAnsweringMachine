@@ -19,20 +19,20 @@ import java.util.List;
 @Component
 public class DefaultFiltersLoader implements CustomFiltersLoader {
     private final Logger logger;
-    private PluginsAddressesRecorder pluginsAddressesRecorder;
+    private PluginsInitializer pluginsInitializer;
     private JsonConfiguration jsonConfiguration;
     private final List<FilteringClass> filteringClassList;
     private final Environment environment;
 
     public DefaultFiltersLoader(List<FilteringClass> filteringClassList,
                                 Environment environment, LoggerBuilder loggerBuilder,
-                                PluginsAddressesRecorder pluginsAddressesRecorder,
+                                PluginsInitializer pluginsInitializer,
                                 JsonConfiguration jsonConfiguration){
 
         this.filteringClassList = filteringClassList;
         this.environment = environment;
         logger = loggerBuilder.build(DefaultFiltersLoader.class);
-        this.pluginsAddressesRecorder = pluginsAddressesRecorder;
+        this.pluginsInitializer = pluginsInitializer;
         this.jsonConfiguration = jsonConfiguration;
     }
 
@@ -48,7 +48,7 @@ public class DefaultFiltersLoader implements CustomFiltersLoader {
             if(methodFilter==null) continue;
             if(cl instanceof StaticWebFilter){
                 var swf =(StaticWebFilter)cl;
-                pluginsAddressesRecorder.addPluginAddress(swf.getAddress(),swf.getDescription());
+                pluginsInitializer.addPluginAddress(swf.getAddress(),swf.getDescription());
             }
             result.add(new FilterDescriptor(this,typeFilter,methodFilter,m,cl,environment,jsonConfiguration));
         }

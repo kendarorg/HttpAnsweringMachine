@@ -6,7 +6,7 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
-import org.kendar.servers.http.PluginsAddressesRecorder;
+import org.kendar.servers.http.PluginsInitializer;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.http.api.model.PluginDescriptor;
@@ -19,11 +19,11 @@ import java.util.ArrayList;
         blocking = true)
 public class PluginsApi implements FilteringClass {
     ObjectMapper mapper = new ObjectMapper();
-    private PluginsAddressesRecorder pluginsAddressesRecorder;
+    private PluginsInitializer pluginsInitializer;
 
-    public PluginsApi(PluginsAddressesRecorder pluginsAddressesRecorder){
+    public PluginsApi(PluginsInitializer pluginsInitializer){
 
-        this.pluginsAddressesRecorder = pluginsAddressesRecorder;
+        this.pluginsInitializer = pluginsInitializer;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class PluginsApi implements FilteringClass {
             method = "GET",id="1zty7a4b4-277d-11ec-9621-0242ac130002")
     public boolean getStatus(Request req, Response res) throws JsonProcessingException {
         var result = new ArrayList<PluginDescriptor>();
-        for(var item : pluginsAddressesRecorder.getPluginAddresses().entrySet()){
+        for(var item : pluginsInitializer.getPluginAddresses().entrySet()){
             result.add(new PluginDescriptor(item.getKey(),item.getValue()));
         }
 
