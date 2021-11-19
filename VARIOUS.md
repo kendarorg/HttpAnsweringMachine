@@ -176,3 +176,12 @@ curl \
 -F "filecomment=This is an image file" \
 -F "image=@favicon.ico" \
 http://replayer.local.org/api/plugins/replayer/recording
+
+
+
+https://github.com/springfox/springfox/blob/master/springfox-spring-web/src/main/java/springfox/documentation/spring/web/scanners/ApiListingScanner.java
+
+      List<RequestMappingContext> requestMappings = nullToEmptyList(requestMappingsByResourceGroup.get(resourceGroup));
+      for (RequestMappingContext each : sortedByMethods(requestMappings)) {
+
+https://github.com/springfox/springfox/blob/ab5868471cdbaf54dac01af12933fe0437cf2b01/springfox-data-rest/src/main/java/springfox/documentation/spring/data/rest/SpecificationBuilder.java#L316

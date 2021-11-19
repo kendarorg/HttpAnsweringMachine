@@ -32,6 +32,6 @@ public @interface HttpMethodFilter {
      */
     String pathPattern() default "";
     String method() default "";
-    String name() default "";
+    String description() default "";
     String id();
 }

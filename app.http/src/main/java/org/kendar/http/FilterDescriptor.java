@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 public class FilterDescriptor {
 
+    private String description;
     private AtomicBoolean enabled=new AtomicBoolean(true);
     private final int priority;
     private final String method;
@@ -50,6 +51,7 @@ public class FilterDescriptor {
       Environment environment, JsonConfiguration jsonConfiguration) {
         this.loader = loader;
         this.id = methodFilter.id();
+        this.description = methodFilter.description();
         this.callback = callback;
         this.filterClass = filterClass;
         this.jsonConfiguration = jsonConfiguration;
@@ -156,9 +158,8 @@ public class FilterDescriptor {
                 return loc.method;
             }
 
-            @Override
-            public String name() {
-                return "";
+            @Override public String description() {
+                return loc.description;
             }
 
             @Override

@@ -40,7 +40,7 @@ public class LoggingApi implements FilteringClass {
   }
 
   @HttpMethodFilter(phase = HttpFilterType.API,
-    pathAddress = "/api/logger",
+    pathAddress = "/api/log/logger",
     method = "GET",id="1000aab4-277d-a1ef-5621-0242ac130002")
   public boolean getLoggers(Request req, Response res) throws JsonProcessingException {
     var config = configuration.getConfiguration(GlobalConfig.class);
@@ -52,7 +52,7 @@ public class LoggingApi implements FilteringClass {
 
 
   @HttpMethodFilter(phase = HttpFilterType.API,
-    pathAddress = "/api/specialloggers",
+    pathAddress = "/api/log/special",
     method = "GET",id="1000aab4-277d-a1tf-5621-0242ac130002")
   public boolean getSpecialLoggers(Request req, Response res) throws JsonProcessingException {
     var specialLoggers = pluginsInitializer.getSpecialLoggers();
@@ -62,7 +62,7 @@ public class LoggingApi implements FilteringClass {
   }
 
   @HttpMethodFilter(phase = HttpFilterType.API,
-    pathAddress = "/api/logger/{id}",
+    pathAddress = "/api/log/logger/{id}",
     method = "GET",id="1000a4b-277d-a1ef-5621-0242ac130002")
   public boolean getLogger(Request req, Response res) throws JsonProcessingException {
     var config = configuration.getConfiguration(GlobalConfig.class);
@@ -74,7 +74,7 @@ public class LoggingApi implements FilteringClass {
   }
 
   @HttpMethodFilter(phase = HttpFilterType.API,
-    pathAddress = "/api/logger/{id}",
+    pathAddress = "/api/log/logger/{id}",
     method = "DELETE",id="10d0a4b4-277d-a1ef-5621-0242ac130002")
   public boolean deleteLogger(Request req, Response res) throws JsonProcessingException {
     var config = configuration.getConfiguration(GlobalConfig.class);
@@ -87,7 +87,7 @@ public class LoggingApi implements FilteringClass {
   }
 
   @HttpMethodFilter(phase = HttpFilterType.API,
-    pathAddress = "/api/logger/{id}",
+    pathAddress = "/api/log/logger/{id}",
     method = "POST",id="10c0a4b4-277d-a1ef-5621-0242ac130002")
   public boolean setLogger(Request req, Response res) throws JsonProcessingException {
     var config = configuration.getConfiguration(GlobalConfig.class);
