@@ -5,12 +5,9 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
-import org.kendar.servers.JsonConfiguration;
-import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -28,12 +25,9 @@ public class CertificatesController implements FilteringClass {
     private FileResourcesUtils fileResourcesUtils;
     ObjectMapper mapper = new ObjectMapper();
 
-    private String localhost;
-
-    public CertificatesController(FileResourcesUtils fileResourcesUtils, JsonConfiguration configuration){
+    public CertificatesController(FileResourcesUtils fileResourcesUtils){
 
         this.fileResourcesUtils = fileResourcesUtils;
-        this.localhost = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
     }
     @Override
     public String getId() {

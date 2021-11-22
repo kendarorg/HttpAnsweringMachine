@@ -1,8 +1,5 @@
 package org.kendar;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 public class TestDerby {
     /*public void test() throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {
         Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();

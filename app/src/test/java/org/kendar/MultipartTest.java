@@ -1,33 +1,5 @@
 package org.kendar;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.junit.Assert;
-import org.junit.Test;
-import org.kendar.mocks.EnvironmentImpl;
-import org.kendar.servers.AnsweringHttpServer;
-import org.kendar.dns.DnsMultiResolverImpl;
-import org.kendar.servers.http.AnsweringHandlerImpl;
-import org.kendar.servers.proxy.SimpleProxyHandlerImpl;
-import org.kendar.utils.LoggerBuilderImpl;
-import org.kendar.utils.SimpleStringUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
 public class MultipartTest {
     /*
     @Test

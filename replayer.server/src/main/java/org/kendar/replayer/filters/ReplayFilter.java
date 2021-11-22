@@ -10,29 +10,32 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 @HttpTypeFilter(hostAddress = "*")
-public class ReplayFilter  implements FilteringClass {
-    private String localAddress;
+public class ReplayFilter implements FilteringClass {
+  private final ReplayerStatus replayerStatus;
+  private String localAddress;
 
-    @Override
-    public String getId() {
-        return "org.kendar.replayer.filters.RecordFilter";
-    }
-    private final ReplayerStatus replayerStatus;
+  public ReplayFilter(ReplayerStatus replayerStatus, JsonConfiguration configuration) {
+    this.replayerStatus = replayerStatus;
+    this.localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
+  }
 
-    public ReplayFilter(ReplayerStatus replayerStatus, JsonConfiguration configuration){
-        this.replayerStatus = replayerStatus;
-        this.localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
-    }
-    @HttpMethodFilter(phase = HttpFilterType.PRE_RENDER,pathAddress ="*",method = "*",id="8000daa6-277f-11ec-9621-0242ac1afe002")
-    public boolean replay(Request req, Response res){
-        if(req.getHost().equalsIgnoreCase(localAddress))return false;
-        if(replayerStatus.getStatus()!= ReplayerState.REPLAYING)return false;
-        var block = replayerStatus.replay(req,res);
-        return block;
-    }
+  @Override
+  public String getId() {
+    return "org.kendar.replayer.filters.RecordFilter";
+  }
+
+  @HttpMethodFilter(
+      phase = HttpFilterType.PRE_RENDER,
+      pathAddress = "*",
+      method = "*",
+      id = "8000daa6-277f-11ec-9621-0242ac1afe002")
+  public boolean replay(Request req, Response res) {
+    if (req.getHost().equalsIgnoreCase(localAddress)) return false;
+    if (replayerStatus.getStatus() != ReplayerState.REPLAYING) return false;
+    return replayerStatus.replay(req, res);
+  }
 }

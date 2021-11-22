@@ -8,7 +8,6 @@ import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -22,21 +21,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@Component public class DnsMultiResolverImpl implements DnsMultiResolver {
+@Component
+public class DnsMultiResolverImpl implements DnsMultiResolver {
 
-  private final Pattern ipPattern = Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
+  private final Pattern ipPattern =
+      Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
   private final JsonConfiguration configuration;
   private final GlobalConfig globalConfig;
   private final ExecutorService executorService = Executors.newFixedThreadPool(20);
   private final Logger logger;
   private final String localHostAddress;
-  private final Environment environment;
   private final Logger logQueries;
   private ConcurrentHashMap<String, HashSet<String>> localDomains = new ConcurrentHashMap<>();
   private PatternItem localDns;
 
-  public DnsMultiResolverImpl(Environment environment, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
-    this.environment = environment;
+  public DnsMultiResolverImpl(LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
     this.logger = loggerBuilder.build(DnsMultiResolverImpl.class);
     this.logQueries = loggerBuilder.build(DnsQueries.class);
     this.localHostAddress = getLocalHostLANAddress();
@@ -44,19 +43,20 @@ import java.util.stream.Collectors;
     this.globalConfig = configuration.getConfiguration(GlobalConfig.class);
   }
 
-  @PostConstruct public void init() {
+  @PostConstruct
+  public void init() {
     localDns = new PatternItem("id", globalConfig.getLocalAddress(), localHostAddress);
     var cloned = configuration.getConfiguration(DnsConfig.class).copy();
-    String hostsFile = "";
+    StringBuilder hostsFile = new StringBuilder();
     for (int i = 0; i < cloned.getResolved().size(); i++) {
       var record = cloned.getResolved().get(i);
-      hostsFile += record.writeHostsLine() + "\n";
+      hostsFile.append(record.writeHostsLine()).append("\n");
     }
 
     if (hostsFile.length() > 0) {
       try {
         var myWriter = new FileWriter("hosts.txt");
-        myWriter.write(hostsFile);
+        myWriter.write(hostsFile.toString());
         myWriter.close();
       } catch (IOException e) {
         e.printStackTrace();
@@ -68,14 +68,14 @@ import java.util.stream.Collectors;
       extraServer.setEnv(false);
     }
     var otherDnss = System.getProperty("other.dns");
-    if(otherDnss!=null && !otherDnss.isEmpty()){
+    if (otherDnss != null && !otherDnss.isEmpty()) {
       var splitted = otherDnss.split(",");
       for (var split : splitted) {
-       var newExtra = new ExtraDnsServer();
-       newExtra.setEnv(true);
-       newExtra.setId(UUID.randomUUID().toString());
-       newExtra.setAddress(split);
-       cloned.getExtraServers().add(newExtra);
+        var newExtra = new ExtraDnsServer();
+        newExtra.setEnv(true);
+        newExtra.setId(UUID.randomUUID().toString());
+        newExtra.setAddress(split);
+        cloned.getExtraServers().add(newExtra);
       }
     }
     for (int i = 0; i < cloned.getExtraServers().size(); i++) {
@@ -101,7 +101,8 @@ import java.util.stream.Collectors;
     try {
       InetAddress candidateAddress = null;
       // Iterate all NICs (network interface cards)...
-      for (Enumeration ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements(); ) {
+      for (Enumeration ifaces = NetworkInterface.getNetworkInterfaces();
+          ifaces.hasMoreElements(); ) {
         NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
         // Iterate all IP addresses assigned to each card...
         for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements(); ) {
@@ -113,9 +114,11 @@ import java.util.stream.Collectors;
               return inetAddr.getHostAddress();
             } else if (candidateAddress == null) {
               // Found non-loopback address, but not necessarily site-local.
-              // Store it as a candidate to be returned if site-local address is not subsequently found...
+              // Store it as a candidate to be returned if site-local address is not subsequently
+              // found...
               candidateAddress = inetAddr;
-              // Note that we don't repeatedly assign non-loopback non-site-local addresses as candidates,
+              // Note that we don't repeatedly assign non-loopback non-site-local addresses as
+              // candidates,
               // only the first. For subsequent iterations, candidate will be non-null.
             }
           }
@@ -140,7 +143,8 @@ import java.util.stream.Collectors;
     }
   }
 
-  @Override public List<String> resolveLocal(String requestedDomain) {
+  @Override
+  public List<String> resolveLocal(String requestedDomain) {
     var config = configuration.getConfiguration(DnsConfig.class);
     var data = new ArrayList<String>();
     if (localDns.match(requestedDomain)) {
@@ -164,7 +168,6 @@ import java.util.stream.Collectors;
             logger.info("Pattern " + item.getIp());
             logger.info("Request " + requestedDomain);
             logger.info("Ip " + item.getIp());
-
           }
           if (item.getIp().equalsIgnoreCase("127.0.0.1")) {
             data.add(this.localHostAddress);
@@ -189,7 +192,8 @@ import java.util.stream.Collectors;
     return data;
   }
 
-  @Override public List<String> resolveRemote(String requestedDomain, boolean fromLocalHost) {
+  @Override
+  public List<String> resolveRemote(String requestedDomain, boolean fromLocalHost) {
     var config = configuration.getConfiguration(DnsConfig.class);
     if (isBlockedDomainQuery(requestedDomain, config)) {
       return new ArrayList<>();
@@ -200,7 +204,7 @@ import java.util.stream.Collectors;
     var extraServersList = config.getExtraServers();
     for (int i = 0; i < extraServersList.size(); i++) {
       var serverToCall = extraServersList.get(i);
-      if(!serverToCall.isEnabled()) continue;
+      if (!serverToCall.isEnabled()) continue;
       var runnable = new DnsRunnable(serverToCall.getResolved(), requestedDomain);
       runnables.add(runnable);
     }
@@ -211,13 +215,13 @@ import java.util.stream.Collectors;
       e.printStackTrace();
     }
     int finished = futures.size();
-    //This method returns the time in millis
+    // This method returns the time in millis
     long timeMilli = new Date().getTime();
     long timeEnd = timeMilli + 2000;
 
     while (finished != 0) {
       if (timeEnd <= new Date().getTime()) {
-        //System.out.println("================");
+        // System.out.println("================");
         for (var current : futures) {
           current.cancel(true);
         }
@@ -235,9 +239,7 @@ import java.util.stream.Collectors;
               continue;
             }
             for (String address : current.get()) {
-              if (!data.contains(address)) {
-                data.add(address);
-              }
+              data.add(address);
             }
             for (var future : futures) {
               if (!future.isDone()) {
@@ -247,7 +249,7 @@ import java.util.stream.Collectors;
             futures.clear();
             if (data.size() > 0) {
               localDomains.put(requestedDomain, new HashSet<>(data));
-            } else if (localDomains.containsKey(requestedDomain)) {
+            } else {
               localDomains.remove(requestedDomain);
             }
             return new ArrayList<>(data);
@@ -255,7 +257,6 @@ import java.util.stream.Collectors;
             e.printStackTrace();
           }
         }
-
       }
     }
     var result = new ArrayList<>(data);
@@ -296,9 +297,10 @@ import java.util.stream.Collectors;
     return shouldBlock;
   }
 
-  @Override public List<String> resolve(String requestedDomain, boolean fromLocalhost) {
+  @Override
+  public List<String> resolve(String requestedDomain, boolean fromLocalhost) {
     if (localDomains.containsKey(requestedDomain)) {
-      return localDomains.get(requestedDomain).stream().collect(Collectors.toList());
+      return new ArrayList<>(localDomains.get(requestedDomain));
     }
 
     var localData = resolveLocal(requestedDomain);

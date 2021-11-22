@@ -11,7 +11,6 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -177,14 +176,12 @@ public class JsFilterLoader implements CustomFiltersLoader {
     private static final SandboxClassShutter sandboxClassShutter = new SandboxClassShutter();
 
     private void precompileFilter(JsFilterDescriptor filterDescriptor) throws Exception {
-        String scriptSrc = "var globalFilterResult=runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON));\n" +
-                "globalResult.put('request', JSON.stringify(globalFilterResult.request));\n"+
-                "globalResult.put('response', JSON.stringify(globalFilterResult.response));\n"+
-                "globalResult.put('continue', globalFilterResult.continue);\n";
+        StringBuilder scriptSrc = new StringBuilder(
+          "var globalFilterResult=runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON));\n" + "globalResult.put('request', JSON.stringify(globalFilterResult.request));\n" + "globalResult.put('response', JSON.stringify(globalFilterResult.response));\n" + "globalResult.put('continue', globalFilterResult.continue);\n");
         //Load all scripts
 
         for (var file :filterDescriptor.getRequires()) {
-            scriptSrc +="\r\n"+ Files.readString(Path.of(filterDescriptor.getRoot()+File.separator+file));
+            scriptSrc.append("\r\n").append(Files.readString(Path.of(filterDescriptor.getRoot() + File.separator + file)));
         }
 
         Context cx = Context.enter();
@@ -193,11 +190,11 @@ public class JsFilterLoader implements CustomFiltersLoader {
         cx.setClassShutter(sandboxClassShutter);
         try {
             Scriptable currentScope = getNewScope(cx);
-            filterDescriptor.setSource(scriptSrc);
-            filterDescriptor.setScript(cx.compileString(scriptSrc, "my_script_id", 1, null));
+            filterDescriptor.setSource(scriptSrc.toString());
+            filterDescriptor.setScript(cx.compileString(scriptSrc.toString(), "my_script_id", 1, null));
         }catch (Exception ex){
             logger.error("Error compiling script");
-            logger.error(scriptSrc);
+            logger.error(scriptSrc.toString());
             throw new Exception(ex);
         } finally {
             Context.exit();

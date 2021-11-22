@@ -22,12 +22,12 @@ public class FakeFuture implements Future<Object> {
     }
 
     @Override
-    public Object get() throws InterruptedException, ExecutionException {
+    public Object get()  {
         return null;
     }
 
     @Override
-    public Object get(long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
+    public Object get(long l, TimeUnit timeUnit) {
         return null;
     }
 }

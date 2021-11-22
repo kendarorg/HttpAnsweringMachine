@@ -23,8 +23,6 @@ public class CustomHttpConectionBuilderImpl implements CustomHttpConectionBuilde
     private final DnsMultiResolver dnsMultiResolver;
 
     private HttpClientConnectionManager connManager;
-    private SystemDefaultDnsResolver dnsResolver;
-
 
     public CustomHttpConectionBuilderImpl(LoggerBuilder loggerBuilder, DnsMultiResolver  dnsMultiResolver){
         this.logger = loggerBuilder.build(CustomHttpConectionBuilderImpl.class);
@@ -34,15 +32,17 @@ public class CustomHttpConectionBuilderImpl implements CustomHttpConectionBuilde
 
     @PostConstruct
     public void init(){
-        this.dnsResolver = new SystemDefaultDnsResolver() {
-            @Override
-            public InetAddress[] resolve(final String host) throws UnknownHostException {
-                var hosts = dnsMultiResolver.resolve(host,false);
+        /* If we match the host we're trying to talk to,
+                       return the IP address we want, not what is in DNS */
+        /* Else, resolve it as we would normally */
+        SystemDefaultDnsResolver dnsResolver = new SystemDefaultDnsResolver() {
+            @Override public InetAddress[] resolve(final String host) throws UnknownHostException {
+                var hosts = dnsMultiResolver.resolve(host, false);
                 var address = new InetAddress[hosts.size()];
-                for(int i=0;i< hosts.size();i++){
+                for (int i = 0; i < hosts.size(); i++) {
                     address[i] = InetAddress.getByName(hosts.get(i));
                 }
-                if (address.length>0) {
+                if (address.length > 0) {
                     /* If we match the host we're trying to talk to,
                        return the IP address we want, not what is in DNS */
                     return address;
@@ -58,8 +58,7 @@ public class CustomHttpConectionBuilderImpl implements CustomHttpConectionBuilde
                 RegistryBuilder.<ConnectionSocketFactory>create()
                         .register("http", PlainConnectionSocketFactory.getSocketFactory())
                         .register("https", SSLConnectionSocketFactory.getSocketFactory())
-                        .build(),
-                dnsResolver  // Our DnsResolver
+                        .build(), dnsResolver  // Our DnsResolver
         );
     }
 

@@ -17,12 +17,10 @@ import org.kendar.replayer.storage.ReplayerResult;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
-import org.kendar.servers.http.RequestUtils;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -132,7 +130,7 @@ public class ReplayerAPICrud implements FilteringClass {
         if(Files.exists(rootPath)){
             var fileContent = Files.readString(rootPath);
             var result = mapper.readValue(fileContent,ReplayerResult.class);
-            var scriptData = mapper.readValue((String)req.getRequestText(), ScriptData.class);
+            var scriptData = mapper.readValue(req.getRequestText(), ScriptData.class);
             result.setDescription(scriptData.getDescription());
             result.setFilter(scriptData.getFilter());
             var resultInFile = mapper.writeValueAsString(result);

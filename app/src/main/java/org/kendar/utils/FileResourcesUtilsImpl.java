@@ -136,14 +136,14 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
     }
 
     public String buildPathRelative(String... paths) {
-        var result = paths[0];
+        StringBuilder result = new StringBuilder(paths[0]);
         try {
             for (var i = 1; i < paths.length; i++) {
                 paths[i] = paths[i].replace("/", File.separator);
                 paths[i] = paths[i].replace("\\", File.separator);
             }
-            while (result.endsWith("/") || result.endsWith("\\")) {
-                result = result.substring(0, result.length() - 1);
+            while (result.toString().endsWith("/") || result.toString().endsWith("\\")) {
+                result = new StringBuilder(result.substring(0, result.length() - 1));
             }
             for (var i = 1; i < paths.length; i++) {
                 var cur = paths[i];
@@ -153,10 +153,10 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
                 while (cur.startsWith("/") || cur.startsWith("\\")) {
                     cur = cur.substring(1);
                 }
-                result += File.separator + cur;
+                result.append(File.separator).append(cur);
             }
 
-            return result;
+            return result.toString();
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             return null;
@@ -164,7 +164,7 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
     }
 
     @Override
-    public HashMap<String, Object> loadResources(Object clazz, String path) throws URISyntaxException, IOException {
+    public HashMap<String, Object> loadResources(Object clazz, String path) throws  IOException {
         if (path.startsWith("/")) {
             path = path.substring(1);
         }
@@ -219,7 +219,6 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
                     }
                 }
             } catch (Exception e) {
-                continue;
             }
         }
     }

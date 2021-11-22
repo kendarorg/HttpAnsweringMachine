@@ -1,14 +1,12 @@
 package org.kendar.servers.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.bouncycastle.cert.ocsp.Req;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
-import org.kendar.servers.config.StaticPage;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -76,7 +74,9 @@ public class RequestResponseFileLogging implements FilteringClass {
     if (serReq.isStaticRequest() && !staticLogger.isDebugEnabled()) return false;
     if (serReq.isStaticRequest() && !dynamicLogger.isDebugEnabled()) return false;
 
-    if (requestLogger.isDebugEnabled() && serReq.getRequestText()!=null && serReq.getRequestText().length()>100) {
+    if (requestLogger.isDebugEnabled()
+        && serReq.getRequestText() != null
+        && serReq.getRequestText().length() > 100) {
       serReq.setRequestText(serReq.getRequestText().substring(0, 100));
     } else if (requestLogger.isTraceEnabled()) {
     } else {
@@ -84,7 +84,9 @@ public class RequestResponseFileLogging implements FilteringClass {
     }
     serReq.setRequestBytes(null);
 
-    if (responseLogger.isDebugEnabled() && serRes.getResponseText()!=null && serRes.getResponseText().length()>100) {
+    if (responseLogger.isDebugEnabled()
+        && serRes.getResponseText() != null
+        && serRes.getResponseText().length() > 100) {
       serRes.setResponseText(serRes.getResponseText().substring(0, 100));
     } else if (responseLogger.isTraceEnabled()) {
     } else {
@@ -139,15 +141,15 @@ public class RequestResponseFileLogging implements FilteringClass {
   }
 
   private String cleanUp(String s) {
-    String result = "";
+    StringBuilder result = new StringBuilder();
     for (var c : s.toCharArray()) {
       if (c == '.') c = '-';
       if (c == '\\') c = '-';
       if (c == '/') c = '-';
       if (c == '`') c = '-';
       if (c == ':') c = '-';
-      result += c;
+      result.append(c);
     }
-    return result;
+    return result.toString();
   }
 }

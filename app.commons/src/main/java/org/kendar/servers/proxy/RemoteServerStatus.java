@@ -1,7 +1,5 @@
 package org.kendar.servers.proxy;
 
-import java.util.UUID;
-
 public class RemoteServerStatus {
     private String id;
     private String when;

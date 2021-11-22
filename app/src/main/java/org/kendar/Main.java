@@ -25,7 +25,7 @@ public class Main implements CommandLineRunner {
   private static final Logger logger = LoggerFactory.getLogger(Main.class);
   @Autowired private ApplicationContext applicationContext;
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
 
     if (System.getProperty("jdk.tls.acknowledgeCloseNotify") == null) {
       // throw new Exception("SHOULD SET -Djdk.tls.acknowledgeCloseNotify=true");
@@ -56,7 +56,8 @@ public class Main implements CommandLineRunner {
     }
   }
 
-  private Map<AnsweringServer, Future<?>> setupFakeFutures(Map<String, AnsweringServer> answeringServers) {
+  private Map<AnsweringServer, Future<?>> setupFakeFutures(
+      Map<String, AnsweringServer> answeringServers) {
     Map<AnsweringServer, Future<?>> futures = new HashMap();
     for (AnsweringServer answeringServer : answeringServers.values()) {
       futures.put(answeringServer, new FakeFuture());
@@ -105,7 +106,7 @@ public class Main implements CommandLineRunner {
   private void setupLogging(JsonConfiguration configuration) {
     var loggerBuilder = applicationContext.getBean(LoggerBuilder.class);
     var globalConfig = configuration.getConfiguration(GlobalConfig.class);
-    loggerBuilder.setLevel(Logger.ROOT_LOGGER_NAME,globalConfig.getLogging().getLogLevel());
+    loggerBuilder.setLevel(Logger.ROOT_LOGGER_NAME, globalConfig.getLogging().getLogLevel());
     for (var logConf : globalConfig.getLogging().getLoggers().entrySet()) {
       loggerBuilder.setLevel(logConf.getKey(), logConf.getValue());
     }

@@ -14,5 +14,5 @@ public interface FileResourcesUtils {
     File getFileFromResource(String fileName) throws URISyntaxException;
     String buildPath(String ... paths);
     String buildPathRelative(String ... paths);
-    HashMap<String,Object> loadResources(Object clazz,String path) throws URISyntaxException, IOException;
+    HashMap<String,Object> loadResources(Object clazz,String path) throws  IOException;
 }

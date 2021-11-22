@@ -3,7 +3,6 @@ package org.kendar.servers;
 import org.kendar.http.StaticWebFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.utils.FileResourcesUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component

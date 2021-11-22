@@ -26,15 +26,11 @@ import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.apache.http.message.BasicNameValuePair;
 import org.kendar.http.FilteringClassesHandler;
 import org.kendar.http.HttpFilterType;
-import org.kendar.servers.AnsweringHttpsServer;
-import org.kendar.servers.JsonConfiguration;
-import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.MimeChecker;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -59,13 +55,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
   public static final String TEST_OVERWRITE_HOST = "X-TEST-OVERWRITE-HOST";
   public static final String BLOCK_RECURSION = "X-BLOCK-RECURSIVE";
   private static final HttpRequestRetryHandler requestRetryHandler =
-      (exception, executionCount, context) -> {
-        if (executionCount == 1) {
-          return false;
-        } else {
-          return true;
-        }
-      };
+      (exception, executionCount, context) -> executionCount != 1;
   private final Logger logger;
   private final DnsMultiResolver multiResolver;
   private final FilteringClassesHandler filteringClassesHandler;
@@ -73,9 +63,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
   private final RequestResponseBuilder requestResponseBuilder;
   private final ObjectMapper mapper = new ObjectMapper();
   private final ConcurrentHashMap<String, ResolvedDomain> domains = new ConcurrentHashMap<>();
-  private SystemDefaultDnsResolver dnsResolver;
+  private final Logger requestLogger;
   private PoolingHttpClientConnectionManager connManager;
-  private Logger requestLogger;
 
   public AnsweringHandlerImpl(
       LoggerBuilder loggerBuilder,
@@ -91,15 +80,19 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     this.simpleProxyHandler = simpleProxyHandler;
 
     this.requestResponseBuilder = requestResponseBuilder;
-    pluginsInitializer.addSpecialLogger(Request.class.getName(),"Requests Logging (INFO,DEBUG,TRACE)");
-    pluginsInitializer.addSpecialLogger(Response.class.getName(),"Responses Logging (DEBUG,TRACE)");
-    pluginsInitializer.addSpecialLogger(StaticRequest.class.getName(),"Log static requests as file (DEBUG)");
-    pluginsInitializer.addSpecialLogger(StaticRequest.class.getName(),"Log dynamic requests as file (DEBUG)");
+    pluginsInitializer.addSpecialLogger(
+        Request.class.getName(), "Requests Logging (INFO,DEBUG,TRACE)");
+    pluginsInitializer.addSpecialLogger(
+        Response.class.getName(), "Responses Logging (DEBUG,TRACE)");
+    pluginsInitializer.addSpecialLogger(
+        StaticRequest.class.getName(), "Log static requests as file (DEBUG)");
+    pluginsInitializer.addSpecialLogger(
+        StaticRequest.class.getName(), "Log dynamic requests as file (DEBUG)");
   }
 
   @PostConstruct
   public void init() {
-    this.dnsResolver =
+    SystemDefaultDnsResolver dnsResolver =
         new SystemDefaultDnsResolver() {
           @Override
           public InetAddress[] resolve(final String host) throws UnknownHostException {
@@ -121,7 +114,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
               descriptor.domains.addAll(hosts);
               domains.put(host, descriptor);
             }
-            hosts = descriptor.domains.stream().collect(Collectors.toList());
+            hosts = new ArrayList<>(descriptor.domains);
             var address = new InetAddress[hosts.size()];
             for (int i = 0; i < hosts.size(); i++) {
               address[i] = InetAddress.getByName(hosts.get(i));
@@ -311,16 +304,9 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
   private boolean handleSpecialRequests(HttpExchange httpExchange, Request request)
       throws IOException {
-    if (mirrorData(request, httpExchange)) {
-      return true;
-    }
-    if (testExpect100(request, httpExchange)) {
-      return true;
-    }
-    if (blockRecursive(request, httpExchange)) {
-      return true;
-    }
-    return false;
+    return mirrorData(request, httpExchange)
+        || testExpect100(request, httpExchange)
+        || testExpect100(request, httpExchange);
   }
 
   private void callExternalSite(HttpExchange httpExchange, Request request, Response response)
@@ -380,14 +366,12 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         if (request.isBinaryRequest()) {
           entity =
               new ByteArrayEntity(
-                  (byte[]) request.getRequestBytes(),
-                  ContentType.create(request.getHeader("content-type")));
+                  request.getRequestBytes(), ContentType.create(request.getHeader("content-type")));
 
         } else {
           entity =
               new StringEntity(
-                  (String) request.getRequestText(),
-                  ContentType.create(request.getHeader("content-type")));
+                  request.getRequestText(), ContentType.create(request.getHeader("content-type")));
         }
         ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
       }
@@ -410,9 +394,9 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     var dataLength = 0;
     if (requestResponseBuilder.hasBody(response)) {
       if (response.isBinaryResponse()) {
-        data = ((byte[]) response.getResponseBytes());
-      } else if (((String) response.getResponseText()).length() > 0) {
-        data = (((String) response.getResponseText()).getBytes(StandardCharsets.UTF_8));
+        data = response.getResponseBytes();
+      } else if (response.getResponseText().length() > 0) {
+        data = (response.getResponseText().getBytes(StandardCharsets.UTF_8));
       }
       if (data.length > 0) {
         dataLength = data.length;
@@ -479,11 +463,11 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     String port = "";
     if (request.getPort() != -1) {
       if (request.getPort() != 443 && request.getProtocol().equalsIgnoreCase("https")) {
-        port = ":" + Integer.toString(request.getPort());
+        port = ":" + request.getPort();
       }
 
       if (request.getPort() != 80 && request.getProtocol().equalsIgnoreCase("http")) {
-        port = ":" + Integer.toString(request.getPort());
+        port = ":" + request.getPort();
       }
     }
     return request.getProtocol()
@@ -500,13 +484,10 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         + request.getQuery().entrySet().stream()
             .map(
                 e -> {
-                  try {
-                    return e.getKey()
-                        + "="
-                        + java.net.URLEncoder.encode(e.getValue(), "UTF-8").replace(" ", "%20");
-                  } catch (UnsupportedEncodingException unsupportedEncodingException) {
-                    return e.getKey() + "=" + e.getValue();
-                  }
+                  return e.getKey()
+                      + "="
+                      + java.net.URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8)
+                          .replace(" ", "%20");
                 })
             .collect(joining("&"));
   }
@@ -515,7 +496,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     return null;
   }
 
-  class ResolvedDomain {
+  static class ResolvedDomain {
     public HashSet<String> domains = new HashSet<>();
     public long timestamp = Calendar.getInstance().getTimeInMillis();
   }

@@ -21,7 +21,7 @@ public class HealthController implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/health",
             method = "GET",id="1007a4b4-277d-11ec-9621-0242ac130002")
-    public boolean getStatus(Request req, Response res) throws JsonProcessingException {
+    public boolean getStatus(Request req, Response res) {
         res.addHeader("Content-type", "text/plain");
         res.setResponseText("OK");
         return false;

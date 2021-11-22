@@ -1,7 +1,5 @@
 package org.kendar.http.annotations;
 
-import org.kendar.http.HttpFilterType;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

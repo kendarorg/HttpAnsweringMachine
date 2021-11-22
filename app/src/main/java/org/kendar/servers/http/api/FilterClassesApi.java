@@ -13,7 +13,6 @@ import org.kendar.servers.http.configurations.FilterConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -26,14 +25,11 @@ import java.util.stream.Collectors;
 public class FilterClassesApi implements FilteringClass {
   ObjectMapper mapper = new ObjectMapper();
   private FilterConfig filteringClassesHandler;
-  private Environment environment;
   private ApplicationContext context;
 
-  public FilterClassesApi(
-      FilterConfig filtersConfiguration, Environment environment, ApplicationContext context) {
+  public FilterClassesApi(FilterConfig filtersConfiguration, ApplicationContext context) {
 
     this.filteringClassesHandler = filtersConfiguration;
-    this.environment = environment;
     this.context = context;
   }
 
@@ -91,9 +87,7 @@ public class FilterClassesApi implements FilteringClass {
     var config = filteringClassesHandler.get();
     var result = new ArrayList<String>();
 
-    for (var kvp : config.filtersByClass.keySet()) {
-      result.add(kvp);
-    }
+    result.addAll(config.filtersByClass.keySet());
 
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(result.toArray()));
@@ -239,9 +233,12 @@ public class FilterClassesApi implements FilteringClass {
       fileName = mp.getFileName();
       fileData = mp.getByteData();
     }
-    FilterDescriptor item = requiredLoader.get().loadFilterFile(fileName, fileData, overwrite);
-    if (item.getId() != id) {
-      throw new Exception("Filter ids not matching for update " + fileName);
+    FilterDescriptor item = null;
+    if (requiredLoader.isPresent()) {
+      item = requiredLoader.get().loadFilterFile(fileName, fileData, overwrite);
+      if (!item.getId().equals(id)) {
+        throw new Exception("Filter ids not matching for update " + fileName);
+      }
     }
     if (item == null) {
       throw new Exception("Unable to add filter " + fileName);
@@ -254,7 +251,7 @@ public class FilterClassesApi implements FilteringClass {
     var overwritten = false;
     for (var i = 0; i < config.filters.get(phase).size(); i++) {
       var founded = config.filters.get(phase).get(i);
-      if (founded.getId() == item.getId()) {
+      if (founded.getId().equals(item.getId())) {
         config.filters.get(phase).set(i, item);
         overwritten = true;
         break;
@@ -287,10 +284,10 @@ public class FilterClassesApi implements FilteringClass {
       uploadNewScript(req, res, overwrite);
   }*/
 
-
-  public class FilterType {
+  public static class FilterType {
     private HttpFilterType type;
     private int index;
+
     public FilterType(int index, HttpFilterType type) {
 
       this.index = index;

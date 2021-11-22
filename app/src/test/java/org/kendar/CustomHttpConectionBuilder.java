@@ -1,33 +1,5 @@
 package org.kendar;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.DnsResolver;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.apache.http.impl.conn.SystemDefaultDnsResolver;
-import org.junit.Assert;
-import org.junit.Test;
-import org.kendar.mocks.EnvironmentImpl;
-import org.kendar.servers.AnsweringHttpServer;
-import org.kendar.dns.DnsMultiResolverImpl;
-import org.kendar.servers.http.AnsweringHandlerImpl;
-import org.kendar.servers.proxy.SimpleProxyHandlerImpl;
-import org.kendar.utils.LoggerBuilderImpl;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-
 public class CustomHttpConectionBuilder {
     /*
     @Test

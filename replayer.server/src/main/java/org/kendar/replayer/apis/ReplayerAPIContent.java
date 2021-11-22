@@ -16,14 +16,11 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 @Component
@@ -170,7 +167,7 @@ public class ReplayerAPIContent implements FilteringClass {
         if(req.getMultipartData()!=null && req.getMultipartData().size()>0) {
             file = req.getMultipartData().get(0);
         }else{
-            data = (String)req.getRequestText();
+            data = req.getRequestText();
         }
 
         var dataset = new ReplayerDataset(id,rootPath.toString(),null,loggerBuilder,dataReorganizer,md5Tester);

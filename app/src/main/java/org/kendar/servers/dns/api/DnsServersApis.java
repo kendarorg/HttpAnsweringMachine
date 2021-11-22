@@ -96,7 +96,7 @@ public class DnsServersApis implements FilteringClass {
         var dnsServers = cloned.getExtraServers();
         var id = (req.getPathParameter("id"));
         var newList = new ArrayList<ExtraDnsServer>();
-        var newData = mapper.readValue((String)req.getRequestText(),ExtraDnsServer.class);
+        var newData = mapper.readValue(req.getRequestText(),ExtraDnsServer.class);
         newData.setEnv(false);
         for(var item:dnsServers){
             var clone = item.copy();
@@ -162,7 +162,7 @@ public class DnsServersApis implements FilteringClass {
         var cloned = configuration.getConfiguration(DnsConfig.class).copy();
         var dnsServeres = cloned.getExtraServers();
         var newList = new ArrayList<ExtraDnsServer>();
-        var newData = mapper.readValue((String)req.getRequestText(),ExtraDnsServer.class);
+        var newData = mapper.readValue(req.getRequestText(),ExtraDnsServer.class);
         newData.setEnv(false);
 
 

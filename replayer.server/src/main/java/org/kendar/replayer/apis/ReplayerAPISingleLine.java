@@ -16,7 +16,6 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -87,7 +86,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
         var datasetContent = dataset.load();
         for (var destination :datasetContent.getStaticRequests()) {
             if(destination.getId()==line){
-                var source = mapper.readValue((String)req.getRequestText(), ReplayerRow.class);
+                var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
                 cloneToRow(destination,source);
                 dataset.saveMods();
                 return true;
@@ -95,7 +94,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
         }
         for (var destination :datasetContent.getDynamicRequests()) {
             if(destination.getId()==line){
-                var source = mapper.readValue((String)req.getRequestText(), ReplayerRow.class);
+                var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
                 cloneToRow(destination,source);
                 dataset.saveMods();
                 return true;
@@ -133,7 +132,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
             }
         }
 
-        var source = mapper.readValue((String)req.getRequestText(), ReplayerRow.class);
+        var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
         datasetContent.getDynamicRequests().add(source);
         dataset.saveMods();
         res.setStatusCode(200);
