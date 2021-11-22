@@ -54,6 +54,7 @@
         <apache.derby.version>10.13.1.1</apache.derby.version>
         <mybatis.orm.version>3.5.7</mybatis.orm.version>
         <ch.qos.logback.version>1.2.3</ch.qos.logback.version>
+        <commonmark.version>0.18.0</commonmark.version>
     </properties>
 
     <modules>

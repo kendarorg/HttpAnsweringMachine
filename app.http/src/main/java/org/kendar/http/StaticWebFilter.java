@@ -1,5 +1,8 @@
 package org.kendar.http;
 
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -10,10 +13,13 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class StaticWebFilter implements FilteringClass {
   private final FileResourcesUtils fileResourcesUtils;
+  Parser parser = Parser.builder().build();
   private HashMap<String, Object> resourceFiles = new HashMap<>();
+  private ConcurrentHashMap<String, String> markdownCache = new ConcurrentHashMap<>();
 
   public StaticWebFilter(FileResourcesUtils fileResourcesUtils) {
     this.fileResourcesUtils = fileResourcesUtils;
@@ -49,6 +55,8 @@ public abstract class StaticWebFilter implements FilteringClass {
     if (verifyPathAndRender(response, realPath, request.getPath())) return true;
     if (verifyPathAndRender(response, realPath, request.getPath() + "/index.htm")) return true;
     if (verifyPathAndRender(response, realPath, request.getPath() + "/index.html")) return true;
+    if (verifyPathAndRender(response, realPath, request.getPath() + ".md")) return true;
+    if (verifyPathAndRender(response, realPath, request.getPath() + "/index.md")) return true;
 
     return false;
   }
@@ -87,16 +95,19 @@ public abstract class StaticWebFilter implements FilteringClass {
 
   private void renderFile(Path fullPath, Response response) {
     try {
+      var stringPath = fullPath.toString();
       String mimeType = null;
       if (resourceFiles == null || resourceFiles.isEmpty()) {
         mimeType = Files.probeContentType(fullPath);
       }
       if (mimeType == null) {
-        if (fullPath.toString().endsWith(".js")) {
+        if (stringPath.endsWith(".js")) {
           mimeType = "text/javascript";
-        } else if (fullPath.toString().endsWith(".css")) {
+        } else if (stringPath.endsWith(".css")) {
           mimeType = "text/css";
-        } else if (fullPath.toString().endsWith(".htm") || fullPath.toString().endsWith(".html")) {
+        } else if (stringPath.endsWith(".htm") || stringPath.endsWith(".html")) {
+          mimeType = "text/html";
+        } else if (stringPath.endsWith(".md")) {
           mimeType = "text/html";
         } else {
           mimeType = "application/octect-stream";
@@ -104,18 +115,9 @@ public abstract class StaticWebFilter implements FilteringClass {
       }
       response.setBinaryResponse(MimeChecker.isBinary(mimeType, null));
       if (resourceFiles == null || resourceFiles.isEmpty()) {
-        if (response.isBinaryResponse()) {
-          response.setResponseBytes(Files.readAllBytes(fullPath));
-        } else {
-          response.setResponseText(Files.readString(fullPath));
-        }
+        renderRealFile(fullPath, response, stringPath);
       } else {
-        var resourcePath = fullPath.toString().replace('\\', '/');
-        if (response.isBinaryResponse()) {
-          response.setResponseBytes((byte[]) resourceFiles.get(resourcePath));
-        } else {
-          response.setResponseText(new String((byte[]) resourceFiles.get(resourcePath)));
-        }
+        renderResourceFile(response, stringPath);
       }
       response.addHeader("Content-Type", mimeType);
       response.setStatusCode(200);
@@ -123,5 +125,43 @@ public abstract class StaticWebFilter implements FilteringClass {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private void renderResourceFile(Response response, String stringPath) {
+    var resourcePath = stringPath.replace('\\', '/');
+    if (response.isBinaryResponse()) {
+      response.setResponseBytes((byte[]) resourceFiles.get(resourcePath));
+    } else if (!stringPath.endsWith(".md")) {
+      response.setResponseText(new String((byte[]) resourceFiles.get(resourcePath)));
+    } else if (stringPath.endsWith(".md")) {
+      response.setResponseText(
+          renderMarkdown(null, new String((byte[]) resourceFiles.get(resourcePath))));
+    }
+  }
+
+  private void renderRealFile(Path fullPath, Response response, String stringPath) throws IOException {
+    if (response.isBinaryResponse()) {
+      response.setResponseBytes(Files.readAllBytes(fullPath));
+    } else if (!stringPath.endsWith(".md")) {
+      response.setResponseText(Files.readString(fullPath));
+    } else if (stringPath.endsWith(".md")) {
+      response.setResponseText(renderMarkdown(stringPath, Files.readString(fullPath)));
+    }
+  }
+
+  private String renderMarkdown(String path, String readString) {
+    if (path != null) {
+      if (!markdownCache.containsKey(path)) {
+        markdownCache.put(path, internalRender(readString));
+      }
+      return markdownCache.get(path);
+    }
+    return internalRender(readString);
+  }
+
+  private String internalRender(String readString) {
+    Node document = parser.parse(readString);
+    HtmlRenderer renderer = HtmlRenderer.builder().build();
+    return renderer.render(document);
   }
 }

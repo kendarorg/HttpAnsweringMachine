@@ -41,6 +41,11 @@
             <version>1.0</version>
 
         </dependency>
+        <dependency>
+            <groupId>org.commonmark</groupId>
+            <artifactId>commonmark</artifactId>
+            <version>${commonmark.version}</version>
+        </dependency>
     </dependencies>
 
     <properties>
