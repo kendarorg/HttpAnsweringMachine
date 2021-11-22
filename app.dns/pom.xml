@@ -30,7 +30,7 @@
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>app.commons</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
