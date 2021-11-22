@@ -18,16 +18,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class JsonConfigurationImpl implements JsonConfiguration {
-  private ObjectMapper mapper = new ObjectMapper();
-  private ConcurrentHashMap<String, JsonNode> configurations = new ConcurrentHashMap<>();
-  private ConcurrentHashMap<String, ParsedConfig> deserializedConfigurations =
+  private final ObjectMapper mapper = new ObjectMapper();
+  private final ConcurrentHashMap<String, JsonNode> configurations = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, ParsedConfig> deserializedConfigurations =
       new ConcurrentHashMap<>();
-  private ConcurrentHashMap<Class, String> mappingStringClasses = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<Class, String> mappingStringClasses = new ConcurrentHashMap<>();
 
   public JsonConfigurationImpl() {
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
+  @SuppressWarnings("unchecked")
   public <T extends BaseJsonConfig> T getConfiguration(Class<T> aClass) {
     try {
       if (!mappingStringClasses.containsKey(aClass)) {
@@ -49,6 +50,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public long getConfigurationTimestamp(Class aClass) {
     if (!mappingStringClasses.containsKey(aClass)) {
       var attribute = (ConfigAttribute) aClass.getAnnotation(ConfigAttribute.class);

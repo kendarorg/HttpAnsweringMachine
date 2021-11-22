@@ -84,6 +84,7 @@ public class CertificatesManagerImpl implements CertificatesManager {
       boolean isCA)
       throws Exception {
 
+    logger.trace("Create certificate");
     // Generate the key-pair with the official Java API's
     KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
     KeyPair certKeyPair = keyGen.generateKeyPair();
@@ -135,11 +136,8 @@ public class CertificatesManagerImpl implements CertificatesManager {
 
       // GeneralNames subjectAltNames = GeneralNames.getInstance(generalNames);
       builder.addExtension(Extension.subjectAlternativeName, false, new GeneralNames(generalNames));
-
-      /*GeneralNames subjectAltNames = GeneralNames.getInstance(new DERSequence((GeneralName[]) generalNames));
-      builder.addExtension(Extension.subjectAlternativeName, false, subjectAltNames);*/
     }
-    if (!isCA) {
+    if (!isCA && issuer != null) {
       byte[] extvalue =
           issuer.certificate.getExtensionValue(Extension.authorityKeyIdentifier.getId());
       if (extvalue != null) {

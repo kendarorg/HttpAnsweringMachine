@@ -98,23 +98,6 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
         String returnValue;
         var result = paths[0];
         try {
-            /*for (var i = 1; i < paths.length; i++) {
-                paths[i] = paths[i].replace("/",File.separator);
-                paths[i] = paths[i].replace("\\",File.separator);
-            }
-            while(result.endsWith("/") || result.endsWith("\\")){
-                result = result.substring(0,result.length()-1);
-            }
-            for (var i = 1; i < paths.length; i++) {
-                var cur = paths[i];
-                while(cur.endsWith("/") || cur.endsWith("\\")){
-                    cur = cur.substring(0,cur.length()-1);
-                }
-                while(cur.startsWith("/")|| cur.startsWith("\\")){
-                    cur = cur.substring(1);
-                }
-                result += File.separator + cur;
-            }*/
             result = buildPathRelative(paths);
             var fpResult = result.replace('\\', '/');
             var fp = new URI(fpResult);

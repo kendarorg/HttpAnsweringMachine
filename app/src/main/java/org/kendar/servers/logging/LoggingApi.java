@@ -20,10 +20,10 @@ import java.util.Locale;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class LoggingApi implements FilteringClass {
-  ObjectMapper mapper = new ObjectMapper();
-  private JsonConfiguration configuration;
-  private LoggerBuilder loggerBuilder;
-  private PluginsInitializer pluginsInitializer;
+  final ObjectMapper mapper = new ObjectMapper();
+  private final JsonConfiguration configuration;
+  private final LoggerBuilder loggerBuilder;
+  private final PluginsInitializer pluginsInitializer;
 
   public LoggingApi(
       JsonConfiguration configuration,

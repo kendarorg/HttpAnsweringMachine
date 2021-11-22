@@ -10,25 +10,25 @@ import java.lang.annotation.*;
 public @interface HttpMethodFilter {
     /**
      * Sets when the filter will be executed
-     * @return
+     * @return phase
      */
     HttpFilterType phase() default HttpFilterType.NONE;
 
     /**
      * Wethear it should be blocking or not
-     * @return
+     * @return if is blocking
      */
     boolean blocking() default false;
 
     /**
      * Can be set using simple ${property:default} or ${property}
-     * @return
+     * @return the path
      */
     String pathAddress() default "";
 
     /**
      * Can be set using simple ${property:default} or ${property}
-     * @return
+     * @return property pattern
      */
     String pathPattern() default "";
     String method() default "";

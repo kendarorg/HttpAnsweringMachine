@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DnsServer {
     private static final int UDP_SIZE = 512;
 
-    private int dnsPort;
+    private final int dnsPort;
     private final Logger logger;
     private final DnsMultiResolver multiResolver;
 
@@ -80,7 +80,7 @@ public class DnsServer {
         return buildErrorMessage(query.getHeader(), rcode, query.getQuestion());
     }
 
-    private ConcurrentHashMap<String,Integer> loopBlocker = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,Integer> loopBlocker = new ConcurrentHashMap<>();
 
     private void resolveAll(DatagramPacket indp,DatagramSocket socket, byte[] in) {
         try {
@@ -99,10 +99,10 @@ public class DnsServer {
 
             if(fromLocalHost) {
                 if(!requestedDomain.equals(requestedDomain.toUpperCase(Locale.ROOT))){
-                    ips = this.multiResolver.resolve(requestedDomain.toUpperCase(Locale.ROOT), fromLocalHost);
+                    ips = this.multiResolver.resolve(requestedDomain.toUpperCase(Locale.ROOT), true);
                 }
             }else{
-                ips = this.multiResolver.resolve(requestedDomain, fromLocalHost);
+                ips = this.multiResolver.resolve(requestedDomain, false);
             }
 
             byte[] resp;

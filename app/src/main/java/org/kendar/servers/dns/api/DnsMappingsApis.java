@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
         blocking = true)
 public class DnsMappingsApis implements FilteringClass {
     private final JsonConfiguration configuration;
-    ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapper = new ObjectMapper();
 
     public DnsMappingsApis(JsonConfiguration configuration) {
 

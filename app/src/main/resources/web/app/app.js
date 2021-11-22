@@ -1,15 +1,14 @@
-
-if (Function.prototype.name === undefined){
+if (Function.prototype.name === undefined) {
     // Add a custom property to all function values
     // that actually invokes a method to get the value
-    Object.defineProperty(Function.prototype,'name',{
-        get:function(){
-            return /function ([^(]*)/.exec( this+"" )[1];
+    Object.defineProperty(Function.prototype, 'name', {
+        get: function () {
+            return /function ([^(]*)/.exec(this + "")[1];
         }
     });
 }
 
-var getUrlParameter = function(sParam) {
+var getUrlParameter = function (sParam) {
     var sPageURL = window.location.search.substring(1),
         sURLVariables = sPageURL.split('&'),
         sParameterName,
@@ -27,7 +26,7 @@ var getUrlParameter = function(sParam) {
 
 ///////////////////////     SIMPLE GRID
 
-class SimpleGrid{
+class SimpleGrid {
     data;
     tableId;
     idField;
@@ -36,12 +35,14 @@ class SimpleGrid{
     saveFunction;
     objType;
     loadFunction;
-    load(){
+
+    load() {
         this.loadFunction(this);
         return this;
     }
-    constructor(objType,name,idField,fields,loadFunction,editFunction,deleteFunction,saveFunction){
-        this.objType= objType;
+
+    constructor(objType, name, idField, fields, loadFunction, editFunction, deleteFunction, saveFunction) {
+        this.objType = objType;
         this.tableId = name;
         this.editFunction = editFunction;
         this.deleteFunction = deleteFunction;
@@ -51,18 +52,19 @@ class SimpleGrid{
         this.idField = idField;
         this.fields = fields;
     }
-    deleteFromTable(id,callback) {
-        var action = confirm("Are you sure you want to delete this "+this.objType+"?");
-        var msg = this.objType+" deleted successfully!";
-        var msgError = this.objType+" cannot be deleted!";
+
+    deleteFromTable(id, callback) {
+        var action = confirm("Are you sure you want to delete this " + this.objType + "?");
+        var msg = this.objType + " deleted successfully!";
+        var msgError = this.objType + " cannot be deleted!";
         var self = this;
-        this.data.forEach(function(row, i) {
+        this.data.forEach(function (row, i) {
             if (row[self.idField] == id && action != false) {
-                if(callback==null){
+                if (callback == null) {
                     self.data.splice(i, 1);
                     $("#" + self.tableId + " #" + self.tableId + "-" + id).remove();
                     flashMessage(msg);
-                }else {
+                } else {
                     callback(id, function () {
                         self.data.splice(i, 1);
                         $("#" + self.tableId + " #" + self.tableId + "-" + id).remove();
@@ -74,23 +76,24 @@ class SimpleGrid{
             }
         });
     }
-    appendToTable(inputData, addbutton=true){
-        var idContent=inputData[this.idField];
-        for(var i=0;i<this.data.length;i++){
+
+    appendToTable(inputData, addbutton = true) {
+        var idContent = inputData[this.idField];
+        for (var i = 0; i < this.data.length; i++) {
             var line = this.data[i];
-            if(line[this.idField]==inputData[this.idField]){
-                this.data[i]=inputData;
-                for(var v=0;v<this.fields.length;v++){
+            if (line[this.idField] == inputData[this.idField]) {
+                this.data[i] = inputData;
+                for (var v = 0; v < this.fields.length; v++) {
                     var index = this.fields[v];
                     var content = inputData[index];
-                    if(content == undefined) content="";
-                    if(!(index.lastIndexOf("_", 0) === 0)){
-                        if(content.length>60)content= content.substr(0,60);
+                    if (content == undefined) content = "";
+                    if (!(index.lastIndexOf("_", 0) === 0)) {
+                        if (content.length > 60) content = content.substr(0, 60);
                     }
 
                     $("#" + this.tableId +
-                        " #" + this.tableId + "-" + idContent+
-                        " #"+index).innerHTML = content;
+                        " #" + this.tableId + "-" + idContent +
+                        " #" + index).innerHTML = content;
                 }
                 return;
             }
@@ -105,21 +108,21 @@ class SimpleGrid{
             data+=`<td class="userData" name="${index}">${content}</td>`;
         }*/
 
-        for(var i=0;i<this.fields.length;i++){
+        for (var i = 0; i < this.fields.length; i++) {
             var index = this.fields[i];
             var allIndex = this.fields[i].split(".");
             var content = inputData;
-            for(var s=0;s<allIndex.length;s++){
+            for (var s = 0; s < allIndex.length; s++) {
                 content = content[allIndex[s]];
             }
-            if(content == undefined) content="";
-            if(!(this.fields[i].lastIndexOf("_", 0) === 0)){
-                if(content.length>60)content= content.substr(0,60);
+            if (content == undefined) content = "";
+            if (!(this.fields[i].lastIndexOf("_", 0) === 0)) {
+                if (content.length > 60) content = content.substr(0, 60);
             }
-            toWrite+=`<td class="userData" name="${index}">${content}</td>`;
+            toWrite += `<td class="userData" name="${index}">${content}</td>`;
         }
 
-        if(addbutton==true) {
+        if (addbutton == true) {
             toWrite += `<td align="center">
                 <button class="btn btn-success form-control" id="${this.tableId}-${idContent}-edit">EDIT</button>
             </td>
@@ -128,11 +131,11 @@ class SimpleGrid{
             </td>`;
         }
 
-        toWrite+=`</tr>`;
-    ;
+        toWrite += `</tr>`;
+        ;
         var self = this;
-        $("#"+this.tableId+" > tbody:last-child").append(toWrite);
-        if(addbutton==true) {
+        $("#" + this.tableId + " > tbody:last-child").append(toWrite);
+        if (addbutton == true) {
             $("#" + this.tableId + "-" + idContent + "-edit").click(function () {
                 self.editFunction(self, idContent);
             });
@@ -147,62 +150,65 @@ class SimpleGrid{
 
 
 function buildKvpModalDialog(modal, table, value, idField, valueField, randomId) {
-    var bodyContent="";
+    var bodyContent = "";
     if (value[valueField].length > 60) {
         bodyContent += `
                     <label for="value">Value</label>
-                    <textarea class="form-control" rows="6" cols="50" name="value" id="value" />
+                    <textarea class="form-control" rows="6" cols="50" name="value" id="value" ></textarea>
                 `;
     } else {
         bodyContent += `
                     <label for="value">Value</label>
-                    <input class="form-control" type="text" name="value"  id="value" />
+                    <input class="form-control" type="text" name="value"  id="value" ></input>
                 `;
     }
     var openAsEdit = true;
-    if(value[idField]=='' || value[idField]===undefined){
+    if (value[idField] == '' || value[idField] === undefined) {
         openAsEdit = false;
     }
     buildGenericModal(modal, table, value, idField, bodyContent, randomId, openAsEdit);
 }
 
-var addKvp=function(modal,table,idField,valueField) {
-    var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
-    var value={};
-    value[idField]='';
-    value[valueField]='';
+var addKvp = function (modal, table, idField, valueField) {
+    var randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
+    var value = {};
+    value[idField] = '';
+    value[valueField] = '';
     buildKvpModalDialog(modal, table, value, idField, valueField, randomId);
     var localTable = table;
-    $(modal).find("#"+randomId).click(function(){
-        value[idField]=$(modal).find("#key").val();
-        value[valueField]=$(modal).find("#value").val();
-        localTable.saveFunction(localTable,value,true); });
+    $(modal).find("#" + randomId).click(function () {
+        value[idField] = $(modal).find("#key").val();
+        value[valueField] = $(modal).find("#value").val();
+        localTable.saveFunction(localTable, value, true);
+    });
     $(modal).find("#value").val(value[valueField]);
 }
 
-var editKvp=function(modal,table,id,idField,valueField) {
-    var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
-    var randomIdInput = "INPUT"+Math.floor(Math.random() * 999999999);
+var editKvp = function (modal, table, id, idField, valueField) {
+    var randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
+    var randomIdInput = "INPUT" + Math.floor(Math.random() * 999999999);
     var localTable = table;
-    localTable.data.forEach(function(value, i) {
+    localTable.data.forEach(function (value, i) {
         if (value[idField] == id) {
             buildKvpModalDialog(modal, table, value, idField, valueField, randomId);
-            $(modal).find("#"+randomId).click(function(){ localTable.saveFunction(localTable,id,false); });
+            $(modal).find("#" + randomId).click(function () {
+                localTable.saveFunction(localTable, id, false);
+            });
             $(modal).find("#value").val(value[valueField]);
         }
     });
 }
-var getKvpData = function(table,idField,valueField){
+var getKvpData = function (table, idField, valueField) {
     var result = {};
-    for(var i=0;i<table.data.length;i++){
-        result[table.data[i][idField]]=table.data[i][valueField];
+    for (var i = 0; i < table.data.length; i++) {
+        result[table.data[i][idField]] = table.data[i][valueField];
     }
     return result;
 }
-var updateKvp=function(modal,table,id,idField,valueField) {
-    var msg = table.objType+" updated successfully!";
+var updateKvp = function (modal, table, id, idField, valueField) {
+    var msg = table.objType + " updated successfully!";
 
-    if(id[idField] == undefined) {
+    if (id[idField] == undefined) {
         var user = {};
         user[idField] = id;
         table.data.forEach(function (user, i) {
@@ -243,8 +249,8 @@ var updateKvp=function(modal,table,id,idField,valueField) {
                 flashMessage(msg);
             }
         });
-    }else{
-        var line = {key:id[idField],value:id[valueField]};
+    } else {
+        var line = {key: id[idField], value: id[valueField]};
         table.appendToTable(line);
         $(modal).modal("toggle");
         flashMessage(msg);
@@ -252,58 +258,58 @@ var updateKvp=function(modal,table,id,idField,valueField) {
 }
 
 
-var deleteKvp=function(modal,table,id,idField,valueField) {
-    table.deleteFromTable(id,null);
+var deleteKvp = function (modal, table, id, idField, valueField) {
+    table.deleteFromTable(id, null);
 }
 
 
 ///////////////////////     FLASH MESSAGE
 
-var flashMessage = function(msg) {
+var flashMessage = function (msg) {
     $(".flashMsg").remove();
     $(".row").prepend(`
         <div class="col-sm-12"><div class="flashMsg alert alert-success alert-dismissible fade in" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button> <strong>${msg}</strong></div></div>
     `);
 }
 
-var setChecked = function(jqueryObj,checked){
-    if(checked){
+var setChecked = function (jqueryObj, checked) {
+    if (checked) {
         jqueryObj.attr('checked', 'checked');
-    }else{
+    } else {
         jqueryObj.removeAttr('checked');
     }
     jqueryObj.attr('value', checked)
 }
 
-var  downloadFile= function(urlToSend) {
+var downloadFile = function (urlToSend) {
     var req = new XMLHttpRequest();
     req.open("GET", urlToSend, true);
     req.responseType = "blob";
     req.onload = function (event) {
         var blob = req.response;
         var fileName = req.getResponseHeader("fileName") //if you have the fileName header available
-        var link=document.createElement('a');
-        link.href=window.URL.createObjectURL(blob);
-        link.download=fileName;
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName;
         link.click();
     };
 
     req.send();
 }
 
-function buildGenericModal(modal, table, value, idField, extraContent, randomId,openAsEdit) {
+function buildGenericModal(modal, table, value, idField, extraContent, randomId, openAsEdit) {
     //var encodedValue = value[valueField].replace('"','\\"');
     $(modal).find(".modal-title").empty().append(`${table.objType}`);
-    var readonly="readonly";
-    if(!openAsEdit){
-        readonly="";
+    var readonly = "readonly";
+    if (!openAsEdit) {
+        readonly = "";
     }
     var bodyContent = `
                 <form id="editKvp" action="">
                     <label for="key">Key</label>
                     <input class="form-control" type="text" name="key" id="key" ${readonly} value="${value[idField]}"/>
                 `;
-    bodyContent+=extraContent;
+    bodyContent += extraContent;
     $(modal).find(".modal-body").empty().append(bodyContent);
 
     $(modal).find(".modal-footer").empty().append(`
@@ -314,16 +320,16 @@ function buildGenericModal(modal, table, value, idField, extraContent, randomId,
     $(modal).modal("toggle");
 }
 
-var uuidv4 = function() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+var uuidv4 = function () {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
 }
 
-var success = function(){
+var success = function () {
     alert("Ok");
 }
 
-var error = function(){
+var error = function () {
     alert("Error");
 }

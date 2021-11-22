@@ -20,10 +20,6 @@ public class SimpleDns implements CommandLineRunner {
 
   public static void main(String[] args) {
 
-    /*if (System.getProperty("jdk.tls.acknowledgeCloseNotify") == null) {
-       throw new Exception("SHOULD SET -Djdk.tls.acknowledgeCloseNotify=true");
-    }*/
-
     // SpringApplication.run(SimpleDns.class, args);
     SpringApplication app = new SpringApplication(SimpleDns.class);
     app.setLazyInitialization(true);
@@ -32,9 +28,6 @@ public class SimpleDns implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
-    // MutablePropertySources propertySources =
-    // ((ConfigurableEnvironment)environment).getPropertySources();
-    // Map<String,Object> propMap = new HashMap<>();
     var configuration = applicationContext.getBean(JsonConfiguration.class);
     try {
       DnsConfig config = new DnsConfig();

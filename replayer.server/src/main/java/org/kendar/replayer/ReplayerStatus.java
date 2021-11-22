@@ -25,8 +25,8 @@ public class ReplayerStatus {
   private final ObjectMapper mapper = new ObjectMapper();
   private ReplayerDataset dataset;
   private ReplayerState state = ReplayerState.NONE;
-  private String replayerData;
-  private Md5Tester md5Tester;
+  private final String replayerData;
+  private final Md5Tester md5Tester;
 
   public ReplayerStatus(
       LoggerBuilder loggerBuilder,

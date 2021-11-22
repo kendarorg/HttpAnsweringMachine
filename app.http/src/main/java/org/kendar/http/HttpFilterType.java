@@ -21,6 +21,7 @@ public enum HttpFilterType {
     private final String text;
 
     /**
+     * Filter phase
      * @param text
      */
     HttpFilterType(final String text) {

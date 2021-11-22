@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class FiltersConfiguration {
-    public HashMap<HttpFilterType, List<FilterDescriptor>> filters = new HashMap<>();
-    public HashMap<String,FilterDescriptor> filtersById = new HashMap<>();
-    public HashMap<String,List<FilterDescriptor>> filtersByClass = new HashMap<>();
+    public final HashMap<HttpFilterType, List<FilterDescriptor>> filters = new HashMap<>();
+    public final HashMap<String,FilterDescriptor> filtersById = new HashMap<>();
+    public final HashMap<String,List<FilterDescriptor>> filtersByClass = new HashMap<>();
 
     public FiltersConfiguration copy() {
         var result = new FiltersConfiguration();

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class  CertificatesConfiguration{
     public String cname;
-    public List<String> extraDomains = new ArrayList<>();
+    public final List<String> extraDomains = new ArrayList<>();
     public long timestamp = Calendar.getInstance().getTimeInMillis();
 
     public CertificatesConfiguration copy() {

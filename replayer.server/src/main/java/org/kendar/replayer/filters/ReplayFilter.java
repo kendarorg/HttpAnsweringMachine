@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "*")
 public class ReplayFilter implements FilteringClass {
   private final ReplayerStatus replayerStatus;
-  private String localAddress;
+  private final String localAddress;
 
   public ReplayFilter(ReplayerStatus replayerStatus, JsonConfiguration configuration) {
     this.replayerStatus = replayerStatus;

@@ -17,54 +17,58 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @Component
-public class CustomHttpConectionBuilderImpl implements CustomHttpConectionBuilder{
+public class CustomHttpConectionBuilderImpl implements CustomHttpConectionBuilder {
 
-    private final Logger logger;
-    private final DnsMultiResolver dnsMultiResolver;
+  private final Logger logger;
+  private final DnsMultiResolver dnsMultiResolver;
 
-    private HttpClientConnectionManager connManager;
+  private HttpClientConnectionManager connManager;
 
-    public CustomHttpConectionBuilderImpl(LoggerBuilder loggerBuilder, DnsMultiResolver  dnsMultiResolver){
-        this.logger = loggerBuilder.build(CustomHttpConectionBuilderImpl.class);
-        this.dnsMultiResolver = dnsMultiResolver;
-    }
+  public CustomHttpConectionBuilderImpl(
+      LoggerBuilder loggerBuilder, DnsMultiResolver dnsMultiResolver) {
+    this.logger = loggerBuilder.build(CustomHttpConectionBuilderImpl.class);
+    this.dnsMultiResolver = dnsMultiResolver;
+  }
 
-
-    @PostConstruct
-    public void init(){
-        /* If we match the host we're trying to talk to,
-                       return the IP address we want, not what is in DNS */
-        /* Else, resolve it as we would normally */
-        SystemDefaultDnsResolver dnsResolver = new SystemDefaultDnsResolver() {
-            @Override public InetAddress[] resolve(final String host) throws UnknownHostException {
-                var hosts = dnsMultiResolver.resolve(host, false);
-                var address = new InetAddress[hosts.size()];
-                for (int i = 0; i < hosts.size(); i++) {
-                    address[i] = InetAddress.getByName(hosts.get(i));
-                }
-                if (address.length > 0) {
-                    /* If we match the host we're trying to talk to,
-                       return the IP address we want, not what is in DNS */
-                    return address;
-                } else {
-                    /* Else, resolve it as we would normally */
-                    return super.resolve(host);
-                }
+  @PostConstruct
+  public void init() {
+    logger.trace("Setup custom connection builer");
+    /* If we match the host we're trying to talk to,
+    return the IP address we want, not what is in DNS */
+    /* Else, resolve it as we would normally */
+    SystemDefaultDnsResolver dnsResolver =
+        new SystemDefaultDnsResolver() {
+          @Override
+          public InetAddress[] resolve(final String host) throws UnknownHostException {
+            var hosts = dnsMultiResolver.resolve(host, false);
+            var address = new InetAddress[hosts.size()];
+            for (int i = 0; i < hosts.size(); i++) {
+              address[i] = InetAddress.getByName(hosts.get(i));
             }
+            if (address.length > 0) {
+              /* If we match the host we're trying to talk to,
+              return the IP address we want, not what is in DNS */
+              return address;
+            } else {
+              /* Else, resolve it as we would normally */
+              return super.resolve(host);
+            }
+          }
         };
-        this.connManager = new PoolingHttpClientConnectionManager(
-                // We're forced to create a SocketFactory Registry.  Passing null
-                //   doesn't force a default Registry, so we re-invent the wheel.
-                RegistryBuilder.<ConnectionSocketFactory>create()
-                        .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                        .register("https", SSLConnectionSocketFactory.getSocketFactory())
-                        .build(), dnsResolver  // Our DnsResolver
-        );
-    }
+    this.connManager =
+        new PoolingHttpClientConnectionManager(
+            // We're forced to create a SocketFactory Registry.  Passing null
+            //   doesn't force a default Registry, so we re-invent the wheel.
+            RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", SSLConnectionSocketFactory.getSocketFactory())
+                .build(),
+            dnsResolver // Our DnsResolver
+            );
+  }
 
-    @Override
-    public HttpClientBuilder getConnection(){
-        return HttpClientBuilder.create()
-                .setConnectionManager(connManager);
-    }
+  @Override
+  public HttpClientBuilder getConnection() {
+    return HttpClientBuilder.create().setConnectionManager(connManager);
+  }
 }

@@ -22,7 +22,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
   private final Logger logger;
   private final DnsMultiResolver multiResolver;
-  private JsonConfiguration configuration;
+  private final JsonConfiguration configuration;
   private boolean startedOnce = false;
 
   public SimpleProxyHandlerImpl(

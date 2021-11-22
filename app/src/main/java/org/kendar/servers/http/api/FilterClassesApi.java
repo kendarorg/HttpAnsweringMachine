@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class FilterClassesApi implements FilteringClass {
-  ObjectMapper mapper = new ObjectMapper();
-  private FilterConfig filteringClassesHandler;
-  private ApplicationContext context;
+  final ObjectMapper mapper = new ObjectMapper();
+  private final FilterConfig filteringClassesHandler;
+  private final ApplicationContext context;
 
   public FilterClassesApi(FilterConfig filtersConfiguration, ApplicationContext context) {
 
@@ -85,9 +85,8 @@ public class FilterClassesApi implements FilteringClass {
       id = "e907a4b4-278d-11ec-6621-0242ac130003")
   public void getFiltersForClass(Request req, Response res) throws JsonProcessingException {
     var config = filteringClassesHandler.get();
-    var result = new ArrayList<String>();
 
-    result.addAll(config.filtersByClass.keySet());
+    var result = new ArrayList<String>(config.filtersByClass.keySet());
 
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(result.toArray()));
@@ -164,34 +163,6 @@ public class FilterClassesApi implements FilteringClass {
     res.setResponseText(mapper.writeValueAsString(result));
   }
 
-  /*
-  @HttpMethodFilter(phase = HttpFilterType.API,
-          pathAddress = "/api/filters/id/{id}/status",
-          method = "PUT",id="e967a4b4-277d-11ec-9621-0242ac130004")
-  public void enableFilterById(Request req, Response res) throws JsonProcessingException {
-      var enabled = Boolean.valueOf(req.getQuery("enabled"));
-      var id = req.getPathParameter("id");
-      var config = filteringClassesHandler.get();
-      var item = config.filtersById.get(id);
-      item.setEnabled(enabled);
-  }*/
-
-  /*
-  @HttpMethodFilter(phase = HttpFilterType.API,
-          pathAddress = "/api/filters/id/{id}/status",
-          method = "GET",id="e967a4b4-277d-44ec-9621-0242ac130004")
-  public void getStatusById(Request req, Response res) throws JsonProcessingException {
-      var enabled = Boolean.valueOf(req.getQuery("enabled"));
-      var id = req.getPathParameter("id");
-      var config = filteringClassesHandler.get();
-      var result = "false";
-      var item = config.filtersById.get(id);
-      result =item.isEnabled()?"true":"false";
-
-      res.addHeader("Content-type", "application/json");
-      res.setResponseText(mapper.writeValueAsString(result));
-  }*/
-
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/filters/loaders/{loader}",
@@ -227,8 +198,6 @@ public class FilterClassesApi implements FilteringClass {
     String fileName = null;
     byte[] fileData = null;
     for (var mp : req.getMultipartData()) {
-      // var contendDisposition =
-      // RequestUtils.parseContentDisposition(mp.getHeader("Content-Disposition"));
       if (!mp.isFile()) continue;
       fileName = mp.getFileName();
       fileData = mp.getByteData();
@@ -266,23 +235,6 @@ public class FilterClassesApi implements FilteringClass {
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(result));
   }
-
-  /*
-  @HttpMethodFilter(phase = HttpFilterType.API,
-          pathAddress = "/api/filters/phase/{phase}",
-          method = "POST",id="e967a4b4-2xxxx-44ec-9621-0242ac130004")
-  public void addFilter(Request req, Response res) throws Exception {
-      var overwrite = false;
-      uploadNewScript(req, res, overwrite);
-  }
-
-  @HttpMethodFilter(phase = HttpFilterType.API,
-          pathAddress = "/api/filters/phase/{phase}/{id}",
-          method = "PUT",id="e967a4b4-2xxxx-44ec-9621-02g2ac130004")
-  public void updateFilter(Request req, Response res) throws Exception {
-      var overwrite = true;
-      uploadNewScript(req, res, overwrite);
-  }*/
 
   public static class FilterType {
     private HttpFilterType type;

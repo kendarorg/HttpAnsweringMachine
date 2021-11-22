@@ -27,10 +27,6 @@ public class Main implements CommandLineRunner {
 
   public static void main(String[] args) {
 
-    /*if (System.getProperty("jdk.tls.acknowledgeCloseNotify") == null) {
-      throw new Exception("SHOULD SET -Djdk.tls.acknowledgeCloseNotify=true");
-    }*/
-
     SpringApplication app = new SpringApplication(Main.class);
     app.setLazyInitialization(true);
     app.run(args);
@@ -58,7 +54,7 @@ public class Main implements CommandLineRunner {
 
   private Map<AnsweringServer, Future<?>> setupFakeFutures(
       Map<String, AnsweringServer> answeringServers) {
-    Map<AnsweringServer, Future<?>> futures = new HashMap();
+    Map<AnsweringServer, Future<?>> futures = new HashMap<>();
     for (AnsweringServer answeringServer : answeringServers.values()) {
       futures.put(answeringServer, new FakeFuture());
     }

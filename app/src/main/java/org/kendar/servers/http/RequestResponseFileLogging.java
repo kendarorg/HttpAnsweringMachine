@@ -23,13 +23,12 @@ import java.nio.file.Path;
 @HttpTypeFilter(hostAddress = "*")
 public class RequestResponseFileLogging implements FilteringClass {
   private static final ObjectMapper mapper = new ObjectMapper();
-  private final Logger logger;
   private final Logger responseLogger;
   private final Logger requestLogger;
   private final Logger staticLogger;
   private final Logger dynamicLogger;
   private final FileResourcesUtils fileResourcesUtils;
-  private JsonConfiguration configuration;
+  private final JsonConfiguration configuration;
   private String roundtripsPath;
 
   public RequestResponseFileLogging(
@@ -38,7 +37,6 @@ public class RequestResponseFileLogging implements FilteringClass {
       JsonConfiguration configuration) {
 
     this.fileResourcesUtils = fileResourcesUtils;
-    this.logger = loggerBuilder.build(RequestResponseFileLogging.class);
     this.responseLogger = loggerBuilder.build(Response.class);
     this.requestLogger = loggerBuilder.build(Request.class);
     this.staticLogger = loggerBuilder.build(StaticRequest.class);

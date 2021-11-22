@@ -18,8 +18,8 @@ import java.util.ArrayList;
 @HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class PluginsApi implements FilteringClass {
-    ObjectMapper mapper = new ObjectMapper();
-    private PluginsInitializer pluginsInitializer;
+    final ObjectMapper mapper = new ObjectMapper();
+    private final PluginsInitializer pluginsInitializer;
 
     public PluginsApi(PluginsInitializer pluginsInitializer){
 

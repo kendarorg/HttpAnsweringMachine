@@ -19,177 +19,194 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-@HttpTypeFilter(hostAddress = "${global.localAddress}",
-        blocking = true)
+@HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class DnsServersApis implements FilteringClass {
-    ObjectMapper mapper = new ObjectMapper();
-    private final JsonConfiguration configuration;
-    private DnsMultiResolver dnsMultiResolver;
-    private final Pattern ipPattern = Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
+  private final JsonConfiguration configuration;
+  private final Pattern ipPattern =
+      Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
+  final ObjectMapper mapper = new ObjectMapper();
+  private final DnsMultiResolver dnsMultiResolver;
 
-    public DnsServersApis(JsonConfiguration configuration, DnsMultiResolver dnsMultiResolver){
+  public DnsServersApis(JsonConfiguration configuration, DnsMultiResolver dnsMultiResolver) {
 
-        this.configuration = configuration;
-        this.dnsMultiResolver = dnsMultiResolver;
-    }
+    this.configuration = configuration;
+    this.dnsMultiResolver = dnsMultiResolver;
+  }
 
-    @Override
-    public String getId() {
-        return "org.kendar.servers.dns.api.DnsApis";
-    }
+  @Override
+  public String getId() {
+    return "org.kendar.servers.dns.api.DnsApis";
+  }
 
-    @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/dns/servers",
-            method = "GET",id="1002a4b4-277d-11ec-9621-0242ac130002")
-    public boolean getExtraServers(Request req, Response res) throws JsonProcessingException {
-        var dnsServeres = configuration.getConfiguration(DnsConfig.class).getExtraServers();
+  @HttpMethodFilter(
+      phase = HttpFilterType.API,
+      pathAddress = "/api/dns/servers",
+      method = "GET",
+      id = "1002a4b4-277d-11ec-9621-0242ac130002")
+  public boolean getExtraServers(Request req, Response res) throws JsonProcessingException {
+    var dnsServeres = configuration.getConfiguration(DnsConfig.class).getExtraServers();
+    res.addHeader("Content-type", "application/json");
+    res.setResponseText(mapper.writeValueAsString(dnsServeres));
+    return false;
+  }
+
+  @HttpMethodFilter(
+      phase = HttpFilterType.API,
+      pathAddress = "/api/dns/servers/{id}",
+      method = "GET",
+      id = "1003a4b4-277d-11ec-9621-0242ac130002")
+  public boolean getDnsServer(Request req, Response res) throws JsonProcessingException {
+    var dnsServers = configuration.getConfiguration(DnsConfig.class).getExtraServers();
+    var name = getIdPathParameter(req, "id");
+    for (var item : dnsServers) {
+      if (item.getId().equalsIgnoreCase(name)) {
+
         res.addHeader("Content-type", "application/json");
-        res.setResponseText(mapper.writeValueAsString(dnsServeres));
+        res.setResponseText(mapper.writeValueAsString(item));
         return false;
+      }
+    }
+    res.setStatusCode(404);
+    return false;
+  }
+
+  private String getIdPathParameter(Request req, String id) {
+    return req.getPathParameter(id);
+  }
+
+  @HttpMethodFilter(
+      phase = HttpFilterType.API,
+      pathAddress = "/api/dns/servers/{id}",
+      method = "DELETE",
+      id = "1004a4b4-277d-11ec-9621-0242ac130002")
+  public boolean removeDnsServer(Request req, Response res) {
+    var cloned = configuration.getConfiguration(DnsConfig.class).copy();
+    var dnsServeres = cloned.getExtraServers();
+    var name = (getIdPathParameter(req, "id"));
+    var newList = new ArrayList<ExtraDnsServer>();
+    for (var item : dnsServeres) {
+      if (item.getId().equalsIgnoreCase(name)) {
+        if (item.isEnv()) return false;
+        continue;
+      }
+      newList.add(item);
+    }
+    cloned.setExtraServers(newList);
+    configuration.setConfiguration(cloned);
+    res.setStatusCode(200);
+    return false;
+  }
+
+  @HttpMethodFilter(
+      phase = HttpFilterType.API,
+      pathAddress = "/api/dns/servers/{id}",
+      method = "PUT",
+      id = "1005a4b4-277d-11ec-9621-0242ac130002")
+  public boolean updateDnsServer(Request req, Response res) throws Exception {
+
+    var cloned = configuration.getConfiguration(DnsConfig.class).copy();
+    var dnsServers = cloned.getExtraServers();
+    var id = (getIdPathParameter(req, "id"));
+    var newList = new ArrayList<ExtraDnsServer>();
+    var newData = mapper.readValue(req.getRequestText(), ExtraDnsServer.class);
+    newData.setEnv(false);
+    for (var item : dnsServers) {
+      var clone = item.copy();
+      if (!clone.getId().equalsIgnoreCase(id)) {
+        if (clone.isEnv()) return false;
+        newList.add(clone);
+        continue;
+      }
+      clone.setAddress(newData.getAddress());
+      var resolved = newData.getAddress();
+      Matcher ipPatternMatcher = ipPattern.matcher(newData.getAddress());
+      if (!ipPatternMatcher.matches()) {
+        var allResolved = dnsMultiResolver.resolve(newData.getAddress(), true);
+        if (allResolved.isEmpty()) {
+          res.setStatusCode(500);
+          res.setResponseText("Unable to resolve " + newData.getAddress());
+          return false;
+        }
+        resolved = allResolved.get(0);
+      }
+      clone.setResolved(resolved);
+      newList.add(clone);
     }
 
-    @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/dns/servers/{id}",
-            method = "GET",id="1003a4b4-277d-11ec-9621-0242ac130002")
-    public boolean getDnsServer(Request req, Response res) throws JsonProcessingException {
-        var dnsServers = configuration.getConfiguration(DnsConfig.class).getExtraServers();
-        var name = req.getPathParameter("id");
-        for(var item:dnsServers){
-            if(item.getId().equalsIgnoreCase(name)){
-
-                res.addHeader("Content-type", "application/json");
-                res.setResponseText(mapper.writeValueAsString(item));
-                return false;
-            }
-        }
-        res.setStatusCode(404);
-        return false;
+    for (var item : newList) {
+      if (item.getResolved().equalsIgnoreCase(newData.getResolved()))
+        throw new Exception("Duplicate dns resolution");
     }
+    cloned.setExtraServers(newList);
+    configuration.setConfiguration(cloned);
+    res.setStatusCode(200);
+    return false;
+  }
 
-    @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/dns/servers/{id}",
-            method = "DELETE",id="1004a4b4-277d-11ec-9621-0242ac130002")
-    public boolean removeDnsServer(Request req, Response res) {
-        var cloned = configuration.getConfiguration(DnsConfig.class).copy();
-        var dnsServeres = cloned.getExtraServers();
-        var name = (req.getPathParameter("id"));
-        var newList = new ArrayList<ExtraDnsServer>();
-        for(var item:dnsServeres){
-            if(item.getId().equalsIgnoreCase(name)){
-                if(item.isEnv())return false;
-                continue;
-            }
-            newList.add(item);
-        }
-        cloned.setExtraServers(newList);
-        configuration.setConfiguration(cloned);
-        res.setStatusCode(200);
-        return false;
+  @HttpMethodFilter(
+      phase = HttpFilterType.API,
+      pathAddress = "/api/dns/servers/swap/{id1}/{id2}",
+      method = "PUT",
+      id = "1006a4b4-277d-11ec-9621-0242ac130002")
+  public boolean swapDnsServer(Request req, Response res) {
+    var cloned = configuration.getConfiguration(DnsConfig.class).copy();
+    var dnsServeres = cloned.getExtraServers();
+    var name1 = (getIdPathParameter(req, "id1"));
+    var name2 = (getIdPathParameter(req, "id2"));
+    var id1Index = -1;
+    var id2Index = -1;
+    for (int i = 0; i < dnsServeres.size(); i++) {
+      if (dnsServeres.get(i).getId().equalsIgnoreCase(name1)) id1Index = i;
+      if (dnsServeres.get(i).getId().equalsIgnoreCase(name2)) id2Index = i;
     }
+    if (dnsServeres.get(id1Index).isEnv()) return false;
+    if (dnsServeres.get(id2Index).isEnv()) return false;
+    var id1Clone = dnsServeres.get(id1Index).copy();
+    dnsServeres.set(id1Index, dnsServeres.get(id2Index));
+    dnsServeres.set(id2Index, id1Clone);
+    configuration.setConfiguration(cloned);
+    res.setStatusCode(200);
+    return false;
+  }
 
-    @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/dns/servers/{id}",
-            method = "PUT",id="1005a4b4-277d-11ec-9621-0242ac130002")
-    public boolean updateDnsServer(Request req, Response res) throws Exception {
+  @HttpMethodFilter(
+      phase = HttpFilterType.API,
+      pathAddress = "/api/dns/servers",
+      method = "POST",
+      id = "1007a4b5-277d-11ec-9621-0242ac130002")
+  public boolean addDnsServer(Request req, Response res) throws Exception {
+    var cloned = configuration.getConfiguration(DnsConfig.class).copy();
+    var dnsServeres = cloned.getExtraServers();
+    var newList = new ArrayList<ExtraDnsServer>();
+    var newData = mapper.readValue(req.getRequestText(), ExtraDnsServer.class);
+    newData.setEnv(false);
 
-        var cloned = configuration.getConfiguration(DnsConfig.class).copy();
-        var dnsServers = cloned.getExtraServers();
-        var id = (req.getPathParameter("id"));
-        var newList = new ArrayList<ExtraDnsServer>();
-        var newData = mapper.readValue(req.getRequestText(),ExtraDnsServer.class);
-        newData.setEnv(false);
-        for(var item:dnsServers){
-            var clone = item.copy();
-            if(!clone.getId().equalsIgnoreCase(id)){
-                if(clone.isEnv())return false;
-                newList.add(clone);
-                continue;
-            }
-            clone.setAddress(newData.getAddress());
-            var resolved = newData.getAddress();
-            Matcher ipPatternMatcher = ipPattern.matcher(newData.getAddress());
-            if (!ipPatternMatcher.matches()) {
-                var allResolved = dnsMultiResolver.resolve(newData.getAddress(), true);
-                if (allResolved.isEmpty()) {
-                    res.setStatusCode(500);
-                    res.setResponseText("Unable to resolve " + newData.getAddress());
-                    return false;
-                }
-                resolved = allResolved.get(0);
-            }
-            clone.setResolved(resolved);
-            newList.add(clone);
-        }
-
-
-        for(var item:newList){
-            if(item.getResolved().equalsIgnoreCase(newData.getResolved()))throw new Exception("Duplicate dns resolution");
-        }
-        cloned.setExtraServers(newList);
-        configuration.setConfiguration(cloned);
-        res.setStatusCode(200);
-        return false;
+    for (var item : dnsServeres) {
+      if (item.getId().equalsIgnoreCase(newData.getId()))
+        throw new Exception("Duplicate dns resolution");
+      newList.add(item.copy());
     }
-
-    @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/dns/servers/swap/{id1}/{id2}",
-            method = "PUT",id="1006a4b4-277d-11ec-9621-0242ac130002")
-    public boolean swapDnsServer(Request req, Response res) {
-        var cloned = configuration.getConfiguration(DnsConfig.class).copy();
-        var dnsServeres = cloned.getExtraServers();
-        var name1 = (req.getPathParameter("id1"));
-        var name2 = (req.getPathParameter("id2"));
-        var id1Index=-1;
-        var id2Index = -1;
-        for (int i = 0; i < dnsServeres.size(); i++) {
-            if(dnsServeres.get(i).getId().equalsIgnoreCase(name1))id1Index=i;
-            if(dnsServeres.get(i).getId().equalsIgnoreCase(name2))id2Index=i;
-        }
-        if(dnsServeres.get(id1Index).isEnv())return false;
-        if(dnsServeres.get(id2Index).isEnv())return false;
-        var id1Clone = dnsServeres.get(id1Index).copy();
-        dnsServeres.set(id1Index,dnsServeres.get(id2Index));
-        dnsServeres.set(id2Index,id1Clone);
-        configuration.setConfiguration(cloned);
-        res.setStatusCode(200);
+    var resolved = newData.getAddress();
+    Matcher ipPatternMatcher = ipPattern.matcher(newData.getAddress());
+    if (!ipPatternMatcher.matches()) {
+      var allResolved = dnsMultiResolver.resolve(newData.getAddress(), true);
+      if (allResolved.isEmpty()) {
+        res.setStatusCode(500);
+        res.setResponseText("Unable to resolve " + newData.getAddress());
         return false;
+      }
+      resolved = allResolved.get(0);
     }
+    newData.setResolved(resolved);
+    newList.add(newData);
 
-    @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/dns/servers",
-            method = "POST",id="1007a4b5-277d-11ec-9621-0242ac130002")
-    public boolean addDnsServer(Request req, Response res) throws Exception {
-        var cloned = configuration.getConfiguration(DnsConfig.class).copy();
-        var dnsServeres = cloned.getExtraServers();
-        var newList = new ArrayList<ExtraDnsServer>();
-        var newData = mapper.readValue(req.getRequestText(),ExtraDnsServer.class);
-        newData.setEnv(false);
-
-
-        for(var item:dnsServeres){
-            if(item.getId().equalsIgnoreCase(newData.getId()))throw new Exception("Duplicate dns resolution");
-            newList.add( item.copy());
-        }
-        var resolved = newData.getAddress();
-        Matcher ipPatternMatcher = ipPattern.matcher(newData.getAddress());
-        if (!ipPatternMatcher.matches()) {
-            var allResolved = dnsMultiResolver.resolve(newData.getAddress(), true);
-            if (allResolved.isEmpty()) {
-                res.setStatusCode(500);
-                res.setResponseText("Unable to resolve " + newData.getAddress());
-                return false;
-            }
-            resolved = allResolved.get(0);
-        }
-        newData.setResolved(resolved);
-        newList.add(newData);
-
-        for(var item:newList){
-            if(item.getResolved().equalsIgnoreCase(newData.getResolved()))throw new Exception("Duplicate dns resolution");
-        }
-        cloned.setExtraServers(newList);
-        configuration.setConfiguration(cloned);
-        res.setStatusCode(200);
-        return false;
+    for (var item : newList) {
+      if (item.getResolved().equalsIgnoreCase(newData.getResolved()))
+        throw new Exception("Duplicate dns resolution");
     }
+    cloned.setExtraServers(newList);
+    configuration.setConfiguration(cloned);
+    res.setStatusCode(200);
+    return false;
+  }
 }

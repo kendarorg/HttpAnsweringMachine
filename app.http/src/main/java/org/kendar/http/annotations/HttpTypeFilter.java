@@ -10,13 +10,13 @@ import java.lang.annotation.Target;
 public @interface HttpTypeFilter {
     /**
      * Can be set using simple ${property:default} or ${property}
-     * @return
+     * @return host
      */
     String hostAddress() default "";
 
     /**
      * Can be set using simple ${property:default} or ${property}
-     * @return
+     * @return host regexp
      */
     String hostPattern() default "";
     String name() default "";
@@ -24,7 +24,7 @@ public @interface HttpTypeFilter {
 
     /**
      * Propagates on children
-     * @return
+     * @return if is blocking
      */
     boolean blocking() default false;
 }

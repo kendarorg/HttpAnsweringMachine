@@ -48,8 +48,6 @@ public class CertitificatesGeneratorTest {
     GeneratedCert domain =
         target.createCertificate(
             "CN=local.gamlor.info", "local.gamlor.info", root, extraDomains, false);
-    // GeneratedCert otherD = target.createCertificate("other.gamlor.info","other.gamlor.info",
-    // root,extraDomains,false);
     var encodedBytes = domain.certificate.getEncoded();
     final FileOutputStream os = new FileOutputStream("target/local.gamlor.info.cer");
     os.write("-----BEGIN CERTIFICATE-----\n".getBytes(StandardCharsets.US_ASCII));

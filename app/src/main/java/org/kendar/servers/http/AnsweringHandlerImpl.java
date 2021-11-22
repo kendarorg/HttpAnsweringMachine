@@ -36,7 +36,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,7 +43,6 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 
@@ -269,10 +267,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
       sendResponse(response, httpExchange);
 
-    } catch (RuntimeException rex) {
+    } catch (Exception rex) {
       handleException(httpExchange, response, rex);
-    } catch (Exception ex) {
-      handleException(httpExchange, response, ex);
     } finally {
       try {
         filteringClassesHandler.handle(HttpFilterType.POST_RENDER, request, response, connManager);
@@ -483,12 +479,11 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     return "?"
         + request.getQuery().entrySet().stream()
             .map(
-                e -> {
-                  return e.getKey()
-                      + "="
-                      + java.net.URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8)
-                          .replace(" ", "%20");
-                })
+                e ->
+                    e.getKey()
+                        + "="
+                        + java.net.URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8)
+                            .replace(" ", "%20"))
             .collect(joining("&"));
   }
 
@@ -497,7 +492,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
   }
 
   static class ResolvedDomain {
-    public HashSet<String> domains = new HashSet<>();
-    public long timestamp = Calendar.getInstance().getTimeInMillis();
+    public final HashSet<String> domains = new HashSet<>();
+    public final long timestamp = Calendar.getInstance().getTimeInMillis();
   }
 }

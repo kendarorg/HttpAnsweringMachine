@@ -30,7 +30,7 @@ public class ReplayerDataset {
   private final String replayerDataDir;
   private final String description;
   private final ConcurrentHashMap<Integer, Object> states = new ConcurrentHashMap<>();
-  private Md5Tester md5Tester;
+  private final Md5Tester md5Tester;
   private ReplayerResult replayerResult;
 
   public ReplayerDataset(

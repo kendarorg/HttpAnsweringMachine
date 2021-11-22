@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class PluginsInitializerImpl implements PluginsInitializer {
-    private HashMap<String,String> plugins = new HashMap<>();
-    private HashMap<String,String> specialLoggers = new HashMap<>();
+    private final HashMap<String,String> plugins = new HashMap<>();
+    private final HashMap<String,String> specialLoggers = new HashMap<>();
     @Override
     public void addPluginAddress(String address, String description) {
         if(null != address){

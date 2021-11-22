@@ -30,7 +30,7 @@ public class FilterDescriptor {
   private final Object filterClass;
   private final List<String> pathSimpleMatchers = new ArrayList<>();
   private String description;
-  private AtomicBoolean enabled = new AtomicBoolean(true);
+  private final AtomicBoolean enabled = new AtomicBoolean(true);
   private String hostAddress;
   private String pathAddress;
   private Pattern hostPattern;
@@ -39,9 +39,9 @@ public class FilterDescriptor {
   private HttpTypeFilter typeFilter;
   private HttpMethodFilter methodFilter;
   private Method callback;
-  private JsonConfiguration jsonConfiguration;
+  private final JsonConfiguration jsonConfiguration;
   private List<String> pathMatchers = new ArrayList<>();
-  private CustomFiltersLoader loader;
+  private final CustomFiltersLoader loader;
   private String id;
 
   public FilterDescriptor(

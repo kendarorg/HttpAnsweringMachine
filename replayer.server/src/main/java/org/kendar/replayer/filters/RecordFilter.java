@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 @HttpTypeFilter(hostAddress = "*")
 public class RecordFilter  implements FilteringClass {
-    private String localAddress;
+    private final String localAddress;
     @Override
     public String getId() {
         return "org.kendar.replayer.filters.RecordFilter";

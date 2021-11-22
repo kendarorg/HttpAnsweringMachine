@@ -1,9 +1,7 @@
 package org.kendar.servers.certificates;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 public interface CertificatesManager {

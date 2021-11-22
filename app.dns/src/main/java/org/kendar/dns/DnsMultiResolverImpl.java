@@ -19,7 +19,6 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Component
 public class DnsMultiResolverImpl implements DnsMultiResolver {
@@ -32,7 +31,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
   private final Logger logger;
   private final String localHostAddress;
   private final Logger logQueries;
-  private ConcurrentHashMap<String, HashSet<String>> localDomains = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, HashSet<String>> localDomains = new ConcurrentHashMap<>();
   private PatternItem localDns;
 
   public DnsMultiResolverImpl(LoggerBuilder loggerBuilder, JsonConfiguration configuration) {

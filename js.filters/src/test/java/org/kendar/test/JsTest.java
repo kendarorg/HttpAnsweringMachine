@@ -20,28 +20,6 @@ public class JsTest {
           + "       fib: fib\n"
           + "   };\n"
           + "})();";
-  /*
-  @Test
-  public void complexExecute() throws IOException {
-      JsTest main = new JsTest();
-      Script result = main.compileNoResult(contextFoo);
-      main.execComplex(result);
-  }
-
-  public void execComplex(Script script){
-      Context cx = Context.enter();
-      cx.setOptimizationLevel(9);
-      cx.setLanguageVersion(Context.VERSION_1_8);
-      cx.setClassShutter(sandboxClassShutter);
-      try {
-          Scriptable currentScope = getNewScope(cx);
-          currentScope.put("result", currentScope, result);
-          script.exec(cx, currentScope);
-          System.out.println("Result: " + result.get("result"));
-      } finally {
-          Context.exit();
-      }
-  }*/
 
   private static final String scriptSource =
       "result.put('result', fib(NUM_CONST).toString());\n"

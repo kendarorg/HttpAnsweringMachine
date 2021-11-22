@@ -1,6 +1,5 @@
 package org.kendar.servers.http.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;

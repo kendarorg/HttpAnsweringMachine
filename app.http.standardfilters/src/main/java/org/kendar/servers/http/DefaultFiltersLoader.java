@@ -19,8 +19,8 @@ import java.util.List;
 @Component
 public class DefaultFiltersLoader implements CustomFiltersLoader {
     private final Logger logger;
-    private PluginsInitializer pluginsInitializer;
-    private JsonConfiguration jsonConfiguration;
+    private final PluginsInitializer pluginsInitializer;
+    private final JsonConfiguration jsonConfiguration;
     private final List<FilteringClass> filteringClassList;
     private final Environment environment;
 

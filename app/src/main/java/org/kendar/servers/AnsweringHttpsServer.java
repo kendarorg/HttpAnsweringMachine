@@ -1,8 +1,5 @@
 package org.kendar.servers;
 
-/**
- * https://stackoverflow.com/questions/67720003/tls-1-3-server-socket-with-java-11-and-self-signed-certificates
- */
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
@@ -10,6 +7,7 @@ import org.kendar.servers.certificates.CertificatesManager;
 import org.kendar.servers.certificates.GeneratedCert;
 import org.kendar.servers.config.SSLConfig;
 import org.kendar.servers.config.HttpsWebServerConfig;
+import org.kendar.servers.config.SSLDomain;
 import org.kendar.servers.http.AnsweringHandler;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -30,6 +28,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+/**
+ * Inspired by
+ * https://stackoverflow.com/questions/67720003/tls-1-3-server-socket-with-java-11-and-self-signed-certificates
+ */
 @Component
 public class AnsweringHttpsServer implements AnsweringServer {
   private final JsonConfiguration configuration;
@@ -37,9 +39,9 @@ public class AnsweringHttpsServer implements AnsweringServer {
   private final AnsweringHandler handler;
   private final CertificatesManager certificatesManager;
   private final AtomicLong sslTimestamp = new AtomicLong(0);
+  private final AtomicReference<SSLContext> sslSharedContext = new AtomicReference<>();
   private boolean running = false;
   private HttpsServer httpsServer;
-  private AtomicReference<SSLContext> sslSharedContext = new AtomicReference<>();
 
   public AnsweringHttpsServer(
       LoggerBuilder loggerBuilder,
@@ -134,9 +136,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
             sslConfig.getCname(),
             null,
             root,
-            sslConfig.getDomains().stream()
-                .map(sslDomain -> sslDomain.getAddress())
-                .collect(Collectors.toList()),
+            sslConfig.getDomains().stream().map(SSLDomain::getAddress).collect(Collectors.toList()),
             false);
 
     KeyStore keyStoreTs = setupKeystore(domain);

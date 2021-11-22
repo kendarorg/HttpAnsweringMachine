@@ -134,7 +134,7 @@ public class DnsDirectCaller {
 
     debugString = new StringBuilder(("Address: "));
     for (int i = 0; i < addrLen; i++) {
-      debugString.append("").append(String.format("%d", (din.readByte() & 0xFF))).append(".");
+      debugString.append(String.format("%d", (din.readByte() & 0xFF))).append(".");
     }
     logger.debug(debugString.toString());
   }
