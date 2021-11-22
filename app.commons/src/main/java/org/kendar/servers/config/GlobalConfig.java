@@ -4,49 +4,58 @@ import org.kendar.servers.BaseJsonConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-@ConfigAttribute(id="global")
+@ConfigAttribute(id = "global")
 public class GlobalConfig extends BaseJsonConfig<GlobalConfig> {
-    private String localAddress;
-    private GlobalConfigLogging logging;
-    private List<FilterStatus> filters = new ArrayList<>();
-    @Override
-    public boolean isSystem() {
-        return true;
-    }
+  private String localAddress;
+  private GlobalConfigLogging logging;
+  private ConcurrentHashMap<String, Boolean> filters = new ConcurrentHashMap<>();
 
-    public String getLocalAddress() {
-        return localAddress;
-    }
+  @Override
+  public boolean isSystem() {
+    return true;
+  }
 
-    public void setLocalAddress(String localAddress) {
-        this.localAddress = localAddress;
-    }
+  public String getLocalAddress() {
+    return localAddress;
+  }
 
-    public GlobalConfigLogging getLogging() {
-        return logging;
-    }
+  public void setLocalAddress(String localAddress) {
+    this.localAddress = localAddress;
+  }
 
-    public void setLogging(GlobalConfigLogging logging) {
-        this.logging = logging;
-    }
+  public GlobalConfigLogging getLogging() {
+    return logging;
+  }
 
-    @Override public GlobalConfig copy() {
-        var result = new GlobalConfig();
-        result.localAddress = this.localAddress;
-        result.logging = this.logging.copy();
-        result.filters = new ArrayList<>();
-        for (var filter : this.filters) {
-            result.filters.add(filter.copy());
-        }
-        return result;
-    }
+  public void setLogging(GlobalConfigLogging logging) {
+    this.logging = logging;
+  }
 
-    public List<FilterStatus> getFilters() {
-        return filters;
+  @Override
+  public GlobalConfig copy() {
+    var result = new GlobalConfig();
+    result.localAddress = this.localAddress;
+    result.logging = this.logging.copy();
+    result.filters = new ConcurrentHashMap<>();
+    for (var filter : this.filters.entrySet()) {
+      result.filters.put(filter.getKey(), filter.getValue());
     }
+    return result;
+  }
 
-    public void setFilters(List<FilterStatus> filters) {
-        this.filters = filters;
-    }
+  public Map<String, Boolean> getFilters() {
+    return filters;
+  }
+
+  public void setFilters(Map<String, Boolean> filters) {
+    this.filters = new ConcurrentHashMap<>(filters);
+  }
+
+  public boolean checkFilterEnabled(String key) {
+    if (!filters.containsKey(key)) return true;
+    return filters.get(key);
+  }
 }

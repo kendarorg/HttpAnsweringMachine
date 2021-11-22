@@ -26,6 +26,8 @@ import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.apache.http.message.BasicNameValuePair;
 import org.kendar.http.FilteringClassesHandler;
 import org.kendar.http.HttpFilterType;
+import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.LoggerBuilder;
@@ -62,6 +64,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
   private final ObjectMapper mapper = new ObjectMapper();
   private final ConcurrentHashMap<String, ResolvedDomain> domains = new ConcurrentHashMap<>();
   private final Logger requestLogger;
+  private JsonConfiguration configuration;
   private PoolingHttpClientConnectionManager connManager;
 
   public AnsweringHandlerImpl(
@@ -70,7 +73,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
       FilteringClassesHandler filteringClassesHandler,
       SimpleProxyHandler simpleProxyHandler,
       RequestResponseBuilder requestResponseBuilder,
-      PluginsInitializer pluginsInitializer) {
+      PluginsInitializer pluginsInitializer,
+      JsonConfiguration configuration) {
     this.logger = loggerBuilder.build(AnsweringHandlerImpl.class);
     this.requestLogger = loggerBuilder.build(Request.class);
     this.multiResolver = multiResolver;
@@ -78,6 +82,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     this.simpleProxyHandler = simpleProxyHandler;
 
     this.requestResponseBuilder = requestResponseBuilder;
+    this.configuration = configuration;
     pluginsInitializer.addSpecialLogger(
         Request.class.getName(), "Requests Logging (INFO,DEBUG,TRACE)");
     pluginsInitializer.addSpecialLogger(
@@ -219,6 +224,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
     Request request = null;
     Response response = new Response();
+    var config = configuration.getConfiguration(GlobalConfig.class);
     try {
       if (httpExchange instanceof HttpsExchange) {
         request = requestResponseBuilder.fromExchange(httpExchange, "https");
@@ -233,18 +239,20 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
       }
 
       if (filteringClassesHandler.handle(
-          HttpFilterType.PRE_RENDER, request, response, connManager)) {
+          config, HttpFilterType.PRE_RENDER, request, response, connManager)) {
         sendResponse(response, httpExchange);
         return;
       }
 
-      if (filteringClassesHandler.handle(HttpFilterType.API, request, response, connManager)) {
+      if (filteringClassesHandler.handle(
+          config, HttpFilterType.API, request, response, connManager)) {
         // ALWAYS WHEN CALLED
         sendResponse(response, httpExchange);
         return;
       }
 
-      if (filteringClassesHandler.handle(HttpFilterType.STATIC, request, response, connManager)) {
+      if (filteringClassesHandler.handle(
+          config, HttpFilterType.STATIC, request, response, connManager)) {
         // ALWAYS WHEN CALLED
         sendResponse(response, httpExchange);
         return;
@@ -252,7 +260,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
       request = simpleProxyHandler.translate(request);
 
-      if (filteringClassesHandler.handle(HttpFilterType.PRE_CALL, request, response, connManager)) {
+      if (filteringClassesHandler.handle(
+          config, HttpFilterType.PRE_CALL, request, response, connManager)) {
         sendResponse(response, httpExchange);
         return;
       }
@@ -260,7 +269,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
       callExternalSite(httpExchange, request, response);
 
       if (filteringClassesHandler.handle(
-          HttpFilterType.POST_CALL, request, response, connManager)) {
+          config, HttpFilterType.POST_CALL, request, response, connManager)) {
         sendResponse(response, httpExchange);
         return;
       }
@@ -271,7 +280,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
       handleException(httpExchange, response, rex);
     } finally {
       try {
-        filteringClassesHandler.handle(HttpFilterType.POST_RENDER, request, response, connManager);
+        filteringClassesHandler.handle(
+            config, HttpFilterType.POST_RENDER, request, response, connManager);
       } catch (Exception e) {
         logger.error("ERROR CALLING POST RENDER ", e);
       }

@@ -8,6 +8,8 @@ import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.api.model.FilterDto;
 import org.kendar.servers.http.configurations.FilterConfig;
 import org.kendar.servers.http.Request;
@@ -26,11 +28,16 @@ public class FilterClassesApi implements FilteringClass {
   final ObjectMapper mapper = new ObjectMapper();
   private final FilterConfig filteringClassesHandler;
   private final ApplicationContext context;
+  private JsonConfiguration configuration;
 
-  public FilterClassesApi(FilterConfig filtersConfiguration, ApplicationContext context) {
+  public FilterClassesApi(
+      FilterConfig filtersConfiguration,
+      ApplicationContext context,
+      JsonConfiguration configuration) {
 
     this.filteringClassesHandler = filtersConfiguration;
     this.context = context;
+    this.configuration = configuration;
   }
 
   @Override
@@ -98,13 +105,17 @@ public class FilterClassesApi implements FilteringClass {
       method = "GET",
       id = "e907a4b4-278k-11ec-6621-0242ac130003")
   public void getIdFiltersForClass(Request req, Response res) throws JsonProcessingException {
+    var globalConfig = configuration.getConfiguration(GlobalConfig.class);
     var clazz = req.getPathParameter("clazz");
     var config = filteringClassesHandler.get();
     ArrayList<FilterDto> result = new ArrayList<>();
     var listOfItems = config.filtersByClass.get(clazz);
 
     for (var item : listOfItems) {
-      var desc = new FilterDto(item.isEnabled(), item.getTypeFilter(), item.getMethodFilter());
+      var enabled =
+          globalConfig.checkFilterEnabled(item.getId())
+              && globalConfig.checkFilterEnabled(item.getClassId());
+      var desc = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter());
       result.add(desc);
     }
 
@@ -118,6 +129,7 @@ public class FilterClassesApi implements FilteringClass {
       method = "GET",
       id = "e907a4b4-277d-11ec-9621-0242ac130003")
   public void getFiltersForPhaseClass(Request req, Response res) throws JsonProcessingException {
+    var globalConfig = configuration.getConfiguration(GlobalConfig.class);
     var stringPhase = req.getPathParameter("phase");
     var clazz = req.getPathParameter("clazz");
     var phase = HttpFilterType.valueOf(stringPhase.toUpperCase(Locale.ROOT));
@@ -127,7 +139,10 @@ public class FilterClassesApi implements FilteringClass {
     for (var i = 0; i < listOfItems.size(); i++) {
       var item = listOfItems.get(i);
       if (!item.getClassId().equalsIgnoreCase(clazz)) continue;
-      var desc = new FilterDto(item.isEnabled(), item.getTypeFilter(), item.getMethodFilter());
+      var enabled =
+          globalConfig.checkFilterEnabled(item.getId())
+              && globalConfig.checkFilterEnabled(item.getClassId());
+      var desc = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter());
       result.add(desc);
     }
 
@@ -141,12 +156,50 @@ public class FilterClassesApi implements FilteringClass {
       method = "GET",
       id = "e907a4b4-277d-11ec-9621-0242ac130004")
   public void getFilterId(Request req, Response res) throws JsonProcessingException {
+    var globalConfig = configuration.getConfiguration(GlobalConfig.class);
     var id = req.getPathParameter("id");
     var config = filteringClassesHandler.get();
     var item = config.filtersById.get(id);
-    var result = new FilterDto(item.isEnabled(), item.getTypeFilter(), item.getMethodFilter());
+    var enabled =
+        globalConfig.checkFilterEnabled(item.getId())
+            && globalConfig.checkFilterEnabled(item.getClassId());
+    var result = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter());
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(result));
+  }
+
+  @HttpMethodFilter(
+      phase = HttpFilterType.API,
+      pathAddress = "/api/filters/id/{id}",
+      method = "DELETE",
+      id = "e907a4b4-277d-11kc-9621-0242ac130004")
+  public void disableById(Request req, Response res) throws JsonProcessingException {
+    var globalConfig = configuration.getConfiguration(GlobalConfig.class).copy();
+    var id = req.getPathParameter("id");
+    var config = filteringClassesHandler.get();
+    var item = config.filtersById.get(id);
+    var filters = globalConfig.getFilters();
+    filters.put(item.getId(), false);
+    globalConfig.setFilters(filters);
+    configuration.setConfiguration(globalConfig);
+    res.setResponseText("");
+  }
+
+  @HttpMethodFilter(
+      phase = HttpFilterType.API,
+      pathAddress = "/api/filters/id/{id}/enable",
+      method = "PUT",
+      id = "e907a4b4-277d-11ec-962h-0242ac130004")
+  public void enableById(Request req, Response res) throws JsonProcessingException {
+    var globalConfig = configuration.getConfiguration(GlobalConfig.class).copy();
+    var id = req.getPathParameter("id");
+    var config = filteringClassesHandler.get();
+    var item = config.filtersById.get(id);
+    var filters = globalConfig.getFilters();
+    filters.put(item.getId(), true);
+    globalConfig.setFilters(filters);
+    configuration.setConfiguration(globalConfig);
+    res.setResponseText("");
   }
 
   @HttpMethodFilter(
@@ -169,12 +222,16 @@ public class FilterClassesApi implements FilteringClass {
       method = "GET",
       id = "e967a4b4-277d-41ecr9621y0242ac130004")
   public void getFiltersLoadersFilters(Request req, Response res) throws JsonProcessingException {
+    var globalConfig = configuration.getConfiguration(GlobalConfig.class);
     var config = filteringClassesHandler.get();
     var loader = req.getPathParameter("loader");
     var result = new ArrayList<FilterDto>();
     for (var item : config.filtersById.values()) {
       if (item.getLoader().getClass().getSimpleName().equalsIgnoreCase(loader)) {
-        result.add(new FilterDto(item.isEnabled(), item.getTypeFilter(), item.getMethodFilter()));
+        var enabled =
+            globalConfig.checkFilterEnabled(item.getId())
+                && globalConfig.checkFilterEnabled(item.getClassId());
+        result.add(new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter()));
       }
     }
     res.addHeader("Content-type", "application/json");
@@ -182,6 +239,8 @@ public class FilterClassesApi implements FilteringClass {
   }
 
   private void uploadNewScript(Request req, Response res, boolean overwrite) throws Exception {
+
+    var globalConfig = configuration.getConfiguration(GlobalConfig.class);
     var loader = req.getQuery("loader");
     var stringPhase = req.getPathParameter("phase");
     var id = req.getPathParameter("id");
@@ -231,7 +290,10 @@ public class FilterClassesApi implements FilteringClass {
     }
     filteringClassesHandler.set(config);
 
-    var result = new FilterDto(item.isEnabled(), item.getTypeFilter(), item.getMethodFilter());
+    var enabled =
+        globalConfig.checkFilterEnabled(item.getId())
+            && globalConfig.checkFilterEnabled(item.getClassId());
+    var result = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter());
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(result));
   }

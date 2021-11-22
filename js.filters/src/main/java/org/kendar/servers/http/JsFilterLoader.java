@@ -108,7 +108,6 @@ public class JsFilterLoader implements CustomFiltersLoader {
       var executor =
           new JsFilterExecutor(filterDescriptor, this, loggerBuilder, filterDescriptor.getId());
       var fd = new FilterDescriptor(this, executor, environment, configuration);
-      fd.setEnabled(filterDescriptor.isEnabled());
       result.add(fd);
     }
   }

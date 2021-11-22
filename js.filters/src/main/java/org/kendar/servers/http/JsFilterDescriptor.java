@@ -18,7 +18,6 @@ public class JsFilterDescriptor {
     private boolean blocking;
     private String source;
     private String id;
-    private boolean enabled;
 
     @Override
     public String toString(){
@@ -129,13 +128,5 @@ public class JsFilterDescriptor {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 }

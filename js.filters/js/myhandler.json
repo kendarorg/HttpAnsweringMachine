@@ -10,7 +10,6 @@
         "myhandler/fuffa.js"
     ],
     "id": "1030a4b4-277d-11ec-9621-0242ac130002",
-    "enabled": true,
     "blocking": true,
     "priority": 100
 }

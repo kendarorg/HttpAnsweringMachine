@@ -2,8 +2,11 @@ package org.kendar.servers.http;
 
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.kendar.http.*;
+import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.configurations.FilterConfig;
 import org.kendar.servers.http.configurations.FiltersConfiguration;
+import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -16,14 +19,17 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
   private final List<CustomFiltersLoader> customFilterLoaders;
   private final Environment environment;
   private final FilterConfig filtersConfiguration;
+  private final Logger logger;
 
   public FilteringClassesHandlerImpl(
       List<CustomFiltersLoader> customFilterLoaders,
       Environment environment,
-      FilterConfig filtersConfiguration) {
+      FilterConfig filtersConfiguration,
+      LoggerBuilder loggerBuilder) {
     this.customFilterLoaders = customFilterLoaders;
     this.environment = environment;
     this.filtersConfiguration = filtersConfiguration;
+    this.logger = loggerBuilder.build(FilteringClassesHandlerImpl.class);
   }
 
   public HashMap<HttpFilterType, List<FilterDescriptor>> getConfiguration() {
@@ -69,6 +75,7 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
 
   @Override
   public boolean handle(
+      GlobalConfig globalConfig,
       HttpFilterType filterType,
       Request request,
       Response response,
@@ -77,9 +84,14 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
     var config = filtersConfiguration.get();
     if (!config.filters.containsKey(filterType)) return false;
     for (var filterEntry : config.filters.get(filterType)) {
-      if (!filterEntry.isEnabled()) continue;
       if (!methodMatches(filterEntry, request)) continue;
       if (!filterMathches(filterEntry, request)) continue;
+      if (!globalConfig.checkFilterEnabled(filterEntry.getId())
+          || !globalConfig.checkFilterEnabled(filterEntry.getClassId())) {
+        logger.debug(
+            "Filter {} with id {} is disabled", filterEntry.getClassId(), filterEntry.getId());
+        continue;
+      }
       var isBlocking = filterEntry.execute(request, response, connectionManager);
 
       // If is blocking "by result"

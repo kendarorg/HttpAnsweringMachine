@@ -110,12 +110,9 @@
         "org.kendar.dns.DnsQueries": "OFF"
       }
     },
-    "filters": [
-      {
-        "id": "12363272",
-        "enabled": false
-      }
-    ]
+    "filters": {
+      "12363272": false
+    }
   },
   {
     "id": "derby",
