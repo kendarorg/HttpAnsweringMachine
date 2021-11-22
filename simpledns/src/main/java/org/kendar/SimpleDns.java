@@ -20,9 +20,9 @@ public class SimpleDns implements CommandLineRunner {
 
   public static void main(String[] args) {
 
-    if (System.getProperty("jdk.tls.acknowledgeCloseNotify") == null) {
-      // throw new Exception("SHOULD SET -Djdk.tls.acknowledgeCloseNotify=true");
-    }
+    /*if (System.getProperty("jdk.tls.acknowledgeCloseNotify") == null) {
+       throw new Exception("SHOULD SET -Djdk.tls.acknowledgeCloseNotify=true");
+    }*/
 
     // SpringApplication.run(SimpleDns.class, args);
     SpringApplication app = new SpringApplication(SimpleDns.class);

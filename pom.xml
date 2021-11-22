@@ -57,7 +57,7 @@
     </properties>
 
     <modules>
-	    <module>app</module>
+        <module>app</module>
         <module>app.commons</module>
         <module>app.http</module>
         <module>oidc.server</module>

@@ -95,7 +95,7 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
     }
 
     public String buildPath(String... paths) {
-        String returnValue = null;
+        String returnValue;
         var result = paths[0];
         try {
             /*for (var i = 1; i < paths.length; i++) {

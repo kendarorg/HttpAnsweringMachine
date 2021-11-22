@@ -23,6 +23,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
   private ConcurrentHashMap<String, ParsedConfig> deserializedConfigurations =
       new ConcurrentHashMap<>();
   private ConcurrentHashMap<Class, String> mappingStringClasses = new ConcurrentHashMap<>();
+
   public JsonConfigurationImpl() {
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
@@ -134,7 +135,6 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     }
     return null;
   }
-
 
   static class ParsedConfig {
     public Object deserialized;

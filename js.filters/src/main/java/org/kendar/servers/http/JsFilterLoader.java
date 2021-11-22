@@ -26,7 +26,7 @@ import java.util.zip.ZipInputStream;
 @Component
 public class JsFilterLoader implements CustomFiltersLoader {
     private final JsonConfiguration configuration;
-    private  String jsFilterPath = null;
+    private  String jsFilterPath;
     private ScriptableObject globalScope;
     private final Environment environment;
     private final Logger logger;
@@ -69,7 +69,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
         String currentPath = "";
         //https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
         try {
-            File f = null;
+            File f;
             var realPath=fileResourcesUtils.buildPath(jsFilterPath);
             f = new File(realPath);
             if(f.exists()) {

@@ -110,7 +110,7 @@ public class DnsDirectCaller {
     logger.debug("Authority RRs: 0x" + String.format("%x", din.readShort()));
     logger.debug("Additional RRs: 0x" + String.format("%x", din.readShort()));
 
-    int recLen = 0;
+    int recLen;
     while ((recLen = din.readByte()) > 0) {
       byte[] record = new byte[recLen];
 

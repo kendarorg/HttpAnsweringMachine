@@ -90,7 +90,7 @@ public class ReplayerDataset {
     var path = req.getHost() + req.getPath();
     try {
 
-      String responseHash = null;
+      String responseHash;
 
       if (req.isStaticRequest() && staticData.containsKey(path)) {
         var alreadyPresent = staticData.get(path);
@@ -194,7 +194,7 @@ public class ReplayerDataset {
   public Response findResponse(Request req) {
     try {
 
-      String contentHash = null;
+      String contentHash;
       if (req.isBinaryRequest()) {
         contentHash = md5Tester.calculateMd5(req.getRequestBytes());
       } else {

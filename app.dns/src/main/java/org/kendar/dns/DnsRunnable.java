@@ -19,7 +19,7 @@ public class DnsRunnable implements Callable<List<String>> {
 
     @Override
     public List<String> call() throws Exception {
-        SimpleResolver resolver = null;
+        SimpleResolver resolver;
         List<String> result = new ArrayList<>();
         try {
             resolver = new SimpleResolver(requestedServer);

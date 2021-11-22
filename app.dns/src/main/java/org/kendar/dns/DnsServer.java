@@ -85,7 +85,7 @@ public class DnsServer {
     private void resolveAll(DatagramPacket indp,DatagramSocket socket, byte[] in) {
         try {
             // Build the response
-            Message request = null;
+            Message request;
             request = new Message(in);
             Message response = new Message(request.getHeader().getID());
             String requestedDomain = request.getQuestion().getName().toString(true);
@@ -105,7 +105,7 @@ public class DnsServer {
                 ips = this.multiResolver.resolve(requestedDomain, fromLocalHost);
             }
 
-            byte[] resp = new byte[0];
+            byte[] resp;
             if(ips.size()>0) {
                 for (String ip : ips) {
                     logger.debug("FOUNDED IP " + ip + " FOR " + requestedDomain);

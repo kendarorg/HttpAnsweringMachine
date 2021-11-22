@@ -78,8 +78,7 @@ public class RequestResponseFileLogging implements FilteringClass {
         && serReq.getRequestText() != null
         && serReq.getRequestText().length() > 100) {
       serReq.setRequestText(serReq.getRequestText().substring(0, 100));
-    } else if (requestLogger.isTraceEnabled()) {
-    } else {
+    } else if (!requestLogger.isTraceEnabled()) {
       serReq.setRequestText(null);
     }
     serReq.setRequestBytes(null);
@@ -88,8 +87,7 @@ public class RequestResponseFileLogging implements FilteringClass {
         && serRes.getResponseText() != null
         && serRes.getResponseText().length() > 100) {
       serRes.setResponseText(serRes.getResponseText().substring(0, 100));
-    } else if (responseLogger.isTraceEnabled()) {
-    } else {
+    } else if (!responseLogger.isTraceEnabled()) {
       serRes.setResponseText(null);
     }
     serRes.setResponseBytes(null);
