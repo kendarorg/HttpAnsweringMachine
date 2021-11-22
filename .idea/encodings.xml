@@ -5,6 +5,7 @@
     <file url="file://$PROJECT_DIR$/app.dns/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app.http.standardfilters/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app.http/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app.swagger/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/docker.builder/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/js.filters/src/main/java" charset="UTF-8" />

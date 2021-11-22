@@ -54,6 +54,7 @@
         <apache.derby.version>10.13.1.1</apache.derby.version>
         <mybatis.orm.version>3.5.7</mybatis.orm.version>
         <ch.qos.logback.version>1.2.3</ch.qos.logback.version>
+        <swagger.version>2.1.11</swagger.version>
     </properties>
 
     <modules>
@@ -67,5 +68,6 @@
         <module>simpledns</module>
         <module>app.dns</module>
         <module>docker.builder</module>
+        <module>app.swagger</module>
     </modules>
 </project>
