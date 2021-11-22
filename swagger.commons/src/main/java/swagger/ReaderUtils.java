@@ -252,7 +252,7 @@ public abstract class ReaderUtils {
 
   public static String getHttpMethodFromCustomAnnotations(SwaggerLoader loader,Method method) {
     for (Annotation methodAnnotation : method.getAnnotations()) {
-      String stringMethod = loader.getHttpMethoFromCustomAnnotation(methodAnnotation.annotationType())
+      String stringMethod = loader.getHttpMethoFromCustomAnnotation(methodAnnotation.annotationType());
       if (stringMethod != null) {
         return stringMethod.toLowerCase(Locale.ROOT);
       }

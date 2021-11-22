@@ -77,7 +77,7 @@ public abstract class SwaggerLoader implements OpenApiReader {
   private static final String HEAD_METHOD = "head";
   private static final String OPTIONS_METHOD = "options";
   protected OpenAPIConfiguration config;
-  private Application application;
+  private Object application;
   private OpenAPI openAPI;
   private Components components;
   private Paths paths;
@@ -136,6 +136,64 @@ public abstract class SwaggerLoader implements OpenApiReader {
   protected abstract List<String> getProducesAnnotation(Object target);
 
   /**
+   * if (Application.class.isAssignableFrom(cls)) {
+   *           ApplicationPath appPathAnnotation =
+   *               ReflectionUtils.getAnnotation(cls, ApplicationPath.class);
+   *           if (appPathAnnotation != null) {
+   *             appPath = appPathAnnotation.value();
+   *           }
+   *         }
+   * @return
+   */
+  protected abstract String getApplicationPath();
+
+  /**
+   *Class<?> applicationToScan = this.application.getClass();
+   *       ApplicationPath applicationPath;
+   *       // search up in the hierarchy until we find one with the annotation, this is needed because
+   *       // for example Weld proxies will not have the annotation and the right class will be the
+   *       // superClass
+   *       while ((applicationPath = applicationToScan.getAnnotation(ApplicationPath.class)) == null
+   *           && !applicationToScan.getSuperclass().equals(Application.class)) {
+   *         applicationToScan = applicationToScan.getSuperclass();
+   *       }
+   *
+   *       if (applicationPath != null) {
+   *         if (StringUtils.isNotBlank(applicationPath.value())) {
+   *           return applicationPath.value();
+   *         }
+   *       }
+   *       // look for inner application, e.g. ResourceConfig
+   *       try {
+   *         Application innerApp = application;
+   *         Method m = application.getClass().getMethod("getApplication");
+   *         while (m != null) {
+   *           Application retrievedApp = (Application) m.invoke(innerApp);
+   *           if (retrievedApp == null) {
+   *             break;
+   *           }
+   *           if (retrievedApp.getClass().equals(innerApp.getClass())) {
+   *             break;
+   *           }
+   *           innerApp = retrievedApp;
+   *           applicationPath = innerApp.getClass().getAnnotation(ApplicationPath.class);
+   *           if (applicationPath != null) {
+   *             if (StringUtils.isNotBlank(applicationPath.value())) {
+   *               return applicationPath.value();
+   *             }
+   *           }
+   *           m = innerApp.getClass().getMethod("getApplication");
+   *         }
+   *       } catch (NoSuchMethodException e) {
+   *         // no inner application found
+   *       } catch (Exception e) {
+   *         // no inner application found
+   *       }
+   * @return
+   */
+  protected abstract String getResolvedApplicationPath();
+
+  /**
    * Scans a set of classes for both ReaderListeners and OpenAPI annotations. All found listeners
    * will be instantiated before any of the classes are scanned for OpenAPI annotations - so they
    * can be invoked accordingly.
@@ -172,13 +230,7 @@ public abstract class SwaggerLoader implements OpenApiReader {
         }
       }
       if (config != null && Boolean.TRUE.equals(config.isAlwaysResolveAppPath())) {
-        if (Application.class.isAssignableFrom(cls)) {
-          ApplicationPath appPathAnnotation =
-              ReflectionUtils.getAnnotation(cls, ApplicationPath.class);
-          if (appPathAnnotation != null) {
-            appPath = appPathAnnotation.value();
-          }
-        }
+        appPath = getApplicationPath();
       }
     }
 
@@ -221,52 +273,15 @@ public abstract class SwaggerLoader implements OpenApiReader {
     return openAPI;
   }
 
-  public void setApplication(Application application) {
+  public void setApplication(Object application) {
     this.application = application;
   }
 
   protected String resolveApplicationPath() {
     if (application != null) {
-      Class<?> applicationToScan = this.application.getClass();
-      ApplicationPath applicationPath;
-      // search up in the hierarchy until we find one with the annotation, this is needed because
-      // for example Weld proxies will not have the annotation and the right class will be the
-      // superClass
-      while ((applicationPath = applicationToScan.getAnnotation(ApplicationPath.class)) == null
-          && !applicationToScan.getSuperclass().equals(Application.class)) {
-        applicationToScan = applicationToScan.getSuperclass();
-      }
-
-      if (applicationPath != null) {
-        if (StringUtils.isNotBlank(applicationPath.value())) {
-          return applicationPath.value();
-        }
-      }
-      // look for inner application, e.g. ResourceConfig
-      try {
-        Application innerApp = application;
-        Method m = application.getClass().getMethod("getApplication");
-        while (m != null) {
-          Application retrievedApp = (Application) m.invoke(innerApp);
-          if (retrievedApp == null) {
-            break;
-          }
-          if (retrievedApp.getClass().equals(innerApp.getClass())) {
-            break;
-          }
-          innerApp = retrievedApp;
-          applicationPath = innerApp.getClass().getAnnotation(ApplicationPath.class);
-          if (applicationPath != null) {
-            if (StringUtils.isNotBlank(applicationPath.value())) {
-              return applicationPath.value();
-            }
-          }
-          m = innerApp.getClass().getMethod("getApplication");
-        }
-      } catch (NoSuchMethodException e) {
-        // no inner application found
-      } catch (Exception e) {
-        // no inner application found
+      var result = getResolvedApplicationPath();
+      if(result!=null && !result.isEmpty()){
+        return result;
       }
     }
     return "";
@@ -1738,6 +1753,8 @@ public abstract class SwaggerLoader implements OpenApiReader {
     }
     return null;
   }
+
+  /**
    * Comparator for uniquely sorting a collection of Method objects. Supports overloaded methods
    * (with the same name).
    *
