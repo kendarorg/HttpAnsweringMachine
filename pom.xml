@@ -69,5 +69,6 @@
         <module>app.dns</module>
         <module>docker.builder</module>
         <module>app.swagger</module>
+        <module>swagger.commons</module>
     </modules>
 </project>

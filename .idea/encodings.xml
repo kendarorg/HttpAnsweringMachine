@@ -12,5 +12,6 @@
     <file url="file://$PROJECT_DIR$/oidc.server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/replayer.server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/simpledns/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/swagger.commons/src/main/java" charset="UTF-8" />
   </component>
 </project>

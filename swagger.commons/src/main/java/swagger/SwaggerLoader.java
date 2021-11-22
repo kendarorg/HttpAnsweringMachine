@@ -1,4 +1,4 @@
-package org.kendar.swagger;
+package swagger;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.BeanDescription;
@@ -41,7 +41,6 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.tags.Tag;
 import org.apache.commons.lang3.StringUtils;
-import org.kendar.servers.JsonConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +64,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-public class SwaggerLoader implements OpenApiReader {
+public abstract class SwaggerLoader implements OpenApiReader {
   public static final String DEFAULT_MEDIA_TYPE_VALUE = "*/*";
   public static final String DEFAULT_DESCRIPTION = "default response";
   private static final Logger LOGGER = LoggerFactory.getLogger(SwaggerLoader.class);
@@ -86,20 +85,11 @@ public class SwaggerLoader implements OpenApiReader {
 
 
 
-  private Path XXXgetApiPath(Object target){
-    //ReflectionUtils.getAnnotation(cls, javax.ws.rs.Path.class)
-    return new Path();
-  }
+  protected abstract String XXXgetApiPath(Object target);
 
-  private Consumes XXXgetConsumes(Object target){
-    //ReflectionUtils.getAnnotation(cls, javax.ws.rs.Consumes.class)
-    return new Consumes();
-  }
+  protected abstract List<String> XXXgetConsumes(Object target);
 
-  private Produces XXXgetProduces(Object target){
-    //ReflectionUtils.getAnnotation(cls, javax.ws.rs.Produces.class)
-    return new Produces();
-  }
+  protected abstract List<String> XXXgetProduces(Object target);
 
   /**
    * Scans a set of classes for both ReaderListeners and OpenAPI annotations. All found listeners
@@ -244,6 +234,7 @@ public class SwaggerLoader implements OpenApiReader {
     paths = new Paths();
     openApiTags = new LinkedHashSet<>();
     components = new Components();
+    OpenAPIExtensions.initialize(this);
   }
 
   public SwaggerLoader(OpenAPI openAPI) {
@@ -351,9 +342,9 @@ public class SwaggerLoader implements OpenApiReader {
         ReflectionUtils.getRepeatableAnnotationsArray(
             cls, io.swagger.v3.oas.annotations.servers.Server.class);
 
-    Consumes classConsumes =
+    var classConsumes =
         XXXgetConsumes(cls);
-    Produces classProduces =
+    var classProduces =
         XXXgetProduces(cls);
 
     boolean classDeprecated = ReflectionUtils.getAnnotation(cls, Deprecated.class) != null;
@@ -471,9 +462,9 @@ public class SwaggerLoader implements OpenApiReader {
         continue;
       }
       AnnotatedMethod annotatedMethod = bd.findMethod(method.getName(), method.getParameterTypes());
-      Produces methodProduces =
+      var methodProduces =
         XXXgetProduces(method);
-      Consumes methodConsumes =
+      var methodConsumes =
         XXXgetConsumes(method);
 
       if (isMethodOverridden(method, cls)) {
@@ -482,7 +473,7 @@ public class SwaggerLoader implements OpenApiReader {
 
       boolean methodDeprecated = ReflectionUtils.getAnnotation(method, Deprecated.class) != null;
 
-      Path methodPath = XXXgetApiPath(method);
+      String methodPath = XXXgetApiPath(method);
 
       String operationPath = ReaderUtils.getPath(apiPath, methodPath, parentPath, isSubresource);
 
@@ -501,7 +492,7 @@ public class SwaggerLoader implements OpenApiReader {
 
         final Class<?> subResource = getSubResourceWithJaxRsSubresourceLocatorSpecs(method);
 
-        String httpMethod = ReaderUtils.extractOperationMethod(method, OpenAPIExtensions.chain());
+        String httpMethod = ReaderUtils.extractOperationMethod(this,method, OpenAPIExtensions.chain());
         httpMethod = (httpMethod == null && isSubresource) ? parentMethod : httpMethod;
 
         if (StringUtils.isBlank(httpMethod) && subResource == null) {
@@ -790,16 +781,16 @@ public class SwaggerLoader implements OpenApiReader {
   }
 
   protected Content processContent(
-      Content content, Schema schema, Consumes methodConsumes, Consumes classConsumes) {
+      Content content, Schema schema, List<String> methodConsumes, List<String> classConsumes) {
     if (content == null) {
       content = new Content();
     }
     if (methodConsumes != null) {
-      for (String value : methodConsumes.value()) {
+      for (String value : methodConsumes) {
         setMediaTypeToContent(schema, content, value);
       }
     } else if (classConsumes != null) {
-      for (String value : classConsumes.value()) {
+      for (String value : classConsumes) {
         setMediaTypeToContent(schema, content, value);
       }
     } else {
@@ -811,8 +802,8 @@ public class SwaggerLoader implements OpenApiReader {
   protected void processRequestBody(
       Parameter requestBodyParameter,
       Operation operation,
-      Consumes methodConsumes,
-      Consumes classConsumes,
+    List<String> methodConsumes,
+    List<String> classConsumes,
       List<Parameter> operationParameters,
       Annotation[] paramAnnotations,
       Type type,
@@ -893,8 +884,8 @@ public class SwaggerLoader implements OpenApiReader {
         && !encoding.isEmpty()) {
       Content content = operation.getRequestBody().getContent();
       for (String mediaKey : content.keySet()) {
-        if (mediaKey.equals(org.kendar.swagger.MediaType.APPLICATION_FORM_URLENCODED.getValue())
-            || mediaKey.equals(org.kendar.swagger.MediaType.MULTIPART_FORM_DATA.getValue())) {
+        if (mediaKey.equals(SwaggerMediaType.APPLICATION_FORM_URLENCODED.getValue())
+            || mediaKey.equals(SwaggerMediaType.MULTIPART_FORM_DATA.getValue())) {
           MediaType m = content.get(mediaKey);
           m.encoding(encoding);
         }
@@ -947,10 +938,10 @@ public class SwaggerLoader implements OpenApiReader {
   public Operation parseMethod(
       Method method,
       List<Parameter> globalParameters,
-      Produces methodProduces,
-      Produces classProduces,
-      Consumes methodConsumes,
-      Consumes classConsumes,
+    List<String> methodProduces,
+    List<String> classProduces,
+    List<String> methodConsumes,
+    List<String> classConsumes,
       List<SecurityRequirement> classSecurityRequirements,
       Optional<io.swagger.v3.oas.models.ExternalDocumentation> classExternalDocs,
       Set<String> classTags,
@@ -984,10 +975,10 @@ public class SwaggerLoader implements OpenApiReader {
   public Operation parseMethod(
       Method method,
       List<Parameter> globalParameters,
-      Produces methodProduces,
-      Produces classProduces,
-      Consumes methodConsumes,
-      Consumes classConsumes,
+    List<String> methodProduces,
+    List<String> classProduces,
+    List<String> methodConsumes,
+    List<String> classConsumes,
       List<SecurityRequirement> classSecurityRequirements,
       Optional<io.swagger.v3.oas.models.ExternalDocumentation> classExternalDocs,
       Set<String> classTags,
@@ -1023,10 +1014,10 @@ public class SwaggerLoader implements OpenApiReader {
       Class<?> cls,
       Method method,
       List<Parameter> globalParameters,
-      Produces methodProduces,
-      Produces classProduces,
-      Consumes methodConsumes,
-      Consumes classConsumes,
+    List<String> methodProduces,
+    List<String> classProduces,
+    List<String> methodConsumes,
+    List<String> classConsumes,
       List<SecurityRequirement> classSecurityRequirements,
       Optional<io.swagger.v3.oas.models.ExternalDocumentation> classExternalDocs,
       Set<String> classTags,
@@ -1258,8 +1249,8 @@ public class SwaggerLoader implements OpenApiReader {
         Content content = new Content();
         MediaType mediaType = new MediaType().schema(returnTypeSchema);
         AnnotationsUtils.applyTypes(
-            classProduces == null ? new String[0] : classProduces.value(),
-            methodProduces == null ? new String[0] : methodProduces.value(),
+            classProduces == null ? new String[0] : classProduces.toArray(new String[0]),
+            methodProduces == null ? new String[0] : methodProduces.toArray(new String[0]),
             content,
             mediaType);
         if (operation.getResponses() == null) {
@@ -1294,8 +1285,8 @@ public class SwaggerLoader implements OpenApiReader {
       Content content = new Content();
       MediaType mediaType = new MediaType();
       AnnotationsUtils.applyTypes(
-          classProduces == null ? new String[0] : classProduces.value(),
-          methodProduces == null ? new String[0] : methodProduces.value(),
+          classProduces == null ? new String[0] : classProduces.toArray(new String[0]),
+          methodProduces == null ? new String[0] : methodProduces.toArray(new String[0]),
           content,
           mediaType);
 
@@ -1325,10 +1316,10 @@ public class SwaggerLoader implements OpenApiReader {
 
   private Map<String, Callback> getCallbacks(
       io.swagger.v3.oas.annotations.callbacks.Callback apiCallback,
-      Produces methodProduces,
-      Produces classProduces,
-      Consumes methodConsumes,
-      Consumes classConsumes,
+    List<String> methodProduces,
+    List<String> classProduces,
+    List<String> methodConsumes,
+    List<String> classConsumes,
       JsonView jsonViewAnnotation) {
     Map<String, Callback> callbackMap = new HashMap<>();
     if (apiCallback == null) {
@@ -1396,10 +1387,10 @@ public class SwaggerLoader implements OpenApiReader {
   private void setOperationObjectFromApiOperationAnnotation(
       Operation operation,
       io.swagger.v3.oas.annotations.Operation apiOperation,
-      Produces methodProduces,
-      Produces classProduces,
-      Consumes methodConsumes,
-      Consumes classConsumes,
+    List<String> methodProduces,
+    List<String> classProduces,
+    List<String> methodConsumes,
+    List<String> classConsumes,
       JsonView jsonViewAnnotation) {
     if (StringUtils.isNotBlank(apiOperation.summary())) {
       operation.setSummary(apiOperation.summary());
@@ -1508,8 +1499,8 @@ public class SwaggerLoader implements OpenApiReader {
 
   protected Optional<List<Parameter>> getParametersListFromAnnotation(
       io.swagger.v3.oas.annotations.Parameter[] parameters,
-      Consumes classConsumes,
-      Consumes methodConsumes,
+    List<String> classConsumes,
+    List<String> methodConsumes,
       Operation operation,
       JsonView jsonViewAnnotation) {
     if (parameters == null) {
@@ -1538,8 +1529,8 @@ public class SwaggerLoader implements OpenApiReader {
       Type type,
       List<Annotation> annotations,
       Operation operation,
-      Consumes classConsumes,
-      Consumes methodConsumes,
+    List<String> classConsumes,
+    List<String> methodConsumes,
       JsonView jsonViewAnnotation) {
     final Iterator<OpenAPIExtension> chain = OpenAPIExtensions.chain();
     if (!chain.hasNext()) {
@@ -1697,13 +1688,18 @@ public class SwaggerLoader implements OpenApiReader {
     }
 
     if (XXXgetApiPath(method) != null) {
-      if (ReaderUtils.extractOperationMethod(method, null) == null) {
+      if (ReaderUtils.extractOperationMethod(this,method, null) == null) {
         return type;
       }
     }
     return null;
   }
 
+
+  protected abstract String getMethodLowerCase(Method method);
+
+  public abstract ParameterType getAnnotaionParmType(Annotation annotation);
+  public abstract String getAnnotaionParmValue(Annotation annotation, ParameterType type);
 
   /**
    * Comparator for uniquely sorting a collection of Method objects. Supports overloaded methods

@@ -1,4 +1,4 @@
-package org.kendar.swagger;
+package swagger;
 
 import io.swagger.v3.oas.integration.api.OpenApiReader;
 import io.swagger.v3.oas.models.OpenAPI;

@@ -1,12 +1,12 @@
-package org.kendar.swagger;
+package swagger;
 
-public enum MediaType {
+public enum SwaggerMediaType {
   APPLICATION_FORM_URLENCODED("application/x-www-form-urlencoded"),
   MULTIPART_FORM_DATA("multipart/form-data");
 
   private final String value;
 
-  MediaType(String s) {
+  SwaggerMediaType(String s) {
     this.value = s;
   }
 

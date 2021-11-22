@@ -1,4 +1,4 @@
-package org.kendar.swagger;
+package swagger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +25,14 @@ public class OpenAPIExtensions {
     return extensions.iterator();
   }
 
-  static {
+
+  public static void initialize(SwaggerLoader swaggerLoader) {
     extensions = new ArrayList<>();
     ServiceLoader<OpenAPIExtension> loader = ServiceLoader.load(OpenAPIExtension.class);
     for (OpenAPIExtension ext : loader) {
       LOGGER.debug("adding extension {}", ext);
       extensions.add(ext);
     }
-    extensions.add(new DefaultParameterExtension());
+    extensions.add(new DefaultParameterExtension(swaggerLoader));
   }
 }

@@ -1,4 +1,4 @@
-package org.kendar.swagger;
+package swagger;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.core.util.ParameterProcessor;
@@ -7,7 +7,6 @@ import io.swagger.v3.oas.integration.api.OpenAPIConfiguration;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import org.apache.commons.lang3.StringUtils;
-import org.kendar.http.annotations.HttpMethodFilter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -23,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-public class ReaderUtils {
+public abstract class ReaderUtils {
   private static final String GET_METHOD = "get";
   private static final String POST_METHOD = "post";
   private static final String PUT_METHOD = "put";
@@ -31,8 +30,6 @@ public class ReaderUtils {
   private static final String HEAD_METHOD = "head";
   private static final String OPTIONS_METHOD = "options";
   private static final String PATH_DELIMITER = "/";
-
-
 
   private static boolean isContext(List<Annotation> annotations) {
     for (Annotation annotation : annotations) {
@@ -45,11 +42,15 @@ public class ReaderUtils {
   /**
    * Collects constructor-level parameters from class.
    *
-   * @param cls        is a class for collecting
+   * @param cls is a class for collecting
    * @param components
    * @return the collection of supported parameters
    */
-  public static List<Parameter> collectConstructorParameters(Class<?> cls, Components components, Consumes classConsumes, JsonView jsonViewAnnotation) {
+  public static List<Parameter> collectConstructorParameters(
+      Class<?> cls,
+      Components components,
+      List<String> classConsumes,
+      JsonView jsonViewAnnotation) {
     if (cls.isLocalClass() || (cls.isMemberClass() && !Modifier.isStatic(cls.getModifiers()))) {
       return Collections.emptyList();
     }
@@ -59,7 +60,7 @@ public class ReaderUtils {
 
     for (Constructor<?> constructor : cls.getDeclaredConstructors()) {
       if (!ReflectionUtils.isConstructorCompatible(constructor)
-        && !ReflectionUtils.isInject(Arrays.asList(constructor.getDeclaredAnnotations()))) {
+          && !ReflectionUtils.isInject(Arrays.asList(constructor.getDeclaredAnnotations()))) {
         continue;
       }
 
@@ -74,17 +75,24 @@ public class ReaderUtils {
           paramsCount++;
         } else {
           final Type genericParameterType = genericParameterTypes[i];
-          final List<Parameter> tmpParameters = collectParameters(genericParameterType, tmpAnnotations, components, classConsumes, jsonViewAnnotation);
-          if (! tmpParameters.isEmpty()) {
+          final List<Parameter> tmpParameters =
+              collectParameters(
+                  genericParameterType,
+                  tmpAnnotations,
+                  components,
+                  classConsumes,
+                  jsonViewAnnotation);
+          if (!tmpParameters.isEmpty()) {
             for (Parameter tmpParameter : tmpParameters) {
-              Parameter processedParameter = ParameterProcessor.applyAnnotations(
-                tmpParameter,
-                genericParameterType,
-                tmpAnnotations,
-                components,
-                classConsumes == null ? new String[0] : classConsumes.value(),
-                null,
-                jsonViewAnnotation);
+              Parameter processedParameter =
+                  ParameterProcessor.applyAnnotations(
+                      tmpParameter,
+                      genericParameterType,
+                      tmpAnnotations,
+                      components,
+                      classConsumes == null ? new String[0] : classConsumes.toArray(new String[0]),
+                      null,
+                      jsonViewAnnotation);
               if (processedParameter != null) {
                 parameters.add(processedParameter);
               }
@@ -106,24 +114,45 @@ public class ReaderUtils {
   /**
    * Collects field-level parameters from class.
    *
-   * @param cls        is a class for collecting
+   * @param cls is a class for collecting
    * @param components
    * @return the collection of supported parameters
    */
-  public static List<Parameter> collectFieldParameters(Class<?> cls, Components components, Consumes classConsumes, JsonView jsonViewAnnotation) {
+  public static List<Parameter> collectFieldParameters(
+      Class<?> cls, Components components, List<String> classConsumes, JsonView jsonViewAnnotation) {
     final List<Parameter> parameters = new ArrayList<>();
     for (Field field : ReflectionUtils.getDeclaredFields(cls)) {
       final List<Annotation> annotations = Arrays.asList(field.getAnnotations());
       final Type genericType = field.getGenericType();
-      parameters.addAll(collectParameters(genericType, annotations, components, classConsumes, jsonViewAnnotation));
+      parameters.addAll(
+          collectParameters(
+              genericType, annotations, components, classConsumes, jsonViewAnnotation));
     }
     return parameters;
   }
 
-  private static List<Parameter> collectParameters(Type type, List<Annotation> annotations, Components components, Consumes classConsumes, JsonView jsonViewAnnotation) {
+  private static List<Parameter> collectParameters(
+      Type type,
+      List<Annotation> annotations,
+      Components components,
+      List<String> classConsumes,
+      JsonView jsonViewAnnotation) {
     final Iterator<OpenAPIExtension> chain = OpenAPIExtensions.chain();
-    return chain.hasNext() ? chain.next().extractParameters(annotations, type, new HashSet<>(), components, classConsumes, null, false, jsonViewAnnotation, chain).parameters :
-      Collections.emptyList();
+    return chain.hasNext()
+        ? chain
+            .next()
+            .extractParameters(
+                annotations,
+                type,
+                new HashSet<>(),
+                components,
+                classConsumes,
+                null,
+                false,
+                jsonViewAnnotation,
+                chain)
+            .parameters
+        : Collections.emptyList();
   }
 
   public static Optional<List<String>> getStringListFromStringArray(String[] array) {
@@ -150,35 +179,38 @@ public class ReaderUtils {
     }
     for (String item : config.getIgnoredRoutes()) {
       final int length = item.length();
-      if (path.startsWith(item) && (path.length() == length || path.startsWith(PATH_DELIMITER, length))) {
+      if (path.startsWith(item)
+          && (path.length() == length || path.startsWith(PATH_DELIMITER, length))) {
         return true;
       }
     }
     return false;
   }
 
-  public static String getPath(Path classLevelPath, Path methodLevelPath, String parentPath, boolean isSubresource) {
+  public static String getPath(
+      String classLevelPath, String methodLevelPath, String parentPath, boolean isSubresource) {
     if (classLevelPath == null && methodLevelPath == null && StringUtils.isEmpty(parentPath)) {
       return null;
     }
     StringBuilder b = new StringBuilder();
     appendPathComponent(parentPath, b);
     if (classLevelPath != null && !isSubresource) {
-      appendPathComponent(classLevelPath.value(), b);
+      appendPathComponent(classLevelPath, b);
     }
     if (methodLevelPath != null) {
-      appendPathComponent(methodLevelPath.value(), b);
+      appendPathComponent(methodLevelPath, b);
     }
     return b.length() == 0 ? "/" : b.toString();
   }
 
   /**
-   * appends a path component string to a StringBuilder
-   * guarantees:
+   * appends a path component string to a StringBuilder guarantees:
+   *
    * <ul>
-   *     <li>nulls, empty strings and "/" are nops</li>
-   *     <li>output will always start with "/" and never end with "/"</li>
+   *   <li>nulls, empty strings and "/" are nops
+   *   <li>output will always start with "/" and never end with "/"
    * </ul>
+   *
    * @param component component to be added
    * @param to output
    */
@@ -196,24 +228,25 @@ public class ReaderUtils {
     }
   }
 
-  public static String extractOperationMethod(Method method, Iterator<OpenAPIExtension> chain) {
-    var getMethodAnnotation = method.getAnnotation(HttpMethodFilter.class);
-    if (getMethodAnnotation.method().equalsIgnoreCase("get")) {
+
+  public static String extractOperationMethod(SwaggerLoader loader,Method method, Iterator<OpenAPIExtension> chain) {
+    var getMethodAnnotation = loader.getMethodLowerCase(method);
+    if (getMethodAnnotation.equalsIgnoreCase("get")) {
       return GET_METHOD;
-    } else if (getMethodAnnotation.method().equalsIgnoreCase("put")) {
+    } else if (getMethodAnnotation.equalsIgnoreCase("put")) {
       return PUT_METHOD;
-    } else if (getMethodAnnotation.method().equalsIgnoreCase("post")) {
+    } else if (getMethodAnnotation.equalsIgnoreCase("post")) {
       return POST_METHOD;
-    } else if (getMethodAnnotation.method().equalsIgnoreCase("delete")) {
+    } else if (getMethodAnnotation.equalsIgnoreCase("delete")) {
       return DELETE_METHOD;
-    } else if (getMethodAnnotation.method().equalsIgnoreCase("options")) {
+    } else if (getMethodAnnotation.equalsIgnoreCase("options")) {
       return OPTIONS_METHOD;
-    } else if (getMethodAnnotation.method().equalsIgnoreCase("header")) {
+    } else if (getMethodAnnotation.equalsIgnoreCase("header")) {
       return HEAD_METHOD;
-    } else if (getMethodAnnotation.method() != null) {
-      return getMethodAnnotation.method().toLowerCase();
+    } else if (getMethodAnnotation != null) {
+      return getMethodAnnotation.toLowerCase();
     } else if ((ReflectionUtils.getOverriddenMethod(method)) != null) {
-      return extractOperationMethod(ReflectionUtils.getOverriddenMethod(method), chain);
+      return extractOperationMethod(loader,ReflectionUtils.getOverriddenMethod(method), chain);
     } else if (chain != null && chain.hasNext()) {
       return chain.next().extractOperationMethod(method, chain);
     } else {

@@ -3,7 +3,7 @@ package org.kendar.servers.http.api;
 import io.swagger.v3.oas.integration.api.OpenApiReader;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.configurations.FilterConfig;
-import org.kendar.swagger.SwaggerLoader;
+//import org.kendar.swagger.SwaggerLoader;
 
 import java.util.ArrayList;
 
@@ -21,12 +21,12 @@ public class SwaggerApi {
   public void loadSwagger(){
     var config = filtersConfiguration.get();
     var result = new ArrayList<String>();
-    var swloader = new SwaggerLoader();
+    //var swloader = new SwaggerLoader();
 
     for (var kvp : config.filtersByClass.entrySet()) {
       var instance = kvp.getValue().get(0);
-      swloader.read(instance.getClass());
+      //swloader.read(instance.getClass());
     }
-    var openapi = swloader.getOpenAPI();
+    //var openapi = swloader.getOpenAPI();
   }
 }

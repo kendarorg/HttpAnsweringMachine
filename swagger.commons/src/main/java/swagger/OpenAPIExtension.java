@@ -1,4 +1,4 @@
-package org.kendar.swagger;
+package swagger;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.models.Components;
@@ -16,7 +16,7 @@ public interface OpenAPIExtension {
   String extractOperationMethod(Method method, Iterator<OpenAPIExtension> chain);
 
   ResolvedParameter extractParameters(List<Annotation> annotations, Type type, Set<Type> typesToSkip, Components components,
-    Consumes classConsumes, Consumes methodConsumes, boolean includeRequestBody, JsonView jsonViewAnnotation, Iterator<OpenAPIExtension> chain);
+    List<String> classConsumes, List<String> methodConsumes, boolean includeRequestBody, JsonView jsonViewAnnotation, Iterator<OpenAPIExtension> chain);
 
   /**
    * Decorates operation with additional vendor based extensions.

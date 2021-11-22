@@ -1,4 +1,4 @@
-package org.kendar.swagger;
+package swagger;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.JavaType;
@@ -26,8 +26,8 @@ public abstract class AbstractOpenAPIExtension implements OpenAPIExtension {
 
   @Override
   public ResolvedParameter extractParameters(List<Annotation> annotations, Type type, Set<Type> typesToSkip,
-    Components components, Consumes classConsumes,
-    Consumes methodConsumes, boolean includeRequestBody, JsonView jsonViewAnnotation, Iterator<OpenAPIExtension> chain) {
+    Components components, List<String> classConsumes,
+    List<String> methodConsumes, boolean includeRequestBody, JsonView jsonViewAnnotation, Iterator<OpenAPIExtension> chain) {
     if (chain.hasNext()) {
       return chain.next().extractParameters(annotations, type, typesToSkip, components, classConsumes, methodConsumes, includeRequestBody, jsonViewAnnotation, chain);
     } else {

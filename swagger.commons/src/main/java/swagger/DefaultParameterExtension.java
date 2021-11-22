@@ -1,4 +1,4 @@
-package org.kendar.swagger;
+package swagger;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +22,12 @@ import java.util.List;
 import java.util.Set;
 
 public class DefaultParameterExtension extends AbstractOpenAPIExtension {
+
+  private final SwaggerLoader loader;
+
+  public DefaultParameterExtension(SwaggerLoader loader){
+    this.loader= loader;
+  }
   private static final String QUERY_PARAM = "query";
   private static final String HEADER_PARAM = "header";
   private static final String COOKIE_PARAM = "cookie";
@@ -34,8 +40,8 @@ public class DefaultParameterExtension extends AbstractOpenAPIExtension {
     Type type,
     Set<Type> typesToSkip,
     Components components,
-    Consumes classConsumes,
-    Consumes methodConsumes,
+    List<String> classConsumes,
+    List<String> methodConsumes,
     boolean includeRequestBody,
     JsonView jsonViewAnnotation,
     Iterator<OpenAPIExtension> chain) {
@@ -46,36 +52,33 @@ public class DefaultParameterExtension extends AbstractOpenAPIExtension {
 
     Parameter parameter = null;
     for (Annotation annotation : annotations) {
-      if (annotation instanceof QueryParam) {
-        QueryParam param = (QueryParam) annotation;
+      var annotationParamType = loader.getAnnotaionParmType(annotation);
+      var annotationParamValue = loader.getAnnotaionParmValue(annotation,annotationParamType);
+      if (annotationParamType == ParameterType.QUERY) {
         Parameter qp = new Parameter();
         qp.setIn(QUERY_PARAM);
-        qp.setName(param.value());
+        qp.setName(annotationParamValue);
         parameter = qp;
-      } else if (annotation instanceof PathParam) {
-        PathParam param = (PathParam) annotation;
+      } else if (annotationParamType == ParameterType.PATH) {
         Parameter pp = new Parameter();
         pp.setIn(PATH_PARAM);
-        pp.setName(param.value());
+        pp.setName(annotationParamValue);
         parameter = pp;
-      } else if (annotation instanceof MatrixParam) {
-        MatrixParam param = (MatrixParam) annotation;
+      } else if (annotationParamType == ParameterType.MATRIX) {
         Parameter pp = new Parameter();
         pp.setIn(PATH_PARAM);
         pp.setStyle(Parameter.StyleEnum.MATRIX);
-        pp.setName(param.value());
+        pp.setName(annotationParamValue);
         parameter = pp;
-      } else if (annotation instanceof HeaderParam) {
-        HeaderParam param = (HeaderParam) annotation;
+      } else if (annotationParamType == ParameterType.HEADER) {
         Parameter pp = new Parameter();
         pp.setIn(HEADER_PARAM);
-        pp.setName(param.value());
+        pp.setName(annotationParamValue);
         parameter = pp;
-      } else if (annotation instanceof CookieParam) {
-        CookieParam param = (CookieParam) annotation;
+      } else if (annotationParamType == ParameterType.COOKIE) {
         Parameter pp = new Parameter();
         pp.setIn(COOKIE_PARAM);
-        pp.setName(param.value());
+        pp.setName(annotationParamValue);
         parameter = pp;
       } else if (annotation instanceof io.swagger.v3.oas.annotations.Parameter) {
         if (((io.swagger.v3.oas.annotations.Parameter) annotation).hidden()) {
@@ -109,8 +112,8 @@ public class DefaultParameterExtension extends AbstractOpenAPIExtension {
         type,
         annotations,
         components,
-        classConsumes == null ? new String[0] : classConsumes.value(),
-        methodConsumes == null ? new String[0] : methodConsumes.value(), jsonViewAnnotation);
+        classConsumes == null ? new String[0] : classConsumes.toArray(new String[0]),
+        methodConsumes == null ? new String[0] : methodConsumes.toArray(new String[0]), jsonViewAnnotation);
       if (unknownParameter != null) {
         if (StringUtils.isNotBlank(unknownParameter.getIn()) && !"form".equals(unknownParameter.getIn())) {
           extractParametersResult.parameters.add(unknownParameter);
@@ -128,8 +131,8 @@ public class DefaultParameterExtension extends AbstractOpenAPIExtension {
         type,
         annotations,
         components,
-        classConsumes == null ? new String[0] : classConsumes.value(),
-        methodConsumes == null ? new String[0] : methodConsumes.value(),
+        classConsumes == null ? new String[0] : classConsumes.toArray(new String[0]),
+        methodConsumes == null ? new String[0] : methodConsumes.toArray(new String[0]),
         jsonViewAnnotation);
       if (processedParameter != null) {
         extractParametersResult.parameters.add(processedParameter);
@@ -148,8 +151,8 @@ public class DefaultParameterExtension extends AbstractOpenAPIExtension {
    */
 
   private boolean handleAdditionalAnnotation(List<Parameter> parameters, List<Parameter> formParameters, Annotation annotation,
-    final Type type, Set<Type> typesToSkip, Consumes classConsumes,
-    Consumes methodConsumes, Components components, boolean includeRequestBody, JsonView jsonViewAnnotation) {
+    final Type type, Set<Type> typesToSkip, List<String> classConsumes,
+    List<String> methodConsumes, Components components, boolean includeRequestBody, JsonView jsonViewAnnotation) {
     boolean processed = false;
     if (BeanParam.class.isAssignableFrom(annotation.getClass())) {
       // Use Jackson's logic for processing Beans
@@ -251,8 +254,8 @@ public class DefaultParameterExtension extends AbstractOpenAPIExtension {
             paramType,
             paramAnnotations,
             components,
-            classConsumes == null ? new String[0] : classConsumes.value(),
-            methodConsumes == null ? new String[0] : methodConsumes.value(),
+            classConsumes == null ? new String[0] : classConsumes.toArray(new String[0]),
+            methodConsumes == null ? new String[0] : methodConsumes.toArray(new String[0]),
             jsonViewAnnotation);
           if (processedParam != null) {
             parameters.add(processedParam);
@@ -268,8 +271,8 @@ public class DefaultParameterExtension extends AbstractOpenAPIExtension {
             paramType,
             paramAnnotations,
             components,
-            classConsumes == null ? new String[0] : classConsumes.value(),
-            methodConsumes == null ? new String[0] : methodConsumes.value(),
+            classConsumes == null ? new String[0] : classConsumes.toArray(new String[0]),
+            methodConsumes == null ? new String[0] : methodConsumes.toArray(new String[0]),
             jsonViewAnnotation);
           if (processedParam != null) {
             formParameters.add(processedParam);

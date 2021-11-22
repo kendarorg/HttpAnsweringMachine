@@ -1,4 +1,4 @@
-package org.kendar.swagger;
+package swagger;
 
 import io.swagger.v3.core.util.AnnotationsUtils;
 import io.swagger.v3.oas.annotations.security.OAuthScope;
