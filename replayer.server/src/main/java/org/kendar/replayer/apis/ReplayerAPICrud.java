@@ -173,12 +173,9 @@ public class ReplayerAPICrud implements FilteringClass {
       res.setStatusCode(200);
     } else if (req.getMultipartData() != null) {
       for (var mp : req.getMultipartData()) {
-        // var contendDisposition =
-        // RequestUtils.parseContentDisposition(mp.getHeader("Content-Disposition"));
         if (!mp.isFile()) continue;
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, mp.getFileName()));
         if (!rootPath.toString().toLowerCase(Locale.ROOT).endsWith(".json")) {
-
           res.setStatusCode(500);
           return false;
         }

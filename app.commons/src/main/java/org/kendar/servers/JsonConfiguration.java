@@ -1,6 +1,6 @@
 package org.kendar.servers;
 
-public interface JsonConfiguration {
+@SuppressWarnings("rawtypes") public interface JsonConfiguration {
   void setConfiguration(Object data);
   void setConfiguration(Object data,Runnable callback);
 

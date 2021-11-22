@@ -86,7 +86,7 @@ public class FilterClassesApi implements FilteringClass {
   public void getFiltersForClass(Request req, Response res) throws JsonProcessingException {
     var config = filteringClassesHandler.get();
 
-    var result = new ArrayList<String>(config.filtersByClass.keySet());
+    var result = new ArrayList<>(config.filtersByClass.keySet());
 
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(result.toArray()));

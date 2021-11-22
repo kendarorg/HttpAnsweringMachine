@@ -26,7 +26,7 @@ public class SimpleDns implements CommandLineRunner {
     app.run(args);
   }
 
-  @Override
+  @SuppressWarnings("InfiniteLoopStatement") @Override
   public void run(String... args) {
     var configuration = applicationContext.getBean(JsonConfiguration.class);
     try {

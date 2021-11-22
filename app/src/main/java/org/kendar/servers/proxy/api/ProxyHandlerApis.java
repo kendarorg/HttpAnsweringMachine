@@ -18,8 +18,8 @@ import java.util.ArrayList;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class ProxyHandlerApis implements FilteringClass {
-  private final JsonConfiguration configuration;
   final ObjectMapper mapper = new ObjectMapper();
+  private final JsonConfiguration configuration;
 
   public ProxyHandlerApis(JsonConfiguration configuration) {
     this.configuration = configuration;

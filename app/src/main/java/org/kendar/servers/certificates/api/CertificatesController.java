@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
@@ -40,7 +39,7 @@ public class CertificatesController implements FilteringClass {
       method = "GET",
       id = "1012a4b4-277d-11ec-9621-0242ac130002")
   public boolean listAllCertificates(Request req, Response res)
-      throws IOException, URISyntaxException {
+      throws IOException {
     var resources = fileResourcesUtils.loadResources(this, "certificates");
 
     var result = new ArrayList<String>();
@@ -83,7 +82,7 @@ public class CertificatesController implements FilteringClass {
       method = "GET",
       id = "1014a4b4-277d-11ec-9621-0242ac130002")
   public boolean getSingleCertificate(Request req, Response res)
-      throws IOException, URISyntaxException {
+      throws IOException {
     var resources = fileResourcesUtils.loadResources(this, "certificates");
     var name = req.getPathParameter("file");
 

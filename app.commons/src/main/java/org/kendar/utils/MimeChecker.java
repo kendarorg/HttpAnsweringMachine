@@ -9,6 +9,7 @@ public class MimeChecker {
     ".jpeg", ".css", ".json", ".ts"
   };
 
+  @SuppressWarnings("RedundantIfStatement")
   public static boolean isBinary(String mime, String contentEncoding) {
     if (contentEncoding != null) {
       return true;

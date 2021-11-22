@@ -3,7 +3,6 @@ package org.kendar.test;
 import org.junit.Test;
 import org.mozilla.javascript.*;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,13 +31,13 @@ public class JsTest {
   private static ScriptableObject globalScope;
 
   @Test
-  public void simplExecute() throws IOException {
+  public void simplExecute() {
     JsTest main = new JsTest();
     main.execute(scriptSource);
   }
 
   @Test
-  public void compileAndRun() throws IOException {
+  public void compileAndRun() {
     JsTest main = new JsTest();
     Script result = main.compileNoResult(scriptSource);
     main.execWithResult(result);
@@ -50,7 +49,7 @@ public class JsTest {
     cx.setLanguageVersion(Context.VERSION_1_8);
     cx.setClassShutter(sandboxClassShutter);
     try {
-      Map result = new HashMap<>();
+      Map<Object, Object> result = new HashMap<>();
       Scriptable currentScope = getNewScope(cx);
       currentScope.put("NUM_CONST", globalScope, NUM_CONST);
       currentScope.put("result", currentScope, result);
@@ -67,7 +66,7 @@ public class JsTest {
     cx.setLanguageVersion(Context.VERSION_1_8);
     cx.setClassShutter(sandboxClassShutter);
     try {
-      Map result = new HashMap<>();
+      Map<Object, Object> result = new HashMap<>();
       Scriptable currentScope = getNewScope(cx);
       currentScope.put("NUM_CONST", globalScope, NUM_CONST);
       return cx.compileString(src, "my_script_id", 1, null);
@@ -82,7 +81,7 @@ public class JsTest {
     cx.setLanguageVersion(Context.VERSION_1_8);
     cx.setClassShutter(sandboxClassShutter);
     try {
-      Map result = new HashMap<>();
+      Map<Object, Object> result = new HashMap<>();
       Scriptable currentScope = getNewScope(cx);
 
       currentScope.put("NUM_CONST", globalScope, NUM_CONST);

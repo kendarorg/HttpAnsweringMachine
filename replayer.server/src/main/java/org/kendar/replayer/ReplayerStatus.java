@@ -54,7 +54,7 @@ public class ReplayerStatus {
             id, rootPath.toString(), description, loggerBuilder, dataReorganizer, md5Tester);
   }
 
-  public void addRequest(Request req, Response res) throws Exception {
+  public void addRequest(Request req, Response res) {
     if (state != ReplayerState.RECORDING) return;
     dataset.add(req, res);
   }

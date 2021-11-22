@@ -298,8 +298,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     }
   }
 
-  private boolean handleSpecialRequests(HttpExchange httpExchange, Request request)
-      throws IOException {
+  private boolean handleSpecialRequests(HttpExchange httpExchange, Request request) {
     return mirrorData(request, httpExchange)
         || testExpect100(request, httpExchange)
         || testExpect100(request, httpExchange);

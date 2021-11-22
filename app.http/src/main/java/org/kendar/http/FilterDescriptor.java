@@ -29,8 +29,10 @@ public class FilterDescriptor {
   private final boolean typeBlocking;
   private final Object filterClass;
   private final List<String> pathSimpleMatchers = new ArrayList<>();
-  private String description;
   private final AtomicBoolean enabled = new AtomicBoolean(true);
+  private final JsonConfiguration jsonConfiguration;
+  private final CustomFiltersLoader loader;
+  private String description;
   private String hostAddress;
   private String pathAddress;
   private Pattern hostPattern;
@@ -39,9 +41,7 @@ public class FilterDescriptor {
   private HttpTypeFilter typeFilter;
   private HttpMethodFilter methodFilter;
   private Method callback;
-  private final JsonConfiguration jsonConfiguration;
   private List<String> pathMatchers = new ArrayList<>();
-  private final CustomFiltersLoader loader;
   private String id;
 
   public FilterDescriptor(
@@ -325,6 +325,9 @@ public class FilterDescriptor {
       result = callback.invoke(filterClass);
     }
     if (callback.getReturnType() == boolean.class) {
+      if(result==null){
+        result =false;
+      }
       return (boolean) result;
     }
     return false;

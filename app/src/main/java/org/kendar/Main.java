@@ -6,7 +6,6 @@ import org.kendar.servers.config.GlobalConfig;
 import org.kendar.utils.FakeFuture;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -22,7 +21,6 @@ import java.util.concurrent.Future;
 @SpringBootApplication
 public class Main implements CommandLineRunner {
   private static final int MAX_THREADS = 10;
-  private static final Logger logger = LoggerFactory.getLogger(Main.class);
   @Autowired private ApplicationContext applicationContext;
 
   public static void main(String[] args) {
@@ -32,6 +30,7 @@ public class Main implements CommandLineRunner {
     app.run(args);
   }
 
+  @SuppressWarnings("InfiniteLoopStatement")
   @Override
   public void run(String... args) {
     var executor = Executors.newFixedThreadPool(MAX_THREADS);

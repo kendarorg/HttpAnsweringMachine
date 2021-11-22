@@ -29,9 +29,9 @@ public class ReplayerAPIContent implements FilteringClass {
   private final FileResourcesUtils fileResourcesUtils;
   private final LoggerBuilder loggerBuilder;
   private final DataReorganizer dataReorganizer;
-  ObjectMapper mapper = new ObjectMapper();
   private final Md5Tester md5Tester;
   private final String replayerData;
+  ObjectMapper mapper = new ObjectMapper();
 
   public ReplayerAPIContent(
       FileResourcesUtils fileResourcesUtils,

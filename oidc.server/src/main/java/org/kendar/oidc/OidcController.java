@@ -58,6 +58,7 @@ public class OidcController implements FilteringClass {
   private JWSSigner signer;
   private JWKSet publicJWKSet;
   private JWSHeader jwsHeader;
+
   public OidcController(LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
     log = loggerBuilder.build(OidcController.class);
     var conf = configuration.getConfiguration(OidcConfig.class);
@@ -521,7 +522,6 @@ public class OidcController implements FilteringClass {
     return setJsonResponse(STATUS_BAD_REQUEST, map, res);
   }
 
-
   private static class AccessTokenInfo {
     final User user;
     final String accessToken;
@@ -540,7 +540,6 @@ public class OidcController implements FilteringClass {
       this.iss = iss;
     }
   }
-
 
   private static class CodeInfo {
     final String codeChallenge;

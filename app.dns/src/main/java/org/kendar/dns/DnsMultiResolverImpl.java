@@ -100,12 +100,12 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     try {
       InetAddress candidateAddress = null;
       // Iterate all NICs (network interface cards)...
-      for (Enumeration ifaces = NetworkInterface.getNetworkInterfaces();
-          ifaces.hasMoreElements(); ) {
-        NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
+      for (Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
+           ifaces.hasMoreElements(); ) {
+        NetworkInterface iface = ifaces.nextElement();
         // Iterate all IP addresses assigned to each card...
-        for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements(); ) {
-          InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
+        for (Enumeration<InetAddress> inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements(); ) {
+          InetAddress inetAddr = inetAddrs.nextElement();
           if (!inetAddr.isLoopbackAddress()) {
 
             if (inetAddr.isSiteLocalAddress()) {
@@ -237,9 +237,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
             if (currentData.size() == 0) {
               continue;
             }
-            for (String address : current.get()) {
-              data.add(address);
-            }
+            data.addAll(current.get());
             for (var future : futures) {
               if (!future.isDone()) {
                 future.cancel(true);

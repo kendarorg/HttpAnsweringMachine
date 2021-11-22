@@ -40,7 +40,7 @@ public class JsFilterExecutor extends GenericFilterExecutor {
         cx.setLanguageVersion(Context.VERSION_1_8);
         cx.setClassShutter(sandboxClassShutter);
         try {
-            Map result = new HashMap<>();
+            Map<Object, Object> result = new HashMap<>();
             Scriptable currentScope = jsFilterLoader.getNewScope(cx);
             currentScope.put("REQUESTJSON", currentScope,
                     mapper.writeValueAsString(request));

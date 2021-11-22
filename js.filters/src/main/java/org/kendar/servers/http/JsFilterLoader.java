@@ -205,7 +205,6 @@ public class JsFilterLoader implements CustomFiltersLoader {
     }
   }
 
-
   public static class SandboxClassShutter implements ClassShutter {
     public boolean visibleToScripts(String fullClassName) {
       return fullClassName.equals(HashMap.class.getName());

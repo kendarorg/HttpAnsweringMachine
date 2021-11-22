@@ -109,6 +109,7 @@ public class DataReorganizer {
     return staticIndexes;
   }
 
+  @SuppressWarnings("RedundantIfStatement")
   private boolean containsTheSameIndexes(List<ReplayerRow> left, List<ReplayerRow> right) {
     if (verifyComparison(left, right)) return false;
     if (verifyComparison(right, left)) return false;

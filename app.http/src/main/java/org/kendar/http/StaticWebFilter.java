@@ -8,7 +8,6 @@ import org.kendar.utils.MimeChecker;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.util.*;
 
@@ -31,7 +30,7 @@ public abstract class StaticWebFilter implements FilteringClass {
   }
 
   @PostConstruct
-  public void loadAllStuffs() throws IOException, URISyntaxException {
+  public void loadAllStuffs() throws IOException {
     var realPath = getPath();
     if (isResource(getPath())) {
       realPath = realPath.substring(1);
@@ -39,6 +38,7 @@ public abstract class StaticWebFilter implements FilteringClass {
     }
   }
 
+  @SuppressWarnings("RedundantIfStatement")
   @HttpMethodFilter(phase = HttpFilterType.STATIC, pathAddress = "*", method = "GET", id = "null")
   public boolean handle(Request request, Response response) {
     var realPath = getPath();

@@ -22,13 +22,15 @@ public class JsonConfigurationImpl implements JsonConfiguration {
   private final ConcurrentHashMap<String, JsonNode> configurations = new ConcurrentHashMap<>();
   private final ConcurrentHashMap<String, ParsedConfig> deserializedConfigurations =
       new ConcurrentHashMap<>();
+
+  @SuppressWarnings("rawtypes")
   private final ConcurrentHashMap<Class, String> mappingStringClasses = new ConcurrentHashMap<>();
 
   public JsonConfigurationImpl() {
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public <T extends BaseJsonConfig> T getConfiguration(Class<T> aClass) {
     try {
       if (!mappingStringClasses.containsKey(aClass)) {
@@ -50,7 +52,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     }
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public long getConfigurationTimestamp(Class aClass) {
     if (!mappingStringClasses.containsKey(aClass)) {
       var attribute = (ConfigAttribute) aClass.getAnnotation(ConfigAttribute.class);
@@ -61,6 +63,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     return item.timestamp;
   }
 
+  @SuppressWarnings("rawtypes")
   public void setConfiguration(Object data, Runnable runnable) {
     try {
       var aClass = data.getClass();
