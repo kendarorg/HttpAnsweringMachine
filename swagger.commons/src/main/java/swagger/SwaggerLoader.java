@@ -84,12 +84,56 @@ public abstract class SwaggerLoader implements OpenApiReader {
   private Set<Tag> openApiTags;
 
 
+  /**
+   *  if (method.getAnnotation(javax.ws.rs.GET.class) != null) { return get
+   * @param method
+   * @return
+   */
+  protected abstract String getHttpMethodLowerCase(Method method);
 
-  protected abstract String XXXgetApiPath(Object target);
+  /**
+   * QueryParam param = (QueryParam) annotation; means ParameterType.QUERY
+   * @param annotation
+   * @return
+   */
+  public abstract ParameterType getHttpParamType(Annotation annotation);
 
-  protected abstract List<String> XXXgetConsumes(Object target);
+  /**
+   * QueryParam param = (QueryParam) annotation;
+   * param.value()
+   * @param annotation
+   * @param type
+   * @return
+   */
+  public abstract String getHttpParamValue(Annotation annotation, ParameterType type);
 
-  protected abstract List<String> XXXgetProduces(Object target);
+  /**
+   * HttpMethod httpMethod = methodAnnotation.annotationType().getAnnotation(HttpMethod.class);
+   * @param annotationType
+   * @return
+   */
+  public abstract String getHttpMethoFromCustomAnnotation(Class<? extends Annotation> annotationType);
+
+  /**
+   * ReflectionUtils.getAnnotation(target, javax.ws.rs.Path.class)::value
+   * @param target
+   * @return
+   */
+  protected abstract String getApiPathAnnotation(Object target);
+
+  /**
+   * ReflectionUtils.getAnnotation(target, javax.ws.rs.Consumes.class)::value (returns string[])
+   * @param target
+   * @return
+   */
+  protected abstract List<String> getConsumesAnnotation(Object target);
+
+  /**
+   * ReflectionUtils.getAnnotation(target, javax.ws.rs.Produces.class)::value (returns string[])
+   * @param target
+   * @return
+   */
+  protected abstract List<String> getProducesAnnotation(Object target);
 
   /**
    * Scans a set of classes for both ReaderListeners and OpenAPI annotations. All found listeners
@@ -316,7 +360,7 @@ public abstract class SwaggerLoader implements OpenApiReader {
 
     Hidden hidden = cls.getAnnotation(Hidden.class);
     // class path
-    var apiPath = XXXgetApiPath(cls);
+    var apiPath = getApiPathAnnotation(cls);
 
     if (hidden != null) { //  || (apiPath == null && !isSubresource)) {
       return openAPI;
@@ -343,9 +387,9 @@ public abstract class SwaggerLoader implements OpenApiReader {
             cls, io.swagger.v3.oas.annotations.servers.Server.class);
 
     var classConsumes =
-        XXXgetConsumes(cls);
+        getConsumesAnnotation(cls);
     var classProduces =
-        XXXgetProduces(cls);
+        getProducesAnnotation(cls);
 
     boolean classDeprecated = ReflectionUtils.getAnnotation(cls, Deprecated.class) != null;
 
@@ -463,9 +507,9 @@ public abstract class SwaggerLoader implements OpenApiReader {
       }
       AnnotatedMethod annotatedMethod = bd.findMethod(method.getName(), method.getParameterTypes());
       var methodProduces =
-        XXXgetProduces(method);
+        getProducesAnnotation(method);
       var methodConsumes =
-        XXXgetConsumes(method);
+        getConsumesAnnotation(method);
 
       if (isMethodOverridden(method, cls)) {
         continue;
@@ -473,7 +517,7 @@ public abstract class SwaggerLoader implements OpenApiReader {
 
       boolean methodDeprecated = ReflectionUtils.getAnnotation(method, Deprecated.class) != null;
 
-      String methodPath = XXXgetApiPath(method);
+      String methodPath = getApiPathAnnotation(method);
 
       String operationPath = ReaderUtils.getPath(apiPath, methodPath, parentPath, isSubresource);
 
@@ -1687,21 +1731,13 @@ public abstract class SwaggerLoader implements OpenApiReader {
       type = rawType;
     }
 
-    if (XXXgetApiPath(method) != null) {
+    if (getApiPathAnnotation(method) != null) {
       if (ReaderUtils.extractOperationMethod(this,method, null) == null) {
         return type;
       }
     }
     return null;
   }
-
-
-  protected abstract String getMethodLowerCase(Method method);
-
-  public abstract ParameterType getAnnotaionParmType(Annotation annotation);
-  public abstract String getAnnotaionParmValue(Annotation annotation, ParameterType type);
-
-  /**
    * Comparator for uniquely sorting a collection of Method objects. Supports overloaded methods
    * (with the same name).
    *

@@ -14,13 +14,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class ReaderUtils {
   private static final String GET_METHOD = "get";
@@ -230,7 +224,7 @@ public abstract class ReaderUtils {
 
 
   public static String extractOperationMethod(SwaggerLoader loader,Method method, Iterator<OpenAPIExtension> chain) {
-    var getMethodAnnotation = loader.getMethodLowerCase(method);
+    var getMethodAnnotation = loader.getHttpMethodLowerCase(method);
     if (getMethodAnnotation.equalsIgnoreCase("get")) {
       return GET_METHOD;
     } else if (getMethodAnnotation.equalsIgnoreCase("put")) {
@@ -245,12 +239,24 @@ public abstract class ReaderUtils {
       return HEAD_METHOD;
     } else if (getMethodAnnotation != null) {
       return getMethodAnnotation.toLowerCase();
-    } else if ((ReflectionUtils.getOverriddenMethod(method)) != null) {
+    } else if (!StringUtils.isEmpty(getHttpMethodFromCustomAnnotations(loader,method))) {
+      return getHttpMethodFromCustomAnnotations(loader,method);
+    }else if ((ReflectionUtils.getOverriddenMethod(method)) != null) {
       return extractOperationMethod(loader,ReflectionUtils.getOverriddenMethod(method), chain);
     } else if (chain != null && chain.hasNext()) {
       return chain.next().extractOperationMethod(method, chain);
     } else {
       return null;
     }
+  }
+
+  public static String getHttpMethodFromCustomAnnotations(SwaggerLoader loader,Method method) {
+    for (Annotation methodAnnotation : method.getAnnotations()) {
+      String stringMethod = loader.getHttpMethoFromCustomAnnotation(methodAnnotation.annotationType())
+      if (stringMethod != null) {
+        return stringMethod.toLowerCase(Locale.ROOT);
+      }
+    }
+    return null;
   }
 }

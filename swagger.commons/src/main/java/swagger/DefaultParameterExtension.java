@@ -52,8 +52,8 @@ public class DefaultParameterExtension extends AbstractOpenAPIExtension {
 
     Parameter parameter = null;
     for (Annotation annotation : annotations) {
-      var annotationParamType = loader.getAnnotaionParmType(annotation);
-      var annotationParamValue = loader.getAnnotaionParmValue(annotation,annotationParamType);
+      var annotationParamType = loader.getHttpParamType(annotation);
+      var annotationParamValue = loader.getHttpParamValue(annotation,annotationParamType);
       if (annotationParamType == ParameterType.QUERY) {
         Parameter qp = new Parameter();
         qp.setIn(QUERY_PARAM);
