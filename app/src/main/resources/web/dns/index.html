@@ -8,20 +8,33 @@
 <body>
 <div class="container">
     <div class="row">
+        
         <div class="col-md-8">
+            <h3>DNS Servers</h3>
             <br>
-            <button id="addDns" name="addDns" type="button"  class="btn btn-default" onClick="addDns();">Add new</button>
-
-
-        </div>
-        <div class="col-md-8">
-            <h3>DNS</h3>
+            <button id="addDns" name="addDns" type="button"  class="btn btn-default" onClick="addDns();">Add new server</button>
+            <br>
             <table class="table table-striped" id="dnsTable">
                 <tr>
                     <th>Id</th>
                     <th>Address</th>
                     <th>Resolved</th>
                     <th>Enabled</th>
+                    <th colspan="2"></th>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-8">
+            <h3>DNS Mappings</h3>
+
+            <br>
+            <button id="addDns" name="addDns" type="button"  class="btn btn-default" onClick="addDnsMapping();">Add new mapping</button>
+            <br>
+            <table class="table table-striped" id="dnsMappingTable">
+                <tr>
+                    <th>Id</th>
+                    <th>Dns</th>
+                    <th>Ip</th>
                     <th colspan="2"></th>
                 </tr>
             </table>
@@ -45,7 +58,7 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
-    var dnsModal = `
+    var dnsTableModal = `
         <label for="name">address</label>
         <input class="form-control" type="text" name="address"  id="address" />
         <div class="form-check">
@@ -62,16 +75,17 @@
             id : uuidv4()
         };
         var id = target.id;
-        buildGenericModal(modal, scriptsTable, target, "id", dnsModal, randomId,false);
-        $(modal).find("#"+randomId).click(function(){ scriptsTable.saveFunction(scriptsTable,id,true); });
+        buildGenericModal(modal, dnsTable, target, "id", dnsTableModal, randomId,false);
+        $(modal).find("#"+randomId).click(function(){ dnsTable.saveFunction(dnsTable,id,true); });
     }
+
     var editDns=function(table,id) {
         var modal=".modal";
         var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
         var localTable = table;
         localTable.data.forEach(function(value, i) {
             if (value["id"] == id) {
-                buildGenericModal(modal, table, value, "id", dnsModal, randomId, true);
+                buildGenericModal(modal, table, value, "id", dnsTableModal, randomId, true);
                 $(modal).find("#"+randomId).click(function(){ localTable.saveFunction(localTable,id,false); });
                 $(modal).find("#address").val(value["address"]);
                 setChecked($(modal).find("#enabled"),value['enabled']);
@@ -79,7 +93,7 @@
         });
     }
 
-    var scriptsTable = new SimpleGrid("Dns","dnsTable","id",["id","address","resolved","_enabled"],
+    var dnsTable = new SimpleGrid("Dns","dnsTable","id",["id","address","resolved","_enabled"],
         function(table){
             $.ajax({
                 url: "/api/dns/servers",
@@ -131,6 +145,93 @@
                 }
             });
         }).load();
+
+
+
+    var dnsMappingModal = `
+        <label for="ip">ip</label>
+        <input class="form-control" type="text" name="ip"  id="ip" />
+        <label for="dns">dns</label>
+        <input class="form-control" type="text" name="dns"  id="dns" />
+    `;
+
+    var addDnsMapping = function(){
+        var modal=".modal";
+        var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
+        var target = {
+            id : uuidv4()
+        };
+        var id = target.id;
+        buildGenericModal(modal, dnsMappingTable, target, "id", dnsMappingModal, randomId,false);
+        $(modal).find("#"+randomId).click(function(){ dnsMappingTable.saveFunction(dnsMappingTable,id,true); });
+    }
+
+    var editDnsMapping=function(table,id) {
+        var modal=".modal";
+        var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
+        var localTable = table;
+        localTable.data.forEach(function(value, i) {
+            if (value["id"] == id) {
+                //buildGenericModal(modal, dnsMappingTable, value, "id", dnsMappingTable, randomId, true);
+                buildGenericModal(modal, table, value, "id", dnsMappingModal, randomId, true);
+                $(modal).find("#"+randomId).click(function(){ localTable.saveFunction(localTable,id,false); });
+                $(modal).find("#ip").val(value["ip"]);
+                $(modal).find("#dns").val(value["dns"]);
+            }
+        });
+    }
+
+
+    var dnsMappingTable = new SimpleGrid("Dns Mapping","dnsMappingTable","id",["id","ip","dns"],
+        function(table){
+            $.ajax({
+                url: "/api/dns/mappings",
+                type: 'GET',
+                success: function(res) {
+                    $.each(res, function(i, script) {
+                        table.appendToTable(script);
+                    });
+                }
+            });
+        },
+        function (table,id) {
+            editDnsMapping(table,id)
+        },
+        function (table,id) {
+            table.deleteFromTable(id,function(id,success,error){
+                $.ajax({
+                    url: "/api/dns/mappings/"+getUrlParameter("id"),
+                    type: 'DELETE',
+                    success: function (res) {
+                        success();
+                    },
+                    error:function(res){
+                        error();
+                    }
+                });
+            });
+        },
+        function (table,id,saveOrUpdate){
+            var modal=".modal";
+            var data = {
+                id: id,
+                ip: $(modal).find("#ip").val(),
+                dns: $(modal).find("#dns").val()
+            };
+            $.ajax({
+                url: "/api/dns/mappings"+(saveOrUpdate?"":"/"+id),
+                type: saveOrUpdate?'POST':'PUT',
+                data:JSON.stringify(data),
+                contentType: "application/json",
+                success: function (res) {
+                    success();
+                },
+                error:function(res){
+                    error();
+                }
+            });
+        }).load();
+
 
 </script>
 </body>

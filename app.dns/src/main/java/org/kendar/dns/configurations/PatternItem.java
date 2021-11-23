@@ -13,7 +13,7 @@ public class PatternItem implements Copyable<PatternItem> {
     private  String matcher;
     private boolean initialized = false;
 
-    private void initialize(){
+    public void initialize(){
         if(!initialized){
             if(dns.startsWith("@")){
                 matcher = dns.substring(1);
