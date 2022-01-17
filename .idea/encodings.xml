@@ -11,5 +11,7 @@
     <file url="file://$PROJECT_DIR$/oidc.server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/replayer.server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/simpledns/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>
 </project>

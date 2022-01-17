@@ -96,9 +96,9 @@ public class AnsweringHttpsServer implements AnsweringServer {
 
                 // Set the SSL parameters
                 SSLParameters sslParameters = context.getSupportedSSLParameters();
-                // sslParameters.setProtocols(new String[]{"TLSv1.3","TLSv1.2","TLSv1.0"});
-                // (sslParameters.setCipherSuites(new String[]
-                // {"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"});
+                //sslParameters.setProtocols(new String[]{"TLSv1.2","TLSv1.1","TLSv1"});
+                 /*sslParameters.setCipherSuites(new String[]
+                 {"TLS_RSA_WITH_AES_256_CBC_SHA256"});*/
                 params.setSSLParameters(sslParameters);
 
               } catch (Exception ex) {
@@ -164,14 +164,14 @@ public class AnsweringHttpsServer implements AnsweringServer {
 
   private KeyStore setupKeystore(GeneratedCert domain)
       throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
-    KeyStore ksTemp = KeyStore.getInstance("JKS");
+    KeyStore ksTemp = KeyStore.getInstance("jks"); //PKCS12
     ksTemp.load(null, null); // Initialize it
     ksTemp.setCertificateEntry("Alias", domain.certificate);
     ByteArrayOutputStream bOut = new ByteArrayOutputStream();
     // save the temp keystore
     ksTemp.store(bOut, "passphrase".toCharArray());
     // Now create the keystore to be used by jsse
-    KeyStore keyStore = KeyStore.getInstance("JKS");
+    KeyStore keyStore = KeyStore.getInstance("jks");
     keyStore.load(new ByteArrayInputStream(bOut.toByteArray()), "passphrase".toCharArray());
     return keyStore;
   }

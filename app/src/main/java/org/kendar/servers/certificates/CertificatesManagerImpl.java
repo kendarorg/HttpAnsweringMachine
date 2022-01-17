@@ -48,7 +48,8 @@ public class CertificatesManagerImpl implements CertificatesManager {
   }
 
   public void updateProvider() {
-    Security.insertProviderAt(new BouncyCastleProvider(), 1);
+    //Security.insertProviderAt(new BouncyCastleProvider(), 1);
+    Security.addProvider(new BouncyCastleProvider());
   }
 
   @Override
@@ -168,6 +169,7 @@ public class CertificatesManagerImpl implements CertificatesManager {
 
     // Finally, sign the certificate:
     ContentSigner signer = new JcaContentSignerBuilder("SHA256WithRSA").build(issuerKey);
+    //ContentSigner signer = new JcaContentSignerBuilder("SHA256").build(issuerKey);
     X509CertificateHolder certHolder = builder.build(signer);
     X509Certificate cert = new JcaX509CertificateConverter().getCertificate(certHolder);
 
