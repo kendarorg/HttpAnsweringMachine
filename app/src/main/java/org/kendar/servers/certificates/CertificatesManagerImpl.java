@@ -76,15 +76,10 @@ public class CertificatesManagerImpl implements CertificatesManager {
     return caCertificate;
   }
 
-  @Override
-  public GeneratedCert createCertificate(
-      String cnName,
-      String rootDomain,
-      GeneratedCert issuer,
-      List<String> childDomains,
-      boolean isCA)
-      throws Exception {
-
+  private GeneratedCert createSNACertificate(String cnName,
+                                             String rootDomain,
+                                             GeneratedCert issuer,
+                                             List<String> childDomains) throws Exception{
     logger.trace("Create certificate");
     // Generate the key-pair with the official Java API's
     KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
@@ -111,30 +106,28 @@ public class CertificatesManagerImpl implements CertificatesManager {
 
     // The cert builder to build up our certificate information
     JcaX509v3CertificateBuilder builder =
-        new JcaX509v3CertificateBuilder(
-            issuerName,
-            serialNumber,
-            Date.from(validFrom),
-            Date.from(validUntil),
-            name,
-            certKeyPair.getPublic());
+            new JcaX509v3CertificateBuilder(
+                    issuerName,
+                    serialNumber,
+                    Date.from(validFrom),
+                    Date.from(validUntil),
+                    name,
+                    certKeyPair.getPublic());
 
     // Make the cert to a Cert Authority to sign more certs when needed
-    if (isCA) {
-      builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
-    }else{
+
       byte[] bytes = new byte[20];
       SecureRandom.getInstanceStrong().nextBytes(bytes);
-      SubjectKeyIdentifier authorityKeyIdentifier =
+      SubjectKeyIdentifier securityKeyIdentifier =
               new SubjectKeyIdentifier(bytes);
-      builder.addExtension(Extension.subjectKeyIdentifier, false, authorityKeyIdentifier);
-    }
+      builder.addExtension(Extension.subjectKeyIdentifier, false, securityKeyIdentifier);
+
     // Modern browsers demand the DNS name entry
     if (rootDomain != null) {
       builder.addExtension(
-          Extension.subjectAlternativeName,
-          false,
-          new GeneralNames(new GeneralName(GeneralName.dNSName, rootDomain)));
+              Extension.subjectAlternativeName,
+              false,
+              new GeneralNames(new GeneralName(GeneralName.dNSName, rootDomain)));
     } else if (childDomains.size() > 0) {
       var generalNames = new GeneralName[childDomains.size()];
       for (int i = 0; i < childDomains.size(); i++) {
@@ -144,34 +137,34 @@ public class CertificatesManagerImpl implements CertificatesManager {
       // GeneralNames subjectAltNames = GeneralNames.getInstance(generalNames);
       builder.addExtension(Extension.subjectAlternativeName, false, new GeneralNames(generalNames));
     }
-    if (!isCA && issuer != null) {
+    if (issuer != null) {
       byte[] extvalue =
-          //issuer.certificate.getExtensionValue(Extension.authorityKeyIdentifier.getId());
+              //issuer.certificate.getExtensionValue(Extension.authorityKeyIdentifier.getId());
               issuer.certificate.getExtensionValue(Extension.subjectKeyIdentifier.getId());
       if (extvalue != null) {
         byte[] filteredByteArray =
-            Arrays.copyOfRange(extvalue, extvalue.length - 20, extvalue.length);
+                Arrays.copyOfRange(extvalue, extvalue.length - 20, extvalue.length);
 
         AuthorityKeyIdentifier authorityKeyIdentifier =
-            new AuthorityKeyIdentifier(filteredByteArray);
+                new AuthorityKeyIdentifier(filteredByteArray);
         builder.addExtension(Extension.authorityKeyIdentifier, false, authorityKeyIdentifier);
       }
       builder.addExtension(
-          new ASN1ObjectIdentifier("2.5.29.19"), false, new BasicConstraints(false));
+              new ASN1ObjectIdentifier("2.5.29.19"), false, new BasicConstraints(false));
       builder.addExtension(
-          Extension.extendedKeyUsage,
-          false,
-          new ExtendedKeyUsage(
-              new KeyPurposeId[] {KeyPurposeId.id_kp_serverAuth, KeyPurposeId.id_kp_clientAuth}));
+              Extension.extendedKeyUsage,
+              false,
+              new ExtendedKeyUsage(
+                      new KeyPurposeId[] {KeyPurposeId.id_kp_serverAuth, KeyPurposeId.id_kp_clientAuth}));
 
       builder.addExtension(
-          Extension.keyUsage,
-          false,
-          new X509KeyUsage(
-              X509KeyUsage.digitalSignature
-                  | X509KeyUsage.nonRepudiation
-                  | X509KeyUsage.keyEncipherment
-                  | X509KeyUsage.dataEncipherment));
+              Extension.keyUsage,
+              false,
+              new X509KeyUsage(
+                      X509KeyUsage.digitalSignature
+                              | X509KeyUsage.nonRepudiation
+                              | X509KeyUsage.keyEncipherment
+                              | X509KeyUsage.dataEncipherment));
     }
 
     // Finally, sign the certificate:
@@ -181,5 +174,20 @@ public class CertificatesManagerImpl implements CertificatesManager {
     X509Certificate cert = new JcaX509CertificateConverter().getCertificate(certHolder);
 
     return new GeneratedCert(certKeyPair.getPrivate(), cert);
+  }
+
+  @Override
+  public GeneratedCert createCertificate(
+      String cnName,
+      String rootDomain,
+      GeneratedCert issuer,
+      List<String> childDomains,
+      boolean isCa)
+      throws Exception {
+    if(!isCa){
+      return createSNACertificate(cnName,rootDomain,issuer,childDomains);
+    }else{
+      throw new Exception("Miss");
+    }
   }
 }
