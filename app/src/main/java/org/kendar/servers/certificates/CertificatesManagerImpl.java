@@ -122,6 +122,12 @@ public class CertificatesManagerImpl implements CertificatesManager {
     // Make the cert to a Cert Authority to sign more certs when needed
     if (isCA) {
       builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+    }else{
+      byte[] bytes = new byte[20];
+      SecureRandom.getInstanceStrong().nextBytes(bytes);
+      SubjectKeyIdentifier authorityKeyIdentifier =
+              new SubjectKeyIdentifier(bytes);
+      builder.addExtension(Extension.subjectKeyIdentifier, false, authorityKeyIdentifier);
     }
     // Modern browsers demand the DNS name entry
     if (rootDomain != null) {
@@ -140,7 +146,8 @@ public class CertificatesManagerImpl implements CertificatesManager {
     }
     if (!isCA && issuer != null) {
       byte[] extvalue =
-          issuer.certificate.getExtensionValue(Extension.authorityKeyIdentifier.getId());
+          //issuer.certificate.getExtensionValue(Extension.authorityKeyIdentifier.getId());
+              issuer.certificate.getExtensionValue(Extension.subjectKeyIdentifier.getId());
       if (extvalue != null) {
         byte[] filteredByteArray =
             Arrays.copyOfRange(extvalue, extvalue.length - 20, extvalue.length);

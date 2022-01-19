@@ -143,8 +143,10 @@ public class AnsweringHttpsServer implements AnsweringServer {
     // now lets do the same with the keystore
     KeyStore keyStore = setupKeystore(domain);
     // HERE IS THE CHAIN
-    X509Certificate[] chain = new X509Certificate[1];
+    X509Certificate[] chain = new X509Certificate[2];
+    //chain[0] = root.certificate;
     chain[0] = domain.certificate;
+    chain[1] = root.certificate;
     keyStore.setKeyEntry("privateCert", domain.privateKey, "passphrase".toCharArray(), chain);
 
     TrustManagerFactory tmf =
