@@ -1,6 +1,8 @@
 package org.kendar;
 
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -10,10 +12,17 @@ import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.crypto.util.SubjectPublicKeyInfoFactory;
+import org.bouncycastle.eac.jcajce.JcaPublicKeyConverter;
 import org.bouncycastle.jce.X509KeyUsage;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMKeyPair;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.openssl.jcajce.JcaPKCS8Generator;
+import org.bouncycastle.openssl.jcajce.JceOpenSSLPKCS8EncryptorBuilder;
 import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.OutputEncryptor;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
@@ -21,6 +30,7 @@ import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS8EncryptedPrivateKeyInfoBuilder;
 import org.bouncycastle.pkcs.jcajce.JcePKCSPBEOutputEncryptorBuilder;
 import org.bouncycastle.util.encoders.Base64;
+import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 //import org.bouncycastle.util.encoders.Base64;
 
@@ -117,8 +127,8 @@ public class BouncyCastleCertificateGenerator {
         X509CertificateHolder rootCertHolder = rootCertBuilder.build(rootCertContentSigner);
         rootCert = new JcaX509CertificateConverter().setProvider(BC_PROVIDER).getCertificate(rootCertHolder);
 
-        writeCertToFileBase64Encoded(rootCert, "root-cert",rootKeyPair);
-        exportKeyPairToKeystoreFile(rootKeyPair, rootCert, "root-cert", "root-cert.pfx", "PKCS12", "pass");
+        writeCertToFileBase64Encoded(rootCert, "ca",rootKeyPair);
+        //exportKeyPairToKeystoreFile(rootKeyPair, rootCert, "root-cert", "root-cert.pfx", "PKCS12", "pass");
 
     }
 
@@ -181,26 +191,16 @@ public class BouncyCastleCertificateGenerator {
 
 
     static void writeCertToFileBase64Encoded(Certificate certificate, String fileName, KeyPair rootKeyPair) throws Exception {
-        /*FileOutputStream certificateOut = new FileOutputStream(fileName+".cer");
-        certificateOut.write("-----BEGIN CERTIFICATE-----".getBytes());
-        certificateOut.write(Base64.encode(certificate.getEncoded()));
-        certificateOut.write("-----END CERTIFICATE-----".getBytes());
-        certificateOut.close();*/
         StringWriter sw = new StringWriter();
         try (JcaPEMWriter  writer  = new JcaPEMWriter(sw)) {
             writer.writeObject(certificate);
         }
         String pem = sw.toString();
-        BufferedWriter bw = new BufferedWriter(new FileWriter(fileName+".cer"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(fileName+".der"));
         bw.write(pem);
         bw.close();
 
         PrivateKey priv = rootKeyPair.getPrivate();
-        /*FileOutputStream privOut = new FileOutputStream(fileName+".key");
-        privOut.write("-----BEGIN CERTIFICATE-----".getBytes());
-        privOut.write(Base64.encode(priv.getEncoded()));
-        privOut.write("-----END CERTIFICATE-----".getBytes());
-        privOut.close();*/
 
 
         var builder = new JcaPKCS8EncryptedPrivateKeyInfoBuilder(priv);
@@ -210,20 +210,38 @@ public class BouncyCastleCertificateGenerator {
         var password = "test".toCharArray();
         var outputBuilder = encryptorBuilder.build(password);
         var privKeyObj = builder.build(outputBuilder);
-        var fos = new FileOutputStream(fileName+".key");
+        var fos = new FileOutputStream(fileName+".encrypted.key");
         fos.write(privKeyObj.getEncoded());
         fos.flush();
         fos.close();
 
-        PublicKey pub = rootKeyPair.getPublic();
+         /*var p8encryptorBuilder = new JceOpenSSLPKCS8EncryptorBuilder(PKCSObjectIdentifiers.pbeWithSHAAnd3_KeyTripleDES_CBC);
+        builder = new JcaPKCS8EncryptedPrivateKeyInfoBuilder(priv);
+        outputBuilder = p8encryptorBuilder.build();
+         privKeyObj = builder.build(outputBuilder);
+         fos = new FileOutputStream(fileName+".key");
+        fos.write(privKeyObj.getEncoded());
+        fos.flush();
+        fos.close();*/
+         sw = new StringWriter();
+        try (JcaPEMWriter  writer  = new JcaPEMWriter(sw)) {
+            writer.writeObject(priv);
+        }
+         pem = sw.toString();
+         bw = new BufferedWriter(new FileWriter(fileName+".key"));
+        bw.write(pem);
+        bw.close();
+
+        //PublicKey pub = rootKeyPair.getPublic();
+        /*//var datt = pub.getEncoded();
          sw = new StringWriter();
         JcaPEMWriter pemWriter = new JcaPEMWriter(sw);
         pemWriter.writeObject(pub);
         pemWriter.close();
         var data = sw.toString();
-        FileOutputStream pubOut = new FileOutputStream("pub."+fileName+".key");
+        FileOutputStream pubOut = new FileOutputStream(fileName+".pub.key");
         pubOut.write(data.getBytes());
-        pubOut.close();
+        pubOut.close();*/
 
     }
 }

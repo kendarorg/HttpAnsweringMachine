@@ -4,7 +4,6 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="org.kendar.HttpsTest" />
     <module name="app" />
-    <option name="VM_PARAMETERS" value="-Djavax.net.debug=all -Djdk.tls.acknowledgeCloseNotify=true -Djdk.tls.server.protocols=TLSv1.2" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="org.kendar.*" />
