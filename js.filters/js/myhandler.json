@@ -1,6 +1,6 @@
 {
     "method" : "GET",
-    "hostAddress" : "js.test.org",
+    "hostAddress" : "www.local.test",
     "hostRegexp" : "",
     "pathAddress": "/test",
     "pathRegexp": "",
