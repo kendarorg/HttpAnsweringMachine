@@ -78,24 +78,33 @@ You should see then an "OK" text
 
 You can then install the root certificate on the machine, first list the certificate you need
 going on [http://www.local.test/api/certificates](http://www.local.test/api/certificates) that will
-return a list of the available formats:
+return a list of the available formats. The encrypted key pwd is "test":
 
         [
             "ca.der",
-            "ca.p12",
-            "ca.cer",
-            "ca.key",
-            "ca.srl",
-            "ca.pem",
-            "ca.crt"
+            "ca.encrypted.key",
+            "ca.key"
         ]
 
 You can then download your preferred one and install on the OS and on the Browser downloading them from
-[http://www.local.test/api/certificates/name](http://www.local.test/api/certificates/name) for example,
-then yout can download the certificat file and install it as root CA.
+[http://www.local.test/api/certificates/NAME](http://www.local.test/api/certificates/NAME) for example,
+then yout can download the certificae file and install it as trusted root CA.
 
-For example on Windows you can download the crt [http://www.local.test/api/certificates/ca.crt](http://www.local.test/api/certificates/ca.crt).
-Then you can unzip the file and install it as root CA. You can add it to the browsers directly.
+#### Windows
+
+For example on Windows you can download the der [http://www.local.test/api/certificates/ca.der](http://www.local.test/api/certificates/ca.der).
+Then you can unzip the file and install it as trusted root CA.
+
+#### Java
+
+On java you can download the der  [http://www.local.test/api/certificates/ca.der](http://www.local.test/api/certificates/ca.der).
+And import it into the main keystore
+
+    keytool -import -trustcacerts -alias answeringMachineCa -file ca.der -cacerts -storepass changeit
+
+#### Browser
+
+For the browser you can follow the various browsers instruction and install as trusted root CA.
 
 Now you can browse to [https://www.local.test/api/health](https://www.local.test/api/health) (mind the
-HTTPS! ) and you will not receive any security warning
+HTTPS! ) and you will not receive any security warning.
