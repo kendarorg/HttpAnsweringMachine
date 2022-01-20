@@ -368,15 +368,27 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
       } else if (requestResponseBuilder.hasBody(request)) {
         HttpEntity entity;
-        if (request.isBinaryRequest()) {
-          entity =
-              new ByteArrayEntity(
-                  request.getRequestBytes(), ContentType.create(request.getHeader("content-type")));
+        try {
+          String contentType = request.getHeader("content-type");
+          if(contentType.indexOf(";")>0){
+            var spl = contentType.split(";");
+            contentType = spl[0];
+          }
+          if (request.isBinaryRequest()) {
+            entity =
+                    new ByteArrayEntity(
+                            request.getRequestBytes(), ContentType.create(contentType));
 
-        } else {
+          } else {
+            entity =
+                    new StringEntity(
+                            request.getRequestText(), ContentType.create(contentType));
+          }
+        }catch(Exception ex){
+          logger.debug("Error "+request.getHeader("content-type"),ex);
           entity =
-              new StringEntity(
-                  request.getRequestText(), ContentType.create(request.getHeader("content-type")));
+                  new StringEntity(
+                          request.getRequestText(), ContentType.create("application/octect-stream"));
         }
         ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
       }
@@ -430,10 +442,15 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         os.flush();
         os.close();
       } else {
-        OutputStream os = httpExchange.getResponseBody();
-        os.write(new byte[0]);
-        os.flush();
-        os.close();
+        try {
+            OutputStream os = httpExchange.getResponseBody();
+
+            os.write(new byte[0]);
+            os.flush();
+            os.close();
+        } catch (Exception ex) {
+
+        }
       }
     } catch (Exception ex) {
       logger.error(ex.getMessage(), ex);

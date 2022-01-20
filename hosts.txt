@@ -1,2 +1,3 @@
 127.0.0.1 www.local.test
 127.0.0.1 redirect.local.test
+127.0.0.1 stackoverflow.com
