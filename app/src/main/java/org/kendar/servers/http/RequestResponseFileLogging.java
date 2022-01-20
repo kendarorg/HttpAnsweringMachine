@@ -55,6 +55,10 @@ public class RequestResponseFileLogging implements FilteringClass {
       var config = configuration.getConfiguration(GlobalConfig.class);
       roundtripsPath = fileResourcesUtils.buildPath(config.getLogging().getLogRoundtripsPath());
       var np = Path.of(roundtripsPath);
+      var dirPath = new File(np.toString());
+      if(!dirPath.exists()){
+        dirPath.mkdir();
+      }
       if (!Files.isDirectory(np)) {
         Files.createDirectory(np);
       }
