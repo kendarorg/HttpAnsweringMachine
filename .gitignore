@@ -28,5 +28,6 @@ hs_err_pid*
 /libs
 /recording
 /replayerdata
+/pacts
 
 target
