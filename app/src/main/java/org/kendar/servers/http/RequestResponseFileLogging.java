@@ -70,8 +70,13 @@ public class RequestResponseFileLogging implements FilteringClass {
       id = "1001a4b4-277d-11ec-9621-0242ac130002")
   public boolean doLog(Request serReq, Response serRes) {
     if (serReq.isStaticRequest() && !staticLogger.isDebugEnabled()) return false;
-    if (serReq.isStaticRequest() && !dynamicLogger.isDebugEnabled()) return false;
+    if (!serReq.isStaticRequest() && !dynamicLogger.isDebugEnabled()) return false;
+    var rt = serReq.getRequestText();
+    var rb = serReq.getRequestBytes();
+    var st = serRes.getResponseText();
+    var sb = serRes.getResponseBytes();
 
+    //TODO ERROR RESETTING req/res
     if (requestLogger.isDebugEnabled()
         && serReq.getRequestText() != null
         && serReq.getRequestText().length() > 100) {
@@ -121,7 +126,10 @@ public class RequestResponseFileLogging implements FilteringClass {
     } catch (Exception ex) {
 
     }
-
+    serReq.setRequestBytes(rb);
+    serReq.setRequestText(rt);
+    serRes.setResponseText(st);
+    serRes.setResponseBytes(sb);
     return false;
   }
 

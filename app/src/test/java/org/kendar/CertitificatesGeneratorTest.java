@@ -1,6 +1,7 @@
 package org.kendar;
 
 import org.apache.commons.codec.binary.Base64;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kendar.servers.certificates.CertificatesManagerImpl;
 import org.kendar.servers.certificates.GeneratedCert;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 public class CertitificatesGeneratorTest {
   @Test
+  @Ignore
   public void generateFromScratch() throws Exception {
     var loggerBuilder = new LoggerBuilderImpl();
     var target = new CertificatesManagerImpl(null, loggerBuilder);

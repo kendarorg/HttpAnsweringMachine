@@ -166,6 +166,10 @@ public class ReplayerAPICrud implements FilteringClass {
       crud.setStaticRequests(new ArrayList<>());
       crud.setErrors(new ArrayList<>());
 
+      var dirPath = new File(Path.of(fileResourcesUtils.buildPath(replayerData)).toString());
+      if(!dirPath.exists()){
+        dirPath.mkdir();
+      }
       var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, scriptName + ".json"));
       var resultInFile = mapper.writeValueAsString(crud);
       Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
