@@ -26,6 +26,11 @@
         "id": "1",
         "dns": "redirect.local.test",
         "ip": "127.0.0.1"
+      },
+      {
+        "id": "2",
+        "dns": "www.kendar.org",
+        "ip": "127.0.0.1"
       }
     ]
   },
@@ -70,6 +75,14 @@
       {
         "id": "1",
         "address": "local.test"
+      },
+      {
+        "id": "2",
+        "address": "*.kendar.org"
+      },
+      {
+        "id": "3",
+        "address": "www.kendar.org"
       }
     ]
   },
@@ -130,6 +143,11 @@
   {
     "id": "replayer.server",
     "path": "replayerdata",
+    "active": true
+  },
+  {
+    "id": "pacts.server",
+    "path": "pacts",
     "active": true
   }
 ]

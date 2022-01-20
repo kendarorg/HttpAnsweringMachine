@@ -4,7 +4,7 @@
     "hostRegexp" : "",
     "pathAddress": "/test",
     "pathRegexp": "",
-    "phase": "PRE_RENDER",\
+    "phase": "PRE_RENDER",
     "requires": [
         "myhandler/runner.js",
         "myhandler/fuffa.js"

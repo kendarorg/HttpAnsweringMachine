@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="app" />
         <module name="oidc.server" />
+        <module name="pacts.server" />
         <module name="replayer.server" />
         <module name="docker.builder" />
         <module name="app.http.standardfilters" />
@@ -38,6 +39,7 @@
       <module name="http.jdbc" options="-parameters" />
       <module name="js.filters" options="-parameters" />
       <module name="oidc.server" options="-parameters" />
+      <module name="pacts.server" options="-parameters" />
       <module name="replayer.server" options="-parameters" />
       <module name="simpledns" options="-parameters" />
       <module name="starter" options="-parameters" />
