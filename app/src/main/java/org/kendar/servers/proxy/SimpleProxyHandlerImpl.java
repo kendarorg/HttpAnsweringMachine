@@ -44,7 +44,8 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
 
           var changed = false;
           for (int i = 0; i < config.getProxies().size(); i++) {
-            changed = changed || checkRemoteMachines(config.getProxies().get(i));
+            var currentProxy = config.getProxies().get(i);
+            changed = checkRemoteMachines(currentProxy) ||changed;
           }
           if (changed) {
             configuration.setConfiguration(config);

@@ -2,23 +2,13 @@
   {
     "id": "dns",
     "system": true,
-    "active": false,
+    "active": true,
     "port": 53,
     "logQueries": false,
     "extraServers": [
       {
         "id": "1",
         "address": "8.8.4.4",
-        "enabled": true
-      },
-      {
-        "id": "2",
-        "address": "10.136.49.21",
-        "enabled": true
-      },
-      {
-        "id": "3",
-        "address": "10.110.49.21",
         "enabled": true
       }
     ],
@@ -30,6 +20,11 @@
       {
         "id": "0",
         "dns": "www.local.test",
+        "ip": "127.0.0.1"
+      },
+      {
+        "id": "0",
+        "dns": "redirect.local.test",
         "ip": "127.0.0.1"
       }
     ]

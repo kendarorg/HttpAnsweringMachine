@@ -1,6 +1,7 @@
 package org.kendar.dns.configurations;
 
 public class ExtraDnsServer {
+
     private String id;
     private String address;
     private String resolved;
@@ -28,6 +29,7 @@ public class ExtraDnsServer {
         result.id = this.id;
         result.address = this.address;
         result.resolved = this.resolved;
+        result.enabled = this.enabled;
         return result;
     }
 
