@@ -12,7 +12,7 @@
     "blocking": true,
     "priority": 100,
     "source": [
-        "var today = getCurrentDate()+testEval();",
+        "var today = getCurrentDate()+utils.loadFile('test.txt',false);",
         "utils.handleEvent('test','{}');",
         "response.responseText = '{\"value\":\"This is a calculated javascript response\",\"date\":\"'+today+'\"}';",
         "response.headers['Content-Type']='application/json';",

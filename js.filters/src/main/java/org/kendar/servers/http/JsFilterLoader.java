@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -104,7 +105,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
   private void loadSinglePlugin(
       ArrayList<FilterDescriptor> result, String realPath, String fullPath) throws Exception {
     var newFile = new File(fullPath);
-    if (newFile.isFile()) {
+    if (newFile.isFile() && fullPath.toLowerCase(Locale.ROOT).endsWith(".json")) {
       var data = Files.readString(Path.of(fullPath));
       var filterDescriptor = mapper.readValue(data, JsFilterDescriptor.class);
 
@@ -180,7 +181,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
   private void precompileFilter(JsFilterDescriptor filterDescriptor) throws Exception {
     StringBuilder scriptSrc =
         new StringBuilder(
-            "var globalFilterResult=runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON),eventQueue);\n"
+            "var globalFilterResult=runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON),utils);\n"
                 + "globalResult.put('request', JSON.stringify(globalFilterResult.request));\n"
                 + "globalResult.put('response', JSON.stringify(globalFilterResult.response));\n"
                 + "globalResult.put('continue', globalFilterResult.continue);\n");
@@ -190,7 +191,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
           .append("\r\n")
           .append(Files.readString(Path.of(filterDescriptor.getRoot() + File.separator + file)));
     }
-    scriptSrc.append("\r\nfunction runFilter(request,response,eventQueue){");
+    scriptSrc.append("\r\nfunction runFilter(request,response,utils){");
     for (var sourceLine :
             filterDescriptor.getSource()) {
       scriptSrc
