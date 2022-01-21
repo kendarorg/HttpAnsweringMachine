@@ -94,7 +94,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
       deserializedConfigurations.put(sanitizedId, parsedConfig);
       runnable.run();
       var evt = new ConfigChangedEvent();
-      evt.setName(aClass.getSimpleName());
+      evt.setName(aClass.getName());
       eventQueue.handle(evt);
     } catch (Exception ex) {
 

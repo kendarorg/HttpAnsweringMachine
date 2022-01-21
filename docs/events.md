@@ -18,3 +18,13 @@ public class PactEvents {
         //Do something
     }
 </pre>
+
+## Standard Events
+
+### ConfigChangedEvent
+
+Invoked when a config change is detected
+
+Fields:
+
+  * name: The class name of the config that had been changed
