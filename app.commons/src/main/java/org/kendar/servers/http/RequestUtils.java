@@ -97,7 +97,7 @@ public class RequestUtils {
     result.put("charset", cd.getCharset());
     result.put("filename", cd.getFilename() == null ? "file" : cd.getFilename());
     result.put("name", cd.getName() == null ? "file" : cd.getName());
-    result.put("type", cd.getType() == null ? "application/octect-stream" : cd.getType());
+    result.put("type", cd.getType() == null ? "application/octet-stream" : cd.getType());
     return result;
   }
 

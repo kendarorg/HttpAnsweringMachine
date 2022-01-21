@@ -110,7 +110,7 @@ public abstract class StaticWebFilter implements FilteringClass {
         } else if (stringPath.endsWith(".md")) {
           mimeType = "text/html";
         } else {
-          mimeType = "application/octect-stream";
+          mimeType = "application/octet-stream";
         }
       }
       response.setBinaryResponse(MimeChecker.isBinary(mimeType, null));

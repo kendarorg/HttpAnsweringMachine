@@ -11,31 +11,34 @@ import java.util.Locale;
 
 public class JsUtils {
     private EventQueue queue;
+    private ExternalRequester externalRequester;
     private String rootPath;
 
-    public JsUtils(EventQueue queue,String rootPath){
+    public JsUtils(EventQueue queue, String rootPath, ExternalRequester externalRequester) {
         this.queue = queue;
-        if(rootPath.endsWith("/")||rootPath.endsWith("\\")){
-            rootPath = rootPath.substring(0,rootPath.length()-1);
+        this.externalRequester = externalRequester;
+        if (rootPath.endsWith("/") || rootPath.endsWith("\\")) {
+            rootPath = rootPath.substring(0, rootPath.length() - 1);
         }
         this.rootPath = rootPath;
     }
 
-    public void handleEvent(String eventType,String jsonEvent){
-        queue.handle(eventType,jsonEvent);
+    public void handleEvent(String eventType, String jsonEvent) {
+        queue.handle(eventType, jsonEvent);
     }
-    public String loadFile(String path,boolean binary){
+
+    public String loadFile(String path, boolean binary) {
         try {
-            if(path.startsWith("/")||path.startsWith("\\")){
+            if (path.startsWith("/") || path.startsWith("\\")) {
                 path = path.substring(1);
             }
-            path = rootPath+File.separator+path;
+            path = rootPath + File.separator + path;
 
             String absolute = new File(path).getCanonicalPath();
-            if(absolute.toLowerCase(Locale.ROOT).startsWith(rootPath.toLowerCase(Locale.ROOT))){
-                if(!binary){
+            if (absolute.toLowerCase(Locale.ROOT).startsWith(rootPath.toLowerCase(Locale.ROOT))) {
+                if (!binary) {
                     return Files.readString(Path.of(absolute));
-                }else{
+                } else {
                     var bytes = Files.readAllBytes(Path.of(absolute));
                     return Base64.encodeBase64String(bytes);
                 }
@@ -46,7 +49,9 @@ public class JsUtils {
         return null;
     }
 
-    public Response httpRequest(Request request){
-        return null;
+    public Response httpRequest(Request request) throws Exception {
+        var response = new Response();
+        externalRequester.callExternalSite(request, response);
+        return response;
     }
 }

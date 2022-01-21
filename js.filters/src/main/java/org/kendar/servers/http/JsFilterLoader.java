@@ -32,6 +32,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
   private final JsonConfiguration configuration;
   private final String jsFilterPath;
   private EventQueue eventQueue;
+  private ExternalRequester externalRequester;
   private final Environment environment;
   private final Logger logger;
   private final LoggerBuilder loggerBuilder;
@@ -43,7 +44,8 @@ public class JsFilterLoader implements CustomFiltersLoader {
           LoggerBuilder loggerBuilder,
           FileResourcesUtils fileResourcesUtils,
           JsonConfiguration configuration,
-          EventQueue eventQueue) {
+          EventQueue eventQueue,
+          ExternalRequester externalRequester) {
 
     this.environment = environment;
     this.logger = loggerBuilder.build(JsFilterLoader.class);
@@ -51,6 +53,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
     this.fileResourcesUtils = fileResourcesUtils;
     jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     this.eventQueue = eventQueue;
+    this.externalRequester = externalRequester;
     logger.info("JsFilter LOADED");
     this.configuration = configuration;
   }
@@ -205,7 +208,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
     cx.setLanguageVersion(Context.VERSION_1_8);
     //cx.setClassShutter(sandboxClassShutter);
     var realPath = fileResourcesUtils.buildPath(jsFilterPath);
-    filterDescriptor.initializeQueue(new JsUtils(eventQueue,realPath));
+    filterDescriptor.initializeQueue(new JsUtils(eventQueue,realPath,externalRequester));
     try {
       Scriptable currentScope = getNewScope(cx);
       filterDescriptor.setScript(cx.compileString(scriptSrc.toString(), "my_script_id", 1, null));

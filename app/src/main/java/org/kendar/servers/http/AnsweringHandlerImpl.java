@@ -3,86 +3,55 @@ package org.kendar.servers.http;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpsExchange;
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpRequestRetryHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.*;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.impl.conn.SystemDefaultDnsResolver;
-import org.apache.http.message.BasicNameValuePair;
 import org.kendar.http.FilteringClassesHandler;
 import org.kendar.http.HttpFilterType;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
-import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.LoggerBuilder;
-import org.kendar.utils.MimeChecker;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static java.util.stream.Collectors.joining;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Locale;
 
 @Component
 public class AnsweringHandlerImpl implements AnsweringHandler {
   public static final String MIRROR_REQUEST_HEADER = "X-MIRROR-REQUEST";
   public static final String TEST_EXPECT_100 = "X-TEST-EXPECT-100";
   public static final String TEST_OVERWRITE_HOST = "X-TEST-OVERWRITE-HOST";
-  public static final String BLOCK_RECURSION = "X-BLOCK-RECURSIVE";
-  private static final HttpRequestRetryHandler requestRetryHandler =
-      (exception, executionCount, context) -> executionCount != 1;
   private final Logger logger;
-  private final DnsMultiResolver multiResolver;
   private final FilteringClassesHandler filteringClassesHandler;
   private final SimpleProxyHandler simpleProxyHandler;
   private final RequestResponseBuilder requestResponseBuilder;
   private final ObjectMapper mapper = new ObjectMapper();
-  private final ConcurrentHashMap<String, ResolvedDomain> domains = new ConcurrentHashMap<>();
   private final Logger requestLogger;
-  private JsonConfiguration configuration;
-  private PoolingHttpClientConnectionManager connManager;
+  private final JsonConfiguration configuration;
+  private final ExternalRequester externalRequester;
 
   public AnsweringHandlerImpl(
       LoggerBuilder loggerBuilder,
-      DnsMultiResolver multiResolver,
       FilteringClassesHandler filteringClassesHandler,
       SimpleProxyHandler simpleProxyHandler,
       RequestResponseBuilder requestResponseBuilder,
       PluginsInitializer pluginsInitializer,
-      JsonConfiguration configuration) {
+      JsonConfiguration configuration,
+      ExternalRequester externalRequester) {
     this.logger = loggerBuilder.build(AnsweringHandlerImpl.class);
     this.requestLogger = loggerBuilder.build(Request.class);
-    this.multiResolver = multiResolver;
     this.filteringClassesHandler = filteringClassesHandler;
     this.simpleProxyHandler = simpleProxyHandler;
 
     this.requestResponseBuilder = requestResponseBuilder;
     this.configuration = configuration;
+    this.externalRequester = externalRequester;
     pluginsInitializer.addSpecialLogger(
         Request.class.getName(), "Requests Logging (INFO,DEBUG,TRACE)");
     pluginsInitializer.addSpecialLogger(
@@ -93,52 +62,9 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         StaticRequest.class.getName(), "Log dynamic requests as file (DEBUG)");
   }
 
-  @PostConstruct
-  public void init() {
-    SystemDefaultDnsResolver dnsResolver =
-        new SystemDefaultDnsResolver() {
-          @Override
-          public InetAddress[] resolve(final String host) throws UnknownHostException {
-            ResolvedDomain descriptor;
-            var currentTime = Calendar.getInstance().getTimeInMillis();
-            List<String> hosts;
-            if (domains.containsKey(host)) {
-              descriptor = domains.get(host);
-              if ((descriptor.timestamp + 10 * 60 * 1000) < currentTime) {
-                domains.remove(host);
-                hosts = multiResolver.resolveRemote(host, false);
-                descriptor = new ResolvedDomain();
-                descriptor.domains.addAll(hosts);
-                domains.put(host, descriptor);
-              }
-            } else {
-              hosts = multiResolver.resolveRemote(host, false);
-              descriptor = new ResolvedDomain();
-              descriptor.domains.addAll(hosts);
-              domains.put(host, descriptor);
-            }
-            hosts = new ArrayList<>(descriptor.domains);
-            var address = new InetAddress[hosts.size()];
-            for (int i = 0; i < hosts.size(); i++) {
-              address[i] = InetAddress.getByName(hosts.get(i));
-            }
-            return address;
-          }
-        };
-    this.connManager =
-        new PoolingHttpClientConnectionManager(
-            // We're forced to create a SocketFactory Registry.  Passing null
-            //   doesn't force a default Registry, so we re-invent the wheel.
-            RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                .register("https", SSLConnectionSocketFactory.getSocketFactory())
-                .build(),
-            dnsResolver // Our DnsResolver
-            );
-    this.connManager.setMaxTotal(100);
-  }
 
-  private void mirrrorRequest(Request request, HttpExchange httpExchange) {
+
+  private void mirrorRequest(Request request, HttpExchange httpExchange) {
     try {
       String myObjectInJson = mapper.writeValueAsString(request);
       httpExchange
@@ -158,13 +84,13 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
   private boolean testExpect100(Request request, HttpExchange httpExchange) {
     String expect100 = request.getHeader(TEST_EXPECT_100);
     if (expect100 != null) {
-      mirrrorRequest(request, httpExchange);
+      mirrorRequest(request, httpExchange);
       return true;
     }
     return false;
   }
 
-  private void handleOverwriteHost(Request request, HttpExchange httpExchange) {
+  private void handleOverwriteHost(Request request) {
     String overwriteHost = request.getHeader(TEST_OVERWRITE_HOST);
     if (overwriteHost != null) {
       try {
@@ -184,29 +110,12 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     }
   }
 
-  private boolean blockRecursive(Request request, HttpExchange httpExchange) throws IOException {
-    String isRecursive = request.getHeader(BLOCK_RECURSION);
-    if (isRecursive == null) {
-      return false;
-    }
-    String fullAddress = buildFullAddress(request);
 
-    if (fullAddress.equalsIgnoreCase(isRecursive)) {
-      var error = "Recursive call to " + isRecursive;
-      var data = error.getBytes();
-      httpExchange.sendResponseHeaders(500, data.length);
-      OutputStream os = httpExchange.getResponseBody();
-      os.write(data);
-      os.close();
-      return true;
-    }
-    return false;
-  }
 
   public boolean mirrorData(Request request, HttpExchange httpExchange) {
     String isMirror = request.getHeader(MIRROR_REQUEST_HEADER);
     if (isMirror != null) {
-      mirrrorRequest(request, httpExchange);
+      mirrorRequest(request, httpExchange);
       return true;
     }
     return false;
@@ -221,6 +130,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         || requestLogger.isTraceEnabled()) {
       logger.info(host + requestUri.toString());
     }
+    var connManager = externalRequester.getConnectionManager();
 
     Request request = null;
     Response response = new Response();
@@ -232,7 +142,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         request = requestResponseBuilder.fromExchange(httpExchange, "http");
       }
 
-      handleOverwriteHost(request, httpExchange);
+      handleOverwriteHost(request);
 
       if (handleSpecialRequests(httpExchange, request)) {
         return;
@@ -266,7 +176,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         return;
       }
 
-      callExternalSite(request, response);
+      externalRequester.callExternalSite(request, response);
 
       if (filteringClassesHandler.handle(
           config, HttpFilterType.POST_CALL, request, response, connManager)) {
@@ -314,97 +224,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         || testExpect100(request, httpExchange);
   }
 
-  private void callExternalSite(Request request, Response response)
-      throws Exception {
 
-    CloseableHttpClient httpClient =
-        HttpClientBuilder.create()
-            .setRetryHandler(requestRetryHandler)
-            .setConnectionManager(connManager)
-            .disableRedirectHandling()
-            .build();
-
-    HttpRequestBase fullRequest = null;
-    try {
-      String fullAddress = buildFullAddress(request);
-      fullRequest = createFullRequest(request, fullAddress);
-      fullRequest.addHeader(BLOCK_RECURSION, fullAddress);
-      for (var header : request.getHeaders().entrySet()) {
-        if (!header.getKey().equalsIgnoreCase("host")
-            && !header.getKey().equalsIgnoreCase("content-length")) {
-          fullRequest.addHeader(header.getKey(), header.getValue());
-        }
-      }
-      if (request.isSoapRequest()) {
-        HttpEntity entity = handleSoapRequest(request);
-        ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
-      } else if (request.getPostParameters().size() > 0) {
-        List<NameValuePair> form = new ArrayList<>();
-        for (var par : request.getPostParameters().entrySet()) {
-          form.add(new BasicNameValuePair(par.getKey(), par.getValue()));
-        }
-        UrlEncodedFormEntity entity = new UrlEncodedFormEntity(form, Consts.UTF_8);
-        ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
-      } else if (requestResponseBuilder.isMultipart(request)) {
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-        for (MultipartPart part : request.getMultipartData()) {
-          if (MimeChecker.isBinary(part.getContentType(), null)) {
-            builder.addBinaryBody(
-                part.getFieldName(),
-                part.getByteData(),
-                ContentType.create(part.getContentType()),
-                part.getFileName());
-          } else {
-            var type = part.getContentType();
-            if (type == null) {
-              type = "text/plain";
-            }
-            builder.addTextBody(
-                part.getFieldName(), part.getStringData(), ContentType.create(type));
-          }
-        }
-        HttpEntity entity = builder.build();
-        ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
-      } else if (requestResponseBuilder.hasBody(request)) {
-        HttpEntity entity;
-        try {
-          String contentType = request.getHeader("content-type");
-          if(contentType.indexOf(";")>0){
-            var spl = contentType.split(";");
-            contentType = spl[0];
-          }
-          if (request.isBinaryRequest()) {
-            entity =
-                    new ByteArrayEntity(
-                            request.getRequestBytes(), ContentType.create(contentType));
-
-          } else {
-            entity =
-                    new StringEntity(
-                            request.getRequestText(), ContentType.create(contentType));
-          }
-        }catch(Exception ex){
-          logger.debug("Error "+request.getHeader("content-type"),ex);
-          entity =
-                  new StringEntity(
-                          request.getRequestText(), ContentType.create("application/octect-stream"));
-        }
-        ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
-      }
-
-      try {
-        HttpResponse httpResponse = httpClient.execute(fullRequest);
-        requestResponseBuilder.fromHttpResponse(httpResponse, response);
-      } catch (Exception ex) {
-        response.setStatusCode(404);
-      }
-    } finally {
-      if (fullRequest != null) {
-        fullRequest.releaseConnection();
-      }
-    }
-  }
 
   private void sendResponse(Response response, HttpExchange httpExchange) throws IOException {
     byte[] data = new byte[0];
@@ -429,7 +249,6 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     response.addHeader("Access-Control-Allow-Methods", "*");
     response.addHeader("Access-Control-Allow-Headers", "*");
     response.addHeader("Access-Control-Max-Age", "86400");
-    var duplicate = new HashSet<String>();
     for (var header : response.getHeaders().entrySet()) {
       httpExchange.getResponseHeaders().add(header.getKey(), header.getValue());
     }
@@ -457,65 +276,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     }
   }
 
-  private HttpRequestBase createFullRequest(Request request, String fullAddress) throws Exception {
-    if (request.getMethod().equalsIgnoreCase("POST")) {
-      return new HttpPost(fullAddress);
-    } else if (request.getMethod().equalsIgnoreCase("PUT")) {
-      return new HttpPut(fullAddress);
-    } else if (request.getMethod().equalsIgnoreCase("PATCH")) {
-      return new HttpPatch(fullAddress);
-    } else if (request.getMethod().equalsIgnoreCase("GET")) {
-      return new HttpGet(fullAddress);
-    } else if (request.getMethod().equalsIgnoreCase("DELETE")) {
-      return new HttpDelete(fullAddress);
-    } else if (request.getMethod().equalsIgnoreCase("HEAD")) {
-      return new HttpHead(fullAddress);
-    } else if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
-      return new HttpOptions(fullAddress);
-    } else if (request.getMethod().equalsIgnoreCase("TRACE")) {
-      return new HttpTrace(fullAddress);
-    } else {
-      logger.error("MISSING METHOD " + request.getMethod() + " on " + fullAddress);
-      throw new Exception("MISSING METHOD " + request.getMethod() + " on " + fullAddress);
-    }
-  }
 
-  private String buildFullAddress(Request request) {
 
-    String port = "";
-    if (request.getPort() != -1) {
-      if (request.getPort() != 443 && request.getProtocol().equalsIgnoreCase("https")) {
-        port = ":" + request.getPort();
-      }
-
-      if (request.getPort() != 80 && request.getProtocol().equalsIgnoreCase("http")) {
-        port = ":" + request.getPort();
-      }
-    }
-    return request.getProtocol()
-        + "://"
-        + request.getHost()
-        + port
-        + request.getPath()
-        + buildFullQuery(request);
-  }
-
-  private String buildFullQuery(Request request) {
-    if (request.getQuery().size() == 0) return "";
-    return "?"
-        + request.getQuery().entrySet().stream()
-            .map(
-                e ->
-                    e.getKey()
-                        + "="
-                        + java.net.URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8)
-                            .replace(" ", "%20"))
-            .collect(joining("&"));
-  }
-
-  private HttpEntity handleSoapRequest(Request request) {
-    return null;
-  }
 
   static class ResolvedDomain {
     public final HashSet<String> domains = new HashSet<>();

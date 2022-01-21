@@ -109,7 +109,7 @@ public class ReplayerAPIContent implements FilteringClass {
         }
       }
       if (res.isBinaryResponse() && res.getHeader("Content-Type") == null) {
-        res.addHeader("Content-Type", "application/octect-stream");
+        res.addHeader("Content-Type", "application/octet-stream");
       } else {
         res.addHeader("Content-Type", "text/plain");
       }
