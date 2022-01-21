@@ -1,6 +1,7 @@
 package org.kendar.servers.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.events.EventQueue;
 import org.kendar.http.CustomFiltersLoader;
 import org.kendar.http.FilterDescriptor;
 import org.kendar.servers.JsonConfiguration;
@@ -29,6 +30,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
   private static final SandboxClassShutter sandboxClassShutter = new SandboxClassShutter();
   private final JsonConfiguration configuration;
   private final String jsFilterPath;
+  private EventQueue eventQueue;
   private final Environment environment;
   private final Logger logger;
   private final LoggerBuilder loggerBuilder;
@@ -36,16 +38,18 @@ public class JsFilterLoader implements CustomFiltersLoader {
   private ScriptableObject globalScope;
 
   public JsFilterLoader(
-      Environment environment,
-      LoggerBuilder loggerBuilder,
-      FileResourcesUtils fileResourcesUtils,
-      JsonConfiguration configuration) {
+          Environment environment,
+          LoggerBuilder loggerBuilder,
+          FileResourcesUtils fileResourcesUtils,
+          JsonConfiguration configuration,
+          EventQueue eventQueue) {
 
     this.environment = environment;
     this.logger = loggerBuilder.build(JsFilterLoader.class);
     this.loggerBuilder = loggerBuilder;
     this.fileResourcesUtils = fileResourcesUtils;
     jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
+    this.eventQueue = eventQueue;
     logger.info("JsFilter LOADED");
     this.configuration = configuration;
   }
@@ -176,7 +180,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
   private void precompileFilter(JsFilterDescriptor filterDescriptor) throws Exception {
     StringBuilder scriptSrc =
         new StringBuilder(
-            "var globalFilterResult=runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON));\n"
+            "var globalFilterResult=runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON),eventQueue);\n"
                 + "globalResult.put('request', JSON.stringify(globalFilterResult.request));\n"
                 + "globalResult.put('response', JSON.stringify(globalFilterResult.response));\n"
                 + "globalResult.put('continue', globalFilterResult.continue);\n");
@@ -186,7 +190,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
           .append("\r\n")
           .append(Files.readString(Path.of(filterDescriptor.getRoot() + File.separator + file)));
     }
-    scriptSrc.append("\r\nfunction runFilter(request,response){");
+    scriptSrc.append("\r\nfunction runFilter(request,response,eventQueue){");
     for (var sourceLine :
             filterDescriptor.getSource()) {
       scriptSrc
@@ -198,7 +202,8 @@ public class JsFilterLoader implements CustomFiltersLoader {
     Context cx = Context.enter();
     cx.setOptimizationLevel(9);
     cx.setLanguageVersion(Context.VERSION_1_8);
-    cx.setClassShutter(sandboxClassShutter);
+    //cx.setClassShutter(sandboxClassShutter);
+    filterDescriptor.initializeQueue(new JsQueueHandler(eventQueue));
     try {
       Scriptable currentScope = getNewScope(cx);
       filterDescriptor.setScript(cx.compileString(scriptSrc.toString(), "my_script_id", 1, null));

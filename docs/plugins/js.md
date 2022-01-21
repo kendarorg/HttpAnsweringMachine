@@ -70,7 +70,7 @@ instruction on [Https hijacking module](../https.md) to se tup the dns
 
 The source will be always wrapped automatically with this declaration
 
-    function runFilter(request,response){
+    function runFilter(request,response,eventQueue){
     }
 
 The request and response will be exactly the Request and Response java class used inside the

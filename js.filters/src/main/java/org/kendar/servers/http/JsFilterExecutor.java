@@ -6,6 +6,7 @@ import org.kendar.http.GenericFilterExecutor;
 import org.kendar.http.HttpFilterType;
 import org.kendar.utils.LoggerBuilder;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.NativeJavaClass;
 import org.mozilla.javascript.Scriptable;
 import org.slf4j.Logger;
 
@@ -38,7 +39,8 @@ public class JsFilterExecutor extends GenericFilterExecutor {
         Context cx = Context.enter();
         cx.setOptimizationLevel(9);
         cx.setLanguageVersion(Context.VERSION_1_8);
-        cx.setClassShutter(sandboxClassShutter);
+        cx.initStandardObjects();
+
         try {
             Map<Object, Object> result = new HashMap<>();
             Scriptable currentScope = jsFilterLoader.getNewScope(cx);
@@ -47,6 +49,10 @@ public class JsFilterExecutor extends GenericFilterExecutor {
             currentScope.put("RESPONSEJSON", currentScope,
                     mapper.writeValueAsString(response));
             currentScope.put("globalResult", currentScope, result);
+            currentScope.put("eventQueue",currentScope,
+                    Context.toObject(filterDescriptor.retrieveQueue(),currentScope));
+            //
+            //cx.setClassShutter(sandboxClassShutter);
             filterDescriptor.getScript().exec(cx, currentScope);
             fromJsonRequest(request,(String)result.get("request"));
             fromJsonResponse(response,(String)result.get("response"));
