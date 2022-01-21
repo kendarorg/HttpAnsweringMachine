@@ -19,7 +19,7 @@ public class JsFilterDescriptor {
     private boolean blocking;
     private List<String> source = new ArrayList<>();
     private String id;
-    private JsQueueHandler jsQueueHandler;
+    private JsUtils jsQueueHandler;
 
     @Override
     public String toString(){
@@ -132,12 +132,12 @@ public class JsFilterDescriptor {
         this.id = id;
     }
 
-    public void initializeQueue(JsQueueHandler jsQueueHandler) {
+    public void initializeQueue(JsUtils jsQueueHandler) {
 
         this.jsQueueHandler = jsQueueHandler;
     }
 
-    public JsQueueHandler retrieveQueue(){
+    public JsUtils retrieveQueue(){
         return jsQueueHandler;
     }
 }

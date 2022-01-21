@@ -70,7 +70,7 @@ instruction on [Https hijacking module](../https.md) to se tup the dns
 
 The source will be always wrapped automatically with this declaration
 
-    function runFilter(request,response,eventQueue){
+    function runFilter(request,response,utils){
     }
 
 The request and response will be exactly the Request and Response java class used inside the
@@ -100,11 +100,39 @@ This filter will return a specific response test with the current data
         "return result;"
 </pre>
 
-## Events production
+## Utils
+
+### Events production
 
 Js filters has the eventQueue parameter. This has the signature
 
-  eventQueue.handle(String anyCaseJavaSimpleName,String serializedEvent)
+  utils.handleEvent(String anyCaseJavaSimpleName,String serializedEvent);
   
 Invoking it is possible to interact (forward only) with the rest of the framework
 It is not possible to generate javascript event handlers :)
+
+### Load file content
+
+This will load an arbitrary file content based on the js plugins path
+
+  var content = utils.loadFile(String relativePath,boolean binary);
+  
+Setting the binary flag will load the file content as Base64 encoded
+
+### Exeternal calls
+
+Using the standard request and response objects you can invoke any external api
+through
+
+  Response response = util.httpRequest(Request request);
+
+The result will be a standard response object
+
+### Load functions from file content
+
+To load function and variables on global scope from strings (aka when you got tehm through loadTextFile)
+you can load their content on the global scope like this:
+
+  (1,eval)(fileContent);
+  
+After that the content of the file will be retrieved

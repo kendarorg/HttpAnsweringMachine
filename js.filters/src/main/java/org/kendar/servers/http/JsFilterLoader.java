@@ -203,7 +203,8 @@ public class JsFilterLoader implements CustomFiltersLoader {
     cx.setOptimizationLevel(9);
     cx.setLanguageVersion(Context.VERSION_1_8);
     //cx.setClassShutter(sandboxClassShutter);
-    filterDescriptor.initializeQueue(new JsQueueHandler(eventQueue));
+    var realPath = fileResourcesUtils.buildPath(jsFilterPath);
+    filterDescriptor.initializeQueue(new JsUtils(eventQueue,realPath));
     try {
       Scriptable currentScope = getNewScope(cx);
       filterDescriptor.setScript(cx.compileString(scriptSrc.toString(), "my_script_id", 1, null));

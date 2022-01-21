@@ -49,7 +49,7 @@ public class JsFilterExecutor extends GenericFilterExecutor {
             currentScope.put("RESPONSEJSON", currentScope,
                     mapper.writeValueAsString(response));
             currentScope.put("globalResult", currentScope, result);
-            currentScope.put("eventQueue",currentScope,
+            currentScope.put("utils",currentScope,
                     Context.toObject(filterDescriptor.retrieveQueue(),currentScope));
             //
             //cx.setClassShutter(sandboxClassShutter);
