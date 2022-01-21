@@ -24,8 +24,8 @@ import java.util.ArrayList;
 public class JsFilterAPI implements FilteringClass {
   private final JsonConfiguration configuration;
   private final Logger logger;
-  private FileResourcesUtils fileResourcesUtils;
-  ObjectMapper mapper = new ObjectMapper();
+  private final FileResourcesUtils fileResourcesUtils;
+  final ObjectMapper mapper = new ObjectMapper();
 
   public JsFilterAPI(JsonConfiguration configuration,
                      FileResourcesUtils fileResourcesUtils,
@@ -80,7 +80,7 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/{filtername}",
           method = "GET",
           id = "1000a4b4-297id-11ec-9777-0242ac130002")
-  public boolean getJsFilter(Request req, Response res) throws JsonProcessingException {
+  public boolean getJsFilter(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
 

@@ -10,9 +10,9 @@ import java.nio.file.Path;
 import java.util.Locale;
 
 public class JsUtils {
-    private EventQueue queue;
-    private ExternalRequester externalRequester;
-    private String rootPath;
+    private final EventQueue queue;
+    private final ExternalRequester externalRequester;
+    private final String rootPath;
 
     public JsUtils(EventQueue queue, String rootPath, ExternalRequester externalRequester) {
         this.queue = queue;

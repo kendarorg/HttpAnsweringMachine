@@ -20,8 +20,8 @@ public class EventQueueImpl implements EventQueue {
     public EventQueueImpl(LoggerBuilder loggerBuilder){
         this.logger = loggerBuilder.build(EventQueue.class);
     }
-    private HashMap<String,List<Consumer<Event>>> eventHandlers = new HashMap<>();
-    private HashMap<String,Class> conversions = new HashMap<>();
+    private final HashMap<String,List<Consumer<Event>>> eventHandlers = new HashMap<>();
+    private final HashMap<String,Class> conversions = new HashMap<>();
 
 
     @Override

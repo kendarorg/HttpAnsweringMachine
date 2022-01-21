@@ -28,7 +28,7 @@ public class FilterClassesApi implements FilteringClass {
   final ObjectMapper mapper = new ObjectMapper();
   private final FilterConfig filtersConfiguration;
   private final ApplicationContext context;
-  private JsonConfiguration configuration;
+  private final JsonConfiguration configuration;
 
   public FilterClassesApi(
       FilterConfig filtersConfiguration,
@@ -173,7 +173,7 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/id/{id}",
       method = "DELETE",
       id = "e907a4b4-277d-11kc-9621-0242ac130004")
-  public void disableById(Request req, Response res) throws JsonProcessingException {
+  public void disableById(Request req, Response res) {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class).copy();
     var id = req.getPathParameter("id");
     var config = filtersConfiguration.get();
@@ -190,7 +190,7 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/id/{id}/enable",
       method = "PUT",
       id = "e907a4b4-277d-11ec-962h-0242ac130004")
-  public void enableById(Request req, Response res) throws JsonProcessingException {
+  public void enableById(Request req, Response res) {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class).copy();
     var id = req.getPathParameter("id");
     var config = filtersConfiguration.get();

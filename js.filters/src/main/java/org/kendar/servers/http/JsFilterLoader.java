@@ -31,8 +31,8 @@ public class JsFilterLoader implements CustomFiltersLoader {
   private static final SandboxClassShutter sandboxClassShutter = new SandboxClassShutter();
   private final JsonConfiguration configuration;
   private final String jsFilterPath;
-  private EventQueue eventQueue;
-  private ExternalRequester externalRequester;
+  private final EventQueue eventQueue;
+  private final ExternalRequester externalRequester;
   private final Environment environment;
   private final Logger logger;
   private final LoggerBuilder loggerBuilder;

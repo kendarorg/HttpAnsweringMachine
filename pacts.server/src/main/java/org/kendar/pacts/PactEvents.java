@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PactEvents {
     public PactEvents(EventQueue eventQueue){
-        eventQueue.register((e)->handleViolation(e),PactViolation.class);
+        eventQueue.register(this::handleViolation,PactViolation.class);
     }
 
     private void handleViolation(PactViolation event){

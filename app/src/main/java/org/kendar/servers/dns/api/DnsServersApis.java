@@ -118,19 +118,7 @@ public class DnsServersApis implements FilteringClass {
         continue;
       }
       clone.setAddress(newData.getAddress());
-      var resolved = newData.getAddress();
-      Matcher ipPatternMatcher = ipPattern.matcher(newData.getAddress());
-      if (!ipPatternMatcher.matches()) {
-        var allResolved = dnsMultiResolver.resolve(newData.getAddress(), true);
-        if (allResolved.isEmpty()) {
-          res.setStatusCode(500);
-          res.setResponseText("Unable to resolve " + newData.getAddress());
-          return false;
-        }
-        resolved = allResolved.get(0);
-      }
-      clone.setResolved(resolved);
-      newList.add(clone);
+      if (prepareResolvedResponse(res, newList, newData, clone)) return false;
     }
 
     for (var item : newList) {
@@ -140,6 +128,23 @@ public class DnsServersApis implements FilteringClass {
     cloned.setExtraServers(newList);
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);
+    return false;
+  }
+
+  private boolean prepareResolvedResponse(Response res, ArrayList<ExtraDnsServer> newList, ExtraDnsServer newData, ExtraDnsServer clone) {
+    var resolved = newData.getAddress();
+    Matcher ipPatternMatcher = ipPattern.matcher(newData.getAddress());
+    if (!ipPatternMatcher.matches()) {
+      var allResolved = dnsMultiResolver.resolve(newData.getAddress(), true);
+      if (allResolved.isEmpty()) {
+        res.setStatusCode(500);
+        res.setResponseText("Unable to resolve " + newData.getAddress());
+        return true;
+      }
+      resolved = allResolved.get(0);
+    }
+    clone.setResolved(resolved);
+    newList.add(clone);
     return false;
   }
 
@@ -186,19 +191,7 @@ public class DnsServersApis implements FilteringClass {
         throw new Exception("Duplicate dns resolution");
       newList.add(item.copy());
     }
-    var resolved = newData.getAddress();
-    Matcher ipPatternMatcher = ipPattern.matcher(newData.getAddress());
-    if (!ipPatternMatcher.matches()) {
-      var allResolved = dnsMultiResolver.resolve(newData.getAddress(), true);
-      if (allResolved.isEmpty()) {
-        res.setStatusCode(500);
-        res.setResponseText("Unable to resolve " + newData.getAddress());
-        return false;
-      }
-      resolved = allResolved.get(0);
-    }
-    newData.setResolved(resolved);
-    newList.add(newData);
+    if (prepareResolvedResponse(res, newList, newData, newData)) return false;
 
     for (var item : newList) {
       if (item.getResolved().equalsIgnoreCase(newData.getResolved()))

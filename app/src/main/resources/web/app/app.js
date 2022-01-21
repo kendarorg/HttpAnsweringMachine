@@ -159,7 +159,7 @@ function buildKvpModalDialog(modal, table, value, idField, valueField, randomId)
     } else {
         bodyContent += `
                     <label for="value">Value</label>
-                    <input class="form-control" type="text" name="value"  id="value" ></input>
+                    <input class="form-control" type="text" name="value"  id="value" />
                 `;
     }
     var openAsEdit = true;

@@ -17,9 +17,7 @@ public class FiltersConfiguration {
         for (var item :filters.entrySet()) {
             result.filters.put(item.getKey(),new ArrayList<>(item.getValue()));
         }
-        for (var item :filtersById.entrySet()) {
-            result.filtersById.put(item.getKey(),item.getValue());
-        }
+        result.filtersById.putAll(filtersById);
         for (var item :filtersByClass.entrySet()) {
             result.filtersByClass.put(item.getKey(),new ArrayList<>(item.getValue()));
         }

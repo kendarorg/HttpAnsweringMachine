@@ -19,7 +19,7 @@ public enum HttpFilterType {
   /**
    * Filter phase
    *
-   * @param The text for phase
+   * @param text for phase
    */
   HttpFilterType(final String text) {
     this.text = text;

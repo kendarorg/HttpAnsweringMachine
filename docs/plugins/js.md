@@ -22,7 +22,7 @@ The myFilter.json is the descriptor of the plugin. The various parts are
 * hostRegexp: the Java regexp to match the host
 * pathAddress: the exact path, started with "/" (or * for any)
 * pathRegexp: the Java regexp to match the path
-* phase: the [phase](docs/lifecyvle.md) for the filter
+* phase: the [phase](../docs/lifecyvle.md) for the filter
 * requires: the list of files needed to run the plugin
 * id: myFilter, aka the name of the file with the filter
 * enabled: true/false

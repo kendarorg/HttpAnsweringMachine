@@ -6,7 +6,6 @@ import org.kendar.http.GenericFilterExecutor;
 import org.kendar.http.HttpFilterType;
 import org.kendar.utils.LoggerBuilder;
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeJavaClass;
 import org.mozilla.javascript.Scriptable;
 import org.slf4j.Logger;
 

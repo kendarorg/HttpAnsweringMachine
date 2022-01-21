@@ -2,8 +2,6 @@ package org.kendar.servers.config;
 
 import org.kendar.servers.BaseJsonConfig;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,9 +38,7 @@ public class GlobalConfig extends BaseJsonConfig<GlobalConfig> {
     result.localAddress = this.localAddress;
     result.logging = this.logging.copy();
     result.filters = new ConcurrentHashMap<>();
-    for (var filter : this.filters.entrySet()) {
-      result.filters.put(filter.getKey(), filter.getValue());
-    }
+    result.filters.putAll(this.filters);
     return result;
   }
 
