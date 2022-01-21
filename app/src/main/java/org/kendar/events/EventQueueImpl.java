@@ -10,12 +10,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 @Component
 public class EventQueueImpl implements EventQueue {
     private final Logger logger;
     private final ObjectMapper mapper = new ObjectMapper();
+    private final ExecutorService executorService = Executors.newFixedThreadPool(20);
 
     public EventQueueImpl(LoggerBuilder loggerBuilder){
         this.logger = loggerBuilder.build(EventQueue.class);
@@ -45,14 +48,17 @@ public class EventQueueImpl implements EventQueue {
         var eventName = event.getClass().getSimpleName().toLowerCase(Locale.ROOT);
         if(!eventHandlers.containsKey(eventName)) return;
         var handlers = eventHandlers.get(eventName);
-        for(var i=0;i<handlers.size();i++){
-            var handler = handlers.get(i);
-            try{
-                handler.accept(event);
-            }catch (Exception ex){
-                logger.error("Error executing Event "+eventName,ex);
+        executorService.submit(()->{
+            for(var i=0;i<handlers.size();i++){
+                var handler = handlers.get(i);
+                try{
+                    handler.accept(event);
+                }catch (Exception ex){
+                    logger.error("Error executing Event "+eventName,ex);
+                }
             }
-        }
+
+        });
     }
 
     @Override

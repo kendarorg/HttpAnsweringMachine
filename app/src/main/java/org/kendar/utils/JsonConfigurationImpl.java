@@ -3,6 +3,8 @@ package org.kendar.utils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.events.EventQueue;
+import org.kendar.events.events.ConfigChangedEvent;
 import org.kendar.servers.BaseJsonConfig;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.SpecialJsonConfig;
@@ -25,8 +27,10 @@ public class JsonConfigurationImpl implements JsonConfiguration {
 
   @SuppressWarnings("rawtypes")
   private final ConcurrentHashMap<Class, String> mappingStringClasses = new ConcurrentHashMap<>();
+  private EventQueue eventQueue;
 
-  public JsonConfigurationImpl() {
+  public JsonConfigurationImpl(EventQueue eventQueue) {
+    this.eventQueue = eventQueue;
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
@@ -89,6 +93,9 @@ public class JsonConfigurationImpl implements JsonConfiguration {
       parsedConfig.timestamp = Calendar.getInstance().getTimeInMillis();
       deserializedConfigurations.put(sanitizedId, parsedConfig);
       runnable.run();
+      var evt = new ConfigChangedEvent();
+      evt.setName(aClass.getSimpleName());
+      eventQueue.handle(evt);
     } catch (Exception ex) {
 
     }
