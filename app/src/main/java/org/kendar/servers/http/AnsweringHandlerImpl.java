@@ -266,7 +266,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         return;
       }
 
-      callExternalSite(httpExchange, request, response);
+      callExternalSite(request, response);
 
       if (filteringClassesHandler.handle(
           config, HttpFilterType.POST_CALL, request, response, connManager)) {
@@ -314,7 +314,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         || testExpect100(request, httpExchange);
   }
 
-  private void callExternalSite(HttpExchange httpExchange, Request request, Response response)
+  private void callExternalSite(Request request, Response response)
       throws Exception {
 
     CloseableHttpClient httpClient =
@@ -336,7 +336,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         }
       }
       if (request.isSoapRequest()) {
-        HttpEntity entity = handleSoapRequest(request, httpExchange);
+        HttpEntity entity = handleSoapRequest(request);
         ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
       } else if (request.getPostParameters().size() > 0) {
         List<NameValuePair> form = new ArrayList<>();
@@ -513,7 +513,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
             .collect(joining("&"));
   }
 
-  private HttpEntity handleSoapRequest(Request request, HttpExchange httpExchange) {
+  private HttpEntity handleSoapRequest(Request request) {
     return null;
   }
 
