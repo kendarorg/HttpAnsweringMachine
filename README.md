@@ -23,6 +23,7 @@ The AnsweringMachine is built to overcome this troubles
 * Embedded web server with REST APIs
 * All functions manageable via REST APIs
 * Configurable DNS hijacking (when not using VPNs) or...generated hosts file
+* Internal events system
 
 ### Docker for development
 
@@ -93,6 +94,7 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 * [Http/s hijack module](docs/https.md)
 * [Static pages](docs/static.md)
 * [Dns server](docs/dns.md)
+* [Events Queue](docs/events.md)
 
 ## Rest APIs
 

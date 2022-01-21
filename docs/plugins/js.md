@@ -99,3 +99,12 @@ This filter will return a specific response test with the current data
         "};",
         "return result;"
 </pre>
+
+## Events production
+
+Js filters has the eventQueue parameter. This has the signature
+
+  eventQueue.handle(String anyCaseJavaSimpleName,String serializedEvent)
+  
+Invoking it is possible to interact (forward only) with the rest of the framework
+It is not possible to generate javascript event handlers :)
