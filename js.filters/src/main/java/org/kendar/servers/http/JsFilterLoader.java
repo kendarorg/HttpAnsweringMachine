@@ -103,7 +103,8 @@ public class JsFilterLoader implements CustomFiltersLoader {
     if (newFile.isFile()) {
       var data = Files.readString(Path.of(fullPath));
       var filterDescriptor = mapper.readValue(data, JsFilterDescriptor.class);
-      filterDescriptor.setRoot(realPath);
+
+      filterDescriptor.setRoot(realPath+File.separator+filterDescriptor.getId());
       precompileFilter(filterDescriptor);
       var executor =
           new JsFilterExecutor(filterDescriptor, this, loggerBuilder, filterDescriptor.getId());
@@ -180,12 +181,19 @@ public class JsFilterLoader implements CustomFiltersLoader {
                 + "globalResult.put('response', JSON.stringify(globalFilterResult.response));\n"
                 + "globalResult.put('continue', globalFilterResult.continue);\n");
     // Load all scripts
-
     for (var file : filterDescriptor.getRequires()) {
       scriptSrc
           .append("\r\n")
           .append(Files.readString(Path.of(filterDescriptor.getRoot() + File.separator + file)));
     }
+    scriptSrc.append("\r\nfunction runFilter(request,response){");
+    for (var sourceLine :
+            filterDescriptor.getSource()) {
+      scriptSrc
+              .append("\r\n")
+              .append(sourceLine);
+    }
+    scriptSrc.append("\r\n}");
 
     Context cx = Context.enter();
     cx.setOptimizationLevel(9);
@@ -193,7 +201,6 @@ public class JsFilterLoader implements CustomFiltersLoader {
     cx.setClassShutter(sandboxClassShutter);
     try {
       Scriptable currentScope = getNewScope(cx);
-      filterDescriptor.setSource(scriptSrc.toString());
       filterDescriptor.setScript(cx.compileString(scriptSrc.toString(), "my_script_id", 1, null));
     } catch (Exception ex) {
       logger.error("Error compiling script");

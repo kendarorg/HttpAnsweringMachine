@@ -2,6 +2,7 @@ package org.kendar.servers.http;
 
 import org.mozilla.javascript.Script;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JsFilterDescriptor {
@@ -16,7 +17,7 @@ public class JsFilterDescriptor {
     private int priority;
     private Script compiledScript;
     private boolean blocking;
-    private String source;
+    private List<String> source = new ArrayList<>();
     private String id;
 
     @Override
@@ -114,11 +115,11 @@ public class JsFilterDescriptor {
         this.blocking = blocking;
     }
 
-    public void setSource(String scriptSrc) {
+    public void setSource(List<String> scriptSrc) {
         this.source = scriptSrc;
     }
 
-    public String getSource() {
+    public List<String> getSource() {
         return source;
     }
 

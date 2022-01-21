@@ -6,11 +6,11 @@ First should be defined a directory where to store the js plugins, relative to t
 
 ## Directory structure
 
-Inside this there is the following file structure
+Inside this there is the following file structure.
+Notice that the directory containing the libs must match the name of the json file
 
     myFilter.json
     myFilter
-        entrypoint.js
         lib.js
 
 ## Filter descriptor
@@ -24,13 +24,13 @@ The myFilter.json is the descriptor of the plugin. The various parts are
 * pathRegexp: the Java regexp to match the path
 * phase: the [phase](docs/lifecyvle.md) for the filter
 * requires: the list of files needed to run the plugin
-* id: an unique id
+* id: myFilter, aka the name of the file with the filter
 * enabled: true/false
 * blocking: true/false. When blocking the filter result will be sent directly to 
 the output, when false all the subsequent filters will be executed
 * priority: the priority of the filter
 * method: the http method (or * for any)
-
+* source: an array containing the filter source. This source will receive the parameters ''request'' and ''response''
 This filter will intercept all the requests to
 
     GET js.test.org/test
@@ -47,21 +47,31 @@ instruction on [Https hijacking module](../https.md) to se tup the dns
     "pathRegexp": "",
     "phase": "PRE_RENDER",
     "requires": [
-        "myhandler/runner.js",
+        "myhandler/lib.js",
         "myhandler/fuffa.js"
     ],
     "id": "uniqueIdentifier",
     "enabled": true,
     "blocking": true,
-    "priority": 100
+    "priority": 100,
+    "source":[
+        "if(request.headers['Host']=="www.test.com")response.statusCode=404;",
+        "var result ={",
+        "    request:request,",
+        "    response:response,",
+        "    continue:false",
+        "};",
+        "return result;"
+    ]
 }
 </pre>
 
 ## Filter implementation
 
-A unique function run filter must be present between all js files
+The source will be always wrapped automatically with this declaration
 
     function runFilter(request,response){
+    }
 
 The request and response will be exactly the Request and Response java class used inside the
 system.
@@ -70,21 +80,22 @@ The result must be an object containing
 
 * request: the request even if not modified
 * response: the response even if not modified
-* continue: weather should continue with the next filters
+* continue: weather should continue (true) with the next filters. False will break the execution (running by the way all post render action) 
+
+    Please notice that if returning true this means the filter is in fact 
+    an object that changes the request, and the response will not be used
 
 This filter will return a specific response test with the current data
 <pre>
-function runFilter(request,response){
-    var today = new Date().toISOString();
-    response.responseText = '{"value":"This is a calculated javascript response","date":"'+today+'"}';
-    response.headers["Content-Type"]="application/json";
-    response.statusCode = 200;
-    request.headers["Host"]="test.com";
-    var result ={
-        request:request,
-        response:response,
-        continue:false
-    };
-    return result;
-}
+        "var today = new Date().toISOString();",
+        "response.responseText = '{\"value\":\"This is a calculated javascript response\",\"date\":\"'+today+'\"}';",
+        "response.headers['Content-Type']='application/json';",
+        "response.statusCode = 200;",
+        "request.headers['Host']='test.com';",
+        "var result ={",
+        "    request:request,",
+        "    response:response,",
+        "    continue:false",
+        "};",
+        "return result;"
 </pre>

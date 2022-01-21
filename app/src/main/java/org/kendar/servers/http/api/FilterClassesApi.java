@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class FilterClassesApi implements FilteringClass {
   final ObjectMapper mapper = new ObjectMapper();
-  private final FilterConfig filteringClassesHandler;
+  private final FilterConfig filtersConfiguration;
   private final ApplicationContext context;
   private JsonConfiguration configuration;
 
@@ -35,7 +35,7 @@ public class FilterClassesApi implements FilteringClass {
       ApplicationContext context,
       JsonConfiguration configuration) {
 
-    this.filteringClassesHandler = filtersConfiguration;
+    this.filtersConfiguration = filtersConfiguration;
     this.context = context;
     this.configuration = configuration;
   }
@@ -71,7 +71,7 @@ public class FilterClassesApi implements FilteringClass {
   public void getFiltersForPhase(Request req, Response res) throws JsonProcessingException {
     var stringPhase = req.getPathParameter("phase");
     var phase = HttpFilterType.valueOf(stringPhase.toUpperCase(Locale.ROOT));
-    var config = filteringClassesHandler.get();
+    var config = filtersConfiguration.get();
     var result = new HashSet<String>();
     var listOfItems = config.filters.get(phase);
 
@@ -91,7 +91,7 @@ public class FilterClassesApi implements FilteringClass {
       method = "GET",
       id = "e907a4b4-278d-11ec-6621-0242ac130003")
   public void getFiltersForClass(Request req, Response res) throws JsonProcessingException {
-    var config = filteringClassesHandler.get();
+    var config = filtersConfiguration.get();
 
     var result = new ArrayList<>(config.filtersByClass.keySet());
 
@@ -107,7 +107,7 @@ public class FilterClassesApi implements FilteringClass {
   public void getIdFiltersForClass(Request req, Response res) throws JsonProcessingException {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class);
     var clazz = req.getPathParameter("clazz");
-    var config = filteringClassesHandler.get();
+    var config = filtersConfiguration.get();
     ArrayList<FilterDto> result = new ArrayList<>();
     var listOfItems = config.filtersByClass.get(clazz);
 
@@ -133,7 +133,7 @@ public class FilterClassesApi implements FilteringClass {
     var stringPhase = req.getPathParameter("phase");
     var clazz = req.getPathParameter("clazz");
     var phase = HttpFilterType.valueOf(stringPhase.toUpperCase(Locale.ROOT));
-    var config = filteringClassesHandler.get();
+    var config = filtersConfiguration.get();
     var result = new ArrayList<FilterDto>();
     var listOfItems = config.filters.get(phase);
     for (var i = 0; i < listOfItems.size(); i++) {
@@ -158,7 +158,7 @@ public class FilterClassesApi implements FilteringClass {
   public void getFilterId(Request req, Response res) throws JsonProcessingException {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class);
     var id = req.getPathParameter("id");
-    var config = filteringClassesHandler.get();
+    var config = filtersConfiguration.get();
     var item = config.filtersById.get(id);
     var enabled =
         globalConfig.checkFilterEnabled(item.getId())
@@ -176,7 +176,7 @@ public class FilterClassesApi implements FilteringClass {
   public void disableById(Request req, Response res) throws JsonProcessingException {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class).copy();
     var id = req.getPathParameter("id");
-    var config = filteringClassesHandler.get();
+    var config = filtersConfiguration.get();
     var item = config.filtersById.get(id);
     var filters = globalConfig.getFilters();
     filters.put(item.getId(), false);
@@ -193,7 +193,7 @@ public class FilterClassesApi implements FilteringClass {
   public void enableById(Request req, Response res) throws JsonProcessingException {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class).copy();
     var id = req.getPathParameter("id");
-    var config = filteringClassesHandler.get();
+    var config = filtersConfiguration.get();
     var item = config.filtersById.get(id);
     var filters = globalConfig.getFilters();
     filters.put(item.getId(), true);
@@ -223,7 +223,7 @@ public class FilterClassesApi implements FilteringClass {
       id = "e967a4b4-277d-41ecr9621y0242ac130004")
   public void getFiltersLoadersFilters(Request req, Response res) throws JsonProcessingException {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class);
-    var config = filteringClassesHandler.get();
+    var config = filtersConfiguration.get();
     var loader = req.getPathParameter("loader");
     var result = new ArrayList<FilterDto>();
     for (var item : config.filtersById.values()) {
@@ -252,7 +252,7 @@ public class FilterClassesApi implements FilteringClass {
                 customFiltersLoader ->
                     customFiltersLoader.getClass().getSimpleName().equalsIgnoreCase(loader))
             .findFirst();
-    var config = filteringClassesHandler.get().copy();
+    var config = filtersConfiguration.get().copy();
 
     String fileName = null;
     byte[] fileData = null;
@@ -288,7 +288,7 @@ public class FilterClassesApi implements FilteringClass {
     if (!overwritten) {
       config.filters.get(phase).add(item);
     }
-    filteringClassesHandler.set(config);
+    filtersConfiguration.set(config);
 
     var enabled =
         globalConfig.checkFilterEnabled(item.getId())
