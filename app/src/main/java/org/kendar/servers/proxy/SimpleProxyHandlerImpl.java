@@ -1,5 +1,7 @@
 package org.kendar.servers.proxy;
 
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.Request;
@@ -11,10 +13,7 @@ import javax.annotation.PostConstruct;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
+import java.net.*;
 import java.util.concurrent.*;
 
 @Component
@@ -65,13 +64,45 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     }
   }
 
+  private static boolean isTcpPortAvailable(int port,String host) {
+    Socket s = null;
+    try
+    {
+      s = new Socket(host, port);
+      return true;
+    }
+    catch (Exception e)
+    {
+      return false;
+    }
+    finally
+    {
+      if(s != null)
+        try {s.close();}
+        catch(Exception e){}
+    }
+  }
+
   private boolean checkRemoteMachines(RemoteServerStatus value) {
-    var data = multiResolver.resolveRemote(value.getTest(), false);
+    var explodedTestUrl = value.getTest().split(":");
+    var data = multiResolver.resolveRemote(explodedTestUrl[0], false);
+
     var oldStatus = value.isRunning();
     if (data != null && data.size() > 0) {
       try {
         var inetAddress = InetAddress.getByName(data.get(0));
-        value.setRunning(inetAddress.isReachable(100));
+        var running = inetAddress.isReachable(100);
+        if(running) {
+          if (explodedTestUrl.length == 2) {
+            var port = Integer.parseInt(explodedTestUrl[1]);
+            running = isTcpPortAvailable(port,data.get(0));
+          }else{
+            running = isTcpPortAvailable(80,data.get(0)) || isTcpPortAvailable(443,data.get(0));
+          }
+
+        }
+
+        value.setRunning(running);
       } catch (IOException e) {
         value.setRunning(false);
       }
