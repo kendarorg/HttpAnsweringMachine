@@ -18,6 +18,7 @@ import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.models.JsonFileData;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -157,53 +158,21 @@ public class ReplayerAPICrud implements FilteringClass {
       method = "POST",
       id = "4004daa6-277f-11ec-9621-0242ac1afe002")
   public boolean uploadRecording(Request req, Response res) throws Exception {
+    var jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
+    var scriptName = jsonFileData.getName();
+    var crud = mapper.readValue(jsonFileData.readAsString(),ReplayerResult.class);
+    crud.setDescription(scriptName);
 
-    if (req.getMultipartData() != null && req.getMultipartData().size() == 0) {
-      var scriptName = (String) req.getRequestText();
-      var crud = new ReplayerResult();
-      crud.setDescription(scriptName);
-      crud.setDynamicRequests(new ArrayList<>());
-      crud.setStaticRequests(new ArrayList<>());
-      crud.setErrors(new ArrayList<>());
-
-      var dirPath = new File(Path.of(fileResourcesUtils.buildPath(replayerData)).toString());
-      if(!dirPath.exists()){
-        dirPath.mkdir();
-      }
-      var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, scriptName + ".json"));
-      var resultInFile = mapper.writeValueAsString(crud);
-      Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
-      logger.info("Uploaded replayer binary script " + rootPath);
-      res.setStatusCode(200);
-    } else if (req.getMultipartData() != null) {
-      for (var mp : req.getMultipartData()) {
-        if (!mp.isFile()) continue;
-        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, mp.getFileName()));
-        if (!rootPath.toString().toLowerCase(Locale.ROOT).endsWith(".json")) {
-          res.setStatusCode(500);
-          return false;
-        }
-        try {
-
-          if (mp.getByteData() != null) {
-            Files.write(rootPath, mp.getByteData());
-            logger.info("Uploaded replayer binary script " + rootPath);
-          } else {
-            FileWriter myWriter = new FileWriter(rootPath.toString());
-            myWriter.write(mp.getStringData());
-            myWriter.close();
-            logger.info("Uploaded replayer text script " + rootPath);
-          }
-
-          res.setStatusCode(200);
-        } catch (Exception ex) {
-          res.addHeader("Content-type", "text/plain");
-          res.setResponseText(ex.getMessage());
-          res.setStatusCode(500);
-          return false;
-        }
-      }
+    var dirPath = new File(Path.of(fileResourcesUtils.buildPath(replayerData)).toString());
+    if(!dirPath.exists()){
+      dirPath.mkdir();
     }
+    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, scriptName + ".json"));
+    var resultInFile = mapper.writeValueAsString(crud);
+    Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
+    logger.info("Uploaded replayer binary script " + rootPath);
+    res.setStatusCode(200);
+
     return false;
   }
 }

@@ -14,6 +14,7 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.MultipartPart;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.models.JsonFileData;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
@@ -180,13 +181,7 @@ public class ReplayerAPIContent implements FilteringClass {
     var line = Integer.parseInt(getPathParameter(req, "line"));
     var requestOrResponse = getPathParameter(req, "requestOrResponse");
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-    MultipartPart file = null;
-    String data = null;
-    if (req.getMultipartData() != null && req.getMultipartData().size() > 0) {
-      file = req.getMultipartData().get(0);
-    } else {
-      data = req.getRequestText();
-    }
+    var data = mapper.readValue(req.getRequestText(), JsonFileData.class);
 
     var dataset =
         new ReplayerDataset(
@@ -194,13 +189,13 @@ public class ReplayerAPIContent implements FilteringClass {
     var datasetContent = dataset.load();
 
     for (var singleLine : datasetContent.getStaticRequests()) {
-      if (updated(res, line, requestOrResponse, singleLine, file, data)) {
+      if (updated( line, requestOrResponse, singleLine, data)) {
         dataset.saveMods();
         return true;
       }
     }
     for (var singleLine : datasetContent.getDynamicRequests()) {
-      if (updated(res, line, requestOrResponse, singleLine, file, data)) {
+      if (updated( line, requestOrResponse, singleLine, data)) {
         dataset.saveMods();
         return true;
       }
@@ -211,49 +206,30 @@ public class ReplayerAPIContent implements FilteringClass {
   }
 
   private boolean updated(
-      Response res,
       int line,
       String requestOrResponse,
       ReplayerRow singleLine,
-      MultipartPart file,
-      String data)
+      JsonFileData data)
       throws NoSuchAlgorithmException {
     if (singleLine.getId() == line) {
       if ("request".equalsIgnoreCase(requestOrResponse)) {
-        if (singleLine.getRequest().isBinaryRequest()) {
-          if (file != null && file.getByteData() != null) {
-            singleLine.getRequest().setRequestBytes(file.getByteData());
-            singleLine.setRequestHash(md5Tester.calculateMd5(file.getByteData()));
-          }
-        } else {
-          if (file != null && file.getByteData() != null) {
-            singleLine
-                .getRequest()
-                .setRequestText(new String(file.getByteData(), StandardCharsets.UTF_8));
-            singleLine.setRequestHash(md5Tester.calculateMd5(file.getByteData()));
-          } else {
-            singleLine.getRequest().setRequestText(data);
-            singleLine.setRequestHash(
-                md5Tester.calculateMd5(data.getBytes(StandardCharsets.UTF_8)));
-          }
+        singleLine.setRequestHash(md5Tester.calculateMd5(data.readAsByte()));
+        if (!data.matchContentType("text/plain")) {
+          singleLine.getRequest().setRequestBytes(data.readAsByte());
+          singleLine.getRequest().setBinaryRequest(true);
+        }else{
+          singleLine.getRequest().setRequestText(data.readAsString());
+          singleLine.getRequest().setBinaryRequest(false);
         }
+
       } else if ("response".equalsIgnoreCase(requestOrResponse)) {
-        if (singleLine.getResponse().isBinaryResponse()) {
-          if (file != null && file.getByteData() != null) {
-            singleLine.getResponse().setResponseBytes(file.getByteData());
-            singleLine.setResponseHash(md5Tester.calculateMd5(file.getByteData()));
-          }
-        } else {
-          if (file != null && file.getByteData() != null) {
-            singleLine
-                .getResponse()
-                .setResponseText(new String(file.getByteData(), StandardCharsets.UTF_8));
-            singleLine.setResponseHash(md5Tester.calculateMd5(file.getByteData()));
-          } else {
-            singleLine.getResponse().setResponseText(data);
-            singleLine.setResponseHash(
-                md5Tester.calculateMd5(data.getBytes(StandardCharsets.UTF_8)));
-          }
+        singleLine.setResponseHash(md5Tester.calculateMd5(data.readAsByte()));
+        if (!data.matchContentType("text/plain")) {
+          singleLine.getResponse().setResponseBytes(data.readAsByte());
+          singleLine.getResponse().setBinaryResponse(true);
+        }else{
+          singleLine.getResponse().setResponseText(data.readAsString());
+          singleLine.getResponse().setBinaryResponse(false);
         }
       }
       return true;

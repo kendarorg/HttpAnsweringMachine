@@ -333,3 +333,53 @@ var success = function () {
 var error = function () {
     alert("Error");
 }
+
+/**
+ *
+ * @param str string to split
+ * @param sep separator
+ * @returns {*[]|*[]}
+ */
+var splitOnFirst =function(str, sep) {
+    const index = str.indexOf(sep);
+    return index < 0 ? [str] : [str.slice(0, index), str.slice(index + sep.length)];
+}
+
+/**
+ *
+ * @param target
+ * @param callback function(dataArray)
+ * @param callbackError function(error)
+ * @returns {Promise<void>}
+ */
+var uploadAsyncFile = async function (files,callback,callbackError) {
+
+    var filesLoaded = [];
+    if (files && files.length) {
+        try {
+            for (var i = 0; i < files.length; i++) {
+                const uploadedImageBase64 = await convertFileToBase64(files[i], callback);
+                filesLoaded.push( {
+                    data:splitOnFirst(uploadedImageBase64,",")[1],
+                    name:files[i].name,
+                    type:files[i].type
+                })
+            }
+
+            callback(filesLoaded);
+        } catch (exception) {
+            callbackError(exception);
+        }
+    }else{
+        callbackError("No files to upload")
+    }
+}
+
+var convertFileToBase64 = function(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+    });
+}

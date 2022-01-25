@@ -60,29 +60,29 @@
         document.getElementById("uploadScript").click();
     });
     $("#uploadScript").change(function(){
-        var files = $('#uploadScript')[0].files;
-
-        // Check file selected or not
-        if(files.length > 0 ) {
-            document.getElementById("uploadScriptShow").value =files[0].name;
-        }
+        window.uploadScript = [];
+        uploadAsyncFile($('#uploadScript')[0].files,function(data){
+            window.uploadScript = data;
+            document.getElementById("uploadScriptShow").value = data[0].name;
+        },function(exception){
+            alert(exception);
+        });
     });
     $("#btUploadScript").click(function(){
+        if(window.uploadScript === undefined || window.uploadScript.length==0){
+            alert("NO FILES SELECTED");
+            return;
+        }
+        var toUpload = window.uploadScript[0];
 
-        var fd = new FormData();
-        var files = $('#uploadScript')[0].files;
-
-        // Check file selected or not
-        if(files.length > 0 ){
-            files[0].type="text/html";
-            fd.append('file',files[0]);
+        toUpload.type = "text/plain";
             var id = getUrlParameter("id");
             var line = getUrlParameter("line");
             var requestOrResponse = getUrlParameter("type");
             $.ajax({
                 url: '/api/plugins/replayer/recording/'+id+'/line/'+line+'/'+requestOrResponse,
                 type: 'post',
-                data: fd,
+                data: JSON.stringify(toUpload),
                 contentType: false,
                 processData: false,
                 success: function(response){
