@@ -39,7 +39,6 @@
             <table class="table table-striped" id="scriptTable">
                 <tr>
                     <th>Name</th>
-                    <th>State</th>
                     <th colspan="2"></th>
                 </tr>
             </table>
@@ -48,16 +47,17 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
-    var scriptsTable = new SimpleGrid("Script","scriptTable","id",["id","state"],
+    var scriptsTable = new SimpleGrid("Script","scriptTable","id",["id"],
         function(table){
             $.ajax({
-                url: "/api/plugins/replayer/recording",
+                url: "/api/plugins/jsfilter",
                 type: 'GET',
                 success: function(res) {
                     $.each(res, function(i, script) {
                         //tSource,tableId,id,data,fields
                         //table.appendToTable({id:"test"});
-                        table.appendToTable(script);
+                        var real = {id:script};
+                        table.appendToTable(real);
                     });
                 }
             });
