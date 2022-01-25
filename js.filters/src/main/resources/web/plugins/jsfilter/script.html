@@ -161,39 +161,37 @@
 
     function save(){
         var id = getUrlParameter("id");
-        alert("save not implemented");
-        /*var line = getUrlParameter("line");
+
+        var requires = [];
+        for (var i = 0; i < requires_list.data.length; i++) {
+            requires.push(requires_list.data[i]["value"]);
+        };
+
+
         var data = {
             id:$("#id").val(),
-            timestamp: $("#timestamp").val(),
-            request:{
-                method:$("#request_method").val(),
-                protocol:$("#request_protocol").val(),
-                host:$("#request_host").val(),
-                path:$("#request_path").val(),
-                port:$("#request_port").val(),
-                staticRequest:$("#request_static").prop("checked"),
-                soapRequest:$("#request_soap").prop("checked"),
-                binaryRequest:$("#request_binary").prop("checked"),
-                headers:getKvpData(request_headerTable,"key","value"),
-                query:getKvpData(requires_list,"key","value"),
-                postParameters:getKvpData(request_postTable,"key","value"),
-            },
-            response:{
-                statusCode:$("#response_code").val(),
-                binaryResponse:$("#response_binary").prop("checked"),
-                headers:getKvpData(response_headerTable,"key","value"),
-            }
+            method: $("#method").val(),
+            hostAddress: $("#hostAddress").val(),
+            hostRegexp: $("#hostRegexp").val(),
+            pathAddress: $("#pathAddress").val(),
+            pathRegexp: $("#pathRegexp").val(),
+            phase: $("#phase").val(),
+            priority: $("#priority").val(),
+            blocking: $("#blocking").prop("checked"),
+            source: $.trim($("#source").val()).split(/\r?\n/),
+            requires:requires
         };
+        console.log(data);
+
         $.ajax({
-            url: '/api/plugins/replayer/recording/'+id+'/line/'+line,
-            type: defaultSaveAction,
+            url: "/api/plugins/jsfilter/" + getUrlParameter("id"),
+            type: "POST",
             data: JSON.stringify(data),
             contentType: "application/json",
             success: function(response){
                 location.reload();
             }
-        });*/
+        });
     }
 
     function addRequires(){
