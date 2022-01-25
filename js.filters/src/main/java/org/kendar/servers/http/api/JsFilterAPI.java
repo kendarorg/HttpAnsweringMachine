@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Locale;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
@@ -62,6 +63,7 @@ public class JsFilterAPI implements FilteringClass {
           for (String pathname : pathnames) {
             var fullPath = fileResourcesUtils.buildPath(jsFilterPath, pathname);
             currentPath = fullPath;
+
             var descriptor = loadScriptId( realPath, fullPath);
             if(descriptor!=null)result.add(descriptor);
           }
@@ -107,6 +109,9 @@ public class JsFilterAPI implements FilteringClass {
       var fname= path.getFileName().toString();
 
       int pos = fname.lastIndexOf(".");
+      if(!fname.toLowerCase(Locale.ROOT).endsWith(".json")){
+        return null;
+      }
       if (pos > 0) {
         fname = fname.substring(0, pos);
       }

@@ -79,7 +79,10 @@ class SimpleGrid {
     }
 
     appendToTable(inputData, addbutton = true) {
-        var idContent = inputData[this.idField].replaceAll(".","_");
+        var idContent = inputData[this.idField];
+        if (typeof idContent === 'string'){
+            idContent = idContent.replaceAll(".","_");
+        }
         for (var i = 0; i < this.data.length; i++) {
             var line = this.data[i];
             if (line[this.idField] == inputData[this.idField]) {
@@ -235,7 +238,12 @@ var updateKvp = function (modal, table, id, idField, valueField) {
                 });
                 table.data.splice(i, 1);
                 table.data.splice(user[idField] - 1, 0, user);
-                $("#" + table.tableId + " #" + table.tableId + "-" + user[idField].replaceAll(".","_")).children(".userData").each(function () {
+
+                var userIdField = user[idField];
+                if (typeof userIdField === 'string'){
+                    userIdField = userIdField.replaceAll(".","_");
+                }
+                $("#" + table.tableId + " #" + table.tableId + "-" + userIdField).children(".userData").each(function () {
                     var attr = $(this).attr("name");
                     var value = $(this).val();
                     if (attr == idField) {
