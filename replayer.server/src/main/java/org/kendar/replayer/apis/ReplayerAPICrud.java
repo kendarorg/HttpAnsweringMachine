@@ -159,7 +159,9 @@ public class ReplayerAPICrud implements FilteringClass {
       id = "4004daa6-277f-11ec-9621-0242ac1afe002")
   public boolean uploadRecording(Request req, Response res) throws Exception {
     var jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
-    var scriptName = jsonFileData.getName();
+    var fileFullPath = jsonFileData.getName();
+
+    var scriptName = fileFullPath.substring(0, fileFullPath.lastIndexOf('.'));
     var crud = mapper.readValue(jsonFileData.readAsString(),ReplayerResult.class);
     crud.setDescription(scriptName);
 

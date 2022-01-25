@@ -105,11 +105,9 @@
             contentType: "application/json",
             processData: false,
             success: function(response){
-                if(response != 0){
-                    alert("File Uploaded")
-                }else{
-                    alert("file not uploaded");
-                }
+                window.uploadScript=[];
+                document.getElementById("uploadScriptShow").value ="";
+                alert("File Uploaded")
             }
         });
     });
