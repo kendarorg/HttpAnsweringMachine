@@ -97,7 +97,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
             var port = Integer.parseInt(explodedTestUrl[1]);
             running = isTcpPortAvailable(port,data.get(0));
           }else{
-            running = isTcpPortAvailable(80,data.get(0)) || isTcpPortAvailable(443,data.get(0));
+            running = isTcpPortAvailable(80,explodedTestUrl[0]) || isTcpPortAvailable(443,explodedTestUrl[0]);
           }
 
         }
