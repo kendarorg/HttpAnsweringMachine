@@ -87,6 +87,11 @@
             <artifactId>mybatis</artifactId>
             <version>${mybatis.orm.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>${tika.core.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -110,6 +115,7 @@
                                     <includes>
                                         <include>mybatis*.jar</include>
                                         <include>derbyclient*.jar</include>
+                                        <include>tika*.jar</include>
                                     </includes>
                                 </resource>
                             </resources>

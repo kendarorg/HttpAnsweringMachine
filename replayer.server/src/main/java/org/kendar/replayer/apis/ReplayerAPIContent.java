@@ -1,6 +1,9 @@
 package org.kendar.replayer.apis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.tika.mime.MimeType;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
@@ -18,6 +21,7 @@ import org.kendar.servers.models.JsonFileData;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MimeTypeUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -92,31 +96,52 @@ public class ReplayerAPIContent implements FilteringClass {
   private boolean sendBackContent(
       Response res, int line, String requestOrResponse, ReplayerRow singleLine) {
     if (singleLine.getId() == line) {
+      var allTypes= MimeTypes.getDefaultMimeTypes();
       if ("request".equalsIgnoreCase(requestOrResponse)) {
-        res.addHeader("Content-Type", singleLine.getRequest().getHeader("Content-Type"));
+        var contentType =singleLine.getRequest().getHeader("Content-Type");
+        res.addHeader("Content-Type", contentType);
         res.setBinaryResponse(singleLine.getRequest().isBinaryRequest());
         if (singleLine.getRequest().isBinaryRequest()) {
           res.setResponseBytes(singleLine.getRequest().getRequestBytes());
         } else {
           res.setResponseText(singleLine.getRequest().getRequestText());
         }
+
+        setResultContentType(res, line, allTypes, contentType);
+
       } else if ("response".equalsIgnoreCase(requestOrResponse)) {
-        res.addHeader("Content-Type", singleLine.getResponse().getHeader("Content-Type"));
+        var contentType = singleLine.getResponse().getHeader("Content-Type");
+        res.addHeader("Content-Type", contentType);
         res.setBinaryResponse(singleLine.getResponse().isBinaryResponse());
         if (singleLine.getResponse().isBinaryResponse()) {
           res.setResponseBytes(singleLine.getResponse().getResponseBytes());
         } else {
           res.setResponseText(singleLine.getResponse().getResponseText());
         }
+        setResultContentType(res, line, allTypes, contentType);
       }
-      if (res.isBinaryResponse() && res.getHeader("Content-Type") == null) {
-        res.addHeader("Content-Type", "application/octet-stream");
-      } else {
-        res.addHeader("Content-Type", "text/plain");
+      if(res.getHeader("Content-Type") == null) {
+        if (res.isBinaryResponse()) {
+          res.addHeader("Content-Type", "application/octet-stream");
+          res.addHeader("Content-Disposition","request."+ line +".bin");
+        } else {
+          res.addHeader("Content-Type", "text/plain");
+          res.addHeader("Content-Disposition","request."+ line +".txt");
+        }
       }
       return true;
     }
     return false;
+  }
+
+  private void setResultContentType(Response res, int line, MimeTypes allTypes, String contentType) {
+    try {
+      MimeType mimeType = allTypes.forName(contentType);
+      String ext = mimeType.getExtension();
+      res.addHeader("Content-Disposition","request."+ line +ext);
+    } catch (MimeTypeException e) {
+      res.addHeader("Content-Disposition","request."+ line +".bin");
+    }
   }
 
   private boolean deleted(
