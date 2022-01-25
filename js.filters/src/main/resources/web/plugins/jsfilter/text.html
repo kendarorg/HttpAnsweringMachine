@@ -1,0 +1,137 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Scripts</button>
+            <button type="button"  class="btn btn-default" id="backToSingle"  name="backToSingle" >???</button>
+            <button type="button"  class="btn btn-default" id="backToLine"  name="backToLine" >???</button>
+        </div>
+        <div class="col-md-8">
+            <div class="form-group">
+                <label htmlFor="id">Id</label>
+                <input class="form-control" readOnly type="text" name="id" id="id"/>
+            </div>
+            <div class="form-group">
+                <label htmlFor="line">Line</label>
+                <input class="form-control" readOnly type="text" name="line" id="line"/>
+            </div>
+            <div class="form-group">
+                <label htmlFor="direction">Direction</label>
+                <input class="form-control" readOnly type="text" name="direction" id="direction"/>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h3>TEXT DATA</h3>
+            <form action="" id="addUser"  method="POST"  >
+                <div class="form-group">
+                    <button type="button" id="btLoadFile" name="btLoadFile" class="btn btn-default">Open file</button>
+                    <input type="file" style="width:0;height: 0;opacity:0;" id="uploadScript" name="uploadScript" >
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="text" name="uploadScriptShow" id="uploadScriptShow" />
+                </div>
+                <div class="form-group">
+                    <button type="button" id="btUploadScript" name="btUploadScript" class="btn btn-default">Upload</button>
+                </div>
+                <div class="form-group">
+                    <label for="free_content">Value</label>
+                    <textarea class="form-control" rows="6" cols="50" name="free_content" id="free_content"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="button" id="btSaveText" name="btSaveText" class="btn btn-default">Save Text</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+
+
+    $("#btLoadFile").click(function(){
+        document.getElementById("uploadScript").click();
+    });
+    $("#uploadScript").change(function(){
+        window.uploadScript = [];
+        uploadAsyncFile($('#uploadScript')[0].files,function(data){
+            window.uploadScript = data;
+            document.getElementById("uploadScriptShow").value = data[0].name;
+        },function(exception){
+            alert(exception);
+        });
+    });
+    $("#btUploadScript").click(function(){
+        if(window.uploadScript === undefined || window.uploadScript.length==0){
+            alert("NO FILES SELECTED");
+            return;
+        }
+        var toUpload = window.uploadScript[0];
+
+        toUpload.type = "text/plain";
+            var id = getUrlParameter("id");
+            var line = getUrlParameter("line");
+            var requestOrResponse = getUrlParameter("type");
+            $.ajax({
+                url: '/api/plugins/replayer/recording/'+id+'/line/'+line+'/'+requestOrResponse,
+                type: 'post',
+                data: JSON.stringify(toUpload),
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    location.reload();
+                }
+            });
+    });
+    var urlData = "/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/"+getUrlParameter("type");
+    $("#createScriptBt").click(function(){
+        var name = $('#createScriptName').val();
+        $.ajax({
+            url: urlData,
+            type: 'post',
+            data: name,
+            contentType: "text/plain",
+            success: function(response){
+                location.reload();
+            }
+        });
+    });
+    $("#id").val(getUrlParameter("id"));
+    $("#line").val(getUrlParameter("line"));
+    $("#direction").val(getUrlParameter("type"));
+    $.ajax({
+        url: urlData,
+        type: 'GET',
+        success: function (res) {
+            $("#free_content").text(res);
+
+        }
+    });
+    $("#backToSingle").click(function(){
+        location.href="script.html?id="+getUrlParameter("id"); })
+        .html(getUrlParameter("id"));
+    $("#backToLine").click(function(){
+        location.href="line.html?id="+getUrlParameter("id")+"&line="+getUrlParameter("line"); })
+        .html("Line "+getUrlParameter("line"));
+    $("#btSaveText").click(function(){
+        var name = $('#free_content').val();
+        $.ajax({
+            url: urlData,
+            type: 'post',
+            data: name,
+            contentType: "text/plain",
+            success: function(response){
+                location.reload();
+            }
+        });
+    });
+</script>
+</body>
+</html>
