@@ -73,46 +73,39 @@
         <div class="col-md-8">
             <table class="table table-striped" id="requires_list">
                 <tr>
-                    <th>Key</th>
-                    <th>Value</th>
+                    <th>Id</th>
                     <th colspan="2">
                         <button class="btn btn-danger form-control"
-                                onClick="addRequestQuery();">Add</button>
+                                onClick="addRequires();">Add</button>
                     </th>
                 </tr>
             </table>
         </div>
     </div>
 </div>
-<!-- Modal -->
-<div aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">Update User</h4>
-            </div>
-            <div class="modal-body"></div>
-            <div class="modal-footer"></div>
-        </div>
-    </div>
-</div>
+
 <script src="/app/app.js"></script>
 <script>
     var defaultSaveAction = "put";
 
-    var requires_list = new SimpleGrid("Query","requires_list","key",["key","value"],
+    var requires_list = new SimpleGrid("Query","requires_list","id",["id","value"],
         null,
         function (table,id) {
-            editKvp(".modal",table,id,"key","value")
+            var localTable = table;
+            localTable.data.forEach(function (value, i) {
+                if (value["id"] == id) {
+                    location.href="text.html?id="+getUrlParameter("id")+
+                        "&file="+value["value"]+"&action=edit";
+                    return;
+                }
+            });
+
         },
         function (table,id) {
-            deleteKvp(".modal",table,id,"key","value")
+            alert("DELETE TO BE IMPLEMENTED");
         },
         function (table,id,saveOrUpdate) {
-            updateKvp(".modal",table,id,"key","value")
+
         });
     var fromArray = function(arlist){
         var result = "";
@@ -139,14 +132,14 @@
 
 
 
-            $.each(res["requires"], function (i, v) {
-                var line = {key:v,value:v};
+            $.each(res["requires"], function (i,v) {
+                var line = {id:v.replaceAll(".","_"),value:v};
                 requires_list.appendToTable(line);
             });
 
         },
         error: function( xhr, textStatus, errorThrown ){
-            if(xhr.status==404) {
+            /*if(xhr.status==404) {
                 $("#timestamp").val(Math.floor(Date.now() / 1000));
                 $("#id").val(getUrlParameter("line"));
                 $("#request_content").hide();
@@ -154,17 +147,11 @@
                 $("#request_content_download").hide();
                 $("#response_content_download").hide();
                 defaultSaveAction="post";
-            }
+            }*/
         }
     });
 
-    $("#request_content_download").click(function(){
-        downloadFile("/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/request");
-    });
 
-    $("#response_content_download").click(function(){
-        downloadFile("/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/response");
-    });
 
     $("#backToSingle").click(function(){
         location.href="script.html?id="+getUrlParameter("id"); })
@@ -174,7 +161,8 @@
 
     function save(){
         var id = getUrlParameter("id");
-        var line = getUrlParameter("line");
+        alert("save not implemented");
+        /*var line = getUrlParameter("line");
         var data = {
             id:$("#id").val(),
             timestamp: $("#timestamp").val(),
@@ -205,23 +193,12 @@
             success: function(response){
                 location.reload();
             }
-        });
+        });*/
     }
 
-    function addRequestQuery(){
-        addKvp('.modal',requires_list,'key','value');
-    }
-
-    function addRequestPost(){
-        addKvp('.modal',request_postTable,'key','value');
-    }
-
-    function addRequestHeader(){
-        addKvp('.modal',request_headerTable,'key','value');
-    }
-
-    function addResponseHeader(){
-        addKvp('.modal',response_headerTable,'key','value');
+    function addRequires(){
+        location.href="text.html?id="+getUrlParameter("id")+
+            "&action=new";
     }
 </script>
 </body>

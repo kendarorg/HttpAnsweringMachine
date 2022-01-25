@@ -125,4 +125,79 @@ public class JsFilterAPI implements FilteringClass {
     }
     return null;
   }
+
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/jsfilter/{filtername}/{file}",
+          method = "GET",
+          id = "1000a4b4-47id-11ec-9777-0242ac130002")
+  public boolean getJsFilterFile(Request req, Response res) {
+    var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
+    var jsFilterDescriptor = req.getPathParameter("filtername");
+    var fileId = req.getPathParameter("file");
+    if(fileId==null || fileId.isEmpty()){
+      res.addHeader("Content-type", "text/plain");
+      res.setResponseText("");
+      return false;
+    }
+
+
+    // https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
+    try {
+      File f;
+      var realPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor+".json");
+      var subPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor,fileId);
+      //var result = loadSinglePlugin(realPath,jsFilterPath);
+      var result = Files.readString(Path.of(subPath));
+      res.addHeader("Content-type", "text/plain");
+      res.setResponseText(result);
+    } catch (Exception e) {
+      logger.error("Error reading js filter " + jsFilterDescriptor, e);
+    }
+    return false;
+  }
+
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/jsfilter/{filtername}/{file}",
+          method = "POST",
+          id = "10iyh4b4-47id-11ec-9777-0242ac130002")
+  public boolean putJsFilterFile(Request req, Response res) {
+    var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
+    var jsFilterDescriptor = req.getPathParameter("filtername");
+    var fileId = req.getPathParameter("file");
+
+
+    // https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
+    try {
+      File f;
+      var realPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor+".json");
+      var subPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor);
+      var result = mapper.readValue(Files.readString(Path.of(realPath)),JsFilterDescriptor.class);
+
+      var founded = false;
+      if(result.getRequires()!=null){
+        for (var require :
+                result.getRequires()) {
+          if(require.equalsIgnoreCase(fileId)){
+            founded=true;
+          }
+        }
+      }else{
+        result.setRequires(new ArrayList<>());
+      }
+      if(!founded){
+        result.getRequires().add(fileId);
+        Files.writeString(Path.of(realPath),mapper.writeValueAsString(result));
+      }
+      var subPathSubFile = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor,fileId);
+      //var result = loadSinglePlugin(realPath,jsFilterPath);
+      var content = req.getRequestText();
+      Files.writeString(Path.of(subPathSubFile),content);
+      res.setStatusCode(200);
+    } catch (Exception e) {
+      logger.error("Error reading js filter " + jsFilterDescriptor, e);
+    }
+    return false;
+  }
 }

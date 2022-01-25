@@ -8,7 +8,8 @@ if (Function.prototype.name === undefined) {
     });
 }
 
-var getUrlParameter = function (sParam) {
+var getUrlParameter = function (sParam,defaultVal) {
+    if(defaultVal===undefined)defaultVal=false;
     var sPageURL = window.location.search.substring(1),
         sURLVariables = sPageURL.split('&'),
         sParameterName,
@@ -21,7 +22,7 @@ var getUrlParameter = function (sParam) {
             return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
         }
     }
-    return false;
+    return defaultVal;
 };
 
 ///////////////////////     SIMPLE GRID
@@ -78,7 +79,7 @@ class SimpleGrid {
     }
 
     appendToTable(inputData, addbutton = true) {
-        var idContent = inputData[this.idField];
+        var idContent = inputData[this.idField].replaceAll(".","_");
         for (var i = 0; i < this.data.length; i++) {
             var line = this.data[i];
             if (line[this.idField] == inputData[this.idField]) {
@@ -184,6 +185,7 @@ var addKvp = function (modal, table, idField, valueField) {
     $(modal).find("#value").val(value[valueField]);
 }
 
+
 var editKvp = function (modal, table, id, idField, valueField) {
     var randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
     var randomIdInput = "INPUT" + Math.floor(Math.random() * 999999999);
@@ -233,7 +235,7 @@ var updateKvp = function (modal, table, id, idField, valueField) {
                 });
                 table.data.splice(i, 1);
                 table.data.splice(user[idField] - 1, 0, user);
-                $("#" + table.tableId + " #" + table.tableId + "-" + user[idField]).children(".userData").each(function () {
+                $("#" + table.tableId + " #" + table.tableId + "-" + user[idField].replaceAll(".","_")).children(".userData").each(function () {
                     var attr = $(this).attr("name");
                     var value = $(this).val();
                     if (attr == idField) {
