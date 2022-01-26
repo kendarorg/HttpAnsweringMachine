@@ -4,6 +4,8 @@
     <script src="/libs/jquery-3.2.1.min.js"></script>
     <script src="/libs/bootstrap.min.js"></script>
     <link href="/app/app.css" rel="stylesheet"/>
+    <link href="/plugins/jsfilter/prism/prism.css" rel="stylesheet"/>
+    <link href="/plugins/jsfilter/prism/prism-live.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="container">
@@ -29,7 +31,14 @@
             </div>
             <div class="form-group">
                 <label htmlFor="method">method</label>
-                <input class="form-control" type="text" name="method" id="method"/>
+                <select class="form-control" name="method" id="method" >
+                    <option>GET</option>
+                    <option>POST</option>
+                    <option>PUT</option>
+                    <option>DELETE</option>
+                    <option>OPTIONS</option>
+                    <option>PATCH</option>
+                </select>
             </div>
             <div class="form-group">
                 <label htmlFor="hostAddress">hostAddress</label>
@@ -49,7 +58,15 @@
             </div>
             <div class="form-group">
                 <label htmlFor="phase">phase</label>
-                <input class="form-control" type="text" name="phase" id="phase"/>
+                <select class="form-control" name="phase" id="phase" >
+                    <option>NONE</option>
+                    <option>PRE_RENDER</option>
+                    <option>API</option>
+                    <option>STATIC</option>
+                    <option>PRE_CALL</option>
+                    <option>POST_CALL</option>
+                    <option>POST_RENDER</option>
+                </select>
             </div>
             <div class="form-group">
                 <label htmlFor="priority">priority (number)</label>
@@ -63,8 +80,11 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="source">source</label>
-            <textarea class="form-control" rows="6" cols="50" name="source" id="source"></textarea>
+            <label for="source">source</label><br>
+            <!--prism-live language-javascript-->
+            <textarea spellcheck="false"
+                      class="form-control"
+                      rows="6" cols="50"  name="source" id="source"></textarea>
         </div>
 
         <div class="col-md-8">
@@ -85,6 +105,12 @@
 </div>
 
 <script src="/app/app.js"></script>
+<script src="/plugins/jsfilter/prism/bliss.shy.min.js"></script>
+<script src="/plugins/jsfilter/prism/prism.js"></script>
+<script src="/plugins/jsfilter/prism/prism-live.js"></script>
+<script src="/plugins/jsfilter/prism/prism-live-markup.js"></script>
+<script src="/plugins/jsfilter/prism/prism-live-css.js"></script>
+<script src="/plugins/jsfilter/prism/prism-live-javascript.js"></script>
 <script>
     var defaultSaveAction = "put";
 
@@ -115,12 +141,14 @@
         return result;
     }
 
+    $("#method").val("GET").change();
+    $("#phase").val("NONE").change();
     $.ajax({
         url: "/api/plugins/jsfilter/" + getUrlParameter("id"),
         type: 'GET',
         success: function (res) {
             $("#id").val(res['id']);
-            $("#method").val(res['method']);
+            $("#method").val(res['method']).change();;
             $("#hostAddress").val(res['hostAddress']);
             $("#hostRegexp").val(res['hostRegexp']);
             $("#pathAddress").val(res['pathAddress']);
@@ -128,7 +156,7 @@
             $("#phase").val(res['phase']);
             $("#priority").val(res['priority']);
             setChecked($("#blocking"),res['blocking']);
-            $("#source").val(fromArray(res['source']));
+            $("#source").text(fromArray(res['source']));
 
 
 

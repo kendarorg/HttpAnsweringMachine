@@ -117,13 +117,31 @@
 
     $("#createScriptBt").click(function(){
         var name = $('#createScriptName').val();
+        var data = {
+            id:name,
+            method:"GET",
+            phase:"NONE",
+            hostAddress:"www.change.me",
+            pathAddress:"changeme",
+            source:[
+                "//You have request,response and utils",
+                "//Here you can examine the request and produce a response",
+                "var result ={",
+                "    request:request,",
+                "    response:response,",
+                "    //If continue is false the response will be sent directly",
+                "    continue:false",
+                "};",
+                "return result;"
+            ]
+        }
         $.ajax({
-            url: '/api/plugins/replayer/recording',
+            url: '/api/plugins/jsfilter/'+name,
             type: 'post',
-            data: name,
-            contentType: "text/plain",
+            data: JSON.stringify(data),
+            contentType: "application/json",
             success: function(response){
-                location.reload();
+                location.href = "script.html?id="+name;
             }
         });
     });

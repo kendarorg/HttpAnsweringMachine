@@ -101,6 +101,28 @@ public class JsFilterAPI implements FilteringClass {
     }
     return false;
   }
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/jsfilter/{filtername}",
+          method = "POST",
+          id = "1000a4b4-297id-11rr-9777-0242ac130002")
+  public boolean saveJsFilter(Request req, Response res) {
+    var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
+    var jsFilterDescriptor = req.getPathParameter("filtername");
+
+
+    // https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
+    try {
+      File f;
+      var realPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor+".json");
+      JsFilterDescriptor result =mapper.readValue(req.getRequestText(),JsFilterDescriptor.class);
+      Files.writeString(Path.of(realPath),req.getRequestText());
+      res.setStatusCode(200);
+    } catch (Exception e) {
+      logger.error("Error reading js filter " + jsFilterDescriptor, e);
+    }
+    return false;
+  }
 
   private String loadScriptId(String realPath, String fullPath){
     var newFile = new File(fullPath);
@@ -180,6 +202,9 @@ public class JsFilterAPI implements FilteringClass {
       var subPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor);
       var result = mapper.readValue(Files.readString(Path.of(realPath)),JsFilterDescriptor.class);
 
+      if(!Files.exists(Path.of(subPath))){
+        Files.createDirectory(Path.of(subPath));
+      }
       var founded = false;
       if(result.getRequires()!=null){
         for (var require :
