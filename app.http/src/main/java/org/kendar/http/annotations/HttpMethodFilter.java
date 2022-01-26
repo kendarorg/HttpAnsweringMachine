@@ -34,4 +34,5 @@ public @interface HttpMethodFilter {
     String method() default "";
     String description() default "";
     String id();
+    HamMatcher[] matcher() default {};
 }

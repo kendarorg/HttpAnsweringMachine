@@ -1,8 +1,7 @@
 package org.kendar.http;
 
 import org.apache.http.conn.HttpClientConnectionManager;
-import org.kendar.http.annotations.HttpMethodFilter;
-import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.*;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -30,6 +29,7 @@ public class FilterDescriptor {
   private final List<String> pathSimpleMatchers = new ArrayList<>();
   private final JsonConfiguration jsonConfiguration;
   private final CustomFiltersLoader loader;
+  private HamMatcher[] extraMatches;
   private String description;
   private String hostAddress;
   private String pathAddress;
@@ -80,7 +80,8 @@ public class FilterDescriptor {
       pathAddress = getWithEnv(methodFilter.pathAddress(), environment);
       setupPathSimpleMatchers();
     }
-    this.typeFilter = buildTypeFilter();
+    this.extraMatches = methodFilter.matcher();
+            this.typeFilter = buildTypeFilter();
     this.methodFilter = buildMethodFilter();
   }
 
@@ -119,7 +120,7 @@ public class FilterDescriptor {
       pathAddress = getWithEnv(executor.getPathAddress(), environment);
       setupPathSimpleMatchers();
     }
-    this.typeFilter = buildTypeFilter();
+            this.typeFilter = buildTypeFilter();
     this.methodFilter = buildMethodFilter();
   }
 
@@ -187,6 +188,46 @@ public class FilterDescriptor {
       @Override
       public String id() {
         return loc.getId();
+      }
+
+      @Override
+      public HamMatcher[] matcher() {
+        var result = new ArrayList<HamMatcher>();
+        if(loc.extraMatches!=null && loc.extraMatches.length>0){
+          for (var matcher :
+                  extraMatches) {
+            result.add(new HamMatcher() {
+              @Override
+              public Class<? extends Annotation> annotationType() {
+                return null;
+              }
+
+              @Override
+              public String value() {
+                return matcher.value();
+              }
+
+              @Override
+              public MatcherFunction function() {
+                return matcher.function();
+              }
+
+              @Override
+              public MatcherType type() {
+                return matcher.type();
+              }
+
+              @Override
+              public String id() {
+                if(matcher.id().length()>0){
+                  return matcher.id();
+                }
+                return null;
+              }
+            });
+          }
+        }
+        return result.toArray(new HamMatcher[0]);
       }
     };
   }

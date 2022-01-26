@@ -6,6 +6,7 @@ import org.kendar.dns.configurations.DnsConfig;
 import org.kendar.dns.configurations.ExtraDnsServer;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamMatcher;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
