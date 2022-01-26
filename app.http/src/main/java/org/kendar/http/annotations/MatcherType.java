@@ -5,7 +5,9 @@ public enum MatcherType {
     PATH("PATH"),
     QUERY_STRING("PARAM"),
     BODY("BODY"),
-    HEADER("HEADER");
+    HEADER("HEADER"),
+    JSONPATH("JSONPATH"),
+    XPATH("XPATH");
 
     private final String text;
 
