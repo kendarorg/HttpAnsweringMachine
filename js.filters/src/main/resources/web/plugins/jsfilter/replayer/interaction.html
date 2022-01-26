@@ -74,6 +74,7 @@
             <br>Generate Java Verifier (junit)
         </div>
     `;
+    var generatorsList = [];
     var linesTable = new SimpleGrid("Request-Response","linesTable","id",fields,
         null,
         function (table,id) {
@@ -85,8 +86,16 @@
                     buildButtonlessModal(modal, table, value, "id", dnsTableModal, randomId, true);
 
                     var buttloc = $(modal).find("#buttloc");
-                    $("<input type='button' value='Dynamic Button' id='btn_a' />").appendTo(buttloc);
-                    $(modal).find("#btn_a").click(function(){ alert("YAY"); });
+                    for(var j=0;j<generatorsList.length;j++){
+                        $("<br><input type='button' value='"+generatorsList[j].type+
+                            "' id='"+generatorsList[j].type+randomId+"' name='"+generatorsList[j].type+randomId+"' />"+
+                            generatorsList[j].description).appendTo(buttloc);
+                        var vardata= generatorsList[j].type;
+                        $(modal).find("#"+generatorsList[j].type+randomId).click(function(){
+                            alert(vardata);
+                        });
+                    }
+
                 }
             });
         },
@@ -112,6 +121,14 @@
                 //tSource,tableId,id,data,fields
                 linesTable.appendToTable(line);
             }
+        }
+    });
+
+    $.ajax({
+        url: "/api/plugins/jsfiltergen/generators",
+        type: 'GET',
+        success: function(res) {
+            generatorsList = res;
         }
     });
 
