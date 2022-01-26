@@ -68,6 +68,7 @@
             <label class="form-check-label" for="enabled">
                 running
             </label>
+            <span id="buttloc" name=""buttloc"></span>
             <br>Generate Curl (curl)
             <br>Generate JsFilter Verifier (jsfilter)
             <br>Generate Java Verifier (junit)
@@ -82,9 +83,10 @@
             localTable.data.forEach(function(value, i) {
                 if (value["id"] == id) {
                     buildButtonlessModal(modal, table, value, "id", dnsTableModal, randomId, true);
-                    $(modal).find("#"+randomId).click(function(){ localTable.saveFunction(localTable,id,false); });
-                    $(modal).find("#address").val("address");
-                    setChecked($(modal).find("#enabled"),false);
+
+                    var buttloc = $(modal).find("#buttloc");
+                    $("<input type='button' value='Dynamic Button' id='btn_a' />").appendTo(buttloc);
+                    $(modal).find("#btn_a").click(function(){ alert("YAY"); });
                 }
             });
         },
