@@ -330,6 +330,26 @@ function buildGenericModal(modal, table, value, idField, extraContent, randomId,
     $(modal).modal("toggle");
 }
 
+function buildButtonlessModal(modal, table, value, idField, extraContent, randomId) {
+    //var encodedValue = value[valueField].replace('"','\\"');
+    $(modal).find(".modal-title").empty().append(`${table.objType}`);
+    var readonly = "readonly";
+
+    var bodyContent = `
+                <form id="editKvp" action="">
+                    <label for="key">Key</label>
+                    <input class="form-control" type="text" name="key" id="key" ${readonly} value="${value[idField]}"/>
+                `;
+    bodyContent += extraContent;
+    $(modal).find(".modal-body").empty().append(bodyContent);
+
+    $(modal).find(".modal-footer").empty().append(`
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </form>
+            `);
+    $(modal).modal("toggle");
+}
+
 var uuidv4 = function () {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
