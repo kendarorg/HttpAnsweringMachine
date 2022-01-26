@@ -3,8 +3,10 @@ package org.kendar.servers.http;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
 import org.kendar.http.CustomFiltersLoader;
+import org.kendar.http.FilterConfig;
 import org.kendar.http.FilterDescriptor;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.http.events.ScriptsModified;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.mozilla.javascript.ClassShutter;
@@ -18,10 +20,7 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -33,6 +32,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
   private final String jsFilterPath;
   private final EventQueue eventQueue;
   private final ExternalRequester externalRequester;
+  private FilterConfig filtersConfiguration;
   private final Environment environment;
   private final Logger logger;
   private final LoggerBuilder loggerBuilder;
@@ -45,7 +45,8 @@ public class JsFilterLoader implements CustomFiltersLoader {
           FileResourcesUtils fileResourcesUtils,
           JsonConfiguration configuration,
           EventQueue eventQueue,
-          ExternalRequester externalRequester) {
+          ExternalRequester externalRequester,
+          FilterConfig filtersConfiguration) {
 
     this.environment = environment;
     this.logger = loggerBuilder.build(JsFilterLoader.class);
@@ -54,9 +55,12 @@ public class JsFilterLoader implements CustomFiltersLoader {
     jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     this.eventQueue = eventQueue;
     this.externalRequester = externalRequester;
+    this.filtersConfiguration = filtersConfiguration;
     logger.info("JsFilter LOADED");
     this.configuration = configuration;
   }
+
+
 
   public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
     File destFile = new File(destinationDir, zipEntry.getName());
@@ -79,6 +83,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
 
     return cx.newObject(globalScope);
   }
+
 
   public List<FilterDescriptor> loadFilters() {
     var result = new ArrayList<FilterDescriptor>();

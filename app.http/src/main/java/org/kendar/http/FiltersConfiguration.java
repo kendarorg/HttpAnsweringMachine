@@ -1,7 +1,4 @@
-package org.kendar.servers.http.configurations;
-
-import org.kendar.http.FilterDescriptor;
-import org.kendar.http.HttpFilterType;
+package org.kendar.http;
 
 import java.util.ArrayList;
 import java.util.HashMap;

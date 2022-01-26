@@ -2,12 +2,14 @@ package org.kendar.servers.http.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.*;
+import org.kendar.http.events.ScriptsModified;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -26,15 +28,18 @@ public class JsFilterAPI implements FilteringClass {
   private final JsonConfiguration configuration;
   private final Logger logger;
   private final FileResourcesUtils fileResourcesUtils;
+  private EventQueue eventQueue;
   final ObjectMapper mapper = new ObjectMapper();
 
   public JsFilterAPI(JsonConfiguration configuration,
                      FileResourcesUtils fileResourcesUtils,
-                     LoggerBuilder loggerBuilder) {
+                     LoggerBuilder loggerBuilder,
+                     EventQueue eventQueue) {
 
     this.logger = loggerBuilder.build(JsFilterAPI.class);
     this.configuration = configuration;
     this.fileResourcesUtils = fileResourcesUtils;
+    this.eventQueue = eventQueue;
   }
 
   @Override
@@ -118,6 +123,7 @@ public class JsFilterAPI implements FilteringClass {
       JsFilterDescriptor result =mapper.readValue(req.getRequestText(),JsFilterDescriptor.class);
       Files.writeString(Path.of(realPath),req.getRequestText());
       res.setStatusCode(200);
+      eventQueue.handle(new ScriptsModified());
     } catch (Exception e) {
       logger.error("Error reading js filter " + jsFilterDescriptor, e);
     }
@@ -225,6 +231,7 @@ public class JsFilterAPI implements FilteringClass {
       var content = req.getRequestText();
       Files.writeString(Path.of(subPathSubFile),content);
       res.setStatusCode(200);
+      eventQueue.handle(new ScriptsModified());
     } catch (Exception e) {
       logger.error("Error reading js filter " + jsFilterDescriptor, e);
     }
