@@ -4,6 +4,12 @@
 
 ### Regex tester
 
+A tester for regular expressions just to verify the regexps before 
+using them on filters.
+
+Mind the slashes! This regexp will be converted to a String so it
+does not need the typical string slashes!
+
 <u>Simple regexp</u>
 
 <pre>
