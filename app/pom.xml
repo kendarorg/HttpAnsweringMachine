@@ -141,6 +141,11 @@
             <version>${jackson.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${version.common-lang3}</version>
@@ -150,11 +155,11 @@
             <artifactId>json-schema-validator</artifactId>
             <version>${json.schema.validator.version}</version>
         </dependency>
-        <dependency>
-            <!--
+        <!--<dependency>
+
             https://jitpack.io/com/github/wiztools/xsd-gen/
             https://github.com/wiztools/xsd-gen
-            -->
+
             <groupId>com.github.wiztools</groupId>
             <artifactId>xsd-gen</artifactId>
             <version>0.2.4</version>
@@ -163,7 +168,7 @@
             <groupId>com.io7m.xom</groupId>
             <artifactId>xom</artifactId>
             <version>1.2.10</version>
-        </dependency>
+        </dependency>-->
 
     </dependencies>
 

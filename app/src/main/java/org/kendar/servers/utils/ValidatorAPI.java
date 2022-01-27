@@ -3,6 +3,7 @@ package org.kendar.servers.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SchemaValidatorsConfig;
@@ -18,8 +19,6 @@ import org.kendar.servers.http.Response;
 import org.kendar.servers.utils.models.ValidatorData;
 import org.kendar.servers.utils.models.ValidatorResult;
 import org.springframework.stereotype.Component;
-import org.wiztools.xsdgen.ParseException;
-import org.wiztools.xsdgen.XsdGen;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -98,44 +97,20 @@ public class ValidatorAPI implements FilteringClass {
             pathAddress = "/api/utils/schemavalidator/xml",
             method = "POST",
             id = "1000a4b4-29tad-1jsc-9621-0ww2ac130002")
-    public void validateXml(Request req, Response res) throws IOException, ParseException, SAXException, ParserConfigurationException {
+    public void validateXml(Request req, Response res) throws IOException, SAXException, ParserConfigurationException {
         var data = mapper.readValue(req.getRequestText(), ValidatorData.class);
 
         var result = new ValidatorResult();
         if(data.getSchema()==null || data.getSchema().length()==0){
-            var schemaTemplate = "";
-            var schemaSource = "";
-            XsdGen gen = new XsdGen();
-            try(var sourceStream = new ByteArrayInputStream(data.getTemplate().getBytes())) {
-                gen.parse(sourceStream);
-                try(ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-                    gen.write(out);
-                    schemaTemplate =new String( out.toByteArray(), StandardCharsets.UTF_8 );
-                }
-            }
+            XmlMapper xmlMapper = new XmlMapper();
+            JsonNode templateNode = xmlMapper.readTree(data.getTemplate().getBytes());
+            data.setTemplate(mapper.writeValueAsString(templateNode));
 
-            try(var sourceStream = new ByteArrayInputStream(data.getSource().getBytes())) {
-                gen.parse(sourceStream);
-                try(ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-                    gen.write(out);
-                    schemaSource =new String( out.toByteArray(), StandardCharsets.UTF_8 );
-                }
-            }
-            if(schemaSource.equalsIgnoreCase(schemaTemplate)){
-                res.setStatusCode(500);
-                result.getErrors().add("Generated schemas are different");
-                result.setError(true);
-                res.addHeader("Content-type", "application/json");
-
-                res.setResponseText(mapper.writeValueAsString(result));
-                return;
-            }else{
-                res.setStatusCode(200);
-                res.addHeader("Content-type", "application/json");
-
-                res.setResponseText(mapper.writeValueAsString(result));
-                return;
-            }
+            JsonNode sourceNode = xmlMapper.readTree(data.getSource().getBytes());
+            data.setSource(mapper.writeValueAsString(sourceNode));
+            req.setRequestText(mapper.writeValueAsString(data));
+            this.validate(req,res);
+            return;
         }
 
 
@@ -148,13 +123,13 @@ public class ValidatorAPI implements FilteringClass {
             saxFactory.setSchema(schema);
             SAXParser parser = saxFactory.newSAXParser();
             try(var sourceStream = new ByteArrayInputStream(data.getSource().getBytes())) {
+
                 parser.parse(new InputSource(sourceStream), new DefaultHandler() {
                     // TODO: other handler methods
                     @Override
                     public void error(SAXParseException e) throws SAXException {
                         result.setError(true);
                         result.getErrors().add(e.getMessage());
-                        throw e;
                     }
                 });
             }
