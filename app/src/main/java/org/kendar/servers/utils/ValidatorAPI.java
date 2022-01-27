@@ -53,7 +53,7 @@ public class ValidatorAPI implements FilteringClass {
             phase = HttpFilterType.API,
             pathAddress = "/api/utils/schemavalidator/json",
             method = "POST",
-            id = "1000a4b4-297id-11ec-9621-0242ac130002")
+            id = "1000a4b4-29tad-1jsc-9621-0242ac130002")
     public void validate(Request req, Response res) throws IOException {
         var data = mapper.readValue(req.getRequestText(), ValidatorData.class);
         if(data.getSchema()==null || data.getSchema().length()==0){
