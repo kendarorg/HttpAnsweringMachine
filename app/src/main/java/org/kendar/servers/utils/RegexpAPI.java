@@ -12,8 +12,10 @@ import org.kendar.servers.utils.models.RegexpData;
 import org.kendar.servers.utils.models.RegexpResult;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -47,10 +49,15 @@ public class RegexpAPI implements FilteringClass {
             result.setFailed(false);
             final List<String> matches = new ArrayList<>();
             var matchesCount = 0;
+            Method method = pattern.getClass().getDeclaredMethod("namedGroups");
+            method.setAccessible(true);
             while (matcher.find()) {
                 matchesCount++;
-                parseGroup(matches,matcher);
+                var namedGroups = (Map<String, Integer>)method.invoke(pattern);
+                parseGroup(matches,matcher,namedGroups);
             }
+
+
             result.setMatchFound(matchesCount>0);
             result.setMatches(matches);
         }catch (PatternSyntaxException ex){
@@ -65,14 +72,32 @@ public class RegexpAPI implements FilteringClass {
         res.setResponseText(mapper.writeValueAsString(result));
     }
 
-    private void parseGroup(List<String> matches, Matcher matcher) {
+    private void parseGroup(List<String> matches, Matcher matcher, Map<String, Integer> named) {
         var size= matcher.groupCount();
-        matches.add("group:");
+
+        var founded = false;
         for(int i=0;i<size;i++){
-            matches.add("\t"+i+":"+matcher.group(i));
+            final int index = i;
+            if(i==0)matches.add("group:");
+            var name = "";
+            if(named!=null){
+                var groupName = named.entrySet().stream().filter(g->g.getValue().intValue()==index).findFirst();
+                if(groupName.isPresent()){
+                    name = " ("+groupName.get().getKey()+")";
+                }
+            }
+            matches.add("\t"+i+name+":"+matcher.group(i));
+            founded= true;
         }
-        if(size==0){
-            matches.add("\t"+0+":"+matcher.group(0));
+        if(size==0 && !founded){
+            var name="";
+            if(named!=null){
+                var groupName = named.entrySet().stream().filter(g->g.getValue().intValue()==0).findFirst();
+                if(groupName.isPresent()){
+                    name = " ("+groupName.get().getKey()+")";
+                }
+            }
+            matches.add("match"+name+":"+matcher.group(0));
         }
     }
 }
