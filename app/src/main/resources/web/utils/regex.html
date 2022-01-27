@@ -9,6 +9,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8">
+            <h3>REGEXP TESTER</h3>
             <div class="form-group">
                 <label htmlFor="regexp">Regexp</label>
                 <input class="form-control" type="text" name="regexp" id="regexp"/>
@@ -43,16 +44,16 @@
             processData: false,
             success: function(result){
                 if(result['failed']){
-                    $('#results').text(result['error']);
-                    alert("ERROR!");
+                    $('#results').text("Error:\r\n"+result['error']);
                 }else {
                     if (!result['matchFound']) {
-                        $('#results').text("NO MATCH");
+                        $('#results').text("No matches found");
                     } else {
-                        var toput = "";
+                        var toput = "Found "+result['matches'].length+" matches:\r\n";
                         for (var i = 0; i < result['matches'].length;i++){
                             toput+=result['matches'][i]+"\r\n";
                         }
+                        toput+="END OF RESULTS";
                         $('#results').text(toput);
                     }
                 }

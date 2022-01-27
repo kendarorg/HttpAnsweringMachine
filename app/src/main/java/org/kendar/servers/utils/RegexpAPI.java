@@ -46,17 +46,33 @@ public class RegexpAPI implements FilteringClass {
 
             result.setFailed(false);
             final List<String> matches = new ArrayList<>();
+            var matchesCount = 0;
             while (matcher.find()) {
-                matches.add(matcher.group());
+                matchesCount++;
+                parseGroup(matches,matcher);
             }
-            result.setMatchFound(matches.size()>0);
+            result.setMatchFound(matchesCount>0);
             result.setMatches(matches);
         }catch (PatternSyntaxException ex){
             result.setFailed(true);
             result.setError(ex.getMessage()+" "+ex.getDescription()+" "+ex.getPattern()+" "+ex.getIndex());
+        }catch (Exception ex){
+            result.setFailed(true);
+            result.setError(ex.getMessage()+" "+ex.toString());
         }
         res.setStatusCode(200);
         res.addHeader("content-type","application/json");
         res.setResponseText(mapper.writeValueAsString(result));
+    }
+
+    private void parseGroup(List<String> matches, Matcher matcher) {
+        var size= matcher.groupCount();
+        matches.add("group:");
+        for(int i=0;i<size;i++){
+            matches.add("\t"+i+":"+matcher.group(i));
+        }
+        if(size==0){
+            matches.add("\t"+0+":"+matcher.group(0));
+        }
     }
 }
