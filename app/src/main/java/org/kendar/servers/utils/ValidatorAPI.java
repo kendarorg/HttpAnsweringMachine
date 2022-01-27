@@ -100,20 +100,46 @@ public class ValidatorAPI implements FilteringClass {
             id = "1000a4b4-29tad-1jsc-9621-0ww2ac130002")
     public void validateXml(Request req, Response res) throws IOException, ParseException, SAXException, ParserConfigurationException {
         var data = mapper.readValue(req.getRequestText(), ValidatorData.class);
+
+        var result = new ValidatorResult();
         if(data.getSchema()==null || data.getSchema().length()==0){
+            var schemaTemplate = "";
+            var schemaSource = "";
             XsdGen gen = new XsdGen();
             try(var sourceStream = new ByteArrayInputStream(data.getTemplate().getBytes())) {
                 gen.parse(sourceStream);
                 try(ByteArrayOutputStream out = new ByteArrayOutputStream()) {
                     gen.write(out);
-                    data.setSchema(new String( out.toByteArray(), StandardCharsets.UTF_8 ));
+                    schemaTemplate =new String( out.toByteArray(), StandardCharsets.UTF_8 );
                 }
+            }
+
+            try(var sourceStream = new ByteArrayInputStream(data.getSource().getBytes())) {
+                gen.parse(sourceStream);
+                try(ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                    gen.write(out);
+                    schemaSource =new String( out.toByteArray(), StandardCharsets.UTF_8 );
+                }
+            }
+            if(schemaSource.equalsIgnoreCase(schemaTemplate)){
+                res.setStatusCode(500);
+                result.getErrors().add("Generated schemas are different");
+                result.setError(true);
+                res.addHeader("Content-type", "application/json");
+
+                res.setResponseText(mapper.writeValueAsString(result));
+                return;
+            }else{
+                res.setStatusCode(200);
+                res.addHeader("Content-type", "application/json");
+
+                res.setResponseText(mapper.writeValueAsString(result));
+                return;
             }
         }
 
-        var result = new ValidatorResult();
 
-        
+
         SchemaFactory schemaFactory = SchemaFactory
                 .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try(var schemaStream = new ByteArrayInputStream(data.getSchema().getBytes())) {
@@ -133,7 +159,6 @@ public class ValidatorAPI implements FilteringClass {
                 });
             }
         }
-
 
         res.setStatusCode(200);
         res.addHeader("Content-type", "application/json");
