@@ -23,7 +23,30 @@
                 <label for="matcherString">ToMatch</label>
                 <textarea class="form-control" rows="6" cols="50" name="matcherString" id="matcherString"></textarea>
             </div>
-
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="multiline" name="multiline">
+                <label class="form-check-label" for="multiline">
+                    multiline
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="caseInsensitive" name="caseInsensitive">
+                <label class="form-check-label" for="caseInsensitive">
+                    caseInsensitive
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="literal" name="literal">
+                <label class="form-check-label" for="literal">
+                    literal
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="unicodeCase" name="unicodeCase">
+                <label class="form-check-label" for="unicodeCase">
+                    unicodeCase
+                </label>
+            </div>
             <div class="form-group">
                 <button type="button" id="test" name="test" class="btn btn-default">Go</button>
             </div>
@@ -39,7 +62,11 @@
     $("#test").click(function(){
         var data={
             regexp: $('#regexp').val(),
-            matcherString: $('#matcherString').val()
+            matcherString: $('#matcherString').val(),
+            caseInsensitive:$("#caseInsensitive").prop("checked"),
+            literal:$("#literal").prop("checked"),
+            unicodeCase:$("#unicodeCase").prop("checked"),
+            multiline:$("#multiline").prop("checked")
         };
         $.ajax({
             url: '/api/utils/regexp',
