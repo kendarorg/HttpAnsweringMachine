@@ -96,7 +96,7 @@ public class AnsweringDerbyServer implements AnsweringServer {
           if (rs != null) rs.close();
           if (conn != null) conn.close();
         } catch (Exception ex) {
-
+          logger.trace(ex.getMessage());
         }
       }
     }

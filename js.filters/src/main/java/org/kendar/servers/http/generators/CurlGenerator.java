@@ -27,15 +27,14 @@ public class CurlGenerator implements BaseGenerator{
         var result = new ArrayList<String>();
         result.add("#!/bin/sh");
 
-        var dataFile = UUID.randomUUID().toString()+".data";
+        var dataFile = UUID.randomUUID() +".data";
         if(!request.isBinaryRequest()){
-            var base64Bytes = Base64.getEncoder().encode(request.getRequestBytes());
+            var base64Bytes = new String(Base64.getEncoder().encode(request.getRequestBytes()));
             result.add("echo '"+base64Bytes+"' |base64 -d -o "+dataFile);
         }
 
         var target = request.getProtocol()+"://"+request.getHost()+":"+request.getPort()+"/"+request.getPath();
-        target+="?"+String.join("&",
-                request.getQuery().entrySet().stream().map(e->e.getKey()+"="+e.getValue()).collect(Collectors.toList()));
+        target+="?"+ request.getQuery().entrySet().stream().map(e->e.getKey()+"="+e.getValue()).collect(Collectors.joining("&"));
         result.add("curl -X "+request.getMethod().toUpperCase(Locale.ROOT)+"\\");
         for (var head :
                 request.getHeaders().entrySet()){

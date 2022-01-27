@@ -6,7 +6,6 @@ import org.kendar.http.CustomFiltersLoader;
 import org.kendar.http.FilterConfig;
 import org.kendar.http.FilterDescriptor;
 import org.kendar.servers.JsonConfiguration;
-import org.kendar.http.events.ScriptsModified;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.mozilla.javascript.ClassShutter;
@@ -32,7 +31,6 @@ public class JsFilterLoader implements CustomFiltersLoader {
   private final String jsFilterPath;
   private final EventQueue eventQueue;
   private final ExternalRequester externalRequester;
-  private FilterConfig filtersConfiguration;
   private final Environment environment;
   private final Logger logger;
   private final LoggerBuilder loggerBuilder;
@@ -55,7 +53,6 @@ public class JsFilterLoader implements CustomFiltersLoader {
     jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     this.eventQueue = eventQueue;
     this.externalRequester = externalRequester;
-    this.filtersConfiguration = filtersConfiguration;
     logger.info("JsFilter LOADED");
     this.configuration = configuration;
   }

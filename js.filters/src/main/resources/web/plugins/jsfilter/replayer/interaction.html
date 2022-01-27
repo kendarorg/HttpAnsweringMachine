@@ -80,8 +80,7 @@
         function (table,id) {
             var modal=".modal";
             var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
-            var localTable = table;
-            localTable.data.forEach(function(value, i) {
+            table.data.forEach(function(value, i) {
                 if (value["id"] == id) {
                     buildButtonlessModal(modal, table, value, "id", dnsTableModal, randomId, true);
 

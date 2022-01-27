@@ -67,3 +67,10 @@ public class GoogleFilter  implements FilteringClass {
 </pre>
 
 Inside the function you can then elaborate the request and response as you please
+
+Please notice that if you set the global @HttpTypeFilter to blocking=true then you can 
+declare the method as void
+
+If the @HttpTypeFilter blocking is set to false or not set at all if the method returns
+a boolean it will be used. BUT if you return void and not set at blocking=true the 
+call will always be non-blocking

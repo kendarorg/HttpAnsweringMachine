@@ -13,6 +13,7 @@ import org.springframework.core.env.Environment;
 import java.io.IOException;
 import java.util.ArrayList;
 
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @SpringBootApplication
 public class SimpleDns implements CommandLineRunner {
   @Autowired private ApplicationContext applicationContext;

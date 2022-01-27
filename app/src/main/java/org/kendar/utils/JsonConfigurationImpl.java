@@ -9,6 +9,7 @@ import org.kendar.servers.BaseJsonConfig;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.SpecialJsonConfig;
 import org.kendar.servers.config.ConfigAttribute;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
@@ -27,9 +28,11 @@ public class JsonConfigurationImpl implements JsonConfiguration {
 
   @SuppressWarnings("rawtypes")
   private final ConcurrentHashMap<Class, String> mappingStringClasses = new ConcurrentHashMap<>();
-  private EventQueue eventQueue;
+  private final EventQueue eventQueue;
+  private final Logger logger;
 
-  public JsonConfigurationImpl(EventQueue eventQueue) {
+  public JsonConfigurationImpl(EventQueue eventQueue, LoggerBuilder loggerBuilder) {
+    logger = loggerBuilder.build(JsonConfiguration.class);
     this.eventQueue = eventQueue;
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
@@ -97,7 +100,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
       evt.setName(aClass.getName());
       eventQueue.handle(evt);
     } catch (Exception ex) {
-
+      logger.trace(ex.getMessage());
     }
   }
 

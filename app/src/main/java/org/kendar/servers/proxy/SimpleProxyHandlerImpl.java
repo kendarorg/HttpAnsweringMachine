@@ -1,7 +1,5 @@
 package org.kendar.servers.proxy;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.Request;
@@ -64,7 +62,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     }
   }
 
-  private static boolean isTcpPortAvailable(int port,String host) {
+  private boolean isTcpPortAvailable(int port,String host) {
     Socket s = null;
     try
     {
@@ -79,7 +77,9 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     {
       if(s != null)
         try {s.close();}
-        catch(Exception e){}
+        catch(Exception e){
+          logger.trace(e.getMessage());
+        }
     }
   }
 

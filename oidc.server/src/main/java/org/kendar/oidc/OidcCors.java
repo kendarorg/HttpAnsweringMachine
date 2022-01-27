@@ -19,13 +19,12 @@ public class OidcCors implements FilteringClass {
             pathAddress ="*",
             method = "OPTIONS",
             blocking = true,id="6000daa6-277f-11ec-9621-0242ac1afe002")
-    public boolean cors(Request req, Response res) {
+    public void cors(Request req, Response res) {
         res.addHeader("access-control-allow-credentials","false");
         res.addHeader("access-control-allow-headers","*");
         res.addHeader("access-control-allow-methods","*");
         res.addHeader("access-control-allow-origin","*");
         res.addHeader("content-length","0");
         res.setStatusCode(200);
-        return false;
     }
 }

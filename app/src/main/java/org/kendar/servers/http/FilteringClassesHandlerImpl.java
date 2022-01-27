@@ -5,8 +5,6 @@ import org.kendar.events.EventQueue;
 import org.kendar.http.*;
 import org.kendar.http.events.ScriptsModified;
 import org.kendar.servers.config.GlobalConfig;
-import org.kendar.http.FilterConfig;
-import org.kendar.http.FiltersConfiguration;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.core.env.Environment;
@@ -22,7 +20,6 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
   private final Environment environment;
   private final FilterConfig filtersConfiguration;
   private final Logger logger;
-  private EventQueue eventQueue;
 
   public FilteringClassesHandlerImpl(
           List<CustomFiltersLoader> customFilterLoaders,
@@ -34,9 +31,8 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
     this.environment = environment;
     this.filtersConfiguration = filtersConfiguration;
     this.logger = loggerBuilder.build(FilteringClassesHandlerImpl.class);
-    this.eventQueue = eventQueue;
 
-    this.eventQueue.register(this::handleScriptModified, ScriptsModified.class);
+    eventQueue.register(this::handleScriptModified, ScriptsModified.class);
   }
 
   public HashMap<HttpFilterType, List<FilterDescriptor>> getConfiguration() {

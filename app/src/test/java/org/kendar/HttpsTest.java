@@ -22,7 +22,7 @@ public class HttpsTest {
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
-        System.out.println(content.toString());
+        System.out.println(content);
         in.close();
         con.disconnect();
     }

@@ -49,6 +49,7 @@ public class JsonFileData {
         return stringData;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean matchContentType(String possible){
         return possible.equalsIgnoreCase(this.type) ;
     }

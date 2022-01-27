@@ -12,5 +12,5 @@ public interface RequestResponseBuilder {
     boolean hasBody(Request request);
     boolean hasBody(Response request);
 
-    Response fromHttpResponse(HttpResponse httpResponse, Response response) throws IOException;
+    void fromHttpResponse(HttpResponse httpResponse, Response response) throws IOException;
 }

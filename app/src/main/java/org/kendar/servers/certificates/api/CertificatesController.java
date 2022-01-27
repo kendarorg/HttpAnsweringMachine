@@ -8,6 +8,8 @@ import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
+import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -22,8 +24,10 @@ import java.util.zip.ZipOutputStream;
 public class CertificatesController implements FilteringClass {
   final ObjectMapper mapper = new ObjectMapper();
   private final FileResourcesUtils fileResourcesUtils;
+  private final Logger logger;
 
-  public CertificatesController(FileResourcesUtils fileResourcesUtils) {
+  public CertificatesController(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
+    logger = loggerBuilder.build(CertificatesController.class);
 
     this.fileResourcesUtils = fileResourcesUtils;
   }
@@ -38,7 +42,7 @@ public class CertificatesController implements FilteringClass {
       pathAddress = "/api/certificates",
       method = "GET",
       id = "1012a4b4-277d-11ec-9621-0242ac130002")
-  public boolean listAllCertificates(Request req, Response res)
+  public void listAllCertificates(Request req, Response res)
       throws IOException {
     var resources = fileResourcesUtils.loadResources(this, "certificates");
 
@@ -52,11 +56,11 @@ public class CertificatesController implements FilteringClass {
         if (byteContent.length == 0) continue; // avoid directories
         result.add(stringPath);
       } catch (Exception ex) {
+        logger.trace(ex.getMessage());
       }
     }
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(result));
-    return false;
   }
   /*
   application/pkcs8                   .p8  .key
@@ -81,7 +85,7 @@ public class CertificatesController implements FilteringClass {
       pathAddress = "/api/certificates/{file}",
       method = "GET",
       id = "1014a4b4-277d-11ec-9621-0242ac130002")
-  public boolean getSingleCertificate(Request req, Response res)
+  public void getSingleCertificate(Request req, Response res)
       throws IOException {
     var resources = fileResourcesUtils.loadResources(this, "certificates");
     var name = req.getPathParameter("file");
@@ -104,11 +108,10 @@ public class CertificatesController implements FilteringClass {
 
         res.setResponseBytes(baos.toByteArray());
         res.setBinaryResponse(true);
-        return false;
+        return;
       }
     }
     res.setStatusCode(404);
     res.setResponseText("Unable to find " + name);
-    return false;
   }
 }

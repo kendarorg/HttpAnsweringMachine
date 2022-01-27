@@ -133,7 +133,7 @@ public abstract class StaticWebFilter implements FilteringClass {
       response.setResponseBytes((byte[]) resourceFiles.get(resourcePath));
     } else if (!stringPath.endsWith(".md")) {
       response.setResponseText(new String((byte[]) resourceFiles.get(resourcePath)));
-    } else if (stringPath.endsWith(".md")) {
+    } else {
       response.setResponseText(
           renderMarkdown(null, new String((byte[]) resourceFiles.get(resourcePath))));
     }
@@ -144,7 +144,7 @@ public abstract class StaticWebFilter implements FilteringClass {
       response.setResponseBytes(Files.readAllBytes(fullPath));
     } else if (!stringPath.endsWith(".md")) {
       response.setResponseText(Files.readString(fullPath));
-    } else if (stringPath.endsWith(".md")) {
+    } else {
       response.setResponseText(renderMarkdown(stringPath, Files.readString(fullPath)));
     }
   }

@@ -36,11 +36,10 @@ public class SSLController implements FilteringClass {
       pathAddress = "/api/ssl",
       method = "GET",
       id = "1008a4b4-277d-11ec-9621-0242ac130002")
-  public boolean getExtraServers(Request req, Response res) throws JsonProcessingException {
+  public void getExtraServers(Request req, Response res) throws JsonProcessingException {
     var domains = configuration.getConfiguration(SSLConfig.class).getDomains();
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(domains));
-    return false;
   }
 
   @HttpMethodFilter(
@@ -48,7 +47,7 @@ public class SSLController implements FilteringClass {
       pathAddress = "/api/ssl/{id}",
       method = "DELETE",
       id = "1009a4b4-277d-11ec-9621-0242ac130002")
-  public boolean removeDnsServer(Request req, Response res) {
+  public void removeDnsServer(Request req, Response res) {
     var cloned = configuration.getConfiguration(SSLConfig.class).copy();
 
     var name = req.getPathParameter("id");
@@ -63,7 +62,6 @@ public class SSLController implements FilteringClass {
     cloned.setDomains(newList);
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);
-    return false;
   }
 
   @HttpMethodFilter(
@@ -71,7 +69,7 @@ public class SSLController implements FilteringClass {
       pathAddress = "/api/ssl/swap/{id1}/{id2}",
       method = "PUT",
       id = "1010a4b4-277d-11ec-9621-0242ac130002")
-  public boolean swapDnsServer(Request req, Response res) {
+  public void swapDnsServer(Request req, Response res) {
     var cloned = configuration.getConfiguration(SSLConfig.class).copy();
     var domains = cloned.getDomains();
     var name1 = (req.getPathParameter("id1"));
@@ -88,7 +86,6 @@ public class SSLController implements FilteringClass {
     domains.set(id2Index, id1Clone);
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);
-    return false;
   }
 
   @HttpMethodFilter(
@@ -96,7 +93,7 @@ public class SSLController implements FilteringClass {
       pathAddress = "/api/ssl",
       method = "POST",
       id = "1011a4b4-277d-11ec-9621-0242ac130002")
-  public boolean addDnsServer(Request req, Response res) throws Exception {
+  public void addDnsServer(Request req, Response res) throws Exception {
     var cloned = configuration.getConfiguration(SSLConfig.class).copy();
     var newData = mapper.readValue(req.getRequestText(), SSLDomain.class);
     var domains = cloned.getDomains();
@@ -111,6 +108,5 @@ public class SSLController implements FilteringClass {
     cloned.setDomains(newList);
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);
-    return false;
   }
 }

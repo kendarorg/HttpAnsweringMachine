@@ -57,7 +57,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "GET",
       id = "5000daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean retrieveSingleLineData(Request req, Response res) throws IOException {
+  public void retrieveSingleLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
 
@@ -72,13 +72,11 @@ public class ReplayerAPISingleLine implements FilteringClass {
       if (singleLine.getId() == line) {
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(singleLine));
-        return true;
+        return;
       }
     }
     res.setStatusCode(404);
     res.setResponseText("Missing id " + id + " with line " + line);
-
-    return false;
   }
 
   @HttpMethodFilter(
@@ -86,7 +84,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "PUT",
       id = "5001daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean modifySingleLineData(Request req, Response res) throws IOException {
+  public void modifySingleLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
 
@@ -101,7 +99,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
         var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
         cloneToRow(destination, source);
         dataset.saveMods();
-        return true;
+        return;
       }
     }
     for (var destination : datasetContent.getDynamicRequests()) {
@@ -109,12 +107,11 @@ public class ReplayerAPISingleLine implements FilteringClass {
         var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
         cloneToRow(destination, source);
         dataset.saveMods();
-        return true;
+        return ;
       }
     }
     res.setStatusCode(404);
     res.setResponseText("Missing id " + id + " with line " + line);
-    return false;
   }
 
   @HttpMethodFilter(
@@ -122,7 +119,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "POST",
       id = "5002daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean addLineData(Request req, Response res) throws IOException {
+  public void addLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
 
@@ -136,14 +133,14 @@ public class ReplayerAPISingleLine implements FilteringClass {
       if (destination.getId() == line) {
         res.setStatusCode(409);
         res.setResponseText("Duplicate id");
-        return true;
+        return;
       }
     }
     for (var destination : datasetContent.getDynamicRequests()) {
       if (destination.getId() == line) {
         res.setStatusCode(409);
         res.setResponseText("Duplicate id");
-        return true;
+        return;
       }
     }
 
@@ -151,7 +148,6 @@ public class ReplayerAPISingleLine implements FilteringClass {
     datasetContent.getDynamicRequests().add(source);
     dataset.saveMods();
     res.setStatusCode(200);
-    return false;
   }
 
   @HttpMethodFilter(
@@ -159,7 +155,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "DELETE",
       id = "5003daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean deleteSingleLineData(Request req, Response res) throws IOException {
+  public void deleteSingleLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
 
@@ -172,7 +168,6 @@ public class ReplayerAPISingleLine implements FilteringClass {
     dataset.delete(line);
     dataset.saveMods();
     res.setStatusCode(200);
-    return false;
   }
 
   private void cloneToRow(ReplayerRow destination, ReplayerRow source) {

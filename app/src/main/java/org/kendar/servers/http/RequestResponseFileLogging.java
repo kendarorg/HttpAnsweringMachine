@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -29,6 +28,7 @@ public class RequestResponseFileLogging implements FilteringClass {
   private final Logger dynamicLogger;
   private final FileResourcesUtils fileResourcesUtils;
   private final JsonConfiguration configuration;
+  private final Logger logger;
   private String roundtripsPath;
 
   public RequestResponseFileLogging(
@@ -42,6 +42,7 @@ public class RequestResponseFileLogging implements FilteringClass {
     this.staticLogger = loggerBuilder.build(StaticRequest.class);
     this.dynamicLogger = loggerBuilder.build(DynamicReqest.class);
     this.configuration = configuration;
+    this.logger = loggerBuilder.build(RequestResponseFileLogging.class);
   }
 
   @Override
@@ -50,21 +51,20 @@ public class RequestResponseFileLogging implements FilteringClass {
   }
 
   @PostConstruct
-  public void init() {
-    try {
+  public void init() throws Exception {
       var config = configuration.getConfiguration(GlobalConfig.class);
       roundtripsPath = fileResourcesUtils.buildPath(config.getLogging().getLogRoundtripsPath());
       var np = Path.of(roundtripsPath);
       var dirPath = new File(np.toString());
       if(!dirPath.exists()){
-        dirPath.mkdir();
+
+        if(!dirPath.mkdir()){
+          throw new Exception("Unable to generate dir "+ dirPath);
+        }
       }
       if (!Files.isDirectory(np)) {
         Files.createDirectory(np);
       }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   @HttpMethodFilter(
@@ -128,7 +128,7 @@ public class RequestResponseFileLogging implements FilteringClass {
       myWriter.write("==========================\n");
       myWriter.close();
     } catch (Exception ex) {
-
+      logger.trace(ex.getMessage());
     }
     serReq.setRequestBytes(rb);
     serReq.setRequestText(rt);

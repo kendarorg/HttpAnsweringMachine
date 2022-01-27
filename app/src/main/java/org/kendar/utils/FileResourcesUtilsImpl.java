@@ -210,14 +210,17 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
           }
         }
       } catch (Exception e) {
+        logger.trace(e.getMessage());
       }
     }
   }
 
   private void loadDirFromJar(
       String path, HashMap<String, Object> result, File jarFile, File apps) {
-    if(apps ==null || apps.listFiles()==null) return;
-    for (File app : apps.listFiles()) {
+    if(apps ==null ) return;
+    var listFiles = apps.listFiles();
+    if(listFiles==null) return;
+    for (File app : listFiles) {
       if (app.isDirectory()) {
         loadDirFromJar(path, result, jarFile, app);
       } else {
@@ -240,7 +243,7 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
         result.put(internalpath, bytes);
       }
     } catch (Exception ex) {
-
+      logger.trace(ex.getMessage());
     }
   }
 }

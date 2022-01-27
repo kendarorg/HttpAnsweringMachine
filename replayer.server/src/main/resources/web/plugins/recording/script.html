@@ -188,8 +188,8 @@
 
     function executeAct(action,type){
         var id = getUrlParameter("id");
-        var type = type=="recording"?"record":"replay";
-        var url = "/api/plugins/replayer/recording/"+id+"/"+type+"/"+action;
+        var usedType = type=="recording"?"record":"replay";
+        var url = "/api/plugins/replayer/recording/"+id+"/"+usedType+"/"+action;
         $.ajax({
             url: url,
             type: 'GET',

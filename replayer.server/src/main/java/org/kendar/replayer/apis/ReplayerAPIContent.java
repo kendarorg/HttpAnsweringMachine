@@ -14,17 +14,14 @@ import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
-import org.kendar.servers.http.MultipartPart;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MimeTypeUtils;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 
@@ -62,7 +59,7 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "GET",
       id = "3004daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean retrieveContent(Request req, Response res) throws IOException {
+  public void retrieveContent(Request req, Response res) throws IOException {
     var id = getPathParameter(req, "id");
     var line = Integer.parseInt(getPathParameter(req, "line"));
     var requestOrResponse = getPathParameter(req, "requestOrResponse");
@@ -76,17 +73,16 @@ public class ReplayerAPIContent implements FilteringClass {
 
     for (var singleLine : datasetContent.getStaticRequests()) {
       if (sendBackContent(res, line, requestOrResponse, singleLine)) {
-        return true;
+        return;
       }
     }
     for (var singleLine : datasetContent.getDynamicRequests()) {
       if (sendBackContent(res, line, requestOrResponse, singleLine)) {
-        return true;
+        return;
       }
     }
     res.setStatusCode(404);
     res.setResponseText("Missing id " + id + " with line " + line);
-    return false;
   }
 
   private String getPathParameter(Request req, String id) {
@@ -166,7 +162,7 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "DELETE",
       id = "3005daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean deleteConent(Request req, Response res) throws IOException {
+  public void deleteConent(Request req, Response res) throws IOException {
     var id = getPathParameter(req, "id");
     var line = Integer.parseInt(getPathParameter(req, "line"));
     var requestOrResponse = getPathParameter(req, "requestOrResponse");
@@ -181,18 +177,17 @@ public class ReplayerAPIContent implements FilteringClass {
     for (var singleLine : datasetContent.getStaticRequests()) {
       if (deleted(res, line, requestOrResponse, singleLine)) {
         dataset.saveMods();
-        return true;
+        return;
       }
     }
     for (var singleLine : datasetContent.getDynamicRequests()) {
       if (deleted(res, line, requestOrResponse, singleLine)) {
         dataset.saveMods();
-        return true;
+        return;
       }
     }
     res.setStatusCode(404);
     res.setResponseText("Missing id " + id + " with line " + line);
-    return false;
   }
 
   @HttpMethodFilter(
@@ -200,7 +195,7 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "POST",
       id = "3006daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean modifyConent(Request req, Response res)
+  public void modifyConent(Request req, Response res)
       throws IOException, NoSuchAlgorithmException {
     var id = getPathParameter(req, "id");
     var line = Integer.parseInt(getPathParameter(req, "line"));
@@ -216,18 +211,17 @@ public class ReplayerAPIContent implements FilteringClass {
     for (var singleLine : datasetContent.getStaticRequests()) {
       if (updated( line, requestOrResponse, singleLine, data)) {
         dataset.saveMods();
-        return true;
+        return;
       }
     }
     for (var singleLine : datasetContent.getDynamicRequests()) {
       if (updated( line, requestOrResponse, singleLine, data)) {
         dataset.saveMods();
-        return true;
+        return;
       }
     }
     res.setStatusCode(404);
     res.setResponseText("Missing id " + id + " with line " + line);
-    return false;
   }
 
   private boolean updated(

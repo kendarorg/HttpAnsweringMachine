@@ -214,7 +214,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
       }
       sendResponse(response, httpExchange);
     } catch (Exception xx) {
-
+      logger.trace(xx.getMessage());
     }
   }
 
@@ -268,7 +268,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
             os.flush();
             os.close();
         } catch (Exception ex) {
-
+          logger.trace(ex.getMessage());
         }
       }
     } catch (Exception ex) {

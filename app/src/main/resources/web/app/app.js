@@ -136,7 +136,7 @@ class SimpleGrid {
         }
 
         toWrite += `</tr>`;
-        ;
+
         var self = this;
         $("#" + this.tableId + " > tbody:last-child").append(toWrite);
         if (addbutton == true) {
@@ -377,7 +377,7 @@ var splitOnFirst =function(str, sep) {
 
 /**
  *
- * @param target
+ * @param files
  * @param callback function(dataArray)
  * @param callbackError function(error)
  * @returns {Promise<void>}

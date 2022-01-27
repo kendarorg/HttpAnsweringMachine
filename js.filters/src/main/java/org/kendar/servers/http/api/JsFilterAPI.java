@@ -28,7 +28,7 @@ public class JsFilterAPI implements FilteringClass {
   private final JsonConfiguration configuration;
   private final Logger logger;
   private final FileResourcesUtils fileResourcesUtils;
-  private EventQueue eventQueue;
+  private final EventQueue eventQueue;
   final ObjectMapper mapper = new ObjectMapper();
 
   public JsFilterAPI(JsonConfiguration configuration,
@@ -51,8 +51,8 @@ public class JsFilterAPI implements FilteringClass {
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/jsfilter",
       method = "GET",
-      id = "1000a4b4-297id-11ec-9621-0242ac130002")
-  public boolean getJsFiltersList(Request req, Response res) throws JsonProcessingException {
+      id = "1000a4b4-297id-11ec-9yy1-0242ac130002")
+  public void getJsFiltersList(Request req, Response res) throws JsonProcessingException {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
 
     var result = new ArrayList<String>();
@@ -79,7 +79,6 @@ public class JsFilterAPI implements FilteringClass {
     }
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(result));
-    return false;
   }
 
   @HttpMethodFilter(
@@ -87,7 +86,7 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/{filtername}",
           method = "GET",
           id = "1000a4b4-297id-11ec-9777-0242ac130002")
-  public boolean getJsFilter(Request req, Response res) {
+  public void getJsFilter(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
 
@@ -104,14 +103,13 @@ public class JsFilterAPI implements FilteringClass {
     } catch (Exception e) {
       logger.error("Error reading js filter " + jsFilterDescriptor, e);
     }
-    return false;
   }
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/jsfilter/{filtername}",
           method = "POST",
           id = "1000a4b4-297id-11rr-9777-0242ac130002")
-  public boolean saveJsFilter(Request req, Response res) {
+  public void saveJsFilter(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
 
@@ -127,7 +125,6 @@ public class JsFilterAPI implements FilteringClass {
     } catch (Exception e) {
       logger.error("Error reading js filter " + jsFilterDescriptor, e);
     }
-    return false;
   }
 
   private String loadScriptId(String realPath, String fullPath){
@@ -164,14 +161,14 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/{filtername}/{file}",
           method = "GET",
           id = "1000a4b4-47id-11ec-9777-0242ac130002")
-  public boolean getJsFilterFile(Request req, Response res) {
+  public void getJsFilterFile(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
     var fileId = req.getPathParameter("file");
     if(fileId==null || fileId.isEmpty()){
       res.addHeader("Content-type", "text/plain");
       res.setResponseText("");
-      return false;
+      return;
     }
 
 
@@ -187,7 +184,6 @@ public class JsFilterAPI implements FilteringClass {
     } catch (Exception e) {
       logger.error("Error reading js filter " + jsFilterDescriptor, e);
     }
-    return false;
   }
 
   @HttpMethodFilter(
@@ -195,7 +191,7 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/{filtername}/{file}",
           method = "POST",
           id = "10iyh4b4-47id-11ec-9777-0242ac130002")
-  public boolean putJsFilterFile(Request req, Response res) {
+  public void putJsFilterFile(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
     var fileId = req.getPathParameter("file");
@@ -217,6 +213,7 @@ public class JsFilterAPI implements FilteringClass {
                 result.getRequires()) {
           if(require.equalsIgnoreCase(fileId)){
             founded=true;
+            break;
           }
         }
       }else{
@@ -235,6 +232,5 @@ public class JsFilterAPI implements FilteringClass {
     } catch (Exception e) {
       logger.error("Error reading js filter " + jsFilterDescriptor, e);
     }
-    return false;
   }
 }

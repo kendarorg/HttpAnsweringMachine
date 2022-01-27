@@ -24,10 +24,7 @@ import java.util.Locale;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class JsFilterGeneratorAPI implements FilteringClass {
-    private final JsonConfiguration configuration;
     private final Logger logger;
-    private final FileResourcesUtils fileResourcesUtils;
-    private final EventQueue eventQueue;
     private final HashMap<String,BaseGenerator> generators;
     final ObjectMapper mapper = new ObjectMapper();
 
@@ -47,9 +44,6 @@ public class JsFilterGeneratorAPI implements FilteringClass {
             this.generators.put(bg.getType(),bg);
         }
         this.logger = loggerBuilder.build(JsFilterAPI.class);
-        this.configuration = configuration;
-        this.fileResourcesUtils = fileResourcesUtils;
-        this.eventQueue = eventQueue;
     }
 
     @HttpMethodFilter(
@@ -57,7 +51,7 @@ public class JsFilterGeneratorAPI implements FilteringClass {
             pathAddress = "/api/plugins/jsfiltergen/generate/{recording}/{line}/{type}",
             method = "GET",
             id = "1000a4b4-297id-11ec-9621-02galac130002")
-    public boolean getJsFiltersList(Request req, Response res) throws JsonProcessingException {
+    public void getJsFiltersList(Request req, Response res) {
         var type = req.getPathParameter("type").toLowerCase(Locale.ROOT);
         var recording = req.getPathParameter("recording");
         var line = Integer.parseInt(req.getPathParameter("line"));
@@ -70,7 +64,6 @@ public class JsFilterGeneratorAPI implements FilteringClass {
         res.addHeader("Content-Disposition",fileName);
         res.addHeader("content-type","text/plain");
         res.setStatusCode(200);
-        return false;
     }
 
     @HttpMethodFilter(
@@ -78,7 +71,7 @@ public class JsFilterGeneratorAPI implements FilteringClass {
             pathAddress = "/api/plugins/jsfiltergen/generators",
             method = "GET",
             id = "1000a777297id-11ecfluk1-0242ac130002")
-    public boolean getGenerators(Request req, Response res) throws JsonProcessingException {
+    public void getGenerators(Request req, Response res) throws JsonProcessingException {
         var result = new ArrayList<GeneratorModel>();
         for (var generator :
                 this.generators.values()) {
@@ -91,6 +84,5 @@ public class JsFilterGeneratorAPI implements FilteringClass {
         res.setResponseText(mapper.writeValueAsString(result));
         res.addHeader("content-type","application/json");
         res.setStatusCode(200);
-        return false;
     }
 }

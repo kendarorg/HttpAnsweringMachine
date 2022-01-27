@@ -117,12 +117,10 @@
     var requires_list = new SimpleGrid("Query","requires_list","id",["id","value"],
         null,
         function (table,id) {
-            var localTable = table;
-            localTable.data.forEach(function (value, i) {
+            table.data.forEach(function (value, i) {
                 if (value["id"] == id) {
                     location.href="text.html?id="+getUrlParameter("id")+
                         "&file="+value["value"]+"&action=edit";
-                    return;
                 }
             });
 
@@ -148,7 +146,7 @@
         type: 'GET',
         success: function (res) {
             $("#id").val(res['id']);
-            $("#method").val(res['method']).change();;
+            $("#method").val(res['method']).change();
             $("#hostAddress").val(res['hostAddress']);
             $("#hostRegexp").val(res['hostRegexp']);
             $("#pathAddress").val(res['pathAddress']);
@@ -193,7 +191,7 @@
         var requires = [];
         for (var i = 0; i < requires_list.data.length; i++) {
             requires.push(requires_list.data[i]["value"]);
-        };
+        }
 
 
         var data = {

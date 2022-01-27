@@ -30,7 +30,7 @@ public class ReplayerAPIActions implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/record/{action}",
             method = "GET",id="3000daa6-277f-11ec-9621-0242ac1afe002")
-    public boolean recording(Request req, Response res) throws IOException {
+    public void recording(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var action = req.getPathParameter("action");
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
@@ -44,13 +44,12 @@ public class ReplayerAPIActions implements FilteringClass {
                 (replayerStatus.getStatus()==ReplayerState.RECORDING||replayerStatus.getStatus()==ReplayerState.PAUSED_RECORDING)){
             replayerStatus.stopAndSave();
         }
-        return false;
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/replay/{action}",
             method = "GET",id="3001daa6-277f-11ec-9621-0242ac1afe002")
-    public boolean replaying(Request req, Response res) throws IOException {
+    public void replaying(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var action = req.getPathParameter("action");
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
@@ -63,6 +62,5 @@ public class ReplayerAPIActions implements FilteringClass {
                 (replayerStatus.getStatus()==ReplayerState.REPLAYING||replayerStatus.getStatus()==ReplayerState.PAUSED_REPLAYING)){
             replayerStatus.stopReplaying();
         }
-        return false;
     }
 }

@@ -34,7 +34,7 @@ public class PluginsApi implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins",
             method = "GET",id="1zty7a4b4-277d-11ec-9621-0242ac130002")
-    public boolean getStatus(Request req, Response res) throws JsonProcessingException {
+    public void getStatus(Request req, Response res) throws JsonProcessingException {
         var result = new ArrayList<PluginDescriptor>();
         for(var item : pluginsInitializer.getPluginAddresses().entrySet()){
             result.add(new PluginDescriptor(item.getKey(),item.getValue()));
@@ -42,6 +42,5 @@ public class PluginsApi implements FilteringClass {
 
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(result));
-        return false;
     }
 }
