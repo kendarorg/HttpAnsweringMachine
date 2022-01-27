@@ -84,7 +84,7 @@ public class ValidatorAPI implements FilteringClass {
         var code = 200;
         for (var message : errors) {
             result.setError(true);
-            code = 500;
+            code = 200;
             result.getErrors().add(message.getMessage());
         }
         res.addHeader("Content-type", "application/json");
@@ -138,7 +138,7 @@ public class ValidatorAPI implements FilteringClass {
         res.setStatusCode(200);
         res.addHeader("Content-type", "application/json");
         if(result.getErrors().size()>0) {
-            res.setStatusCode(500);
+            res.setStatusCode(200);
         }
         res.setResponseText(mapper.writeValueAsString(result));
     }
