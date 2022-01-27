@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class ValidatorAPITest {
+public class ValidatorAPITestJson {
     private final String S_VALID = "{\n" +
             "  \"firstName\": \"John\",\n" +
             "  \"lastName\": \"Doe\",\n" +
