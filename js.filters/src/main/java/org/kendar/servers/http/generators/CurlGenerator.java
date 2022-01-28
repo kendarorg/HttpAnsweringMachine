@@ -28,25 +28,31 @@ public class CurlGenerator implements BaseGenerator{
         result.add("#!/bin/sh");
 
         var dataFile = UUID.randomUUID() +".data";
-        if(!request.isBinaryRequest()){
+        var hasData = false;
+        if(request.isBinaryRequest() && request.getRequestBytes()!=null && request.getRequestBytes().length>0){
             var base64Bytes = new String(Base64.getEncoder().encode(request.getRequestBytes()));
             result.add("echo '"+base64Bytes+"' |base64 -d -o "+dataFile);
+            hasData = true;
+        }else if(request.getRequestText()!=null && !request.getRequestText().isEmpty()){
+            var straightText = request.getRequestText();
+            result.add("echo '"+straightText+"' |base64 -d -o "+dataFile);
+            hasData = true;
         }
 
-        var target = request.getProtocol()+"://"+request.getHost()+":"+request.getPort()+"/"+request.getPath();
+        var port = request.getPort()>0?":"+request.getPort():"";
+        var target = request.getProtocol()+"://"+request.getHost()+port+request.getPath();
         target+="?"+ request.getQuery().entrySet().stream().map(e->e.getKey()+"="+e.getValue()).collect(Collectors.joining("&"));
-        result.add("curl -X "+request.getMethod().toUpperCase(Locale.ROOT)+"\\");
+        result.add("curl --insecure -X "+request.getMethod().toUpperCase(Locale.ROOT)+" \\");
         for (var head :
                 request.getHeaders().entrySet()){
-            result.add("\t-H '"+head.getKey()+":"+head.getValue()+"'\\");
+            result.add("\t-H '"+head.getKey()+":"+head.getValue()+"' \\");
         }
-        if((request.getRequestBytes()!=null &&request.getRequestBytes().length>0 ) ||
-                (request.getRequestText()!=null && request.getRequestText().length()>0)){
-            result.add("\t-F 'file=@/"+dataFile+"'\\");
+        if(hasData){
+            result.add("\t-F 'file=@/"+dataFile+"' \\");
         }
         for (var postParameter :
                 request.getPostParameters().entrySet()){
-            result.add("\t-F \""+postParameter.getKey()+"="+postParameter.getValue()+"\"\\");
+            result.add("\t-F \""+postParameter.getKey()+"="+postParameter.getValue()+"\" \\");
         }
         result.add("\t"+target);
 
