@@ -11,7 +11,7 @@ import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.api.model.FilterDto;
-import org.kendar.servers.http.configurations.FilterConfig;
+import org.kendar.http.FilterConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.context.ApplicationContext;

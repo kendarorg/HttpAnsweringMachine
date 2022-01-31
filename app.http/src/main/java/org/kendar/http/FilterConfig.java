@@ -1,4 +1,4 @@
-package org.kendar.servers.http.configurations;
+package org.kendar.http;
 
 import org.springframework.stereotype.Component;
 

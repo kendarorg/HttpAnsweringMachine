@@ -71,19 +71,18 @@ public class OidcController implements FilteringClass {
     return URLEncoder.encode(s, StandardCharsets.UTF_8);
   }
 
-  private static Response response401(Response res) {
+  private static void response401(Response res) {
     // Map<String,String> responseHeaders = new HashMap<>();
     res.addHeader("Content-Type", "text/html");
     res.addHeader("WWW-Authenticate", "Basic realm=\"Fake OIDC server\"");
     res.setResponseText("<html><body><h1>401 Unauthorized</h1>Fake OIDC server</body></html>");
     res.setStatusCode(STATUS_UNAUTHORIZED);
-    return res;
   }
 
-  private static Response setJsonResponse(int code, Object data, Response res) {
+  private void setJsonResponse(int code, Object data, Response res) {
     res.setStatusCode(code);
     if (data == null) {
-      return res;
+      return;
     }
 
     res.setStatusCode(code);
@@ -96,7 +95,6 @@ public class OidcController implements FilteringClass {
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
-    return res;
   }
 
   @Override
@@ -128,7 +126,7 @@ public class OidcController implements FilteringClass {
       pathAddress = AUTHORIZATION_ENDPOINT,
       method = "GET",
       id = "2004daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean authorize(Request req, Response res)
+  public void authorize(Request req, Response res)
       throws JOSEException, NoSuchAlgorithmException {
     var client_id = req.getRequestParameter("client_id");
     var redirect_uri = req.getRequestParameter("redirect_uri");
@@ -213,7 +211,6 @@ public class OidcController implements FilteringClass {
         response401(res);
       }
     }
-    return false;
   }
 
   /**
@@ -225,7 +222,7 @@ public class OidcController implements FilteringClass {
       pathAddress = METADATA_ENDPOINT,
       method = "GET",
       id = "1facdaa6-277f-11ec-9621-0242ac1afe002")
-  public boolean metadata(/*UriComponentsBuilder uriBuilder,*/ Request req, Response res) {
+  public void metadata(/*UriComponentsBuilder uriBuilder,*/ Request req, Response res) {
     log.info("called " + METADATA_ENDPOINT + " from {}", req.getRemoteHost());
     String urlPrefix = "https://" + serverAddress + "/api/plugins/oidc";
     Map<String, Object> m = new LinkedHashMap<>();
@@ -252,7 +249,6 @@ public class OidcController implements FilteringClass {
         "code_challenge_methods_supported",
         Arrays.asList("plain", "S256")); // PKCE support advertised
     setJsonResponse(200, m, res);
-    return false;
   }
 
   /** Provides JSON Web Key Set containing the public part of the key used to sign ID tokens. */
@@ -261,10 +257,9 @@ public class OidcController implements FilteringClass {
       pathAddress = JWKS_ENDPOINT,
       method = "GET",
       id = "2000daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean jwks(Request req, Response res) {
+  public void jwks(Request req, Response res) {
     log.info("called " + JWKS_ENDPOINT + " from {}", req.getRemoteHost());
     res.setResponseText(publicJWKSet.toString());
-    return false;
   }
 
   /** Provides claims about a user. Requires a valid access token. */
@@ -273,7 +268,7 @@ public class OidcController implements FilteringClass {
       pathAddress = USERINFO_ENDPOINT,
       method = "GET",
       id = "2001daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean userinfo(Request req, Response res) {
+  public void userinfo(Request req, Response res) {
     var auth = req.getRequestParameter("Authorization");
     var access_token = req.getRequestParameter("access_token");
     log.info("called " + USERINFO_ENDPOINT + " from {}", req.getRemoteHost());
@@ -281,7 +276,7 @@ public class OidcController implements FilteringClass {
       if (access_token == null) {
         res.setStatusCode(STATUS_UNAUTHORIZED);
         res.setResponseText("No token");
-        return false;
+        return;
       }
       auth = access_token;
     } else {
@@ -291,7 +286,7 @@ public class OidcController implements FilteringClass {
     if (accessTokenInfo == null) {
       res.setStatusCode(STATUS_UNAUTHORIZED);
       res.setResponseText("access token not found");
-      return false;
+      return;
     }
     Set<String> scopes = setFromSpaceSeparatedString(accessTokenInfo.scope);
     Map<String, Object> m = new LinkedHashMap<>();
@@ -307,7 +302,6 @@ public class OidcController implements FilteringClass {
       m.put("email", user.getEmail());
     }
     setJsonResponse(200, m, res);
-    return false;
   }
 
   /** Provides information about a supplied access token. */
@@ -316,7 +310,7 @@ public class OidcController implements FilteringClass {
       pathAddress = INTROSPECTION_ENDPOINT,
       method = "POST",
       id = "2002daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean introspection(Request req, Response res) {
+  public void introspection(Request req, Response res) {
     var auth = req.getRequestParameter("Authorization");
     var token = req.getRequestParameter("token");
     log.info("called " + INTROSPECTION_ENDPOINT + " from {}", req.getRemoteHost());
@@ -341,7 +335,6 @@ public class OidcController implements FilteringClass {
       m.put("iss", accessTokenInfo.iss);
     }
     setJsonResponse(200, m, res);
-    return false;
   }
 
   /** Provides token endpoint. */
@@ -350,7 +343,7 @@ public class OidcController implements FilteringClass {
       pathAddress = TOKEN_ENDPOINT,
       method = "POST",
       id = "2003daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean token(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
+  public void token(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
     var grant_type = req.getRequestParameter("grant_type");
     var code = req.getRequestParameter("code");
     var redirect_uri = req.getRequestParameter("redirect_uri");
@@ -366,22 +359,22 @@ public class OidcController implements FilteringClass {
         client_id);
     if (!"authorization_code".equals(grant_type)) {
       jsonError(res, "unsupported_grant_type", "grant_type is not authorization_code");
-      return false;
+      return;
     }
     CodeInfo codeInfo = authorizationCodes.get(code);
     if (codeInfo == null) {
       jsonError(res, "invalid_grant", "code not valid");
-      return false;
+      return ;
     }
     if (!redirect_uri.equals(codeInfo.redirect_uri)) {
       jsonError(res, "invalid_request", "redirect_uri not valid");
-      return false;
+      return ;
     }
     if (codeInfo.codeChallenge != null) {
       // check PKCE
       if (code_verifier == null) {
         jsonError(res, "invalid_request", "code_verifier missing");
-        return false;
+        return;
       }
       if ("S256".equals(codeInfo.codeChallengeMethod)) {
         MessageDigest s256 = MessageDigest.getInstance("SHA-256");
@@ -395,7 +388,7 @@ public class OidcController implements FilteringClass {
               hashedVerifier,
               codeInfo.codeChallenge);
           jsonError(res, "invalid_request", "code_verifier not correct");
-          return false;
+          return;
         }
         log.info("code_verifier OK");
       } else {
@@ -405,7 +398,7 @@ public class OidcController implements FilteringClass {
               code_verifier,
               codeInfo.codeChallenge);
           jsonError(res, "invalid_request", "code_verifier not correct");
-          return false;
+          return;
         }
       }
     }
@@ -423,7 +416,6 @@ public class OidcController implements FilteringClass {
             codeInfo.iss, codeInfo.user, codeInfo.client_id, codeInfo.nonce, accessToken));
 
     setJsonResponse(200, map, res);
-    return false;
   }
 
   private String createAuthorizationCode(
@@ -514,12 +506,12 @@ public class OidcController implements FilteringClass {
     return new HashSet<>(Arrays.asList(s.split(" ")));
   }
 
-  private Response jsonError(Response res, String error, String error_description) {
+  private void jsonError(Response res, String error, String error_description) {
     log.warn("error={} error_description={}", error, error_description);
     Map<String, String> map = new LinkedHashMap<>();
     map.put("error", error);
     map.put("error_description", error_description);
-    return setJsonResponse(STATUS_BAD_REQUEST, map, res);
+    setJsonResponse(STATUS_BAD_REQUEST, map, res);
   }
 
   private static class AccessTokenInfo {

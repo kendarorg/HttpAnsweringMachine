@@ -126,13 +126,93 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <!--
+            https://jitpack.io/com/github/saasquatch/json-schema-inferrer/
+            https://github.com/saasquatch/json-schema-inferrer
+            -->
+            <groupId>com.github.saasquatch</groupId>
+            <artifactId>json-schema-inferrer</artifactId>
+            <version>0.1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jsonSchema</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${version.common-lang3}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.networknt</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${json.schema.validator.version}</version>
+        </dependency>
+        <!--<dependency>
 
+            https://jitpack.io/com/github/wiztools/xsd-gen/
+            https://github.com/wiztools/xsd-gen
+
+            <groupId>com.github.wiztools</groupId>
+            <artifactId>xsd-gen</artifactId>
+            <version>0.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.io7m.xom</groupId>
+            <artifactId>xom</artifactId>
+            <version>1.2.10</version>
+        </dependency>-->
 
     </dependencies>
 
     <build>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install-inferrer</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <repositoryLayout>default</repositoryLayout>
+                            <groupId>com.github.saasquatch</groupId>
+                            <artifactId>json-schema-inferrer</artifactId>
+                            <version>0.1.4</version>
+                            <file>../externals/json-schema-inferrer-0.1.4.jar</file>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>
+                    <!--<execution>
+                        <id>install-external-xsd</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <repositoryLayout>default</repositoryLayout>
+                            <groupId>com.github.wiztools</groupId>
+                            <artifactId>xsd-gen</artifactId>
+                            <version>0.2.4</version>
+                            <file>../externals/xsd-gen-0.2.4.jar</file>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>-->
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.0.2</version>

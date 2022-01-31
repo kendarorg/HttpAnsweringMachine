@@ -14,22 +14,24 @@ import org.kendar.replayer.apis.models.LocalRecording;
 import org.kendar.replayer.apis.models.ScriptData;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerResult;
+import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.models.JsonFileData;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Locale;
 
 @Component
@@ -71,7 +73,7 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording",
       method = "GET",
       id = "4000daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean listAllLocalRecordings(Request req, Response res) throws JsonProcessingException {
+  public void listAllLocalRecordings(Request req, Response res) throws JsonProcessingException {
     var realPath = fileResourcesUtils.buildPath(replayerData);
     var f = new File(realPath);
     var pathNames = f.list();
@@ -93,7 +95,6 @@ public class ReplayerAPICrud implements FilteringClass {
     }
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(listOfItems));
-    return false;
   }
 
   @HttpMethodFilter(
@@ -101,7 +102,7 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}",
       method = "GET",
       id = "4001daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean listAllRecordingSteps(Request req, Response res) throws IOException {
+  public void listAllRecordingSteps(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
 
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
@@ -110,9 +111,9 @@ public class ReplayerAPICrud implements FilteringClass {
         new ReplayerDataset(id, rootPath.toString(), null, loggerBuilder, null, md5Tester);
     var datasetContent = dataset.load();
     ListAllRecordList result = new ListAllRecordList(datasetContent, id);
+    result.getLines().sort(Comparator.comparingInt(ReplayerRow::getId));
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(result));
-    return false;
   }
 
   @HttpMethodFilter(
@@ -120,14 +121,13 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}",
       method = "DELETE",
       id = "4002daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean deleteRecordin(Request req, Response res) throws IOException {
+  public void deleteRecordin(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
     if (Files.exists(rootPath)) {
       Files.delete(rootPath);
     }
     res.setStatusCode(200);
-    return false;
   }
 
   @HttpMethodFilter(
@@ -135,7 +135,7 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}",
       method = "PUT",
       id = "4003daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean updateRecord(Request req, Response res) throws IOException {
+  public void updateRecord(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
     if (Files.exists(rootPath)) {
@@ -148,7 +148,6 @@ public class ReplayerAPICrud implements FilteringClass {
       Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
     }
     res.setStatusCode(200);
-    return false;
   }
 
   @HttpMethodFilter(
@@ -156,54 +155,26 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording",
       method = "POST",
       id = "4004daa6-277f-11ec-9621-0242ac1afe002")
-  public boolean uploadRecording(Request req, Response res) throws Exception {
+  public void uploadRecording(Request req, Response res) throws Exception {
+    JsonFileData jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
+    var fileFullPath = jsonFileData.getName();
 
-    if (req.getMultipartData() != null && req.getMultipartData().size() == 0) {
-      var scriptName = (String) req.getRequestText();
-      var crud = new ReplayerResult();
-      crud.setDescription(scriptName);
-      crud.setDynamicRequests(new ArrayList<>());
-      crud.setStaticRequests(new ArrayList<>());
-      crud.setErrors(new ArrayList<>());
+    var scriptName = fileFullPath.substring(0, fileFullPath.lastIndexOf('.'));
+    var crud = mapper.readValue(jsonFileData.readAsString(),ReplayerResult.class);
+    crud.setDescription(scriptName);
 
-      var dirPath = new File(Path.of(fileResourcesUtils.buildPath(replayerData)).toString());
-      if(!dirPath.exists()){
-        dirPath.mkdir();
-      }
-      var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, scriptName + ".json"));
-      var resultInFile = mapper.writeValueAsString(crud);
-      Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
-      logger.info("Uploaded replayer binary script " + rootPath);
-      res.setStatusCode(200);
-    } else if (req.getMultipartData() != null) {
-      for (var mp : req.getMultipartData()) {
-        if (!mp.isFile()) continue;
-        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, mp.getFileName()));
-        if (!rootPath.toString().toLowerCase(Locale.ROOT).endsWith(".json")) {
-          res.setStatusCode(500);
-          return false;
-        }
-        try {
-
-          if (mp.getByteData() != null) {
-            Files.write(rootPath, mp.getByteData());
-            logger.info("Uploaded replayer binary script " + rootPath);
-          } else {
-            FileWriter myWriter = new FileWriter(rootPath.toString());
-            myWriter.write(mp.getStringData());
-            myWriter.close();
-            logger.info("Uploaded replayer text script " + rootPath);
-          }
-
-          res.setStatusCode(200);
-        } catch (Exception ex) {
-          res.addHeader("Content-type", "text/plain");
-          res.setResponseText(ex.getMessage());
-          res.setStatusCode(500);
-          return false;
-        }
+    var dirPath = new File(Path.of(fileResourcesUtils.buildPath(replayerData)).toString());
+    if(!dirPath.exists()){
+      if(!dirPath.mkdir()){
+        res.setResponseText("ERROR CREATING "+ dirPath);
+        res.setStatusCode(500);
+        return;
       }
     }
-    return false;
+    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, scriptName + ".json"));
+    var resultInFile = mapper.writeValueAsString(crud);
+    Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
+    logger.info("Uploaded replayer binary script " + rootPath);
+    res.setStatusCode(200);
   }
 }

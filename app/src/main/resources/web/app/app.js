@@ -8,7 +8,8 @@ if (Function.prototype.name === undefined) {
     });
 }
 
-var getUrlParameter = function (sParam) {
+var getUrlParameter = function (sParam,defaultVal) {
+    if(defaultVal===undefined)defaultVal=false;
     var sPageURL = window.location.search.substring(1),
         sURLVariables = sPageURL.split('&'),
         sParameterName,
@@ -21,7 +22,7 @@ var getUrlParameter = function (sParam) {
             return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
         }
     }
-    return false;
+    return defaultVal;
 };
 
 ///////////////////////     SIMPLE GRID
@@ -79,6 +80,9 @@ class SimpleGrid {
 
     appendToTable(inputData, addbutton = true) {
         var idContent = inputData[this.idField];
+        if (typeof idContent === 'string'){
+            idContent = idContent.replaceAll(".","_");
+        }
         for (var i = 0; i < this.data.length; i++) {
             var line = this.data[i];
             if (line[this.idField] == inputData[this.idField]) {
@@ -132,7 +136,7 @@ class SimpleGrid {
         }
 
         toWrite += `</tr>`;
-        ;
+
         var self = this;
         $("#" + this.tableId + " > tbody:last-child").append(toWrite);
         if (addbutton == true) {
@@ -184,6 +188,7 @@ var addKvp = function (modal, table, idField, valueField) {
     $(modal).find("#value").val(value[valueField]);
 }
 
+
 var editKvp = function (modal, table, id, idField, valueField) {
     var randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
     var randomIdInput = "INPUT" + Math.floor(Math.random() * 999999999);
@@ -233,7 +238,12 @@ var updateKvp = function (modal, table, id, idField, valueField) {
                 });
                 table.data.splice(i, 1);
                 table.data.splice(user[idField] - 1, 0, user);
-                $("#" + table.tableId + " #" + table.tableId + "-" + user[idField]).children(".userData").each(function () {
+
+                var userIdField = user[idField];
+                if (typeof userIdField === 'string'){
+                    userIdField = userIdField.replaceAll(".","_");
+                }
+                $("#" + table.tableId + " #" + table.tableId + "-" + userIdField).children(".userData").each(function () {
                     var attr = $(this).attr("name");
                     var value = $(this).val();
                     if (attr == idField) {
@@ -320,6 +330,26 @@ function buildGenericModal(modal, table, value, idField, extraContent, randomId,
     $(modal).modal("toggle");
 }
 
+function buildButtonlessModal(modal, table, value, idField, extraContent, randomId) {
+    //var encodedValue = value[valueField].replace('"','\\"');
+    $(modal).find(".modal-title").empty().append(`${table.objType}`);
+    var readonly = "readonly";
+
+    var bodyContent = `
+                <form id="editKvp" action="">
+                    <label for="key">Key</label>
+                    <input class="form-control" type="text" name="key" id="key" ${readonly} value="${value[idField]}"/>
+                `;
+    bodyContent += extraContent;
+    $(modal).find(".modal-body").empty().append(bodyContent);
+
+    $(modal).find(".modal-footer").empty().append(`
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </form>
+            `);
+    $(modal).modal("toggle");
+}
+
 var uuidv4 = function () {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
@@ -332,4 +362,54 @@ var success = function () {
 
 var error = function () {
     alert("Error");
+}
+
+/**
+ *
+ * @param str string to split
+ * @param sep separator
+ * @returns {*[]|*[]}
+ */
+var splitOnFirst =function(str, sep) {
+    const index = str.indexOf(sep);
+    return index < 0 ? [str] : [str.slice(0, index), str.slice(index + sep.length)];
+}
+
+/**
+ *
+ * @param files
+ * @param callback function(dataArray)
+ * @param callbackError function(error)
+ * @returns {Promise<void>}
+ */
+var uploadAsyncFile = async function (files,callback,callbackError) {
+
+    var filesLoaded = [];
+    if (files && files.length) {
+        try {
+            for (var i = 0; i < files.length; i++) {
+                const uploadedImageBase64 = await convertFileToBase64(files[i], callback);
+                filesLoaded.push( {
+                    data:splitOnFirst(uploadedImageBase64,",")[1],
+                    name:files[i].name,
+                    type:files[i].type
+                })
+            }
+
+            callback(filesLoaded);
+        } catch (exception) {
+            callbackError(exception);
+        }
+    }else{
+        callbackError("No files to upload")
+    }
+}
+
+var convertFileToBase64 = function(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+    });
 }

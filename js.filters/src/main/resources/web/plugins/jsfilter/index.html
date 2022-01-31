@@ -39,7 +39,6 @@
             <table class="table table-striped" id="scriptTable">
                 <tr>
                     <th>Name</th>
-                    <th>State</th>
                     <th colspan="2"></th>
                 </tr>
             </table>
@@ -48,16 +47,17 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
-    var scriptsTable = new SimpleGrid("Script","scriptTable","id",["id","state"],
+    var scriptsTable = new SimpleGrid("Script","scriptTable","id",["id"],
         function(table){
             $.ajax({
-                url: "/api/plugins/replayer/recording",
+                url: "/api/plugins/jsfilter",
                 type: 'GET',
                 success: function(res) {
                     $.each(res, function(i, script) {
                         //tSource,tableId,id,data,fields
                         //table.appendToTable({id:"test"});
-                        table.appendToTable(script);
+                        var real = {id:script};
+                        table.appendToTable(real);
                     });
                 }
             });
@@ -84,50 +84,64 @@
         document.getElementById("uploadScript").click();
     });
     $("#uploadScript").change(function(){
-        var files = $('#uploadScript')[0].files;
-
-        // Check file selected or not
-        if(files.length > 0 ) {
-            document.getElementById("uploadScriptShow").value =files[0].name;
-        }
+        window.uploadScript = [];
+        uploadAsyncFile($('#uploadScript')[0].files,function(data){
+            window.uploadScript = data;
+            document.getElementById("uploadScriptShow").value = data[0].name;
+        },function(exception){
+            alert(exception);
+        });
     });
     $("#btUploadScript").click(function(){
-
-        var fd = new FormData();
-        var files = $('#uploadScript')[0].files;
-
-        // Check file selected or not
-        if(files.length > 0 ){
-            fd.append('file',files[0]);
-
-            $.ajax({
-                url: '/api/plugins/replayer/recording',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                    if(response != 0){
-                        alert("File Uploaded")
-                    }else{
-                        alert("file not uploaded");
-                    }
-                }
-            });
-        }else{
-            alert("Please select a file.");
+        if(window.uploadScript === undefined || window.uploadScript.length==0){
+            alert("NO FILES SELECTED");
+            return;
         }
+        var toUpload = window.uploadScript[0];
+
+        $.ajax({
+            url: '/api/plugins/replayer/recording',
+            type: 'post',
+            data: JSON.stringify(toUpload),
+            contentType: "application/json",
+            processData: false,
+            success: function(response){
+                if(response != 0){
+                    alert("File Uploaded")
+                }else{
+                    alert("file not uploaded");
+                }
+            }
+        });
     });
 
     $("#createScriptBt").click(function(){
         var name = $('#createScriptName').val();
+        var data = {
+            id:name,
+            method:"GET",
+            phase:"NONE",
+            hostAddress:"www.change.me",
+            pathAddress:"changeme",
+            source:[
+                "//You have request,response and utils",
+                "//Here you can examine the request and produce a response",
+                "var result ={",
+                "    request:request,",
+                "    response:response,",
+                "    //If continue is false the response will be sent directly",
+                "    continue:false",
+                "};",
+                "return result;"
+            ]
+        }
         $.ajax({
-            url: '/api/plugins/replayer/recording',
+            url: '/api/plugins/jsfilter/'+name,
             type: 'post',
-            data: name,
-            contentType: "text/plain",
+            data: JSON.stringify(data),
+            contentType: "application/json",
             success: function(response){
-                location.reload();
+                location.href = "script.html?id="+name;
             }
         });
     });

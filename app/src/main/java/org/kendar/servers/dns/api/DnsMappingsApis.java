@@ -35,17 +35,16 @@ public class DnsMappingsApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/mappings",
             method = "GET",id="1000a4b4-277d-11ef-9621-0242ac130002")
-    public boolean getDnsMappings(Request req, Response res) throws JsonProcessingException {
+    public void getDnsMappings(Request req, Response res) throws JsonProcessingException {
         var records = configuration.getConfiguration(DnsConfig.class).getResolved();
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(records));
-        return false;
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
       pathAddress = "/api/dns/mappings/{id}",
       method = "PUT",id="1000a4f4-277d-11ef-9621-0242ac130002")
-    public boolean saveDnsMappings(Request req, Response res) throws JsonProcessingException {
+    public void saveDnsMappings(Request req, Response res) throws JsonProcessingException {
         var id = req.getPathParameter("id");
         var newObject = mapper.readValue(req.getRequestText(), PatternItem.class);
         newObject.initialize();
@@ -60,13 +59,12 @@ public class DnsMappingsApis implements FilteringClass {
         configuration.setConfiguration(dnsConfig);
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(newMapped));
-        return false;
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
       pathAddress = "/api/dns/mappings",
       method = "POST",id="3000a4f4-277k-11ef-9621-0242ac130002")
-    public boolean addDnsMappings(Request req, Response res) throws Exception {
+    public void addDnsMappings(Request req, Response res) throws Exception {
         var newObject = mapper.readValue(req.getRequestText(), PatternItem.class);
         newObject.initialize();
         var dnsConfig = configuration.getConfiguration(DnsConfig.class).copy();
@@ -83,13 +81,12 @@ public class DnsMappingsApis implements FilteringClass {
         configuration.setConfiguration(dnsConfig);
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(newObject));
-        return false;
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
       pathAddress = "/api/dns/mappings/{id}",
       method = "DELETE",id="10k0a4f4-277d-11ef-9621-0242ac130002")
-    public boolean deleteDnsMappings(Request req, Response res) throws JsonProcessingException {
+    public void deleteDnsMappings(Request req, Response res) throws JsonProcessingException {
         var id = req.getPathParameter("id");
         var dnsConfig = configuration.getConfiguration(DnsConfig.class).copy();
         var newMapped = new ArrayList<PatternItem>();
@@ -101,6 +98,5 @@ public class DnsMappingsApis implements FilteringClass {
         configuration.setConfiguration(dnsConfig);
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(newMapped));
-        return false;
     }
 }

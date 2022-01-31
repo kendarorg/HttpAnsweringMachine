@@ -60,38 +60,35 @@
         document.getElementById("uploadScript").click();
     });
     $("#uploadScript").change(function(){
-        var files = $('#uploadScript')[0].files;
-
-        // Check file selected or not
-        if(files.length > 0 ) {
-            document.getElementById("uploadScriptShow").value =files[0].name;
-        }
+        window.uploadScript = [];
+        uploadAsyncFile($('#uploadScript')[0].files,function(data){
+            window.uploadScript = data;
+            document.getElementById("uploadScriptShow").value = data[0].name;
+        },function(exception){
+            alert(exception);
+        });
     });
     $("#btUploadScript").click(function(){
+        if(window.uploadScript === undefined || window.uploadScript.length==0){
+            alert("NO FILES SELECTED");
+            return;
+        }
+        var toUpload = window.uploadScript[0];
 
-        var fd = new FormData();
-        var files = $('#uploadScript')[0].files;
-
-        // Check file selected or not
-        if(files.length > 0 ){
-            files[0].type="text/html";
-            fd.append('file',files[0]);
+        toUpload.type = "text/plain";
             var id = getUrlParameter("id");
             var line = getUrlParameter("line");
             var requestOrResponse = getUrlParameter("type");
             $.ajax({
                 url: '/api/plugins/replayer/recording/'+id+'/line/'+line+'/'+requestOrResponse,
                 type: 'post',
-                data: fd,
+                data: JSON.stringify(toUpload),
                 contentType: false,
                 processData: false,
                 success: function(response){
                     location.reload();
                 }
             });
-        }else{
-            alert("Please select a file.");
-        }
     });
     var urlData = "/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/"+getUrlParameter("type");
     $("#createScriptBt").click(function(){
@@ -124,11 +121,16 @@
         location.href="line.html?id="+getUrlParameter("id")+"&line="+getUrlParameter("line"); })
         .html("Line "+getUrlParameter("line"));
     $("#btSaveText").click(function(){
-        var name = $('#free_content').val();
+        var content = $('#free_content').val();
+        var data = {
+            data:btoa(content),
+            name:"content",
+            type:"text/plain"
+        }
         $.ajax({
             url: urlData,
             type: 'post',
-            data: name,
+            data: JSON.stringify(data),
             contentType: "text/plain",
             success: function(response){
                 location.reload();

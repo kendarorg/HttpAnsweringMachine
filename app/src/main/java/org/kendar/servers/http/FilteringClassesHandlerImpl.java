@@ -1,10 +1,10 @@
 package org.kendar.servers.http;
 
 import org.apache.http.conn.HttpClientConnectionManager;
+import org.kendar.events.EventQueue;
 import org.kendar.http.*;
+import org.kendar.http.events.ScriptsModified;
 import org.kendar.servers.config.GlobalConfig;
-import org.kendar.servers.http.configurations.FilterConfig;
-import org.kendar.servers.http.configurations.FiltersConfiguration;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.core.env.Environment;
@@ -22,14 +22,17 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
   private final Logger logger;
 
   public FilteringClassesHandlerImpl(
-      List<CustomFiltersLoader> customFilterLoaders,
-      Environment environment,
-      FilterConfig filtersConfiguration,
-      LoggerBuilder loggerBuilder) {
+          List<CustomFiltersLoader> customFilterLoaders,
+          Environment environment,
+          FilterConfig filtersConfiguration,
+          LoggerBuilder loggerBuilder,
+          EventQueue eventQueue) {
     this.customFilterLoaders = customFilterLoaders;
     this.environment = environment;
     this.filtersConfiguration = filtersConfiguration;
     this.logger = loggerBuilder.build(FilteringClassesHandlerImpl.class);
+
+    eventQueue.register(this::handleScriptModified, ScriptsModified.class);
   }
 
   public HashMap<HttpFilterType, List<FilterDescriptor>> getConfiguration() {
@@ -38,6 +41,10 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
 
   public void setConfiguration(HashMap<HttpFilterType, List<FilterDescriptor>> config) {
     // filtersConfiguration.set(config);
+  }
+
+  private void handleScriptModified(ScriptsModified event){
+    init();
   }
 
   @PostConstruct

@@ -31,3 +31,4 @@ hs_err_pid*
 /pacts
 
 target
+!/externals/json-schema-inferrer-0.1.4.jar

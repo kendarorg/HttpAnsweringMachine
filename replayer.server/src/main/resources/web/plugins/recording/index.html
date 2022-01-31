@@ -84,47 +84,45 @@
         document.getElementById("uploadScript").click();
     });
     $("#uploadScript").change(function(){
-        var files = $('#uploadScript')[0].files;
-
-        // Check file selected or not
-        if(files.length > 0 ) {
-            document.getElementById("uploadScriptShow").value =files[0].name;
-        }
+        window.uploadScript = [];
+        uploadAsyncFile($('#uploadScript')[0].files,function(data){
+            window.uploadScript = data;
+            document.getElementById("uploadScriptShow").value = data[0].name;
+        },function(exception){
+            alert(exception);
+        });
     });
     $("#btUploadScript").click(function(){
-
-        var fd = new FormData();
-        var files = $('#uploadScript')[0].files;
-
-        // Check file selected or not
-        if(files.length > 0 ){
-            fd.append('file',files[0]);
-
-            $.ajax({
-                url: '/api/plugins/replayer/recording',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                    if(response != 0){
-                        alert("File Uploaded")
-                    }else{
-                        alert("file not uploaded");
-                    }
-                }
-            });
-        }else{
-            alert("Please select a file.");
+        if(window.uploadScript === undefined || window.uploadScript.length==0){
+            alert("NO FILES SELECTED");
+            return;
         }
+        var toUpload = window.uploadScript[0];
+        $.ajax({
+            url: '/api/plugins/replayer/recording',
+            type: 'post',
+            data: JSON.stringify(toUpload),
+            contentType: "application/json",
+            processData: false,
+            success: function(response){
+                window.uploadScript=[];
+                document.getElementById("uploadScriptShow").value ="";
+                alert("File Uploaded")
+            }
+        });
     });
 
     $("#createScriptBt").click(function(){
         var name = $('#createScriptName').val();
+        var data = {
+            name:name+".json",
+            data:btoa("{}"),
+            type:"application/json"
+        };
         $.ajax({
             url: '/api/plugins/replayer/recording',
             type: 'post',
-            data: name,
+            data: JSON.stringify(data),
             contentType: "text/plain",
             success: function(response){
                 location.reload();

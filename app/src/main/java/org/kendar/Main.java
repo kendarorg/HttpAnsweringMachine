@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 @SpringBootApplication
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 public class Main implements CommandLineRunner {
   private static final int MAX_THREADS = 10;
   @Autowired private ApplicationContext applicationContext;
@@ -39,6 +40,8 @@ public class Main implements CommandLineRunner {
     setupLogging(configuration);
 
     var answeringServers = applicationContext.getBeansOfType(AnsweringServer.class);
+
+    var logger = applicationContext.getBean(LoggerBuilder.class).build(this.getClass());
     Map<AnsweringServer, Future<?>> futures = setupFakeFutures(answeringServers);
     while (true) {
       intializeRunners(executor, futures);
@@ -46,7 +49,7 @@ public class Main implements CommandLineRunner {
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {
-
+        logger.trace(e.getMessage());
       }
     }
   }
@@ -72,6 +75,7 @@ public class Main implements CommandLineRunner {
   }
 
   private void intializeRunners(ExecutorService executor, Map<AnsweringServer, Future<?>> futures) {
+    var logger = applicationContext.getBean(LoggerBuilder.class).build(this.getClass());
     for (var future : futures.entrySet()) {
       if (future.getValue().isDone() || future.getValue().isCancelled()) {
         try {
@@ -82,7 +86,7 @@ public class Main implements CommandLineRunner {
             }
           }
         } catch (NoSuchMethodException e) {
-
+          logger.trace(e.getMessage());
         }
       }
     }

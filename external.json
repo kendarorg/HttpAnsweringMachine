@@ -31,6 +31,16 @@
         "id": "2",
         "dns": "www.kendar.org",
         "ip": "127.0.0.1"
+      },
+      {
+        "id": "3",
+        "dns": "www.codeproject.com",
+        "ip": "127.0.0.1"
+      },
+      {
+        "id": "4",
+        "dns": "api.codeproject.com",
+        "ip": "127.0.0.1"
       }
     ]
   },
@@ -82,7 +92,15 @@
       },
       {
         "id": "3",
-        "address": "www.kendar.org"
+        "address": "kendar.org"
+      },
+      {
+        "id": "4",
+        "address": "*.codeproject.com"
+      },
+      {
+        "id": "5",
+        "address": "codeproject.com"
       }
     ]
   },

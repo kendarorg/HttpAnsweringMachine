@@ -35,11 +35,10 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes",
       method = "GET",
       id = "1015a4b4-277d-11ec-9621-0242ac130002")
-  public boolean getProxies(Request req, Response res) throws JsonProcessingException {
+  public void getProxies(Request req, Response res) throws JsonProcessingException {
     var proxyes = configuration.getConfiguration(SimpleProxyConfig.class).getProxies();
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(proxyes));
-    return false;
   }
 
   @HttpMethodFilter(
@@ -47,7 +46,7 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes/{id}",
       method = "GET",
       id = "1016a4b4-277d-11ec-9621-0242ac130002")
-  public boolean getProxy(Request req, Response res) throws JsonProcessingException {
+  public void getProxy(Request req, Response res) throws JsonProcessingException {
     var clone = configuration.getConfiguration(SimpleProxyConfig.class);
     var proxyes = clone.getProxies();
     var id = req.getPathParameter("id");
@@ -55,11 +54,10 @@ public class ProxyHandlerApis implements FilteringClass {
       if (item.getId().equalsIgnoreCase(id)) {
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(item));
-        return false;
+        return ;
       }
     }
     res.setStatusCode(404);
-    return false;
   }
 
   @HttpMethodFilter(
@@ -67,7 +65,7 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes/{id}",
       method = "DELETE",
       id = "1017a4b4-277d-11ec-9621-0242ac130002")
-  public boolean removeProxy(Request req, Response res) {
+  public void removeProxy(Request req, Response res) {
     var clone = configuration.getConfiguration(SimpleProxyConfig.class).copy();
     var proxyes = clone.getProxies();
     var id = req.getPathParameter("id");
@@ -81,7 +79,6 @@ public class ProxyHandlerApis implements FilteringClass {
     clone.setProxies(newList);
     configuration.setConfiguration(clone);
     res.setStatusCode(200);
-    return false;
   }
 
   @HttpMethodFilter(
@@ -89,7 +86,7 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes/{id}",
       method = "PUT",
       id = "1018a4b4-277d-11ec-9621-0242ac130002")
-  public boolean updateProxy(Request req, Response res) throws JsonProcessingException {
+  public void updateProxy(Request req, Response res) throws JsonProcessingException {
     var cloneConf = configuration.getConfiguration(SimpleProxyConfig.class).copy();
     var proxyes = cloneConf.getProxies();
     var id = req.getPathParameter("id");
@@ -110,7 +107,6 @@ public class ProxyHandlerApis implements FilteringClass {
     cloneConf.setProxies(newList);
     configuration.setConfiguration(cloneConf);
     res.setStatusCode(200);
-    return false;
   }
 
   @HttpMethodFilter(
@@ -118,7 +114,7 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes/swap/{id1}/{id2}",
       method = "PUT",
       id = "1019a4b4-277d-11ec-9621-0242ac130002")
-  public boolean swapProxy(Request req, Response res) {
+  public void swapProxy(Request req, Response res) {
     var cloneConf = configuration.getConfiguration(SimpleProxyConfig.class).copy();
     var proxyes = cloneConf.getProxies();
     var id1 = req.getPathParameter("id1");
@@ -134,7 +130,6 @@ public class ProxyHandlerApis implements FilteringClass {
     proxyes.set(id2Index, id1Clone);
     configuration.setConfiguration(cloneConf);
     res.setStatusCode(200);
-    return false;
   }
 
   @HttpMethodFilter(
@@ -142,13 +137,12 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes",
       method = "POST",
       id = "1020a4b4-277d-11ec-9621-0242ac130002")
-  public boolean addProxy(Request req, Response res) throws JsonProcessingException {
+  public void addProxy(Request req, Response res) throws JsonProcessingException {
     var cloneConf = configuration.getConfiguration(SimpleProxyConfig.class).copy();
     var proxyes = cloneConf.getProxies();
     var newData = mapper.readValue(req.getRequestText(), RemoteServerStatus.class);
     proxyes.add(newData);
     configuration.setConfiguration(cloneConf);
     res.setStatusCode(200);
-    return false;
   }
 }

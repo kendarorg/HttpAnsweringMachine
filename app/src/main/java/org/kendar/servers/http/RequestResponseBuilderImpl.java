@@ -102,7 +102,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
     result.setQuery(RequestUtils.queryToMap(exchange.getRequestURI().getRawQuery()));
     setupRequestHost(exchange, result);
     setupRequestPort(exchange, result);
-    result.setPath(exchange.getRequestURI().getPath());
+    result.setPath(exchange.getRequestURI().getRawPath());
     result.setMethod(exchange.getRequestMethod().toUpperCase(Locale.ROOT));
     result.setHeaders(RequestUtils.headersToMap(exchange.getRequestHeaders()));
     var headerContentType = result.getHeader(H_CONTENT_TYPE);
@@ -145,7 +145,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
   }
 
   @Override
-  public Response fromHttpResponse(HttpResponse httpResponse, Response response)
+  public void fromHttpResponse(HttpResponse httpResponse, Response response)
       throws IOException {
     HttpEntity responseEntity = httpResponse.getEntity();
     if (responseEntity != null) {
@@ -172,6 +172,5 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
       if (header.getName().equalsIgnoreCase("transfer-encoding")) continue;
       response.addHeader(header.getName(), header.getValue());
     }
-    return response;
   }
 }

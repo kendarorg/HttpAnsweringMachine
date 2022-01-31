@@ -2,12 +2,14 @@ package org.kendar.servers.http.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.*;
+import org.kendar.http.events.ScriptsModified;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Locale;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
@@ -25,15 +28,18 @@ public class JsFilterAPI implements FilteringClass {
   private final JsonConfiguration configuration;
   private final Logger logger;
   private final FileResourcesUtils fileResourcesUtils;
+  private final EventQueue eventQueue;
   final ObjectMapper mapper = new ObjectMapper();
 
   public JsFilterAPI(JsonConfiguration configuration,
                      FileResourcesUtils fileResourcesUtils,
-                     LoggerBuilder loggerBuilder) {
+                     LoggerBuilder loggerBuilder,
+                     EventQueue eventQueue) {
 
     this.logger = loggerBuilder.build(JsFilterAPI.class);
     this.configuration = configuration;
     this.fileResourcesUtils = fileResourcesUtils;
+    this.eventQueue = eventQueue;
   }
 
   @Override
@@ -45,8 +51,8 @@ public class JsFilterAPI implements FilteringClass {
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/jsfilter",
       method = "GET",
-      id = "1000a4b4-297id-11ec-9621-0242ac130002")
-  public boolean getJsFiltersList(Request req, Response res) throws JsonProcessingException {
+      id = "1000a4b4-297id-11ec-9yy1-0242ac130002")
+  public void getJsFiltersList(Request req, Response res) throws JsonProcessingException {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
 
     var result = new ArrayList<String>();
@@ -62,6 +68,7 @@ public class JsFilterAPI implements FilteringClass {
           for (String pathname : pathnames) {
             var fullPath = fileResourcesUtils.buildPath(jsFilterPath, pathname);
             currentPath = fullPath;
+
             var descriptor = loadScriptId( realPath, fullPath);
             if(descriptor!=null)result.add(descriptor);
           }
@@ -72,7 +79,6 @@ public class JsFilterAPI implements FilteringClass {
     }
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(result));
-    return false;
   }
 
   @HttpMethodFilter(
@@ -80,7 +86,7 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/{filtername}",
           method = "GET",
           id = "1000a4b4-297id-11ec-9777-0242ac130002")
-  public boolean getJsFilter(Request req, Response res) {
+  public void getJsFilter(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
 
@@ -97,7 +103,28 @@ public class JsFilterAPI implements FilteringClass {
     } catch (Exception e) {
       logger.error("Error reading js filter " + jsFilterDescriptor, e);
     }
-    return false;
+  }
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/jsfilter/{filtername}",
+          method = "POST",
+          id = "1000a4b4-297id-11rr-9777-0242ac130002")
+  public void saveJsFilter(Request req, Response res) {
+    var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
+    var jsFilterDescriptor = req.getPathParameter("filtername");
+
+
+    // https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
+    try {
+      File f;
+      var realPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor+".json");
+      JsFilterDescriptor result =mapper.readValue(req.getRequestText(),JsFilterDescriptor.class);
+      Files.writeString(Path.of(realPath),req.getRequestText());
+      res.setStatusCode(200);
+      eventQueue.handle(new ScriptsModified());
+    } catch (Exception e) {
+      logger.error("Error reading js filter " + jsFilterDescriptor, e);
+    }
   }
 
   private String loadScriptId(String realPath, String fullPath){
@@ -107,6 +134,9 @@ public class JsFilterAPI implements FilteringClass {
       var fname= path.getFileName().toString();
 
       int pos = fname.lastIndexOf(".");
+      if(!fname.toLowerCase(Locale.ROOT).endsWith(".json")){
+        return null;
+      }
       if (pos > 0) {
         fname = fname.substring(0, pos);
       }
@@ -124,5 +154,83 @@ public class JsFilterAPI implements FilteringClass {
       return filterDescriptor;
     }
     return null;
+  }
+
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/jsfilter/{filtername}/{file}",
+          method = "GET",
+          id = "1000a4b4-47id-11ec-9777-0242ac130002")
+  public void getJsFilterFile(Request req, Response res) {
+    var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
+    var jsFilterDescriptor = req.getPathParameter("filtername");
+    var fileId = req.getPathParameter("file");
+    if(fileId==null || fileId.isEmpty()){
+      res.addHeader("Content-type", "text/plain");
+      res.setResponseText("");
+      return;
+    }
+
+
+    // https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
+    try {
+      File f;
+      var realPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor+".json");
+      var subPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor,fileId);
+      //var result = loadSinglePlugin(realPath,jsFilterPath);
+      var result = Files.readString(Path.of(subPath));
+      res.addHeader("Content-type", "text/plain");
+      res.setResponseText(result);
+    } catch (Exception e) {
+      logger.error("Error reading js filter " + jsFilterDescriptor, e);
+    }
+  }
+
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/jsfilter/{filtername}/{file}",
+          method = "POST",
+          id = "10iyh4b4-47id-11ec-9777-0242ac130002")
+  public void putJsFilterFile(Request req, Response res) {
+    var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
+    var jsFilterDescriptor = req.getPathParameter("filtername");
+    var fileId = req.getPathParameter("file");
+
+
+    // https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
+    try {
+      File f;
+      var realPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor+".json");
+      var subPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor);
+      var result = mapper.readValue(Files.readString(Path.of(realPath)),JsFilterDescriptor.class);
+
+      if(!Files.exists(Path.of(subPath))){
+        Files.createDirectory(Path.of(subPath));
+      }
+      var founded = false;
+      if(result.getRequires()!=null){
+        for (var require :
+                result.getRequires()) {
+          if(require.equalsIgnoreCase(fileId)){
+            founded=true;
+            break;
+          }
+        }
+      }else{
+        result.setRequires(new ArrayList<>());
+      }
+      if(!founded){
+        result.getRequires().add(fileId);
+        Files.writeString(Path.of(realPath),mapper.writeValueAsString(result));
+      }
+      var subPathSubFile = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor,fileId);
+      //var result = loadSinglePlugin(realPath,jsFilterPath);
+      var content = req.getRequestText();
+      Files.writeString(Path.of(subPathSubFile),content);
+      res.setStatusCode(200);
+      eventQueue.handle(new ScriptsModified());
+    } catch (Exception e) {
+      logger.error("Error reading js filter " + jsFilterDescriptor, e);
+    }
   }
 }

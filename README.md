@@ -89,12 +89,13 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 
 ## Basic functions  
 
-* [The phases](docs/lifecyvle.md)
+* [The phases](docs/lifecycle.md)
 * [Proxy module](docs/proxy.md)
 * [Http/s hijack module](docs/https.md)
 * [Static pages](docs/static.md)
 * [Dns server](docs/dns.md)
 * [Events Queue](docs/events.md)
+* [Utils](docs/utils.md)
 
 ## Rest APIs
 

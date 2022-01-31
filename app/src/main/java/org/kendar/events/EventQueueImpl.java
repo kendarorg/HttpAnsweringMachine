@@ -24,10 +24,12 @@ public class EventQueueImpl implements EventQueue {
         this.logger = loggerBuilder.build(EventQueue.class);
     }
     private final HashMap<String,List<Consumer<Event>>> eventHandlers = new HashMap<>();
+    @SuppressWarnings("rawtypes")
     private final HashMap<String,Class> conversions = new HashMap<>();
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends Event> void register(Consumer<T> consumer, Class<T> clazz) {
         var eventName = clazz.getSimpleName().toLowerCase(Locale.ROOT);
         conversions.put(eventName,clazz);
@@ -61,6 +63,7 @@ public class EventQueueImpl implements EventQueue {
         });
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void handle(String eventType, String jsonEvent) {
         eventType = eventType.toLowerCase(Locale.ROOT);
