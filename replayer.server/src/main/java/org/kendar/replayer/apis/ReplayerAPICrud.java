@@ -14,6 +14,7 @@ import org.kendar.replayer.apis.models.LocalRecording;
 import org.kendar.replayer.apis.models.ScriptData;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerResult;
+import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
@@ -30,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Locale;
 
 @Component
@@ -109,6 +111,7 @@ public class ReplayerAPICrud implements FilteringClass {
         new ReplayerDataset(id, rootPath.toString(), null, loggerBuilder, null, md5Tester);
     var datasetContent = dataset.load();
     ListAllRecordList result = new ListAllRecordList(datasetContent, id);
+    result.getLines().sort(Comparator.comparingInt(ReplayerRow::getId));
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(result));
   }
@@ -153,7 +156,7 @@ public class ReplayerAPICrud implements FilteringClass {
       method = "POST",
       id = "4004daa6-277f-11ec-9621-0242ac1afe002")
   public void uploadRecording(Request req, Response res) throws Exception {
-    var jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
+    JsonFileData jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
     var fileFullPath = jsonFileData.getName();
 
     var scriptName = fileFullPath.substring(0, fileFullPath.lastIndexOf('.'));

@@ -121,11 +121,16 @@
         location.href="line.html?id="+getUrlParameter("id")+"&line="+getUrlParameter("line"); })
         .html("Line "+getUrlParameter("line"));
     $("#btSaveText").click(function(){
-        var name = $('#free_content').val();
+        var content = $('#free_content').val();
+        var data = {
+            data:btoa(content),
+            name:"content",
+            type:"text/plain"
+        }
         $.ajax({
             url: urlData,
             type: 'post',
-            data: name,
+            data: JSON.stringify(data),
             contentType: "text/plain",
             success: function(response){
                 location.reload();

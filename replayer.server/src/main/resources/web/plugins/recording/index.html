@@ -114,10 +114,15 @@
 
     $("#createScriptBt").click(function(){
         var name = $('#createScriptName').val();
+        var data = {
+            name:name+".json",
+            data:btoa("{}"),
+            type:"application/json"
+        };
         $.ajax({
             url: '/api/plugins/replayer/recording',
             type: 'post',
-            data: name,
+            data: JSON.stringify(data),
             contentType: "text/plain",
             success: function(response){
                 location.reload();

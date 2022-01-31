@@ -268,11 +268,11 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
             os.flush();
             os.close();
         } catch (Exception ex) {
-          logger.trace(ex.getMessage());
+          //logger.trace(ex.getMessage());
         }
       }
     } catch (Exception ex) {
-      logger.error(ex.getMessage(), ex);
+      //logger.error(ex.getMessage(), ex);
     }
   }
 
