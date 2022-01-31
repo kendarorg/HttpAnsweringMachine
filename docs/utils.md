@@ -2,6 +2,12 @@
 
 ### JsonSchema extractor/verifier
 
+Allow to verify xml and json data based on xsd/json schema or message templates
+
+For xml validation based on template the template and the item to test are converted
+to json and then from the template is extracted the schema against which the 
+message will be verified
+
 ### Regex tester
 
 A tester for regular expressions just to verify the regexps before 

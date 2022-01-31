@@ -195,7 +195,7 @@
                             <goal>install-file</goal>
                         </goals>
                     </execution>
-                    <execution>
+                    <!--<execution>
                         <id>install-external-xsd</id>
                         <phase>clean</phase>
                         <configuration>
@@ -210,7 +210,7 @@
                         <goals>
                             <goal>install-file</goal>
                         </goals>
-                    </execution>
+                    </execution>-->
                 </executions>
             </plugin>
             <plugin>

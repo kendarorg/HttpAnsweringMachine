@@ -32,4 +32,3 @@ hs_err_pid*
 
 target
 !/externals/json-schema-inferrer-0.1.4.jar
-!/externals/xsd-gen-0.2.4.jar
