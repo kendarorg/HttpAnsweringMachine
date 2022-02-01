@@ -1,0 +1,139 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-8">
+            <h3>EMPLOYEES</h3>
+            <table class="table table-striped" id="employeesTable">
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Appointments</th>
+                    <th colspan="2">
+                        <button class="btn btn-danger form-control"
+                                onClick="addEmployee();">Add</button>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Proxy</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+    var employeeModal = `
+    <label for="name">name</label>
+    <input class="form-control" type="text" name="name"  id="name" />
+    <label for="role">role</label>
+    <input class="form-control" type="text" name="role"  id="role" />
+    `;
+    var addEmployee = function(){
+        var modal=".modal";
+        var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
+        var target = {
+            id : 0
+        };
+        var id = target.id;
+        buildGenericModal(modal, scriptsTable, target, "id", employeeModal, randomId,false);
+        $(modal).find("#"+randomId).click(function(){ scriptsTable.saveFunction(scriptsTable,id,true); });
+    }
+    var editEmployee=function(table,id) {
+        var modal=".modal";
+        var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
+        var localTable = table;
+        localTable.data.forEach(function(value, i) {
+            if (value["id"] == id) {
+                buildGenericModal(modal, table, value, "id", employeeModal, randomId, true);
+                $(modal).find("#"+randomId).click(function(){ localTable.saveFunction(localTable,id,false); });
+                $(modal).find("#name").val(value["name"]);
+                $(modal).find("#role").val(value["role"]);
+            }
+        });
+    }
+
+    var goToAppointments = function(id){
+        location.href="appointments.html?employeeId="+id;
+    }
+    var scriptsTable = new SimpleGrid("Employees","employeesTable","id",["id","name","role","_appointments"],
+        function(table){
+            $.ajax({
+                url: apiHost+"/api/v1/employees/",
+                type: 'GET',
+                success: function(res) {
+                    for(var v=0;v<res.length;v++) {
+                        res[v]["_appointments"]="<button class=\"btn btn-success form-control\" id=\"appointments-"+
+                            res[v]['id']+
+                            "-edit\" onclick='goToAppointments(\""+res[v]['id']+"\")'>Go</button>"
+                    }
+                    $.each(res, function(i, script) {
+                        table.appendToTable(script);
+                    });
+                }
+            });
+        },
+        function (table,id) {
+            editEmployee(table,id)
+        },
+        function (table,id) {
+            table.deleteFromTable(id,function(id,success,error){
+                $.ajax({
+                    url: apiHost+"/api/v1/employees/"+getUrlParameter("id"),
+                    type: 'DELETE',
+                    success: function (res) {
+                        success();
+                        location.reload();
+                    },
+                    error:function(res){
+                        error();
+                    }
+                });
+            });
+        },
+        function (table,id,saveOrUpdate){
+            var modal=".modal";
+            var data = {
+                id: id,
+                name: $(modal).find("#name").val(),
+                role: $(modal).find("#role").val()
+            };
+
+            $.ajax({
+                url: apiHost+"/api/v1/employees"+(saveOrUpdate?"":"/"+id),
+                type: saveOrUpdate?'POST':'PUT',
+                data:JSON.stringify(data),
+                contentType: "application/json",
+                success: function (res) {
+                    success();
+                    location.reload();
+                },
+                error:function(res){
+                    error();
+                }
+            });
+        }).load();
+
+</script>
+</body>
+</html>
