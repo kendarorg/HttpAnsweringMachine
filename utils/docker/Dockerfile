@@ -23,8 +23,8 @@ RUN mkdir -p /start/services/answering/jsplugins
 RUN mkdir -p /start/services/answering/derbydata
 
 COPY ./start /start
-COPY ../app/target/*.jar /start/services/answering/
-COPY ../libs/*.jar /start/services/answering/libs/
+COPY ../../ham/app/target/*.jar /start/services/answering/
+COPY ../../ham/libs/*.jar /start/services/answering/libs/
 
 RUN chmod 777 /start/*.sh|true
 RUN chmod 777 /start/runonce/*.sh|true
