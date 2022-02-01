@@ -21,10 +21,14 @@ RUN mkdir -p /start/services/answering/recording
 RUN mkdir -p /start/services/answering/replayerdata
 RUN mkdir -p /start/services/answering/jsplugins
 RUN mkdir -p /start/services/answering/derbydata
+RUN mkdir -p /start/services/samplebe
+RUN mkdir -p /start/services/samplefe
 
 COPY ./start /start
 COPY ../../ham/app/target/*.jar /start/services/answering/
 COPY ../../ham/libs/*.jar /start/services/answering/libs/
+COPY ../sampleapp/be/target/*.jar /start/services/samplbe/
+COPY ../sampleapp/fe/target/*.jar /start/services/samplfe/
 
 RUN chmod 777 /start/*.sh|true
 RUN chmod 777 /start/runonce/*.sh|true
