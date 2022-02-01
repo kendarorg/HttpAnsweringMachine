@@ -16,15 +16,6 @@
     </parent>
 
     <repositories>
-        <!--<repository>
-            <id>central1</id>
-            <name>Central Repository</name>
-            <url>https://repo1.maven.org/maven2/</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>-->
         <repository>
             <id>central2</id>
             <name>Central Repository2</name>

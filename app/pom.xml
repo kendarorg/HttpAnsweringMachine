@@ -195,22 +195,6 @@
                             <goal>install-file</goal>
                         </goals>
                     </execution>
-                    <!--<execution>
-                        <id>install-external-xsd</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <repositoryLayout>default</repositoryLayout>
-                            <groupId>com.github.wiztools</groupId>
-                            <artifactId>xsd-gen</artifactId>
-                            <version>0.2.4</version>
-                            <file>../externals/xsd-gen-0.2.4.jar</file>
-                            <packaging>jar</packaging>
-                            <generatePom>true</generatePom>
-                        </configuration>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                    </execution>-->
                 </executions>
             </plugin>
             <plugin>
