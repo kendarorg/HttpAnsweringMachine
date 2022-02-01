@@ -2,23 +2,13 @@
   {
     "id": "dns",
     "system": true,
-    "active": false,
+    "active": true,
     "port": 53,
     "logQueries": false,
     "extraServers": [
       {
         "id": "1",
         "address": "8.8.4.4",
-        "enabled": true
-      },
-      {
-        "id": "2",
-        "address": "10.136.49.21",
-        "enabled": true
-      },
-      {
-        "id": "3",
-        "address": "10.110.49.21",
         "enabled": true
       }
     ],
@@ -99,24 +89,17 @@
     "system": true,
     "localAddress": "www.local.test",
     "logging": {
-      "request": {
-        "basic": false,
-        "full": false
-      },
-      "response": {
-        "basic": false,
-        "full": false
-      },
-      "path": false,
-      "statics": false,
-      "dynamic": false
-    },
-    "filters": [
-      {
-        "id": "12363272",
-        "enabled": false
+      "logPath": null,
+      "logRoundtripsPath": "recording",
+      "logLevel": "INFO",
+      "loggers": {
+        "org.kendar.servers.http.Request": "OFF",
+        "org.kendar.servers.http.Response": "OFF",
+        "org.kendar.servers.http.StaticRequest": "OFF",
+        "org.kendar.servers.http.DynamicRequest": "OFF",
+        "org.kendar.dns.DnsQueries": "OFF"
       }
-    ]
+    },
   },
   {
     "id": "derby",
@@ -139,6 +122,11 @@
   {
     "id": "replayer.server",
     "path": "replayerdata",
+    "active": true
+  },
+  {
+    "id": "pacts.server",
+    "path": "pacts",
     "active": true
   }
 ]
