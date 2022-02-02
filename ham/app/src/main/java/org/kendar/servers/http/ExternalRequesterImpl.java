@@ -184,11 +184,17 @@ public class ExternalRequesterImpl implements ExternalRequester{
                 ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
             }
 
+            HttpResponse httpResponse = null;
             try {
-                HttpResponse httpResponse = httpClient.execute(fullRequest);
+                httpResponse = httpClient.execute(fullRequest);
                 requestResponseBuilder.fromHttpResponse(httpResponse, response);
             } catch (Exception ex) {
                 response.setStatusCode(404);
+                response.setResponseText(ex.getMessage());
+                if(httpResponse!=null){
+                    response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
+                    response.setResponseText(httpResponse.getStatusLine().getReasonPhrase()+" "+ex.getMessage());
+                }
             }
         } finally {
             if (fullRequest != null) {

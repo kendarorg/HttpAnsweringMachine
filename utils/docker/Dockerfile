@@ -34,5 +34,5 @@ RUN chmod 777 /start/*.sh|true
 RUN chmod 777 /start/runonce/*.sh|true
 RUN chmod 777 /start/services/*.sh|true
 
-CMD ./start/prestart.sh
+CMD ./start/startup.sh
 

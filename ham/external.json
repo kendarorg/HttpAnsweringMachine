@@ -70,6 +70,18 @@
         "when": "https://redirect.local.test/kendar",
         "where": "https://www.kendar.org",
         "test": "www.kendar.org"
+      },
+      {
+        "id": "2",
+        "when": "http://api.sample.test",
+        "where": "http://127.0.0.1:8090",
+        "test": "www.kendar.org"
+      },
+      {
+        "id": "3",
+        "when": "http://www.sample.test",
+        "where": "http://127.0.0.1:8080",
+        "test": "www.kendar.org"
       }
     ]
   },
