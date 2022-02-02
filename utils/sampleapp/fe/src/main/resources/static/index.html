@@ -99,7 +99,7 @@
         function (table,id) {
             table.deleteFromTable(id,function(id,success,error){
                 $.ajax({
-                    url: apiHost+"/api/v1/employees/"+getUrlParameter("id"),
+                    url: apiHost+"/api/v1/employees/"+id,
                     type: 'DELETE',
                     success: function (res) {
                         success();
