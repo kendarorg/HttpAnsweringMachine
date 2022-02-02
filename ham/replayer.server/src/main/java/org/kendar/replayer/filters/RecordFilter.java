@@ -33,7 +33,8 @@ public class RecordFilter  implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.POST_RENDER,pathAddress ="*",method = "*",id="9000daa6-277f-11ec-9621-0242ac1afe002")
-    public boolean record(Request req, Response res){
+    public boolean record(Request reqArrived, Response res){
+        var req = reqArrived.retrieveOriginal();
         if(req.getHost().equalsIgnoreCase(localAddress))return false;
         if(replayerStatus.getStatus()!= ReplayerState.RECORDING)return false;
         try {

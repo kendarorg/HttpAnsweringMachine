@@ -1,6 +1,7 @@
 package org.kendar.servers.http;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Request {
 
@@ -23,6 +24,7 @@ public class Request {
     private Map<String,String> query = new HashMap<>();
     private String remoteHost;
     private Map<String, String> pathParameters = new HashMap<>();
+    private Request original;
 
     public String getMethod() {
         return method;
@@ -218,4 +220,40 @@ public class Request {
         this.pathParameters = pathParameters;
     }
 
+    public Request copy() {
+        var r  = new Request();
+        r.pathParameters = this.pathParameters.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        r.ms = this.ms;
+        r.remoteHost = this.remoteHost;
+        r.path = this.path;
+        r.basicPassword = this.basicPassword;
+        r.basicUsername = this.basicUsername;
+        r.binaryRequest = this.binaryRequest;
+        r.headers = this.headers.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        r.host = this.host;
+        r.method = this.method;
+        r.multipartData = this.multipartData.stream().map(multipartPart -> multipartPart.copy()).collect(Collectors.toList());
+        r.port = this.port;
+        r.postParameters = this.postParameters.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        r.protocol = this.protocol;
+        r.query = this.query.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        r.requestBytes = this.requestBytes!=null?this.requestBytes.clone():this.requestBytes;
+        r.requestText = this.requestText!=null?new String(this.requestText):this.requestText;
+        r.soapRequest= this.soapRequest;
+        r.staticRequest= this.staticRequest;
+        return r;
+    }
+
+    public void addOriginal(Request oriSource) {
+        this.original = oriSource;
+    }
+
+    public Request retrieveOriginal(){
+        if(original!=null) return original;
+        return this;
+    }
 }

@@ -23,8 +23,11 @@ public class MimeChecker {
   }
 
   public static boolean isStatic(String mime, String path) {
-    var mimeLow = mime.toLowerCase(Locale.ROOT);
+    //var mimeLow = mime.toLowerCase(Locale.ROOT);
     var pathlow = path.toLowerCase(Locale.ROOT);
+    if(pathlow.equalsIgnoreCase("/")||pathlow.equalsIgnoreCase("")){
+      return true;
+    }
     for (int i = 0; i < STATIC_FILES.length; i++) {
       if (pathlow.endsWith(STATIC_FILES[i])) return true;
     }

@@ -110,7 +110,7 @@
         url: urlData,
         type: 'GET',
         success: function (res) {
-            $("#free_content").text(res);
+            $("#free_content").text(JSON.stringify(res));
 
         }
     });

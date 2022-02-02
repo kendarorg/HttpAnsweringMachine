@@ -79,7 +79,7 @@
     var scriptsTable = new SimpleGrid("Employees","employeesTable","id",["id","name","role","_appointments"],
         function(table){
             $.ajax({
-                url: apiHost+"/api/v1/employees/",
+                url: apiHost+"/api/v1/employees",
                 type: 'GET',
                 success: function(res) {
                     for(var v=0;v<res.length;v++) {

@@ -4,6 +4,7 @@ import org.apache.commons.fileupload.FileItem;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MultipartPart {
   private boolean file;
@@ -14,6 +15,9 @@ public class MultipartPart {
   private byte[] byteData;
   private Map<String, String> headers = new HashMap<>();
 
+  protected MultipartPart(){
+
+  }
   public MultipartPart(FileItem fileItem) {
     this.contentType = fileItem.getContentType();
     this.file = !fileItem.isFormField();
@@ -92,5 +96,18 @@ public class MultipartPart {
 
   public void setFile(boolean b) {
     file = b;
+  }
+
+  public MultipartPart copy() {
+    var r = new MultipartPart();
+    r.byteData = this.byteData!=null?this.byteData.clone():this.byteData;
+    r.contentType = this.contentType;
+    r.fieldName = this.fieldName;
+    r.file = this.file;
+    r.fileName = this.fileName;
+    r.stringData = this.stringData!=null?new String(this.stringData):this.stringData;
+    r.headers = this.headers.entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    return r;
   }
 }

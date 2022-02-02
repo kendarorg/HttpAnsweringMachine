@@ -6,7 +6,8 @@ import java.net.*;
 public class HttpsTest {
     public static void main(String[] args) throws IOException {
         //extracted("https://www.google.com");
-        extracted("https://www.local.test");
+        //extracted("http://www.local.test");
+        extracted("http://localhost:8090/api/v1/employees/");
     }
 
     private static void extracted(String urla) throws IOException {

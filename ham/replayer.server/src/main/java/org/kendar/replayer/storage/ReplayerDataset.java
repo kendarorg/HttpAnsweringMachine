@@ -101,10 +101,18 @@ public class ReplayerDataset {
         }
 
         if (!responseHash.equalsIgnoreCase(alreadyPresent.getResponseHash())) {
+          if(res.getStatusCode()==304 || res.getStatusCode()==404){
+            return;
+          }
           errors.add("Static request was dynamic " + path);
           throw new Exception("Static request was dynamic " + path);
+          /*alreadyPresent.getRequest().setStaticRequest(false);
+          req.setStaticRequest(false);
+          staticData.remove(path);
+          dynamicData.add(alreadyPresent);*/
+        }else {
+          return;
         }
-        return;
       }
       var replayerRow = new ReplayerRow();
       if (res.isBinaryResponse()) {
@@ -172,6 +180,7 @@ public class ReplayerDataset {
     for (var row : replayerResult.getDynamicRequests()) {
       var rreq = row.getRequest();
       // Avoid already running stuffs
+      if(row.done())continue;
       if (states.contains(row.getId())) continue;
       if (!sreq.getPath().equals(rreq.getPath())) continue;
       if (!sreq.getHost().equals(rreq.getHost())) continue;
@@ -202,11 +211,18 @@ public class ReplayerDataset {
       }
       ReplayerRow founded = findStaticMatch(req, contentHash);
       if (founded != null) {
-        return founded.getResponse();
+        var result =  founded.getResponse();
+        result.addHeader("X-REPLAYER-ID",founded.getId()+"");
+        result.addHeader("X-REPLAYER-TYPE","STATIC");
+        return result;
       }
       founded = findDynamicMatch(req);
       if (founded != null) {
-        return founded.getResponse();
+        var result =  founded.getResponse();
+        result.addHeader("X-REPLAYER-ID",founded.getId()+"");
+        result.addHeader("X-REPLAYER-TYPE","DYNAMIC");
+        founded.markAsDone();
+        return result;
       }
       return null;
     } catch (Exception ex) {

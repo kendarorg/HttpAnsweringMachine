@@ -1,4 +1,4 @@
-var apiHost="http://localhost:8090";
+var apiHost="http://api.sample.test";
 
 if (Function.prototype.name === undefined) {
     // Add a custom property to all function values

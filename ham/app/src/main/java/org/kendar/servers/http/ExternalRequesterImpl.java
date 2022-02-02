@@ -1,13 +1,13 @@
 package org.kendar.servers.http;
 
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
+import com.networknt.schema.format.InetAddressValidator;
+import org.apache.http.*;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.SchemePortResolver;
+import org.apache.http.conn.UnsupportedSchemeException;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.net.InetAddress;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class ExternalRequesterImpl implements ExternalRequester{
     private final RequestResponseBuilder requestResponseBuilder;
     private final DnsMultiResolver multiResolver;
     private final ConcurrentHashMap<String, AnsweringHandlerImpl.ResolvedDomain> domains = new ConcurrentHashMap<>();
+    private SystemDefaultDnsResolver dnsResolver;
 
     public ExternalRequesterImpl(RequestResponseBuilder requestResponseBuilder,
                                  DnsMultiResolver multiResolver,
@@ -60,7 +62,7 @@ public class ExternalRequesterImpl implements ExternalRequester{
     }
     @PostConstruct
     public void init() {
-        SystemDefaultDnsResolver dnsResolver =
+        this.dnsResolver =
                 new SystemDefaultDnsResolver() {
                     @Override
                     public InetAddress[] resolve(final String host) throws UnknownHostException {
@@ -91,7 +93,7 @@ public class ExternalRequesterImpl implements ExternalRequester{
                     }
                 };
         this.connManager =
-                new PoolingHttpClientConnectionManager(
+                new PoolingHttpClientConnectionManager();/*
                         // We're forced to create a SocketFactory Registry.  Passing null
                         //   doesn't force a default Registry, so we re-invent the wheel.
                         RegistryBuilder.<ConnectionSocketFactory>create()
@@ -99,7 +101,7 @@ public class ExternalRequesterImpl implements ExternalRequester{
                                 .register("https", SSLConnectionSocketFactory.getSocketFactory())
                                 .build(),
                         dnsResolver // Our DnsResolver
-                );
+                );*/
         this.connManager.setMaxTotal(100);
     }
     public PoolingHttpClientConnectionManager getConnectionManager(){
@@ -108,10 +110,28 @@ public class ExternalRequesterImpl implements ExternalRequester{
     public void callExternalSite(Request request, Response response)
             throws Exception {
 
+        var resolved = multiResolver.resolveRemote(request.getHost(), false);
+        if(resolved.size()==0){
+            if(!InetAddressValidator.getInstance().isValidInet4Address(request.getHost())) {
+                response.setStatusCode(404);
+                return;
+            }
+        }
+
+
         CloseableHttpClient httpClient =
                 HttpClientBuilder.create()
                         .setRetryHandler(requestRetryHandler)
+                        .setDnsResolver(this.dnsResolver)
+                        .setSchemePortResolver(httpHost -> {
+                            if(request.getPort()>0) {
+                                return request.getPort();
+                            }
+                            if(request.getProtocol().equalsIgnoreCase("https")) return 443;
+                            return 80;
+                        })
                         .setConnectionManager(connManager)
+                        .disableConnectionState()
                         .disableRedirectHandling()
                         .build();
 
@@ -126,6 +146,7 @@ public class ExternalRequesterImpl implements ExternalRequester{
                     fullRequest.addHeader(header.getKey(), header.getValue());
                 }
             }
+            fullRequest.addHeader("Host", request.getHost());
             if (request.isSoapRequest()) {
                 HttpEntity entity = handleSoapRequest(request);
                 ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
@@ -240,7 +261,8 @@ public class ExternalRequesterImpl implements ExternalRequester{
         return null;
     }
 
-    private HttpRequestBase createFullRequest(Request request, String fullAddress) throws Exception {
+    private HttpRequestBase createFullRequest(Request request, String stringAdress) throws Exception {
+        var fullAddress = new URI(stringAdress);
         if (request.getMethod().equalsIgnoreCase("POST")) {
             return new HttpPost(fullAddress);
         } else if (request.getMethod().equalsIgnoreCase("PUT")) {

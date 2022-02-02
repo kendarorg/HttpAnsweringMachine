@@ -114,7 +114,9 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
     setupAuthHeaders(result);
 
     result.setBinaryRequest(MimeChecker.isBinary(headerContentType, null));
-    result.setStaticRequest(MimeChecker.isStatic(headerContentType, result.getPath()));
+    result.setStaticRequest(MimeChecker.isStatic(headerContentType, result.getPath())
+           // && result.getQuery().size()==0
+    );
     setupOptionalBody(exchange, result);
     // result.sanitizedPath = RequestUtils.sanitizePath(result);
     return result;

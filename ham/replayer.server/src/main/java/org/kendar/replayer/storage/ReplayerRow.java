@@ -60,4 +60,13 @@ public class ReplayerRow {
     public void setResponseHash(String responseHash) {
         this.responseHash = responseHash;
     }
+
+    private boolean done =false;
+    public void markAsDone() {
+        done =true;
+    }
+
+    public boolean done(){
+        return done;
+    }
 }

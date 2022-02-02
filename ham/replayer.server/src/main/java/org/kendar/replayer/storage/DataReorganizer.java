@@ -1,5 +1,6 @@
 package org.kendar.replayer.storage;
 
+import org.kendar.utils.MimeChecker;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -7,8 +8,31 @@ import java.util.*;
 @Component
 public class DataReorganizer {
   public void reorganizeData(ReplayerResult destination, ArrayList<ReplayerRow> source) {
+    //reorganizeV1(destination, source);
+    reorganizeV2(destination, source);
+  }
+
+  private void reorganizeV2(ReplayerResult destination, ArrayList<ReplayerRow> source) {
+
+    var staticHashes = new HashSet<String>();
+    for (var row :
+            source) {
+      var isRowStatic = MimeChecker.isStatic(row.getResponse().getHeader("content-type"),row.getRequest().getPath());
+      if(isRowStatic ){
+        if(!staticHashes.contains(row.getResponseHash())){
+          destination.getStaticRequests().add(row);
+          staticHashes.add(row.getResponseHash());
+        }
+      }else{
+        destination.getDynamicRequests().add(row);
+      }
+    }
+  }
+
+  private void reorganizeV1(ReplayerResult destination, ArrayList<ReplayerRow> source) {
     var requestGroups = new HashMap<String, List<ReplayerRow>>();
     var requestResponseGroups = new HashMap<String, List<ReplayerRow>>();
+    //Group by path+hashmap
     groupMultipleRequests(source, requestGroups, requestResponseGroups);
 
     var staticIndexes = setupStaticIndexes(requestGroups, requestResponseGroups);
@@ -54,7 +78,7 @@ public class DataReorganizer {
       if (!byRequestResponse.containsKey(byRequestResponseDs)) {
         byRequestResponse.put(byRequestResponseDs, new ArrayList<>());
       }
-      byRequest.get(byRequestResponseDs).add(row);
+      byRequestResponse.get(byRequestResponseDs).add(row);
     }
   }
 

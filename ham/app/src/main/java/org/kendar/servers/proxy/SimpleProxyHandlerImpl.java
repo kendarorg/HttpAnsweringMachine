@@ -86,7 +86,10 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
   private boolean checkRemoteMachines(RemoteServerStatus value) {
     var explodedTestUrl = value.getTest().split(":");
     var data = multiResolver.resolveRemote(explodedTestUrl[0], false);
-
+    if(data.size()==0 && (explodedTestUrl[0].equalsIgnoreCase("127.0.0.1")||
+            explodedTestUrl[0].equalsIgnoreCase("localhost"))){
+      data.add("127.0.0.1");
+    }
     var oldStatus = value.isRunning();
     if (data != null && data.size() > 0) {
       try {
@@ -135,12 +138,14 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     }
   }
 
-  public Request translate(Request source) throws MalformedURLException {
-    var realSrc = source.getProtocol() + "://" + source.getHost() + source.getPath();
+  public Request translate(Request oriSource) throws MalformedURLException {
+
+    var realSrc = oriSource.getProtocol() + "://" + oriSource.getHost() + oriSource.getPath();
     var config = configuration.getConfiguration(SimpleProxyConfig.class);
     for (int i = 0; i < config.getProxies().size(); i++) {
       var status = config.getProxies().get(i);
       if (realSrc.startsWith(status.getWhen()) && status.isRunning()) {
+        var source = oriSource.copy();
         realSrc = realSrc.replace(status.getWhen(), status.getWhere());
         var url = new URL(realSrc);
         if (url.getProtocol().equalsIgnoreCase("https") && url.getPort() != 443) {
@@ -158,9 +163,10 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
         }
         source.setHost(url.getHost());
         source.setPath(url.getPath());
+        source.addOriginal(oriSource);
         return source;
       }
     }
-    return source;
+    return oriSource;
   }
 }
