@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk/
+export PATH="${JAVA_HOME}/bin:${PATH}"
+
+java -Dother.dns=127.0.0.11,${DNS_HIJACK_SERVER} -jar /start/services/simpledns-1.0-SNAPSHOT.jar > /start/logs/simpledns.log &
+export lastPid=$!
+exit $lastPid
