@@ -24,11 +24,13 @@ RUN mkdir -p /start/services/answering/derbydata
 RUN mkdir -p /start/services/samplebe
 RUN mkdir -p /start/services/samplefe
 
-COPY ./utils/docker/start /start
-COPY ./ham/app/target/*.jar /start/services/answering/
-COPY ./ham/libs/*.jar /start/services/answering/libs/
-COPY ./utils/sampleapp/be/target/*.jar /start/services/samplebe/
-COPY ./utils/sampleapp/fe/target/*.jar /start/services/samplefe/
+#COPY ./utils/docker/start /start
+#COPY ./ham/app/target/*.jar /start/services/answering/
+#COPY ./ham/libs/*.jar /start/services/answering/libs/
+#COPY ./utils/sampleapp/be/target/*.jar /start/services/samplebe/
+#COPY ./utils/sampleapp/fe/target/*.jar /start/services/samplefe/
+
+COPY ./start /start
 
 RUN chmod 777 /start/*.sh|true
 RUN chmod 777 /start/runonce/*.sh|true
