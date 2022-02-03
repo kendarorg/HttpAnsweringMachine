@@ -1,0 +1,21 @@
+version: "2"
+networks:
+  selfnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/24
+services:
+  sampleapp:
+    container_name: sampleappimpl
+    privileged: true
+    dns:
+      - 127.0.0.1
+    image: sampleapp
+    networks:
+      - selfnet
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8090:8090"
+      - "8080:8080"
