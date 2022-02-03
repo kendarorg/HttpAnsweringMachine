@@ -8,6 +8,11 @@
     "extraServers": [
       {
         "id": "1",
+        "address": "127.0.0.1",
+        "enabled": true
+      },
+      {
+        "id": "2",
         "address": "8.8.4.4",
         "enabled": true
       }
@@ -21,6 +26,16 @@
         "id": "0",
         "dns": "www.local.test",
         "ip": "127.0.0.1"
+      },
+      {
+        "id": "3",
+        "dns": "www.sample.test",
+        "ip": "127.0.0.1"
+      },
+      {
+        "id": "4",
+        "dns": "api.sample.test",
+        "ip": "127.0.0.1"
       }
     ]
   },
@@ -28,11 +43,6 @@
     "id": "staticPage",
     "system": true,
     "staticPages": [
-      {
-        "id": "0",
-        "address": "static.local.test",
-        "path": "staticServer"
-      }
     ]
   },
   {
@@ -40,16 +50,16 @@
     "system": true,
     "proxies": [
       {
-        "id": "0",
-        "when": "https://redirect.local.test/google",
-        "where": "https://www.google.com",
-        "test": "www.google.com"
+        "id": "2",
+        "when": "http://api.sample.test",
+        "where": "http://127.0.0.1:8090",
+        "test": "127.0.0.1:80"
       },
       {
-        "id": "1",
-        "when": "https://redirect.local.test/kendar",
-        "where": "https://www.kendar.org",
-        "test": "www.kendar.org"
+        "id": "3",
+        "when": "http://www.sample.test",
+        "where": "http://127.0.0.1:8080",
+        "test": "127.0.0.1:80"
       }
     ]
   },
@@ -65,6 +75,14 @@
       {
         "id": "1",
         "address": "local.test"
+      },
+      {
+        "id": "2",
+        "address": "*.sample.test"
+      },
+      {
+        "id": "3",
+        "address": "sample.test"
       }
     ]
   },
@@ -99,7 +117,7 @@
         "org.kendar.servers.http.DynamicRequest": "OFF",
         "org.kendar.dns.DnsQueries": "OFF"
       }
-    },
+    }
   },
   {
     "id": "derby",
