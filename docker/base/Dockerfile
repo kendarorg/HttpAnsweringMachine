@@ -16,7 +16,7 @@ RUN chmod 655 /usr/local/share/ca-certificates/ca.crt \
 RUN apk add --no-cache openjdk11
 
 # Prepare runit
-RUN apk add -no-cache runit \
+RUN apk add --no-cache runit \
     && mkdir -p /etc/service
 
 # Install sshd
