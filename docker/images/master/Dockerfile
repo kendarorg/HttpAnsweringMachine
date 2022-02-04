@@ -6,7 +6,7 @@ RUN apk upgrade
 RUN mkdir -p /etc/service/ham \
     && mkdir -p /etc/service/ham/app \
     && mkdir -p /etc/service/ham/log \
-    && echo "#!/bin/bash\nexec /etc/service/ham/ham.sh\n" > /etc/service/ham/run \
+    && echo -e "#!/bin/bash\nexec /etc/service/ham/ham.sh\n" > /etc/service/ham/run \
     && chmod +x /etc/service/ham/run
 
 COPY data/ham.sh /etc/service/ham/

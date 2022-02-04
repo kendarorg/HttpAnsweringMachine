@@ -1,0 +1,40 @@
+version: "2"
+networks:
+  sampleappnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/24
+services:
+  openvpn.local.self:
+    container_name: sampleapp.openvpn
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    ports:
+      - "3000:1194/udp"
+    networks:
+      - sampleappnet
+    depends_on:
+      - master.local.self
+    environment:
+      - DNS_HIJACK_SERVER=master.local.self
+    image: ham.openvpn
+  master.local.self:
+    container_name: sampleapp.master
+    build: './'
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    image: sampleapp.master
+    networks:
+      - sampleappnet
+    ports:
+      - "11080:80"
+      - "11443:443"

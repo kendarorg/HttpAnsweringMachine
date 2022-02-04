@@ -1,5 +1,7 @@
 FROM ham.master:latest
 
+COPY ./docker/external.json /etc/service/ham/app
+
 RUN mkdir -p /etc/service/be \
     && mkdir -p /etc/service/be/log \
     && echo "#!/bin/bash\nexec /etc/service/be/be.sh\n" > /etc/service/be/run \

@@ -31,13 +31,13 @@ COPY data/sshd_config /etc/ssh/
 
 RUN mkdir -p /etc/service/sshd \
     && mkdir -p /etc/service/sshd/log \
-    && echo "#!/bin/bash\nexec /usr/sbin/sshd -D\n" > /etc/service/sshd/run \
+    && echo -e "#!/bin/bash\nexec /usr/sbin/sshd -D\n" > /etc/service/sshd/run \
     && chmod +x /etc/service/sshd/run
 
 # Force root password
 RUN mkdir -p /etc/service/rootforce \
     && mkdir -p /etc/service/rootforce/log \
-    && echo "#!/bin/bash\necho '"'root:\$ROOT_PWD'"'|chpasswd\n" > /etc/service/rootforce/config \
+    && echo -e "#!/bin/bash\necho '"'root:\$ROOT_PWD'"'|chpasswd\n" > /etc/service/rootforce/config \
     && chmod +x /etc/service/rootforce/config
 
 # Start everythin
