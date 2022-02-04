@@ -10,5 +10,5 @@ RUN mkdir -p /etc/service/ham \
     && chmod +x /etc/service/ham/run
 
 COPY data/ham.sh /etc/app/ham/
-COPY data/app /etc/service/ham/app/
+COPY data/app /etc/app/ham/app/
 RUN chmod +x /etc/app/ham/*.sh

@@ -30,6 +30,6 @@ COPY data/openvpn.conf /etc/openvpn
 
 # Start Openvpn
 RUN mkdir -p /etc/service/openvpn \
-    && mkdir -p /etc/service/openvpn/log \
+    #&& mkdir -p /etc/service/openvpn/log \
     && echo -e "#!/bin/bash\nexec 2>&1\nexec /usr/local/bin/ovpn_run\n" > /etc/service/openvpn/run \
     && chmod +x /etc/service/openvpn/run
