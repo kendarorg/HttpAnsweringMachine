@@ -22,10 +22,13 @@ services:
       - master.local.self
     environment:
       - DNS_HIJACK_SERVER=master.local.self
+      - ROOT_PWD=root
     image: ham.openvpn
   master.local.self:
     container_name: ham.sampleapp.single.master
     privileged: true
+    environment:
+      - ROOT_PWD=root
     cap_add:
       - NET_ADMIN
       - DAC_READ_SEARCH
