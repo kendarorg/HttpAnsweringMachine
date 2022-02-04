@@ -8,7 +8,7 @@ RUN apk add --no-cache wget curl bash vim openssl tar cifs-utils
 
 # Update certificates
 RUN apk add --no-cache ca-certificates
-COPY ./data/ca.crt /usr/local/share/ca-certificates/
+COPY data/ca.crt /usr/local/share/ca-certificates/
 RUN chmod 655 /usr/local/share/ca-certificates/ca.crt \
   && update-ca-certificates
 
@@ -27,7 +27,7 @@ RUN apk add --no-cache \
   && mkdir -p /run/sshd \
   && chmod 0700 /root/.ssh
 
-COPY ./data/sshd_config /etc/ssh/
+COPY data/sshd_config /etc/ssh/
 
 RUN mkdir -p /etc/service/sshd \
     && mkdir -p /etc/service/sshd/log \

@@ -19,14 +19,14 @@ VOLUME ["/etc/openvpn"]
 # Internally uses port 1194/udp, remap using `docker run -p 443:1194/tcp`
 EXPOSE 1194/udp
 
-ADD ./data/bin /usr/local/bin
-ADD ./data/etc /etc
+ADD data/bin /usr/local/bin
+ADD data/etc /etc
 RUN chmod a+x /usr/local/bin/*
 
 # Add support for OTP authentication using a PAM module
-ADD ./data/otp/openvpn /etc/pam.d/
+ADD data/otp/openvpn /etc/pam.d/
 
-COPY ./data/openvpn.conf /etc/openvpn
+COPY data/openvpn.conf /etc/openvpn
 
 # Start Openvpn
 RUN mkdir -p /etc/service/openvpn \
