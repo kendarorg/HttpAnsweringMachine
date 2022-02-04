@@ -16,7 +16,7 @@ RUN mkdir -p /etc/app/fe \
     && mkdir -p /etc/service/fe \
     #&& mkdir -p /etc/app/fe/log \
     && echo -e "#!/bin/bash\nexec 2>&1\nexec /etc/app/fe/fe.sh\n" > /etc/service/fe/run \
-    && chmod +x /etc/service/be/run
+    && chmod +x /etc/service/fe/run
 
 COPY ./docker/single/fe.sh /etc/app/fe/
 COPY ./fe/target/*.jar /etc/app/fe/
