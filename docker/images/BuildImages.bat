@@ -2,17 +2,14 @@
 set HAM_DEBUG=false
 set DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 
-mkdir master\data\
-
-
 cd base
 docker build -t ham.base .
 
 cd ../master
 md "data\app" 2>NUL
 md "data\app\libs" 2>NUL
-copy /Y ..\..\ham\app\target\*.jar data\app\
-copy /Y ..\..\ham\libs\*.jar data\app\libs\
+copy /Y ..\..\..\ham\app\target\*.jar data\app\
+copy /Y ..\..\..\ham\libs\*.jar data\app\libs\
 docker build -t ham.master .
 
 cd ../client

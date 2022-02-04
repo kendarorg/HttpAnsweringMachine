@@ -9,6 +9,6 @@ RUN mkdir -p /etc/service/ham \
     && echo "#!/bin/bash\nexec /etc/service/ham/ham.sh\n" > /etc/service/ham/run \
     && chmod +x /etc/service/ham/run
 
-COPY ./data/ham.sh /etc/service/ham/
-COPY ./data/app /etc/service/ham/app/
+COPY data/ham.sh /etc/service/ham/
+COPY data/app /etc/service/ham/app/
 RUN chmod +x /etc/service/ham/*.sh

@@ -8,5 +8,5 @@ RUN mkdir -p /etc/service/simpledns \
     && echo "#!/bin/bash\nexec /etc/service/simpledns/simpledns.sh\n" > /etc/service/simpledns/run \
     && chmod +x /etc/service/simpledns/run
 
-COPY ./data/simpledns.sh /etc/service/simpledns/
+COPY data/simpledns.sh /etc/service/simpledns/
 RUN chmod +x /etc/service/simpledns/*.sh
