@@ -17,4 +17,6 @@ docker build -t ham.client .
 
 cd ../openvpn
 docker build -t ham.openvpn .
+
+:end
 cd ..

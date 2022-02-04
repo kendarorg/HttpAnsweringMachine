@@ -17,7 +17,8 @@ RUN apk add --no-cache openjdk11
 
 # Prepare runit
 RUN apk add --no-cache runit \
-    && mkdir -p /etc/service
+    && mkdir -p /etc/service \
+    && mkdir -p /etc/apps
 
 # Install sshd
 RUN apk add --no-cache \
@@ -30,16 +31,16 @@ RUN apk add --no-cache \
 COPY data/sshd_config /etc/ssh/
 
 RUN mkdir -p /etc/service/sshd \
-    && mkdir -p /etc/service/sshd/log \
-    && echo -e "#!/bin/bash\nexec /usr/sbin/sshd -D\n" > /etc/service/sshd/run \
+    #&& mkdir -p /etc/service/sshd/log \
+    && echo -e "#!/bin/bash\nexec 2>&1\nexec /usr/sbin/sshd\n" > /etc/service/sshd/run \
     && chmod +x /etc/service/sshd/run
 
 # Force root password
 RUN mkdir -p /etc/service/rootforce \
-    && mkdir -p /etc/service/rootforce/log \
-    && echo -e "#!/bin/bash\necho '"'root:\$ROOT_PWD'"'|chpasswd\n" > /etc/service/rootforce/config \
-    && chmod +x /etc/service/rootforce/config
+    #&& mkdir -p /etc/service/rootforce/log \
+    && echo -e "#!/bin/bash\nexec 2>&1\necho \"root:\${ROOT_PWD}\"|chpasswd\nsleep infinity\n" > /etc/service/rootforce/run \
+    && chmod +x /etc/service/rootforce/run
 
 # Start everythin
-CMD ["runsvdir", "/etc/service","log"]
+CMD ["runsvdir", "/etc/service"]
 
