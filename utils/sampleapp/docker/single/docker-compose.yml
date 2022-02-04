@@ -7,7 +7,7 @@ networks:
         - subnet: 172.25.0.0/24
 services:
   openvpn.local.self:
-    container_name: sampleapp.openvpn
+    container_name: ham.sampleapp.single.openvpn
     privileged: true
     cap_add:
       - NET_ADMIN
@@ -24,15 +24,14 @@ services:
       - DNS_HIJACK_SERVER=master.local.self
     image: ham.openvpn
   master.local.self:
-    container_name: sampleapp.master
-    build: './'
+    container_name: ham.sampleapp.single.master
     privileged: true
     cap_add:
       - NET_ADMIN
       - DAC_READ_SEARCH
     dns:
       - 127.0.0.1
-    image: sampleapp.master
+    image: ham.sampleapp.single
     networks:
       - sampleappnet
     ports:
