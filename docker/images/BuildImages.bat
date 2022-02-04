@@ -18,3 +18,8 @@ docker build -t ham.client .
 cd ../openvpn
 docker build -t ham.openvpn .
 cd ..
+
+
+cd ../chrome
+docker build -t ham.chrome .
+cd ..
