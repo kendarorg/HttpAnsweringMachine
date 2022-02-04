@@ -26,10 +26,13 @@ RUN chmod a+x /usr/local/bin/*
 # Add support for OTP authentication using a PAM module
 ADD data/otp/openvpn /etc/pam.d/
 
+RUN mkdir -p /etc/app/openvpn
+COPY data/openvpn.sh /etc/app/openvpn
+RUN chmod +x /etc/app/openvpn/*.sh
 COPY data/openvpn.conf /etc/openvpn
 
 # Start Openvpn
 RUN mkdir -p /etc/service/openvpn \
     #&& mkdir -p /etc/service/openvpn/log \
-    && echo -e "#!/bin/bash\nexec 2>&1\nexec /usr/local/bin/ovpn_run\n" > /etc/service/openvpn/run \
+    && echo -e "#!/bin/bash\nexec 2>&1\nexec /etc/app/openvpn/openvpn.sh\n" > /etc/service/openvpn/run \
     && chmod +x /etc/service/openvpn/run
