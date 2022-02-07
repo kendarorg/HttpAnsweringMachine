@@ -11,9 +11,9 @@ import java.util.List;
 public class DnsConfig extends BaseJsonConfig<DnsConfig> implements SpecialJsonConfig {
     private boolean active;
     private int port;
-    private List<ExtraDnsServer> extraServers;
-    private List<String> blocked;
-    private List<PatternItem> resolved;
+    private List<ExtraDnsServer> extraServers = new ArrayList<>();
+    private List<String> blocked = new ArrayList<>();
+    private List<PatternItem> resolved = new ArrayList<>();
 
     @Override
     public boolean isSystem() {
