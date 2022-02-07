@@ -34,7 +34,6 @@ public class JsonConfigurationImpl implements JsonConfiguration {
 
     public JsonConfigurationImpl(LoggerBuilder loggerBuilder) {
         logger = loggerBuilder.build(JsonConfiguration.class);
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
