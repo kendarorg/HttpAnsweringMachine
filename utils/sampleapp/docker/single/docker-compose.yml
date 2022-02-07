@@ -21,7 +21,7 @@ services:
     depends_on:
       - master.local.self
     environment:
-      - DNS_HIJACK_SERVER=master.local.self
+      - DNS_HIJACK_SERVER=ham.sampleapp.single.master
       - ROOT_PWD=root
     image: ham.openvpn
   master.local.self:

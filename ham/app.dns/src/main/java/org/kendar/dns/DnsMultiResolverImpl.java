@@ -74,6 +74,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         newExtra.setEnv(true);
         newExtra.setId(UUID.randomUUID().toString());
         newExtra.setAddress(split);
+        newExtra.setEnabled(true);
         cloned.getExtraServers().add(newExtra);
       }
     }
