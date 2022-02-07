@@ -6,7 +6,7 @@ networks:
       config:
         - subnet: 172.25.0.0/24
 services:
-  openvpn.local.self:
+  ham.sampleapp.single.openvpn:
     container_name: ham.sampleapp.single.openvpn
     privileged: true
     cap_add:
@@ -18,13 +18,13 @@ services:
       - "3000:1194/udp"
     networks:
       - sampleappnet
-    depends_on:
-      - master.local.self
     environment:
       - DNS_HIJACK_SERVER=ham.sampleapp.single.master
       - ROOT_PWD=root
     image: ham.openvpn
-  master.local.self:
+    depends_on:
+      - ham.sampleapp.single.master
+  ham.sampleapp.single.master:
     container_name: ham.sampleapp.single.master
     privileged: true
     environment:

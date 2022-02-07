@@ -20,3 +20,4 @@ docker build -t ham.openvpn .
 
 :end
 cd ..
+pause

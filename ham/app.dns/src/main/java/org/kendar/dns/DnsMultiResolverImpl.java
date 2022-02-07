@@ -74,7 +74,6 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         newExtra.setEnv(true);
         newExtra.setId(UUID.randomUUID().toString());
         newExtra.setAddress(split);
-        newExtra.setEnabled(true);
         cloned.getExtraServers().add(newExtra);
       }
     }
@@ -82,6 +81,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
       var extraServer = cloned.getExtraServers().get(i);
       Matcher ipPatternMatcher = ipPattern.matcher(extraServer.getAddress());
       if (ipPatternMatcher.matches()) {
+        extraServer.setEnabled(true);
         extraServer.setResolved(extraServer.getAddress());
       } else {
         var namedDns = resolve(extraServer.getAddress(), false);
@@ -89,10 +89,12 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
           logger.error("Not found named DNS " + extraServer.getAddress());
         } else {
           logger.info("Resolved named DNS " + extraServer.getAddress() + ":" + namedDns.get(0));
-
+          extraServer.setEnabled(true);
           extraServer.setResolved(namedDns.get(0));
         }
       }
+
+      configuration.setConfiguration(cloned);
     }
     configuration.setConfiguration(cloned);
   }
@@ -297,6 +299,10 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
   @Override
   public List<String> resolve(String requestedDomain, boolean fromLocalhost) {
+
+    if(requestedDomain.toUpperCase(Locale.ROOT).equals(requestedDomain)){
+      return new ArrayList<>();
+    }
     if (localDomains.containsKey(requestedDomain)) {
       return new ArrayList<>(localDomains.get(requestedDomain));
     }
