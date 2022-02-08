@@ -1,5 +1,3 @@
 127.0.0.1 www.local.test
-127.0.0.1 redirect.local.test
-127.0.0.1 www.kendar.org
-127.0.0.1 www.codeproject.com
-127.0.0.1 api.codeproject.com
+127.0.0.1 www.sample.test
+127.0.0.1 api.sample.test

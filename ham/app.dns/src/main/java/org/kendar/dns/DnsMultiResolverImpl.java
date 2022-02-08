@@ -154,13 +154,13 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
       return data;
     }
     if (requestedDomain.equalsIgnoreCase("localhost")) {
-      data.add("127.0.0.1");
+      data.add(localDns.getIp());
       return data;
     } else if (requestedDomain.endsWith("in-addr.arpa")) {
-      data.add("127.0.0.1");
+      data.add(localDns.getIp());
       return data;
     } else if (requestedDomain.endsWith("ip6.arpa")) {
-      data.add("127.0.0.1");
+      data.add(localDns.getIp());
       return data;
     } else {
       for (int i = 0; i < config.getResolved().size(); i++) {
@@ -194,14 +194,32 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     return data;
   }
 
+  private ConcurrentHashMap<String,String> forgetThem = new ConcurrentHashMap<>();
+
   @Override
   public List<String> resolveRemote(String requestedDomain, boolean fromLocalHost) {
+    requestedDomain = requestedDomain.toUpperCase(Locale.ROOT);
+    if(forgetThem.contains(requestedDomain) )return new ArrayList<>();
     var config = configuration.getConfiguration(DnsConfig.class);
+    var data = new HashSet<String>();
     if (isBlockedDomainQuery(requestedDomain, config)) {
       return new ArrayList<>();
     }
+    if (localDns.match(requestedDomain)) {
+      data.add(localDns.getIp());
+      return new ArrayList<>( data);
+    }
+    if (requestedDomain.equalsIgnoreCase("localhost".toUpperCase(Locale.ROOT))) {
+      data.add(localDns.getIp());
+      return new ArrayList<>( data);
+    } else if (requestedDomain.endsWith("in-addr.arpa".toUpperCase(Locale.ROOT))) {
+      data.add(localDns.getIp());
+      return new ArrayList<>( data);
+    } else if (requestedDomain.endsWith("ip6.arpa".toUpperCase(Locale.ROOT))) {
+      data.add(localDns.getIp());
+      return new ArrayList<>( data);
+    }
 
-    var data = new HashSet<String>();
     List<Callable<List<String>>> runnables = new ArrayList<>();
     var extraServersList = config.getExtraServers();
     for (int i = 0; i < extraServersList.size(); i++) {
@@ -262,14 +280,17 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     var result = new ArrayList<>(data);
     if (logQueries.isDebugEnabled() || logQueries.isTraceEnabled()) {
       if (result.size() > 0) {
-        logger.info("Resloved remote " + requestedDomain + result.get(0));
+        logger.info("Resolved remote " + requestedDomain + result.get(0));
       }
     }
 
     if (logQueries.isTraceEnabled()) {
       if (result.size() == 0) {
-        logger.info("Unable to resolve locally " + requestedDomain);
+        logger.info("Unable to resolve remotely " + requestedDomain);
       }
+    }
+    if(result.size()==0){
+      forgetThem.put(requestedDomain,requestedDomain);
     }
     return result;
   }
@@ -300,9 +321,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
   @Override
   public List<String> resolve(String requestedDomain, boolean fromLocalhost) {
 
-    if(requestedDomain.toUpperCase(Locale.ROOT).equals(requestedDomain)){
-      return new ArrayList<>();
-    }
+
     if (localDomains.containsKey(requestedDomain)) {
       return new ArrayList<>(localDomains.get(requestedDomain));
     }
