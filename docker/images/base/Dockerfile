@@ -33,7 +33,7 @@ COPY data/sshd_config /etc/ssh/
 RUN mkdir -p /etc/service/sshd \
     && mkdir -p /etc/app/sshd/log \
     && mkdir -p /etc/service/sshd/log \
-    && echo -e "#!/bin/bash\nexec svlogd -tt /etc/service/sshd/log\n" > /etc/service/sshd/log/run \
+    && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/sshd/log\n" > /etc/service/sshd/log/run \
     && chmod +x /etc/service/sshd/log/run \
     && echo -e "#!/bin/bash\nexec 2>&1\nexec /usr/sbin/sshd\n" > /etc/service/sshd/run \
     && chmod +x /etc/service/sshd/run

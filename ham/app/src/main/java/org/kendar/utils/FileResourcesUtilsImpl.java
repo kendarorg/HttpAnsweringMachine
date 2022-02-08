@@ -158,12 +158,39 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
 
     var ress = new ArrayList<String>();
     if (jarFile.isFile()) { // Run with JAR file
-      loadFromJar(path, result, classLoader, jarFile, ress);
-    } else { // Run with IDE
+      loadFromJar(path, result, classLoader, jarFile, ress,null);
+    } else if(isCanonical(jarFile)) {// Run with IDE
       loadFromClasspathInIDE(path, result, jarFile);
+    }else {
+      loadNestedJar(path, result, classLoader, jarFile, ress);
     }
 
     return result;
+  }
+
+  /**
+   * Handles file:\C:\Private\HttpAnsweringMachine\ham\app-1.0-SNAPSHOT.jar!\BOOT-INF\classes!
+   * @param path  /C:/Private/HttpAnsweringMachine/ham/libs/docker.builder-1.0-SNAPSHOT.jar
+   * @param result
+   * @param classLoader
+   * @param jarFile
+   * @param ress
+   */
+  private void loadNestedJar(String path, HashMap<String, Object> result, ClassLoader classLoader, File jarFile, ArrayList<String> ress) throws IOException {
+    var splitted = jarFile.getPath().split("!");
+    var rootFilePath = splitted[0].substring(5);
+    var rootFile = new File(rootFilePath);
+    logger.error("Loading nested jar  with path "+jarFile);
+    loadFromJar(path, result, classLoader, rootFile, ress,"BOOT-INF/classes");
+  }
+
+  private boolean isCanonical(File jarFile) {
+    try {
+      jarFile.getCanonicalPath();
+      return true;
+    } catch (IOException e) {
+      return false;
+    }
   }
 
   private void loadFromClasspathInIDE(String path, HashMap<String, Object> result, File jarFile) {
@@ -183,8 +210,11 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
       HashMap<String, Object> result,
       ClassLoader classLoader,
       File jarFile,
-      ArrayList<String> ress)
+      ArrayList<String> ress,String extra)
       throws IOException {
+    if(extra!=null){
+      path = extra+"/"+path;
+    }
     final JarFile jar = new JarFile(jarFile);
     final Enumeration<JarEntry> entries = jar.entries(); // gives ALL entries in jar
     while (entries.hasMoreElements()) {
@@ -205,6 +235,11 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
         try (inputStream) {
           var bytes = inputStream.readAllBytes();
           if (bytes.length > 0) {
+            //web/test.css
+            //BOOT-INF/classes/web/test.css
+            if(extra!=null){
+              filePath = filePath.substring(extra.length());
+            }
             if (filePath.startsWith("/")) filePath = filePath.substring(1);
             result.put(filePath, bytes);
           }

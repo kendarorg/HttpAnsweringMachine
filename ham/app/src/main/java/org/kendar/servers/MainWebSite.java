@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "${global.localAddress}")
 public class MainWebSite extends StaticWebFilter {
     public MainWebSite(FileResourcesUtils fileResourcesUtils) {
+
         super(fileResourcesUtils);
     }
 
