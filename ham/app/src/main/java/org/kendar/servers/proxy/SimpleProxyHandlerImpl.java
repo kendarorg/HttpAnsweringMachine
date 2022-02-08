@@ -49,7 +49,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
           }
         },
         1000,
-        5 * 60 * 1000,
+        60 * 1000,
         TimeUnit.MILLISECONDS);
 
     logger.info("Simple proxyes LOADED");
@@ -86,8 +86,9 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
   private boolean checkRemoteMachines(RemoteServerStatus value) {
     var explodedTestUrl = value.getTest().split(":");
     var data = multiResolver.resolveRemote(explodedTestUrl[0], false);
-    if(data.size()==0 && (explodedTestUrl[0].equalsIgnoreCase("127.0.0.1")||
-            explodedTestUrl[0].equalsIgnoreCase("localhost"))){
+    if(explodedTestUrl[0].equalsIgnoreCase("127.0.0.1")||
+            explodedTestUrl[0].equalsIgnoreCase("localhost")){
+      data.clear();
       data.add("127.0.0.1");
     }
     var oldStatus = value.isRunning();
