@@ -156,14 +156,19 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
     final File jarFile =
         new File(clazz.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
 
+    String jarType;
     var ress = new ArrayList<String>();
     if (jarFile.isFile()) { // Run with JAR file
+      jarType = "REAL_FILE";
       loadFromJar(path, result, classLoader, jarFile, ress,null);
     } else if(isCanonical(jarFile)) {// Run with IDE
+      jarType = "CLASSPATH";
       loadFromClasspathInIDE(path, result, jarFile);
     }else {
+      jarType = "NESTED";
       loadNestedJar(path, result, classLoader, jarFile, ress);
     }
+    logger.info("Loading "+jarType+" jar with path "+jarFile);
 
     return result;
   }
@@ -180,14 +185,14 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
     var splitted = jarFile.getPath().split("!");
     var rootFilePath = splitted[0].substring(5);
     var rootFile = new File(rootFilePath);
-    logger.error("Loading nested jar  with path "+jarFile);
+    logger.debug("Loading nested jar  with path "+jarFile);
     loadFromJar(path, result, classLoader, rootFile, ress,"BOOT-INF/classes");
   }
 
   private boolean isCanonical(File jarFile) {
     try {
       jarFile.getCanonicalPath();
-      return true;
+      return true && !jarFile.getPath().contains("!");
     } catch (IOException e) {
       return false;
     }

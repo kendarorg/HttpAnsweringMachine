@@ -10,8 +10,7 @@ cd /etc/app/ham/app
 #	 org.springframework.boot.loader.PropertiesLauncher
 
 
-java "-Dloader.path=/etc/app/ham/app/libs"  -Dloader.main=org.kendar.Main  \
-	-Dother.dns=127.0.0.11 -Djdk.tls.acknowledgeCloseNotify=true \
+java "-Dloader.path=/etc/app/ham/app/libs/"  -Dloader.main=org.kendar.Main  \
 	-jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher
 	
 #-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005 \
