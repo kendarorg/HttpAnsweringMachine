@@ -1,0 +1,14 @@
+FROM ham.client:latest
+
+
+RUN mkdir -p /etc/app/fe \
+    && mkdir -p /etc/app/fe/log \
+    && mkdir -p /etc/service/fe/log \
+    && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/fe/log\n" > /etc/service/fe/log/run \
+    && chmod +x /etc/service/fe/log/run \
+    && echo -e "#!/bin/bash\nexec 2>&1\nexec /etc/app/fe/fe.sh\n" > /etc/service/fe/run \
+    && chmod +x /etc/service/fe/run
+
+COPY ./docker/fe.sh /etc/app/fe/
+COPY ./fe/target/*.jar /etc/app/fe/
+RUN chmod +x /etc/app/fe/*.sh

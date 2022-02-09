@@ -4,6 +4,7 @@ import org.kendar.dns.configurations.DnsConfig;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.ThreeParamsFunction;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.xbill.DNS.*;
@@ -12,10 +13,13 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 @Component
 public class DnsServer {
@@ -25,15 +29,22 @@ public class DnsServer {
   private final Logger logger;
   private final DnsMultiResolver multiResolver;
   private final ConcurrentHashMap<String, Integer> loopBlocker = new ConcurrentHashMap<>();
+  private Function<String, String> blocker;
+
 
   public DnsServer(
       LoggerBuilder loggerBuilder,
       DnsMultiResolver multiResolver,
       JsonConfiguration configuration) {
 
+    this.blocker = (a)->a.toUpperCase(Locale.ROOT);
     this.logger = loggerBuilder.build(DnsServer.class);
     this.multiResolver = multiResolver;
     this.dnsPort = configuration.getConfiguration(DnsConfig.class).getPort();
+  }
+
+  public void setDnsRunnable(ThreeParamsFunction<String,String,LoggerBuilder, Callable<List<String>>> runnable){
+    this.multiResolver.setRunnable(runnable);
   }
 
   @SuppressWarnings("InfiniteLoopStatement")
@@ -97,15 +108,10 @@ public class DnsServer {
       List<String> ips = new ArrayList<>();
 
       response.addRecord(request.getQuestion(), Section.QUESTION);
-      var fromLocalHost = indp.getAddress().toString().contains("127.0.0.1");
 
-      if (fromLocalHost) {
-        if (!requestedDomain.equals(requestedDomain.toUpperCase(Locale.ROOT))) {
-          ips = this.multiResolver.resolve(requestedDomain.toUpperCase(Locale.ROOT), true);
+        if (!requestedDomain.equals(blocker.apply(requestedDomain))) {
+          ips = this.multiResolver.resolve(blocker.apply(requestedDomain));
         }
-      } else {
-        ips = this.multiResolver.resolve(requestedDomain, false);
-      }
 
       byte[] resp;
       if (ips.size() > 0) {
@@ -127,5 +133,9 @@ public class DnsServer {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public void setBlocker(Function<String,String> blocker) {
+    this.blocker = blocker;
   }
 }

@@ -19,10 +19,10 @@ public class DnsDirectCaller {
     logger = builder.build(DnsDirectCaller.class);
   }
 
-  private void testDnsServer(String DNS_SERVER_ADDRESS) throws Exception {
+  public String testDnsServer(String DNS_SERVER_ADDRESS,String domain) throws Exception {
     int DNS_SERVER_PORT = 53;
     logger.debug("Testing " + DNS_SERVER_ADDRESS);
-    String domain = "google.com";
+    //String domain = "google.com";
     InetAddress ipAddress = InetAddress.getByName(DNS_SERVER_ADDRESS);
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -132,10 +132,13 @@ public class DnsDirectCaller {
     short addrLen = din.readShort();
     logger.debug("Len: 0x" + String.format("%x", addrLen));
 
+    var realAddress = new StringBuilder();
     debugString = new StringBuilder(("Address: "));
     for (int i = 0; i < addrLen; i++) {
       debugString.append(String.format("%d", (din.readByte() & 0xFF))).append(".");
+      realAddress.append(String.format("%d", (din.readByte() & 0xFF))).append(".");
     }
     logger.debug(debugString.toString());
+    return realAddress.toString();
   }
 }

@@ -73,13 +73,13 @@ public class ExternalRequesterImpl implements ExternalRequester{
                             descriptor = domains.get(host);
                             if ((descriptor.timestamp + 10 * 60 * 1000) < currentTime) {
                                 domains.remove(host);
-                                hosts = multiResolver.resolveRemote(host, false);
+                                hosts = multiResolver.resolveRemote(host);
                                 descriptor = new AnsweringHandlerImpl.ResolvedDomain();
                                 descriptor.domains.addAll(hosts);
                                 domains.put(host, descriptor);
                             }
                         } else {
-                            hosts = multiResolver.resolveRemote(host, false);
+                            hosts = multiResolver.resolveRemote(host);
                             descriptor = new AnsweringHandlerImpl.ResolvedDomain();
                             descriptor.domains.addAll(hosts);
                             domains.put(host, descriptor);
@@ -110,7 +110,7 @@ public class ExternalRequesterImpl implements ExternalRequester{
     public void callExternalSite(Request request, Response response)
             throws Exception {
 
-        var resolved = multiResolver.resolveRemote(request.getHost(), false);
+        var resolved = multiResolver.resolveRemote(request.getHost());
         if(resolved.size()==0){
             if(!InetAddressValidator.getInstance().isValidInet4Address(request.getHost())) {
                 response.setStatusCode(404);
