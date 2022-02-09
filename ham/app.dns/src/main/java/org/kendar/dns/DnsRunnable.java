@@ -1,20 +1,25 @@
 package org.kendar.dns;
 
+import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 import org.xbill.DNS.*;
 
 import java.net.UnknownHostException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 public class DnsRunnable implements Callable<List<String>> {
     private final String requestedServer;
     private final String requestedDomain;
+    private final Logger logger;
 
-    public DnsRunnable(String requestedServer, String requestedDomain) {
+    public DnsRunnable(String requestedServer, String requestedDomain, LoggerBuilder loggerBuilder) {
         this.requestedServer = requestedServer;
         this.requestedDomain = requestedDomain;
+        this.logger = loggerBuilder.build(DnsRunnable.class);
     }
 
     @Override
@@ -22,6 +27,7 @@ public class DnsRunnable implements Callable<List<String>> {
         SimpleResolver resolver;
         List<String> result = new ArrayList<>();
         try {
+            logger.debug("Request to "+requestedServer+" for "+requestedDomain);
             resolver = new SimpleResolver(requestedServer);
             resolver.setPort(53);
             var resolvers = new ArrayList<Resolver>();
@@ -37,13 +43,16 @@ public class DnsRunnable implements Callable<List<String>> {
             if(records!=null){
                 for (Record record:records) {
                     String realip = ((ARecord) records[0]).getAddress().getHostAddress();
-
+                    logger.debug("Resolved with "+requestedServer+" for "+requestedDomain+ ": "+realip);
                     result.add(realip);
 
                 }
             }
         } catch (UnknownHostException | TextParseException e) {
             throw new UnknownHostException();
+        }
+        if(result==null || result.size()==0){
+            logger.debug("NOTRESOLVED with "+requestedServer+" for "+requestedDomain);
         }
         return result;
     }

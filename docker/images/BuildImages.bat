@@ -13,6 +13,8 @@ copy /Y ..\..\..\ham\libs\*.jar data\app\libs\
 docker build -t ham.master .
 
 cd ../client
+md "data\app" 2>NUL
+copy /Y ..\..\..\ham\simpledns\target\*.jar data\
 docker build -t ham.client .
 
 cd ../openvpn

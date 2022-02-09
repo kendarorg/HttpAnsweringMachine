@@ -12,6 +12,7 @@ import org.springframework.core.env.Environment;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @SpringBootApplication
@@ -50,6 +51,8 @@ public class SimpleDns implements CommandLineRunner {
 
     var dnsServer =
         (org.kendar.dns.DnsServer) applicationContext.getBean(org.kendar.dns.DnsServer.class);
+    dnsServer.setBlocker((a)-> a.substring(0,1).toUpperCase(Locale.ROOT)+a.substring(1));
+    dnsServer.setDnsRunnable((a,b,c)->{return new HttpDnsRunnable(a,b,c);});
     while (true) {
       try {
         dnsServer.run();

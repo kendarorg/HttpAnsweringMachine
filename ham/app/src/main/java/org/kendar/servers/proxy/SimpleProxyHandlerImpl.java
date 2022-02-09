@@ -85,7 +85,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
 
   private boolean checkRemoteMachines(RemoteServerStatus value) {
     var explodedTestUrl = value.getTest().split(":");
-    var data = multiResolver.resolveRemote(explodedTestUrl[0], false);
+    var data = multiResolver.resolveRemote(explodedTestUrl[0]);
     if(explodedTestUrl[0].equalsIgnoreCase("127.0.0.1")||
             explodedTestUrl[0].equalsIgnoreCase("localhost")){
       data.clear();

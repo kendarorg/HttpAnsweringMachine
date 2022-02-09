@@ -7,6 +7,7 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.ThreeParamsFunction;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -32,10 +33,12 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
   private final String localHostAddress;
   private final Logger logQueries;
   private final ConcurrentHashMap<String, HashSet<String>> localDomains = new ConcurrentHashMap<>();
+  private final LoggerBuilder loggerBuilder;
   private PatternItem localDns;
 
   public DnsMultiResolverImpl(LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
     this.logger = loggerBuilder.build(DnsMultiResolverImpl.class);
+    this.loggerBuilder = loggerBuilder;
     this.logQueries = loggerBuilder.build(DnsQueries.class);
     this.localHostAddress = getLocalHostLANAddress();
     this.configuration = configuration;
@@ -84,7 +87,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         extraServer.setEnabled(true);
         extraServer.setResolved(extraServer.getAddress());
       } else {
-        var namedDns = resolve(extraServer.getAddress(), false);
+        var namedDns = resolve(extraServer.getAddress());
         if (namedDns.size() == 0) {
           logger.error("Not found named DNS " + extraServer.getAddress());
         } else {
@@ -197,8 +200,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
   private ConcurrentHashMap<String,String> forgetThem = new ConcurrentHashMap<>();
 
   @Override
-  public List<String> resolveRemote(String requestedDomain, boolean fromLocalHost) {
-    requestedDomain = requestedDomain.toUpperCase(Locale.ROOT);
+  public List<String> resolveRemote(String requestedDomain) {
     if(forgetThem.contains(requestedDomain) )return new ArrayList<>();
     var config = configuration.getConfiguration(DnsConfig.class);
     var data = new HashSet<String>();
@@ -225,7 +227,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     for (int i = 0; i < extraServersList.size(); i++) {
       var serverToCall = extraServersList.get(i);
       if (!serverToCall.isEnabled()) continue;
-      var runnable = new DnsRunnable(serverToCall.getResolved(), requestedDomain);
+      var runnable = this.runnable.apply(serverToCall.getResolved(), requestedDomain,loggerBuilder);
       runnables.add(runnable);
     }
     List<Future<List<String>>> futures = new ArrayList<>();
@@ -294,6 +296,12 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     }
     return result;
   }
+  private ThreeParamsFunction<String, String, LoggerBuilder, Callable<List<String>>> runnable = (a,b,c)-> new DnsRunnable(a,b,c);
+
+  @Override
+  public void setRunnable(ThreeParamsFunction<String, String, LoggerBuilder, Callable<List<String>>> runnable) {
+    this.runnable = runnable;
+  }
 
   private boolean isBlockedDomainQuery(String requestedDomain, DnsConfig config) {
     var shouldBlock = false;
@@ -319,7 +327,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
   }
 
   @Override
-  public List<String> resolve(String requestedDomain, boolean fromLocalhost) {
+  public List<String> resolve(String requestedDomain) {
 
 
     if (localDomains.containsKey(requestedDomain)) {
@@ -330,6 +338,6 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     if (localData.size() > 0) {
       return localData;
     }
-    return resolveRemote(requestedDomain, fromLocalhost);
+    return resolveRemote(requestedDomain);
   }
 }
