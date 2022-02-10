@@ -11,7 +11,6 @@
         <module name="oidc.server" />
         <module name="pacts.server" />
         <module name="replayer.server" />
-        <module name="docker.builder" />
         <module name="app.http.standardfilters" />
         <module name="app.http" />
         <module name="simpledns" />
@@ -22,6 +21,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="answer.jdbc" target="11" />
+      <module name="docker.builder" target="11" />
       <module name="http.jdbc" target="11" />
       <module name="starter" target="11" />
     </bytecodeTargetLevel>
