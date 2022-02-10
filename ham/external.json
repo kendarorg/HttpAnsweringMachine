@@ -21,41 +21,18 @@
         "id": "0",
         "dns": "www.local.test",
         "ip": "127.0.0.1"
-      },
-      {
-        "id": "3",
-        "dns": "www.sample.test",
-        "ip": "127.0.0.1"
-      },
-      {
-        "id": "4",
-        "dns": "api.sample.test",
-        "ip": "127.0.0.1"
       }
     ]
   },
   {
     "id": "staticPage",
     "system": true,
-    "staticPages": [
-    ]
+    "staticPages": []
   },
   {
     "id": "proxy",
     "system": true,
     "proxies": [
-      {
-        "id": "2",
-        "when": "http://api.sample.test",
-        "where": "http://127.0.0.1:8090",
-        "test": "127.0.0.1:8090"
-      },
-      {
-        "id": "3",
-        "when": "http://www.sample.test",
-        "where": "http://127.0.0.1:8080",
-        "test": "127.0.0.1:8080"
-      }
     ]
   },
   {
@@ -70,14 +47,6 @@
       {
         "id": "1",
         "address": "local.test"
-      },
-      {
-        "id": "2",
-        "address": "*.sample.test"
-      },
-      {
-        "id": "3",
-        "address": "sample.test"
       }
     ]
   },
