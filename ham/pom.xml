@@ -62,7 +62,6 @@
         <module>app.http.standardfilters</module>
         <module>simpledns</module>
         <module>app.dns</module>
-        <module>docker.builder</module>
         <module>pacts.server</module>
     </modules>
 </project>

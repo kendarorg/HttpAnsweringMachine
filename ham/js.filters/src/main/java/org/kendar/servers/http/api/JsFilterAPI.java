@@ -118,6 +118,9 @@ public class JsFilterAPI implements FilteringClass {
     try {
       File f;
       var realPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor+".json");
+      if(!Files.exists(Path.of(jsFilterPath))){
+        Files.createDirectory(Path.of(jsFilterPath));
+      }
       JsFilterDescriptor result =mapper.readValue(req.getRequestText(),JsFilterDescriptor.class);
       Files.writeString(Path.of(realPath),req.getRequestText());
       res.setStatusCode(200);

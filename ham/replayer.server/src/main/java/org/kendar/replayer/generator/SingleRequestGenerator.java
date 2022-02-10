@@ -50,6 +50,6 @@ public class SingleRequestGenerator {
     }
 
     private void addRequest(SpecialStringBuilder a, String s) {
-        
+
     }
 }
