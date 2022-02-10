@@ -1,5 +1,6 @@
 package org.kendar.servers.proxy;
 
+import org.kendar.events.EventQueue;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.Request;
@@ -18,17 +19,25 @@ import java.util.concurrent.*;
 public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
   private final Logger logger;
+  private EventQueue eventQueue;
   private final DnsMultiResolver multiResolver;
   private final JsonConfiguration configuration;
   private boolean startedOnce = false;
 
   public SimpleProxyHandlerImpl(
-      LoggerBuilder loggerBuilder,
-      DnsMultiResolver multiResolver,
-      JsonConfiguration configuration) {
+          LoggerBuilder loggerBuilder,
+          DnsMultiResolver multiResolver,
+          JsonConfiguration configuration,
+          EventQueue eventQueue) {
     this.multiResolver = multiResolver;
     this.configuration = configuration;
     logger = loggerBuilder.build(SimpleProxyHandlerImpl.class);
+    this.eventQueue = eventQueue;
+    eventQueue.register((a)->handleConfigChange(a),ProxyConfigChanged.class);
+  }
+
+  public void handleConfigChange(ProxyConfigChanged event){
+    verifyProxyConfiguration();
   }
 
   @PostConstruct
@@ -37,22 +46,26 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     scheduler.scheduleAtFixedRate(
         () -> {
           doLog();
-          var config = configuration.getConfiguration(SimpleProxyConfig.class);
-
-          var changed = false;
-          for (int i = 0; i < config.getProxies().size(); i++) {
-            var currentProxy = config.getProxies().get(i);
-            changed = checkRemoteMachines(currentProxy) ||changed;
-          }
-          if (changed) {
-            configuration.setConfiguration(config);
-          }
+          verifyProxyConfiguration();
         },
         1000,
         60 * 1000,
         TimeUnit.MILLISECONDS);
 
     logger.info("Simple proxyes LOADED");
+  }
+
+  private void verifyProxyConfiguration() {
+    var config = configuration.getConfiguration(SimpleProxyConfig.class);
+
+    var changed = false;
+    for (int i = 0; i < config.getProxies().size(); i++) {
+      var currentProxy = config.getProxies().get(i);
+      changed = checkRemoteMachines(currentProxy) ||changed;
+    }
+    if (changed) {
+      configuration.setConfiguration(config);
+    }
   }
 
   private void doLog() {

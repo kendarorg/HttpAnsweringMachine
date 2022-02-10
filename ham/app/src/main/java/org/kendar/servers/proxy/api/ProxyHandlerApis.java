@@ -2,6 +2,7 @@ package org.kendar.servers.proxy.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
@@ -9,6 +10,7 @@ import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.proxy.ProxyConfigChanged;
 import org.kendar.servers.proxy.RemoteServerStatus;
 import org.kendar.servers.proxy.SimpleProxyConfig;
 import org.springframework.stereotype.Component;
@@ -20,9 +22,11 @@ import java.util.ArrayList;
 public class ProxyHandlerApis implements FilteringClass {
   final ObjectMapper mapper = new ObjectMapper();
   private final JsonConfiguration configuration;
+  private EventQueue eventQueue;
 
-  public ProxyHandlerApis(JsonConfiguration configuration) {
+  public ProxyHandlerApis(JsonConfiguration configuration, EventQueue eventQueue) {
     this.configuration = configuration;
+    this.eventQueue = eventQueue;
   }
 
   @Override
@@ -78,6 +82,7 @@ public class ProxyHandlerApis implements FilteringClass {
     }
     clone.setProxies(newList);
     configuration.setConfiguration(clone);
+    eventQueue.handle(new ProxyConfigChanged());
     res.setStatusCode(200);
   }
 
@@ -106,6 +111,7 @@ public class ProxyHandlerApis implements FilteringClass {
     }
     cloneConf.setProxies(newList);
     configuration.setConfiguration(cloneConf);
+    eventQueue.handle(new ProxyConfigChanged());
     res.setStatusCode(200);
   }
 
@@ -129,6 +135,7 @@ public class ProxyHandlerApis implements FilteringClass {
     proxyes.set(id1Index, proxyes.get(id2Index));
     proxyes.set(id2Index, id1Clone);
     configuration.setConfiguration(cloneConf);
+    eventQueue.handle(new ProxyConfigChanged());
     res.setStatusCode(200);
   }
 
@@ -143,6 +150,7 @@ public class ProxyHandlerApis implements FilteringClass {
     var newData = mapper.readValue(req.getRequestText(), RemoteServerStatus.class);
     proxyes.add(newData);
     configuration.setConfiguration(cloneConf);
+    eventQueue.handle(new ProxyConfigChanged());
     res.setStatusCode(200);
   }
 }
