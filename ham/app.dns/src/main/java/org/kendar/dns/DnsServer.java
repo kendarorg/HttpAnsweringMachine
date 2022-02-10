@@ -119,8 +119,17 @@ public class DnsServer {
           logger.debug("FOUNDED IP " + ip + " FOR " + requestedDomain);
           // Add answers as needed
           response.addRecord(
-              Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.root),
+              Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.fromString(requestedDomain)),
               Section.ANSWER);
+          /*response.addRecord(
+                  Record.fromString(Name.root, Type.NS, DClass.IN, 86400, ip, Name.fromString("localdns")),
+                  Section.AUTHORITY);
+          response.addRecord(
+                  Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.fromString("localdns")),
+                  Section.ADDITIONAL);*/
+          /*response.addRecord(
+                  Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.root),
+                  Section.AUTHORITY);*/
         }
         resp = response.toWire();
       } else {

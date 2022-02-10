@@ -1,4 +1,4 @@
 FROM ham.master:latest
 
-COPY ./docker/external.json /etc/app/ham/app/
+COPY ./docker_multi/external.json /etc/app/ham/app/
 
