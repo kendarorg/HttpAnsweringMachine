@@ -53,13 +53,18 @@ should set the DNS to main.local.self for its installation see [Running in docke
 Of course when you do this you can't (easily) know in advance the address of main.local.self. For this reason
 you can install on the machine needing to use the system a simple dns proxy. the simpledns.jar
 
-To start it you can use the following command line to start the service
+To start it you can use the following command line to start the service. The other dns will call
+the main ham server (192.168.1.2)
 
-    java -Dother.dns=127.0.0.11,8.8.8.8,8.8.4.4,main.local.self \
+    java -Dother.dns=192.168.1.2 \
         -jar simpledns-1.0-SNAPSHOT.jar
 
 This way you could start the image as with the single instance described before adding the 127.0.0.1 as
 dns server. The simpledns will take care of resolving the value of main.local.self with the preceding
 dns server.
 
-Notice the 127.0.0.11 address that is the default DNS address used inside the container
+Eventually you can find the ham server address from the name -before- calling the simple dns
+
+    export hamContainerIp=`ping -c 4 $HAM_CONTAINER_NAME|head -n 1| grep -Eo "([0-9]+\.?){4}"`
+
+passing the HAM_CONTAINER_NAME as an environment variable on compose or docker run
