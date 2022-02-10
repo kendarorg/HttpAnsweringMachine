@@ -15,7 +15,14 @@ public class SimpleProxyConfig extends BaseJsonConfig<SimpleProxyConfig> {
   }
 
   @Override public SimpleProxyConfig copy() {
-    return null;
+    var result = new SimpleProxyConfig();
+    result.setProxies(new ArrayList<>());
+    for(var rss : proxies){
+      result.getProxies().add(rss.copy());
+    }
+    result.setId(this.getId());
+    result.setSystem(this.isSystem());
+    return result;
   }
 
   public List<RemoteServerStatus> getProxies() {
