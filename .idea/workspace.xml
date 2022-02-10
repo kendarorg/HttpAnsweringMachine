@@ -1,59 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ham/app.http/src/main/java/org/kendar/http/events/ScriptsModified.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/prism/bliss.shy.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/prism/prism-live-css.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/prism/prism-live-javascript.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/prism/prism-live-markup.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/prism/prism-live.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/prism/prism-live.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/prism/prism.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/prism/prism.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/replayer/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/replayer/interaction.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.commons/src/main/java/org/kendar/servers/models/JsonFileData.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/org/kendar/servers/utils/RegexpAPI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/org/kendar/servers/utils/ValidatorAPI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/org/kendar/servers/utils/models/RegexpData.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/org/kendar/servers/utils/models/RegexpResult.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/org/kendar/servers/utils/models/ValidatorData.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/org/kendar/servers/utils/models/ValidatorResult.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/resources/web/utils/encodecode.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/resources/web/utils/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/resources/web/utils/regex.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/resources/web/utils/validator.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/org/kendar/servers/utils/ValidatorAPITestJson.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/org/kendar/servers/utils/ValidatorAPITestXml.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/json/squad_invalid.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/json/squad_template.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/json/squad_valid.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/json/squad_valid_empty_array.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/json/squad_valid_null.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/json/user_schema.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/json/user_valid.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/xml/res_invalid.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/xml/res_template.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/xml/res_valid.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/xml/studend_xsd.xsd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/xml/student_invalid.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/resources/org/kendar/server/utils/xml/student_valid.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/externals/json-schema-inferrer-0.1.4.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/externals/xsd-gen-0.2.4.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/js.filters/src/main/java/org/kendar/servers/http/api/GeneratorModel.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/js.filters/src/main/java/org/kendar/servers/http/api/JsFilterGeneratorAPI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/js.filters/src/main/java/org/kendar/servers/http/generators/BaseGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/js.filters/src/main/java/org/kendar/servers/http/generators/CurlGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/js.filters/src/main/java/org/kendar/servers/http/generators/JUnitGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/js.filters/src/main/java/org/kendar/servers/http/generators/JsFilterGenerator.java" beforeDir="false" />
-    </list>
+    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="feature/demoaware" />
@@ -88,7 +48,7 @@
       <workItem from="1644225986508" duration="321000" />
       <workItem from="1644493357289" duration="459000" />
       <workItem from="1644508797958" duration="593000" />
-      <workItem from="1644509595266" duration="485000" />
+      <workItem from="1644509595266" duration="1090000" />
     </task>
     <servers />
   </component>
