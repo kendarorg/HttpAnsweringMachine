@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="" />
+    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/docker/images/base/data/startservice.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/images/base/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/base/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/images/client/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/client/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/images/master/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/master/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/images/openvpn/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/openvpn/Dockerfile" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,6 +39,7 @@
       <updated>1644225983802</updated>
       <workItem from="1644225986508" duration="321000" />
       <workItem from="1644493357289" duration="459000" />
+      <workItem from="1644508797958" duration="328000" />
     </task>
     <servers />
   </component>
