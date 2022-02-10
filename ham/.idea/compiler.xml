@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <option name="BUILD_PROCESS_HEAP_SIZE" value="1500" />
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="app" />
+        <module name="oidc.server" />
+        <module name="pacts.server" />
+        <module name="replayer.server" />
+        <module name="app.http.standardfilters" />
+        <module name="app.http" />
+        <module name="simpledns" />
+        <module name="app.dns" />
+        <module name="js.filters" />
+        <module name="app.commons" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="answer.jdbc" target="11" />
+      <module name="docker.builder" target="11" />
+      <module name="http.jdbc" target="11" />
+      <module name="starter" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="HttpAnsweringMachine" options="-parameters" />
+      <module name="answer.jdbc" options="-parameters" />
+      <module name="app" options="-parameters" />
+      <module name="app.commons" options="-parameters" />
+      <module name="app.dns" options="-parameters" />
+      <module name="app.http" options="-parameters" />
+      <module name="app.http.standardfilters" options="-parameters" />
+      <module name="docker.builder" options="-parameters" />
+      <module name="http.jdbc" options="-parameters" />
+      <module name="js.filters" options="-parameters" />
+      <module name="oidc.server" options="-parameters" />
+      <module name="pacts.server" options="-parameters" />
+      <module name="replayer.server" options="-parameters" />
+      <module name="simpledns" options="-parameters" />
+      <module name="starter" options="-parameters" />
+    </option>
+  </component>
+</project>

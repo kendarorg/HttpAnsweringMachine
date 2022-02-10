@@ -1,0 +1,97 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Utils</button>
+        </div>
+        <div class="col-md-8">
+            <h3>REGEXP TESTER</h3>
+            <div class="form-group">
+                <label htmlFor="regexp">Regexp</label> Do not escape like in Java Strings (e.g. don't write '\"' but '"')
+                <input class="form-control" type="text" name="regexp" id="regexp"/>
+            </div>
+            <div class="form-group">
+                <label for="matcherString">ToMatch</label>
+                <textarea class="form-control" rows="6" cols="50" name="matcherString" id="matcherString"></textarea>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="multiline" name="multiline">
+                <label class="form-check-label" for="multiline">
+                    multiline
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="caseInsensitive" name="caseInsensitive">
+                <label class="form-check-label" for="caseInsensitive">
+                    caseInsensitive
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="literal" name="literal">
+                <label class="form-check-label" for="literal">
+                    literal
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="unicodeCase" name="unicodeCase">
+                <label class="form-check-label" for="unicodeCase">
+                    unicodeCase
+                </label>
+            </div>
+            <div class="form-group">
+                <button type="button" id="test" name="test" class="btn btn-default">Go</button>
+            </div>
+            <div class="form-group">
+                <label for="results">Results</label>
+                <textarea class="form-control" rows="6" cols="50" name="results" id="results"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+    $("#test").click(function(){
+        var data={
+            regexp: $('#regexp').val(),
+            matcherString: $('#matcherString').val(),
+            caseInsensitive:$("#caseInsensitive").prop("checked"),
+            literal:$("#literal").prop("checked"),
+            unicodeCase:$("#unicodeCase").prop("checked"),
+            multiline:$("#multiline").prop("checked")
+        };
+        $.ajax({
+            url: '/api/utils/regexp',
+            type: 'post',
+            data: JSON.stringify(data),
+            contentType: false,
+            processData: false,
+            success: function(result){
+                if(result['failed']){
+                    $('#results').text("Error:\r\n"+result['error']);
+                }else {
+                    if (!result['matchFound']) {
+                        $('#results').text("No matches found");
+                    } else {
+                        var toput = "Found "+result['matches'].length+" matches:\r\n";
+                        for (var i = 0; i < result['matches'].length;i++){
+                            toput+=result['matches'][i]+"\r\n";
+                        }
+                        toput+="END OF RESULTS";
+                        $('#results').text(toput);
+                    }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

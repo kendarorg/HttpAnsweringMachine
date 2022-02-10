@@ -1,0 +1,22 @@
+<?xml version = "1.0"?>
+
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema">
+    <xs:element name = 'class'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name = 'student' type = 'StudentType' minOccurs = '0'
+                            maxOccurs = 'unbounded' />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name = "StudentType">
+        <xs:sequence>
+            <xs:element name = "firstname" type = "xs:string"/>
+            <xs:element name = "lastname" type = "xs:string"/>
+            <xs:element name = "nickname" type = "xs:string"/>
+            <xs:element name = "marks" type = "xs:positiveInteger"/>
+        </xs:sequence>
+        <xs:attribute name = 'rollno' type = 'xs:positiveInteger'/>
+    </xs:complexType>
+</xs:schema>

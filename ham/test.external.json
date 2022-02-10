@@ -1,0 +1,140 @@
+[
+  {
+    "id": "dns",
+    "system": true,
+    "active": true,
+    "port": 53,
+    "logQueries": false,
+    "extraServers": [
+      {
+        "id": "1",
+        "address": "8.8.4.4",
+        "enabled": true
+      }
+    ],
+    "blocked": [
+      "wpad.*",
+      "*.trafficmanager.net"
+    ],
+    "resolved": [
+      {
+        "id": "0",
+        "dns": "www.local.test",
+        "ip": "127.0.0.1"
+      },
+      {
+        "id": "1",
+        "dns": "redirect.local.test",
+        "ip": "127.0.0.1"
+      }
+    ]
+  },
+  {
+    "id": "staticPage",
+    "system": true,
+    "staticPages": [
+      {
+        "id": "0",
+        "address": "static.local.test",
+        "path": "staticServer"
+      }
+    ]
+  },
+  {
+    "id": "proxy",
+    "system": true,
+    "proxies": [
+      {
+        "id": "0",
+        "when": "https://redirect.local.test/google",
+        "where": "https://www.google.com",
+        "test": "www.google.com"
+      },
+      {
+        "id": "1",
+        "when": "https://redirect.local.test/kendar",
+        "where": "https://www.kendar.org",
+        "test": "www.kendar.org"
+      }
+    ]
+  },
+  {
+    "id": "ssl",
+    "system": true,
+    "cname": "C=US,O=Local Development,CN=local.org",
+    "domains": [
+      {
+        "id": "0",
+        "address": "*.local.test"
+      },
+      {
+        "id": "1",
+        "address": "local.test"
+      }
+    ]
+  },
+  {
+    "id": "https",
+    "system": true,
+    "active": true,
+    "port": 443,
+    "backlog": 50,
+    "useCachedExecutor": true
+  },
+  {
+    "id": "http",
+    "system": true,
+    "active": true,
+    "port": 80,
+    "backlog": 50,
+    "useCachedExecutor": true
+  },
+  {
+    "id": "global",
+    "system": true,
+    "localAddress": "www.local.test",
+    "logging": {
+      "logPath": null,
+      "logRoundtripsPath": "recording",
+      "logLevel": "INFO",
+      "loggers": {
+        "org.kendar.servers.http.Request": "OFF",
+        "org.kendar.servers.http.Response": "OFF",
+        "org.kendar.servers.http.StaticRequest": "OFF",
+        "org.kendar.servers.http.DynamicRequest": "OFF",
+        "org.kendar.dns.DnsQueries": "OFF"
+      }
+    },
+    "filters": {
+      "12363272": false
+    }
+  },
+  {
+    "id": "derby",
+    "active": false,
+    "port": 1527,
+    "user": "root",
+    "password": "root",
+    "path": "derbydata"
+  },
+  {
+    "id": "oidc.server",
+    "tokenExpiration": 86400,
+    "active": true
+  },
+  {
+    "id": "js.filters",
+    "path": "jsplugins",
+    "active": true
+  },
+  {
+    "id": "replayer.server",
+    "path": "replayerdata",
+    "active": true
+  },
+  {
+    "id": "pacts.server",
+    "path": "pacts",
+    "active": true
+  }
+]
