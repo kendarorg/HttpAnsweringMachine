@@ -8,7 +8,7 @@ RUN mkdir -p /etc/app/be \
     && echo -e "#!/bin/bash\nexec 2>&1\nexec /etc/app/be/be.sh\n" > /etc/service/be/run \
     && chmod +x /etc/service/be/run
 
-COPY ./docker/be.sh /etc/app/be/
+COPY ./docker_multi/be.sh /etc/app/be/
 COPY ./be/target/*.jar /etc/app/be/
 RUN chmod +x /etc/app/be/*.sh
 

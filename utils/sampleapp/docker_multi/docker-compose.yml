@@ -41,7 +41,7 @@ services:
       - "11080:80"
       - "11443:443"
   ham.sampleapp.multi.be:
-    container_name: api.sample.test.multi
+    container_name: api.sample.test
     privileged: true
     environment:
       - DNS_HIJACK_SERVER=ham.sampleapp.multi.master
@@ -57,7 +57,7 @@ services:
     depends_on:
       - ham.sampleapp.multi.master
   ham.sampleapp.multi.fe:
-    container_name: www.sample.test.multi
+    container_name: www.sample.test
     privileged: true
     environment:
       - DNS_HIJACK_SERVER=ham.sampleapp.multi.master

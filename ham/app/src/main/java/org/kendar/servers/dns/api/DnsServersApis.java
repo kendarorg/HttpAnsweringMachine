@@ -93,21 +93,7 @@ public class DnsServersApis implements FilteringClass {
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);
   }
-  @HttpMethodFilter(
-          phase = HttpFilterType.API,
-          pathAddress = "/api/dns/lookup/{id}",
-          method = "PUT",
-          id = "1005a4b91277d-11ec-9621-0242ac130002")
-  public void resolve(Request req, Response res) throws Exception {
-    var toResolve = req.getPathParameter("id");
-    var resultList = dnsMultiResolver.resolveRemote(toResolve);
-    if(resultList.size()>0){
-      res.setResponseText(resultList.get(0));
-    }else{
-      res.setResponseText("");
-    }
-    res.addHeader("content-type","text/plain");
-  }
+
 
   @HttpMethodFilter(
       phase = HttpFilterType.API,
