@@ -30,9 +30,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
@@ -175,6 +174,78 @@ public class ReplayerAPICrud implements FilteringClass {
     var resultInFile = mapper.writeValueAsString(crud);
     Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
     logger.info("Uploaded replayer binary script " + rootPath);
+    res.setStatusCode(200);
+  }
+
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/replayer/recording/{id}/deletelines",
+          method = "POST",
+          id = "4004dXX6-277f-11sfec-9621-0242ac1afe002")
+  public void deleteLines(Request req, Response res) throws Exception {
+    List<Integer> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Integer[].class)).collect(Collectors.toList());
+    var id = req.getPathParameter("id");
+    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
+    if (Files.exists(rootPath)) {
+      var fileContent = Files.readString(rootPath);
+      var result = mapper.readValue(fileContent, ReplayerResult.class);
+      for(var i = result.getDynamicRequests().size()-1;i>=0;i--){
+        var dq = result.getDynamicRequests().get(i);
+        if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
+          result.getDynamicRequests().remove(i);
+        }
+      }
+      for(var i = result.getStaticRequests().size()-1;i>=0;i--){
+        var dq = result.getStaticRequests().get(i);
+        if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
+          result.getStaticRequests().remove(i);
+        }
+      }
+
+      var resultInFile = mapper.writeValueAsString(result);
+      Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
+    }
+    res.setStatusCode(200);
+  }
+
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/replayer/recording/{id}/clone/{newid}",
+          method = "POST",
+          id = "4004dXX6-277f-11ec-9621-0242ac1afe002")
+  public void clone(Request req, Response res) throws Exception {
+    List<Integer> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Integer[].class)).collect(Collectors.toList());
+    var id = req.getPathParameter("id");
+    var newid = req.getPathParameter("newid");
+    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
+    var newRootPath = Path.of(fileResourcesUtils.buildPath(replayerData, newid + ".json"));
+
+    if (Files.exists(rootPath)) {
+      var fileContent = Files.readString(rootPath);
+      var result = mapper.readValue(fileContent, ReplayerResult.class);
+
+      var newReplayerData = new ReplayerResult();
+      newReplayerData.setDescription(result.getDescription());
+      newReplayerData.setFilter(result.getFilter());
+      newReplayerData.setDynamicRequests(new ArrayList<>());
+      newReplayerData.setStaticRequests(new ArrayList<>());
+
+      for(var i = result.getDynamicRequests().size()-1;i>=0;i--){
+        var dq = result.getDynamicRequests().get(i);
+        if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
+          newReplayerData.getDynamicRequests().add(dq);
+        }
+      }
+      for(var i = result.getStaticRequests().size()-1;i>=0;i--){
+        var dq = result.getStaticRequests().get(i);
+        if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
+          newReplayerData.getStaticRequests().add(dq);
+        }
+      }
+
+      var resultInFile = mapper.writeValueAsString(newReplayerData);
+      Files.write(newRootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
+    }
     res.setStatusCode(200);
   }
 }

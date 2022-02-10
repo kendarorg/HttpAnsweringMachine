@@ -314,7 +314,13 @@ public class FilterDescriptor {
     return host.equalsIgnoreCase(hostAddress);
   }
 
-  public boolean matchesPath(String path, Environment env, Request request) {
+  public boolean matchesPath(String path, Environment env, Request request,boolean exact) {
+    if(exact){
+      if(pathAddress==null ||pathAddress.length()==0 ||pathAddress.indexOf('*')>=0){
+        return false;
+      }
+      return path.equalsIgnoreCase(pathAddress);
+    }
     if (pathAddress != null && pathAddress.equalsIgnoreCase("*")) return true;
     if (pathPattern != null) {
       var matcher = pathPattern.matcher(path);
