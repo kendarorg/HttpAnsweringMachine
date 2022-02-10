@@ -90,24 +90,28 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
       throws InvocationTargetException, IllegalAccessException {
     var config = filtersConfiguration.get();
     if (!config.filters.containsKey(filterType)) return false;
+    var possibleMatches = new ArrayList<FilterDescriptor>();
     for (var filterEntry : config.filters.get(filterType)) {
       if (!methodMatches(filterEntry, request)) continue;
       if (!filterMathches(filterEntry, request)) continue;
       if (!globalConfig.checkFilterEnabled(filterEntry.getId())
-          || !globalConfig.checkFilterEnabled(filterEntry.getClassId())) {
+              || !globalConfig.checkFilterEnabled(filterEntry.getClassId())) {
         logger.debug(
-            "Filter {} with id {} is disabled", filterEntry.getClassId(), filterEntry.getId());
+                "Filter {} with id {} is disabled", filterEntry.getClassId(), filterEntry.getId());
         continue;
       }
-      var isBlocking = filterEntry.execute(request, response, connectionManager);
+      possibleMatches.add(filterEntry);
+    }
+    for (var filterEntry : possibleMatches) {
 
-      // If is blocking "by result"
-      if (isBlocking) {
-        return true;
-      }
-      if (filterEntry.isBlocking()) {
-        return true;
-      }
+        var isBlocking = filterEntry.execute(request, response, connectionManager);
+        // If is blocking "by result"
+        if (isBlocking) {
+          return true;
+        }
+        if (filterEntry.isBlocking()) {
+          return true;
+        }
     }
     return false;
   }
@@ -119,7 +123,11 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
 
   private boolean filterMathches(FilterDescriptor filterEntry, Request request) {
     if (!filterEntry.matchesHost(request.getHost(), environment)) return false;
-    return filterEntry.matchesPath(request.getPath(), environment, request);
+    return filterEntry.matchesPath(request.getPath(), environment, request,false);
+  }
+
+  private boolean filterMatchesExact(FilterDescriptor filterEntry, Request request) {
+    return filterEntry.matchesPath(request.getPath(), environment, request,false);
   }
 
   static class PrioritySorter implements Comparator<FilterDescriptor> {
