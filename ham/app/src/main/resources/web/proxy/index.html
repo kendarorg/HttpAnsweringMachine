@@ -100,7 +100,7 @@
         function (table,id) {
             table.deleteFromTable(id,function(id,success,error){
                 $.ajax({
-                    url: "/api/proxyes/"+getUrlParameter("id"),
+                    url: "/api/proxyes/"+id,
                     type: 'DELETE',
                     success: function (res) {
                         success();

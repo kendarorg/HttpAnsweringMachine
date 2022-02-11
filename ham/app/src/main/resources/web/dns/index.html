@@ -33,8 +33,8 @@
             <table class="table table-striped" id="dnsMappingTable">
                 <tr>
                     <th>Id</th>
-                    <th>Dns</th>
                     <th>Ip</th>
+                    <th>Dns</th>
                     <th colspan="2"></th>
                 </tr>
             </table>
@@ -114,7 +114,7 @@
         function (table,id) {
             table.deleteFromTable(id,function(id,success,error){
                 $.ajax({
-                    url: "/api/dns/servers/"+getUrlParameter("id"),
+                    url: "/api/dns/servers/"+id,
                     type: 'DELETE',
                     success: function (res) {
                         success();
@@ -200,7 +200,7 @@
         function (table,id) {
             table.deleteFromTable(id,function(id,success,error){
                 $.ajax({
-                    url: "/api/dns/mappings/"+getUrlParameter("id"),
+                    url: "/api/dns/mappings/"+id,
                     type: 'DELETE',
                     success: function (res) {
                         success();
