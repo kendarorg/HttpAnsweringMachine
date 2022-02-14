@@ -52,6 +52,11 @@ public class ReplayerDataset {
     return name;
   }
 
+  public void load(List<ReplayerRow> dynamicData,List<ReplayerRow> staticData){
+    dynamicData = new ArrayList<>(dynamicData);
+    staticData = new ArrayList<>(staticData);
+  }
+
   public void save(boolean dofull) throws IOException {
     synchronized (this) {
       var result = new ReplayerResult();
@@ -295,5 +300,9 @@ public class ReplayerDataset {
     FileWriter myWriter = new FileWriter(stringPath);
     myWriter.write(allDataString);
     myWriter.close();
+  }
+
+  public void reorganize() {
+
   }
 }

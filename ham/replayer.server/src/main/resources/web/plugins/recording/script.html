@@ -40,6 +40,7 @@
             <button id="unselectall" name="unselectall" type="button"  class="btn btn-default" onClick="unselectall();">Unselect All</button>
             <button id="clone" name="clone" type="button"  class="btn btn-default" onClick="cloneselected();">Clone Selected</button>
             <button id="download" name="download" type="button"  class="btn btn-default" onClick="download();">Download</button>
+            <button id="compact" name="compact" type="button"  class="btn btn-default" onClick="compact();">Compact script</button>
         </div>
         <div class="col-md-8">
             <br>
@@ -261,6 +262,18 @@
             }
         });
         return result;
+    }
+
+    function compact(){
+        var id = getUrlParameter("id");
+        $.ajax({
+            url: '/api/plugins/replayer/recording/'+id+'/compact',
+            type: 'post',
+            contentType: "application/json",
+            success: function(response){
+                location.reload();
+            }
+        });
     }
 
     function cloneselected(){
