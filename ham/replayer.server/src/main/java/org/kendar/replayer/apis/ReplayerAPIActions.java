@@ -33,10 +33,17 @@ public class ReplayerAPIActions implements FilteringClass {
     public void recording(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var action = req.getPathParameter("action");
+
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
             var description = req.getQuery("description");
-            replayerStatus.startRecording(id,description);
+            var fullrecording = req.getQuery("fullrecording");
+            var dofull =false;
+            if(fullrecording!=null && fullrecording.equalsIgnoreCase("true")){
+                dofull = true;
+            }
+            replayerStatus.startRecording(id,description,dofull);
         }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_RECORDING){
+
             replayerStatus.restartRecording();
         }else if(action.equalsIgnoreCase("pause") && replayerStatus.getStatus()==ReplayerState.RECORDING){
             replayerStatus.pauseRecording();

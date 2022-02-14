@@ -51,6 +51,12 @@
                 <label for="description">Description</label>
                 <input class="form-control" type="text" name="description" id="description" />
             </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="fullrecording" name="fullrecording">
+                <label class="form-check-label" for="fullrecording">
+                    Do not optimize requests/responses
+                </label>
+            </div>
         </div>
 
         <div class="col-md-8">
@@ -201,6 +207,12 @@
     }
 
     function executeAct(action,type){
+        if(action=="start"){
+            var fullrecording = $("#fullrecording").prop("checked");
+            if(fullrecording){
+                action+="?fullrecording=true"
+            }
+        }
         var id = getUrlParameter("id");
         var usedType = type=="recording"?"record":"replay";
         var url = "/api/plugins/replayer/recording/"+id+"/"+usedType+"/"+action;

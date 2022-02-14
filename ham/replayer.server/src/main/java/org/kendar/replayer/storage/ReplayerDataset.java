@@ -52,7 +52,7 @@ public class ReplayerDataset {
     return name;
   }
 
-  public void save() throws IOException {
+  public void save(boolean dofull) throws IOException {
     synchronized (this) {
       var result = new ReplayerResult();
       var partialResult = new ArrayList<ReplayerRow>();
@@ -77,7 +77,12 @@ public class ReplayerDataset {
       }
 
       result.setDescription(description);
-      dataReorganizer.reorganizeData(result, partialResult);
+      if(!dofull) {
+        dataReorganizer.reorganizeData(result, partialResult);
+      }else{
+        result.setStaticRequests(new ArrayList<>(staticData.values()));
+        result.setDynamicRequests(new ArrayList<>(dynamicData));
+      }
       var allDataString = mapper.writeValueAsString(result);
       var stringPath = rootPath + File.separator + name + ".json";
       FileWriter myWriter = new FileWriter(stringPath);
