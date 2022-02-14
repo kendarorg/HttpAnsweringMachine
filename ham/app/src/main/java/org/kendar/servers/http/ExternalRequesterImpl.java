@@ -1,13 +1,14 @@
 package org.kendar.servers.http;
 
 import com.networknt.schema.format.InetAddressValidator;
-import org.apache.http.*;
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.SchemePortResolver;
-import org.apache.http.conn.UnsupportedSchemeException;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -93,7 +94,7 @@ public class ExternalRequesterImpl implements ExternalRequester{
                     }
                 };
         this.connManager =
-                new PoolingHttpClientConnectionManager();/*
+                new PoolingHttpClientConnectionManager(
                         // We're forced to create a SocketFactory Registry.  Passing null
                         //   doesn't force a default Registry, so we re-invent the wheel.
                         RegistryBuilder.<ConnectionSocketFactory>create()
@@ -101,7 +102,8 @@ public class ExternalRequesterImpl implements ExternalRequester{
                                 .register("https", SSLConnectionSocketFactory.getSocketFactory())
                                 .build(),
                         dnsResolver // Our DnsResolver
-                );*/
+                );
+
         this.connManager.setMaxTotal(100);
     }
     public PoolingHttpClientConnectionManager getConnectionManager(){
@@ -116,6 +118,11 @@ public class ExternalRequesterImpl implements ExternalRequester{
                 response.setStatusCode(404);
                 return;
             }
+        }
+
+        if(request.getHeader(BLOCK_RECURSION)!=null){
+            response.setStatusCode(500);
+            return;
         }
 
 
