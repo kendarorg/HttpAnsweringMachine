@@ -1,0 +1,59 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+</head>
+<body>
+<div className="container">
+    <div className="row">
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">SSL</button>
+        </div>
+        <div className="col-md-8">
+            <h3>Certificates</h3>
+            <table className="table table-striped" id="certificatesTable">
+                <tr>
+                    <th>Id</th>
+                    <th>Download</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+
+
+    var certificatesTable = new SimpleGrid("Certificates", "certificatesTable", "id", ["id", "_download"],
+        function (table) {
+            $.ajax({
+                url: "/api/certificates",
+                type: 'GET',
+                success: function (realRes) {
+                    var res = [];
+                    for (var v = 0; v < realRes.length; v++) {
+                        res.push([])
+                        res[v]["_download"] = "<button class=\"btn btn-success form-control\" id=\"download-" +
+                            v +
+                            "-edit\" onclick='download(\"" + realRes[v] + "\")'>Download</button>"
+                        res[v]["id"] = realRes[v];
+                    }
+                    $.each(res, function (i, script) {
+                        table.appendToTable(script, false);
+                    });
+                }
+            });
+        },
+        null,
+        null,
+        null).load();
+    function download(what){
+        window.open("/api/certificates/"+what);
+    }
+</script>
+</body>
+</html>
