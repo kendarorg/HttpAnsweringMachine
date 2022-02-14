@@ -1,1 +1,56 @@
-TODO
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+        </div>
+        <div class="col-md-8">
+            <h3>Proxyes</h3>
+            <table class="table table-striped" id="proxiesTable">
+                <tr>
+                    <th>Id</th>
+                    <th>Download</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+
+
+
+    var scriptsTable = new SimpleGrid("Certificates","proxiesTable","id",["id","_download"],
+        function(table){
+            $.ajax({
+                url: "/api/certificates",
+                type: 'GET',
+                success: function(realRes) {
+                    var res=[];
+                    for(var v=0;v<res.length;v++) {
+                        res.push([])
+                        res[v]["_download"]='Download';
+                        res[v]["id"]=realRes[i];
+                    }
+                    $.each(res, function(i, script) {
+                        table.appendToTable(script,false);
+                    });
+                }
+            });
+        },
+        null,
+        null,
+        null).load();
+
+</script>
+</body>
+</html>
