@@ -21,6 +21,11 @@
         "id": "0",
         "dns": "www.local.test",
         "ip": "127.0.0.1"
+      },
+      {
+        "id": "1",
+        "dns": "www.codeproject.com",
+        "ip": "127.0.0.1"
       }
     ]
   },
@@ -47,6 +52,14 @@
       {
         "id": "1",
         "address": "local.test"
+      },
+      {
+        "id": "011",
+        "address": "*.codeproject.com"
+      },
+      {
+        "id": "12",
+        "address": "codeproject.com"
       }
     ]
   },
