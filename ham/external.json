@@ -55,10 +55,18 @@
       },
       {
         "id": "011",
-        "address": "*.codeproject.com"
+        "address": "*.kendar.org"
       },
       {
         "id": "12",
+        "address": "kendar.org"
+      },
+      {
+        "id": "013",
+        "address": "*.codeproject.com"
+      },
+      {
+        "id": "124",
         "address": "codeproject.com"
       }
     ]

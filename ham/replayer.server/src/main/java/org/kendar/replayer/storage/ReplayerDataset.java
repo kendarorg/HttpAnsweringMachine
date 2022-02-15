@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class ReplayerDataset {
   private static final String MAIN_FILE = "runall.json";
@@ -23,7 +24,7 @@ public class ReplayerDataset {
   private final DataReorganizer dataReorganizer;
   private final ObjectMapper mapper = new ObjectMapper();
   private final ConcurrentLinkedQueue<ReplayerRow> dynamicData = new ConcurrentLinkedQueue<>();
-  private final ConcurrentHashMap<String, ReplayerRow> staticData = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, List<ReplayerRow>> staticData = new ConcurrentHashMap<>();
   private final ConcurrentLinkedQueue<String> errors = new ConcurrentLinkedQueue<>();
   private final AtomicInteger counter = new AtomicInteger(0);
   private ConcurrentLinkedQueue<CallIndex> indexes = new ConcurrentLinkedQueue<>();
@@ -63,7 +64,12 @@ public class ReplayerDataset {
       }
       for (var staticRow : this.staticData.entrySet()) {
         var rowValue = staticRow.getValue();
-        partialResult.add(rowValue);
+        if(rowValue.size()==1) {
+          partialResult.add(rowValue.get(0));
+        }else{
+          rowValue.stream().forEach(a->a.getRequest().setStaticRequest(false));
+          partialResult.addAll(rowValue);
+        }
       }
 
       while (!dynamicData.isEmpty()) {
@@ -78,6 +84,7 @@ public class ReplayerDataset {
       }
 
       result.setDescription(description);
+      result.setIndexes(indexes.stream().collect(Collectors.toList()));
       dataReorganizer.reorganizeData(result, partialResult);
 
       var allDataString = mapper.writeValueAsString(result);
@@ -102,17 +109,10 @@ public class ReplayerDataset {
           responseHash = md5Tester.calculateMd5(res.getResponseText());
         }
 
-        if (!responseHash.equalsIgnoreCase(alreadyPresent.getResponseHash())) {
-          if(res.getStatusCode()==304 || res.getStatusCode()==404){
-            return;
-          }
-          errors.add("Static request was dynamic " + path);
-          throw new Exception("Static request was dynamic " + path);
-          /*alreadyPresent.getRequest().setStaticRequest(false);
-          req.setStaticRequest(false);
-          staticData.remove(path);
-          dynamicData.add(alreadyPresent);*/
-        }else {
+        final var lambdaHash = responseHash;
+        var isAlreadyPresent = alreadyPresent.stream().anyMatch(present->
+                lambdaHash.equalsIgnoreCase(present.getResponseHash()));
+        if (isAlreadyPresent) {
           return;
         }
       }
@@ -135,12 +135,13 @@ public class ReplayerDataset {
       var callIndex = new CallIndex();
       callIndex.setId(replayerRow.getId());
       callIndex.setReference(replayerRow.getId());
+      this.indexes.add(callIndex);
       if (req.isStaticRequest()) {
         if(!staticData.containsKey(path)){
-          staticData.put(path, replayerRow);
+          staticData.put(path, new ArrayList<>());
         }
-        var realRow = staticData.get(path);
-        callIndex.setReference(realRow.getId());
+        staticData.get(path).add(replayerRow);
+        callIndex.setReference(replayerRow.getId());
       } else {
         dynamicData.add(replayerRow);
       }
@@ -308,8 +309,14 @@ public class ReplayerDataset {
     myWriter.write(allDataString);
     myWriter.close();
   }
-
-  public void reorganize() {
-
-  }
+    public void deleteIndex(int line) {
+      List<CallIndex> steps = replayerResult.getIndexes();
+      for (int i = steps.size()-1; i >=0 ; i--) {
+        CallIndex entry = steps.get(i);
+        if (entry.getId() == line) {
+          steps.remove(i);
+          return;
+        }
+      }
+    }
 }

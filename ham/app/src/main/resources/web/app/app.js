@@ -54,6 +54,17 @@ class SimpleGrid {
         this.fields = fields;
     }
 
+    clearTable(callback){
+        this.data.forEach(function (row, i) {
+            $("#" + self.tableId + " #" + self.tableId + "-" + id).remove();
+        });
+        this.data = [];
+        if(callback!=null){
+            callback();
+        }
+
+    }
+
     deleteFromTable(id, callback) {
         var action = confirm("Are you sure you want to delete this " + this.objType + "?");
         var msg = this.objType + " deleted successfully!";

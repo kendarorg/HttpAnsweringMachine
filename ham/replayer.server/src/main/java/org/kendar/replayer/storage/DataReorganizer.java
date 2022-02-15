@@ -13,10 +13,9 @@ public class DataReorganizer {
   }
 
   private void reorganizeV2(ReplayerResult destination, ArrayList<ReplayerRow> source) {
-
     var staticHashes = new HashSet<String>();
     for (var row :
-            source) {
+            source){
       var isRowStatic = MimeChecker.isStatic(row.getResponse().getHeader("content-type"),row.getRequest().getPath());
       if(isRowStatic ){
         if(!staticHashes.contains(row.getResponseHash())){
@@ -25,6 +24,13 @@ public class DataReorganizer {
         }
       }else{
         destination.getDynamicRequests().add(row);
+      }
+    }
+    //Clean up indexes
+    for(var i =destination.getIndexes().size()-1;i>=0;i--){
+      var current = destination.getIndexes().get(i);
+      if(!source.stream().anyMatch(a->a.getId()==current.getReference())){
+        destination.getIndexes().remove(i);
       }
     }
   }
