@@ -109,6 +109,7 @@ class SimpleGrid {
     }
 
     buildSearch(showSearchFields){
+        if(this.showSearch==null || this.showSearch.length==0)return;
         var idContent = "search";
         var toWrite = `
         <tr id="${this.tableId}-${idContent}">`;
