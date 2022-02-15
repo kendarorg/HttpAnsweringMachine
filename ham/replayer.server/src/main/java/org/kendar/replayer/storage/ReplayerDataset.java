@@ -110,9 +110,14 @@ public class ReplayerDataset {
         }
 
         final var lambdaHash = responseHash;
-        var isAlreadyPresent = alreadyPresent.stream().anyMatch(present->
-                lambdaHash.equalsIgnoreCase(present.getResponseHash()));
-        if (isAlreadyPresent) {
+        var isAlreadyPresent = alreadyPresent.stream().filter(present->
+                lambdaHash.equalsIgnoreCase(present.getResponseHash())).collect(Collectors.toList());
+        if (isAlreadyPresent.size()>0) {
+          var newId = counter.getAndIncrement();
+          var callIndex = new CallIndex();
+          callIndex.setId(newId);
+          callIndex.setReference(isAlreadyPresent.get(0).getId());
+          this.indexes.add(callIndex);
           return;
         }
       }
