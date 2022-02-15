@@ -170,6 +170,26 @@ public class ReplayerAPISingleLine implements FilteringClass {
     res.setStatusCode(200);
   }
 
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/replayer/recording/{id}/indexline/{line}",
+          method = "DELETE",
+          id = "5003daa6-277f-ytec-9621-0242ac1afe002")
+  public void deleteSingleIndexLineData(Request req, Response res) throws IOException {
+    var id = req.getPathParameter("id");
+    var line = Integer.parseInt(req.getPathParameter("line"));
+
+    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+
+    var dataset =
+            new ReplayerDataset(
+                    id, rootPath.toString(), null, loggerBuilder, dataReorganizer, md5Tester);
+    dataset.load();
+    dataset.deleteIndex(line);
+    dataset.saveMods();
+    res.setStatusCode(200);
+  }
+
   private void cloneToRow(ReplayerRow destination, ReplayerRow source) {
     destination.getResponse().setBinaryResponse(source.getResponse().isBinaryResponse());
     destination.getResponse().setHeaders(source.getResponse().getHeaders());

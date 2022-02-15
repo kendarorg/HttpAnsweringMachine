@@ -3,6 +3,7 @@
     <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
     <script src="/libs/jquery-3.2.1.min.js"></script>
     <script src="/libs/bootstrap.min.js"></script>
+    <script src="/libs/lodash.js"></script>
     <link href="/app/app.css" rel="stylesheet"/>
 </head>
 <body>
@@ -103,7 +104,25 @@
             </div>
             <div id="fullpath" class="tab-pane fade">
                 <h3>Full path</h3>
-                <p>Some content in menu 1.</p>
+                <div class="col-md-8">
+                    <table class="table table-striped" id="allCalls">
+                        <tr>
+                            <th>Selected</th>
+                            <th>Id</th>
+                            <th>Method</th>
+                            <th>Host</th>
+                            <th>Path</th>
+                            <th>Query</th>
+                            <th>Res.Status</th>
+                            <th>Req.Body</th>
+                            <th>Res.Body</th>
+                            <th colspan="2">
+                                <button class="btn btn-danger form-control"
+                                        onClick="addLine();">Add</button>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
             </div>
@@ -135,6 +154,24 @@
             });
         },null);
 
+    var allCalls = new SimpleGrid("Request-Response","allCalls","id",fields,
+        null,
+        null,
+        function (table,id) {
+            table.deleteFromTable(id,function(id,success,error){
+                $.ajax({
+                    url: "/api/plugins/replayer/recording/"+getUrlParameter("id")+"/lineindex/" + id,
+                    type: 'DELETE',
+                    success: function (res) {
+                        success();
+                    },
+                    error:function(res){
+                        error();
+                    }
+                });
+            });
+        },null);
+
     function download(){
         window.open("/api/plugins/replayer/recording/"+getUrlParameter("id"));
     }
@@ -152,8 +189,11 @@
                 $("#test").val(res['filter']['test']);
             }
             $("#id").val(res['id']);
-            for(var v=0;v<res["lines"].length;v++) {
-                var line =res["lines"][v];
+
+            //Load lines
+            var lines = res["lines"];
+            for(var v=0;v<lines.length;v++) {
+                var line =lines[v];
                 line['_selected'] = `<div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="selected_`+line['id']+`" name="selected_\`+line['id']+\`">
 
@@ -165,6 +205,26 @@
                 if(line['requestHash']!="0")line['_requestHashCalc']="Yes";
                 //tSource,tableId,id,data,fields
                 linesTable.appendToTable(line);
+            }
+
+
+            //Load indexes
+            var indexes = res['indexes'];
+            for(var v=0;v<indexes.length;v++) {
+                var indexline =indexes[v];
+                var line = _.find(lines,function(o){ return indexline['reference']==o['id'];})
+                line['id']=indexline['id'];
+                line['_selected'] = `<div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="selected_`+line['id']+`" name="selected_\`+line['id']+\`">
+
+            </div>`
+                line['_responseHashCalc']="No";
+                line['_requestHashCalc']="No";
+                line['_queryCalc']=calculateQuery(line['request']['query']);
+                if(line['responseHash']!="0")line['_responseHashCalc']="Yes";
+                if(line['requestHash']!="0")line['_requestHashCalc']="Yes";
+                //tSource,tableId,id,data,fields
+                allCalls.appendToTable(line);
             }
         }
     });

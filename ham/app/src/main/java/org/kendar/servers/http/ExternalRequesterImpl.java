@@ -8,10 +8,12 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
+import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -22,6 +24,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.MimeChecker;
@@ -33,6 +36,11 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -97,14 +105,47 @@ public class ExternalRequesterImpl implements ExternalRequester{
                 new PoolingHttpClientConnectionManager(
                         // We're forced to create a SocketFactory Registry.  Passing null
                         //   doesn't force a default Registry, so we re-invent the wheel.
-                        RegistryBuilder.<ConnectionSocketFactory>create()
+                        /*RegistryBuilder.<ConnectionSocketFactory>create()
                                 .register("http", PlainConnectionSocketFactory.getSocketFactory())
                                 .register("https", SSLConnectionSocketFactory.getSocketFactory())
-                                .build(),
+                                .build()*/
+                        getDefaultRegistry(),
                         dnsResolver // Our DnsResolver
                 );
 
         this.connManager.setMaxTotal(100);
+    }
+
+    private static Registry<ConnectionSocketFactory> getDefaultRegistry() {
+
+
+        SSLContextBuilder contextBuilder = new SSLContextBuilder();
+        try {
+            contextBuilder.loadTrustMaterial(null, new TrustStrategy() {
+                @Override
+                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    return true;
+                }
+            });
+        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(contextBuilder.build(),
+                SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+        //SSLConnectionSocketFactory sslsf = SSLConnectionSocketFactory.getSocketFactory()).build()
+
+        RegistryBuilder<ConnectionSocketFactory> builder = RegistryBuilder.create();
+        return builder
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", sslsf).build();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+            return null;
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     public PoolingHttpClientConnectionManager getConnectionManager(){
         return connManager;
@@ -137,6 +178,8 @@ public class ExternalRequesterImpl implements ExternalRequester{
                             if(request.getProtocol().equalsIgnoreCase("https")) return 443;
                             return 80;
                         })
+                        //.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                        //.setSSLContext(sc)
                         .setConnectionManager(connManager)
                         .disableConnectionState()
                         .disableRedirectHandling()

@@ -1,5 +1,6 @@
 package org.kendar.servers.dns;
 
+import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -55,16 +56,21 @@ public class CustomHttpConectionBuilderImpl implements CustomHttpConectionBuilde
             }
           }
         };
+
+
     this.connManager =
         new PoolingHttpClientConnectionManager(
             // We're forced to create a SocketFactory Registry.  Passing null
-            //   doesn't force a default Registry, so we re-invent the wheel.
-            RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                .register("https", SSLConnectionSocketFactory.getSocketFactory())
-                .build(),
+            //   doesn't force a default Registry, so we re-invent the wheel
+             getDefaultRegistry(),
             dnsResolver // Our DnsResolver
             );
+  }
+
+  private static Registry<ConnectionSocketFactory> getDefaultRegistry() {
+
+    RegistryBuilder<ConnectionSocketFactory> builder = RegistryBuilder.create();
+    return builder.register("http", PlainConnectionSocketFactory.getSocketFactory()).register("https", SSLConnectionSocketFactory.getSocketFactory()).build();
   }
 
   @Override
