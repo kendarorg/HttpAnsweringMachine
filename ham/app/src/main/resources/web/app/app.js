@@ -42,7 +42,7 @@ class SimpleGrid {
         return this;
     }
 
-    constructor(objType, name, idField, fields, loadFunction, editFunction, deleteFunction, saveFunction) {
+    constructor(objType, name, idField, fields, loadFunction, editFunction, deleteFunction, saveFunction,showSearch=[]) {
         this.objType = objType;
         this.tableId = name;
         this.editFunction = editFunction;
@@ -52,6 +52,8 @@ class SimpleGrid {
         this.data = [];
         this.idField = idField;
         this.fields = fields;
+        this.showSearch = showSearch;
+        this.buildSearch(showSearch);
     }
 
     clearTable(callback){
@@ -87,6 +89,35 @@ class SimpleGrid {
                 }
             }
         });
+    }
+
+    buildSearch(showSearchFields){
+        var idContent = "search";
+        var toWrite = `
+        <tr id="${this.tableId}-${idContent}">`;
+
+        for (var v = 0; v < this.fields.length; v++) {
+            var index = this.fields[v];
+            if(showSearchFields.length==0)continue;
+            var founded = _.find(showSearchFields,function(ssf){ return ssf.id==index;});
+            if(founded==undefined || founded==null){
+                toWrite+=`<td></td>`;
+                continue;
+            }
+            var foundedType = founded.type;
+            toWrite+=`<td>`+index+`_`+foundedType+`</td>`;
+        }
+        toWrite += `</tr>`;
+
+        var self = this;
+        $("#" + this.tableId + " > tbody:last-child").append(toWrite);
+         $("#" + this.tableId + "-" + idContent + "-search").click(function () {
+                self.search(self, idContent);
+            });
+    }
+
+    search(self, idContent) {
+        alert("SEARCHING");
     }
 
     appendToTable(inputData, addbutton = true) {
