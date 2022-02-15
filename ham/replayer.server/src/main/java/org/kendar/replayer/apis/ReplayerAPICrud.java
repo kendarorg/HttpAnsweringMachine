@@ -248,23 +248,4 @@ public class ReplayerAPICrud implements FilteringClass {
     }
     res.setStatusCode(200);
   }
-
-  @HttpMethodFilter(
-          phase = HttpFilterType.API,
-          pathAddress = "/api/plugins/replayer/recording/{id}/compact",
-          method = "POST",
-          id = "400kakiX6-277f-11ec-$rr21-0242ac1afe002")
-  public void compact(Request req, Response res) throws Exception {
-    var id = req.getPathParameter("id");
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
-    if (Files.exists(rootPath)) {
-      var fileContent = Files.readString(rootPath);
-      var result = mapper.readValue(fileContent, ReplayerResult.class);
-      var dataset =
-              new ReplayerDataset(id, rootPath.toString(), null, loggerBuilder, null, md5Tester);
-      dataset.load(result.getDynamicRequests(),result.getStaticRequests());
-      dataset.save(false);
-    }
-    res.setStatusCode(200);
-  }
 }

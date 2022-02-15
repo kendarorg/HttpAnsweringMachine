@@ -36,12 +36,7 @@ public class ReplayerAPIActions implements FilteringClass {
 
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
             var description = req.getQuery("description");
-            var fullrecording = req.getQuery("fullrecording");
-            var dofull =false;
-            if(fullrecording!=null && fullrecording.equalsIgnoreCase("true")){
-                dofull = true;
-            }
-            replayerStatus.startRecording(id,description,dofull);
+            replayerStatus.startRecording(id,description);
         }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_RECORDING){
 
             replayerStatus.restartRecording();

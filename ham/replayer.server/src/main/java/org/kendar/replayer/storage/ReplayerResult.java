@@ -9,6 +9,7 @@ public class ReplayerResult {
     private List<ReplayerRow> staticRequests = new ArrayList<>();
     private List<ReplayerRow> dynamicRequests = new ArrayList<>();
     private List<String> errors = new ArrayList<>();
+    private List<CallIndex> indexes = new ArrayList<>();
     private String description;
     private RedirectFilter filter;
 
@@ -58,5 +59,13 @@ public class ReplayerResult {
 
     public RedirectFilter getFilter() {
         return filter;
+    }
+
+    public List<CallIndex> getIndexes() {
+        return indexes;
+    }
+
+    public void setIndexes(List<CallIndex> indexes) {
+        this.indexes = indexes;
     }
 }

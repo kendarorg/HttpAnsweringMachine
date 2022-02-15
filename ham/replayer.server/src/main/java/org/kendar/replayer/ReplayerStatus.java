@@ -27,7 +27,6 @@ public class ReplayerStatus {
   private ReplayerState state = ReplayerState.NONE;
   private final String replayerData;
   private final Md5Tester md5Tester;
-  private boolean doFull;
 
   public ReplayerStatus(
       LoggerBuilder loggerBuilder,
@@ -43,14 +42,13 @@ public class ReplayerStatus {
     this.md5Tester = md5Tester;
   }
 
-  public void startRecording(String id, String description,boolean doFull) throws IOException {
+  public void startRecording(String id, String description) throws IOException {
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
     if (!Files.isDirectory(rootPath)) {
       Files.createDirectory(rootPath);
     }
     if (state != ReplayerState.NONE) return;
     state = ReplayerState.RECORDING;
-    this.doFull = doFull;
     dataset =
         new ReplayerDataset(
             id, rootPath.toString(), description, loggerBuilder, dataReorganizer, md5Tester);
@@ -102,7 +100,7 @@ public class ReplayerStatus {
 
     if (state != ReplayerState.PAUSED_RECORDING && state != ReplayerState.RECORDING) return;
     state = ReplayerState.NONE;
-    dataset.save(doFull);
+    dataset.save();
     dataset = null;
   }
 
