@@ -71,25 +71,44 @@
                 <input class="form-control" type="text" name="test" id="test" />
             </div>
         </div>
+
         <div class="col-md-8">
-            <table class="table table-striped" id="linesTable">
-                <tr>
-                    <th>Selected</th>
-                    <th>Id</th>
-                    <th>Method</th>
-                    <th>Host</th>
-                    <th>Path</th>
-                    <th>Query</th>
-                    <th>Res.Status</th>
-                    <th>Req.Body</th>
-                    <th>Res.Body</th>
-                    <th colspan="2">
-                        <button class="btn btn-danger form-control"
-                                onClick="addLine();">Add</button>
-                    </th>
-                </tr>
-            </table>
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#optimizedscript">Script</a></li>
+            <li><a data-toggle="tab" href="#fullpath">Full path</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="optimizedscript" class="tab-pane fade in active">
+                <h3>Script</h3>
+                <div class="col-md-8">
+                    <table class="table table-striped" id="linesTable">
+                        <tr>
+                            <th>Selected</th>
+                            <th>Id</th>
+                            <th>Method</th>
+                            <th>Host</th>
+                            <th>Path</th>
+                            <th>Query</th>
+                            <th>Res.Status</th>
+                            <th>Req.Body</th>
+                            <th>Res.Body</th>
+                            <th colspan="2">
+                                <button class="btn btn-danger form-control"
+                                        onClick="addLine();">Add</button>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div id="fullpath" class="tab-pane fade">
+                <h3>Full path</h3>
+                <p>Some content in menu 1.</p>
+            </div>
         </div>
+            </div>
+
+
     </div>
 </div>
 <script src="/app/app.js"></script>
