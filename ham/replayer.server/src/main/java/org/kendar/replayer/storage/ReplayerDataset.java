@@ -26,6 +26,7 @@ public class ReplayerDataset {
   private final ConcurrentHashMap<String, ReplayerRow> staticData = new ConcurrentHashMap<>();
   private final ConcurrentLinkedQueue<String> errors = new ConcurrentLinkedQueue<>();
   private final AtomicInteger counter = new AtomicInteger(0);
+  private ConcurrentLinkedQueue<CallIndex> indexes = new ConcurrentLinkedQueue<>();
   private final String name;
   private final String replayerDataDir;
   private final String description;
@@ -52,12 +53,7 @@ public class ReplayerDataset {
     return name;
   }
 
-  public void load(List<ReplayerRow> dynamicData,List<ReplayerRow> staticData){
-    dynamicData = new ArrayList<>(dynamicData);
-    staticData = new ArrayList<>(staticData);
-  }
-
-  public void save(boolean dofull) throws IOException {
+  public void save() throws IOException {
     synchronized (this) {
       var result = new ReplayerResult();
       var partialResult = new ArrayList<ReplayerRow>();
@@ -82,12 +78,8 @@ public class ReplayerDataset {
       }
 
       result.setDescription(description);
-      if(!dofull) {
-        dataReorganizer.reorganizeData(result, partialResult);
-      }else{
-        result.setStaticRequests(new ArrayList<>(staticData.values()));
-        result.setDynamicRequests(new ArrayList<>(dynamicData));
-      }
+      dataReorganizer.reorganizeData(result, partialResult);
+
       var allDataString = mapper.writeValueAsString(result);
       var stringPath = rootPath + File.separator + name + ".json";
       FileWriter myWriter = new FileWriter(stringPath);
@@ -140,8 +132,15 @@ public class ReplayerDataset {
       }
       replayerRow.setResponseHash(responseHash);
 
+      var callIndex = new CallIndex();
+      callIndex.setId(replayerRow.getId());
+      callIndex.setReference(replayerRow.getId());
       if (req.isStaticRequest()) {
-        staticData.put(path, replayerRow);
+        if(!staticData.containsKey(path)){
+          staticData.put(path, replayerRow);
+        }
+        var realRow = staticData.get(path);
+        callIndex.setReference(realRow.getId());
       } else {
         dynamicData.add(replayerRow);
       }
@@ -262,7 +261,7 @@ public class ReplayerDataset {
 
   public void delete(int line) {
     List<ReplayerRow> staticRequests = replayerResult.getStaticRequests();
-    for (int i = 0; i < staticRequests.size(); i++) {
+    for (int i = staticRequests.size()-1; i >=0 ; i--) {
       ReplayerRow entry = staticRequests.get(i);
       if (entry.getId() == line) {
         staticRequests.remove(i);
@@ -270,10 +269,18 @@ public class ReplayerDataset {
       }
     }
     List<ReplayerRow> dynamicRequests = replayerResult.getDynamicRequests();
-    for (int i = 0; i < dynamicRequests.size(); i++) {
+    for (int i = dynamicRequests.size()-1; i >=0 ; i--) {
       ReplayerRow entry = dynamicRequests.get(i);
       if (entry.getId() == line) {
         dynamicRequests.remove(i);
+        return;
+      }
+    }
+    List<CallIndex> steps = replayerResult.getIndexes();
+    for (int i = steps.size()-1; i >=0 ; i--) {
+      CallIndex entry = steps.get(i);
+      if (entry.getReference() == line) {
+        steps.remove(i);
         return;
       }
     }
