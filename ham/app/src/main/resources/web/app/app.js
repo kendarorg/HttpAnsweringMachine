@@ -36,7 +36,24 @@ class SimpleGrid {
     saveFunction;
     objType;
     loadFunction;
+    showSearch;
 
+    filterRow(inputData) {
+        if(this.showSearch==null || this.showSearch.length==0)return true;
+
+        var valid = true;
+        for(var i=0;i<this.showSearch.length;i++){
+            var str = this.showSearch[i];
+            var content = this.retrieveFieldComplexContent(inputData,str.id);
+            if(str.type=="string"){
+
+
+            }else if(str.type=="number"){
+
+            }
+        }
+        return valid;
+    }
     load() {
         this.loadFunction(this);
         return this;
@@ -105,22 +122,41 @@ class SimpleGrid {
                 continue;
             }
             var foundedType = founded.type;
-            toWrite+=`<td>`+index+`_`+foundedType+`</td>`;
+            var id = index.replace(".","_")+`_`+foundedType;
+            toWrite+=`<td><div class="form-group">
+                <input class="form-control" type="text" name="${id}" id="${id}" />
+            </div></td>`;
         }
+        var buttonId=this.tableId + "-" + idContent + "-search";
+        toWrite+=`<td><button id="${buttonId}" name="${buttonId}" 
+        type="button"  class="btn btn-default" >Search</button></td>`;
         toWrite += `</tr>`;
 
         var self = this;
         $("#" + this.tableId + " > tbody:last-child").append(toWrite);
-         $("#" + this.tableId + "-" + idContent + "-search").click(function () {
-                self.search(self, idContent);
+         $("#" + buttonId).click(function () {
+                self.loadFunction(self);
             });
     }
 
-    search(self, idContent) {
-        alert("SEARCHING");
+    retrieveFieldComplexContent(inputData,id){
+        var index = id;
+        var allIndex = id.split(".");
+        var content = inputData;
+        for (var s = 0; s < allIndex.length; s++) {
+            content = content[allIndex[s]];
+        }
+        if (content == undefined) content = "";
+        return content;
     }
 
+
+
+
     appendToTable(inputData, addbutton = true) {
+        if(!this.filterRow(inputData)){
+            return;
+        }
         var idContent = inputData[this.idField];
         if (typeof idContent === 'string'){
             idContent = idContent.replaceAll(".","_");
@@ -156,12 +192,13 @@ class SimpleGrid {
 
         for (var i = 0; i < this.fields.length; i++) {
             var index = this.fields[i];
-            var allIndex = this.fields[i].split(".");
+            /*var allIndex = this.fields[i].split(".");
             var content = inputData;
             for (var s = 0; s < allIndex.length; s++) {
                 content = content[allIndex[s]];
             }
-            if (content == undefined) content = "";
+            if (content == undefined) content = "";*/
+            var content = this.retrieveFieldComplexContent(inputData,index)
             if (!(this.fields[i].lastIndexOf("_", 0) === 0)) {
                 if (content.length > 60) content = content.substr(0, 60);
             }
