@@ -8,11 +8,11 @@ if (Function.prototype.name === undefined) {
     });
 }
 
-var getUrlParameter = function (sParam,defaultVal) {
-    if(defaultVal===undefined)defaultVal=false;
-    var sPageURL = window.location.search.substring(1),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
+const getUrlParameter = function (sParam, defaultVal) {
+    if (defaultVal === undefined) defaultVal = false;
+    const sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&');
+    let sParameterName,
         i;
 
     for (i = 0; i < sURLVariables.length; i++) {
@@ -37,29 +37,31 @@ class SimpleGrid {
     objType;
     loadFunction;
     showSearch;
+    addbutton;
 
     filterRow(inputData) {
-        if(this.showSearch==null || this.showSearch.length==0)return true;
+        if (this.showSearch == null || this.showSearch.length == 0) return true;
 
-        var valid = true;
-        for(var i=0;i<this.showSearch.length;i++){
-            var str = this.showSearch[i];
-            var content = this.retrieveFieldComplexContent(inputData,str.id);
-            if(str.type=="string"){
+        const valid = true;
+        for (let i = 0; i < this.showSearch.length; i++) {
+            const str = this.showSearch[i];
+            const content = this.retrieveFieldComplexContent(inputData, str.id);
+            if (str.type == "string") {
 
 
-            }else if(str.type=="number"){
+            } else if (str.type == "number") {
 
             }
         }
         return valid;
     }
+
     load() {
         this.loadFunction(this);
         return this;
     }
 
-    constructor(objType, name, idField, fields, loadFunction, editFunction, deleteFunction, saveFunction,showSearch=[]) {
+    constructor(objType, name, idField, fields, loadFunction, editFunction, deleteFunction, saveFunction, showSearch = []) {
         this.objType = objType;
         this.tableId = name;
         this.editFunction = editFunction;
@@ -70,25 +72,29 @@ class SimpleGrid {
         this.idField = idField;
         this.fields = fields;
         this.showSearch = showSearch;
+        this.addbutton = null;
         this.buildSearch(showSearch);
     }
 
-    clearTable(callback){
+    clearTable(callback) {
+        var self = this;
         this.data.forEach(function (row, i) {
-            $("#" + self.tableId + " #" + self.tableId + "-" + id).remove();
+            var selectedItem = $("#" + self.tableId + " #" + self.tableId + "-" + id);
+            if (selectedItem) {
+                selectedItem.remove();
+            }
         });
-        this.data = [];
-        if(callback!=null){
+        if (callback != null) {
             callback();
         }
 
     }
 
     deleteFromTable(id, callback) {
-        var action = confirm("Are you sure you want to delete this " + this.objType + "?");
-        var msg = this.objType + " deleted successfully!";
-        var msgError = this.objType + " cannot be deleted!";
-        var self = this;
+        const action = confirm("Are you sure you want to delete this " + this.objType + "?");
+        const msg = this.objType + " deleted successfully!";
+        const msgError = this.objType + " cannot be deleted!";
+        const self = this;
         this.data.forEach(function (row, i) {
             if (row[self.idField] == id && action != false) {
                 if (callback == null) {
@@ -108,43 +114,56 @@ class SimpleGrid {
         });
     }
 
-    buildSearch(showSearchFields){
-        if(this.showSearch==null || this.showSearch.length==0)return;
-        var idContent = "search";
-        var toWrite = `
+    buildSearch(showSearchFields) {
+        if (this.showSearch == null || this.showSearch.length == 0) return;
+        let idContent = "search";
+        let toWrite = `
         <tr id="${this.tableId}-${idContent}">`;
 
-        for (var v = 0; v < this.fields.length; v++) {
-            var index = this.fields[v];
-            if(showSearchFields.length==0)continue;
-            var founded = _.find(showSearchFields,function(ssf){ return ssf.id==index;});
-            if(founded==undefined || founded==null){
-                toWrite+=`<td></td>`;
+        for (let v = 0; v < this.fields.length; v++) {
+            const index = this.fields[v];
+            if (showSearchFields.length == 0) continue;
+            const founded = _.find(showSearchFields, function (ssf) {
+                return ssf.id == index;
+            });
+            if (founded == undefined) {
+                toWrite += `<td></td>`;
                 continue;
             }
-            var foundedType = founded.type;
-            var id = index.replace(".","_")+`_`+foundedType;
-            toWrite+=`<td><div class="form-group">
+            const foundedType = founded.type;
+            const id = index.replace(".", "_") + `_` + foundedType;
+            toWrite += `<td><div class="form-group">
                 <input class="form-control" type="text" name="${id}" id="${id}" />
             </div></td>`;
         }
-        var buttonId=this.tableId + "-" + idContent + "-search";
-        toWrite+=`<td><button id="${buttonId}" name="${buttonId}" 
+        const buttonId = this.tableId + "-" + idContent + "-search";
+        toWrite += `<td><button id="${buttonId}" name="${buttonId}" 
         type="button"  class="btn btn-default" >Search</button></td>`;
         toWrite += `</tr>`;
 
-        var self = this;
+        const self = this;
         $("#" + this.tableId + " > tbody:last-child").append(toWrite);
-         $("#" + buttonId).click(function () {
-                self.loadFunction(self);
-            });
+        $("#" + buttonId).click(function () {
+            self.clearTable();
+            for (let i = 0; i < self.data.length; i++) {
+                const line = self.data[i];
+                if (self.filterRow(line)) {
+                    let idContent = line[self.idField];
+                    if (typeof idContent === 'string') {
+                        idContent = idContent.replaceAll(".", "_");
+
+                    }
+                    self.writeSingleRow(idContent, line);
+
+                }
+            }
+        });
     }
 
-    retrieveFieldComplexContent(inputData,id){
-        var index = id;
-        var allIndex = id.split(".");
-        var content = inputData;
-        for (var s = 0; s < allIndex.length; s++) {
+    retrieveFieldComplexContent(inputData, id) {
+        const allIndex = id.split(".");
+        let content = inputData;
+        for (let s = 0; s < allIndex.length; s++) {
             content = content[allIndex[s]];
         }
         if (content == undefined) content = "";
@@ -152,37 +171,54 @@ class SimpleGrid {
     }
 
 
-
-
-    appendToTable(inputData, addbutton = true) {
-        if(!this.filterRow(inputData)){
-            return;
+    appendToTable(inputData, addbutton = null) {
+        if (this.addbutton == null) {
+            if (addbutton != null) {
+                this.addbutton = addbutton;
+            } else {
+                this.addbutton = true;
+            }
         }
-        var idContent = inputData[this.idField];
-        if (typeof idContent === 'string'){
-            idContent = idContent.replaceAll(".","_");
+        let idContent = inputData[this.idField];
+        if (typeof idContent === 'string') {
+            idContent = idContent.replaceAll(".", "_");
         }
-        for (var i = 0; i < this.data.length; i++) {
-            var line = this.data[i];
+        for (let i = 0; i < this.data.length; i++) {
+            const line = this.data[i];
             if (line[this.idField] == inputData[this.idField]) {
                 this.data[i] = inputData;
-                for (var v = 0; v < this.fields.length; v++) {
-                    var index = this.fields[v];
-                    var content = inputData[index];
+                for (let v = 0; v < this.fields.length; v++) {
+                    const index = this.fields[v];
+                    let content = inputData[index];
                     if (content == undefined) content = "";
                     if (!(index.lastIndexOf("_", 0) === 0)) {
                         if (content.length > 60) content = content.substr(0, 60);
                     }
 
-                    $("#" + this.tableId +
+                    let selectedItem = $("#" + this.tableId +
                         " #" + this.tableId + "-" + idContent +
-                        " #" + index).innerHTML = content;
+                        " #" + index);
+                    if (selectedItem) {
+                        selectedItem.innerHTML = content;
+                    }
                 }
                 return;
             }
         }
         this.data.push(inputData);
-        var toWrite = `
+        //if(this.filterRow(inputData))
+
+        this.writeSingleRow(idContent, inputData);
+
+    }
+
+    writeSingleRow(idContent, inputData) {
+        if (this.showSearch != null) {
+            if (!this.filterRow(inputData)) {
+                return;
+            }
+        }
+        let toWrite = `
         <tr id="${this.tableId}-${idContent}">`;
 
         /*for(var i=0;i<fields.length;i++){
@@ -191,22 +227,22 @@ class SimpleGrid {
             data+=`<td class="userData" name="${index}">${content}</td>`;
         }*/
 
-        for (var i = 0; i < this.fields.length; i++) {
-            var index = this.fields[i];
+        for (let i = 0; i < this.fields.length; i++) {
+            const index = this.fields[i];
             /*var allIndex = this.fields[i].split(".");
             var content = inputData;
             for (var s = 0; s < allIndex.length; s++) {
                 content = content[allIndex[s]];
             }
             if (content == undefined) content = "";*/
-            var content = this.retrieveFieldComplexContent(inputData,index)
+            let content = this.retrieveFieldComplexContent(inputData, index);
             if (!(this.fields[i].lastIndexOf("_", 0) === 0)) {
                 if (content.length > 60) content = content.substr(0, 60);
             }
             toWrite += `<td class="userData" name="${index}">${content}</td>`;
         }
 
-        if (addbutton == true) {
+        if (this.addbutton == true) {
             toWrite += `<td align="center">
                 <button class="btn btn-success form-control" id="${this.tableId}-${idContent}-edit">EDIT</button>
             </td>
@@ -217,9 +253,9 @@ class SimpleGrid {
 
         toWrite += `</tr>`;
 
-        var self = this;
+        const self = this;
         $("#" + this.tableId + " > tbody:last-child").append(toWrite);
-        if (addbutton == true) {
+        if (this.addbutton == true) {
             $("#" + this.tableId + "-" + idContent + "-edit").click(function () {
                 self.editFunction(self, idContent);
             });
@@ -234,7 +270,7 @@ class SimpleGrid {
 
 
 function buildKvpModalDialog(modal, table, value, idField, valueField, randomId) {
-    var bodyContent = "";
+    let bodyContent = "";
     if (value[valueField].length > 60) {
         bodyContent += `
                     <label for="value">Value</label>
@@ -246,33 +282,32 @@ function buildKvpModalDialog(modal, table, value, idField, valueField, randomId)
                     <input class="form-control" type="text" name="value"  id="value" />
                 `;
     }
-    var openAsEdit = true;
+    let openAsEdit = true;
     if (value[idField] == '' || value[idField] === undefined) {
         openAsEdit = false;
     }
     buildGenericModal(modal, table, value, idField, bodyContent, randomId, openAsEdit);
 }
 
-var addKvp = function (modal, table, idField, valueField) {
-    var randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
-    var value = {};
+const addKvp = function (modal, table, idField, valueField) {
+    const randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
+    const value = {};
     value[idField] = '';
     value[valueField] = '';
     buildKvpModalDialog(modal, table, value, idField, valueField, randomId);
-    var localTable = table;
+    const localTable = table;
     $(modal).find("#" + randomId).click(function () {
         value[idField] = $(modal).find("#key").val();
         value[valueField] = $(modal).find("#value").val();
         localTable.saveFunction(localTable, value, true);
     });
     $(modal).find("#value").val(value[valueField]);
-}
+};
 
 
-var editKvp = function (modal, table, id, idField, valueField) {
-    var randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
-    var randomIdInput = "INPUT" + Math.floor(Math.random() * 999999999);
-    var localTable = table;
+const editKvp = function (modal, table, id, idField, valueField) {
+    const randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
+    const localTable = table;
     localTable.data.forEach(function (value, i) {
         if (value[idField] == id) {
             buildKvpModalDialog(modal, table, value, idField, valueField, randomId);
@@ -282,25 +317,27 @@ var editKvp = function (modal, table, id, idField, valueField) {
             $(modal).find("#value").val(value[valueField]);
         }
     });
-}
-var getKvpData = function (table, idField, valueField) {
-    var result = {};
-    for (var i = 0; i < table.data.length; i++) {
+};
+
+const getKvpData = function (table, idField, valueField) {
+    const result = {};
+    for (let i = 0; i < table.data.length; i++) {
         result[table.data[i][idField]] = table.data[i][valueField];
     }
     return result;
-}
-var updateKvp = function (modal, table, id, idField, valueField) {
-    var msg = table.objType + " updated successfully!";
+};
+
+const updateKvp = function (modal, table, id, idField, valueField) {
+    const msg = table.objType + " updated successfully!";
 
     if (id[idField] == undefined) {
-        var user = {};
+        const user = {};
         user[idField] = id;
         table.data.forEach(function (user, i) {
             if (user[idField] == id) {
                 $(modal).find("#editKvp").children("input").each(function () {
-                    var value = $(this).val();
-                    var attr = $(this).attr("name");
+                    const value = $(this).val();
+                    const attr = $(this).attr("name");
                     if (attr == idField) {
                         user[idField] = value;
                     } else if (attr == valueField) {
@@ -308,8 +345,8 @@ var updateKvp = function (modal, table, id, idField, valueField) {
                     }
                 });
                 $(modal).find("#editKvp").children("textarea").each(function () {
-                    var value = $(this).val();
-                    var attr = $(this).attr("name");
+                    const value = $(this).val();
+                    const attr = $(this).attr("name");
                     if (attr == idField) {
                         user[idField] = value;
                     } else if (attr == valueField) {
@@ -319,17 +356,16 @@ var updateKvp = function (modal, table, id, idField, valueField) {
                 table.data.splice(i, 1);
                 table.data.splice(user[idField] - 1, 0, user);
 
-                var userIdField = user[idField];
-                if (typeof userIdField === 'string'){
-                    userIdField = userIdField.replaceAll(".","_");
+                let userIdField = user[idField];
+                if (typeof userIdField === 'string') {
+                    userIdField = userIdField.replaceAll(".", "_");
                 }
                 $("#" + table.tableId + " #" + table.tableId + "-" + userIdField).children(".userData").each(function () {
-                    var attr = $(this).attr("name");
-                    var value = $(this).val();
+                    const attr = $(this).attr("name");
                     if (attr == idField) {
                         $(this).text(user[idField]);
                     } else if (attr == valueField) {
-                        var content = user[valueField];
+                        let content = user[valueField];
                         if (content == undefined) content = "";
                         if (content.length > 60) content = content.substr(0, 60);
                         $(this).text(content);
@@ -340,61 +376,61 @@ var updateKvp = function (modal, table, id, idField, valueField) {
             }
         });
     } else {
-        var line = {key: id[idField], value: id[valueField]};
+        const line = {key: id[idField], value: id[valueField]};
         table.appendToTable(line);
         $(modal).modal("toggle");
         flashMessage(msg);
     }
-}
+};
 
 
-var deleteKvp = function (modal, table, id, idField, valueField) {
+const deleteKvp = function (modal, table, id, idField, valueField) {
     table.deleteFromTable(id, null);
-}
+};
 
 
 ///////////////////////     FLASH MESSAGE
 
-var flashMessage = function (msg) {
+const flashMessage = function (msg) {
     $(".flashMsg").remove();
     $(".row").prepend(`
         <div class="col-sm-12"><div class="flashMsg alert alert-success alert-dismissible fade in" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button> <strong>${msg}</strong></div></div>
     `);
-}
+};
 
-var setChecked = function (jqueryObj, checked) {
+const setChecked = function (jqueryObj, checked) {
     if (checked) {
         jqueryObj.attr('checked', 'checked');
     } else {
         jqueryObj.removeAttr('checked');
     }
-    jqueryObj.attr('value', checked)
-}
+    jqueryObj.attr('value', checked);
+};
 
-var downloadFile = function (urlToSend) {
-    var req = new XMLHttpRequest();
+const downloadFile = function (urlToSend) {
+    const req = new XMLHttpRequest();
     req.open("GET", urlToSend, true);
     req.responseType = "blob";
     req.onload = function (event) {
-        var blob = req.response;
-        var fileName = req.getResponseHeader("fileName") //if you have the fileName header available
-        var link = document.createElement('a');
+        const blob = req.response;
+        const fileName = req.getResponseHeader("fileName"); //if you have the fileName header available
+        const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
         link.download = fileName;
         link.click();
     };
 
     req.send();
-}
+};
 
 function buildGenericModal(modal, table, value, idField, extraContent, randomId, openAsEdit) {
     //var encodedValue = value[valueField].replace('"','\\"');
     $(modal).find(".modal-title").empty().append(`${table.objType}`);
-    var readonly = "readonly";
+    let readonly = "readonly";
     if (!openAsEdit) {
         readonly = "";
     }
-    var bodyContent = `
+    let bodyContent = `
                 <form id="editKvp" action="">
                     <label for="key">Key</label>
                     <input class="form-control" type="text" name="key" id="key" ${readonly} value="${value[idField]}"/>
@@ -410,12 +446,12 @@ function buildGenericModal(modal, table, value, idField, extraContent, randomId,
     $(modal).modal("toggle");
 }
 
-function buildButtonlessModal(modal, table, value, idField, extraContent, randomId) {
+const buildButtonlessModal = function (modal, table, value, idField, extraContent) {
     //var encodedValue = value[valueField].replace('"','\\"');
     $(modal).find(".modal-title").empty().append(`${table.objType}`);
-    var readonly = "readonly";
+    const readonly = "readonly";
 
-    var bodyContent = `
+    let bodyContent = `
                 <form id="editKvp" action="">
                     <label for="key">Key</label>
                     <input class="form-control" type="text" name="key" id="key" ${readonly} value="${value[idField]}"/>
@@ -430,19 +466,19 @@ function buildButtonlessModal(modal, table, value, idField, extraContent, random
     $(modal).modal("toggle");
 }
 
-var uuidv4 = function () {
+const uuidv4 = function () {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
-}
+};
 
-var success = function () {
+const success = function () {
     alert("Ok");
-}
+};
 
-var error = function () {
+const error = function () {
     alert("Error");
-}
+};
 
 /**
  *
@@ -450,10 +486,10 @@ var error = function () {
  * @param sep separator
  * @returns {*[]|*[]}
  */
-var splitOnFirst =function(str, sep) {
+const splitOnFirst = function (str, sep) {
     const index = str.indexOf(sep);
     return index < 0 ? [str] : [str.slice(0, index), str.slice(index + sep.length)];
-}
+};
 
 /**
  *
@@ -462,34 +498,34 @@ var splitOnFirst =function(str, sep) {
  * @param callbackError function(error)
  * @returns {Promise<void>}
  */
-var uploadAsyncFile = async function (files,callback,callbackError) {
+const uploadAsyncFile = async function (files, callback, callbackError) {
 
-    var filesLoaded = [];
+    const filesLoaded = [];
     if (files && files.length) {
         try {
-            for (var i = 0; i < files.length; i++) {
+            for (let i = 0; i < files.length; i++) {
                 const uploadedImageBase64 = await convertFileToBase64(files[i], callback);
-                filesLoaded.push( {
-                    data:splitOnFirst(uploadedImageBase64,",")[1],
-                    name:files[i].name,
-                    type:files[i].type
-                })
+                filesLoaded.push({
+                    data: splitOnFirst(uploadedImageBase64, ",")[1],
+                    name: files[i].name,
+                    type: files[i].type
+                });
             }
 
             callback(filesLoaded);
         } catch (exception) {
             callbackError(exception);
         }
-    }else{
-        callbackError("No files to upload")
+    } else {
+        callbackError("No files to upload");
     }
-}
+};
 
-var convertFileToBase64 = function(file) {
+const convertFileToBase64 = function (file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
         reader.onerror = reject;
     });
-}
+};
