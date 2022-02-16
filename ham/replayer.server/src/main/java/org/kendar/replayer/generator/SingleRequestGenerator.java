@@ -1,10 +1,10 @@
 package org.kendar.replayer.generator;
 
+import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.ReplayerResult;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.utils.FileResourcesUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,8 +25,14 @@ public class SingleRequestGenerator {
     }
 
     private String buildTestCode(String id, ReplayerResult data) {
-        var allRows = new ArrayList<ReplayerRow>();
-        allRows.addAll(data.getDynamicRequests());
+        var allRows = new HashMap<Integer,ReplayerRow>();
+        for (var row :data.getStaticRequests()) {
+            allRows.put(row.getId(),row);
+        }
+        for (var row :data.getDynamicRequests()) {
+            allRows.put(row.getId(),row);
+        }
+
         return new SpecialStringBuilder()
                 .add("import org.apache.http.HttpResponse'")
                 .add("import org.apache.http.StatusLine;" )
@@ -40,7 +46,8 @@ public class SingleRequestGenerator {
                 .add("import java.util.Scanner;")
                 .add()
                 .add("public class "+id+"Test {")
-                .tab(a->{a
+                .tab(a->{
+                    a
                         .add("@BeforeAll")
                         .add("void beforeAll(){")
                         .tab(b->{b
@@ -49,27 +56,37 @@ public class SingleRequestGenerator {
                         })
                         .add("}")
                         .add();
-                    for (var line :data.getDynamicRequests()) {
-                        addRequest(a,"d_"+line.getId());
-                    }
-                    for (var line :data.getStaticRequests()) {
-                        addRequest(a,"s_"+line.getId());
+                    for (var line :data.getIndexes()) {
+                        var row = allRows.get(line.getReference());
+                        addRequest(a,"d_"+line.getId(),line,row);
                     }
 
                 })
                 .build();
     }
 
-    private void addRequest(SpecialStringBuilder a, String methodName) {
+    private void addRequest(SpecialStringBuilder a, String methodName, CallIndex line, ReplayerRow row) {
         a
-            .add("@Test")
-            .add("void "+methodName+"(){")
-            .tab(b->{b
-                    .add("//MAKETHECALL")
-                    .add("//RETRIEVETHEDATA")
-                    .add("//CHECKTHEDATA");
-            })
-            .add("}")
-            .add();
+                //.add("@Test")
+                .add("private void "+methodName+"(){")
+                .tab(b->{b
+                        .add(c->makeTheCall(c,line,row))
+                        .add(c->retrieveTheData(c,line,row))
+                        .add(c->checkTheReturn(c,line,row));
+                })
+                .add("}")
+                .add();
+    }
+
+    private void checkTheReturn(SpecialStringBuilder c, CallIndex line, ReplayerRow row) {
+        
+    }
+
+    private void retrieveTheData(SpecialStringBuilder c, CallIndex line, ReplayerRow row) {
+
+    }
+
+    private void makeTheCall(SpecialStringBuilder a, CallIndex line, ReplayerRow row) {
+
     }
 }
