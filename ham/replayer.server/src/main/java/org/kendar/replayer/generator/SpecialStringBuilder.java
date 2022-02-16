@@ -14,6 +14,11 @@ public class SpecialStringBuilder {
         return this;
     }
 
+    public SpecialStringBuilder add(Consumer<SpecialStringBuilder> specialStringBuilderConsumer){
+        specialStringBuilderConsumer.accept(this);
+        return this;
+    }
+
     public SpecialStringBuilder add(){
         this.data.add("");
         return this;
