@@ -7,6 +7,7 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.RequestUtils;
 import org.kendar.utils.FileResourcesUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
@@ -21,14 +22,9 @@ public class SingleRequestGenerator {
         this.fileResourcesUtils = fileResourcesUtils;
     }
 
-    public Map<String, String> generateRequestResponse(String id, ReplayerResult data) {
-        var result = new HashMap<String, String>();
-        result.put(id + "Test.java", buildTestCode(id, data));
+    public Map<String, byte[]> generateRequestResponse(String pack,String recordingId, ReplayerResult data) {
+        var result = new HashMap<String, byte[]>();
 
-        return result;
-    }
-
-    private String buildTestCode(String id, ReplayerResult data) {
         var allRows = new HashMap<Integer, ReplayerRow>();
         for (var row : data.getStaticRequests()) {
             allRows.put(row.getId(), row);
@@ -37,8 +33,45 @@ public class SingleRequestGenerator {
             allRows.put(row.getId(), row);
         }
 
+        //Build the code
+        var srcDir = "src/test/java/"+pack.replaceAll(".","/")+"/"+recordingId;
+        result.put(srcDir+"/"+recordingId+"Test.java", buildTestCode(pack,recordingId, data,allRows).getBytes(StandardCharsets.UTF_8));
+
+        //Build the resources
+        var rsrcDir = "src/test/resources/"+pack.replaceAll(".","/")+"/"+recordingId;
+
+        for(var row:allRows.values()){
+            var response = row.getResponse();
+            var request = row.getRequest();
+            var resourceFile = rsrcDir+"/row_"+row.getId()+"_";
+            var resourceFileRes = resourceFile+"res";
+            var res= writeData(resourceFileRes,response.isBinaryResponse(),response.getResponseBytes(),response.getResponseText());
+            result.put(resourceFileRes,res);
+            var resourceFileReq = resourceFile+"req";
+            var req = writeData(resourceFileReq,request.isBinaryRequest(),request.getRequestBytes(),request.getRequestText());
+            result.put(resourceFileReq,req);
+        }
+
+        return result;
+    }
+
+    private byte[] writeData(String resourceFileRes, boolean binaryResponse, byte[] responseBytes, String responseText) {
+        if(binaryResponse && responseBytes!=null && responseBytes.length>0){
+            return responseBytes;
+        }else if(!binaryResponse && responseText!=null && !responseText.isEmpty()){
+            return responseText.getBytes(StandardCharsets.UTF_8);
+        }else{
+            return new byte[]{};
+        }
+    }
+
+    private String buildTestCode(String pack, String recordingId, ReplayerResult data, HashMap<Integer, ReplayerRow> allRows) {
+
+
         return new SpecialStringBuilder()
-                .add("import org.apache.http.HttpResponse'")
+                .add("package "+pack)
+                .add()
+                .add("import org.apache.http.HttpResponse;")
                 .add("import org.apache.http.StatusLine;")
                 .add("import org.apache.http.client.methods.HttpGet;")
                 .add("import org.apache.http.impl.client.CloseableHttpClient;")
@@ -49,7 +82,7 @@ public class SingleRequestGenerator {
                 .add("import java.io.IOException;")
                 .add("import java.util.Scanner;")
                 .add()
-                .add("public class " + id + "Test {")
+                .add("public class " + recordingId + "Test {")
                 .tab(a -> {
                     a
                             .add("@BeforeAll")
@@ -63,33 +96,33 @@ public class SingleRequestGenerator {
                             .add();
                     for (var line : data.getIndexes()) {
                         var row = allRows.get(line.getReference());
-                        addRequest(a,id, "d_" + line.getId(), line, row);
+                        addRequest(a,recordingId, "d_" + line.getId(), line, row,pack);
                     }
 
                 })
                 .build();
     }
 
-    private void addRequest(SpecialStringBuilder a,String id, String methodName, CallIndex line, ReplayerRow row) {
+    private void addRequest(SpecialStringBuilder a, String recordingId, String methodName, CallIndex line, ReplayerRow row, String pack) {
         a
                 //.add("@Test")
                 .add("private void " + methodName + "(){")
                 .tab(b -> {
                     b
-                            .add(c -> makeTheCall(c,id, line, row))
-                            .add(c -> retrieveTheData(c,id, line, row))
-                            .add(c -> checkTheReturn(c,id, line, row));
+                            .add(c -> makeTheCall(c,recordingId, line, row,pack))
+                            .add(c -> retrieveTheData(c,recordingId, line, row,pack))
+                            .add(c -> checkTheReturn(c,recordingId, line, row,pack));
                 })
                 .add("}")
                 .add();
     }
 
-    private void checkTheReturn(SpecialStringBuilder a, String recordingId,CallIndex line, ReplayerRow row) {
+    private void checkTheReturn(SpecialStringBuilder a, String recordingId, CallIndex line, ReplayerRow row, String pack) {
 
     }
 
 
-    private void retrieveTheData(SpecialStringBuilder a, String recordingId, CallIndex line, ReplayerRow row) {
+    private void retrieveTheData(SpecialStringBuilder a, String recordingId, CallIndex line, ReplayerRow row, String pack) {
         a
                 .add("int statusCode = httpResponse.getStatusLine().getStatusCode();")
                 .add("String contentType = responseEntity.getContentType().getValue();");
@@ -110,7 +143,7 @@ public class SingleRequestGenerator {
             "post","put","patch"
     };
 
-    private void makeTheCall(SpecialStringBuilder a,String recordingId, CallIndex line, ReplayerRow row) {
+    private void makeTheCall(SpecialStringBuilder a, String recordingId, CallIndex line, ReplayerRow row, String pack) {
         var request = row.getRequest();
         var address = RequestUtils.buildFullAddress(request);
         var buildMethod =
@@ -125,7 +158,7 @@ public class SingleRequestGenerator {
                 .add("request.addHeader(\"Host\",\"" + request.getHost() + "\");");
         if(isRequestWithBody(request)){
             var contentType = getCleanContentType( request.getHeader("content-type"));
-            var resourceFile = recordingId+"/row_"+row.getId()+"_req";
+            var resourceFile = "/"+pack.replaceAll(".","/")+"/"+recordingId+"/row_"+row.getId()+"_req";
             a.add("HttpEntity entity = ");
             if(request.isBinaryRequest()){
                 a
