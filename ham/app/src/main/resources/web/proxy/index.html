@@ -129,7 +129,10 @@
                     error();
                 }
             });
-        }).load();
+        },[
+            {id:"when",type:"string"},
+            {id:"where",type:"string"},
+            {id:"test",type:"string"}]).load();
 
 </script>
 </body>

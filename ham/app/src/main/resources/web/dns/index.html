@@ -147,7 +147,8 @@
                     error();
                 }
             });
-        }).load();
+        },[{id:"address",type:"string"},
+                {id:"resolved",type:"string"}]).load();
 
 
 
@@ -233,7 +234,8 @@
                     error();
                 }
             });
-        }).load();
+        },[{id:"ip",type:"string"},
+            {id:"dns",type:"string"}]).load();
 
 
 </script>

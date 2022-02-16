@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 if (Function.prototype.name === undefined) {
     // Add a custom property to all function values
     // that actually invokes a method to get the value
@@ -39,28 +41,6 @@ class SimpleGrid {
     showSearch;
     addbutton;
 
-    filterRow(inputData) {
-        if (this.showSearch == null || this.showSearch.length == 0) return true;
-
-        const valid = true;
-        for (let i = 0; i < this.showSearch.length; i++) {
-            const str = this.showSearch[i];
-            const content = this.retrieveFieldComplexContent(inputData, str.id);
-            if (str.type == "string") {
-
-
-            } else if (str.type == "number") {
-
-            }
-        }
-        return valid;
-    }
-
-    load() {
-        this.loadFunction(this);
-        return this;
-    }
-
     constructor(objType, name, idField, fields, loadFunction, editFunction, deleteFunction, saveFunction, showSearch = []) {
         this.objType = objType;
         this.tableId = name;
@@ -76,10 +56,74 @@ class SimpleGrid {
         this.buildSearch(showSearch);
     }
 
+    filterRow(inputData) {
+        if (this.isNotSearchEnabled()) return true;
+
+        for (let i = 0; i < this.showSearch.length; i++) {
+            const str = this.showSearch[i];
+            const content = this.retrieveFieldComplexContent(inputData, str.id);
+            const realId =  str.id.replace(".", "_") + `_` + str.type;
+            const valueToCompareWith = $("#" + this.tableId + " #"+realId).val();
+            if(valueToCompareWith=="" || valueToCompareWith===undefined)continue;
+            if (str.type == "string") {
+                if(!this.compareString(valueToCompareWith,content))return false;
+            } else if (str.type == "number") {
+                if(!this.compareNumber(valueToCompareWith,content))return false;
+            }else if (str.type == "bool") {
+                if(!this.compareBool(valueToCompareWith,content))return false;
+
+            }
+        }
+        return true;
+    }
+
+    compareString(valueToCompareWith, content) {
+        if(content.indexOf(valueToCompareWith)>=0) return true;
+        return false;
+    }
+
+    compareNumber(valueToCompareWith, content) {
+        if(parseInt(valueToCompareWith)==parseInt(content)) return true;
+        return false;
+    }
+
+    stringToBoolean(string){
+        switch(string.toLowerCase().trim()){
+            case "true":
+            case "yes":
+            case "1":
+                return true;
+
+            case "false":
+            case "no":
+            case "0":
+            case null:
+                return false;
+
+            default:
+                return false;
+        }
+    }
+
+    compareBool(valueToCompareWith, content) {
+        if(stringToBoolean(valueToCompareWith)==stringToBoolean(content)) return true;
+        return false;
+    }
+
+    isNotSearchEnabled() {
+        return this.showSearch == null || this.showSearch.length == 0;
+    }
+
+    load() {
+        this.loadFunction(this);
+        return this;
+    }
+
     clearTable(callback) {
         var self = this;
         this.data.forEach(function (row, i) {
-            var selectedItem = $("#" + self.tableId + " #" + self.tableId + "-" + id);
+            let id = row[self.idField];
+            let selectedItem = $("#" + self.tableId + " #" + self.tableId + "-" + id);
             if (selectedItem) {
                 selectedItem.remove();
             }
@@ -115,18 +159,17 @@ class SimpleGrid {
     }
 
     buildSearch(showSearchFields) {
-        if (this.showSearch == null || this.showSearch.length == 0) return;
+        if (this.isNotSearchEnabled()) return;
         let idContent = "search";
         let toWrite = `
         <tr id="${this.tableId}-${idContent}">`;
 
         for (let v = 0; v < this.fields.length; v++) {
             const index = this.fields[v];
-            if (showSearchFields.length == 0) continue;
-            const founded = _.find(showSearchFields, function (ssf) {
+            let founded = _.find(showSearchFields, function (ssf) {
                 return ssf.id == index;
             });
-            if (founded == undefined) {
+            if (founded === undefined) {
                 toWrite += `<td></td>`;
                 continue;
             }
@@ -151,7 +194,6 @@ class SimpleGrid {
                     let idContent = line[self.idField];
                     if (typeof idContent === 'string') {
                         idContent = idContent.replaceAll(".", "_");
-
                     }
                     self.writeSingleRow(idContent, line);
 
@@ -239,7 +281,7 @@ class SimpleGrid {
             if (!(this.fields[i].lastIndexOf("_", 0) === 0)) {
                 if (content.length > 60) content = content.substr(0, 60);
             }
-            toWrite += `<td class="userData" name="${index}">${content}</td>`;
+            toWrite += `<td class="userData" name="${index}" id="${index}">${content}</td>`;
         }
 
         if (this.addbutton == true) {
@@ -269,7 +311,7 @@ class SimpleGrid {
 ///////////////////////     KVP
 
 
-function buildKvpModalDialog(modal, table, value, idField, valueField, randomId) {
+const buildKvpModalDialog = function(modal, table, value, idField, valueField, randomId) {
     let bodyContent = "";
     if (value[valueField].length > 60) {
         bodyContent += `
@@ -423,7 +465,7 @@ const downloadFile = function (urlToSend) {
     req.send();
 };
 
-function buildGenericModal(modal, table, value, idField, extraContent, randomId, openAsEdit) {
+const buildGenericModal = function(modal, table, value, idField, extraContent, randomId, openAsEdit) {
     //var encodedValue = value[valueField].replace('"','\\"');
     $(modal).find(".modal-title").empty().append(`${table.objType}`);
     let readonly = "readonly";

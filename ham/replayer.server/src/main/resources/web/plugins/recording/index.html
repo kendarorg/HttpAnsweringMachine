@@ -83,7 +83,8 @@
                     }
                 });
             });
-        },null).load();
+        },null,[
+            {id:"id",type:"string"}]).load();
 
     $("#btLoadFile").click(function(){
         document.getElementById("uploadScript").click();

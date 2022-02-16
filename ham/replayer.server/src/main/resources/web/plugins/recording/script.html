@@ -232,8 +232,10 @@
                 });
             });
         },null,[
-            {id:"id",type:"number"},
-            {id:"request.host",type:"string"}]);
+            {id:"id",type:"string"},
+            {id:"request.host",type:"string"},
+            {id:"request.path",type:"string"},
+            {id:"request.query",type:"string"}]);
 
     var allCalls = new SimpleGrid("Request-Response","allCalls","id",fields,
         function (table){
@@ -253,7 +255,11 @@
                     }
                 });
             });
-        },null);
+        },null,[
+            {id:"id",type:"string"},
+            {id:"request.host",type:"string"},
+            {id:"request.path",type:"string"},
+            {id:"request.query",type:"string"}]);
 
     function download(){
         window.open("/api/plugins/replayer/recording/"+getUrlParameter("id"));
