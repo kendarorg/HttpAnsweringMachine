@@ -145,6 +145,7 @@ public class SingleRequestGenerator {
 
     private void makeTheCall(SpecialStringBuilder a, String recordingId, CallIndex line, ReplayerRow row, String pack) {
         var request = row.getRequest();
+        var response = row.getResponse();
         var address = RequestUtils.buildFullAddress(request);
         var buildMethod =
                 request.getMethod().substring(0, 1).toUpperCase(Locale.ROOT) +
@@ -156,9 +157,10 @@ public class SingleRequestGenerator {
                         request.getHeaders().entrySet().stream().map(h ->
                                 v.add("request.addHeader(\"" + h.getKey() + "\",\"" + h.getValue() + "\");")))
                 .add("request.addHeader(\"Host\",\"" + request.getHost() + "\");");
+        var resourceFileResponse = pack.replaceAll(".","/")+"/"+recordingId+"/row_"+row.getId()+"_res";
         if(isRequestWithBody(request)){
             var contentType = getCleanContentType( request.getHeader("content-type"));
-            var resourceFile = "/"+pack.replaceAll(".","/")+"/"+recordingId+"/row_"+row.getId()+"_req";
+            var resourceFile = pack.replaceAll(".","/")+"/"+recordingId+"/row_"+row.getId()+"_req";
             a.add("HttpEntity entity = ");
             if(request.isBinaryRequest()){
                 a
@@ -166,13 +168,23 @@ public class SingleRequestGenerator {
                         .add("HttpEntity entity = new ByteArrayEntity(data, ContentType.create("+contentType+"));");
             }else{
                 a
-                        .add("var data = new Scanner(AppropriateClass.class.getResourceAsStream(\"/"+resourceFile+".txt\"), \"UTF-8\").next();")
+                        .add("var data = new Scanner(AppropriateClass.class.getResourceAsStream(\"/"+resourceFile+"\"), \"UTF-8\").next();")
                         .add("HttpEntity entity = new StringEntity(data, ContentType.create("+contentType+"));");
             }
             a
                     .add("((HttpEntityEnclosingRequestBase) request).setEntity(entity);");
         }
+
+        if(response.isBinaryResponse()){
+            a
+                    .add("var expectedResponseData = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource(\"/"+resourceFileResponse+"\").toURI()));");
+        }else{
+            a
+                    .add("var expectedResponseData = new Scanner(AppropriateClass.class.getResourceAsStream(\"/"+resourceFileResponse+"\"), \"UTF-8\").next();");
+        }
+
         a
+                .add("var expectedResponseCode = "+response.getStatusCode()+";")
                 .add("httpResponse = httpClient.execute(request);")
                 .add("HttpEntity responseEntity = httpResponse.getEntity();");
     }
