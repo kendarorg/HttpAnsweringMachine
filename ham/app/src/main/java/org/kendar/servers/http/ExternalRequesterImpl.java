@@ -35,7 +35,6 @@ import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -45,8 +44,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static java.util.stream.Collectors.joining;
 
 @Component
 public class ExternalRequesterImpl implements ExternalRequester{
@@ -187,7 +184,7 @@ public class ExternalRequesterImpl implements ExternalRequester{
 
         HttpRequestBase fullRequest = null;
         try {
-            String fullAddress = buildFullAddress(request);
+            String fullAddress = RequestUtils.buildFullAddress(request);
             fullRequest = createFullRequest(request, fullAddress);
             fullRequest.addHeader(BLOCK_RECURSION, fullAddress);
             for (var header : request.getHeaders().entrySet()) {
@@ -275,37 +272,7 @@ public class ExternalRequesterImpl implements ExternalRequester{
     }
 
 
-    private String buildFullAddress(Request request) {
 
-        String port = "";
-        if (request.getPort() != -1) {
-            if (request.getPort() != 443 && request.getProtocol().equalsIgnoreCase("https")) {
-                port = ":" + request.getPort();
-            }
-
-            if (request.getPort() != 80 && request.getProtocol().equalsIgnoreCase("http")) {
-                port = ":" + request.getPort();
-            }
-        }
-        return request.getProtocol()
-                + "://"
-                + request.getHost()
-                + port
-                + request.getPath()
-                + buildFullQuery(request);
-    }
-    private String buildFullQuery(Request request) {
-        if (request.getQuery().size() == 0) return "";
-        return "?"
-                + request.getQuery().entrySet().stream()
-                .map(
-                        e ->
-                                e.getKey()
-                                        + "="
-                                        + java.net.URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8)
-                                        .replace(" ", "%20"))
-                .collect(joining("&"));
-    }
 
     private HttpEntity handleSoapRequest(Request request) {
         return null;

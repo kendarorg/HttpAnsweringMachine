@@ -7,12 +7,14 @@ import org.apache.commons.fileupload.portlet.PortletFileUpload;
 
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.joining;
 
 public class RequestUtils {
   public static boolean isMethodWithBody(Request result) {
@@ -133,5 +135,37 @@ public class RequestUtils {
       result.add(new MultipartPart(fileItem));
     }
     return result;
+  }
+
+  public static String buildFullAddress(Request request) {
+
+    String port = "";
+    if (request.getPort() != -1) {
+      if (request.getPort() != 443 && request.getProtocol().equalsIgnoreCase("https")) {
+        port = ":" + request.getPort();
+      }
+
+      if (request.getPort() != 80 && request.getProtocol().equalsIgnoreCase("http")) {
+        port = ":" + request.getPort();
+      }
+    }
+    return request.getProtocol()
+            + "://"
+            + request.getHost()
+            + port
+            + request.getPath()
+            + buildFullQuery(request);
+  }
+  public static String buildFullQuery(Request request) {
+    if (request.getQuery().size() == 0) return "";
+    return "?"
+            + request.getQuery().entrySet().stream()
+            .map(
+                    e ->
+                            e.getKey()
+                                    + "="
+                                    + java.net.URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8)
+                                    .replace(" ", "%20"))
+            .collect(joining("&"));
   }
 }
