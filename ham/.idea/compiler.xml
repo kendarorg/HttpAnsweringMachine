@@ -11,6 +11,7 @@
         <module name="oidc.server" />
         <module name="pacts.server" />
         <module name="replayer.server" />
+        <module name="schema.checker" />
         <module name="app.http.standardfilters" />
         <module name="app.http" />
         <module name="simpledns" />
@@ -41,6 +42,7 @@
       <module name="oidc.server" options="-parameters" />
       <module name="pacts.server" options="-parameters" />
       <module name="replayer.server" options="-parameters" />
+      <module name="schema.checker" options="-parameters" />
       <module name="simpledns" options="-parameters" />
       <module name="starter" options="-parameters" />
     </option>

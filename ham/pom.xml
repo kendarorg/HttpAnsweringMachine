@@ -63,5 +63,6 @@
         <module>simpledns</module>
         <module>app.dns</module>
         <module>pacts.server</module>
+        <module>schema.checker</module>
     </modules>
 </project>
