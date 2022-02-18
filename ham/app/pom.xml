@@ -164,6 +164,12 @@
             <artifactId>json-schema-validator</artifactId>
             <version>${json.schema.validator.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>schema.checker</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
         <!--<dependency>
 
             https://jitpack.io/com/github/wiztools/xsd-gen/
