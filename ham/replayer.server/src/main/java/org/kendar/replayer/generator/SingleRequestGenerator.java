@@ -1,5 +1,7 @@
 package org.kendar.replayer.generator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.ReplayerResult;
 import org.kendar.replayer.storage.ReplayerRow;
@@ -13,18 +15,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class SingleRequestGenerator {
     private FileResourcesUtils fileResourcesUtils;
-
+private ObjectMapper mapper = new ObjectMapper();
 
     public SingleRequestGenerator(FileResourcesUtils fileResourcesUtils) {
 
         this.fileResourcesUtils = fileResourcesUtils;
     }
 
-    public Map<String, byte[]> generateRequestResponse(String pack,String recordingId, ReplayerResult data) {
+    public Map<String, byte[]> generateRequestResponse(String pack,String recordingId, ReplayerResult data) throws JsonProcessingException {
         var result = new HashMap<String, byte[]>();
 
         var allRows = new HashMap<Integer, ReplayerRow>();
@@ -41,6 +44,10 @@ public class SingleRequestGenerator {
 
         //Build the resources
         var rsrcDir = "src/test/resources/"+pack.replaceAll("\\.","/")+"/"+recordingId;
+
+        var replayData = mapper.writeValueAsString(data);
+        var resourceFileData = rsrcDir+"/recording.json";
+        result.put(resourceFileData,replayData.getBytes(StandardCharsets.UTF_8));
 
         for(var row:allRows.values()){
             var response = row.getResponse();
@@ -75,11 +82,9 @@ public class SingleRequestGenerator {
                 .add()
                 .add("import org.apache.http.HttpResponse;")
                 .add("import org.apache.http.StatusLine;")
-                .add("import org.apache.http.client.methods.HttpGet;")
+                .add("import org.apache.http.client.methods.*;")
                 .add("import org.apache.http.impl.client.CloseableHttpClient;")
                 .add("import org.apache.http.impl.client.HttpClients;")
-                .add("import org.junit.jupiter.api.BeforeAll;")
-                .add("import org.junit.jupiter.api.BeforeEach;")
                 .add("import org.junit.jupiter.api.Test;")
                 .add("import java.io.IOException;")
                 .add("import java.util.Scanner;")
@@ -91,7 +96,16 @@ public class SingleRequestGenerator {
                             .add("void doTestNavigation(){")
                             .tab(b -> {
                                 b
-                                        .add("//UPLOADTHEREPLAYERRESULT")
+                                        .add("//UPLOAD THE REPLAYER RESULT")
+                                        .add("CloseableHttpClient httpClient = HttpClientBuilder.create();")
+                                        .add("var request = new HttpPost(\"https://www.local.test\");")
+                                        .add("var data = new Scanner(this.getClass().getResourceAsStream(\"/"+pack.replaceAll("\\.","/")+"/recording.json\"), \"UTF-8\").next();")
+                                        .add("var jsonFile=\"{\\\"name\\\":\\\""+recordingId+".json\\\",\\\"data\\\":\\\"\"+Base64.getEncoder().encodeToString(data.getBytes())+\"\\\"}\";")
+                                        .add("HttpEntity entity = new StringEntity(data, ContentType.create(\"application/json\"));")
+                                        .add("((HttpEntityEnclosingRequestBase) request).setEntity(entity);")
+                                        .add("httpResponse = httpClient.execute(request);")
+                                        .add("HttpEntity responseEntity = httpResponse.getEntity();")
+                                        .add()
                                         .add("//STARTREPLAYING");
                                 for (var line : data.getIndexes()) {
                                     var row = allRows.get(line.getReference());
@@ -158,24 +172,23 @@ public class SingleRequestGenerator {
                         request.getMethod().substring(1).toLowerCase(Locale.ROOT);
         a
                 .add("CloseableHttpClient httpClient = HttpClientBuilder.create();")
-                .add("var request = new " + buildMethod + "(\""+address+"\");")
+                .add("var request = new Http" + buildMethod + "(\""+address+"\");")
                 .add(v ->
                         request.getHeaders().entrySet().stream().map(h ->
-                                v.add("request.addHeader(\"" + h.getKey() + "\",\"" + h.getValue() + "\");")))
+                                v.add("request.addHeader(\"" + h.getKey() + "\",\"" + h.getValue() + "\");")).collect(Collectors.toList()))
                 .add("request.addHeader(\"Host\",\"" + request.getHost() + "\");");
         var resourceFileResponse = pack.replaceAll("\\.","/")+"/"+recordingId+"/row_"+row.getId()+"_res";
         if(isRequestWithBody(request)){
             var contentType = getCleanContentType( request.getHeader("content-type"));
             var resourceFile = pack.replaceAll("\\.","/")+"/"+recordingId+"/row_"+row.getId()+"_req";
-            a.add("HttpEntity entity = ");
             if(request.isBinaryRequest()){
                 a
                         .add("var data = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource(\"/"+resourceFile+"\").toURI()));")
-                        .add("HttpEntity entity = new ByteArrayEntity(data, ContentType.create("+contentType+"));");
+                        .add("HttpEntity entity = new ByteArrayEntity(data, ContentType.create(\""+contentType+"\"));");
             }else{
                 a
                         .add("var data = new Scanner(this.getClass().getResourceAsStream(\"/"+resourceFile+"\"), \"UTF-8\").next();")
-                        .add("HttpEntity entity = new StringEntity(data, ContentType.create("+contentType+"));");
+                        .add("HttpEntity entity = new StringEntity(data, ContentType.create(\""+contentType+"\"));");
             }
             a
                     .add("((HttpEntityEnclosingRequestBase) request).setEntity(entity);");
