@@ -95,7 +95,7 @@ public class SingleRequestGenerator {
                                         .add("//STARTREPLAYING");
                                 for (var line : data.getIndexes()) {
                                     var row = allRows.get(line.getReference());
-                                    b.add("d_"+line.getId()+"()");
+                                    b.add("d_"+line.getId()+"();");
                                 }
                             })
                             .add("}")
