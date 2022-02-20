@@ -6,6 +6,7 @@ import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.RequestUtils;
 import org.kendar.utils.FileResourcesUtils;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+@Component
 public class SingleRequestGenerator {
     private FileResourcesUtils fileResourcesUtils;
 
