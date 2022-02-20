@@ -9,8 +9,10 @@ public class SpecialStringBuilder {
     private int length =0;
 
     public SpecialStringBuilder add(String inputString){
-        var toAdd = String.format("%1$" + length + "s", inputString).replace(' ', '\t');
-        this.data.add(toAdd);
+        var toAdd = "";
+        for(var i=0;i<length;i++)toAdd+="\t";
+
+        this.data.add(toAdd+inputString);
         return this;
     }
 

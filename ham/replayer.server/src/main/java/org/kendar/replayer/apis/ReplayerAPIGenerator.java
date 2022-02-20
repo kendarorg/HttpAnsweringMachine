@@ -17,10 +17,13 @@ import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
@@ -72,9 +75,23 @@ public class ReplayerAPIGenerator implements FilteringClass {
             var replayer = mapper.readValue(fileContent, ReplayerResult.class);
             result = singleRequestGenerator.generateRequestResponse(pack,id,replayer);
 
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ZipOutputStream zos = new ZipOutputStream(baos);
+            for(var item :result.entrySet()) {
+                ZipEntry entry = new ZipEntry(item.getKey());
+                entry.setSize(item.getValue().length);
+                zos.putNextEntry(entry);
+                zos.write(item.getValue());
+                zos.closeEntry();
+            }
+            zos.close();
+            res.setBinaryResponse(true);
+            res.addHeader("Content-type", "application/zip");
+            res.addHeader("Content-disposition", "inline;filename=" + id + ".zip");
+
+            res.setResponseBytes(baos.toByteArray());
         }
-        res.addHeader("Content-type", "application/json");
-        res.setResponseText(mapper.writeValueAsString(result));
     }
 
 }

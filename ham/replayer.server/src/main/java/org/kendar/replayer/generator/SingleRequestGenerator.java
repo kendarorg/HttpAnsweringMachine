@@ -36,11 +36,11 @@ public class SingleRequestGenerator {
         }
 
         //Build the code
-        var srcDir = "src/test/java/"+pack.replaceAll(".","/")+"/"+recordingId;
+        var srcDir = "src/test/java/"+pack.replaceAll("\\.","/")+"/"+recordingId;
         result.put(srcDir+"/"+recordingId+"Test.java", buildTestCode(pack,recordingId, data,allRows).getBytes(StandardCharsets.UTF_8));
 
         //Build the resources
-        var rsrcDir = "src/test/resources/"+pack.replaceAll(".","/")+"/"+recordingId;
+        var rsrcDir = "src/test/resources/"+pack.replaceAll("\\.","/")+"/"+recordingId;
 
         for(var row:allRows.values()){
             var response = row.getResponse();
@@ -87,12 +87,16 @@ public class SingleRequestGenerator {
                 .add("public class " + recordingId + "Test {")
                 .tab(a -> {
                     a
-                            .add("@BeforeAll")
-                            .add("void beforeAll(){")
+                            .add("@Test")
+                            .add("void doTestNavigation(){")
                             .tab(b -> {
                                 b
                                         .add("//UPLOADTHEREPLAYERRESULT")
                                         .add("//STARTREPLAYING");
+                                for (var line : data.getIndexes()) {
+                                    var row = allRows.get(line.getReference());
+                                    b.add("d_"+line.getId()+"()");
+                                }
                             })
                             .add("}")
                             .add();
@@ -159,10 +163,10 @@ public class SingleRequestGenerator {
                         request.getHeaders().entrySet().stream().map(h ->
                                 v.add("request.addHeader(\"" + h.getKey() + "\",\"" + h.getValue() + "\");")))
                 .add("request.addHeader(\"Host\",\"" + request.getHost() + "\");");
-        var resourceFileResponse = pack.replaceAll(".","/")+"/"+recordingId+"/row_"+row.getId()+"_res";
+        var resourceFileResponse = pack.replaceAll("\\.","/")+"/"+recordingId+"/row_"+row.getId()+"_res";
         if(isRequestWithBody(request)){
             var contentType = getCleanContentType( request.getHeader("content-type"));
-            var resourceFile = pack.replaceAll(".","/")+"/"+recordingId+"/row_"+row.getId()+"_req";
+            var resourceFile = pack.replaceAll("\\.","/")+"/"+recordingId+"/row_"+row.getId()+"_req";
             a.add("HttpEntity entity = ");
             if(request.isBinaryRequest()){
                 a
@@ -170,7 +174,7 @@ public class SingleRequestGenerator {
                         .add("HttpEntity entity = new ByteArrayEntity(data, ContentType.create("+contentType+"));");
             }else{
                 a
-                        .add("var data = new Scanner(AppropriateClass.class.getResourceAsStream(\"/"+resourceFile+"\"), \"UTF-8\").next();")
+                        .add("var data = new Scanner(this.getClass().getResourceAsStream(\"/"+resourceFile+"\"), \"UTF-8\").next();")
                         .add("HttpEntity entity = new StringEntity(data, ContentType.create("+contentType+"));");
             }
             a
@@ -182,7 +186,7 @@ public class SingleRequestGenerator {
                     .add("var expectedResponseData = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource(\"/"+resourceFileResponse+"\").toURI()));");
         }else{
             a
-                    .add("var expectedResponseData = new Scanner(AppropriateClass.class.getResourceAsStream(\"/"+resourceFileResponse+"\"), \"UTF-8\").next();");
+                    .add("var expectedResponseData = new Scanner(this.getClass().getResourceAsStream(\"/"+resourceFileResponse+"\"), \"UTF-8\").next();");
         }
 
         a
