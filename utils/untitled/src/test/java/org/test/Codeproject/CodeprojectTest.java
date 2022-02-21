@@ -1,4 +1,4 @@
-package org.test.Codeproject;
+package org.kendar.Codeproject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -20,11 +20,10 @@ import java.util.Scanner;
 public class CodeprojectTest {
 	@Test
 	void doTestNavigation() throws IOException{
-		d_2();
 		//UPLOAD THE REPLAYER RESULT
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		var request = new HttpPost("http://www.local.test");
-		var data = this.getClass().getResourceAsStream("/org/test/Codeproject/recording.json").readAllBytes();
+		var data = this.getClass().getResourceAsStream("/org/kendar/Codeproject/recording.json").readAllBytes();
 		var jsonFile="{\"name\":\"Codeproject.json\",\"data\":\""+Base64.getEncoder().encodeToString(data)+"\"}";
 		HttpEntity entity = new StringEntity(jsonFile, ContentType.create("application/json"));
 		((HttpEntityEnclosingRequestBase) request).setEntity(entity);
@@ -32,7 +31,7 @@ public class CodeprojectTest {
 		HttpEntity responseEntity = httpResponse.getEntity();
 
 		//STARTREPLAYING
-
+		d_0();
 		d_1();
 		d_2();
 		d_3();
@@ -73,8 +72,7 @@ public class CodeprojectTest {
 		request.addHeader("Upgrade-insecure-requests","1");
 		request.addHeader("Sec-ch-ua-mobile","?0");
 		request.addHeader("Content-Type","application/octet-stream");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_0_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_0_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -105,11 +103,10 @@ public class CodeprojectTest {
 		request.addHeader("Content-length","32");
 		request.addHeader("X-requested-with","XMLHttpRequest");
 		request.addHeader("Sec-ch-ua-mobile","?0");
-		request.addHeader("Host","www.codeproject.com");
-		var data = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_1_req").readAllBytes());
+		var data = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_1_req").readAllBytes());
 		HttpEntity entity = new StringEntity(data, ContentType.create("application/json"));
 		((HttpEntityEnclosingRequestBase) request).setEntity(entity);
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_1_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_1_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -124,7 +121,7 @@ public class CodeprojectTest {
 		var request = new HttpPost("https://www.codeproject.com/script/Common/Webservices/CommonServices.aspx/GetPageViewsTimeSeriesData");
 		request.addHeader("Origin","https://www.codeproject.com");
 		request.addHeader("Accept-encoding","gzip, deflate, br");
-		//request.addHeader("Cookie","mguid=5853a8f0-f0cf-4346-a8f2-29ac4b4e1480; vk=ad52b0e4-a53f-4da5-a440-f3bd660f3d29; _ga=GA1.1.896389723.1643017258; __gads=ID=e72e7344db5d49c2:T=1643017258:S=ALNI_MbdF8AQaXePEV8YGN63Yerhm_a1cQ; cookieconsent_status=deny; SessionGUID=ca489c81-8eff-43cb-ada5-919ef8fe1a0a; g_state={\"i_p\":1645526177239,\"i_l\":3}; _ga_YZNPNQ0F2S=GS1.1.1644921371.7.1.1644922685.0");
+		request.addHeader("Cookie","mguid=5853a8f0-f0cf-4346-a8f2-29ac4b4e1480; vk=ad52b0e4-a53f-4da5-a440-f3bd660f3d29; _ga=GA1.1.896389723.1643017258; __gads=ID=e72e7344db5d49c2:T=1643017258:S=ALNI_MbdF8AQaXePEV8YGN63Yerhm_a1cQ; cookieconsent_status=deny; SessionGUID=ca489c81-8eff-43cb-ada5-919ef8fe1a0a; g_state={\"i_p\":1645526177239,\"i_l\":3}; _ga_YZNPNQ0F2S=GS1.1.1644921371.7.1.1644922685.0");
 		request.addHeader("Sec-ch-ua","\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"98\", \"Google Chrome\";v=\"98\"");
 		request.addHeader("Accept","text/plain, */*; q=0.01");
 		request.addHeader("Sec-fetch-dest","empty");
@@ -137,14 +134,13 @@ public class CodeprojectTest {
 		request.addHeader("User-agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36");
 		request.addHeader("Content-type","application/json");
 		request.addHeader("Accept-language","en-US,en;q=0.9");
-		//request.addHeader("Content-length","32");
+		request.addHeader("Content-length","32");
 		request.addHeader("X-requested-with","XMLHttpRequest");
 		request.addHeader("Sec-ch-ua-mobile","?0");
-		//request.addHeader("Host","www.codeproject.com");
-		var data = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_2_req").readAllBytes());
+		var data = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_2_req").readAllBytes());
 		HttpEntity entity = new StringEntity(data, ContentType.create("application/json"));
 		((HttpEntityEnclosingRequestBase) request).setEntity(entity);
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_2_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_2_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -174,8 +170,7 @@ public class CodeprojectTest {
 		request.addHeader("Upgrade-insecure-requests","1");
 		request.addHeader("Sec-ch-ua-mobile","?0");
 		request.addHeader("Content-Type","application/octet-stream");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_3_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_3_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -205,8 +200,7 @@ public class CodeprojectTest {
 		request.addHeader("Upgrade-insecure-requests","1");
 		request.addHeader("Sec-ch-ua-mobile","?0");
 		request.addHeader("Content-Type","application/octet-stream");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_4_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_4_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -237,8 +231,7 @@ public class CodeprojectTest {
 		request.addHeader("Content-length","16");
 		request.addHeader("X-requested-with","XMLHttpRequest");
 		request.addHeader("Sec-ch-ua-mobile","?0");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_5_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_5_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -269,8 +262,7 @@ public class CodeprojectTest {
 		request.addHeader("Content-length","16");
 		request.addHeader("X-requested-with","XMLHttpRequest");
 		request.addHeader("Sec-ch-ua-mobile","?0");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_6_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_6_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -301,11 +293,10 @@ public class CodeprojectTest {
 		request.addHeader("Content-length","19");
 		request.addHeader("X-requested-with","XMLHttpRequest");
 		request.addHeader("Sec-ch-ua-mobile","?0");
-		request.addHeader("Host","www.codeproject.com");
-		var data = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_7_req").readAllBytes());
+		var data = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_7_req").readAllBytes());
 		HttpEntity entity = new StringEntity(data, ContentType.create("application/json"));
 		((HttpEntityEnclosingRequestBase) request).setEntity(entity);
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_7_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_7_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -335,8 +326,7 @@ public class CodeprojectTest {
 		request.addHeader("Upgrade-insecure-requests","1");
 		request.addHeader("Sec-ch-ua-mobile","?0");
 		request.addHeader("Content-Type","application/octet-stream");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_8_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_8_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -367,8 +357,7 @@ public class CodeprojectTest {
 		request.addHeader("Content-length","16");
 		request.addHeader("X-requested-with","XMLHttpRequest");
 		request.addHeader("Sec-ch-ua-mobile","?0");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_9_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_9_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -398,8 +387,7 @@ public class CodeprojectTest {
 		request.addHeader("Upgrade-insecure-requests","1");
 		request.addHeader("Sec-ch-ua-mobile","?0");
 		request.addHeader("Content-Type","application/octet-stream");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_10_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_10_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -430,11 +418,10 @@ public class CodeprojectTest {
 		request.addHeader("Content-length","32");
 		request.addHeader("X-requested-with","XMLHttpRequest");
 		request.addHeader("Sec-ch-ua-mobile","?0");
-		request.addHeader("Host","www.codeproject.com");
-		var data = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_11_req").readAllBytes());
+		var data = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_11_req").readAllBytes());
 		HttpEntity entity = new StringEntity(data, ContentType.create("application/json"));
 		((HttpEntityEnclosingRequestBase) request).setEntity(entity);
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_11_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_11_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -465,11 +452,10 @@ public class CodeprojectTest {
 		request.addHeader("Content-length","32");
 		request.addHeader("X-requested-with","XMLHttpRequest");
 		request.addHeader("Sec-ch-ua-mobile","?0");
-		request.addHeader("Host","www.codeproject.com");
-		var data = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_12_req").readAllBytes());
+		var data = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_12_req").readAllBytes());
 		HttpEntity entity = new StringEntity(data, ContentType.create("application/json"));
 		((HttpEntityEnclosingRequestBase) request).setEntity(entity);
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_12_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_12_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -499,8 +485,7 @@ public class CodeprojectTest {
 		request.addHeader("Upgrade-insecure-requests","1");
 		request.addHeader("Sec-ch-ua-mobile","?0");
 		request.addHeader("Content-Type","application/octet-stream");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_13_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_13_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -531,8 +516,7 @@ public class CodeprojectTest {
 		request.addHeader("Content-length","16");
 		request.addHeader("X-requested-with","XMLHttpRequest");
 		request.addHeader("Sec-ch-ua-mobile","?0");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_14_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_14_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -563,8 +547,7 @@ public class CodeprojectTest {
 		request.addHeader("Content-length","256");
 		request.addHeader("X-requested-with","XMLHttpRequest");
 		request.addHeader("Sec-ch-ua-mobile","?0");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_15_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_15_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -595,11 +578,10 @@ public class CodeprojectTest {
 		request.addHeader("Content-length","19");
 		request.addHeader("X-requested-with","XMLHttpRequest");
 		request.addHeader("Sec-ch-ua-mobile","?0");
-		request.addHeader("Host","www.codeproject.com");
-		var data = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_16_req").readAllBytes());
+		var data = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_16_req").readAllBytes());
 		HttpEntity entity = new StringEntity(data, ContentType.create("application/json"));
 		((HttpEntityEnclosingRequestBase) request).setEntity(entity);
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_16_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_16_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -629,8 +611,7 @@ public class CodeprojectTest {
 		request.addHeader("Upgrade-insecure-requests","1");
 		request.addHeader("Sec-ch-ua-mobile","?0");
 		request.addHeader("Content-Type","application/octet-stream");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_17_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_17_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();
@@ -661,8 +642,7 @@ public class CodeprojectTest {
 		request.addHeader("Content-length","16");
 		request.addHeader("X-requested-with","XMLHttpRequest");
 		request.addHeader("Sec-ch-ua-mobile","?0");
-		request.addHeader("Host","www.codeproject.com");
-		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/test/Codeproject/row_18_res").readAllBytes());
+		var expectedResponseData = new String(this.getClass().getResourceAsStream("/org/kendar/Codeproject/row_18_res").readAllBytes());
 		var expectedResponseCode = 200;
 		var httpResponse = httpClient.execute(request);
 		HttpEntity responseEntity = httpResponse.getEntity();

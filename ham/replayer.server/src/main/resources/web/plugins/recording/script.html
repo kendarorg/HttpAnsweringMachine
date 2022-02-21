@@ -37,6 +37,7 @@
             <br>
             <button id="save" name="save" type="button"  class="btn btn-default" onClick="save();">Save</button>
             <button id="download" name="download" type="button"  class="btn btn-default" onClick="download();">Download</button>
+            <button id="downloadTest" name="downloadTest" type="button"  class="btn btn-default" onClick="downloadTest();">Download test project</button>
         </div>
         <div class="col-md-8">
             <br>
@@ -263,6 +264,11 @@
 
     function download(){
         window.open("/api/plugins/replayer/recording/"+getUrlParameter("id"));
+    }
+
+    function downloadTest(){
+        var pack = prompt("Insert the package");
+        window.open("/api/plugins/replayer/generator/"+getUrlParameter("id")+"?package="+pack);
     }
 
     handleStateButtons(null);
