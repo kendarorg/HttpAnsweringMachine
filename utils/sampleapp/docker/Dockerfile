@@ -14,6 +14,22 @@ COPY ./docker/be.sh /etc/app/be/
 COPY ./be/target/*.jar /etc/app/be/
 RUN chmod +x /etc/app/be/*.sh
 
+
+RUN mkdir -p /etc/app/be-users \
+    && mkdir -p /etc/app/be-users/log \
+    && mkdir -p /etc/service/be-users/log \
+    && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/be-users/log\n" > /etc/service/be-users/log/run \
+    && chmod +x /etc/service/be-users/log/run \
+    && echo -e "#!/bin/bash\nexec 2>&1\nexec /etc/app/be-users/be-users.sh\n" > /etc/service/be-users/run \
+    && chmod +x /etc/service/be-users/run
+
+COPY ./docker/be-users.sh /etc/app/be-users/
+COPY ./docker/be.application.properties /etc/app/be-users/application.properties
+COPY ./be-users/target/*.jar /etc/app/be-users/
+RUN chmod +x /etc/app/be-users/*.sh
+
+
+
 RUN mkdir -p /etc/app/fe \
     && mkdir -p /etc/app/fe/log \
     && mkdir -p /etc/service/fe/log \
