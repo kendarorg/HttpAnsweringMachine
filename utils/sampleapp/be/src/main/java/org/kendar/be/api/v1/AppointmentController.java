@@ -1,13 +1,14 @@
 package org.kendar.be.api.v1;
 
 import org.kendar.be.data.AppointmentRepository;
-import org.kendar.be.data.EmployeeRepository;
 import org.kendar.be.data.entities.Appointment;
 import org.kendar.be.data.entities.AppointmentId;
 import org.kendar.be.data.entities.AppointmentStatus;
 import org.kendar.be.data.exceptions.ItemNotFoundException;
+import org.kendar.be.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,9 +16,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/appointments")
 public class AppointmentController {
     private final AppointmentRepository appointmentRepository;
-    private EmployeeRepository employeeRepository;
+    private EmployeeService employeeRepository;
 
-    AppointmentController(AppointmentRepository appointmentRepository, EmployeeRepository employeeRepository) {
+    AppointmentController(AppointmentRepository appointmentRepository, EmployeeService employeeRepository) {
         this.appointmentRepository = appointmentRepository;
         this.employeeRepository = employeeRepository;
     }
@@ -34,7 +35,7 @@ public class AppointmentController {
     // end::get-aggregate-root[]
 
     @PostMapping("/{employeeId}")
-    AppointmentDto newAppointment(@RequestBody AppointmentDto newAppointment,@PathVariable Long employeeId) {
+    AppointmentDto newAppointment(@RequestBody AppointmentDto newAppointment,@PathVariable Long employeeId) throws IOException {
         var employee = employeeRepository.getById(employeeId);
         if(employee==null){
             throw new ItemNotFoundException(employeeId.toString());
