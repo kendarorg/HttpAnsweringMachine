@@ -1,0 +1,1196 @@
+<!DOCTYPE HTML>
+
+
+<html lang="en">
+<head>
+
+	
+	<link rel="preconnect" href="https://apps.developermedia.com">
+	<link rel="preconnect" href="https://cdn1.developermedia.com">
+	<link rel="preconnect" href="https://cdn.ampproject.org">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://ajax.googleapis.com">
+	<link rel="preconnect" href="https://adservice.google.com">
+	<link rel="preconnect" href="https://www.googletagservices.com">
+	<link rel="preconnect" href="https://www.googletagmanager.com">
+	<link rel="preconnect" href="https://www.google.com">
+	<link rel="preconnect" href="https://www.google-analytics.com">
+	<link rel="preconnect" href="https://pagead2.googlesyndication.com">
+
+	<link rel="preconnect" href="https://codeproject.freetls.fastly.net">
+
+
+	<link rel="preload" href="https://codeproject.freetls.fastly.net/App_Themes/CodeProject/Img/logo250x135.gif" as="image">
+
+
+	<link rel="preload" href="/App_Themes/CodeProject/Img/logo135-bg.gif" as="image">
+	<link rel="preload" href="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" as="script" type="text/javascript" >
+
+<title>CodeProject - For those who code</title><!-- inlined file /App_Themes/CodeProject/Css/homepage.critical.min.css. Minimized in Release. -->
+<style type='text/css'>
+/*! CSS Used from: /App_Themes/CodeProject/Css/Main.css?dt=2.8.20210329.2 */
+.theme1-background{background-color:#f90}div,span,iframe,a,img,form,label,table,tbody,tr,td,li,ul{margin:0;padding:0;border:0}body,p,h2,h3,li,tr,td{font-family:"Segoe UI",Arial,Sans-Serif;font-size:14px;line-height:1.4;color:#111}body{margin:0}h3{font-weight:bold}h2{margin:20px 0 11px;padding:0;padding-bottom:10px;color:#333}h3{color:#f90}h2{font-size:29px;font-weight:200}h3{font-size:19px;font-weight:normal}table{background-color:Transparent}img{-ms-interpolation-mode:bicubic}a{text-decoration:none;color:#005782}a:visited{color:#800080}a:active{text-decoration:underline}a:hover{text-decoration:underline}a:focus{outline:none !important}img:focus{outline:none !important}a:not([href]){color:inherit;text-decoration:none}::selection{background-color:#f90;color:#fff;text-shadow:none}::-moz-selection{background-color:#f90;color:#fff;text-shadow:none}input[type="email"]{border:1px solid #d7d7d7;font-size:14px;padding:5px}input[type="email"]:focus{border:1px solid #a0acbf}input[type=radio]{border:none}.button{color:#fff;background-color:#e08900;border:1px solid #ccc;text-decoration:none !important;white-space:nowrap;font-size:100%;padding:4px;cursor:pointer;border-radius:3px;-webkit-border-radius:3px;-moz-border-radius:3px}.small-text{font-size:12px !important}.hidden{visibility:hidden}.invisible{display:none}.subdue{color:#808080}.bold{font-weight:bold}.align-left{text-align:left !important}.align-right{text-align:right !important}.align-center{text-align:center}.align-top{vertical-align:top}.float-right{float:right}.float-left{float:left}.extended{width:100%;box-sizing:border-box}.padded-top{padding-top:20px !important}.padded-bottom{padding-bottom:20px !important}.tight{margin:0 !important;padding:0 !important}ul{padding-left:40px;margin:10px 0}.trace{padding:20px;background-color:#eee;color:#333;border:1px solid #f00;font-size:11px}.divider-dark{border-style:none;color:#333;background-color:#333;height:1px;padding:0;margin:0}input[type="button"],input[type="submit"]{-webkit-appearance:none;border-radius:0}@media print{.ui-tabs-nav{display:none}}.ui-tabs-nav{list-style:none;margin:0;padding:0 0 0 3px;background-color:#fff;border:none}.ui-tabs-nav:after{display:block;clear:both;content:" "}.ui-tabs-nav li{display:inline;margin:0 0 0 2px;font-weight:bold;border:none}.ui-tabs-nav a,.ui-tabs-nav a span{float:left;font-weight:bold}.ui-tabs-nav a{padding-left:0;text-decoration:none;white-space:nowrap;outline:none}.ui-tabs-nav a span{margin-bottom:0;font-weight:normal;padding:5px 7px;color:#808080;background-color:#fff8df}.ui-tabs-nav a:link,.ui-tabs-nav a:visited{color:#333}.ui-tabs-nav .ui-tabs-active a span,.ui-tabs-nav a:hover span{background-color:#f90;color:#fff;text-decoration:none}.ui-tabs-nav .ui-tabs-active a:link,.ui-tabs-nav .ui-tabs-active a:visited{cursor:text}.ui-tabs-nav a:hover,.ui-tabs-nav a:focus,.ui-tabs-nav a:active{cursor:pointer}.ui-tabs-panel{display:block;clear:both;border:1px solid #f2f2f2 !important;padding:10px;background:#fff}div.pagelog{border:0 !important;padding:0 !important}div.pagelog.slow{background-color:#ff0;color:#f00 !important}div.pagelog>span{display:inline-block}div.pagelog>span.timestamp{width:60px;padding-right:5px;text-align:right}div.pagelog>span.timestamp .partial{font-size:70%;vertical-align:top}div.pagelog>span.duration{width:60px;text-align:right;padding:0 10px 0 5px}div.pagelog>span.calldata{padding-left:10px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:inline-block}.container-content{background-color:#fff;position:relative;zoom:1;padding:0 9px;cursor:default}.container-content-wrap{margin:auto;max-width:1056px}.container-main{zoom:1;padding:0 0}.row{zoom:1;overflow:hidden}.flex-container{display:-webkit-box !important;display:-moz-box !important;display:-ms-flexbox !important;display:-webkit-flex !important;display:flex !important}.flex-extend{justify-content:space-between}.flex-item{-webkit-box-flex:1 !important;-moz-box-flex:1 !important;-webkit-flex:1 !important;-ms-flex:1 !important;flex:1 !important}.hover-container{display:block;position:relative}.clearfix:after,.container:after{display:block;content:'.';visibility:hidden;height:0;clear:both}.clearfix,.container{display:inline-block;display:block}.access-link,.access-link img{position:absolute;top:0;left:0;width:1px;height:1px;z-index:101;border-style:none;margin-top:-1px;overflow:hidden}.site-top-menu{white-space:nowrap;position:absolute;z-index:101;width:100% !important}.site-top-menu .main-content{width:100% !important}.site-top-menu .main-content .memberbar{margin-left:90px;margin-right:10px}.site-top-menu.fixed .main-content{margin:auto;max-width:1056px}.site-header{background-image:url('/App_Themes/CodeProject/Img/logo135-bg.gif');white-space:nowrap;overflow:hidden}.site-header .main-content{position:relative;overflow:hidden;white-space:nowrap}.site-header .logo{display:inline-block}.site-header .promo{display:inline-block;position:absolute;top:33px;right:0}.site-header.fixed .main-content{margin:auto;max-width:1056px}@media(max-width:1000px){.site-header .promo{left:250px}}.sub-headerbar{padding-right:9px;position:relative;margin:auto;max-width:1044px}.sub-headerbar-divider{margin-left:10px;height:1px;border-bottom:1px solid #ccc;position:absolute;bottom:2px;left:0;right:9px}.memberbar{height:25px;padding-top:10px;color:#999;font-size:12px}.memberbar a{color:#808080;font-size:12px}div.navbar{white-space:nowrap}.navmenu{background:#fff;color:#4d4d4d;padding:0;margin:0;list-style:none;height:25px}.navmenu ul,.navmenu li{margin:0;padding:0}.navmenu .has-submenu{position:absolute;right:5px;padding-left:10px}.navmenu>li:hover>a,.navmenu>li>a:active{border:1px solid #ccc}.navmenu ul{border:1px solid #ccc;border-bottom-color:#fff}.navmenu>li{margin:0 11px 2px 2px}.navmenu>li:active,.navmenu>li:active>a,.navmenu>li:hover,.navmenu>li>a:active{background:#fff !important;color:#4d4d4d !important}.navmenu>li>a{padding:2px 7px 6px 7px;border:1px solid transparent;font-weight:bold}.navmenu a{display:block;float:left;color:#666;background:#fff;font-size:16px;padding:0 9px;text-decoration:none;white-space:nowrap}.navmenu a.fly{white-space:nowrap}.navmenu ul{background:#fff;position:absolute;left:-9999px;top:-9999px;list-style:none}.navmenu li{float:left;color:#4d4d4d}.navmenu li.last{height:9px}.navmenu li a:active,.navmenu li a:hover{color:#fff;background-color:#f90}.navmenu li>a:active,.navmenu li:hover,.navmenu li:hover>a{position:relative;color:#fff;background-color:#f90}.navmenu li.openable:hover ul{left:0;top:30px;z-index:500}.navmenu li.openable:hover li.openable:active>ul,.navmenu li.openable:hover li.openable:hover>ul{left:-1px;margin-left:100%;top:-1px;z-index:500}.navmenu li.openable:hover>ul ul{position:absolute;left:-9999px;top:-9999px;width:auto}.navmenu li li:hover ul.taxonomy{left:100%;margin-left:-1px;top:-1px}.navmenu li ul{border-bottom:5px solid #f90}.navmenu li li{float:none}.navmenu li li:active>a.fly,.navmenu li li:hover>a.fly{color:#fff;background-color:#f90}.navmenu li li a{float:none;font-size:13px;font-weight:normal}.navmenu li li a.fly{color:#4d4d4d;background-color:#fff;padding:2px 20px}.navmenu li li a.break{margin-bottom:15px}.navmenu li li a.highlight1,.navmenu li li a.highlight1:active,.navmenu li li a.highlight1:hover{background-color:#090}.navmenu li li a.highlight2,.navmenu li li a.highlight2:active,.navmenu li li a.highlight2:hover{background-color:#f90}.navmenu li li a.highlight3,.navmenu li li a.highlight3:active,.navmenu li li a.highlight3:hover{background-color:#000}.navmenu li li a.highlight1,.navmenu li li a.highlight2,.navmenu li li a.highlight3{color:#fff;font-size:15px;margin:5px 0;padding:9px 20px}.site-footer{display:-webkit-box !important;display:-moz-box !important;display:-ms-flexbox !important;display:-webkit-flex !important;display:flex !important;padding-top:5px;width:100%;font-size:11px;color:#999}.site-footer .align-left,.site-footer .align-center,.site-footer .align-right{-webkit-box-flex:1 !important;-moz-box-flex:1 !important;-webkit-flex:1 !important;-ms-flex:1 !important;flex:1 !important}.site-footer .align-left{flex:1 0 100px}.site-footer .align-center{flex:0 1 0%;white-space:nowrap}.site-footer .align-right{flex:1 0 100px}.site-footer .page-width .active{border-bottom:2px solid #f90}.action-tiles td{padding:5px 0 25px 0}.homepage h2{font-size:30px;font-weight:200;margin:0;padding:0;padding-bottom:10px;color:#333}.homepage .news .signup-box .heading{font-size:28px;font-weight:300}.homepage .community.heading img{display:none}.homepage .content-list{padding-bottom:10px}.homepage .content-list .title{font-size:20px;line-height:125%;font-weight:normal}.homepage .content-list .title a{color:#005782}.homepage .content-list .title a:hover{color:#069}.homepage .content-list .thumbnail{width:100px;float:left}.homepage .content-list .thumbnail img{width:100px;height:80px}.homepage .message-list{padding-bottom:10px;font-size:14px !important}.homepage .message-list .title{font-size:14px !important;line-height:125%;font-weight:normal}.homepage .message-list .title a{color:#005782}.homepage .content-list-item{margin:2px 0 10px}.homepage .content-list-item .entry{margin:2px 0 4px}.homepage .content-list-item .title{padding:3px 0}.homepage .content-list-item div.text{border-left:110px solid transparent}.homepage div.site-filter{margin-bottom:12px}.homepage div.site-filter h3{margin:0 0 7px 0}.homepage .viewer-info{width:80%;text-align:center;margin-bottom:30px}.homepage .viewer-info .ui-tabs-nav .ui-tabs-active a span{color:#000;background-color:#fff}.homepage .viewer-info .ui-tabs-nav a span{color:#ccc;background-color:#fff}.homepage-news{width:315px}.homepage-news .message-list-item{max-width:300px}.homepage-content{padding-right:31px}.collapse-menu{box-sizing:border-box;padding:0;margin:0;border:0;width:100%;position:relative;display:flex}.collapse-menu .menu-item{margin:0 10px 0 0;white-space:nowrap;display:none}.collapse-menu .menu-item:first-child{display:inline-flex}.collapse-menu .menu-item a,.collapse-menu .menu-anchor{text-decoration:none;padding:3px 10px;font-weight:bold;text-align:center;min-width:50px;border:1px #ccc solid}.collapse-menu .menu-anchor{min-width:0 !important}.collapse-menu .menu-item:hover a,.collapse-menu .menu-item.selected,.collapse-menu .menu-item.selected a{background-color:#f90;color:#fff}.collapse-menu .collapse-overflow{display:inline-block;position:relative}.collapse-menu .collapse-overflow .collapse-overflow-menu{display:none;position:absolute;white-space:nowrap;z-index:10000;padding:1px 0;border:1px #f90 solid;background-color:#fff}.collapse-menu .collapse-overflow .collapse-overflow-menu .menu-item{display:block;margin:0}.collapse-menu .collapse-overflow .collapse-overflow-menu .menu-item a{display:block;text-align:left;border:0;line-height:1.6em}.collapse-menu .collapse-overflow:hover .collapse-overflow-menu{display:block;right:11px}@media screen and (-webkit-min-device-pixel-ratio:0){.collapse-menu .menu-item{display:inline-block}}.searchbar{padding:0}.searchbar .search{margin-bottom:4px;padding:2px 5px 0;border:1px solid #ccc}.searchbar .search.subdue{color:#ccc}.searchbar input.search{width:190px;border:none;font-size:11px;padding:4px 2px}.searchbar .search-advanced{padding:8px;width:203px;z-index:1000;background-color:#fff;border:solid 1px #ccc;position:absolute;top:-4px;right:0}.search td{background-color:#fff}#adbp-tester{display:none}.msg-728x90{width:728px;height:90px;overflow:hidden}.msg-300x250{width:300px;height:250px;overflow:hidden}.content-list{margin-bottom:17px}.content-list .count{font-weight:bold;font-size:14px;color:#f90;padding:3px;text-align:center}.content-list .heading{font-size:30px;font-weight:200;padding-bottom:10px;color:#333}.content-list-item{margin:10px 0}.content-list-item .thumbnail img{vertical-align:bottom;padding-right:3px}.content-list-item .entry{font-size:12px;color:#f90;line-height:20px;margin:0 0}.content-list-item .title{font-size:14px;font-weight:bold;padding:0 0}.content-list-item .title a{color:#005782}.content-list-item .title a:visited{color:#800080}.content-list-item .description{font-size:14px;color:#111}.content-list-item .author,.content-list-item .author a{font-size:11px;font-weight:bold;color:#f90 !important}.content-list-item .tags{margin:0 0 0 -12px}.content-list-item .read-later{padding:0 3px 2px 3px;font-size:10px;display:inline-block;vertical-align:bottom;height:12px;margin:0 3px 2px 0;line-height:12px;cursor:pointer;background-color:#4a92b79e;color:#fff}.content-list-item .read-later:hover{background-color:#4a92b7}.content-list-item .thumbnail{width:100px;float:left}.content-list-item .thumbnail img{width:100px;height:80px}.content-list-item div.text{border-left:110px solid transparent}.category-selector{position:relative;left:0;width:100%}.tags{line-height:190%}.tags.horizontal .t{display:inline-block}.tags .t{background:none repeat scroll 0 0 transparent;border:1px solid transparent;border-radius:12px 0 0 12px;line-height:1.4;padding:0 2px 0 4px;position:relative;text-decoration:none;margin:2px 0 4px 0;white-space:nowrap}.tags .t .follow{opacity:.3;margin-bottom:-1px}.tags .t .follow:hover{opacity:1}.tags .t:hover{background-color:#fff8ba !important;border:1px solid #e5dc8a;text-decoration:none}.tags .t a{color:#666;display:inline-block;margin-right:3px;padding-left:5px;text-overflow:ellipsis}.container-breadcrumb{font-size:12px;margin-top:7px;color:#808080;margin:12px 0 35px}.speech-bubble-container-up,.speech-bubble-container-up-right{position:relative}.speech-bubble-up,.speech-bubble-up-right{padding:.6em;border:1px solid #ccc;background-color:#fff !important;margin:15px;text-decoration:none;font-weight:normal;text-align:left;white-space:normal;color:#333;font-size:11px}.tooltip .speech-bubble-up,.tooltip .speech-bubble-up-right{-moz-box-shadow:4px 4px 16px 1px rgba(0,0,0,.25);-webkit-box-shadow:4px 4px 16px 1px rgba(0,0,0,.25);box-shadow:4px 4px 16px 1px rgba(0,0,0,.25)}.speech-bubble-pointer-up,.speech-bubble-pointer-up-right,.speech-bubble-pointer-up-inner,.speech-bubble-pointer-up-right-inner{width:0;height:0;border-top-width:0;background:none}.speech-bubble-pointer-up,.speech-bubble-pointer-up-right{border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:1px solid #ccc;border-bottom-width:14px;margin-left:35px;position:absolute;top:-12px;_display:none}.speech-bubble-pointer-up-inner,.speech-bubble-pointer-up-right-inner{border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:12px solid #fff;margin-left:-5px;margin-bottom:-16px;padding-top:4px;position:absolute;_display:none}.speech-bubble-container-up-right .speech-bubble-pointer-up-right{margin-left:0;margin-right:0;right:35px}.tooltip{position:relative;text-decoration:none}.tooltip .speech-bubble-container-up,.tooltip .speech-bubble-container-up-right,.tooltip .tooltip-flyout{display:none;opacity:0;-webkit-transition:opacity .2s linear 0ms;-moz-transition:opacity .2s linear 0ms;-o-transition:opacity .2s linear 0ms;transition:opacity .2s linear 0ms}.tooltip:hover .speech-bubble-container-up,.tooltip:active .speech-bubble-container-up,.tooltip:hover .speech-bubble-container-up-right,.tooltip:active .speech-bubble-container-up-right,.tooltip:hover .tooltip-flyout,.tooltip:active .tooltip-flyout{display:block;z-index:16777271;opacity:1;-webkit-transition:opacity .2s linear 0ms;-moz-transition:opacity .2s linear 0ms;-o-transition:opacity .2s linear 0ms;transition:opacity .2s linear 0ms}.tooltip:hover .speech-bubble-container-up,.tooltip:active .speech-bubble-container-up{left:-35px}.tooltip:hover .speech-bubble-container-up-right,.tooltip:active .speech-bubble-container-up-right{right:-25px}.tooltip:hover .speech-bubble-container-up,.tooltip:active .speech-bubble-container-up,.tooltip:hover .speech-bubble-container-up-right,.tooltip:active .speech-bubble-container-up-right{text-decoration:none !important;position:absolute;width:150px;color:#000 !important;cursor:text}.tooltip:hover .tooltip-flyout,.tooltip:active .tooltip-flyout,.tooltip:hover .speech-bubble-container-up-right .speech-bubble-pointer-up-right,.tooltip:active .speech-bubble-container-up-right .speech-bubble-pointer-up-right,.tooltip:hover .speech-bubble-container-up .speech-bubble-pointer-up,.tooltip:active .speech-bubble-container-up .speech-bubble-pointer-up{top:1px}.tooltip-flyout{position:relative;border:1px solid #ccc;color:#666;background-color:#fff;margin:15px;z-index:2147483646;white-space:normal;font-weight:normal;text-align:left;cursor:text;width:175px;-moz-box-shadow:4px 4px 16px 1px rgba(0,0,0,.25);-webkit-box-shadow:4px 4px 16px 1px rgba(0,0,0,.25);box-shadow:4px 4px 16px 1px rgba(0,0,0,.25)}.tooltip:hover .tooltip-flyout,.tooltip:active .tooltip-flyout{position:absolute;left:-16px;top:0;display:block}.bottom-promo{height:90px;margin-top:10px;overflow:hidden}.bottom-promo .msg-728x90{width:728px;margin:0 auto}.msg-728x90{overflow:hidden;position:relative;height:90px;min-width:728px}body .msg-728x90{*float:right}body .bottom-promo .msg-728x90{*float:none}body .site-filter{*display:none}.message-list .count{font-weight:bold;font-size:14px;color:#f90;padding:3px;text-align:center}.message-list .message-list-item{padding:3px;overflow:hidden}.content a{color:#005782}.member-signin{font-size:12px}.member-signin input[type="email"],.member-signin input[type="password"],.member-signin input[type="button"],.member-signin input[type="submit"]{border:1px solid #ccc;padding:4px;width:190px;margin-bottom:10px}.member-signin .create,.member-signin .signin{margin:15px 2px 10px;text-align:center;width:94px !important;cursor:pointer}.member-signin .create{background-color:#98ca47;color:#fff;font-weight:bold}.member-signin .signin{background-color:#f90;color:#fff}.member-signin .oauth{display:inline;padding:10px 1px 4px 0}.member-signin .divider-dark{margin:20px 0 13px;color:#ccc;background-color:#ccc}.member-signin .forgot{padding:0}.member-signin a.forgot{color:#808080}.member-signin .forgot:hover{color:#808080;background-color:#fff}.member-signin.tooltip>span{border:1px solid transparent;padding:2px 6px 4px 6px;z-index:503}.member-signin.tooltip:hover>span{border:1px solid #ccc;border-bottom:none;position:relative;background-color:#fff}.member-signin.tooltip:hover .tooltip-flyout,.member-signin.tooltip:active .tooltip-flyout{z-index:502 !important;opacity:1;-webkit-transition:opacity .1s linear 0ms;-moz-transition:opacity .1s linear 0ms;-o-transition:opacity .1s linear 0ms;transition:opacity .1s linear 0ms}.member-signin.tooltip .tooltip-flyout{border:1px solid #ccc;border-bottom:5px solid #f90;padding:10px;width:200px;position:absolute;top:3px !important;left:-163px !important;background-color:#fff}.news .signup-box{background-color:#f9f9f9;background:-webkit-linear-gradient(left top,#fff,#f9f9f9);background:-o-linear-gradient(bottom right,#fff,#f9f9f9);background:-moz-linear-gradient(bottom right,#fff,#f9f9f9);background:linear-gradient(to bottom right,#fff,#f9f9f9);width:340px}.news .signup-box .heading{font-size:22px}.survey .header{font-size:16px;font-weight:bold;padding:2px 0}.survey .content{font-size:14px;padding-top:5px;overflow:hidden;text-overflow:ellipsis}.survey .description{font-size:14px;color:#808080;font-weight:normal;margin-bottom:10px}.survey.brief .description{margin-bottom:5px;padding-top:5px}.survey .vote-bar{padding:2px;padding-left:0;font-weight:bold;color:#808080;font-size:16px;background-color:1px solid #f2f2f2;margin:0;margin-top:5px}.survey .question{width:600px;padding:10px}.survey .question td{padding:5px 0;font-size:13px;vertical-align:top}.survey.brief .heading{font-size:30px;font-weight:200;padding-bottom:10px;color:#333}.survey.brief .question{width:90%;padding:0}.survey.brief .question input{max-width:150px}.survey.brief .button{background-color:#f2f2f2;border:1px solid #ccc;padding:4px;color:#333}.survey.brief .button:hover{background-color:#ccc}.timeline-heading{margin:20px 0 7px 0;position:relative}.timeline-heading:before{content:'';position:absolute;height:1px;background:#ccc;left:0;right:0;top:34px}.timeline-heading h2{font-size:25px;background-color:#fff;width:100%}.timeline button.load{float:right;border:none;outline:none;background-color:#fff;cursor:pointer;color:#999;font-size:12px}.timeline button.load img{vertical-align:top;visibility:hidden}.timeline .message-list-item{font-size:12px}.timeline .message-list-item a{font-size:14px !important}.timeline .message-list-item .count{width:9%;float:left;display:inline-block;padding:0}.timeline .message-list-item .title{display:inline-block;float:right;width:91%}.timeline .content-list-item{margin:20px 0}.timeline .content-list-item .thumbnail img{width:auto;height:auto;max-width:80px;max-height:80px}.timeline .content-list-item .entry{font-size:11px;font-weight:normal;color:#999}.timeline .content-list-item .title{padding:0 0;font-size:17px;line-height:125%;font-weight:normal}.timeline .content-list-item .title a{color:#005782}.timeline .content-list-item .description{font-size:14px;color:#333}.timeline .content-list-item .text{min-height:100px;word-break:break-word}.timeline .content-list-item.medium{margin:0 5px 14px 0}.timeline .content-list-item.medium .title{padding:0;font-size:17px !important;line-height:125%;font-weight:500}.timeline .content-list-item.medium .thumbnail img{max-width:100px;max-height:66px}.timeline .content-list-item.medium .description{display:block}.timeline .content-list-item.medium .text{min-height:40px !important;margin-right:15px;max-height:80px;overflow:hidden;border-left-width:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;text-overflow:ellipsis;text-overflow:-o-ellipsis-lastline}.timeline .content-list-item.medium .tags{line-height:1em;clear:both;margin-top:5px}.timeline .content-list-item.medium .tags .t{line-height:1em;padding:0 2px;margin:1px 0 0 0;font-size:12px}.timeline .content-list-item.medium .tags .t img.follow{cursor:pointer}@media(min-width:1024px){.desktop-only{display:inherit}.tablet-only{display:none}.mobile-only{display:none}.desktop-only.tablet-only{display:inherit !important}}@media(max-width:756px){.survey .question{width:90%}}@media(min-width:769px) and (max-width:934px){.homepage .action-tiles td{width:245px !important}.homepage .action-tiles img{width:245px;height:51px}}@media(max-width:768px){.homepage .action-tiles{display:none}}@media(max-width:500px){.homepage .timeline table tr{display:block;margin-bottom:.625em}.homepage .timeline table td{display:block;width:100%}.homepage .timeline table td:last-child{border-bottom:0}}@media(min-width:769px) and (max-width:1023px){.homepage .content-list-item .thumbnail{display:none}.homepage .content-list-item div.text{margin:0;border-left:0}}@media(min-width:769px){.tablet-only,.mobile-only{display:none}.tablet-only.desktop-only{display:inherit !important}}@media(min-width:576px) and (max-width:768px){.desktop-only{display:none}.tablet-only{display:inherit}.mobile-only{display:none}.desktop-only.tablet-only{display:inherit !important}.navmenu>li{margin:0 4px !important}.homepage .content-list-item .thumbnail{display:none}.homepage .content-list-item .thumbnail img{width:50px !important;height:auto !important;padding-top:5px;margin:0 -10px}.homepage .content-list-item div.text{margin:0;border-left:0}.site-top-menu{position:relative !important}.site-top-menu .memberbar,.site-top-menu .memberbar a{height:auto;margin-bottom:5px}.site-top-menu .memberbar{padding:0 5px !important;margin:0 !important;line-height:25px}.site-top-menu .member-signin.tooltip>span{background:none}}@media(max-width:575px){.desktop-only{display:none !important}.tablet-only{display:none !important}.mobile-only{display:inherit !important}img{max-width:100%;height:auto}.navmenu>li{margin:0 4px !important}div.navbar{padding:5px 0}.container-breadcrumb{display:none}.site-top-menu{position:relative !important}.site-top-menu .memberbar,.site-top-menu .memberbar a{height:auto;margin-bottom:5px}.site-top-menu .memberbar{padding:0 5px !important;margin:0 !important;line-height:25px}.site-top-menu .member-signin.tooltip>span{background:none}.site-header{margin-top:-22px !important;overflow:unset;height:132px}.site-header .main-content{position:absolute;left:0}.homepage-news{display:none}.homepage-content{padding-right:0}.homepage .action-tiles{display:none}.homepage .homepage-news{display:none}.homepage .homepage-content{margin-right:0;padding-right:0}.homepage .content-list-item{margin-bottom:25px}.homepage .content-list-item .entry{margin:0}.homepage .content-list-item .tags{display:none}.homepage .content-list-item .thumbnail{display:none}.homepage .content-list-item .thumbnail img{width:10px !important;height:8px !important;padding-top:5px;margin:0 -10px}.homepage .content-list-item div.text{margin:0;border-left:0}.searchbar .search{width:100% !important}.memberbar .create,.memberbar .signin{width:90px !important}.memberbar .tooltip-flyout{top:6px !important}.msg-728x90{display:none}.msg-300x250{display:none}}@media print{body,p,h2,h3,li,tr,td{font-family:"Segoe UI",Arial,Sans-Serif;font-size:12px;line-height:1.4;color:#111}h2{font-size:27px;font-weight:200}h3{font-size:19px;font-weight:normal}}.clearfix{*zoom:1}.clearfix:after{clear:both}.clearfix:before,.clearfix:after{content:" ";display:table}.cc-window{opacity:1;background-color:#f90}.cc-animate.cc-revoke.cc-bottom{transform:translateY(2em)}.cc-revoke:hover{transform:translateY(0)}.cc-window,.cc-revoke{position:fixed;overflow:hidden;box-sizing:border-box;font-family:"Segoe UI",Arial,Sans-Serif;font-size:13px;line-height:1.5em;display:flex;flex-wrap:nowrap;z-index:9999}.cc-window.cc-banner{padding:.7em 1.8em;width:100%;flex-direction:row}.cc-revoke{padding:.5em}.cc-revoke:hover{text-decoration:underline}.cc-btn,.cc-link,.cc-revoke{cursor:pointer}.cc-link{opacity:.8;display:inline-block;padding:.2em;text-decoration:underline}.cc-link:hover{opacity:1}.cc-link:active,.cc-link:visited{color:initial}.cc-btn{display:block;padding:.4em .8em;font-size:.9em;font-weight:bold;border-width:2px;border-style:solid;text-align:center;white-space:nowrap}.cc-banner .cc-btn:last-child{min-width:110px;margin-left:10px}.cc-highlight .cc-btn:first-child{background-color:transparent;border-color:transparent}.cc-highlight .cc-btn:first-child:hover,.cc-highlight .cc-btn:first-child:focus{background-color:transparent;text-decoration:underline}.cc-revoke.cc-bottom{bottom:0;left:3em;border-top-left-radius:.5em;border-top-right-radius:.5em}.cc-bottom{bottom:1em}.cc-window.cc-banner{align-items:center}.cc-banner.cc-bottom{left:0;right:0;bottom:0}.cc-banner .cc-message{flex:1}.cc-compliance{display:flex;align-items:center;align-content:space-between}.cc-compliance>.cc-btn{flex:1}.cc-btn+.cc-btn{margin-left:.5em}@media print{.cc-window,.cc-revoke{display:none}}@media screen and (max-width:900px){.cc-btn{white-space:normal}}@media screen and (max-width:414px) and (orientation:portrait),screen and (max-width:736px) and (orientation:landscape){.cc-window.cc-bottom{bottom:0}.cc-window.cc-banner{left:0;right:0}.cc-window.cc-banner{flex-direction:column}.cc-window.cc-banner .cc-compliance{flex:1}.cc-window .cc-message{margin-bottom:1em}.cc-window.cc-banner{align-items:unset}}
+/*! CSS Used from: Embedded */
+.cc-color-override--316233370.cc-window{color:#000;background-color:#f90}.cc-color-override--316233370.cc-revoke{color:#000;background-color:#f90}.cc-color-override--316233370 .cc-link,.cc-color-override--316233370 .cc-link:active,.cc-color-override--316233370 .cc-link:visited{color:#000}.cc-color-override--316233370 .cc-btn{color:#000;border-color:transparent;background-color:#f5d948}.cc-color-override--316233370 .cc-btn:hover,.cc-color-override--316233370 .cc-btn:focus{background-color:#ffff6e}.cc-color-override--316233370 .cc-highlight .cc-btn:first-child{color:#000}
+</style>
+<link rel="stylesheet" type="text/css" href="https://codeproject.freetls.fastly.net/App_Themes/CodeProject/Css/Main.min.css?dt=2.8.2022.02.10.1" media="none" onload="if(media!='all')media='all'">
+<noscript><link rel="stylesheet" type="text/css" href="https://codeproject.freetls.fastly.net/App_Themes/CodeProject/Css/Main.min.css?dt=2.8.2022.02.10.1"></noscript>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" defer ></script>
+<script type="text/javascript" src="https://codeproject.freetls.fastly.net/script/JS/standard.min.js?dt=2.8.2022.02.10.1" defer ></script>
+<script type="text/javascript" src="https://accounts.google.com/gsi/client" defer  async ></script>
+<script type="text/javascript" src="https://codeproject.freetls.fastly.net/script/JS/collapse-menu.min.js?dt=2.8.2022.02.10.1" defer ></script>
+<script type="text/javascript" src="https://codeproject.freetls.fastly.net/script/JS/jquery.cookie.min.js" defer ></script>
+<script type="text/javascript" src="https://codeproject.freetls.fastly.net/script/JS/jquery-ui-1.12.1.custom.min.js" defer ></script>
+<script type="text/javascript" src="https://codeproject.freetls.fastly.net/script/JS/flot-bundle.min.js?dt=2.8.2022.02.10.1" defer ></script>
+<script type="text/javascript" src="/a.min.js?v=1.3" defer ></script>
+
+<meta http-equiv="content-language" content="en-US">
+<meta charset="UTF-8">
+<meta name="Description" content="Free source code and tutorials for Software developers and Architects.; Updated: 15 Feb 2022">
+<meta name="Keywords" content="Free source code, tutorials">
+<meta name="Author" content="CodeProject">
+<meta name="Rating" content="General">
+<meta name="Revisit-After" content="1 days">
+<meta name="application-name" content="CodeProject">
+<meta name="google-translate-customization" content="d908bb7ce7aff658-4c2f3a504525c916-g629383f736781a8a-13">
+
+<link rel="dns-prefetch" href="//ajax.googleapis.com"> 
+<link rel="canonical" href="https://www.codeproject.com" />
+
+<link rel="alternate" type="application/rss+xml" title="CodeProject Latest articles - All Topics" href="https://www.codeproject.com/WebServices/ArticleRSS.aspx?cat=1" />
+<link rel="alternate" type="application/rss+xml" title="CodeProject Latest articles - Python" href="https://www.codeproject.com/WebServices/ArticleRSS.aspx?cat=34" />
+<link rel="alternate" type="application/rss+xml" title="CodeProject Lounge Postings" href="https://www.codeproject.com/webservices/LoungeRSS.aspx" />
+<meta name="robots" content="index, follow" />
+
+<link rel="search" type="application/opensearchdescription+xml" title="CodeProject" href="https://www.codeproject.com/info/OpenSearch.xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="apple-touch-icon" sizes="144x144" href="/favicon/apple-touch-icon.png"> 
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png"> 
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png"> 
+<link rel="manifest" href="/favicon/manifest.json"> 
+<link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#ff9900"><base target="_top" >
+
+
+<script type='text/javascript'>
+function defrm () { /* thanks twitter */
+    document.write = '';
+    window.top.location = window.self.location;
+    setTimeout(function() { document.body.innerHTML = ''; }, 0);
+    window.self.onload = function(evt) { document.body.innerHTML = ''; };
+}
+
+if (window.top !== window.self) {
+    try {
+        if (window.top.location.host) { /* will throw for all except chrome */ }
+        else { defrm(); /* chrome */ }
+    } catch (ex) { defrm(); /* everyone else */ }
+}
+
+// Specific case where a site is screwing with us.
+if (typeof(DemoUrl) !== 'undefined') {
+    document.write(unescape('%3Cme') + 'ta http' + '-equiv="re' + 'fresh con' +
+                           'tent="1;url=' + DemoUrl + unescape('"%3CE'));
+}
+</script>
+
+
+
+
+
+    <script async type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-YZNPNQ0F2S"></script>
+    <script type="text/javascript">
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-YZNPNQ0F2S' , {'user_id': '5853a8f0-f0cf-4346-a8f2-29ac4b4e1480'});
+    </script>
+</head>
+
+<body class="chrome chrome98" >
+
+	<div id="ctl00_OneTap_OneTap">
+    <div id="g_id_onload" 
+         data-client_id="857795997829.apps.googleusercontent.com"
+         data-login_uri="/script/Membership/OAuthLogOn.aspx?auth=Google">
+    </div>
+</div>
+
+
+
+<a class="access-link" href="#Main"><img alt="Click here to Skip to main content" src="https://codeproject.freetls.fastly.net/images/t.gif" /></a>
+
+    <div class="page-background">
+
+	
+	<div id="ctl00_STM" class="site-top-menu fixed">
+		<div class="main-content">
+			
+
+<div class="container memberbar clearfix flex-container flex-extend">
+
+	<div id="ctl00_MemberBar_GenInfo" class="flex-item align-left">15,199,527 members</div>
+
+	<div class="flex-item">
+		
+	</div>
+
+	<div class="flex-item align-right">
+
+		
+
+		
+
+		
+
+			<script type="text/javascript">//<!--
+			function doSubmit(secure)
+			{
+				if (secure)
+					document.signinForm.action = "https://www.codeproject.com/script/Membership/LogOn.aspx?rp=%2f"
+				else
+					document.signinForm.action = "https://www.codeproject.com/script/Membership/LogOn.aspx?rp=%2f"
+				document.signinForm.submit();
+				return true;
+			}//-->
+			</script>
+
+			<a name="SignUp"></a>
+			<span class="member-signin tooltip openable">
+				<span><a href="https://www.codeproject.com/script/Membership/LogOn.aspx?rp=%2f">Sign in</a>
+                    <img src="https://codeproject.freetls.fastly.net/App_Themes/CodeProject/Img/login32.png"
+                        width="16" height="16" style="vertical-align:middle;"/>
+				</span>
+
+				<div class="tooltip-flyout">
+					<form name="signinForm" id="signinForm" action="https://www.codeproject.com/script/Membership/LogOn.aspx?rp=%2f" method="post"
+						class="tight">
+
+						
+						<input id="FormName" name="FormName" value="MenuBarForm" type="hidden" />
+
+						<div>Email</div>
+						<div><input class="small-text" type="email" name="Email" id="Email" autocomplete="email" /></div>
+						<div>Password</div>
+						<div><input class="small-text" type="password" name="Password" id="Password" 
+							autocomplete="current-password" /></div>
+						<div class="action">
+                            <input id='joinBtn' type='button' class='create hidden' onclick='return Join();' value='Join' />
+                            <input type='hidden' name='fld_quicksign' value='true' />
+							<input type="submit" value="Sign in" class="signin" onclick="return doSubmit(false);" />
+						</div>
+
+						<div class="container">
+							
+							&nbsp;
+							<a id="ctl00_MemberBar_SendPassword" class="forgot float-right" href="/script/Membership/SendPassword.aspx?rp=/">Forgot your password?</a>
+						</div>
+					</form>
+
+					<hr class="divider-dark" />
+
+					Sign in with <a class="oauth" alt="Sign in using Github" title="Sign in using Github" href="/script/Membership/OAuthLogOn.aspx?auth=GitHub"><img src="/script/Membership/Images/octicons_github.png" style="vertical-align:middle;padding-right:3px;border:0;" /></a>
+<a class="oauth" alt="Sign in using Facebook" title="Sign in using Facebook" href="/script/Membership/OAuthLogOn.aspx?auth=Facebook"><img src="/script/Membership/Images/facebook.png" style="vertical-align:middle;padding-right:3px;border:0;" /></a>
+<a class="oauth" alt="Sign in using Google" title="Sign in using Google" href="/script/Membership/OAuthLogOn.aspx?auth=Google"><img src="/script/Membership/Images/google-plus.png" style="vertical-align:middle;padding-right:3px;border:0;" /></a>
+<a class="oauth" alt="Sign in using Microsoft" title="Sign in using Microsoft" href="/script/Membership/OAuthLogOn.aspx?auth=Microsoft"><img src="/script/Membership/Images/microsoft.png" style="vertical-align:middle;padding-right:3px;border:0;" /></a>
+
+				</div>
+            </span>
+		
+	</div>
+</div>
+		</div>
+	</div>
+
+	
+	<div id="ctl00_SH" class="site-header fixed">
+		<div class="main-content">
+			<div class="logo"><a href="/"><img id="ctl00_Logo" tabindex="1" title="CodeProject" src="https://codeproject.freetls.fastly.net/App_Themes/CodeProject/Img/logo250x135.gif" alt="Home" style="height:135px;width:250px;border-width:0px;" /></a></div>
+			<div class="promo"><div class="msg-728x90" data-format="728x90" data-type="ad" data-publisher="lqm.codeproject.site" data-zone="home"  data-country='US' data-tags='pos_top'><noscript><a href="https://pubads.g.doubleclick.net/gampad/jump?iu=/6839/lqm.codeproject.site/home&sz=728x90&c=25175"><img src="https://pubads.g.doubleclick.net/gampad/jump?iu=/6839/lqm.codeproject.site/home&sz=728x90&c=25175"  width="728px" height="90px" target="_blank"/></a></noscript></div></div>
+		</div>
+	</div>
+
+	
+	<div id="ctl00_TPR" class="sub-headerbar clearfix fixed">
+	<div class="float-right">
+		
+
+<div class="searchbar">
+
+<form method="get" action="/search.aspx?sbo=kw" name="Search" class="tight">
+
+
+<table border="0" cellspacing="0" cellpadding="0" class="search"><tr><td><input TabIndex="2" class="search " id="sb_tb" autocomplete="off" value="" name="q" /></td><td><input type="image" src="https://codeproject.freetls.fastly.net/images/search.gif" /></td></tr></table>
+
+<div class="hover-container">
+	<div id="SearchFilter" class="search-advanced popup small-text align-left">
+	<b>Search within:<br /></b>
+		
+		<input type="radio" id="sb_kw" name="sbo" value="kw" checked="checked"><label for="sb_kw">Articles</label><br>
+<input type="radio" id="sb_qa" name="sbo" value="qa"><label for="sb_qa">Quick Answers</label><br>
+<input type="radio" id="sb_fm" name="sbo" value="fm"><label for="sb_fm">Messages</label><br>
+
+
+		
+		
+
+		
+		
+	</div>
+</div>
+</form>
+
+</div>
+	</div>
+	<div class="float-left">
+		
+
+<div class="navbar clearfix">
+<ul class="navmenu openable">
+
+<li class="desktop-only"><a id="ctl00_TopNavBar_Home" href="https://www.codeproject.com">home</a>
+
+
+<li class="openable"><a id="ctl00_TopNavBar_Art" class="down" href="/script/Articles/Latest.aspx">articles</a>
+
+	<ul>
+		<li class="openable"><a id="ctl00_TopNavBar_ArtTopicList" class="fly" onmouseover="navBarMenu.ShowMap(this, &#39;ctl00_TopNavBar_MapFlyout&#39;);" href="/script/Content/SiteMap.aspx">Browse Topics<span class="has-submenu">&gt;</span></a><ul id="ctl00_TopNavBar_MapFlyout" class="taxonomy">
+			<li>
+				<div id="siteMap"></div>
+			</li>
+			</ul>
+		</li>
+		<li><a id="ctl00_TopNavBar_ArtLatestArts" class="fly" href="/script/Articles/Latest.aspx">Latest Articles</a></li>
+		<li><a id="ctl00_TopNavBar_ArtTop" class="fly" href="/script/Articles/TopArticles.aspx?ta_so=5">Top Articles</a></li>
+		<li><a id="ctl00_TopNavBar_ArtGuide" class="fly" href="/info/Submit.aspx">Posting/Update Guidelines</a></li>
+		<li><a id="ctl00_TopNavBar_ArtHelpForum" class="fly" href="/Forums/1641/Article-Writing">Article Help Forum</a></li>
+		<li><a id="ctl00_TopNavBar_ArtPostArticle" class="fly highlight1" href="/script/Articles/Submit.aspx">
+			<img src="https://codeproject.freetls.fastly.net/images/write13.png" width="13" height="13" /> Submit an article or tip
+			</a></li>
+        
+		<li><a id="ctl00_TopNavBar_ArtImportGitHub" class="fly highlight3" href="/script/Articles/ImportArticle.aspx">
+			<img src="https://codeproject.freetls.fastly.net/images/write13.png" width="13" height="13" /> Import GitHub Project
+			</a></li>
+        
+		<li><a id="ctl00_TopNavBar_ArtPostBlog" class="fly highlight2" href="/script/Articles/BlogFeed.aspx">
+			<img src="https://codeproject.freetls.fastly.net/images/write13.png" width="13" height="13" /> Import your Blog
+			</a></li>		
+        
+        <li class="last"></li>
+	</ul>
+
+</li>
+
+
+
+<li class="openable">
+<a id="ctl00_TopNavBar_Answers" href="/script/Answers/List.aspx?tab=active">
+    <span class="desktop-only tablet-only">quick answers</span><span class="mobile-only">Q&amp;A</span>
+</a>
+	<ul>
+		
+
+		<li><a id="ctl00_TopNavBar_QAAsk" class="fly highlight2" href="/Questions/ask.aspx"><img 
+			src="https://codeproject.freetls.fastly.net/images/write13.png" width="13" height="13" /> Ask a Question</a></li>
+
+		<li><a id="ctl00_TopNavBar_QAUnanswered" class="fly" href="/script/Answers/List.aspx?tab=unanswered">View Unanswered Questions</a></li>
+		<li><a id="ctl00_TopNavBar_QALatest" class="fly" href="/script/Answers/List.aspx?tab=active">View All Questions</a></li>
+        
+				<li><a id="ctl00_TopNavBar_QATR_ctl00_Tag" class="fly" href="/script/Answers/List.aspx?tab=active&amp;amp;alltags=true&amp;amp;tags=81" style="padding-left:30px">View C# questions</a></li>
+			
+				<li><a id="ctl00_TopNavBar_QATR_ctl01_Tag" class="fly" href="/script/Answers/List.aspx?tab=active&amp;amp;alltags=true&amp;amp;tags=78" style="padding-left:30px">View C++ questions</a></li>
+			
+				<li><a id="ctl00_TopNavBar_QATR_ctl02_Tag" class="fly" href="/script/Answers/List.aspx?tab=active&amp;amp;alltags=true&amp;amp;tags=87" style="padding-left:30px">View Javascript questions</a></li>
+			
+				<li><a id="ctl00_TopNavBar_QATR_ctl03_Tag" class="fly" href="/script/Answers/List.aspx?tab=active&amp;amp;alltags=true&amp;amp;tags=268" style="padding-left:30px">View Python questions</a></li>
+			
+				<li><a id="ctl00_TopNavBar_QATR_ctl04_Tag" class="fly" href="/script/Answers/List.aspx?tab=active&amp;amp;alltags=true&amp;amp;tags=91" style="padding-left:30px">View Java questions</a></li>
+			
+    
+		<li class="last"></li>
+	</ul>
+
+</li>
+
+
+
+<li class="openable"><a id="ctl00_TopNavBar_Forums" href="/script/Forums/List.aspx">
+        <span class="desktop-only tablet-only">discussions</span><span class="mobile-only">forums</span>
+</a>
+
+	<ul>
+		<li><a id="ctl00_TopNavBar_SenseAI" class="fly" href="/Feature/SenseAI-Discussions.aspx">CodeProject SenseAI</a></li>
+		<li><a id="ctl00_TopNavBar_MessageBoardsAll" class="fly" href="/script/Forums/List.aspx">All Message Boards...</a></li>
+		<li class="openable"><a class="fly" style="padding-left:30px" href="/Forums/1580997/Application-Lifecycle">Application Lifecycle<span class="has-submenu">&gt;</span></a>
+<ul class="openable"><li><a class="fly" href="/Forums/1533717/Running-a-Business">Running a Business</a></li>
+<li><a class="fly" href="/Forums/1533716/Sales-Marketing">Sales / Marketing</a></li>
+<li><a class="fly" href="/Forums/1651/Collaboration-Beta-Testing">Collaboration / Beta Testing</a></li>
+<li><a class="fly" href="/Forums/3304/Work-Issues">Work  Issues</a></li>
+</ul></li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/369270/Design-and-Architecture">Design and Architecture</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1969389/Artificial-Intelligence">Artificial Intelligence</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/12076/ASP-NET">ASP.NET</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1580226/JavaScript">JavaScript</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1969388/Internet-of-Things">Internet of Things</a>
+</li>
+<li class="openable"><a class="fly" style="padding-left:30px" href="/Forums/1647/C-Cplusplus-MFC">C / C++ / MFC<span class="has-submenu">&gt;</span></a>
+<ul class="openable"><li><a class="fly" href="/Forums/4486/ATL-WTL-STL">ATL /  WTL / STL</a></li>
+<li><a class="fly" href="/Forums/3785/Managed-Cplusplus-CLI">Managed C++/CLI</a></li>
+</ul></li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1649/Csharp">C#</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1627782/Free-Tools">Free Tools</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1827460/Objective-C-and-Swift">Objective-C and Swift</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1725/Database">Database</a>
+</li>
+<li class="openable"><a class="fly" style="padding-left:30px" href="/Forums/186301/Hardware-Devices">Hardware &amp; Devices<span class="has-submenu">&gt;</span></a>
+<ul class="openable"><li><a class="fly" href="/Forums/1644/System-Admin">System Admin</a></li>
+</ul></li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1606152/Hosting-and-Servers">Hosting and Servers</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1643/Java">Java</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1942421/Linux-Programming">Linux Programming</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1650/NET-Core-and-Framework">.NET (Core and Framework)</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1848626/Android">Android</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1876716/iOS">iOS</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/13695/Mobile">Mobile</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1004257/WPF">WPF</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1646/Visual-Basic">Visual Basic</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1640/Web-Development">Web Development</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/suggestions.aspx">Site Bugs / Suggestions</a>
+</li>
+<li><a class="fly" style="padding-left:30px" href="/Forums/1652005/Spam-and-Abuse-Watch">Spam and Abuse Watch</a>
+</li>
+
+		<li class="last"></li>
+	</ul>
+
+</li>
+
+<li class="openable"><a id="ctl00_TopNavBar_Features" href="/Feature/">
+      <span class="desktop-only tablet-only">features</span><span class="mobile-only">stuff</span>
+</a>
+
+	<ul>
+		<li><a id="ctl00_TopNavBar_Comps" class="fly" href="/script/Contests/CurrentCompetitions.aspx?cmpTpId=3&amp;amp;awsac=true">Competitions</a></li>
+        
+		<li><a id="ctl00_TopNavBar_Conferences" class="fly" href="/script/Conferences/List.aspx">Conferences</a></li>
+		
+		<li><a id="ctl00_TopNavBar_News" class="fly" href="/script/News/List.aspx">News</a></li>
+		<li><a id="ctl00_TopNavBar_Insider" class="fly" href="/Feature/Insider/">The Insider Newsletter</a></li>
+    	<li><a id="ctl00_TopNavBar_DailyBuild" class="fly" href="/Feature/DailyBuild">The Daily Build Newsletter</a></li>
+		<li><a id="ctl00_TopNavBar_Newsletters" class="fly" href="/script/Mailouts/Archive.aspx?mtpid=1">Newsletter archive</a></li>
+		<li><a id="ctl00_TopNavBar_Surveys" class="fly" href="/script/Surveys/List.aspx">Surveys</a></li>
+		<li><a id="ctl00_TopNavBar_Showcase" class="fly" href="/KB/showcase/">Product Showcase</a></li>
+        
+		<li><a id="ctl00_TopNavBar_Stuff" class="fly" href="/Info/Stuff.aspx">CodeProject Stuff</a></li>
+		<li class="last"></li>
+	</ul>
+
+</li>
+
+
+<li  class="openable"><a id="ctl00_TopNavBar_Lounge" href="/Lounge.aspx">
+            <span class="desktop-only tablet-only">community</span><span class="mobile-only">lounge</span>
+</a>
+
+	<ul>
+		<li><a id="ctl00_TopNavBar_WhosWho" class="fly" href="/script/Membership/Profiles.aspx">Who's Who</a></li>
+		<li><a id="ctl00_TopNavBar_MVPs" class="fly break" href="/script/Contests/Winners.aspx?obtid=1&amp;amp;cmpTpId=2&amp;amp;cid=0">Most Valuable Professionals</a></li>
+
+		<li><a id="ctl00_TopNavBar_LoungeLnk" class="fly highlight2" href="/Lounge.aspx">The Lounge  </a></li>
+		<li><a id="ctl00_TopNavBar_SiteBlog" class="fly break" href="/Members/CodeProject#_comments">The CodeProject Blog</a></li>
+
+		<li><a id="ctl00_TopNavBar_WhereAmILink" class="fly" href="/Forums/1939564/Where-I-am-Member-Photos">Where I Am: Member Photos</a></li>
+		<li><a id="ctl00_TopNavBar_InsiderLnk" class="fly" href="/Insider.aspx">The Insider News</a></li>
+		<li><a id="ctl00_TopNavBar_WeirdWonderful" class="fly" href="/Feature/WeirdAndWonderful.aspx">The Weird & The Wonderful</a></li>
+
+		<li class="last"></li>
+	</ul>
+
+</li>
+
+
+<li class="openable" style="margin-left:20px"><a id="ctl00_TopNavBar_Help" href="/KB/FAQs/">
+    <span class="desktop-only tablet-only">help</span><span class="mobile-only">?</span>
+</a>
+
+
+	<ul>
+		<li><a id="ctl00_TopNavBar_HelpWhatIs" class="fly" href="/info/guide.aspx">What is 'CodeProject'?</a></li>
+		<li><a id="ctl00_TopNavBar_HelpGeneral" class="fly break" href="/KB/FAQs/">General FAQ</a></li>
+		<li><a id="ctl00_TopNavBar_HelpPostQuestion" class="fly break highlight2" href="/Questions/ask.aspx">Ask a Question</a></li>
+		<li><a id="ctl00_TopNavBar_HelpBugs" class="fly" href="/suggestions.aspx">Bugs and Suggestions</a></li>
+		<li><a id="ctl00_TopNavBar_HelpArticles" class="fly" href="/Forums/1641/Article-Writing">Article Help Forum</a></li>
+		
+		
+		
+		
+		<li><a id="ctl00_TopNavBar_HelpAboutUs" class="fly" href="/info/about.aspx">About Us</a></li>
+		<li class="last"></li>
+	</ul>
+
+</li>
+
+</ul>
+
+</div>
+	</div>
+	<div class="sub-headerbar-divider"></div>
+	</div>
+	
+
+	<div id="C" class="container-content-wrap fixed"> 
+	<div class="container-content">
+
+		<div class="container-breadcrumb">
+		
+		</div>
+
+		
+		
+		
+
+		<div id="ctl00_ContentPane" class="container-main">
+
+            
+			<div style="min-height:600px">
+
+				<a name="Main"></a>
+
+                
+				
+
+				
+				
+
+                
+				
+
+<div class="homepage">
+
+<script type="application/ld+json">
+{
+   "@context": "http://schema.org",
+   "@type": "WebSite",
+   "url": "https://www.codeproject.com",
+   "potentialAction": {
+     "@type": "SearchAction",
+     "target": "https://www.codeproject.com/search.aspx?q={search_term}",
+     "query-input": "required name=search_term"
+   }
+}
+</script>
+
+ 
+    <table class="extended">
+	<tr class="action-tiles">
+	<td align="left" ><a href="/script/Articles/Submit.aspx"><img alt="post an article"
+        src="https://codeproject.freetls.fastly.net/images/post_an_article.png" width="300"
+        height="63" style="border:0;" /></a></td>
+	<td align="left" ><a href="/script/answers"><img alt="ask a question"
+        src="https://codeproject.freetls.fastly.net/images/ask_a_question.png"
+        width="300" height="63" style="border:0;" /></a></td>
+	<td align="left" ><a href="/search.aspx"><img alt="Search our articles"
+        src="https://codeproject.freetls.fastly.net/images/call-search.png"
+        width="300" height="63" style="border:0;"/></a></td>
+	</tr>
+    </table>
+
+
+<table class="extended">
+	<tr valign="top">
+	<td colspan="2" class="homepage-content">
+
+        
+
+		
+
+        <div id="ctl00_MC_SiteFilter" class="site-filter">
+            <h3>Filter articles, news and messages</h3>
+            <div class="category-selector collapse-menu" data-promoted-class="selected"><div class="menu-item selected"><a href="?cat=1" title="All Topics">All</a>
+</div>
+<div class="menu-item"><a href="?cat=34" title="Python">Python</a>
+</div>
+<div class="menu-item"><a href="?cat=31" title="Artificial Intelligence">Artificial Intelligence</a>
+</div>
+<div class="menu-item"><a href="?cat=26" title="Internet of Things">IoT</a>
+</div>
+<div class="menu-item"><a href="?cat=32" title="DevOps">DevOps</a>
+</div>
+<div class="menu-item"><a href="?cat=23" title="Web Development">Web</a>
+</div>
+<div class="menu-item"><a href="?cat=18" title="Mobile Developer">Mobile</a>
+</div>
+<div class="menu-item"><a href="?cat=24" title=".NET">.NET</a>
+</div>
+<div class="menu-item"><a href="?cat=10" title="Java Developer">Java</a>
+</div>
+<div class="menu-item"><a href="?cat=2" title="C++ Developer">C++</a>
+</div>
+<div class="menu-item"><a href="?cat=9" title="Database Developer">Database</a>
+</div>
+</div>
+        </div>
+
+        <div id="ctl00_MC_TopicHeading1" class="timeline-heading"><h2>Just Published</h2></div>
+        <div class="content-list">
+            
+
+<div class="timeline">
+    
+
+    <div id="ctl00_MC_Timeline1_TimelineContainer"></div>
+</div>
+		</div>
+
+        <div id="ctl00_MC_TopicHeading2" class="timeline-heading"><h2>Python</h2></div>
+        <div class="content-list">
+            
+
+<div class="timeline">
+    
+
+    <div id="ctl00_MC_Timeline2_TimelineContainer"></div>
+</div>
+		</div>
+        
+
+        <div id="ctl00_MC_TopicHeading3" class="timeline-heading"><h2>Artificial Intelligence</h2></div>
+        <div class="content-list">
+            
+
+<div class="timeline">
+    
+
+    <div id="ctl00_MC_Timeline3_TimelineContainer"></div>
+</div>
+		</div>
+        
+
+        <div id="ctl00_MC_TopicHeading4" class="timeline-heading"><h2>IoT</h2></div>
+        <div class="content-list">
+            
+
+<div class="timeline">
+    
+
+    <div id="ctl00_MC_Timeline4_TimelineContainer"></div>
+</div>
+		</div>
+        
+
+    </td>
+
+	<td class="align-top homepage-news">
+		
+
+<div id="ctl00_MC_MarketingStats_SessionGraph" class="viewer-info">
+    
+
+    <div id="viewer-info">
+        <ul>
+        <li><a href="#current"><span>Currrent Viewers</span></a></li>
+        <li><a href="#timeline"><span>Page Views</span></a></li>
+        </ul>
+        <div id="current" class="clearfix"><a name="current"></a>
+            <div class="align-center">
+                <div style="font-size: 20px;margin-top:-4px">Right Now</div>
+                <div id="SessionCount" style="font-size: 48px;font-weight:500;margin-top: -12px;">
+                    43,054</div>
+                <div style="font-size: 14px;margin:-8px 0 0px 0;">Active user sessions</div>
+            </div>
+        </div>
+        <div id="timeline" class="clearfix"><a name="timeline"></a>
+            <div style="width:90%;margin:0px auto">
+                <div>Content Views per minute</div>
+                <div class="subdue small-text"></div>
+
+                <div id="ctl00_MC_MarketingStats_PageViews_StatsGraph_ChartArea" class="flot" style="width:225px;height:145px;"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+            <div class="content-list timeline">
+                <h2 class="heading community"><img src="/images/community24.png" width="25"
+                    height="24">&nbsp;Questions</h2>
+
+                
+        
+        <div class="message-list">
+    
+        <div class="message-list-item">
+            <div id="ctl00_MC_FeatureQuestions_FeaturedRepeater_ctl01_AnswerCount" class="count" title="Answers">1</div>
+            <div class="title"><a id="ctl00_MC_FeatureQuestions_FeaturedRepeater_ctl01_Link" href="//www.codeproject.com/Questions/5325152/Access-a-number-of-controls-in-a-windows-form-usin">Access a number of controls in a windows form using a loop</a></div>
+        </div>
+	
+        <div class="message-list-item">
+            <div id="ctl00_MC_FeatureQuestions_FeaturedRepeater_ctl03_AnswerCount" class="count" title="Answers">1</div>
+            <div class="title"><a id="ctl00_MC_FeatureQuestions_FeaturedRepeater_ctl03_Link" href="//www.codeproject.com/Questions/5325136/European-number-format">European number format</a></div>
+        </div>
+	
+        <div class="message-list-item">
+            <div id="ctl00_MC_FeatureQuestions_FeaturedRepeater_ctl05_AnswerCount" class="count" title="Answers">1</div>
+            <div class="title"><a id="ctl00_MC_FeatureQuestions_FeaturedRepeater_ctl05_Link" href="//www.codeproject.com/Questions/5325133/How-can-I-find-out-that-which-font-will-be-used-wh">How can I find out that which font will be used when I type a letter in a ms word?</a></div>
+        </div>
+	
+        <div class="message-list-item">
+            <div id="ctl00_MC_FeatureQuestions_FeaturedRepeater_ctl07_AnswerCount" class="count" title="Answers">1</div>
+            <div class="title"><a id="ctl00_MC_FeatureQuestions_FeaturedRepeater_ctl07_Link" href="//www.codeproject.com/Questions/5325117/Convert-string-to-number-in-oracle">Convert string to number in oracle</a></div>
+        </div>
+	
+        <div class="message-list-item">
+            <div id="ctl00_MC_FeatureQuestions_FeaturedRepeater_ctl09_AnswerCount" class="count" title="Answers">1</div>
+            <div class="title"><a id="ctl00_MC_FeatureQuestions_FeaturedRepeater_ctl09_Link" href="//www.codeproject.com/Questions/5325109/How-to-retrive-fetch-value-from-following-json">How to retrive/fetch a value from JSON</a></div>
+        </div>
+	
+		</div>
+	
+
+
+            </div>
+
+            
+
+
+			<div class="padded-top align-center">
+				<div class="msg-300x250" data-format="300x250" data-type="ad" data-publisher="lqm.codeproject.site" data-zone="home"  data-country='US' data-loadOnView='true' ><noscript><a href="https://pubads.g.doubleclick.net/gampad/jump?iu=/6839/lqm.codeproject.site/home&sz=300x250&c=25175"><img src="https://pubads.g.doubleclick.net/gampad/jump?iu=/6839/lqm.codeproject.site/home&sz=300x250&c=25175"  width="300px" height="250px" target="_blank"/></a></noscript></div>
+			</div>
+
+			<div class="padded-top">
+				<a name="_poll"></a>
+				<form class="tight" method="post" action="/script/Surveys/Vote.aspx?srvid=2389" name="SurveyForm" onsubmit="return Submit();">
+<input type="hidden" name="ID" id="ID" value="2389">
+<input type="hidden" name="buttonPressed" id="buttonPressed" value="void" /><input type="hidden" name="answersResults" id="answersResults" value="" />
+<div class="survey brief">
+<div class="heading"><img src="/images/poll24.png" style="width:25px;height:24px"> Straw Poll</div><div class="header">
+AI can drive a car and write a novel. What's the value a software developer brings that AI can't?<div class="description">Are we slowly being replaced and haven't yet noticed, or will AI always be merely a tool that us Skilled Professionals wield to make a better world?</div>
+</div>
+<div class="content">
+<table class="question" cellpadding="0" cellspacing="0">
+<tr valign="top"><td width="16px"><input id="SE_4348_33131" name="SE_4348_33131" type="checkbox"></td><td><label for="SE_4348_33131">We developers understand humans, and so can cater to their illogical needs</label></td></tr>
+<tr valign="top"><td width="16px"><input id="SE_4348_33132" name="SE_4348_33132" type="checkbox"></td><td><label for="SE_4348_33132">AI can only mimic what's been done, but can't <i>truly</i> innovate</label></td></tr>
+<tr valign="top"><td width="16px"><input id="SE_4348_33133" name="SE_4348_33133" type="checkbox"></td><td><label for="SE_4348_33133">AI can never make something fun</label></td></tr>
+<tr valign="top"><td width="16px"><input id="SE_4348_33134" name="SE_4348_33134" type="checkbox"></td><td><label for="SE_4348_33134">AI are terrible at team building exercises</label></td></tr>
+<tr valign="top"><td width="16px"><input id="SE_4348_33135" name="SE_4348_33135" type="checkbox"></td><td><label for="SE_4348_33135">Us developers keep entire legions of QA testers employed. An AI can't do that.</label></td></tr>
+<tr valign="top"><td width="16px"><input id="SE_4348_33136" name="SE_4348_33136" type="checkbox"></td><td><label for="SE_4348_33136">An AI could never explain to its manager why it did something</label></td></tr>
+<tr valign="top"><td width="16px"><input id="SE_4348_33137" name="SE_4348_33137" type="checkbox"></td><td><label for="SE_4348_33137">AI systems are terrible at understanding what's <i>not</i> being said by your manager</label></td></tr>
+<tr valign="top"><td width="16px"><input id="SE_4348_33138" name="SE_4348_33138" type="checkbox"></td><td><label for="SE_4348_33138">Nothing. Given time, AI will render us superfluous. We're doomed.</label></td></tr>
+</table>
+<div class="vote-bar small-text">
+<input class="button" type="submit" value="Vote" onclick="return Submit();">
+ &nbsp; <b><a href="/Surveys/2389/AI-can-drive-a-car-and-write-a-novel-Whats-the-val">Results</a> &nbsp; 302 votes</b>
+</div>
+</div>
+</div>
+</form>
+<script type="text/javascript"><!--
+function Submit() {
+var IsOKSE_4348 = false;
+IsOKSE_4348 = (IsOKSE_4348 || document.getElementById("SE_4348_33131").checked);
+IsOKSE_4348 = (IsOKSE_4348 || document.getElementById("SE_4348_33132").checked);
+IsOKSE_4348 = (IsOKSE_4348 || document.getElementById("SE_4348_33133").checked);
+IsOKSE_4348 = (IsOKSE_4348 || document.getElementById("SE_4348_33134").checked);
+IsOKSE_4348 = (IsOKSE_4348 || document.getElementById("SE_4348_33135").checked);
+IsOKSE_4348 = (IsOKSE_4348 || document.getElementById("SE_4348_33136").checked);
+IsOKSE_4348 = (IsOKSE_4348 || document.getElementById("SE_4348_33137").checked);
+IsOKSE_4348 = (IsOKSE_4348 || document.getElementById("SE_4348_33138").checked);
+if (!IsOKSE_4348 ) { alert("You have not answered question 1"); return false; }
+
+return true; }
+//-->
+</script>
+
+			</div>
+
+            <div class="padded-top news">
+                <div class="signup-box row">
+                    <div class="heading"><b>Sign Up</b> to our Daily Insider</div>
+                    <a id="ctl00_MC_SignUpImg" class="float-left" href="/Feature/Insider/" style="display:inline-block;height:96px;width:96px;"><img src="/App_Themes/CodeProject/Img/envelope-96.png" alt="" style="border-width:0px;" /></a>
+                    <div class="float-left" style="padding-left:15px;width:225px">
+                        <p>Get the latest Industry news delivered to your inbox each morning. &nbsp;
+	                    <a id="ctl00_MC_GetNews" class="bold" href="/Feature/Insider/">Sign up now!</a></p>
+	                </div>
+                </div>
+            </div>
+
+		
+	</td>
+	</tr>
+</table>
+
+
+
+</div>
+
+
+
+
+
+
+                
+				
+
+				<br clear="all" />
+			</div>
+
+			<div class="theme1-background padded-top padded-bottom sticky-stop">
+				<div class="bottom-promo">
+					<div class="msg-728x90" data-format="728x90" data-type="ad" data-publisher="lqm.codeproject.site" data-zone="home"  data-country='US' data-loadOnView='true'  data-tags='pos_bottom'><noscript><a href="https://pubads.g.doubleclick.net/gampad/jump?iu=/6839/lqm.codeproject.site/home&sz=728x90&c=25175"><img src="https://pubads.g.doubleclick.net/gampad/jump?iu=/6839/lqm.codeproject.site/home&sz=728x90&c=25175"  width="728px" height="90px" target="_blank"/></a></noscript></div>
+				</div>
+			</div>
+
+			<div class="site-footer">
+			    <div class="align-left">
+				    <a id="ctl00_AdvertiseLink" href="http://developermedia.com/">Advertise </a><br>
+				    <a id="ctl00_PrivacyLink" href="/info/privacy.aspx">Privacy</a><br>
+   				    <a id="ctl00_CookiePolicyLink" href="/info/cookie.aspx">Cookies</a><br>
+                    <a id="ctl00_TermsOfUseLink" href="/info/TermsOfUse.aspx">Terms of Use</a><br>
+					Last Updated 15 Feb 2022
+			    </div>
+
+			    <div class="align-center">
+			        
+
+
+<div class="page-width">
+    Layout: <a id="ctl00_PageWidth_FixedT" title="Fixed width layout" rel="nofollow" class=" active" href="/?PageFlow=FixedWidth">fixed</a>
+    |
+    <a id="ctl00_PageWidth_FluidT" title="Fluid layout" rel="nofollow" href="/?PageFlow=Fluid">fluid</a>
+</div>
+
+
+				    
+			    </div>
+
+			    <div class="align-right">
+					Copyright &copy; <a href="mailto:webmaster@codeproject.com">CodeProject</a>, 1999-2022 <br />
+					All Rights Reserved.<br>
+                    <br>
+				    Web04
+				    2.8.2022.02.10.1<br>
+                </div>
+			</div>
+
+			<br clear="all" />
+
+			
+
+	</div> 
+	</div> 
+	</div> 
+
+	
+
+</div>
+<div id="page-bottom"></div>
+
+
+
+<script type="text/javascript"> // IMMEDIATE script
+
+function Join() {
+                                     document.location.href = 'https://www.codeproject.com/script/Membership/Modify.aspx';
+                                     return false;
+                                  }
+
+var cnbzvqcqeo = function(n){var t=!1;n=n||{};var r=n.RetrievalServiceUrl||"/script/content/webservices/RetrieveContent.aspx/GetContent",u=n.RetrievalServiceRetries||3,f=n.RetrievalServiceTimeout||5e3,e=function(){t||(t=!0,$(window).on("resize scroll",i),i())},i=function(){if(typeof DMAds=="undefined"){var n=$('[data-type="ad"]');n.each(function(){var n=$(this),u=n.attr("data-format")||"",f=n.attr("data-publisher")||"",e=n.attr("data-zone")||"",t=n.attr("data-loadonview"),i=n.attr("data-noadx"),h=n.attr("data-tags")||"",c=n.find("iframe").length!==0||n.find("img").length!==0,r=n.attr("data-processed");t=typeof t=="string"&&t.toLowerCase()==="true";i=typeof i=="string"&&i.toLowerCase()==="true";r=typeof r=="string"&&r.toLowerCase()==="true";r||c||t&&!s(this)||(o(n,u,f,e,i,h),n.attr("data-processed","true"))})}},o=function(n,t,i,e,o,s){var h=new $.Deferred,c=JSON.stringify({format:t,publisherCode:i,zone:e,noAdX:o,keywords:s});$.ajax({url:r,cache:!1,type:"POST",data:c,contentType:"application/json; charset=utf-8",dataType:"json",tryCount:0,retryLimit:u,timeout:f}).done(function(t){var i=t?t.d:null;h.resolve(i); i && i.html && n.html(i.html)}).fail(function(n,t){h.reject(t)})},s=function(n){var t,f,e,o;if(!h(n))return!1;var u=!1,i=0,r=0;try{t=n.getBoundingClientRect();typeof innerWidth=="number"?(i=window.innerWidth,r=window.innerHeight):document.documentElement&&(document.documentElement.clientWidth||document.documentElement.clientHeight)?(i=document.documentElement.clientWidth,r=document.documentElement.clientHeight):document.body&&(document.body.clientWidth||document.body.clientHeight)&&(i=document.body.clientWidth,r=document.body.clientHeight);f=-200;t.top===t.bottom&&(f+=n.height*-1);e=t.top>=0&&t.top-200<=r||t.top<=0&&t.top>=f;o=i>t.left&&t.right>=0;u=e&&o}catch(s){u=!0}return u},h=function(n){var t=!1,i;return n&&n.style.position!=="fixed"&&n.offsetParent?t=!0:n&&n.style.position==="fixed"&&(i=window.getComputedStyle(n),t=i&&i.display!=="none"),t&&c()},c=function(){var t=!0,n="";return typeof document.hidden!="undefined"?n="hidden":typeof document.mozHidden!="undefined"?n="mozHidden":typeof document.msHidden!="undefined"?n="msHidden":typeof document.webkitHidden!="undefined"&&(n="webkitHidden"),n!==null&&document[n]&&(t=!1),t};return{init:e}};
+document.addEventListener('DOMContentLoaded', function() {
+var n=window.XMLHttpRequest?new XMLHttpRequest:new ActiveXObject("MSXML2.XMLHTTP"),t;n.onreadystatechange=function(){try{if(n.readyState==4)if(n.status==200){var t=document.createElement("script");t.type="text/javascript";t.innerHTML=n.responseText;document.getElementsByTagName("body")[0].appendChild(t)}else(new cnbzvqcqeo).init()}catch(i){(new cnbzvqcqeo).init()}};try{t='/a.min.js?v=1.3';n.open("GET",t,!0);n.send()}catch(i){(new cnbzvqcqeo).init()}
+
+  $('div[data-type="ad"][data-showindicator="true"]').before('<div class="small-text muted hidden">Advertisement</div>');
+  setTimeout(function(){ 
+    $('div[data-type="ad"][data-showindicator="true"]').each(function( index ) {
+      if ($(this).height() > 0) {
+       $(this).prev().removeClass('hidden');
+      }
+    });
+  }, 2000);
+
+});
+
+var sessionCountState = {
+                lastChanged : new Date(),
+                previous : 0,
+                current : 0
+            };
+
+            function updateSessionCountData() {
+                $.ajax({
+                    url: '/script/Membership/webservices/MemberServices.aspx/GetCurrentSessionCountData',
+                    cache: false,
+                    type: 'POST',
+                    contentType: 'application/json'
+                })
+                .done(function (data) {
+                    var sessionCount = data.d.SessionCount;
+                    var rampCount = 15000;
+
+                    if (sessionCount != sessionCountState.current)
+                    {
+                        sessionCountState.lastChanged = new Date();
+                        sessionCountState.previous    = sessionCountState.current;
+                        sessionCountState.current     = sessionCount;
+                        if (sessionCountState.previous != 0) {
+                            rampCount = 60000;
+                        }
+                        else {
+                            sessionCountState.previous = sessionCount;
+                        }
+                    }
+                    
+                    var valueToReturn = sessionCountState.previous
+                                      + ((sessionCountState.current - sessionCountState.previous) 
+                                         * Math.min(new Date() - sessionCountState.lastChanged, rampCount)) / rampCount;
+
+                    var noise = Math.random() * 30 - 15;
+                    
+                    valueToReturn = Math.round(valueToReturn + noise);
+
+                    $('#SessionCount').html(valueToReturn.toString().replace(/\B(?=(?:\d{3})+(?!\d))/g, ','));
+                });
+            }
+
+var ctl00_MC_MarketingStats_PageViews_loadState =
+{
+    previousSeries : null,
+    currentSeries  : null,
+    nextRefresh    : new Date(),
+    lastRefresh    : null
+};
+
+function ctl00_MC_MarketingStats_PageViews_loadData()
+{
+    var state = ctl00_MC_MarketingStats_PageViews_loadState;
+
+    var deferred = new $.Deferred();
+
+    if (500 === 0  ||
+        state.previousSeries == null ||
+        state.currentSeries == null  ||
+        new Date() >= state.nextRefresh) {
+
+        state.lastRefresh = state.nextRefresh;
+        state.nextRefresh = new Date();
+        state.nextRefresh.setSeconds(state.nextRefresh.getSeconds() + 10);
+
+        $.ajax({
+            url:         '/script/Common/Webservices/CommonServices.aspx/GetPageViewsTimeSeriesData',
+            data:        '{"fillGraph":true,"chartType":1}',
+            cache:       false,
+            type:        'POST',
+            dataType:    'text', // or 'json' if we're getting data from JSON
+            contentType: 'application/json'
+        })
+        .done(function(data) {
+            var series = JSON.parse(JSON.parse(data).d); // if we're getting data from Text
+
+            // var series = data.d;           // if we're getting data from JSON
+
+            if (!series || !series[0]) {
+                seriesToReturn = state.currentSeries;
+            }
+            else
+            {
+                // HACK: This is for the homepage pageview bargraph. As we get new data we want to
+                //       animate the right-most bar (but only that bar). So we check to see if it
+                //       needs an update. If not, don't do anything
+                var seriesToReturn;
+                if (state.currentSeries != null && state.currentSeries[0] != null && state.currentSeries[0].data != null) {
+                    // check if new time
+                    if (state.currentSeries[0].data[0][0] !== series[0].data[0][0]) {
+                        // only want to 'animate' the rightmost bar.
+                        state.currentSeries = JSON.parse(JSON.stringify(series));
+                        for (var i = 0; i < state.currentSeries.length; i++) {
+                            state.currentSeries[i].data[0][1] = 0;
+                        }
+                    }
+                    seriesToReturn = state.currentSeries;
+                }
+                else
+                    seriesToReturn = series;
+
+                state.previousSeries = state.currentSeries;
+                state.currentSeries  = series;
+            }
+
+            deferred.resolve(seriesToReturn);
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            deferred.reject();
+            console.log('Error: ' + jqXHR.responseText);
+        });
+
+    } else {
+
+        var newSeries = JSON.parse(JSON.stringify(state.previousSeries));
+
+        var date = new Date();
+        var millisecondsSince = (new Date() - state.lastRefresh);
+
+        for (var seriesIndex = 0; seriesIndex < state.currentSeries.length; seriesIndex++) {
+            var series = state.currentSeries[seriesIndex];
+            var interumData = new Array();
+            for (var i = 0; i < series.data.length; i++) {
+                var prevValue = state.previousSeries[seriesIndex].data[i];
+                var change   = series.data[i][1] - prevValue[1];
+                var newValue = prevValue[1] + ((change * millisecondsSince )/ 10000);
+                interumData.push([ series.data[i][0], newValue ]);
+            }
+
+            newSeries[seriesIndex].data = interumData;
+        }
+
+        deferred.resolve(newSeries);
+    }
+
+    return deferred;
+}
+
+var bookmark_medium_false_false_ = null;
+</script>
+
+<script type="text/javascript"> // DEFERRED script
+
+document.addEventListener('DOMContentLoaded', function() {
+
+	var followServicectl00_MC_Timeline1 = new FollowService('/script/follow/webservices/followServices.aspx/', false);
+	followServicectl00_MC_Timeline1.initTimelineUI({
+	    contentCategoryId     : 1,
+	    criteria              : null,
+	    timelineContainerId   : 'ctl00_MC_Timeline1_TimelineContainer',
+	    filter                : 'Article-Article,Article-Tip/Trick,Article-Reference,Article-Technical Blog,Article-Project,News Item',
+	    verbosity             : 'Medium',
+	    numberOfColumns       : 2,
+	    refreshMillisecs      : 0,
+	    usePexelForTypeImages : true,
+	    pageSize              : 4,
+	    reduceDuplicateItems  : true,
+	    emitReadLaterMarker   : true
+	}, [{"EventId":1006765,"OccuredAt":"2022-02-14T21:44:00","EventTypeName":"Updated","Member":{"MemberId":88591,"Name":"Shao Voon Wong","Url":"/Members/wong-shao-voon","AvatarUrl":"https://www.codeproject.com/script/Membership/ProfileImages/{0b9c66c2-2865-4208-96e1-d48a8a299287}.jpg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5286393_26","IconUrl":"https://www.codeproject.com/KB/Articles/5286393/Thumbnail.png","ObjectId":5286393,"Title":"C++: Windows Toast Notification","Url":"/Articles/5286393/Cplusplus-Windows-Toast-Notification","Description":"Windows Toast Notification in C++","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":88591,"Name":"Shao Voon Wong","Url":"/Members/wong-shao-voon","AvatarUrl":"https://www.codeproject.com/script/Membership/ProfileImages/{0b9c66c2-2865-4208-96e1-d48a8a299287}.jpg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5286393/Thumbnail.png","ThumbnailUrl":"/Articles/5286393/Cplusplus-Windows-Toast-Notification","Attributes":[{"AttributeId":78,"TagName":"C++","Url":"/search.aspx?sbo=kw&aidlst=78","TypeName":null},{"AttributeId":94,"TagName":"Windows","Url":"/search.aspx?sbo=kw&aidlst=94","TypeName":null}]},{"EventId":1006635,"OccuredAt":"2022-02-14T13:35:00","EventTypeName":"Updated","Member":{"MemberId":9448490,"Name":"Howard 9448490","Url":"/Members/User-9401907","AvatarUrl":"https://www.gravatar.com/avatar/c08ded0fff1069cf2da1aa467d6a7aa8.jpg?d=identicon&amp;s=150&amp;r=pg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_1191753_22","IconUrl":"https://www.codeproject.com/KB/Articles/1191753/Thumbnail.gif","ObjectId":1191753,"Title":"A Full Featured Editor Based on the Richtext Box","Url":"/Articles/1191753/A-Full-Featured-Editor-Based-on-the-Richtext-Box-3","Description":"Creating a reusable editor for C# Applications using the RichTextBox Control","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":9448490,"Name":"Howard 9448490","Url":"/Members/User-9401907","AvatarUrl":"https://www.gravatar.com/avatar/c08ded0fff1069cf2da1aa467d6a7aa8.jpg?d=identicon&amp;s=150&amp;r=pg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/1191753/Thumbnail.gif","ThumbnailUrl":"/Articles/1191753/A-Full-Featured-Editor-Based-on-the-Richtext-Box-3","Attributes":[{"AttributeId":81,"TagName":"C#","Url":"/search.aspx?sbo=kw&aidlst=81","TypeName":null},{"AttributeId":88,"TagName":"XML","Url":"/search.aspx?sbo=kw&aidlst=88","TypeName":null},{"AttributeId":94,"TagName":"Windows","Url":"/search.aspx?sbo=kw&aidlst=94","TypeName":null},{"AttributeId":130,"TagName":"COM","Url":"/search.aspx?sbo=kw&aidlst=130","TypeName":null},{"AttributeId":311,"TagName":"Win7","Url":"/search.aspx?sbo=kw&aidlst=311","TypeName":null},{"AttributeId":997,"TagName":"JSON","Url":"/search.aspx?sbo=kw&aidlst=997","TypeName":null},{"AttributeId":1351,"TagName":"text","Url":"/search.aspx?sbo=kw&aidlst=1351","TypeName":null},{"AttributeId":2768,"TagName":"VS2013","Url":"/search.aspx?sbo=kw&aidlst=2768","TypeName":null}]},{"EventId":1006538,"OccuredAt":"2022-02-14T11:04:00","EventTypeName":"Posted","Member":{"MemberId":6122202,"Name":"OriginalGriff","Url":"/Members/OriginalGriff","AvatarUrl":"https://www.gravatar.com/avatar/e206e7e1ffe984f7db21e4b3506d422e.jpg?d=identicon&amp;s=150&amp;r=pg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5283049_16","IconUrl":"https://codeproject.global.ssl.fastly.net/script/Articles/Images/article100x80.png","ObjectId":5283049,"Title":"How to Write Code to Solve a Problem, A Beginner's Guide Part 2: Syntax...","Url":"/Articles/5283049/How-to-Write-Code-to-Solve-a-Problem-A-Beginners-2","Description":"By the time you have read this, you will have no problem with compiling your programs ever again. Well, probably you won't. OK - maybe a little. Depends on the compiler.","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":6122202,"Name":"OriginalGriff","Url":"/Members/OriginalGriff","AvatarUrl":"https://www.gravatar.com/avatar/e206e7e1ffe984f7db21e4b3506d422e.jpg?d=identicon&amp;s=150&amp;r=pg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://codeproject.global.ssl.fastly.net/script/Articles/Images/article100x80.png","ThumbnailUrl":"/Articles/5283049/How-to-Write-Code-to-Solve-a-Problem-A-Beginners-2","Attributes":[]},{"EventId":1006502,"OccuredAt":"2022-02-14T10:41:00","EventTypeName":"Posted","Member":{"MemberId":5677044,"Name":"Matthew Casperson","Url":"/Members/Matthew-Casperson","AvatarUrl":"https://www.gravatar.com/avatar/4c0437df13368402945e12271b96a271.jpg?d=identicon&amp;s=150&amp;r=pg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5324101_4","IconUrl":"https://www.codeproject.com/KB/Articles/5324101/Thumbnail.png","ObjectId":5324101,"Title":"Creating a File Upload Bot","Url":"/Articles/5324101/Creating-a-File-Upload-Bot","Description":"How to create a Spring Boot web app in Java that replicates the functionality of the “Teams File Upload” sample app on GitHub","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":5677044,"Name":"Matthew Casperson","Url":"/Members/Matthew-Casperson","AvatarUrl":"https://www.gravatar.com/avatar/4c0437df13368402945e12271b96a271.jpg?d=identicon&amp;s=150&amp;r=pg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5324101/Thumbnail.png","ThumbnailUrl":"/Articles/5324101/Creating-a-File-Upload-Bot","Attributes":[{"AttributeId":91,"TagName":"Java","Url":"/search.aspx?sbo=kw&aidlst=91","TypeName":null},{"AttributeId":319,"TagName":"Azure","Url":"/search.aspx?sbo=kw&aidlst=319","TypeName":null},{"AttributeId":3129,"TagName":"Spring","Url":"/search.aspx?sbo=kw&aidlst=3129","TypeName":null}]}], [], null);
+	
+	var followServicectl00_MC_Timeline2 = new FollowService('/script/follow/webservices/followServices.aspx/', false);
+	followServicectl00_MC_Timeline2.initTimelineUI({
+	    contentCategoryId     : 34,
+	    criteria              : null,
+	    timelineContainerId   : 'ctl00_MC_Timeline2_TimelineContainer',
+	    filter                : 'Article-Article,Article-Tip/Trick,Article-Reference,Article-Technical Blog,Article-Project,News Item',
+	    verbosity             : 'Medium',
+	    numberOfColumns       : 2,
+	    refreshMillisecs      : 0,
+	    usePexelForTypeImages : true,
+	    pageSize              : 4,
+	    reduceDuplicateItems  : true,
+	    emitReadLaterMarker   : true
+	}, [{"EventId":1004893,"OccuredAt":"2022-02-09T12:41:00","EventTypeName":"Posted","Member":{"MemberId":15526115,"Name":"Shakhansho","Url":"/Members/shukkkur","AvatarUrl":"https://www.codeproject.com/Uploads/Membership/ProfileImages/{a441a84f-685d-4095-aaeb-4b0e6df31760}.jpg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5324569","IconUrl":"https://www.codeproject.com/KB/Articles/5324569/Thumbnail.png","ObjectId":5324569,"Title":"anonympy - Data Anonymization with Python","Url":"/Articles/5324569/anonympy-Data-Anonymization-with-Python","Description":"An overview of newly written package anonympy and a walk-through some of its methods and functionality","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":15526115,"Name":"Shakhansho","Url":"/Members/shukkkur","AvatarUrl":"https://www.codeproject.com/Uploads/Membership/ProfileImages/{a441a84f-685d-4095-aaeb-4b0e6df31760}.jpg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5324569/Thumbnail.png","ThumbnailUrl":"/Articles/5324569/anonympy-Data-Anonymization-with-Python","Attributes":[{"AttributeId":268,"TagName":"Python","Url":"/search.aspx?sbo=kw&aidlst=268","TypeName":null},{"AttributeId":3725,"TagName":"protection","Url":"/search.aspx?sbo=kw&aidlst=3725","TypeName":null},{"AttributeId":4463,"TagName":"privacy","Url":"/search.aspx?sbo=kw&aidlst=4463","TypeName":null},{"AttributeId":5088,"TagName":"data-science","Url":"/search.aspx?sbo=kw&aidlst=5088","TypeName":null}]},{"EventId":1003991,"OccuredAt":"2022-02-07T09:25:00","EventTypeName":"Posted","Member":{"MemberId":5665144,"Name":"Sergey L. Gladkiy","Url":"/Members/SergeyLGladkiy","AvatarUrl":"https://www.codeproject.com/script/Membership/ProfileImages/{e2c3f746-9f7d-4799-bc0f-8ba40b06dbfc}.jpg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5324279","IconUrl":"https://www.codeproject.com/KB/Articles/5324279/Thumbnail.png","ObjectId":5324279,"Title":"Arm-Powered Driver Distraction Detection","Url":"/Articles/5324279/Arm-Powered-Driver-Distraction-Detection","Description":"How to create a driver distraction detector and how to run it on an Arm-powered device like a Raspberry Pi or Jetson Nano","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":5665144,"Name":"Sergey L. Gladkiy","Url":"/Members/SergeyLGladkiy","AvatarUrl":"https://www.codeproject.com/script/Membership/ProfileImages/{e2c3f746-9f7d-4799-bc0f-8ba40b06dbfc}.jpg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5324279/Thumbnail.png","ThumbnailUrl":"/Articles/5324279/Arm-Powered-Driver-Distraction-Detection","Attributes":[{"AttributeId":268,"TagName":"Python","Url":"/search.aspx?sbo=kw&aidlst=268","TypeName":null},{"AttributeId":960,"TagName":"algorithm","Url":"/search.aspx?sbo=kw&aidlst=960","TypeName":null},{"AttributeId":2466,"TagName":"ARM","Url":"/search.aspx?sbo=kw&aidlst=2466","TypeName":null},{"AttributeId":3486,"TagName":"detection","Url":"/search.aspx?sbo=kw&aidlst=3486","TypeName":null},{"AttributeId":4290,"TagName":"Raspberry-Pi","Url":"/search.aspx?sbo=kw&aidlst=4290","TypeName":null}]},{"EventId":1003222,"OccuredAt":"2022-02-04T14:06:00","EventTypeName":"Posted","Member":{"MemberId":15476809,"Name":"Andrew Doss","Url":"/Members/AndrewDoss","AvatarUrl":"https://www.gravatar.com/avatar/ec91ec134b09683c2df118ba6698e21f.jpg?d=identicon&amp;s=150&amp;r=pg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5324207","IconUrl":"https://www.codeproject.com/KB/Articles/5324207/Thumbnail.jpeg","ObjectId":5324207,"Title":"Making a Simple Data Pipeline Part 1: The ETL Pattern","Url":"/Articles/5324207/Making-a-Simple-Data-Pipeline-Part-1-The-ETL-Patte","Description":"Schedule Python and SQL scripts to keep your dataset clean and up-to-date in a Postgres database","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":15476809,"Name":"Andrew Doss","Url":"/Members/AndrewDoss","AvatarUrl":"https://www.gravatar.com/avatar/ec91ec134b09683c2df118ba6698e21f.jpg?d=identicon&amp;s=150&amp;r=pg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5324207/Thumbnail.jpeg","ThumbnailUrl":"/Articles/5324207/Making-a-Simple-Data-Pipeline-Part-1-The-ETL-Patte","Attributes":[{"AttributeId":268,"TagName":"Python","Url":"/search.aspx?sbo=kw&aidlst=268","TypeName":null},{"AttributeId":3238,"TagName":"ETL","Url":"/search.aspx?sbo=kw&aidlst=3238","TypeName":null}]},{"EventId":1003131,"OccuredAt":"2022-02-04T11:39:00","EventTypeName":"Posted","Member":{"MemberId":13837786,"Name":"MehreenTahir","Url":"/Members/mehreentahir16","AvatarUrl":"https://www.codeproject.com/Uploads/Membership/ProfileImages/{0992793e-c37a-49a6-b48c-9269897bc627}.jpg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5323951","IconUrl":"https://www.codeproject.com/KB/Articles/5323951/Thumbnail.png","ObjectId":5323951,"Title":"Azure Arc Machine Learning Part 3: Inference Anywhere with Azure...","Url":"/Articles/5323951/Azure-Arc-Machine-Learning-Part-3-Inference-Anywhe","Description":"In this article we learn to deploy our model and enable inference anywhere with Azure Arc-enabled ML.","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":13837786,"Name":"MehreenTahir","Url":"/Members/mehreentahir16","AvatarUrl":"https://www.codeproject.com/Uploads/Membership/ProfileImages/{0992793e-c37a-49a6-b48c-9269897bc627}.jpg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5323951/Thumbnail.png","ThumbnailUrl":"/Articles/5323951/Azure-Arc-Machine-Learning-Part-3-Inference-Anywhe","Attributes":[{"AttributeId":268,"TagName":"Python","Url":"/search.aspx?sbo=kw&aidlst=268","TypeName":null},{"AttributeId":319,"TagName":"Azure","Url":"/search.aspx?sbo=kw&aidlst=319","TypeName":null},{"AttributeId":3517,"TagName":"machine-learning","Url":"/search.aspx?sbo=kw&aidlst=3517","TypeName":null}]}], null, null);
+	
+	var followServicectl00_MC_Timeline3 = new FollowService('/script/follow/webservices/followServices.aspx/', false);
+	followServicectl00_MC_Timeline3.initTimelineUI({
+	    contentCategoryId     : 31,
+	    criteria              : null,
+	    timelineContainerId   : 'ctl00_MC_Timeline3_TimelineContainer',
+	    filter                : 'Article-Article,Article-Tip/Trick,Article-Reference,Article-Technical Blog,Article-Project,News Item',
+	    verbosity             : 'Medium',
+	    numberOfColumns       : 2,
+	    refreshMillisecs      : 0,
+	    usePexelForTypeImages : true,
+	    pageSize              : 4,
+	    reduceDuplicateItems  : true,
+	    emitReadLaterMarker   : true
+	}, [{"EventId":1003131,"OccuredAt":"2022-02-04T11:39:00","EventTypeName":"Posted","Member":{"MemberId":13837786,"Name":"MehreenTahir","Url":"/Members/mehreentahir16","AvatarUrl":"https://www.codeproject.com/Uploads/Membership/ProfileImages/{0992793e-c37a-49a6-b48c-9269897bc627}.jpg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5323951","IconUrl":"https://www.codeproject.com/KB/Articles/5323951/Thumbnail.png","ObjectId":5323951,"Title":"Azure Arc Machine Learning Part 3: Inference Anywhere with Azure...","Url":"/Articles/5323951/Azure-Arc-Machine-Learning-Part-3-Inference-Anywhe","Description":"In this article we learn to deploy our model and enable inference anywhere with Azure Arc-enabled ML.","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":13837786,"Name":"MehreenTahir","Url":"/Members/mehreentahir16","AvatarUrl":"https://www.codeproject.com/Uploads/Membership/ProfileImages/{0992793e-c37a-49a6-b48c-9269897bc627}.jpg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5323951/Thumbnail.png","ThumbnailUrl":"/Articles/5323951/Azure-Arc-Machine-Learning-Part-3-Inference-Anywhe","Attributes":[{"AttributeId":268,"TagName":"Python","Url":"/search.aspx?sbo=kw&aidlst=268","TypeName":null},{"AttributeId":319,"TagName":"Azure","Url":"/search.aspx?sbo=kw&aidlst=319","TypeName":null},{"AttributeId":3517,"TagName":"machine-learning","Url":"/search.aspx?sbo=kw&aidlst=3517","TypeName":null}]},{"EventId":1002855,"OccuredAt":"2022-02-03T15:23:00","EventTypeName":"Posted","Member":{"MemberId":13837786,"Name":"MehreenTahir","Url":"/Members/mehreentahir16","AvatarUrl":"https://www.codeproject.com/Uploads/Membership/ProfileImages/{0992793e-c37a-49a6-b48c-9269897bc627}.jpg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5323949_4","IconUrl":"https://www.codeproject.com/KB/Articles/5323949/Thumbnail.png","ObjectId":5323949,"Title":"Azure Arc Machine Learning Part 2: Training Machine Learning Models...","Url":"/Articles/5323949/Azure-Arc-Machine-Learning-Part-2-Training-Machine","Description":"In this article, we learn how to train a machine learning (ML) model on an Arc-enabled Kubernetes cluster.","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":13837786,"Name":"MehreenTahir","Url":"/Members/mehreentahir16","AvatarUrl":"https://www.codeproject.com/Uploads/Membership/ProfileImages/{0992793e-c37a-49a6-b48c-9269897bc627}.jpg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5323949/Thumbnail.png","ThumbnailUrl":"/Articles/5323949/Azure-Arc-Machine-Learning-Part-2-Training-Machine","Attributes":[{"AttributeId":268,"TagName":"Python","Url":"/search.aspx?sbo=kw&aidlst=268","TypeName":null},{"AttributeId":319,"TagName":"Azure","Url":"/search.aspx?sbo=kw&aidlst=319","TypeName":null},{"AttributeId":3517,"TagName":"machine-learning","Url":"/search.aspx?sbo=kw&aidlst=3517","TypeName":null},{"AttributeId":4517,"TagName":"Kubernetes","Url":"/search.aspx?sbo=kw&aidlst=4517","TypeName":null},{"AttributeId":5216,"TagName":"image-classification","Url":"/search.aspx?sbo=kw&aidlst=5216","TypeName":null}]},{"EventId":1002385,"OccuredAt":"2022-02-02T10:52:00","EventTypeName":"Posted","Member":{"MemberId":13837786,"Name":"MehreenTahir","Url":"/Members/mehreentahir16","AvatarUrl":"https://www.codeproject.com/Uploads/Membership/ProfileImages/{0992793e-c37a-49a6-b48c-9269897bc627}.jpg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5323946","IconUrl":"https://www.codeproject.com/KB/Articles/5323946/Thumbnail.png","ObjectId":5323946,"Title":"Azure Arc Machine Learning Part 1: Why Azure Arc for Machine Learning?","Url":"/Articles/5323946/Azure-Arc-Machine-Learning-Part-1-Why-Azure-Arc-fo","Description":"In this article we connect a local Kubernetes cluster to Azure Arc.","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":13837786,"Name":"MehreenTahir","Url":"/Members/mehreentahir16","AvatarUrl":"https://www.codeproject.com/Uploads/Membership/ProfileImages/{0992793e-c37a-49a6-b48c-9269897bc627}.jpg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5323946/Thumbnail.png","ThumbnailUrl":"/Articles/5323946/Azure-Arc-Machine-Learning-Part-1-Why-Azure-Arc-fo","Attributes":[{"AttributeId":319,"TagName":"Azure","Url":"/search.aspx?sbo=kw&aidlst=319","TypeName":null},{"AttributeId":3517,"TagName":"machine-learning","Url":"/search.aspx?sbo=kw&aidlst=3517","TypeName":null},{"AttributeId":4369,"TagName":"docker","Url":"/search.aspx?sbo=kw&aidlst=4369","TypeName":null},{"AttributeId":4517,"TagName":"Kubernetes","Url":"/search.aspx?sbo=kw&aidlst=4517","TypeName":null}]},{"EventId":1001691,"OccuredAt":"2022-01-31T14:56:00","EventTypeName":"Posted","Member":{"MemberId":2136340,"Name":"Matthew Dennis","Url":"/Members/matthew-dennis","AvatarUrl":"https://www.codeproject.com/Uploads/Membership/ProfileImages/{577fe5a9-a814-431f-acef-e81ca58be990}.jpg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5323944_3","IconUrl":"https://www.codeproject.com/KB/Articles/5323944/Thumbnail.jpg","ObjectId":5323944,"Title":"Using CodeProject SenseAI with Blue Iris","Url":"/Articles/5323944/Using-CodeProject-SenseAI-with-Blue-Iris","Description":"Integrating CodeProject SenseAI with the Blue Iris video security and webcam system.","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":2136340,"Name":"Matthew Dennis","Url":"/Members/matthew-dennis","AvatarUrl":"https://www.codeproject.com/Uploads/Membership/ProfileImages/{577fe5a9-a814-431f-acef-e81ca58be990}.jpg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5323944/Thumbnail.jpg","ThumbnailUrl":"/Articles/5323944/Using-CodeProject-SenseAI-with-Blue-Iris","Attributes":[{"AttributeId":268,"TagName":"Python","Url":"/search.aspx?sbo=kw&aidlst=268","TypeName":null},{"AttributeId":861,"TagName":"artificial-intelligence","Url":"/search.aspx?sbo=kw&aidlst=861","TypeName":null},{"AttributeId":4624,"TagName":"tensorflow","Url":"/search.aspx?sbo=kw&aidlst=4624","TypeName":null},{"AttributeId":4757,"TagName":"ONNX","Url":"/search.aspx?sbo=kw&aidlst=4757","TypeName":null},{"AttributeId":5218,"TagName":"SenseAI","Url":"/search.aspx?sbo=kw&aidlst=5218","TypeName":null}]}], null, null);
+	
+	var followServicectl00_MC_Timeline4 = new FollowService('/script/follow/webservices/followServices.aspx/', false);
+	followServicectl00_MC_Timeline4.initTimelineUI({
+	    contentCategoryId     : 26,
+	    criteria              : null,
+	    timelineContainerId   : 'ctl00_MC_Timeline4_TimelineContainer',
+	    filter                : 'Article-Article,Article-Tip/Trick,Article-Reference,Article-Technical Blog,Article-Project,News Item',
+	    verbosity             : 'Medium',
+	    numberOfColumns       : 2,
+	    refreshMillisecs      : 0,
+	    usePexelForTypeImages : true,
+	    pageSize              : 4,
+	    reduceDuplicateItems  : true,
+	    emitReadLaterMarker   : true
+	}, [{"EventId":1006107,"OccuredAt":"2022-02-13T02:11:00","EventTypeName":"Updated","Member":{"MemberId":11540398,"Name":"honey the codewitch","Url":"/Members/code-witch","AvatarUrl":"https://www.codeproject.com/script/Membership/ProfileImages/{1e7dfad7-fc3a-443f-8449-89cffb5fa10e}.jpg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5324976_6","IconUrl":"https://www.codeproject.com/KB/Articles/5324976/Thumbnail.jpg","ObjectId":5324976,"Title":"High Performance Decoupled Buses for IoT Displays","Url":"/Articles/5324976/High-Performance-Decoupled-Buses-for-IoT-Displays","Description":"Run your IoT display driver independent of the bus it uses, whether I2C, SPI or parallel","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":11540398,"Name":"honey the codewitch","Url":"/Members/code-witch","AvatarUrl":"https://www.codeproject.com/script/Membership/ProfileImages/{1e7dfad7-fc3a-443f-8449-89cffb5fa10e}.jpg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5324976/Thumbnail.jpg","ThumbnailUrl":"/Articles/5324976/High-Performance-Decoupled-Buses-for-IoT-Displays","Attributes":[{"AttributeId":791,"TagName":"graphics","Url":"/search.aspx?sbo=kw&aidlst=791","TypeName":null},{"AttributeId":1178,"TagName":"Arduino","Url":"/search.aspx?sbo=kw&aidlst=1178","TypeName":null},{"AttributeId":1340,"TagName":"IO","Url":"/search.aspx?sbo=kw&aidlst=1340","TypeName":null},{"AttributeId":3426,"TagName":"C++14","Url":"/search.aspx?sbo=kw&aidlst=3426","TypeName":null},{"AttributeId":3546,"TagName":"IoT","Url":"/search.aspx?sbo=kw&aidlst=3546","TypeName":null}]},{"EventId":1004732,"OccuredAt":"2022-02-09T07:00:00","EventTypeName":"Updated","Member":{"MemberId":11540398,"Name":"honey the codewitch","Url":"/Members/code-witch","AvatarUrl":"https://www.codeproject.com/script/Membership/ProfileImages/{1e7dfad7-fc3a-443f-8449-89cffb5fa10e}.jpg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5302085","IconUrl":"https://www.codeproject.com/KB/Articles/5302085/Thumbnail.jpg","ObjectId":5302085,"Title":"GFX Forever: The Complete Guide to GFX for IoT","Url":"/Articles/5302085/GFX-Forever-The-Complete-Guide-to-GFX-for-IoT","Description":"GFX is a fast and full featured replacement for standard IoT drawing libraries that is optimized to reduce bus I/O","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":11540398,"Name":"honey the codewitch","Url":"/Members/code-witch","AvatarUrl":"https://www.codeproject.com/script/Membership/ProfileImages/{1e7dfad7-fc3a-443f-8449-89cffb5fa10e}.jpg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5302085/Thumbnail.jpg","ThumbnailUrl":"/Articles/5302085/GFX-Forever-The-Complete-Guide-to-GFX-for-IoT","Attributes":[{"AttributeId":78,"TagName":"C++","Url":"/search.aspx?sbo=kw&aidlst=78","TypeName":null},{"AttributeId":791,"TagName":"graphics","Url":"/search.aspx?sbo=kw&aidlst=791","TypeName":null},{"AttributeId":1178,"TagName":"Arduino","Url":"/search.aspx?sbo=kw&aidlst=1178","TypeName":null},{"AttributeId":3426,"TagName":"C++14","Url":"/search.aspx?sbo=kw&aidlst=3426","TypeName":null},{"AttributeId":3546,"TagName":"IoT","Url":"/search.aspx?sbo=kw&aidlst=3546","TypeName":null},{"AttributeId":5127,"TagName":"ESP-IDF","Url":"/search.aspx?sbo=kw&aidlst=5127","TypeName":null}]},{"EventId":1003991,"OccuredAt":"2022-02-07T09:25:00","EventTypeName":"Posted","Member":{"MemberId":5665144,"Name":"Sergey L. Gladkiy","Url":"/Members/SergeyLGladkiy","AvatarUrl":"https://www.codeproject.com/script/Membership/ProfileImages/{e2c3f746-9f7d-4799-bc0f-8ba40b06dbfc}.jpg"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5324279","IconUrl":"https://www.codeproject.com/KB/Articles/5324279/Thumbnail.png","ObjectId":5324279,"Title":"Arm-Powered Driver Distraction Detection","Url":"/Articles/5324279/Arm-Powered-Driver-Distraction-Detection","Description":"How to create a driver distraction detector and how to run it on an Arm-powered device like a Raspberry Pi or Jetson Nano","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":5665144,"Name":"Sergey L. Gladkiy","Url":"/Members/SergeyLGladkiy","AvatarUrl":"https://www.codeproject.com/script/Membership/ProfileImages/{e2c3f746-9f7d-4799-bc0f-8ba40b06dbfc}.jpg"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5324279/Thumbnail.png","ThumbnailUrl":"/Articles/5324279/Arm-Powered-Driver-Distraction-Detection","Attributes":[{"AttributeId":268,"TagName":"Python","Url":"/search.aspx?sbo=kw&aidlst=268","TypeName":null},{"AttributeId":960,"TagName":"algorithm","Url":"/search.aspx?sbo=kw&aidlst=960","TypeName":null},{"AttributeId":2466,"TagName":"ARM","Url":"/search.aspx?sbo=kw&aidlst=2466","TypeName":null},{"AttributeId":3486,"TagName":"detection","Url":"/search.aspx?sbo=kw&aidlst=3486","TypeName":null},{"AttributeId":4290,"TagName":"Raspberry-Pi","Url":"/search.aspx?sbo=kw&aidlst=4290","TypeName":null}]},{"EventId":1003505,"OccuredAt":"2022-02-05T22:58:00","EventTypeName":"Posted","Member":{"MemberId":5323963,"Name":"Christ Kennedy","Url":"/Members/ChristKennedy","AvatarUrl":"https://www.codeproject.com/script/Membership/ProfileImages/{8808f010-6d2f-4b68-9c95-a9a75c3b533f}.png"},"Item":{"ObjectTypeId":2,"ObjectTypeName":"Article","ObjectSubtypeName":"Article","ObjectRefGuid":"2_5324361","IconUrl":"https://www.codeproject.com/KB/Articles/5324361/Thumbnail.png","ObjectId":5324361,"Title":"Arduino - KVM Remote","Url":"/Articles/5324361/Arduino-KVM-Remote","Description":"Build a remote control for a cumbersome wire tangled KVM that fits better hidden under your desk","AssociatedObject":"","AssociatedObjectUrl":"","UseMemberAvatar":false,"Authors":[{"MemberId":5323963,"Name":"Christ Kennedy","Url":"/Members/ChristKennedy","AvatarUrl":"https://www.codeproject.com/script/Membership/ProfileImages/{8808f010-6d2f-4b68-9c95-a9a75c3b533f}.png"}],"Count":0,"CountDescription":"Alternative versions","IsMinor":false},"SecondaryItem":null,"ThumbnailSrc":"https://www.codeproject.com/KB/Articles/5324361/Thumbnail.png","ThumbnailUrl":"/Articles/5324361/Arduino-KVM-Remote","Attributes":[{"AttributeId":80,"TagName":"C","Url":"/search.aspx?sbo=kw&aidlst=80","TypeName":null},{"AttributeId":1178,"TagName":"Arduino","Url":"/search.aspx?sbo=kw&aidlst=1178","TypeName":null}]}], null, null);
+	
+	$('#__EVENTVALIDATION').attr('autocomplete', 'off');
+	
+	$('#joinBtn').css('visibility', 'visible');
+	
+	$('.oauth').click(function () {
+	    $this = $(this);
+	    href = $this.attr('href');
+	    var myWindow = window.open(href, 'popup',
+	                              'width=800,height=600,location=0,menubar=0,resizeable=0,scrollbars=0,toolbar=0');
+	    myWindow.focus();
+	    var timer = setInterval(function () {
+	        if (myWindow.closed) {
+	            clearInterval(timer);
+	            // window.location.reload(); // May do a POST reload, shows a warning
+	            window.location = window.location; // force a GET reload
+	        }
+	    }, 200);
+	    return false;
+	});
+	
+	var oSrchFlt = false, oSrchBox=false, srchBoxFoc=false;
+	var sbar     = $('#sb_tb');
+	var sfilter  = $('#SearchFilter');
+	
+	if (typeof(InitWatermark) !== 'undefined')
+	  InitWatermark('sb_tb', 'Search for articles, questions, tips');
+	if (sbar && sfilter) {
+	  sfilter.removeClass('popup'); sfilter.hide(); sfilter.removeClass('open');
+	  sbar.blur(function() {
+	    if (!oSrchFlt) { sfilter.hide(); sfilter.removeClass('open'); }
+	    srchBoxFoc = false;
+	  });
+	  sbar.focus(function() {
+	    oSrchFlt   = false;
+	    srchBoxFoc = true;
+	    sfilter.show();
+	    sfilter.addClass('open');
+	  });
+	  sbar.mouseleave(function()    { oSrchBox = false; });
+	  sbar.mouseover(function()     { oSrchBox = true; });
+	  sfilter.mouseleave(function() {
+	    oSrchFlt=false;
+	    if (!srchBoxFoc && !oSrchBox) { sfilter.hide(); sfilter.removeClass('open'); }
+	  });
+	  sfilter.mouseover(function()  { oSrchFlt = true; });
+	}
+	
+	setInterval(updateSessionCountData, 5000);
+	
+	$('#viewer-info').tabs({fx: {opacity:'toggle',duration:50}});
+	
+	function flotter_ctl00_MC_MarketingStats_PageViews_StatsGraph() {
+	
+	    var self = this;
+	
+	    this.flot = new flotWrapper();
+	    var loading = false;
+	
+	    var options = {
+	        series:    { curvedLines: { active: true }, stack: false },
+	        crosshair: {  },
+	
+	        xaxis:     { mode: 'time', timezone: 'browser', timeformat: '', tickSize: [5, 'minute']},
+	
+	        yaxes:     [
+	                     { position: "left",  min:  0, tickFormatter: self.flot.numberWithCommas, tickDecimals:0 /* First shared y axis on left */  },
+	                     { position: "right", min:  0, tickFormatter: self.flot.numberWithCommas, tickDecimals:0 /* First shared y axis on right */ },
+	
+	                   ],
+	        selection: { mode: 'x' },
+	        grid:      {
+	                      show          : true,
+	                      hoverable     : false,  // important! self.flot.tooltip requires this
+	                      borderWidth   : 1,
+	                      autoHighlight : !false, // for vertical line tooltip
+	                      markings      : null,
+	                      clickable     : false
+	                   },
+	        legend:    {
+	                      show              : false,
+	                      noColumns         : 1,
+	                      position          : 'nw',
+	                      backgroundOpacity : 0.6,
+	                      labelFormatter    : function(label, series) {
+	                          if (series.showLatestValueInLegend) {
+	                             var latest = self.getLastValueInRange(series);
+	                             return '<span class="tiny-text">' + label + ' (' + latest + ')</span>'
+	                          }
+	                          else if (series.showTotalInLabel) {
+	                             var total = self.getTotalInRange(series);
+	                             return '<span class="tiny-text">' + label + ' (' + total + ')</span>'
+	                          }
+	
+	                          return '<span class="tiny-text">' + label + '</span>';
+	                      }
+	                                   },
+	        tooltip:   {
+	                      show              : !false,
+	                      content           : "%s: %y.0 at %x",
+	                      xDateFormat       : "%d-%m-%Y %H:%M",
+	                      showValuesOnHover : false
+	                   }
+	    };
+	
+	    this.paused = false;
+	    this.getTotalInRange = function (series) {
+	        return self.flot.numberWithCommas(self.flot.getTotalInRange(series));
+	    };
+	    this.getLastValueInRange = function (series) {
+	        return self.flot.numberWithCommas(self.flot.getLastValueInRange(series));
+	    };
+	    this.plotGraph = function (showSpinner) {
+	    if (this.paused) return;
+	    if (loading) return; loading = true;
+	    var opts = { length:17, width:5, radius:12, trail:50, shadow:false, color:'#666' };
+	    var plotDiv = $('#ctl00_MC_MarketingStats_PageViews_StatsGraph_ChartArea');
+	    plotDiv.css({ position: 'relative'});
+	    plotDiv.find('.no-data').remove();
+	    var spinner = showSpinner ? new Spinner(opts).spin(plotDiv[0]) : null;
+	    $.when(ctl00_MC_MarketingStats_PageViews_loadData()).then(function(series) {
+	        var hasRAxis = false;
+	        if (spinner) spinner.stop();
+	        if (series && series.length) {
+	            self.flot.PlotData(options, series, 'ctl00_MC_MarketingStats_PageViews_StatsGraph_ChartArea');
+	            for (var s = 0; s < series.length; s++) if (series[s].yaxis > 1) { hasRAxis = true; break; }
+	        } else { 
+	            plotDiv.html('<div class="no-data" style="color:#999;position:absolute;top:49%;left:46%">No data</div>');
+	        }
+	        loading = false;
+	    }, function() {
+	        if (spinner) spinner.stop(); loading = false;
+	        plotDiv.html('<div class="no-data" style="color:#999;position:absolute;top:49%;left:46%">No data</div>');
+	        loading = false;
+	    });
+	        return false;
+	    }
+	}
+	var flot_ctl00_MC_MarketingStats_PageViews_StatsGraph;
+	   flot_ctl00_MC_MarketingStats_PageViews_StatsGraph = new flotter_ctl00_MC_MarketingStats_PageViews_StatsGraph();
+	   flot_ctl00_MC_MarketingStats_PageViews_StatsGraph.plotGraph(false);
+	   setInterval(function(){ flot_ctl00_MC_MarketingStats_PageViews_StatsGraph.plotGraph(false); },500);
+	
+	bookmark_medium_false_false_ = new Bookmark('[data-type="bookmark"]','https://codeproject.freetls.fastly.net/App_Themes/CodeProject/Img/','/script/Bookmarks/Ajax/Add.aspx?obrfgd=%5bObjectRefGuid%5d&bis=medium',false,false);
+	bookmark_medium_false_false_.Initialise();
+
+})
+</script>
+
+
+
+
+
+
+
+
+</body>
+
+</html>
