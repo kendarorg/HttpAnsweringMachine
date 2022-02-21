@@ -10,11 +10,9 @@ import org.kendar.servers.http.RequestUtils;
 import org.kendar.utils.FileResourcesUtils;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -48,6 +46,13 @@ private ObjectMapper mapper = new ObjectMapper();
         var replayData = mapper.writeValueAsString(data);
         var resourceFileData = rsrcDir+"/recording.json";
         result.put(resourceFileData,replayData.getBytes(StandardCharsets.UTF_8));
+        byte[] pom = new byte[0];
+        try {
+            pom = this.getClass().getResourceAsStream("/standards/pom.xml").readAllBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        result.put("pom.xml",pom);
 
         for(var row:allRows.values()){
             var response = row.getResponse();
@@ -78,32 +83,40 @@ private ObjectMapper mapper = new ObjectMapper();
 
 
         return new SpecialStringBuilder()
-                .add("package "+pack)
+                .add("package "+pack+"."+recordingId+";")
                 .add()
-                .add("import org.apache.http.HttpResponse;")
-                .add("import org.apache.http.StatusLine;")
-                .add("import org.apache.http.client.methods.*;")
+                .add("import org.apache.commons.io.IOUtils;")
+                .add("import org.apache.http.HttpEntity;")
+                .add("import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;")
+                .add("import org.apache.http.client.methods.HttpGet;")
+                .add("import org.apache.http.client.methods.HttpPost;")
+                .add("import org.apache.http.entity.ContentType;")
+                .add("import org.apache.http.entity.StringEntity;")
                 .add("import org.apache.http.impl.client.CloseableHttpClient;")
-                .add("import org.apache.http.impl.client.HttpClients;")
+                .add("import org.apache.http.impl.client.HttpClientBuilder;")
                 .add("import org.junit.jupiter.api.Test;")
+                .add()
                 .add("import java.io.IOException;")
+                .add("import java.io.InputStream;")
+                .add("import java.nio.charset.StandardCharsets;")
+                .add("import java.util.Base64;")
                 .add("import java.util.Scanner;")
                 .add()
                 .add("public class " + recordingId + "Test {")
                 .tab(a -> {
                     a
                             .add("@Test")
-                            .add("void doTestNavigation(){")
+                            .add("void doTestNavigation() throws IOException{")
                             .tab(b -> {
                                 b
                                         .add("//UPLOAD THE REPLAYER RESULT")
-                                        .add("CloseableHttpClient httpClient = HttpClientBuilder.create();")
-                                        .add("var request = new HttpPost(\"https://www.local.test\");")
-                                        .add("var data = new Scanner(this.getClass().getResourceAsStream(\"/"+pack.replaceAll("\\.","/")+"/recording.json\"), \"UTF-8\").next();")
-                                        .add("var jsonFile=\"{\\\"name\\\":\\\""+recordingId+".json\\\",\\\"data\\\":\\\"\"+Base64.getEncoder().encodeToString(data.getBytes())+\"\\\"}\";")
-                                        .add("HttpEntity entity = new StringEntity(data, ContentType.create(\"application/json\"));")
+                                        .add("CloseableHttpClient httpClient = HttpClientBuilder.create().build();")
+                                        .add("var request = new HttpPost(\"http://www.local.test\");")
+                                        .add("var data = this.getClass().getResourceAsStream(\"/"+pack.replaceAll("\\.","/")+"/"+recordingId+"/recording.json\").readAllBytes();")
+                                        .add("var jsonFile=\"{\\\"name\\\":\\\""+recordingId+".json\\\",\\\"data\\\":\\\"\"+Base64.getEncoder().encodeToString(data)+\"\\\"}\";")
+                                        .add("HttpEntity entity = new StringEntity(jsonFile, ContentType.create(\"application/json\"));")
                                         .add("((HttpEntityEnclosingRequestBase) request).setEntity(entity);")
-                                        .add("httpResponse = httpClient.execute(request);")
+                                        .add("var httpResponse = httpClient.execute(request);")
                                         .add("HttpEntity responseEntity = httpResponse.getEntity();")
                                         .add()
                                         .add("//STARTREPLAYING");
@@ -120,13 +133,14 @@ private ObjectMapper mapper = new ObjectMapper();
                     }
 
                 })
+                .add("}")
                 .build();
     }
 
     private void addRequest(SpecialStringBuilder a, String recordingId, String methodName, CallIndex line, ReplayerRow row, String pack) {
         a
                 //.add("@Test")
-                .add("private void " + methodName + "(){")
+                .add("private void " + methodName + "() throws IOException{")
                 .tab(b -> {
                     b
                             .add(c -> makeTheCall(c,recordingId, line, row,pack))
@@ -171,23 +185,22 @@ private ObjectMapper mapper = new ObjectMapper();
                 request.getMethod().substring(0, 1).toUpperCase(Locale.ROOT) +
                         request.getMethod().substring(1).toLowerCase(Locale.ROOT);
         a
-                .add("CloseableHttpClient httpClient = HttpClientBuilder.create();")
+                .add("CloseableHttpClient httpClient = HttpClientBuilder.create().build();")
                 .add("var request = new Http" + buildMethod + "(\""+address+"\");")
                 .add(v ->
                         request.getHeaders().entrySet().stream().map(h ->
-                                v.add("request.addHeader(\"" + h.getKey() + "\",\"" + h.getValue() + "\");")).collect(Collectors.toList()))
-                .add("request.addHeader(\"Host\",\"" + request.getHost() + "\");");
+                                v.add("request.addHeader(\"" + h.getKey() + "\",\"" + h.getValue().replaceAll("\"","\\\\\"") + "\");")).collect(Collectors.toList()));
         var resourceFileResponse = pack.replaceAll("\\.","/")+"/"+recordingId+"/row_"+row.getId()+"_res";
         if(isRequestWithBody(request)){
             var contentType = getCleanContentType( request.getHeader("content-type"));
             var resourceFile = pack.replaceAll("\\.","/")+"/"+recordingId+"/row_"+row.getId()+"_req";
             if(request.isBinaryRequest()){
                 a
-                        .add("var data = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource(\"/"+resourceFile+"\").toURI()));")
+                        .add("var data = this.getClass().getResourceAsStream(\"/"+resourceFile+"\").readAllBytes();")
                         .add("HttpEntity entity = new ByteArrayEntity(data, ContentType.create(\""+contentType+"\"));");
             }else{
                 a
-                        .add("var data = new Scanner(this.getClass().getResourceAsStream(\"/"+resourceFile+"\"), \"UTF-8\").next();")
+                        .add("var data = new String(this.getClass().getResourceAsStream(\"/"+resourceFile+"\").readAllBytes());")
                         .add("HttpEntity entity = new StringEntity(data, ContentType.create(\""+contentType+"\"));");
             }
             a
@@ -196,15 +209,15 @@ private ObjectMapper mapper = new ObjectMapper();
 
         if(response.isBinaryResponse()){
             a
-                    .add("var expectedResponseData = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource(\"/"+resourceFileResponse+"\").toURI()));");
+                    .add("var expectedResponseData = this.getClass().getResourceAsStream(\"/"+resourceFileResponse+"\").readAllBytes();");
         }else{
             a
-                    .add("var expectedResponseData = new Scanner(this.getClass().getResourceAsStream(\"/"+resourceFileResponse+"\"), \"UTF-8\").next();");
+                    .add("var expectedResponseData = new String(this.getClass().getResourceAsStream(\"/"+resourceFileResponse+"\").readAllBytes());");
         }
 
         a
                 .add("var expectedResponseCode = "+response.getStatusCode()+";")
-                .add("httpResponse = httpClient.execute(request);")
+                .add("var httpResponse = httpClient.execute(request);")
                 .add("HttpEntity responseEntity = httpResponse.getEntity();");
     }
 
