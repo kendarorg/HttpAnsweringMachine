@@ -39,5 +39,6 @@ RUN mkdir -p /etc/app/fe \
     && chmod +x /etc/service/fe/run
 
 COPY ./docker/fe.sh /etc/app/fe/
+COPY ./docker/fe.application.properties /etc/app/fe/application.properties
 COPY ./fe/target/*.jar /etc/app/fe/
 RUN chmod +x /etc/app/fe/*.sh
