@@ -9,7 +9,7 @@ RUN mkdir -p /etc/app/be-users \
     && chmod +x /etc/service/be-users/run
 
 COPY ./docker_multi/be-users.sh /etc/app/be-users/
-COPY ./docker-multi/be.application.properties /etc/app/be-users/application.properties
+COPY ./docker_multi/be.application.properties /etc/app/be-users/application.properties
 COPY ./be-users/target/*.jar /etc/app/be-users/
 RUN chmod +x /etc/app/be-users/*.sh
 
