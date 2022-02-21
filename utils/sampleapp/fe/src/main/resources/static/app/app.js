@@ -1,6 +1,8 @@
 var apiHost="http://api.sample.test";
 var useresHost="http://users.sample.test";
 
+
+
 if (Function.prototype.name === undefined) {
     // Add a custom property to all function values
     // that actually invokes a method to get the value
