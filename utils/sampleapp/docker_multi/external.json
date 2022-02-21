@@ -36,6 +36,11 @@
         "id": "4",
         "dns": "api.sample.test",
         "ip": "127.0.0.1"
+      },
+      {
+        "id": "5",
+        "dns": "users.sample.test",
+        "ip": "127.0.0.1"
       }
     ]
   },

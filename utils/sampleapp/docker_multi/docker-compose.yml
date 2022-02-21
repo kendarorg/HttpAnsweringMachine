@@ -56,6 +56,22 @@ services:
       - multisampleappnet
     depends_on:
       - ham.sampleapp.multi.master
+  ham.sampleapp.multi.be-useres:
+    container_name: users.sample.test
+    privileged: true
+    environment:
+      - DNS_HIJACK_SERVER=ham.sampleapp.multi.master
+      - ROOT_PWD=root
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    image: ham.sampleapp.be.users
+    networks:
+      - multisampleappnet
+    depends_on:
+      - ham.sampleapp.multi.master
   ham.sampleapp.multi.fe:
     container_name: www.sample.test
     privileged: true

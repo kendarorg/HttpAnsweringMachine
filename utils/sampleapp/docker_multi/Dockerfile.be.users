@@ -1,0 +1,16 @@
+FROM ham.client:latest
+
+RUN mkdir -p /etc/app/be-users \
+    && mkdir -p /etc/app/be-users/log \
+    && mkdir -p /etc/service/be-users/log \
+    && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/be-users/log\n" > /etc/service/be-users/log/run \
+    && chmod +x /etc/service/be-users/log/run \
+    && echo -e "#!/bin/bash\nexec 2>&1\nexec /etc/app/be-users/be-users.sh\n" > /etc/service/be-users/run \
+    && chmod +x /etc/service/be-users/run
+
+COPY ./docker_multi/be-users.sh /etc/app/be-users/
+COPY ./docker-multi/be.application.properties /etc/app/be-users/application.properties
+COPY ./be-users/target/*.jar /etc/app/be-users/
+RUN chmod +x /etc/app/be-users/*.sh
+
+
