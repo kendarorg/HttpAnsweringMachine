@@ -31,6 +31,11 @@
         "id": "4",
         "dns": "api.sample.test",
         "ip": "127.0.0.1"
+      },
+      {
+        "id": "5",
+        "dns": "users.sample.test",
+        "ip": "127.0.0.1"
       }
     ]
   },
@@ -52,6 +57,12 @@
       },
       {
         "id": "3",
+        "when": "http://users.sample.test",
+        "where": "http://127.0.0.1:8100",
+        "test": "127.0.0.1:8100"
+      },
+      {
+        "id": "4",
         "when": "http://www.sample.test",
         "where": "http://127.0.0.1:8080",
         "test": "127.0.0.1:8080"
@@ -128,7 +139,7 @@
   {
     "id": "oidc.server",
     "tokenExpiration": 86400,
-    "active": true
+    "active": false
   },
   {
     "id": "js.filters",
@@ -138,11 +149,6 @@
   {
     "id": "replayer.server",
     "path": "replayerdata",
-    "active": true
-  },
-  {
-    "id": "pacts.server",
-    "path": "pacts",
     "active": true
   }
 ]

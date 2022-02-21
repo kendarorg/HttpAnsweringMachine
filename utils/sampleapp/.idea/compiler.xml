@@ -8,12 +8,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="be" />
         <module name="fe" />
+        <module name="be-users" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="be" options="-parameters" />
+      <module name="be-users" options="-parameters" />
       <module name="fe" options="-parameters" />
     </option>
   </component>

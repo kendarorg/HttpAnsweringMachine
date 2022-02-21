@@ -17,12 +17,18 @@
     <modules>
         <module>be</module>
         <module>fe</module>
+        <module>be-users</module>
     </modules>
     <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <apache.http.version>4.5.13</apache.http.version>
+        <commons.io.version>2.6</commons.io.version>
+        <jackson.version>2.12.4</jackson.version>
+        <junit.version>5.8.1</junit.version>
+        <commons.io.version>2.11.0</commons.io.version>
     </properties>
 
 </project>

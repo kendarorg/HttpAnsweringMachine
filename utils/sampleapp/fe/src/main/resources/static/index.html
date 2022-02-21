@@ -79,7 +79,7 @@
     var scriptsTable = new SimpleGrid("Employees","employeesTable","id",["id","name","role","_appointments"],
         function(table){
             $.ajax({
-                url: apiHost+"/api/v1/employees",
+                url: useresHost+"/api/v1/employees",
                 type: 'GET',
                 success: function(res) {
                     for(var v=0;v<res.length;v++) {
@@ -99,7 +99,7 @@
         function (table,id) {
             table.deleteFromTable(id,function(id,success,error){
                 $.ajax({
-                    url: apiHost+"/api/v1/employees/"+id,
+                    url: useresHost+"/api/v1/employees/"+id,
                     type: 'DELETE',
                     success: function (res) {
                         success();
@@ -120,7 +120,7 @@
             };
 
             $.ajax({
-                url: apiHost+"/api/v1/employees"+(saveOrUpdate?"":"/"+id),
+                url: useresHost+"/api/v1/employees"+(saveOrUpdate?"":"/"+id),
                 type: saveOrUpdate?'POST':'PUT',
                 data:JSON.stringify(data),
                 contentType: "application/json",
