@@ -80,10 +80,10 @@
             <div id="optimizedscript" class="tab-pane fade in active">
                 <h3>Script</h3>
                 <div class="col-md-8">
-                    <button id="delete" name="delete" type="button"  class="btn btn-default" onClick="deleteSelected();">Delete Selected</button>
-                    <button id="selectall" name="selectall" type="button"  class="btn btn-default" onClick="selectall();">Select All</button>
-                    <button id="unselectall" name="unselectall" type="button"  class="btn btn-default" onClick="unselectall();">Unselect All</button>
-                    <button id="clone" name="clone" type="button"  class="btn btn-default" onClick="cloneselected();">Clone Selected</button>
+                    <button id="script_deleteselected" name="script_deleteselected" type="button"  class="btn btn-default" onClick="deleteSelected();">Delete Selected</button>
+                    <button id="script_selectall" name="script_selectall" type="button"  class="btn btn-default" onClick="selectall();">Select All</button>
+                    <button id="script_deselectall" name="script_deselectall" type="button"  class="btn btn-default" onClick="unselectall();">Unselect All</button>
+                    <button id="script_clone" name="script_clone" type="button"  class="btn btn-default" onClick="cloneselected();">Clone Selected</button>
                     <br>
                 </div>
                 <div class="col-md-8">
@@ -100,6 +100,7 @@
                             <th>Res.Body</th>
                             <th colspan="2">
                                 <button class="btn btn-danger form-control"
+                                        id="script_addline" name="script_addline"
                                         onClick="addLine();">Add</button>
                             </th>
                         </tr>
@@ -121,8 +122,8 @@
                             <th>Req.Body</th>
                             <th>Res.Body</th>
                             <th colspan="2">
-                                <button class="btn btn-danger form-control"
-                                        onClick="addLine();">Add</button>
+                                <!--<button class="btn btn-danger form-control"
+                                        onClick="addLine();">Add</button>-->
                             </th>
                         </tr>
                     </table>
@@ -140,15 +141,17 @@
         {id:["startreplaying"],states:["PAUSED_REPLAYING","NONE"]},
         {id:["stopreplaying"],states:["PAUSED_REPLAYING","REPLAYING"]},
         {id:["pausereplaying"],states:["REPLAYING"]},
-        {id:["startrecording"],states:["NONE","PAUSED_RECORDING"]},
+        {id:["startrecording"],states:["NONE","PAUSED_RECORDING"],callback:function(){
+                return linesTable.data.length==0;
+            }},
         {id:["stoprecording"],states:["RECORDING","PAUSED_RECORDING"]},
         {id:["pauserecording"],states:["RECORDING"]},
-        {id:["clone"],states:["NONE","OTHER_RUNNING"]},
+        //{id:["script_clone"],states:["NONE","OTHER_RUNNING"]},
         {id:["save"],states:["NONE","OTHER_RUNNING"]},
 
-        {id:["script_selectall","script_deselectall","script_deleteselected"],states:["NONE","OTHER_RUNNING"]},
+        {id:["script_addline","script_deleteselected"],states:["NONE","OTHER_RUNNING"]},
 
-        {id:["full_selectall","full_deselectall","full_deleteselected"],states:["NONE","OTHER_RUNNING"]},
+        //s{id:["full_deleteselected"],states:["NONE","OTHER_RUNNING"]},
 
         {id:["play_pact"],states:["NONE"]},
         {id:["stop_pact"],states:["PLAYING_PACT"]},
