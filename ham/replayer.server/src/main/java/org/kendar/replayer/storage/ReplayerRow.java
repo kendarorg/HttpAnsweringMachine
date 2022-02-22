@@ -12,6 +12,7 @@ public class ReplayerRow {
     private String requestHash;
     private String responseHash;
     private int id;
+    private boolean stimulatedTest;
 
     public Calendar getTimestamp() {
         return timestamp;
@@ -70,4 +71,11 @@ public class ReplayerRow {
         return done;
     }
 
+    public boolean isStimulatedTest() {
+        return stimulatedTest;
+    }
+
+    public void setStimulatedTest(boolean stimulatedTest) {
+        this.stimulatedTest = stimulatedTest;
+    }
 }

@@ -28,7 +28,16 @@
             <button id="startreplaying" name="startreplaying" type="button"  class="btn btn-default" onClick="executeAct('start','replaying');">Start Replaying</button>
             <button id="pausereplaying" name="pausereplaying" type="button"  class="btn btn-default" onClick="executeAct('pause','replaying');">Pause Replaying</button>
             <button id="stopreplaying" name="stopreplaying" type="button"  class="btn btn-default" onClick="executeAct('stop','replaying');">Stop Replaying</button>
-
+        </div>
+        <div class="col-md-8">
+            <br>
+            <button id="play_pact" name="play_pact" type="button"  class="btn btn-default" onClick="executeAct('start','pact');">Start PACT</button>
+            <button id="stop_pact" name="stop_pact" type="button"  class="btn btn-default" onClick="executeAct('stop','pact');">Stop PACT</button>
+        </div>
+        <div class="col-md-8">
+            <br>
+            <button id="play_null" name="play_null" type="button"  class="btn btn-default" onClick="executeAct('start','null');">Start NULL</button>
+            <button id="stop_null" name="stop_null" type="button"  class="btn btn-default" onClick="executeAct('stop','null');">Stop NULL</button>
         </div>
         <div class="col-md-8">
             <h3>SCRIPT</h3>
@@ -84,6 +93,7 @@
                     <button id="script_selectall" name="script_selectall" type="button"  class="btn btn-default" onClick="selectall();">Select All</button>
                     <button id="script_deselectall" name="script_deselectall" type="button"  class="btn btn-default" onClick="unselectall();">Unselect All</button>
                     <button id="script_clone" name="script_clone" type="button"  class="btn btn-default" onClick="cloneselected();">Clone Selected</button>
+                    <button id="script_togglestimulatedselected" name="script_togglestimulatedselected" type="button"  class="btn btn-default" onClick="togglestimulatedselected();">Toggle selected as stimulated</button>
                     <br>
                 </div>
                 <div class="col-md-8">
@@ -91,6 +101,7 @@
                         <tr>
                             <th>Selected</th>
                             <th>Id</th>
+                            <th>Stimulated Test</th>
                             <th>Method</th>
                             <th>Host</th>
                             <th>Path</th>
@@ -110,10 +121,17 @@
             <div id="fullpath" class="tab-pane fade">
                 <h3>Full path</h3>
                 <div class="col-md-8">
+                    <button id="script_togglestimulatorselected" name="script_togglestimulatorselected" type="button"  class="btn btn-default" onClick="togglestimulatorselected();">Toggle selected as stimulator</button>
+                    <button id="script_togglepactselected" name="script_togglepactselected" type="button"  class="btn btn-default" onClick="togglepactselected();">Toggle selected as PACT</button>
+                    <br>
+                </div>
+                <div class="col-md-8">
                     <table class="table table-striped" id="allCalls">
                         <tr>
                             <th>Selected</th>
                             <th>Id</th>
+                            <th>Pact Test</th>
+                            <th>Stimulator Test</th>
                             <th>Method</th>
                             <th>Host</th>
                             <th>Path</th>
@@ -149,9 +167,9 @@
         //{id:["script_clone"],states:["NONE","OTHER_RUNNING"]},
         {id:["save"],states:["NONE","OTHER_RUNNING"]},
 
-        {id:["script_addline","script_deleteselected"],states:["NONE","OTHER_RUNNING"]},
+        {id:["script_addline","script_deleteselected","script_togglestimulatorseleted"],states:["NONE","OTHER_RUNNING"]},
 
-        //s{id:["full_deleteselected"],states:["NONE","OTHER_RUNNING"]},
+        {id:["script_togglestimulatorseleted","script_togglepactselected"],states:["NONE","OTHER_RUNNING"]},
 
         {id:["play_pact"],states:["NONE"]},
         {id:["stop_pact"],states:["PLAYING_PACT"]},
@@ -181,6 +199,7 @@
        checkButtons();
     });
 
+    //'_pactTest','_stimulatorTest
     var loadIndexData = function(table){
         $.ajax({
             url: "/api/plugins/replayer/recording/" + getUrlParameter("id"),
@@ -211,6 +230,8 @@
             </div>`
                     line['_responseHashCalc'] = "No";
                     line['_requestHashCalc'] = "No";
+                    line['_pactTest'] = line['pactTest']?"Yes":"No";
+                    line['_stimulatorTest'] = line['stimulatorTest']?"Yes":"No";
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
@@ -244,6 +265,7 @@
             </div>`
                     line['_responseHashCalc'] = "No";
                     line['_requestHashCalc'] = "No";
+                    line['_stimulatedTest'] = line['stimulatedTest']?"Yes":"No";
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
@@ -253,7 +275,7 @@
             }
         });
     }
-    var fields = ['_selected','id','request.method','request.host','request.path','_queryCalc','response.statusCode',
+    var fields = ['_selected','id','_stimulatedTest','request.method','request.host','request.path','_queryCalc','response.statusCode',
         '_requestHashCalc','_responseHashCalc'];
     var linesTable = new SimpleGrid("Request-Response","linesTable","id",fields,
         function(table) {
@@ -277,11 +299,13 @@
             });
         },null,[
             {id:"id",type:"string"},
+            {id:"_stimulatedTest",type:"bool"},
             {id:"request.host",type:"string"},
             {id:"request.path",type:"string"},
             {id:"request.query",type:"string"}]);
-
-    var allCalls = new SimpleGrid("Request-Response","allCalls","id",fields,
+    var fieldsAllCalls = ['_selected','id','_pactTest','_stimulatorTest','request.method','request.host','request.path','_queryCalc','response.statusCode',
+        '_requestHashCalc','_responseHashCalc'];
+    var allCalls = new SimpleGrid("Request-Response","allCalls","id",fieldsAllCalls,
         function (table){
             loadIndexData(table);
         },
@@ -301,6 +325,8 @@
             });
         },null,[
             {id:"id",type:"string"},
+            {id:"_pactTest",type:"bool"},
+            {id:"_stimulatorTest",type:"bool"},
             {id:"request.host",type:"string"},
             {id:"request.path",type:"string"},
             {id:"request.query",type:"string"}]);

@@ -106,7 +106,7 @@ class SimpleGrid {
     }
 
     compareBool(valueToCompareWith, content) {
-        if(stringToBoolean(valueToCompareWith)==stringToBoolean(content)) return true;
+        if(this.stringToBoolean(valueToCompareWith)==this.stringToBoolean(content)) return true;
         return false;
     }
 
