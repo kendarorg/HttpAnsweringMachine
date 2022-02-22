@@ -92,6 +92,11 @@
             <artifactId>tika-core</artifactId>
             <version>${tika.core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.mozilla</groupId>
+            <artifactId>rhino</artifactId>
+            <version>${rhino.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -117,6 +122,8 @@
                                         <include>mybatis*.jar</include>
                                         <include>derbyclient*.jar</include>
                                         <include>tika*.jar</include>
+                                        <include>rhino-*.jar</include>
+                                        <include>hamcrest-*.jar</include>
                                     </includes>
                                 </resource>
                             </resources>
