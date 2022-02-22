@@ -191,17 +191,21 @@ public class JsFilterLoader implements CustomFiltersLoader {
                 + "globalResult.put('response', JSON.stringify(globalFilterResult.response));\n"
                 + "globalResult.put('continue', globalFilterResult.continue);\n");
     // Load all scripts
-    for (var file : filterDescriptor.getRequires()) {
-      scriptSrc
-          .append("\r\n")
-          .append(Files.readString(Path.of(filterDescriptor.getRoot() + File.separator + file)));
+    if(filterDescriptor.getRequires()!=null) {
+      for (var file : filterDescriptor.getRequires()) {
+        scriptSrc
+                .append("\r\n")
+                .append(Files.readString(Path.of(filterDescriptor.getRoot() + File.separator + file)));
+      }
     }
     scriptSrc.append("\r\nfunction runFilter(request,response,utils){");
-    for (var sourceLine :
-            filterDescriptor.getSource()) {
-      scriptSrc
-              .append("\r\n")
-              .append(sourceLine);
+    if(filterDescriptor.getSource()!=null) {
+      for (var sourceLine :
+              filterDescriptor.getSource()) {
+        scriptSrc
+                .append("\r\n")
+                .append(sourceLine);
+      }
     }
     scriptSrc.append("\r\n}");
 
