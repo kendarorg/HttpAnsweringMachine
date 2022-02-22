@@ -143,6 +143,23 @@ public class ReplayerAPICrud implements FilteringClass {
       var scriptData = mapper.readValue(req.getRequestText(), ScriptData.class);
       result.setDescription(scriptData.getDescription());
       result.setFilter(scriptData.getFilter());
+
+      //Update indexes
+      //Update fulls
+      for (var indexLine : result.getIndexes()) {
+        indexLine.setPactTest(scriptData.getPactTest().stream().anyMatch(a->a.intValue()==indexLine.getId()));
+      }
+      for (var indexLine : result.getIndexes()) {
+        indexLine.setStimulatorTest(scriptData.getStimulatorTest().stream().anyMatch(a->a.intValue()==indexLine.getId()));
+      }
+
+      for (var row : result.getDynamicRequests()) {
+        row.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==row.getId()));
+      }
+      for (var row : result.getStaticRequests()) {
+        row.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==row.getId()));
+      }
+
       var resultInFile = mapper.writeValueAsString(result);
       Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
     }
