@@ -11,6 +11,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/docker.builder/pom.xml" />
+        <option value="$PROJECT_DIR$/pacts.server/pom.xml" />
       </set>
     </option>
   </component>
