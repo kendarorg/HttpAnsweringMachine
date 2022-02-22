@@ -2,18 +2,14 @@ package org.kendar.servers.http.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.kendar.http.CustomFiltersLoader;
-import org.kendar.http.FilterDescriptor;
-import org.kendar.http.FilteringClass;
-import org.kendar.http.HttpFilterType;
+import org.kendar.http.*;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
-import org.kendar.servers.http.api.model.FilterDto;
-import org.kendar.http.FilterConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.http.api.model.FilterDto;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 

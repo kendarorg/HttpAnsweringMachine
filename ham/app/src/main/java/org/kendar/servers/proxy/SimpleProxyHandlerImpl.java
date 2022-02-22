@@ -12,8 +12,13 @@ import javax.annotation.PostConstruct;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.*;
-import java.util.concurrent.*;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class SimpleProxyHandlerImpl implements SimpleProxyHandler {

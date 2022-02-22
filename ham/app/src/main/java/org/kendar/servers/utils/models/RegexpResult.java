@@ -1,6 +1,5 @@
 package org.kendar.servers.utils.models;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RegexpResult {

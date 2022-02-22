@@ -3,6 +3,7 @@ package org.kendar.replayer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
+import org.kendar.replayer.storage.RecordingDataset;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
@@ -23,10 +24,11 @@ public class ReplayerStatus {
   private final DataReorganizer dataReorganizer;
   private final FileResourcesUtils fileResourcesUtils;
   private final ObjectMapper mapper = new ObjectMapper();
-  private ReplayerDataset dataset;
+  private RecordingDataset dataset;
   private ReplayerState state = ReplayerState.NONE;
   private final String replayerData;
   private final Md5Tester md5Tester;
+  private ReplayerDataset replayer;
 
   public ReplayerStatus(
       LoggerBuilder loggerBuilder,
@@ -50,7 +52,7 @@ public class ReplayerStatus {
     if (state != ReplayerState.NONE) return;
     state = ReplayerState.RECORDING;
     dataset =
-        new ReplayerDataset(
+        new RecordingDataset(
             id, rootPath.toString(), description, loggerBuilder, dataReorganizer, md5Tester);
   }
 
@@ -61,7 +63,7 @@ public class ReplayerStatus {
 
   public boolean replay(Request req, Response res) {
     if (state != ReplayerState.REPLAYING) return false;
-    Response response = dataset.findResponse(req);
+    Response response = replayer.findResponse(req);
     if (response != null) {
       res.setBinaryResponse(response.isBinaryResponse());
       if (response.isBinaryResponse()) {
@@ -82,8 +84,9 @@ public class ReplayerStatus {
   }
 
   public String getCurrentScript() {
-    if (dataset == null) return null;
-    return dataset.getName();
+    if (dataset != null) return dataset.getName();
+    if (replayer != null) return replayer.getName();
+    return null;
   }
 
   public void restartRecording() {
@@ -111,10 +114,10 @@ public class ReplayerStatus {
     }
     if (state != ReplayerState.NONE) return;
     state = ReplayerState.REPLAYING;
-    dataset =
+    replayer =
         new ReplayerDataset(
             id, rootPath.toString(), null, loggerBuilder, dataReorganizer, md5Tester);
-    dataset.load();
+    replayer.load();
   }
 
   public void restartReplaying() {
@@ -129,6 +132,6 @@ public class ReplayerStatus {
 
   public void stopReplaying() {
     state = ReplayerState.NONE;
-    dataset = null;
+    replayer = null;
   }
 }
