@@ -191,6 +191,28 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
+    var buttonsMask=[
+        {id:["save"],states:["NONE","OTHER_RUNNING"]}
+    ];
+
+    var checkButtons = function(){
+        $.ajax({
+            url: "/api/plugins/replayer/status",
+            type: 'GET',
+            success: function (res) {
+                var status = res["status"].toUpperCase();
+                var running = res["running"].toUpperCase();
+                var thisScript = getUrlParameter("id").toUpperCase();
+                if(status!="NONE" && thisScript!=running){
+                    status="OTHER_RUNNING";
+                }
+                buttonEnabler(buttonsMask,status);
+            }});
+    };
+    longPolling(1000,function(){
+        checkButtons();
+    });
+
     var defaultSaveAction = "put";
     var request_headerTable = new SimpleGrid("Request-Headers","request_headerTable","key",["key","value"],
         null,

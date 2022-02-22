@@ -571,3 +571,39 @@ const convertFileToBase64 = function (file) {
         reader.onerror = reject;
     });
 };
+
+const longPolling = function (milliseconds,callback){
+    callback();
+    var sleep = time => new Promise(resolve => setTimeout(resolve, time));
+    var poll = (promiseFn, time) => promiseFn().then(
+        sleep(time).then(() => poll(promiseFn, time)));
+
+    // Greet the World every second
+    poll(() => new Promise(() => callback()), milliseconds);
+};
+
+const buttonEnabler = function(buttonsMask,status){
+    var status = status.toUpperCase();
+    for(var i=0;i<buttonsMask.length;i++){
+        var bMask = buttonsMask[i];
+        for(var s=0;s<bMask.states.length;s++){
+            var realState = bMask.states[s].toUpperCase();
+            var enable = false;
+            if(realState==status){
+                enable=true;
+            }
+            for(var b=0;b<bMask.id.length;b++){
+                var butt = bMask.id[b];
+                var buttInstance = $("#"+butt);
+                if(buttInstance){
+                    var visible = buttInstance.is(":visible");
+                    if(visible && !enable){
+                        buttInstance.hide();
+                    }else if(!visible && enable){
+                        buttInstance.show();
+                    }
+                }
+            }
+        }
+    }
+}

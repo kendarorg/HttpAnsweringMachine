@@ -136,12 +136,53 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
+    var buttonsMask=[
+        {id:["startreplaying"],states:["PAUSED_REPLAYING","NONE"]},
+        {id:["stopreplaying"],states:["PAUSED_REPLAYING","REPLAYING"]},
+        {id:["pausereplaying"],states:["REPLAYING"]},
+        {id:["startrecording"],states:["NONE","PAUSED_RECORDING"]},
+        {id:["stoprecording"],states:["RECORDING","PAUSED_RECORDING"]},
+        {id:["pauserecording"],states:["RECORDING"]},
+        {id:["clone"],states:["NONE","OTHER_RUNNING"]},
+        {id:["save"],states:["NONE","OTHER_RUNNING"]},
+
+        {id:["script_selectall","script_deselectall","script_deleteselected"],states:["NONE","OTHER_RUNNING"]},
+
+        {id:["full_selectall","full_deselectall","full_deleteselected"],states:["NONE","OTHER_RUNNING"]},
+
+        {id:["play_pact"],states:["NONE"]},
+        {id:["stop_pact"],states:["PLAYING_PACT"]},
+
+        {id:["play_null"],states:["NONE"]},
+        {id:["stop_null"],states:["PLAYING_NULL_INFRASTRUCTURE"]}
+    ];
+
+
+
+    var checkButtons = function(){
+        $.ajax({
+            url: "/api/plugins/replayer/status",
+            type: 'GET',
+            success: function (res) {
+                var status = res["status"].toUpperCase();
+                var running = res["running"].toUpperCase();
+                var thisScript = getUrlParameter("id").toUpperCase();
+                if(status!="NONE" && thisScript!=running){
+                    status="OTHER_RUNNING";
+                }
+                buttonEnabler(buttonsMask,status);
+            }});
+    };
+
+    longPolling(1000,function(){
+       checkButtons();
+    });
+
     var loadIndexData = function(table){
         $.ajax({
             url: "/api/plugins/replayer/recording/" + getUrlParameter("id"),
             type: 'GET',
             success: function (res) {
-                retrieveScriptStatuses(res["lines"].length);
                 $("#description").val(res['description']);
                 if (res['filter'] != undefined) {
                     $("#dst").val(res['filter']['dst']);
@@ -182,7 +223,6 @@
             url: "/api/plugins/replayer/recording/" + getUrlParameter("id"),
             type: 'GET',
             success: function (res) {
-                retrieveScriptStatuses(res["lines"].length);
                 $("#description").val(res['description']);
                 if (res['filter'] != undefined) {
                     $("#dst").val(res['filter']['dst']);
@@ -271,7 +311,6 @@
         window.open("/api/plugins/replayer/generator/"+getUrlParameter("id")+"?package="+pack);
     }
 
-    handleStateButtons(null);
     linesTable.load();
     allCalls.load();
 
@@ -298,35 +337,6 @@
         location.href = "line.html?line="+maxValue+"&id="+getUrlParameter("id");
     }
 
-    function retrieveScriptStatuses(linesCount){
-        $.ajax({
-            url: "/api/plugins/replayer/recording",
-            type: 'GET',
-            success: function(res) {
-                var currentId = getUrlParameter("id");
-                var active=null;
-                var current=null;
-                for(var i=0;i<res.length;i++){
-                    var script = res[i];
-                    if(script.state!="NONE" && script.state!=undefined && script.state!=""){
-                        active=script;
-                    }
-                    if(script.id==currentId){
-                        current=script;
-                    }
-                }
-                if( (active==null || current.id==active.id) && current!=null){
-                    if(current.state==undefined || current.state==""){
-                        current.state="NONE";
-                    }
-                    handleStateButtons(current.state,linesCount);
-                }else{
-                    handleStateButtons("NONE",linesCount);
-                }
-            }
-        });
-    }
-
     function executeAct(action,type){
         var id = getUrlParameter("id");
         var usedType = type=="recording"?"record":"replay";
@@ -338,33 +348,6 @@
                 location.reload();
             }
         });
-    }
-
-    function handleStateButtons(state,linesCount){
-        var buttons = {"startrecording":false,"pauserecording":false,"stoprecording":false,
-            "startreplaying":false,"pausereplaying":false,"stopreplaying":false,"save":false};
-        if(state=="NONE"){
-            if(linesCount==0)buttons["startrecording"]=true;
-            if(linesCount>0)buttons["startreplaying"]=true;
-            buttons['save']=true;
-        }else if(state=="RECORDING"){
-            buttons["pauserecording"]=true;
-            buttons["stoprecording"]=true;
-        }else if(state=="PAUSED_RECORDING"){
-            buttons["startrecording"]=true;
-            buttons["stoprecording"]=true;
-        }else if(state=="REPLAYING"){
-            buttons["pausereplaying"]=true;
-            buttons["stopreplaying"]=true;
-        }else if(state=="PAUSED_REPLAYING"){
-            buttons["startreplaying"]=true;
-            buttons["stopreplaying"]=true;
-        }
-        for (var key in buttons) {
-            var visible = buttons[key];
-            if(!visible) $("#"+key).hide();
-            else $("#"+key).show();
-        }
     }
 
     function getSelectedLines(){
