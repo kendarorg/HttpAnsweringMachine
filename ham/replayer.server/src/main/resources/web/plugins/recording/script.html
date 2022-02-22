@@ -240,6 +240,8 @@
                 <input class="form-check-input" type="checkbox" value="" id="stimulatorTest_` + line['id'] + `" name="stimulatorTest_`+line['id']+`">
 
             </div>`;
+                    setChecked($('#allCalls #pactTest_'+line['id']),line['pactTest']);
+                    setChecked($('#allCalls #stimulatorTest_'+line['id']),line['stimulatorTest']);
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
@@ -275,13 +277,13 @@
                     line['_requestHashCalc'] = "No";
                     line['_stimulatedTest'] = `<div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="stimulatedTest_` + line['id'] + `" name="stimulatedTest_`+line['id']+`">
-
             </div>`;
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
                     //tSource,tableId,id,data,fields
                     linesTable.appendToTable(line);
+                    setChecked($('#linesTable #stimulatedTest_'+line['id']),line['stimulatedTest']);
                 }
             }
         });
@@ -485,18 +487,18 @@
         var stimulatorTest = [];
         linesTable.data.forEach(function (row, i) {
             if($('#linesTable #stimulatedTest_'+row['id']).prop("checked")){
-                stimulatedTest.push(row[id]);
+                stimulatedTest.push(row['id']);
             }
         });
 
         allCalls.data.forEach(function (row, i) {
-            if($('#allCalls #pactTest__'+row['id']).prop("checked")){
-                pactTest.push(row[id]);
+            if($('#allCalls #pactTest_'+row['id']).prop("checked")){
+                pactTest.push(row['id']);
             }
         });
         allCalls.data.forEach(function (row, i) {
             if($('#allCalls #stimulatorTest_'+row['id']).prop("checked")){
-                stimulatorTest.push(row[id]);
+                stimulatorTest.push(row['id']);
             }
         });
 
