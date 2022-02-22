@@ -441,12 +441,24 @@ const flashMessage = function (msg) {
 };
 
 const setChecked = function (jqueryObj, checked) {
+    if(jqueryObj.is(":hidden"))return;
     if (checked) {
         jqueryObj.attr('checked', 'checked');
     } else {
         jqueryObj.removeAttr('checked');
     }
     jqueryObj.attr('value', checked);
+};
+const toggleCheck = function (jqueryObj) {
+    if(jqueryObj.is(":hidden"))return;
+    var checked = jqueryObj.prop("checked");
+    if(checked===undefined) checked=false;
+    if (checked) {
+        jqueryObj.removeAttr('checked');
+    } else {
+        jqueryObj.attr('checked', 'checked');
+    }
+    jqueryObj.attr('value', !checked);
 };
 
 const downloadFile = function (urlToSend) {
