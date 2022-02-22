@@ -586,22 +586,26 @@ const buttonEnabler = function(buttonsMask,status){
     var status = status.toUpperCase();
     for(var i=0;i<buttonsMask.length;i++){
         var bMask = buttonsMask[i];
+        var enable = false;
         for(var s=0;s<bMask.states.length;s++){
             var realState = bMask.states[s].toUpperCase();
-            var enable = false;
-            if(realState==status){
+            if(realState==status || realState=="*"){
                 enable=true;
+                break;
             }
-            for(var b=0;b<bMask.id.length;b++){
-                var butt = bMask.id[b];
-                var buttInstance = $("#"+butt);
-                if(buttInstance){
-                    var visible = buttInstance.is(":visible");
-                    if(visible && !enable){
-                        buttInstance.hide();
-                    }else if(!visible && enable){
-                        buttInstance.show();
-                    }
+        }
+        if(bMask.callback!==undefined && enable){
+            enable = bMask.callback();
+        }
+        for(var b=0;b<bMask.id.length;b++){
+            var butt = bMask.id[b];
+            var buttInstance = $("#"+butt);
+            if(buttInstance){
+                var visible = buttInstance.is(":visible");
+                if(visible && !enable){
+                    buttInstance.hide();
+                }else if(!visible && enable){
+                    buttInstance.show();
                 }
             }
         }
