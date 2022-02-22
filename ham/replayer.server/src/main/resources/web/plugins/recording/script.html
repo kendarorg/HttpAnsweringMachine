@@ -479,26 +479,39 @@
 
     function save(){
         var id = getUrlParameter("id");
+
+        var stimulatedTest = [];
+        var pactTest = [];
+        var stimulatorTest = [];
+        linesTable.data.forEach(function (row, i) {
+            if($('#linesTable #stimulatedTest_'+row['id']).prop("checked")){
+                stimulatedTest.push(row[id]);
+            }
+        });
+
+        allCalls.data.forEach(function (row, i) {
+            if($('#allCalls #pactTest__'+row['id']).prop("checked")){
+                pactTest.push(row[id]);
+            }
+        });
+        allCalls.data.forEach(function (row, i) {
+            if($('#allCalls #stimulatorTest_'+row['id']).prop("checked")){
+                stimulatorTest.push(row[id]);
+            }
+        });
+
         var data = {
             id:id,
             description: $("#description").val(),
             filter:{
                 dst:$("#dst").val(),
                 src:$("#src").val(),
-                test:$("#test").val(),
-            }
+                test:$("#test").val()
+            },
+            stimulatorTest:stimulatorTest,
+            pactTest:pactTest,
+            stimulatedTest:stimulatedTest
         };
-
-        linesTable.data.forEach(function (row, i) {
-            row['stimulatedTest']=$('#linesTable #stimulatedTest_'+row['id']).prop("checked");
-        });
-
-        allCalls.data.forEach(function (row, i) {
-            row['pactTest_']=$('#allCalls #pactTest__'+row['id']).prop("checked");
-        });
-        allCalls.data.forEach(function (row, i) {
-            row['pactTest_']=$('#allCalls #stimulatorTest_'+row['id']).prop("checked");
-        });
         //FIXME: SHOULD SAVE THE TEST STUFFS
         $.ajax({
             url: '/api/plugins/replayer/recording/'+id,
