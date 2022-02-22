@@ -488,6 +488,18 @@
                 test:$("#test").val(),
             }
         };
+
+        linesTable.data.forEach(function (row, i) {
+            row['stimulatedTest']=$('#linesTable #stimulatedTest_'+row['id']).prop("checked");
+        });
+
+        allCalls.data.forEach(function (row, i) {
+            row['pactTest_']=$('#allCalls #pactTest__'+row['id']).prop("checked");
+        });
+        allCalls.data.forEach(function (row, i) {
+            row['pactTest_']=$('#allCalls #stimulatorTest_'+row['id']).prop("checked");
+        });
+        //FIXME: SHOULD SAVE THE TEST STUFFS
         $.ajax({
             url: '/api/plugins/replayer/recording/'+id,
             type: 'put',
