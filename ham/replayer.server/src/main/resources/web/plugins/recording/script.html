@@ -121,8 +121,10 @@
             <div id="fullpath" class="tab-pane fade">
                 <h3>Full path</h3>
                 <div class="col-md-8">
-                    <button id="script_togglestimulatorselected" name="script_togglestimulatorselected" type="button"  class="btn btn-default" onClick="togglestimulatorselected();">Toggle selected as stimulator</button>
-                    <button id="script_togglepactselected" name="script_togglepactselected" type="button"  class="btn btn-default" onClick="togglepactselected();">Toggle selected as PACT</button>
+                    <button id="full_togglepactselected" name="full_togglepactselected" type="button"  class="btn btn-default" onClick="togglepactselected();">Toggle selected as PACT</button>
+                    <button id="full_togglestimulatorselected" name="full_togglestimulatorselected" type="button"  class="btn btn-default" onClick="togglestimulatorselected();">Toggle selected as stimulator</button>
+                    <button id="full_selectall" name="full_selectall" type="button"  class="btn btn-default" onClick="full_selectall();">Select All</button>
+                    <button id="full_deselectall" name="full_deselectall" type="button"  class="btn btn-default" onClick="full_unselectall();">Unselect All</button>
                     <br>
                 </div>
                 <div class="col-md-8">
@@ -225,13 +227,19 @@
                     line = JSON.parse(JSON.stringify(line));
                     line['id'] = indexline['id'];
                     line['_selected'] = `<div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="selected_` + line['id'] + `" name="selected_\`+line['id']+\`">
+                <input class="form-check-input" type="checkbox" value="" id="selected_` + line['id'] + `" name="selected_`+line['id']+`">
 
             </div>`
                     line['_responseHashCalc'] = "No";
                     line['_requestHashCalc'] = "No";
-                    line['_pactTest'] = line['pactTest']?"Yes":"No";
-                    line['_stimulatorTest'] = line['stimulatorTest']?"Yes":"No";
+                    line['_pactTest'] = `<div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="pactTest_` + line['id'] + `" name="pactTest_`+line['id']+`">
+
+            </div>`;
+                    line['_stimulatorTest'] = `<div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="stimulatorTest_` + line['id'] + `" name="stimulatorTest_`+line['id']+`">
+
+            </div>`;
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
@@ -262,10 +270,13 @@
                     line['_selected'] = `<div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="selected_` + line['id'] + `" name="selected_\`+line['id']+\`">
 
-            </div>`
+            </div>`;
                     line['_responseHashCalc'] = "No";
                     line['_requestHashCalc'] = "No";
-                    line['_stimulatedTest'] = line['stimulatedTest']?"Yes":"No";
+                    line['_stimulatedTest'] = `<div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="stimulatedTest_` + line['id'] + `" name="stimulatedTest_`+line['id']+`">
+
+            </div>`;
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
@@ -383,7 +394,7 @@
 
         var result = [];
         linesTable.data.forEach(function (row, i) {
-            if($('#selected_'+row['id']).prop("checked")) {
+            if($('#linesTable #selected_'+row['id']).prop("checked")) {
                 result.push(row['id']);
             }
         });
@@ -423,12 +434,46 @@
 
     function selectall(){
         linesTable.data.forEach(function (row, i) {
-            setChecked($('#selected_'+row['id']),true);
+            setChecked($('#linesTable #selected_'+row['id']),true);
         });
     }
+
+    function full_selectall(){
+        allCalls.data.forEach(function (row, i) {
+            setChecked($('#allCalls #selected_'+row['id']),true);
+        });
+    }
+
+    function full_unselectall(){
+        allCalls.data.forEach(function (row, i) {
+            setChecked($('#allCalls #selected_'+row['id']),false);
+        });
+    }
+
+    function togglestimulatedselected(){
+        linesTable.data.forEach(function (row, i) {
+            if(!$('#linesTable #selected_'+row['id']).prop("checked"))return;
+            toggleCheck($('#linesTable #stimulatedTest_'+row['id']));
+        });
+    }
+
+    function togglestimulatorselected(){
+
+        allCalls.data.forEach(function (row, i) {
+            if(!$('#allCalls #selected_'+row['id']).prop("checked"))return;
+            toggleCheck($('#allCalls #stimulatorTest_'+row['id']));
+        });
+    }
+    function togglepactselected(){
+        allCalls.data.forEach(function (row, i) {
+            if(!$('#allCalls #selected_'+row['id']).prop("checked"))return;
+            toggleCheck($('#allCalls #pactTest_'+row['id']));
+        });
+    }
+
     function unselectall(){
         linesTable.data.forEach(function (row, i) {
-            setChecked($('#selected_'+row['id']),false);
+            setChecked($('#linesTable #selected_'+row['id']),false);
         });
     }
 
