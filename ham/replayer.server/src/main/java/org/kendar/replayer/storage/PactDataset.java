@@ -97,7 +97,7 @@ public class PactDataset implements BaseDataset {
 
                 var response = new Response();
                 //Call request
-                externalRequester.callExternalSite(reqResp.getRequest(), response);
+                externalRequester.callSite(reqResp.getRequest(), response);
                 //FIXME: Should call the js file to do the check
                 //Run the js
                 //Write to resultsFile
