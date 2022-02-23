@@ -79,7 +79,7 @@ public class PactDataset implements BaseDataset {
                 Files.createDirectory(pactsDir);
             }
             var maps = new HashMap<Integer, ReplayerRow>();
-            var jss = new HashMap<Integer, String>();
+
             var replayerResult = mapper.readValue(stringPath.toFile(), ReplayerResult.class);
             for (var call : replayerResult.getStaticRequests()) {
                 maps.put(call.getId(), call);
@@ -94,11 +94,11 @@ public class PactDataset implements BaseDataset {
             for (var toCall : indexes) {
                 if (!running.get()) break;
                 var reqResp = maps.get(toCall.getReference());
-                var jsToRun = jss.get(toCall.getReference());
 
                 var response = new Response();
                 //Call request
                 externalRequester.callExternalSite(reqResp.getRequest(), response);
+                //FIXME: Should call the js file to do the check
                 //Run the js
                 //Write to resultsFile
             }
