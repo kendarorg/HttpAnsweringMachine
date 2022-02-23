@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ReplayerDataset {
+public class ReplayerDataset implements BaseDataset{
   private static final String MAIN_FILE = "runall.json";
   private final Logger logger;
   private DataReorganizer dataReorganizer;

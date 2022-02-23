@@ -18,16 +18,16 @@
         </div>
         <div class="col-md-8">
             <br>
-            <button id="startrecording" name="startrecording" type="button"  class="btn btn-default" onClick="executeAct('start','recording');">Start Recording</button>
-            <button id="pauserecording" name="pauserecording" type="button"  class="btn btn-default" onClick="executeAct('pause','recording');">Pause Recording</button>
-            <button id="stoprecording" name="stoprecording" type="button"  class="btn btn-default" onClick="executeAct('stop','recording');">Stop Recording</button>
+            <button id="startrecording" name="startrecording" type="button"  class="btn btn-default" onClick="executeAct('start','record');">Start Recording</button>
+            <button id="pauserecording" name="pauserecording" type="button"  class="btn btn-default" onClick="executeAct('pause','record');">Pause Recording</button>
+            <button id="stoprecording" name="stoprecording" type="button"  class="btn btn-default" onClick="executeAct('stop','record');">Stop Recording</button>
 
         </div>
         <div class="col-md-8">
             <br>
-            <button id="startreplaying" name="startreplaying" type="button"  class="btn btn-default" onClick="executeAct('start','replaying');">Start Replaying</button>
-            <button id="pausereplaying" name="pausereplaying" type="button"  class="btn btn-default" onClick="executeAct('pause','replaying');">Pause Replaying</button>
-            <button id="stopreplaying" name="stopreplaying" type="button"  class="btn btn-default" onClick="executeAct('stop','replaying');">Stop Replaying</button>
+            <button id="startreplaying" name="startreplaying" type="button"  class="btn btn-default" onClick="executeAct('start','replay');">Start Replaying</button>
+            <button id="pausereplaying" name="pausereplaying" type="button"  class="btn btn-default" onClick="executeAct('pause','replay');">Pause Replaying</button>
+            <button id="stopreplaying" name="stopreplaying" type="button"  class="btn btn-default" onClick="executeAct('stop','replay');">Stop Replaying</button>
         </div>
         <div class="col-md-8">
             <br>
@@ -157,6 +157,7 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
+
     var buttonsMask=[
         {id:["startreplaying"],states:["PAUSED_REPLAYING","NONE"]},
         {id:["stopreplaying"],states:["PAUSED_REPLAYING","REPLAYING"]},
@@ -379,9 +380,8 @@
         location.href = "line.html?line="+maxValue+"&id="+getUrlParameter("id");
     }
 
-    function executeAct(action,type){
+    function executeAct(action,usedType){
         var id = getUrlParameter("id");
-        var usedType = type=="recording"?"record":"replay";
         var url = "/api/plugins/replayer/recording/"+id+"/"+usedType+"/"+action;
         $.ajax({
             url: url,

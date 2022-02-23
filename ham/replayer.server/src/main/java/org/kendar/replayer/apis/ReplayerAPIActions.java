@@ -65,4 +65,32 @@ public class ReplayerAPIActions implements FilteringClass {
             replayerStatus.stopReplaying();
         }
     }
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/plugins/replayer/recording/{id}/pact/{action}",
+            method = "GET",id="pacta6-277f-11ec-9621-0242ac1afe002")
+    public void pact(Request req, Response res) throws IOException {
+        var id = req.getPathParameter("id");
+        var action = req.getPathParameter("action");
+        if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
+            String runId = replayerStatus.startPact(id);
+        }else if(action.equalsIgnoreCase("stop") &&
+                replayerStatus.getStatus()==ReplayerState.PLAYING_PACT){
+            replayerStatus.stopPact(id);
+        }
+    }
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/plugins/replayer/recording/{id}/null/{action}",
+            method = "GET",id="nullaa6-277f-11ec-9621-0242ac1afe002")
+    public void nullReplay(Request req, Response res) throws IOException {
+        var id = req.getPathParameter("id");
+        var action = req.getPathParameter("action");
+        if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
+            String runId = replayerStatus.startNull(id);
+        }else if(action.equalsIgnoreCase("stop") &&
+                replayerStatus.getStatus()==ReplayerState.PLAYING_NULL_INFRASTRUCTURE){
+            replayerStatus.stopNull(id);
+        }
+    }
 }
