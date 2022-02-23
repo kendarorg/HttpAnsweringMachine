@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.UUID;
@@ -61,22 +62,32 @@ public class PactDataset implements BaseDataset {
     public String start() {
         id = UUID.randomUUID().toString();
         thread = new Thread(() -> {
-            runPactDataset(id);
+            try {
+                runPactDataset(id);
+            } catch (IOException e) {
+                logger.error("ERROR EXECUTING RECORDING",e);
+            }
         });
         thread.start();
         return id;
     }
 
-    private void runPactDataset(String id) {
+    private void runPactDataset(String id) throws IOException {
+        var result = new TestResults();
+        result.setType("Pact");
+        result.setTimestamp(Calendar.getInstance());
+        long start = System.currentTimeMillis();
+        var rootPath = Path.of(replayerDataDir);
+        var stringPath = Path.of(rootPath + File.separator + name + ".json");
+        var pactsDir = Path.of(rootPath + File.separator + "pacts" + File.separator);
+        var resultsFile = Path.of(rootPath + File.separator + "pacts" + File.separator + id + ".json");
+
         try {
             running.set(true);
-            var rootPath = Path.of(replayerDataDir);
+
             if (!Files.isDirectory(rootPath)) {
                 Files.createDirectory(rootPath);
             }
-            var stringPath = Path.of(rootPath + File.separator + name + ".json");
-            var pactsDir = Path.of(rootPath + File.separator + "pacts" + File.separator);
-            var resultsFile = Path.of(rootPath + File.separator + "pacts" + File.separator + id + ".json");
             if (!Files.exists(pactsDir)) {
                 Files.createDirectory(pactsDir);
             }
@@ -93,22 +104,32 @@ public class PactDataset implements BaseDataset {
                     .filter(a -> a.isPactTest())
                     .sorted(Comparator.comparingInt(CallIndex::getId))
                     .collect(Collectors.toList());
-            for (var toCall : indexes) {
-                if (!running.get()) break;
-                var reqResp = maps.get(toCall.getReference());
+            try {
+                for (var toCall : indexes) {
+                    if (!running.get()) break;
+                    var reqResp = maps.get(toCall.getReference());
 
-                var response = new Response();
-                //Call request
-                externalRequester.callSite(reqResp.getRequest(), response);
-                var script = executor.prepare(toCall.getJsCallback());
-                executor.run(reqResp.getRequest(),response,reqResp.getResponse(),script);
+                    var response = new Response();
+                    //Call request
+                    externalRequester.callSite(reqResp.getRequest(), response);
+                    var script = executor.prepare(toCall.getJsCallback());
+                    executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
+                    result.getExecuted().add(toCall.getId());
+                }
+            }catch(Exception ex){
+                result.setError(ex.getMessage());
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            result.setError(e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            result.setError(e.getMessage());
         }
+        long finish = System.currentTimeMillis();
+        long timeElapsed = finish - start;
+        result.setDuration(timeElapsed);
+        var toWrite = mapper.writeValueAsString(result);
+        Files.writeString(resultsFile,toWrite);
         this.eventQueue.handle(new PactCompleted());
     }
 
