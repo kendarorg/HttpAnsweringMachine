@@ -107,7 +107,8 @@ public class ReplayerAPICrud implements FilteringClass {
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
     var dataset =
-        new ReplayerDataset(id, rootPath.toString(), null, loggerBuilder, null, md5Tester);
+        new ReplayerDataset( loggerBuilder, null, md5Tester);
+    dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
     ListAllRecordList result = new ListAllRecordList(datasetContent, id);
     result.getLines().sort(Comparator.comparingInt(ReplayerRow::getId));

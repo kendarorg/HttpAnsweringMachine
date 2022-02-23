@@ -64,8 +64,8 @@ public class ReplayerAPISingleLine implements FilteringClass {
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
     var dataset =
-        new ReplayerDataset(
-            id, rootPath.toString(), null, loggerBuilder, dataReorganizer, md5Tester);
+        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
+    dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
     ListAllRecordList result = new ListAllRecordList(datasetContent, id);
     for (var singleLine : result.getLines()) {
@@ -91,8 +91,8 @@ public class ReplayerAPISingleLine implements FilteringClass {
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
     var dataset =
-        new ReplayerDataset(
-            id, rootPath.toString(), null, loggerBuilder, dataReorganizer, md5Tester);
+        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
+    dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
     for (var destination : datasetContent.getStaticRequests()) {
       if (destination.getId() == line) {
@@ -126,8 +126,8 @@ public class ReplayerAPISingleLine implements FilteringClass {
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
     var dataset =
-        new ReplayerDataset(
-            id, rootPath.toString(), null, loggerBuilder, dataReorganizer, md5Tester);
+        new ReplayerDataset( loggerBuilder, dataReorganizer, md5Tester);
+    dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
     for (var destination : datasetContent.getStaticRequests()) {
       if (destination.getId() == line) {
@@ -162,8 +162,8 @@ public class ReplayerAPISingleLine implements FilteringClass {
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
     var dataset =
-        new ReplayerDataset(
-            id, rootPath.toString(), null, loggerBuilder, dataReorganizer, md5Tester);
+        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
+    dataset.load(id, rootPath.toString(),null);
     dataset.load();
     dataset.delete(line);
     dataset.saveMods();
@@ -182,8 +182,8 @@ public class ReplayerAPISingleLine implements FilteringClass {
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
     var dataset =
-            new ReplayerDataset(
-                    id, rootPath.toString(), null, loggerBuilder, dataReorganizer, md5Tester);
+            new ReplayerDataset( loggerBuilder, dataReorganizer, md5Tester);
+    dataset.load(id, rootPath.toString(),null);
     dataset.load();
     dataset.deleteIndex(line);
     dataset.saveMods();

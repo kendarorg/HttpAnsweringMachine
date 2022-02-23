@@ -67,8 +67,8 @@ public class ReplayerAPIContent implements FilteringClass {
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
     var dataset =
-        new ReplayerDataset(
-            id, rootPath.toString(), null, loggerBuilder, dataReorganizer, md5Tester);
+        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
+    dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
 
     for (var singleLine : datasetContent.getStaticRequests()) {
@@ -170,8 +170,8 @@ public class ReplayerAPIContent implements FilteringClass {
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
     var dataset =
-        new ReplayerDataset(
-            id, rootPath.toString(), null, loggerBuilder, dataReorganizer, md5Tester);
+        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
+    dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
 
     for (var singleLine : datasetContent.getStaticRequests()) {
@@ -204,8 +204,8 @@ public class ReplayerAPIContent implements FilteringClass {
     var data = mapper.readValue(req.getRequestText(), JsonFileData.class);
 
     var dataset =
-        new ReplayerDataset(
-            id, rootPath.toString(), null, loggerBuilder, dataReorganizer, md5Tester);
+        new ReplayerDataset( loggerBuilder, dataReorganizer, md5Tester);
+    dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
 
     for (var singleLine : datasetContent.getStaticRequests()) {
