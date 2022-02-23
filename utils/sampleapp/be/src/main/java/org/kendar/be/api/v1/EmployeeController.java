@@ -45,16 +45,7 @@ public class EmployeeController {
     @PutMapping("/{id}")
     Employee replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) throws IOException {
 
-        return service.findById(id)
-                .map(employee -> {
-                    employee.setName(newEmployee.getName());
-                    employee.setRole(newEmployee.getRole());
-                    return service.save(employee);
-                })
-                .orElseGet(() -> {
-                    newEmployee.setId(id);
-                    return service.save(newEmployee);
-                });
+        return service.replaceEmployee(newEmployee,id);
     }
 
     @DeleteMapping("/{id}")
