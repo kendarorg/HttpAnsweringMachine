@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.events.PactCompleted;
+import org.kendar.replayer.utils.JsReplayerExecutor;
 import org.kendar.servers.http.ExternalRequester;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
@@ -31,6 +32,7 @@ public class PactDataset implements BaseDataset {
     private String id;
     private ObjectMapper mapper = new ObjectMapper();
     private AtomicBoolean running = new AtomicBoolean(false);
+    private JsReplayerExecutor executor = new JsReplayerExecutor();
 
     public PactDataset(LoggerBuilder loggerBuilder, EventQueue eventQueue, ExternalRequester externalRequester) {
 
@@ -98,9 +100,8 @@ public class PactDataset implements BaseDataset {
                 var response = new Response();
                 //Call request
                 externalRequester.callSite(reqResp.getRequest(), response);
-                //FIXME: Should call the js file to do the check
-                //Run the js
-                //Write to resultsFile
+                var script = executor.prepare(toCall.getJsCallback());
+                executor.run(reqResp.getRequest(),response,reqResp.getResponse(),script);
             }
 
         } catch (IOException e) {
