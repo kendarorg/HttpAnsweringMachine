@@ -1,11 +1,13 @@
 package org.kendar.replayer.storage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -19,6 +21,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+@Component
 public class RecordingDataset implements BaseDataset{
     private final DataReorganizer dataReorganizer;
     private final ConcurrentLinkedQueue<ReplayerRow> dynamicData = new ConcurrentLinkedQueue<>();
@@ -36,15 +39,25 @@ public class RecordingDataset implements BaseDataset{
     public String getName(){
         return this.name;
     }
-    public RecordingDataset(String name, String replayerDataDir, String description,
+
+    @Override
+    public void load(String name, String replayerDataDir, String description) {
+        this.description = description;
+        this.name = name;
+        this.replayerDataDir = replayerDataDir;
+    }
+
+    @Override
+    public ReplayerState getType() {
+        return ReplayerState.RECORDING;
+    }
+
+    public RecordingDataset(
                             LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer,
                             Md5Tester md5Tester) {
         this.dataReorganizer = dataReorganizer;
         this.md5Tester = md5Tester;
-        this.description = description;
         this.logger = loggerBuilder.build(RecordingDataset.class);
-        this.name = name;
-        this.replayerDataDir = replayerDataDir;
     }
 
     public void save() throws IOException {

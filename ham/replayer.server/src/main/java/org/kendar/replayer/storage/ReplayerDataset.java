@@ -1,6 +1,7 @@
 package org.kendar.replayer.storage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -18,30 +19,24 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ReplayerDataset implements BaseDataset{
-  private static final String MAIN_FILE = "runall.json";
-  private final Logger logger;
-  private DataReorganizer dataReorganizer;
-  private Md5Tester md5Tester;
+  protected static final String MAIN_FILE = "runall.json";
+  protected final Logger logger;
+  protected DataReorganizer dataReorganizer;
+  protected Md5Tester md5Tester;
 
-  private final ObjectMapper mapper = new ObjectMapper();
+  protected final ObjectMapper mapper = new ObjectMapper();
 
-  private final String name;
-  private final String replayerDataDir;
-  private final String description;
-  private final ConcurrentHashMap<Integer, Object> states = new ConcurrentHashMap<>();
+  protected String name;
+  protected String replayerDataDir;
+  protected String description;
+  protected final ConcurrentHashMap<Integer, Object> states = new ConcurrentHashMap<>();
 
-  private ReplayerResult replayerResult;
+  protected ReplayerResult replayerResult;
 
   public ReplayerDataset(
-      String name,
-      String replayerDataDir,
-      String description,
       LoggerBuilder loggerBuilder,
       DataReorganizer dataReorganizer,
       Md5Tester md5Tester) {
-    this.name = name;
-    this.replayerDataDir = replayerDataDir;
-    this.description = description;
     this.logger = loggerBuilder.build(ReplayerDataset.class);
     this.dataReorganizer = dataReorganizer;
     this.md5Tester = md5Tester;
@@ -51,8 +46,18 @@ public class ReplayerDataset implements BaseDataset{
     return name;
   }
 
+  @Override
+  public void load(String name, String replayerDataDir, String description) {
+    this.name = name;
+    this.replayerDataDir = replayerDataDir;
+    this.description = description;
 
+  }
 
+  @Override
+  public ReplayerState getType() {
+    return ReplayerState.REPLAYING;
+  }
 
 
   public ReplayerResult load() throws IOException {
@@ -72,6 +77,7 @@ public class ReplayerDataset implements BaseDataset{
       var rreq = row.getRequest();
       if (!sreq.getPath().equals(rreq.getPath())) continue;
       if (!sreq.getHost().equals(rreq.getHost())) continue;
+      if(!superMatch(row))continue;
       var matchedQuery = matchQuery(rreq.getQuery(), sreq.getQuery());
       if (rreq.isBinaryRequest() == sreq.isBinaryRequest()) {
         if (row.getRequestHash().equalsIgnoreCase(contentHash)) {
@@ -87,6 +93,10 @@ public class ReplayerDataset implements BaseDataset{
     return founded;
   }
 
+  protected boolean superMatch(ReplayerRow row) {
+    return true;
+  }
+
   private ReplayerRow findDynamicMatch(Request sreq) {
     var matchingQuery = -1;
     ReplayerRow founded = null;
@@ -97,6 +107,7 @@ public class ReplayerDataset implements BaseDataset{
       if (states.contains(row.getId())) continue;
       if (!sreq.getPath().equals(rreq.getPath())) continue;
       if (!sreq.getHost().equals(rreq.getHost())) continue;
+      if(!superMatch(row))continue;
       var matchedQuery = matchQuery(rreq.getQuery(), sreq.getQuery());
       if (rreq.isBinaryRequest() == sreq.isBinaryRequest()) {
         matchedQuery += 1;

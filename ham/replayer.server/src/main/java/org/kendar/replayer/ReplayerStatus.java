@@ -2,6 +2,7 @@ package org.kendar.replayer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
+import org.kendar.replayer.events.NullCompleted;
 import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.storage.*;
 import org.kendar.replayer.utils.Md5Tester;
@@ -45,6 +46,12 @@ public class ReplayerStatus {
         this.md5Tester = md5Tester;
         this.eventQueue = eventQueue;
         eventQueue.register((a)->pactCompleted(), PactCompleted.class);
+        eventQueue.register((a)->nullCompleted(), NullCompleted.class);
+    }
+
+    private void nullCompleted() {
+        dataset = null;
+        state = ReplayerState.NONE;
     }
 
     private void pactCompleted() {
@@ -60,8 +67,8 @@ public class ReplayerStatus {
         if (state != ReplayerState.NONE) return;
         state = ReplayerState.RECORDING;
         dataset =
-                new RecordingDataset(
-                        id, rootPath.toString(), description, loggerBuilder, dataReorganizer, md5Tester);
+                new RecordingDataset( loggerBuilder, dataReorganizer, md5Tester);
+        dataset.load(id, rootPath.toString(), description);
     }
 
     public void addRequest(Request req, Response res) {
@@ -70,7 +77,7 @@ public class ReplayerStatus {
     }
 
     public boolean replay(Request req, Response res) {
-        if (state != ReplayerState.REPLAYING) return false;
+        if (state != ReplayerState.REPLAYING||state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) return false;
         Response response = ((ReplayerDataset)dataset).findResponse(req);
         if (response != null) {
             res.setBinaryResponse(response.isBinaryResponse());
@@ -122,9 +129,8 @@ public class ReplayerStatus {
         if (state != ReplayerState.NONE) return;
         state = ReplayerState.REPLAYING;
         dataset =
-                new ReplayerDataset(
-                        id, rootPath.toString(), null, loggerBuilder, dataReorganizer, md5Tester);
-        ((ReplayerDataset)dataset).load();
+                new ReplayerDataset(  loggerBuilder, dataReorganizer, md5Tester);
+        dataset.load(id, rootPath.toString(),null);
     }
 
     public void restartReplaying() {
@@ -148,7 +154,8 @@ public class ReplayerStatus {
             Files.createDirectory(rootPath);
         }
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
-        dataset = new PactDataset(id,rootPath.toString(),loggerBuilder,eventQueue);
+        dataset = new PactDataset(loggerBuilder,eventQueue);
+        dataset.load(id, rootPath.toString(),null);
         var runId = ((PactDataset)dataset).start();
         state = ReplayerState.PLAYING_PACT;
         return runId;
@@ -161,13 +168,21 @@ public class ReplayerStatus {
 
     }
 
-    public String startNull(String id) {
+    public String startNull(String id) throws IOException {
+        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+        if (!Files.isDirectory(rootPath)) {
+            Files.createDirectory(rootPath);
+        }
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
-        return null;
+        dataset = new PactDataset(loggerBuilder,eventQueue);
+        dataset.load(id, rootPath.toString(),null);
+        var runId = ((PactDataset)dataset).start();
+        state = ReplayerState.PLAYING_NULL_INFRASTRUCTURE;
+        return runId;
     }
 
     public void stopNull(String id) {
         if (state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) throw new RuntimeException("State not allowed");
-
+        ((NullDataset)dataset).stop();
     }
 }
