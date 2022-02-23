@@ -1,6 +1,8 @@
 package org.kendar.replayer.storage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.events.EventQueue;
+import org.kendar.replayer.events.PactCompleted;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 
@@ -15,16 +17,18 @@ import java.util.stream.Collectors;
 
 public class PactDataset implements BaseDataset{
     private final Logger logger;
+    private EventQueue eventQueue;
     private String name;
     private String replayerDataDir;
     private Thread thread;
     private String id;
     private ObjectMapper mapper = new ObjectMapper();
 
-    public PactDataset(String name, String replayerDataDir, LoggerBuilder loggerBuilder){
+    public PactDataset(String name, String replayerDataDir, LoggerBuilder loggerBuilder, EventQueue eventQueue){
         this.name = name;
         this.replayerDataDir = replayerDataDir;
         this.logger = loggerBuilder.build(PactDataset.class);
+        this.eventQueue = eventQueue;
     }
     @Override
     public String getName() {
@@ -76,6 +80,9 @@ public class PactDataset implements BaseDataset{
             //Run the js
             //Write to resultsFile
         }
+        this.eventQueue.handle(new PactCompleted());
+    }
 
+    public void stop() {
     }
 }

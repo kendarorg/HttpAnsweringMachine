@@ -1,6 +1,8 @@
 package org.kendar.replayer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.events.EventQueue;
+import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.storage.*;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
@@ -24,6 +26,7 @@ public class ReplayerStatus {
     private final ObjectMapper mapper = new ObjectMapper();
     private final String replayerData;
     private final Md5Tester md5Tester;
+    private final EventQueue eventQueue;
     private BaseDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
 
@@ -32,13 +35,21 @@ public class ReplayerStatus {
             DataReorganizer dataReorganizer,
             FileResourcesUtils fileResourcesUtils,
             Md5Tester md5Tester,
-            JsonConfiguration configuration) {
+            JsonConfiguration configuration,
+            EventQueue eventQueue) {
 
         this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.loggerBuilder = loggerBuilder;
         this.dataReorganizer = dataReorganizer;
         this.fileResourcesUtils = fileResourcesUtils;
         this.md5Tester = md5Tester;
+        this.eventQueue = eventQueue;
+        eventQueue.register((a)->pactCompleted(), PactCompleted.class);
+    }
+
+    private void pactCompleted() {
+        dataset = null;
+        state = ReplayerState.NONE;
     }
 
     public void startRecording(String id, String description) throws IOException {
@@ -137,7 +148,7 @@ public class ReplayerStatus {
             Files.createDirectory(rootPath);
         }
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
-        dataset = new PactDataset(id,rootPath.toString(),loggerBuilder);
+        dataset = new PactDataset(id,rootPath.toString(),loggerBuilder,eventQueue);
         var runId = ((PactDataset)dataset).start();
         state = ReplayerState.PLAYING_PACT;
         return runId;
@@ -145,6 +156,7 @@ public class ReplayerStatus {
 
     public void stopPact(String id) {
         if (state != ReplayerState.PLAYING_PACT) throw new RuntimeException("State not allowed");
+        ((PactDataset)dataset).stop();
         state = ReplayerState.NONE;
 
     }
