@@ -3,6 +3,7 @@ package org.kendar.replayer.storage;
 import org.kendar.events.EventQueue;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.events.NullCompleted;
+import org.kendar.replayer.utils.JsReplayerExecutor;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.http.InternalRequester;
 import org.kendar.servers.http.Response;
@@ -25,6 +26,7 @@ public class NullDataset extends ReplayerDataset{
     private Thread thread;
     private String id;
     private AtomicBoolean running = new AtomicBoolean(false);
+    private JsReplayerExecutor executor = new JsReplayerExecutor();
 
     public NullDataset(
             LoggerBuilder loggerBuilder,
@@ -95,11 +97,8 @@ public class NullDataset extends ReplayerDataset{
             var reqResp = maps.get(toCall.getReference());
             var response = new Response();
             internalRequester.callSite(reqResp.getRequest(),response);
-            //FIXME: Should figure out how to call the right server
-            //Call request
-            //Retrieve response
-            //Run the js
-            //Write to resultsFile
+            var script = executor.prepare(toCall.getJsCallback());
+            executor.run(reqResp.getRequest(),response,reqResp.getResponse(),script);
         }
         this.eventQueue.handle(new NullCompleted());
     }
