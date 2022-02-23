@@ -7,6 +7,7 @@ import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.storage.*;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.http.ExternalRequester;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
@@ -28,6 +29,7 @@ public class ReplayerStatus {
     private final String replayerData;
     private final Md5Tester md5Tester;
     private final EventQueue eventQueue;
+    private ExternalRequester externalRequester;
     private BaseDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
 
@@ -37,7 +39,7 @@ public class ReplayerStatus {
             FileResourcesUtils fileResourcesUtils,
             Md5Tester md5Tester,
             JsonConfiguration configuration,
-            EventQueue eventQueue) {
+            EventQueue eventQueue, ExternalRequester externalRequester) {
 
         this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.loggerBuilder = loggerBuilder;
@@ -45,6 +47,7 @@ public class ReplayerStatus {
         this.fileResourcesUtils = fileResourcesUtils;
         this.md5Tester = md5Tester;
         this.eventQueue = eventQueue;
+        this.externalRequester = externalRequester;
         eventQueue.register((a)->pactCompleted(), PactCompleted.class);
         eventQueue.register((a)->nullCompleted(), NullCompleted.class);
     }
@@ -74,7 +77,7 @@ public class ReplayerStatus {
     }
 
     public boolean replay(Request req, Response res) {
-        if (state != ReplayerState.REPLAYING && state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) return false;
+        if (state != ReplayerState.REPLAYING||state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) return false;
         Response response = ((ReplayerDataset)dataset).findResponse(req);
         if (response != null) {
             res.setBinaryResponse(response.isBinaryResponse());
@@ -145,7 +148,7 @@ public class ReplayerStatus {
     public String startPact(String id) throws IOException {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
-        dataset = new PactDataset(loggerBuilder,eventQueue);
+        dataset = new PactDataset(loggerBuilder,eventQueue,externalRequester);
         dataset.load(id, rootPath.toString(),null);
         var runId = ((PactDataset)dataset).start();
         state = ReplayerState.PLAYING_PACT;
