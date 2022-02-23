@@ -60,10 +60,7 @@ public class ReplayerStatus {
     }
 
     public void startRecording(String id, String description) throws IOException {
-        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-        if (!Files.isDirectory(rootPath)) {
-            Files.createDirectory(rootPath);
-        }
+        Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) return;
         state = ReplayerState.RECORDING;
         dataset =
@@ -77,7 +74,7 @@ public class ReplayerStatus {
     }
 
     public boolean replay(Request req, Response res) {
-        if (state != ReplayerState.REPLAYING||state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) return false;
+        if (state != ReplayerState.REPLAYING && state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) return false;
         Response response = ((ReplayerDataset)dataset).findResponse(req);
         if (response != null) {
             res.setBinaryResponse(response.isBinaryResponse());
@@ -122,10 +119,7 @@ public class ReplayerStatus {
     }
 
     public void startReplaying(String id) throws IOException {
-        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-        if (!Files.isDirectory(rootPath)) {
-            Files.createDirectory(rootPath);
-        }
+        Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) return;
         state = ReplayerState.REPLAYING;
         dataset =
@@ -149,10 +143,7 @@ public class ReplayerStatus {
     }
 
     public String startPact(String id) throws IOException {
-        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-        if (!Files.isDirectory(rootPath)) {
-            Files.createDirectory(rootPath);
-        }
+        Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         dataset = new PactDataset(loggerBuilder,eventQueue);
         dataset.load(id, rootPath.toString(),null);
@@ -169,16 +160,21 @@ public class ReplayerStatus {
     }
 
     public String startNull(String id) throws IOException {
-        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-        if (!Files.isDirectory(rootPath)) {
-            Files.createDirectory(rootPath);
-        }
+        Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue);
         dataset.load(id, rootPath.toString(),null);
         var runId = ((NullDataset)dataset).start();
         state = ReplayerState.PLAYING_NULL_INFRASTRUCTURE;
         return runId;
+    }
+
+    private Path getRootPath() throws IOException {
+        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+        if (!Files.isDirectory(rootPath)) {
+            Files.createDirectory(rootPath);
+        }
+        return rootPath;
     }
 
     public void stopNull(String id) {
