@@ -138,8 +138,9 @@ public class ReplayerStatus {
         }
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         dataset = new PactDataset(id,rootPath.toString(),loggerBuilder);
+        var runId = ((PactDataset)dataset).start();
         state = ReplayerState.PLAYING_PACT;
-        return null;
+        return runId;
     }
 
     public void stopPact(String id) {
