@@ -174,9 +174,9 @@ public class ReplayerStatus {
             Files.createDirectory(rootPath);
         }
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
-        dataset = new PactDataset(loggerBuilder,eventQueue);
+        dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue);
         dataset.load(id, rootPath.toString(),null);
-        var runId = ((PactDataset)dataset).start();
+        var runId = ((NullDataset)dataset).start();
         state = ReplayerState.PLAYING_NULL_INFRASTRUCTURE;
         return runId;
     }
