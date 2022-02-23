@@ -176,7 +176,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         return;
       }
 
-      externalRequester.callExternalSite(request, response);
+      externalRequester.callSite(request, response);
 
       if (filteringClassesHandler.handle(
           config, HttpFilterType.POST_CALL, request, response, connManager)) {

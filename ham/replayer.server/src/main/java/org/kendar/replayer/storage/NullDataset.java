@@ -4,6 +4,8 @@ import org.kendar.events.EventQueue;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.events.NullCompleted;
 import org.kendar.replayer.utils.Md5Tester;
+import org.kendar.servers.http.InternalRequester;
+import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
 
 import java.io.File;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 public class NullDataset extends ReplayerDataset{
     private EventQueue eventQueue;
+    private InternalRequester internalRequester;
     private Thread thread;
     private String id;
     private AtomicBoolean running = new AtomicBoolean(false);
@@ -26,9 +29,10 @@ public class NullDataset extends ReplayerDataset{
     public NullDataset(
             LoggerBuilder loggerBuilder,
             DataReorganizer dataReorganizer,
-            Md5Tester md5Tester, EventQueue eventQueue) {
+            Md5Tester md5Tester, EventQueue eventQueue, InternalRequester internalRequester) {
         super(loggerBuilder,dataReorganizer,md5Tester);
         this.eventQueue = eventQueue;
+        this.internalRequester = internalRequester;
     }
 
 
@@ -49,6 +53,8 @@ public class NullDataset extends ReplayerDataset{
                 runNullDataset(id);
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
         thread.start();
@@ -60,7 +66,7 @@ public class NullDataset extends ReplayerDataset{
         return row.isStimulatedTest();
     }
 
-    private void runNullDataset(String id) throws IOException {
+    private void runNullDataset(String id) throws Exception {
         running.set(true);
         var rootPath = Path.of(replayerDataDir);
         if (!Files.isDirectory(rootPath)) {
@@ -87,6 +93,8 @@ public class NullDataset extends ReplayerDataset{
         for (var toCall : indexes) {
             if(!running.get())break;
             var reqResp = maps.get(toCall.getReference());
+            var response = new Response();
+            internalRequester.callSite(reqResp.getRequest(),response);
             //FIXME: Should figure out how to call the right server
             //Call request
             //Retrieve response
@@ -95,7 +103,6 @@ public class NullDataset extends ReplayerDataset{
         }
         this.eventQueue.handle(new NullCompleted());
     }
-
     public void stop() {
         running.set(false);
     }

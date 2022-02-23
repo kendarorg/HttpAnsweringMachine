@@ -51,7 +51,7 @@ public class JsUtils {
 
     public Response httpRequest(Request request) throws Exception {
         var response = new Response();
-        externalRequester.callExternalSite(request, response);
+        externalRequester.callSite(request, response);
         return response;
     }
 }

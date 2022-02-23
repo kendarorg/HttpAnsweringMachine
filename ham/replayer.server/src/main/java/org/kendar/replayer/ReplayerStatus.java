@@ -7,7 +7,9 @@ import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.storage.*;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.ExternalRequester;
+import org.kendar.servers.http.InternalRequester;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
@@ -30,6 +32,8 @@ public class ReplayerStatus {
     private final Md5Tester md5Tester;
     private final EventQueue eventQueue;
     private ExternalRequester externalRequester;
+    private DnsMultiResolver multiResolver;
+    private InternalRequester internalRequester;
     private BaseDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
 
@@ -39,7 +43,8 @@ public class ReplayerStatus {
             FileResourcesUtils fileResourcesUtils,
             Md5Tester md5Tester,
             JsonConfiguration configuration,
-            EventQueue eventQueue, ExternalRequester externalRequester) {
+            EventQueue eventQueue, ExternalRequester externalRequester,
+            DnsMultiResolver multiResolver, InternalRequester internalRequester) {
 
         this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.loggerBuilder = loggerBuilder;
@@ -48,6 +53,8 @@ public class ReplayerStatus {
         this.md5Tester = md5Tester;
         this.eventQueue = eventQueue;
         this.externalRequester = externalRequester;
+        this.multiResolver = multiResolver;
+        this.internalRequester = internalRequester;
         eventQueue.register((a)->pactCompleted(), PactCompleted.class);
         eventQueue.register((a)->nullCompleted(), NullCompleted.class);
     }
@@ -165,7 +172,7 @@ public class ReplayerStatus {
     public String startNull(String id) throws IOException {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
-        dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue);
+        dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue,internalRequester);
         dataset.load(id, rootPath.toString(),null);
         var runId = ((NullDataset)dataset).start();
         state = ReplayerState.PLAYING_NULL_INFRASTRUCTURE;
