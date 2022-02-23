@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/appointments")
 public class AppointmentController {
     private final AppointmentRepository appointmentRepository;
-    private EmployeeService employeeRepository;
+    private EmployeeService employeeService;
 
-    AppointmentController(AppointmentRepository appointmentRepository, EmployeeService employeeRepository) {
+    AppointmentController(AppointmentRepository appointmentRepository, EmployeeService employeeService) {
         this.appointmentRepository = appointmentRepository;
-        this.employeeRepository = employeeRepository;
+        this.employeeService = employeeService;
     }
 
 
@@ -36,11 +36,11 @@ public class AppointmentController {
 
     @PostMapping("/{employeeId}")
     AppointmentDto newAppointment(@RequestBody AppointmentDto newAppointment,@PathVariable Long employeeId) throws IOException {
-        var employee = employeeRepository.getById(employeeId);
-        if(employee==null){
+        var employee = employeeService.findById(employeeId);
+        if(employee.isEmpty()){
             throw new ItemNotFoundException(employeeId.toString());
         }
-        newAppointment.setEmployeeId(employee.getId());
+        newAppointment.setEmployeeId(employee.get().getId());
         var newAppointmentEntity = AppointmentDto.convert(newAppointment);
         return AppointmentDto.convert(appointmentRepository.save(newAppointmentEntity));
     }
