@@ -6,6 +6,7 @@ public class CallIndex {
     private String description;
     private boolean pactTest;
     private boolean stimulatorTest;
+    private String jsCallback;
 
     public int getId() {
         return id;
@@ -45,5 +46,13 @@ public class CallIndex {
 
     public void setPactTest(boolean pactTest) {
         this.pactTest = pactTest;
+    }
+
+    public String getJsCallback() {
+        return jsCallback;
+    }
+
+    public void setJsCallback(String jsCallback) {
+        this.jsCallback = jsCallback;
     }
 }

@@ -73,7 +73,6 @@ public class NullDataset extends ReplayerDataset{
             Files.createDirectory(nullDir);
         }
         var maps = new HashMap<Integer,ReplayerRow>();
-        var jss = new HashMap<Integer,String>();
         var replayerResult = mapper.readValue(stringPath.toFile(), ReplayerResult.class);
         for (var call : replayerResult.getStaticRequests()) {
             maps.put(call.getId(),call);
@@ -88,7 +87,7 @@ public class NullDataset extends ReplayerDataset{
         for (var toCall : indexes) {
             if(!running.get())break;
             var reqResp = maps.get(toCall.getReference());
-            var jsToRun = jss.get(toCall.getReference());
+            //FIXME: Should figure out how to call the right server
             //Call request
             //Retrieve response
             //Run the js
