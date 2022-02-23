@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.UUID;
@@ -53,10 +54,8 @@ public class NullDataset extends ReplayerDataset{
         thread = new Thread(()-> {
             try {
                 runNullDataset(id);
-            } catch (IOException e) {
-                e.printStackTrace();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("ERROR EXECUTING RECORDING",e);
             }
         });
         thread.start();
@@ -68,38 +67,57 @@ public class NullDataset extends ReplayerDataset{
         return row.isStimulatedTest();
     }
 
-    private void runNullDataset(String id) throws Exception {
+    private void runNullDataset(String id) throws IOException {
         running.set(true);
+        var result = new TestResults();
+        result.setType("NullInfrastructure");
+        result.setTimestamp(Calendar.getInstance());
+        long start = System.currentTimeMillis();
         var rootPath = Path.of(replayerDataDir);
-        if (!Files.isDirectory(rootPath)) {
-            Files.createDirectory(rootPath);
-        }
+
         var stringPath = Path.of(rootPath + File.separator + name + ".json");
         var nullDir = Path.of(rootPath + File.separator + "null" + File.separator);
         var resultsFile =  Path.of(rootPath + File.separator + "null" + File.separator+ id+".json");
-        if(!Files.exists(nullDir)){
-            Files.createDirectory(nullDir);
+        try {
+            if (!Files.isDirectory(rootPath)) {
+                Files.createDirectory(rootPath);
+            }
+            if (!Files.exists(nullDir)) {
+                Files.createDirectory(nullDir);
+            }
+            var maps = new HashMap<Integer, ReplayerRow>();
+            var replayerResult = mapper.readValue(stringPath.toFile(), ReplayerResult.class);
+            for (var call : replayerResult.getStaticRequests()) {
+                maps.put(call.getId(), call);
+            }
+            for (var call : replayerResult.getDynamicRequests()) {
+                maps.put(call.getId(), call);
+            }
+            var indexes = replayerResult.getIndexes().stream()
+                    .filter(a -> a.isStimulatorTest())
+                    .sorted(Comparator.comparingInt(CallIndex::getId))
+                    .collect(Collectors.toList());
+            try {
+                for (var toCall : indexes) {
+                    if (!running.get()) break;
+                    var reqResp = maps.get(toCall.getReference());
+                    var response = new Response();
+                    internalRequester.callSite(reqResp.getRequest(), response);
+                    var script = executor.prepare(toCall.getJsCallback());
+                    executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
+                    result.getExecuted().add(toCall.getId());
+                }
+            } catch (Exception ex) {
+                result.setError(ex.getMessage());
+            }
+        }catch (Exception e){
+            result.setError(e.getMessage());
         }
-        var maps = new HashMap<Integer,ReplayerRow>();
-        var replayerResult = mapper.readValue(stringPath.toFile(), ReplayerResult.class);
-        for (var call : replayerResult.getStaticRequests()) {
-            maps.put(call.getId(),call);
-        }
-        for (var call : replayerResult.getDynamicRequests()) {
-            maps.put(call.getId(),call);
-        }
-        var indexes = replayerResult.getIndexes().stream()
-                .filter(a->a.isStimulatorTest())
-                .sorted(Comparator.comparingInt(CallIndex::getId))
-                .collect(Collectors.toList());
-        for (var toCall : indexes) {
-            if(!running.get())break;
-            var reqResp = maps.get(toCall.getReference());
-            var response = new Response();
-            internalRequester.callSite(reqResp.getRequest(),response);
-            var script = executor.prepare(toCall.getJsCallback());
-            executor.run(reqResp.getRequest(),response,reqResp.getResponse(),script);
-        }
+        long finish = System.currentTimeMillis();
+        long timeElapsed = finish - start;
+        result.setDuration(timeElapsed);
+        var toWrite = mapper.writeValueAsString(result);
+        Files.writeString(resultsFile,toWrite);
         this.eventQueue.handle(new NullCompleted());
     }
     public void stop() {
