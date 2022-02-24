@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MainBeUsers" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="be-users" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="org.kendar.be.MainBe" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

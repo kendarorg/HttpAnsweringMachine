@@ -1,0 +1,154 @@
+[
+  {
+    "id": "dns",
+    "system": true,
+    "active": true,
+    "port": 53,
+    "logQueries": false,
+    "extraServers": [
+      {
+        "id": "1",
+        "address": "8.8.4.4",
+        "enabled": true
+      }
+    ],
+    "blocked": [
+      "wpad.*",
+      "*.trafficmanager.net"
+    ],
+    "resolved": [
+      {
+        "id": "0",
+        "dns": "www.local.test",
+        "ip": "127.0.0.1"
+      },
+      {
+        "id": "3",
+        "dns": "www.sample.test",
+        "ip": "127.0.0.1"
+      },
+      {
+        "id": "4",
+        "dns": "api.sample.test",
+        "ip": "127.0.0.1"
+      },
+      {
+        "id": "5",
+        "dns": "users.sample.test",
+        "ip": "127.0.0.1"
+      }
+    ]
+  },
+  {
+    "id": "staticPage",
+    "system": true,
+    "staticPages": [
+    ]
+  },
+  {
+    "id": "proxy",
+    "system": true,
+    "proxies": [
+      {
+        "id": "2",
+        "when": "http://api.sample.test",
+        "where": "http://127.0.0.1:8090",
+        "test": "127.0.0.1:8090"
+      },
+      {
+        "id": "3",
+        "when": "http://users.sample.test",
+        "where": "http://127.0.0.1:8100",
+        "test": "127.0.0.1:8100"
+      },
+      {
+        "id": "4",
+        "when": "http://www.sample.test",
+        "where": "http://127.0.0.1:8080",
+        "test": "127.0.0.1:8080"
+      }
+    ]
+  },
+  {
+    "id": "ssl",
+    "system": true,
+    "cname": "C=US,O=Local Development,CN=local.org",
+    "domains": [
+      {
+        "id": "0",
+        "address": "*.local.test"
+      },
+      {
+        "id": "1",
+        "address": "local.test"
+      },
+      {
+        "id": "2",
+        "address": "*.sample.test"
+      },
+      {
+        "id": "3",
+        "address": "sample.test"
+      }
+    ]
+  },
+  {
+    "id": "https",
+    "system": true,
+    "active": true,
+    "port": 443,
+    "backlog": 50,
+    "useCachedExecutor": true
+  },
+  {
+    "id": "http",
+    "system": true,
+    "active": true,
+    "port": 80,
+    "backlog": 50,
+    "useCachedExecutor": true
+  },
+  {
+    "id": "global",
+    "system": true,
+    "localAddress": "www.local.test",
+    "logging": {
+      "logPath": null,
+      "logRoundtripsPath": "recording",
+      "logLevel": "INFO",
+      "loggers": {
+        "org.kendar.servers.http.Request": "OFF",
+        "org.kendar.servers.http.Response": "OFF",
+        "org.kendar.servers.http.StaticRequest": "OFF",
+        "org.kendar.servers.http.DynamicRequest": "OFF",
+        "org.kendar.dns.DnsQueries": "OFF"
+      }
+    },
+    "filters": {
+      "12363272": false
+    }
+  },
+  {
+    "id": "derby",
+    "active": false,
+    "port": 1527,
+    "user": "root",
+    "password": "root",
+    "path": "derbydata"
+  },
+  {
+    "id": "oidc.server",
+    "tokenExpiration": 86400,
+    "active": false
+  },
+  {
+    "id": "js.filters",
+    "path": "jsplugins",
+    "active": true
+  },
+  {
+    "id": "replayer.server",
+    "path": "replayerdata",
+    "active": true
+  }
+]
