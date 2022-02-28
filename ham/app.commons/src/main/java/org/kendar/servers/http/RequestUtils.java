@@ -137,16 +137,19 @@ public class RequestUtils {
     return result;
   }
 
-  public static String buildFullAddress(Request request) {
+  public static String buildFullAddress(Request request,boolean usePort) {
 
     String port = "";
-    if (request.getPort() != -1) {
-      if (request.getPort() != 443 && request.getProtocol().equalsIgnoreCase("https")) {
-        port = ":" + request.getPort();
-      }
 
-      if (request.getPort() != 80 && request.getProtocol().equalsIgnoreCase("http")) {
-        port = ":" + request.getPort();
+    if(usePort) {
+      if (request.getPort() != -1) {
+        if (request.getPort() != 443 && request.getProtocol().equalsIgnoreCase("https")) {
+          port = ":" + request.getPort();
+        }
+
+        if (request.getPort() != 80 && request.getProtocol().equalsIgnoreCase("http")) {
+          port = ":" + request.getPort();
+        }
       }
     }
     return request.getProtocol()
