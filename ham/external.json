@@ -21,18 +21,14 @@
         "id": "0",
         "dns": "www.local.test",
         "ip": "127.0.0.1"
-      },
-      {
-        "id": "1",
-        "dns": "www.codeproject.com",
-        "ip": "127.0.0.1"
       }
     ]
   },
   {
     "id": "staticPage",
     "system": true,
-    "staticPages": []
+    "staticPages": [
+    ]
   },
   {
     "id": "proxy",
@@ -52,22 +48,6 @@
       {
         "id": "1",
         "address": "local.test"
-      },
-      {
-        "id": "011",
-        "address": "*.kendar.org"
-      },
-      {
-        "id": "12",
-        "address": "kendar.org"
-      },
-      {
-        "id": "013",
-        "address": "*.codeproject.com"
-      },
-      {
-        "id": "124",
-        "address": "codeproject.com"
       }
     ]
   },
@@ -118,7 +98,7 @@
   {
     "id": "oidc.server",
     "tokenExpiration": 86400,
-    "active": true
+    "active": false
   },
   {
     "id": "js.filters",
@@ -128,11 +108,6 @@
   {
     "id": "replayer.server",
     "path": "replayerdata",
-    "active": true
-  },
-  {
-    "id": "pacts.server",
-    "path": "pacts",
     "active": true
   }
 ]

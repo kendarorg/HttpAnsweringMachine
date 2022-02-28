@@ -180,7 +180,7 @@ private ObjectMapper mapper = new ObjectMapper();
     private void makeTheCall(SpecialStringBuilder a, String recordingId, CallIndex line, ReplayerRow row, String pack) {
         var request = row.getRequest();
         var response = row.getResponse();
-        var address = RequestUtils.buildFullAddress(request);
+        var address = RequestUtils.buildFullAddress(request,false);
         var buildMethod =
                 request.getMethod().substring(0, 1).toUpperCase(Locale.ROOT) +
                         request.getMethod().substring(1).toLowerCase(Locale.ROOT);

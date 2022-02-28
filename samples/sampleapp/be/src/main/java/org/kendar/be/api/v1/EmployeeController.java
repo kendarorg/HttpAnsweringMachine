@@ -1,8 +1,8 @@
 package org.kendar.be.api.v1;
 
 
-import org.kendar.be.data.entities.Employee;
 import org.kendar.be.data.exceptions.ItemNotFoundException;
+import org.kendar.be.services.Employee;
 import org.kendar.be.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 

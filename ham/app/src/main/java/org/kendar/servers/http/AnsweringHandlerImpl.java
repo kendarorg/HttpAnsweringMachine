@@ -8,6 +8,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.proxy.SimpleProxyHandler;
+import org.kendar.utils.ConnectionBuilder;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -17,9 +18,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Locale;
 
 @Component
@@ -35,15 +34,17 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
   private final Logger requestLogger;
   private final JsonConfiguration configuration;
   private final ExternalRequester externalRequester;
+  private ConnectionBuilder connectionBuilder;
 
   public AnsweringHandlerImpl(
-      LoggerBuilder loggerBuilder,
-      FilteringClassesHandler filteringClassesHandler,
-      SimpleProxyHandler simpleProxyHandler,
-      RequestResponseBuilder requestResponseBuilder,
-      PluginsInitializer pluginsInitializer,
-      JsonConfiguration configuration,
-      ExternalRequester externalRequester) {
+          LoggerBuilder loggerBuilder,
+          FilteringClassesHandler filteringClassesHandler,
+          SimpleProxyHandler simpleProxyHandler,
+          RequestResponseBuilder requestResponseBuilder,
+          PluginsInitializer pluginsInitializer,
+          JsonConfiguration configuration,
+          ExternalRequester externalRequester,
+          ConnectionBuilder connectionBuilder) {
     this.logger = loggerBuilder.build(AnsweringHandlerImpl.class);
     this.requestLogger = loggerBuilder.build(Request.class);
     this.filteringClassesHandler = filteringClassesHandler;
@@ -52,6 +53,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     this.requestResponseBuilder = requestResponseBuilder;
     this.configuration = configuration;
     this.externalRequester = externalRequester;
+    this.connectionBuilder = connectionBuilder;
     pluginsInitializer.addSpecialLogger(
         Request.class.getName(), "Requests Logging (INFO,DEBUG,TRACE)");
     pluginsInitializer.addSpecialLogger(
@@ -130,7 +132,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         || requestLogger.isTraceEnabled()) {
       logger.info(host + requestUri.toString());
     }
-    var connManager = externalRequester.getConnectionManager();
+    var connManager = connectionBuilder.getConnectionManger(true,true);
 
     Request request = null;
     Response response = new Response();
@@ -188,10 +190,14 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
     } catch (Exception rex) {
       handleException(httpExchange, response, rex);
+      try {
+        httpExchange.close();
+      }catch(Exception exx){}
     } finally {
       try {
         filteringClassesHandler.handle(
             config, HttpFilterType.POST_RENDER, request, response, connManager);
+
       } catch (Exception e) {
         logger.error("ERROR CALLING POST RENDER ", e);
       }
@@ -274,13 +280,5 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     } catch (Exception ex) {
       //logger.error(ex.getMessage(), ex);
     }
-  }
-
-
-
-
-  static class ResolvedDomain {
-    public final HashSet<String> domains = new HashSet<>();
-    public final long timestamp = Calendar.getInstance().getTimeInMillis();
   }
 }

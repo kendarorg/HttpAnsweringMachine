@@ -1,6 +1,5 @@
 package org.kendar.servers.http;
 
-import com.networknt.schema.format.InetAddressValidator;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -8,12 +7,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -24,19 +17,12 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.kendar.servers.dns.DnsMultiResolver;
+import org.kendar.utils.ConnectionBuilder;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.MimeChecker;
 import org.slf4j.Logger;
 
-import javax.annotation.PostConstruct;
-import java.net.URI;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,71 +36,19 @@ public abstract class BaseRequesterImpl implements BaseRequester{
     private PoolingHttpClientConnectionManager connManager;
     private final RequestResponseBuilder requestResponseBuilder;
     protected final DnsMultiResolver multiResolver;
-    protected final ConcurrentHashMap<String, AnsweringHandlerImpl.ResolvedDomain> domains = new ConcurrentHashMap<>();
+    private ConnectionBuilder connectionBuilder;
+    protected final ConcurrentHashMap<String, ResolvedDomain> domains = new ConcurrentHashMap<>();
     private SystemDefaultDnsResolver dnsResolver;
 
     public BaseRequesterImpl(RequestResponseBuilder requestResponseBuilder,
                                  DnsMultiResolver multiResolver,
-                                 LoggerBuilder loggerBuilder){
+                                 LoggerBuilder loggerBuilder,
+                             ConnectionBuilder connectionBuilder){
         this.logger = loggerBuilder.build(ExternalRequester.class);
         this.requestResponseBuilder = requestResponseBuilder;
 
         this.multiResolver = multiResolver;
-    }
-    @PostConstruct
-    public void init() {
-        this.dnsResolver = buildResolver();
-
-        this.connManager =
-                new PoolingHttpClientConnectionManager(
-                        // We're forced to create a SocketFactory Registry.  Passing null
-                        //   doesn't force a default Registry, so we re-invent the wheel.
-                        /*RegistryBuilder.<ConnectionSocketFactory>create()
-                                .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                                .register("https", SSLConnectionSocketFactory.getSocketFactory())
-                                .build()*/
-                        getDefaultRegistry(),
-                        dnsResolver // Our DnsResolver
-                );
-
-        this.connManager.setMaxTotal(100);
-    }
-
-    public abstract SystemDefaultDnsResolver buildResolver() ;
-
-    private static Registry<ConnectionSocketFactory> getDefaultRegistry() {
-
-
-        SSLContextBuilder contextBuilder = new SSLContextBuilder();
-        try {
-            contextBuilder.loadTrustMaterial(null, new TrustStrategy() {
-                @Override
-                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                    return true;
-                }
-            });
-            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(contextBuilder.build(),
-                    SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-            //SSLConnectionSocketFactory sslsf = SSLConnectionSocketFactory.getSocketFactory()).build()
-
-            RegistryBuilder<ConnectionSocketFactory> builder = RegistryBuilder.create();
-            return builder
-                    .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                    .register("https", sslsf).build();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-            return null;
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-    public PoolingHttpClientConnectionManager getConnectionManager(){
-        return connManager;
+        this.connectionBuilder = connectionBuilder;
     }
 
     public void callSite(Request request, Response response)
@@ -126,29 +60,27 @@ public abstract class BaseRequesterImpl implements BaseRequester{
             response.setStatusCode(500);
             return;
         }
-
-
-        CloseableHttpClient httpClient =
-                HttpClientBuilder.create()
-                        .setRetryHandler(requestRetryHandler)
-                        .setDnsResolver(this.dnsResolver)
-                        .setSchemePortResolver(httpHost -> {
-                            if(request.getPort()>0) {
-                                return request.getPort();
-                            }
-                            if(request.getProtocol().equalsIgnoreCase("https")) return 443;
-                            return 80;
-                        })
-                        //.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-                        //.setSSLContext(sc)
-                        .setConnectionManager(connManager)
-                        .disableConnectionState()
-                        .disableRedirectHandling()
-                        .build();
+        CloseableHttpClient httpClient;
+        if(request.getHost().equalsIgnoreCase("127.0.0.1")||
+                request.getHost().equalsIgnoreCase("localhost")){
+            httpClient = HttpClientBuilder.create().
+                    disableRedirectHandling().
+                    build();
+        }else {
+            httpClient = connectionBuilder.buildClient(useRemoteDnsOnly(), true, request.getPort(), request.getProtocol());
+        }
 
         HttpRequestBase fullRequest = null;
         try {
-            String fullAddress = RequestUtils.buildFullAddress(request);
+            String fullAddress = RequestUtils.buildFullAddress(request,true);
+            /*var httpPort = request.getPort();if(httpPort<=0){
+                if(request.getProtocol().equalsIgnoreCase("http")){
+                    httpPort = 80;
+                }else if(request.getProtocol().equalsIgnoreCase("http")){
+                    httpPort = 443;
+                }
+            }*/
+            //var httpHost = new HttpHost(request.getHost(),httpPort,request.getProtocol());
             fullRequest = createFullRequest(request, fullAddress);
             fullRequest.addHeader(BLOCK_RECURSION, fullAddress);
             for (var header : request.getHeaders().entrySet()) {
@@ -235,7 +167,7 @@ public abstract class BaseRequesterImpl implements BaseRequester{
         }
     }
 
-
+    protected abstract boolean useRemoteDnsOnly();
 
 
     private HttpEntity handleSoapRequest(Request request) {
@@ -243,7 +175,11 @@ public abstract class BaseRequesterImpl implements BaseRequester{
     }
 
     private HttpRequestBase createFullRequest(Request request, String stringAdress) throws Exception {
-        var fullAddress = new URI(stringAdress);
+        //var partialAddress= new URI(stringAdress).toString();
+        var fullAddress = stringAdress;//"/"+String.join("/", Arrays.stream(partialAddress.split("/"))
+                //.skip(3).collect(Collectors.toList()));
+
+        //var fullAddress =
         if (request.getMethod().equalsIgnoreCase("POST")) {
             return new HttpPost(fullAddress);
         } else if (request.getMethod().equalsIgnoreCase("PUT")) {
