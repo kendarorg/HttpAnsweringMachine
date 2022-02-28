@@ -44,7 +44,7 @@ public abstract class BaseRequesterImpl implements BaseRequester{
                                  DnsMultiResolver multiResolver,
                                  LoggerBuilder loggerBuilder,
                              ConnectionBuilder connectionBuilder){
-        this.logger = loggerBuilder.build(ExternalRequester.class);
+        this.logger = loggerBuilder.build(this.getClass());
         this.requestResponseBuilder = requestResponseBuilder;
 
         this.multiResolver = multiResolver;
