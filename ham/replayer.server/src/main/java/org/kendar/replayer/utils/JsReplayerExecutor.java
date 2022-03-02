@@ -54,7 +54,7 @@ public class JsReplayerExecutor {
         }
     }
 
-    public void run(Request request, Response response,Response expectedResponse,Script script) {
+    public void run(Request request, Response response,Response expectedResponse,Script script) throws Exception{
         Context cx = Context.enter();
         cx.setOptimizationLevel(9);
         cx.setLanguageVersion(Context.VERSION_1_8);
@@ -75,8 +75,7 @@ public class JsReplayerExecutor {
             //
             //cx.setClassShutter(sandboxClassShutter);
             script.exec(cx, currentScope);
-        }catch (Exception ex){
-        } finally {
+        }finally {
             Context.exit();
         }
     }
