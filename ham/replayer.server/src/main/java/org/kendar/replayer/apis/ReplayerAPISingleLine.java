@@ -68,7 +68,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
         new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
     dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
-    ListAllRecordList result = new ListAllRecordList(datasetContent, id);
+    ListAllRecordList result = new ListAllRecordList(datasetContent, id,false);
     for (var singleLine : result.getLines()) {
       if (singleLine.getId() == line) {
         res.addHeader("Content-type", "application/json");
@@ -228,7 +228,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
             new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
     dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
-    ListAllRecordList result = new ListAllRecordList(datasetContent, id);
+    ListAllRecordList result = new ListAllRecordList(datasetContent, id,false);
     for (var singleLine : result.getIndexes()) {
       if (singleLine.getId() == line) {
         res.addHeader("Content-type", "application/json");
