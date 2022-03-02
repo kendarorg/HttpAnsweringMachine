@@ -252,7 +252,7 @@
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
                     //tSource,tableId,id,data,fields
-                    allCalls.appendToTable(line);
+                    allCalls.appendToTable(line,false);
                 }
             }
         });
