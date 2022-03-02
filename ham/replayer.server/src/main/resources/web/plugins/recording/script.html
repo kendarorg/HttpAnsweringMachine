@@ -188,6 +188,17 @@
             </div>
     `;
 
+    var saveScript = function(url,data){
+
+        $.ajax({
+            url: url,
+            type: 'PUT',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(response){
+                location.reload();
+            }});
+    }
     var setScript = function(line,isIndexLine){
 
         var url = "/api/plugins/replayer/recording/"+getUrlParameter("id")+"/";
@@ -208,16 +219,13 @@
                     jsScript:res['jsCallback']
                 };
                 buildGenericModal(modal, null,target, "compositeId", scriptModal, randomId,true);
+                $(modal).find("#jsScript").val(res["jsCallback"]);
+                $(modal).find("#line").val(line);
                 $(modal).find("#"+randomId).click(function(){
-                    //scriptsTable.saveFunction(scriptsTable,id,true);
-                    //Save the world
-                    //Calls the freaking new API
+                    target.data['jsCallback']=$(modal).find("#jsScript").val();
+                    saveScript(url,res)
                 });
             }});
-
-        //ajaxloadjsscript( success (
-
-        //))
     }
 
     var buttonsMask=[
@@ -311,7 +319,7 @@
                     setChecked($('#allCalls #pactTest_'+line['id']),indexline['pactTest']);
                     setChecked($('#allCalls #stimulatorTest_'+line['id']),indexline['stimulatorTest']);
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
-                    line['_script'] = line['jsCallback']=="PRESENT"?"Yes":"No";
+                    line['_script'] = indexline['jsCallback']=="PRESENT"?"Yes":"No";
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
                     line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`,true)" class="btn btn-default">Edit</button>`;
@@ -345,8 +353,9 @@
             </div>`;
                     line['_responseHashCalc'] = "No";
                     line['_requestHashCalc'] = "No";
+                    var checkedItem = line['stimulatedTest']?"checked='checked' value='true'":"value='false'";
                     line['_stimulatedTest'] = `<div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="stimulatedTest_` + line['id'] + `" name="stimulatedTest_`+line['id']+`">
+                <input class="form-check-input" type="checkbox" `+checkedItem+` value="" id="stimulatedTest_` + line['id'] + `" name="stimulatedTest_`+line['id']+`">
             </div>`;
 
                     line['_script'] = line['jsCallback']=="PRESENT"?"Yes":"No";

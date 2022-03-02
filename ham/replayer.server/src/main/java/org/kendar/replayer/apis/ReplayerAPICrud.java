@@ -110,7 +110,7 @@ public class ReplayerAPICrud implements FilteringClass {
         new ReplayerDataset( loggerBuilder, null, md5Tester);
     dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
-    ListAllRecordList result = new ListAllRecordList(datasetContent, id);
+    ListAllRecordList result = new ListAllRecordList(datasetContent, id,true);
     result.getLines().sort(Comparator.comparingInt(ReplayerRow::getId));
     res.addHeader("Content-type", "application/json");
     res.setResponseText(mapper.writeValueAsString(result));
