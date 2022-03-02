@@ -24,16 +24,19 @@
             <groupId>org.kendar</groupId>
             <artifactId>app.http</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>app.commons</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>app.dns</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
