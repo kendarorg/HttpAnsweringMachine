@@ -76,7 +76,7 @@ public class PactDataset implements BaseDataset {
         var result = new TestResults();
         result.setType("Pact");
         result.setTimestamp(Calendar.getInstance());
-        result.setRecordingId(id);
+        result.setRecordingId(name);
         long start = System.currentTimeMillis();
         var rootPath = Path.of(replayerDataDir);
         var stringPath = Path.of(rootPath + File.separator + name + ".json");
@@ -113,8 +113,14 @@ public class PactDataset implements BaseDataset {
                     var response = new Response();
                     //Call request
                     externalRequester.callSite(reqResp.getRequest(), response);
-                    var script = executor.prepare(toCall.getJsCallback());
-                    executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
+                    if(reqResp.getJsCallback()!=null && !reqResp.getJsCallback().isEmpty()) {
+                        var script = executor.prepare(reqResp.getJsCallback());
+                        executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
+                    }
+                    if(toCall.getJsCallback()!=null && !toCall.getJsCallback().isEmpty()) {
+                        var script = executor.prepare(toCall.getJsCallback());
+                        executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
+                    }
                     result.getExecuted().add(toCall.getId());
                 }
             }catch(Exception ex){
