@@ -11,7 +11,7 @@ cd /etc/app/ham/app
 
 
 java "-Dloader.path=/etc/app/ham/app/libs/"  -Dloader.main=org.kendar.Main  \
-  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005 \
+  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
 	-jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher
 	
 #-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005 \
