@@ -7,6 +7,7 @@ import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.ListAllRecordList;
+import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerRow;
@@ -206,5 +207,73 @@ public class ReplayerAPISingleLine implements FilteringClass {
     destination.getRequest().setPostParameters(source.getRequest().getPostParameters());
     destination.getRequest().setStaticRequest(source.getRequest().isStaticRequest());
     destination.getRequest().setSoapRequest(source.getRequest().isSoapRequest());
+
+    destination.setJsCallback(source.getJsCallback());
+    destination.setStimulatedTest(source.isStimulatedTest());
+  }
+
+
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/replayer/recording/{id}/lineindex/{line}",
+          method = "GET",
+          id = "5000daa6-277f-11ec-9621-0242ac1afe002lineindex")
+  public void retrieveSingleLineIndexData(Request req, Response res) throws IOException {
+    var id = req.getPathParameter("id");
+    var line = Integer.parseInt(req.getPathParameter("line"));
+
+    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+
+    var dataset =
+            new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
+    dataset.load(id, rootPath.toString(),null);
+    var datasetContent = dataset.load();
+    ListAllRecordList result = new ListAllRecordList(datasetContent, id);
+    for (var singleLine : result.getIndexes()) {
+      if (singleLine.getId() == line) {
+        res.addHeader("Content-type", "application/json");
+        res.setResponseText(mapper.writeValueAsString(singleLine));
+        return;
+      }
+    }
+    res.setStatusCode(404);
+    res.setResponseText("Missing id " + id + " with line " + line);
+  }
+
+
+
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/replayer/recording/{id}/lineindex/{line}",
+          method = "PUT",
+          id = "5001daa6-277f-11ec-9621-0242ac1afe008lineindex")
+  public void modifySingleLineIndexData(Request req, Response res) throws IOException {
+    var id = req.getPathParameter("id");
+    var line = Integer.parseInt(req.getPathParameter("line"));
+
+    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+
+    var dataset =
+            new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
+    dataset.load(id, rootPath.toString(),null);
+    var datasetContent = dataset.load();
+    for (var destination : datasetContent.getIndexes()) {
+      if (destination.getId() == line) {
+        var source = mapper.readValue(req.getRequestText(), CallIndex.class);
+        cloneToIndex(destination, source);
+        dataset.saveMods();
+        return;
+      }
+    }
+    res.setStatusCode(404);
+    res.setResponseText("Missing id " + id + " with line " + line);
+  }
+
+  private void cloneToIndex(CallIndex destination, CallIndex source) {
+    destination.setStimulatorTest(source.isStimulatorTest());
+    destination.setPactTest(source.isPactTest());
+    destination.setReference(source.getReference());
+    destination.setDescription(source.getDescription());
+    destination.setJsCallback(source.getJsCallback());
   }
 }
