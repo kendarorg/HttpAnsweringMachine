@@ -21,6 +21,11 @@
         "id": "0",
         "dns": "www.local.test",
         "ip": "127.0.0.1"
+      },
+      {
+        "id": "1",
+        "dns": "www.kendar.org",
+        "ip": "127.0.0.1"
       }
     ]
   },

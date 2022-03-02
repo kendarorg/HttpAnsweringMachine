@@ -1,4 +1,2 @@
 127.0.0.1 www.local.test
-127.0.0.1 www.sample.test
-127.0.0.1 api.sample.test
-127.0.0.1 users.sample.test
+127.0.0.1 www.kendar.org
