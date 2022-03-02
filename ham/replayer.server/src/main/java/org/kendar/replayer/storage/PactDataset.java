@@ -105,8 +105,12 @@ public class PactDataset implements BaseDataset {
                     .filter(a -> a.isPactTest())
                     .sorted(Comparator.comparingInt(CallIndex::getId))
                     .collect(Collectors.toList());
+            boolean onIndex = false;
+            int currentIndex = 0;
             try {
                 for (var toCall : indexes) {
+                    onIndex =false;
+                    currentIndex = toCall.getId();
                     if (!running.get()) break;
                     var reqResp = maps.get(toCall.getReference());
 
@@ -118,13 +122,15 @@ public class PactDataset implements BaseDataset {
                         executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
                     }
                     if(toCall.getJsCallback()!=null && !toCall.getJsCallback().isEmpty()) {
+                        onIndex = true;
                         var script = executor.prepare(toCall.getJsCallback());
                         executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
                     }
                     result.getExecuted().add(toCall.getId());
                 }
             }catch(Exception ex){
-                result.setError(ex.getMessage());
+                var extra = "Error calling index "+currentIndex+" running "+(onIndex?"index script":"optimized script. ");
+                result.setError(extra+ex.getMessage());
             }
 
         } catch (IOException e) {
