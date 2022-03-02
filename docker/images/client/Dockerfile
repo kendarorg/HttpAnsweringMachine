@@ -4,6 +4,7 @@ RUN apk upgrade
 
 # Start LocalDNS
 RUN mkdir -p /etc/service/simpledns \
+    && mkdir -p /etc/app/simpledns \
     && mkdir -p /etc/app/simpledns/log \
     && mkdir -p /etc/service/simpledns/log \
     && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/simpledns/log\n" > /etc/service/simpledns/log/run \

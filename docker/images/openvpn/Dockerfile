@@ -33,6 +33,7 @@ COPY data/openvpn.conf /etc/openvpn
 
 # Start Openvpn
 RUN mkdir -p /etc/service/openvpn \
+    && mkdir -p /etc/app/openvpn \
     #&& mkdir -p /etc/app/openvpn/log \
     #&& mkdir -p /etc/service/openvpn/log \
     #&& echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/openvpn/log\n" > /etc/service/openvpn/log/run \

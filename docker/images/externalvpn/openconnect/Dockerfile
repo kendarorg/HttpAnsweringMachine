@@ -31,6 +31,7 @@ COPY data/setuproute.sh /etc/app/setuproute/
 RUN chmod +x /etc/app/setuproute/*
 
 RUN mkdir -p /etc/service/sshd \
+    && mkdir -p /etc/app/sshd \
     && mkdir -p /etc/app/sshd/log \
     && mkdir -p /etc/service/sshd/log \
     && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/sshd/log\n" > /etc/service/sshd/log/run \
@@ -41,6 +42,7 @@ RUN mkdir -p /etc/service/sshd \
 
 # Setup the route
 RUN mkdir -p /etc/service/setuproute \
+    && mkdir -p /etc/app/setuproute \
     && mkdir -p /etc/app/setuproute/log \
     && mkdir -p /etc/service/setuproute/log \
     && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/setuproute/log\n" > /etc/service/setuproute/log/run \
