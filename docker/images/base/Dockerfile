@@ -31,6 +31,7 @@ RUN apk add --no-cache \
 COPY data/sshd_config /etc/ssh/
 
 RUN mkdir -p /etc/service/sshd \
+    && mkdir -p /etc/app/sshd \
     && mkdir -p /etc/app/sshd/log \
     && mkdir -p /etc/service/sshd/log \
     && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/sshd/log\n" > /etc/service/sshd/log/run \

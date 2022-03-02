@@ -4,6 +4,7 @@ RUN apk upgrade
 
 # Start HAM service
 RUN mkdir -p /etc/service/ham \
+    && mkdir -p /etc/app/ham \
     #&& mkdir -p /etc/app/ham/log \
     #&& mkdir -p /etc/service/ham/log \
     #&& echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/ham/log\n" > /etc/service/ham/log/run \

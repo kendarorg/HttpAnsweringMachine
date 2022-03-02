@@ -3,6 +3,7 @@ FROM ham.master:latest
 COPY ./docker/external.json /etc/app/ham/app/
 
 RUN mkdir -p /etc/app/be \
+    && mkdir -p /etc/service/be \
     && mkdir -p /etc/app/be/log \
     && mkdir -p /etc/service/be/log \
     && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/be/log\n" > /etc/service/be/log/run \
@@ -16,6 +17,7 @@ RUN chmod +x /etc/app/be/*.sh
 
 
 RUN mkdir -p /etc/app/be-users \
+    && mkdir -p /etc/service/be-users \
     && mkdir -p /etc/app/be-users/log \
     && mkdir -p /etc/service/be-users/log \
     && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/be-users/log\n" > /etc/service/be-users/log/run \
@@ -31,6 +33,7 @@ RUN chmod +x /etc/app/be-users/*.sh
 
 
 RUN mkdir -p /etc/app/fe \
+    && mkdir -p /etc/service/fe \
     && mkdir -p /etc/app/fe/log \
     && mkdir -p /etc/service/fe/log \
     && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/fe/log\n" > /etc/service/fe/log/run \
