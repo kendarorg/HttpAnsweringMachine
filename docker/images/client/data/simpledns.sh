@@ -4,7 +4,7 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk/
 export PATH="${JAVA_HOME}/bin:${PATH}"
 dnsServer=`ping -c 4 $DNS_HIJACK_SERVER|head -n 1| grep -Eo "([0-9]+\.?){4}"`
 java -Dother.dns=${dnsServer} \
-  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005 \
+  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5015 \
   -jar /etc/app/simpledns/simpledns-1.0-SNAPSHOT.jar
 
 #java -Dother.dns=127.0.0.11,${DNS_HIJACK_SERVER} \
