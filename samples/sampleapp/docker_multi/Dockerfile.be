@@ -9,6 +9,7 @@ RUN mkdir -p /etc/app/be \
     && chmod +x /etc/service/be/run
 
 COPY ./docker_multi/be.sh /etc/app/be/
+COPY ./docker_multi/be.application.properties /etc/app/be/application.properties
 COPY ./be/target/*.jar /etc/app/be/
 RUN chmod +x /etc/app/be/*.sh
 

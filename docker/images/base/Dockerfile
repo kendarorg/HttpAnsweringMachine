@@ -18,7 +18,7 @@ RUN apk add --no-cache openjdk11
 # Prepare runit
 RUN apk add --no-cache runit \
     && mkdir -p /etc/service \
-    && mkdir -p /etc/apps
+    && mkdir -p /etc/app
 
 # Install sshd
 RUN apk add --no-cache \

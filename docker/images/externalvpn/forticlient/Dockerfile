@@ -12,7 +12,7 @@ RUN apt-get install -y bash curl vim iptables wget unzip forticlient iptables-pe
 # Prepare runit
 RUN apk add --no-cache runit \
     && mkdir -p /etc/service \
-    && mkdir -p /etc/apps
+    && mkdir -p /etc/app
 
 # Update iptables
 RUN echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
