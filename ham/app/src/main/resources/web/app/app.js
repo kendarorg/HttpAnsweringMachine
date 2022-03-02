@@ -484,7 +484,9 @@ const downloadFile = function (urlToSend) {
 
 const buildGenericModal = function(modal, table, value, idField, extraContent, randomId, openAsEdit) {
     //var encodedValue = value[valueField].replace('"','\\"');
-    $(modal).find(".modal-title").empty().append(`${table.objType}`);
+    if(table!=undefined && table!=null) {
+        $(modal).find(".modal-title").empty().append(`${table.objType}`);
+    }
     let readonly = "readonly";
     if (!openAsEdit) {
         readonly = "";

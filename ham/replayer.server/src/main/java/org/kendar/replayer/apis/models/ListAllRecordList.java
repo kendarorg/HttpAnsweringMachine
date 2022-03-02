@@ -20,6 +20,9 @@ public class ListAllRecordList {
             staticLine.getRequest().setRequestBytes(null);
             staticLine.getResponse().setResponseBytes(null);
             staticLine.getResponse().setResponseText(null);
+            if(staticLine.getJsCallback()!=null){
+                staticLine.setJsCallback("PRESENT");
+            }
             getLines().add((staticLine));
         }
         for (var dynamicLine :
@@ -28,9 +31,15 @@ public class ListAllRecordList {
             dynamicLine.getRequest().setRequestBytes(null);
             dynamicLine.getResponse().setResponseBytes(null);
             dynamicLine.getResponse().setResponseText(null);
+            if(dynamicLine.getJsCallback()!=null){
+                dynamicLine.setJsCallback("PRESENT");
+            }
             getLines().add((dynamicLine));
         }
         for(var index: datasetContent.getIndexes()){
+            if(index.getJsCallback()!=null){
+                index.setJsCallback("PRESENT");
+            }
             getIndexes().add(index);
         }
         this.setId(id);
