@@ -189,20 +189,35 @@
     `;
 
     var setScript = function(line,isIndexLine){
-        var modal=".modal";
-        var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
-        var target = {
-            compositeId :getUrlParameter("id")+"|"+line+"|"+(isIndexLine?1:0),
-            id : getUrlParameter("id"),
-            line : line,
-            index : isIndexLine
-        };
-        buildGenericModal(modal, null,target, "compositeId", scriptModal, randomId,true);
-        $(modal).find("#"+randomId).click(function(){
-            //scriptsTable.saveFunction(scriptsTable,id,true);
-            //Save the world
-            //Calls the freaking new API
-        });
+
+        var url = "/api/plugins/replayer/recording/"+getUrlParameter("id")+"/";
+        url+= isIndexLine?"lineindex":"line";
+        url+= "/"+line;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (res) {
+                var modal=".modal";
+                var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
+                var target = {
+                    compositeId :getUrlParameter("id")+"|"+line+"|"+(isIndexLine?1:0),
+                    id : getUrlParameter("id"),
+                    line : line,
+                    index : isIndexLine,
+                    data:res,
+                    jsScript:res['jsCallback']
+                };
+                buildGenericModal(modal, null,target, "compositeId", scriptModal, randomId,true);
+                $(modal).find("#"+randomId).click(function(){
+                    //scriptsTable.saveFunction(scriptsTable,id,true);
+                    //Save the world
+                    //Calls the freaking new API
+                });
+            }});
+
+        //ajaxloadjsscript( success (
+
+        //))
     }
 
     var buttonsMask=[
