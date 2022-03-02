@@ -76,6 +76,7 @@ public class PactDataset implements BaseDataset {
         var result = new TestResults();
         result.setType("Pact");
         result.setTimestamp(Calendar.getInstance());
+        result.setRecordingId(id);
         long start = System.currentTimeMillis();
         var rootPath = Path.of(replayerDataDir);
         var stringPath = Path.of(rootPath + File.separator + name + ".json");

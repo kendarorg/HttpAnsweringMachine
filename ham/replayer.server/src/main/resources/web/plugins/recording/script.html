@@ -241,8 +241,8 @@
                 <input class="form-check-input" type="checkbox" value="" id="stimulatorTest_` + line['id'] + `" name="stimulatorTest_`+line['id']+`">
 
             </div>`;
-                    setChecked($('#allCalls #pactTest_'+line['id']),line['pactTest']);
-                    setChecked($('#allCalls #stimulatorTest_'+line['id']),line['stimulatorTest']);
+                    setChecked($('#allCalls #pactTest_'+line['id']),indexline['pactTest']);
+                    setChecked($('#allCalls #stimulatorTest_'+line['id']),indexline['stimulatorTest']);
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
