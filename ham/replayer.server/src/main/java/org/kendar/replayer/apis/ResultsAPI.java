@@ -106,6 +106,7 @@ public class ResultsAPI  implements FilteringClass {
 
     private void loadFileResults(Path rootPath, ArrayList<RecordingItem> result, String type) {
         var nullDir = Path.of(rootPath + File.separator + type + File.separator);
+        if(!Files.exists(nullDir))return;
         File file = new File(nullDir.toString());
         String[] fileList = file.list();
         if(fileList==null){
