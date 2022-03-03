@@ -5,13 +5,7 @@ function(request,response,expectedresponse){
 	//YOUR DATA
 }
 
-To make diffs you can
+To make diffs you can write in the code
 
 var diffEngine = new org.kendar.xml.DiffInferrer();
-var template = {id:"test",data:"data"};
-var message = {id:"test"}
-try{
-  diffEngine.diff(JSON.stringify(template),JSON.stringify(message));
-}catch(error){
-  response.responseText = JSON.stringify(error);
-}
+diffEngine.diff(JSON.stringify(expectedresponse),JSON.stringify(response));
