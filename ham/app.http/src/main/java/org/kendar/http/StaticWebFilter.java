@@ -51,17 +51,23 @@ public abstract class StaticWebFilter implements FilteringClass {
     if (isResource(getPath())) {
       realPath = realPath.substring(1);
     }
+    var requestedPath = request.getPath();
+    if(requestedPath.endsWith("/")){
+      requestedPath = requestedPath.substring(0,requestedPath.length()-1);
+    }
 
-    if (verifyPathAndRender(response, realPath, request.getPath())) return true;
-    if (verifyPathAndRender(response, realPath, request.getPath() + "/index.htm")) return true;
-    if (verifyPathAndRender(response, realPath, request.getPath() + "/index.html")) return true;
-    if (verifyPathAndRender(response, realPath, request.getPath() + ".md")) return true;
-    if (verifyPathAndRender(response, realPath, request.getPath() + "/index.md")) return true;
+    if (verifyPathAndRender(response, realPath, requestedPath,false)) return true;
+    if (verifyPathAndRender(response, realPath, requestedPath + "/index.htm",true)) return true;
+    if (verifyPathAndRender(response, realPath, requestedPath + "/index.html",true)) return true;
+    if (verifyPathAndRender(response, realPath, requestedPath + "/index.md",true)) return true;
+    if (verifyPathAndRender(response, realPath, request.getPath() + ".md",true)) return true;
+    if (verifyPathAndRender(response, realPath, request.getPath() + ".htm",true)) return true;
+    if (verifyPathAndRender(response, realPath, request.getPath() + ".html",true)) return true;
 
     return false;
   }
 
-  private boolean verifyPathAndRender(Response response, String realPath, String possibleMatch) {
+  private boolean verifyPathAndRender(Response response, String realPath, String possibleMatch,boolean redirect) {
     Path fullPath;
     if (resourceFiles == null || resourceFiles.isEmpty()) {
       fullPath = Path.of(fileResourcesUtils.buildPath(realPath, possibleMatch));
@@ -69,7 +75,12 @@ public abstract class StaticWebFilter implements FilteringClass {
       fullPath = Path.of(realPath, possibleMatch);
     }
     if (isFileExisting(fullPath)) {
-      renderFile(fullPath, response);
+      if(redirect){
+        response.addHeader("location",possibleMatch);
+        response.setStatusCode(302);
+      }else {
+        renderFile(fullPath, response);
+      }
       return true;
     }
     return false;
