@@ -33,7 +33,7 @@ public class JsReplayerExecutor {
                         "var globalFilterResult=runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON),JSON.parse(EXPECTEDRESPONSEJSON));\n"
                                 + "globalResult.put('request', JSON.stringify(globalFilterResult.request));\n"
                                 + "globalResult.put('response', JSON.stringify(globalFilterResult.response));\n");
-        scriptSrc.append("\r\nfunction runFilter(request,response){");
+        scriptSrc.append("\r\nfunction runFilter(request,response,expectedresponse){");
         String[] lines = LINE_SEP_PATTERN.split(data);
         for (var sourceLine :lines) {
             scriptSrc
