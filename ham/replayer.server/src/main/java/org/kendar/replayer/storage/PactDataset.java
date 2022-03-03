@@ -81,7 +81,7 @@ public class PactDataset implements BaseDataset {
         var rootPath = Path.of(replayerDataDir);
         var stringPath = Path.of(rootPath + File.separator + name + ".json");
         var pactsDir = Path.of(rootPath + File.separator + "pacts" + File.separator);
-        var resultsFile = Path.of(rootPath + File.separator + "pacts" + File.separator + id + ".json");
+        var resultsFile = Path.of(rootPath + File.separator + "pacts" + File.separator + name+"."+ id + ".json");
 
         try {
             running.set(true);

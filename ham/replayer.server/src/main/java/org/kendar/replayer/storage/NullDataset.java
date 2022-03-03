@@ -72,12 +72,13 @@ public class NullDataset extends ReplayerDataset{
         var result = new TestResults();
         result.setType("NullInfrastructure");
         result.setTimestamp(Calendar.getInstance());
+        result.setRecordingId(name);
         long start = System.currentTimeMillis();
         var rootPath = Path.of(replayerDataDir);
 
         var stringPath = Path.of(rootPath + File.separator + name + ".json");
         var nullDir = Path.of(rootPath + File.separator + "null" + File.separator);
-        var resultsFile =  Path.of(rootPath + File.separator + "null" + File.separator+ id+".json");
+        var resultsFile =  Path.of(rootPath + File.separator + "null" + File.separator+ name+"."+id+".json");
         try {
             if (!Files.isDirectory(rootPath)) {
                 Files.createDirectory(rootPath);
