@@ -61,7 +61,7 @@ public class ReplayerAPIActions implements FilteringClass {
         }else if(action.equalsIgnoreCase("pause") && replayerStatus.getStatus()==ReplayerState.REPLAYING){
             replayerStatus.pauseReplaying();
         }else if(action.equalsIgnoreCase("stop") &&
-                (replayerStatus.getStatus()==ReplayerState.REPLAYING||replayerStatus.getStatus()==ReplayerState.PAUSED_REPLAYING)){
+                (replayerStatus.getStatus()==ReplayerState.REPLAYING || replayerStatus.getStatus()==ReplayerState.PAUSED_REPLAYING)){
             replayerStatus.stopReplaying();
         }
     }

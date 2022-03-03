@@ -295,6 +295,7 @@
                     var line = _.find(lines, function (o) {
                         return indexline['reference'] == o['id'];
                     });
+                    if(line == undefined) continue;
                     line = JSON.parse(JSON.stringify(line));
                     line['id'] = indexline['id'];
                     line['_selected'] = `<div class="form-check">
