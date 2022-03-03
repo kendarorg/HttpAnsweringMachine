@@ -8,4 +8,4 @@ function(request,response,expectedresponse){
 To make diffs you can write in the code
 
 var diffEngine = new org.kendar.xml.DiffInferrer();
-diffEngine.diff(JSON.stringify(expectedresponse),JSON.stringify(response));
+diffEngine.diff(expectedresponse.responseText,response.responseText);

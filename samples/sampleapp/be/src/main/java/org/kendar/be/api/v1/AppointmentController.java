@@ -25,13 +25,13 @@ public class AppointmentController {
 
     // Aggregate root
     // tag::get-aggregate-root[]
-    @GetMapping("")
+    @GetMapping(value = "",produces = "application/json")
     List<Appointment> all() throws IOException {
         return appointmentService.findAll();
     }
     // end::get-aggregate-root[]
 
-    @PostMapping("/{employeeId}")
+    @PostMapping(value ="/{employeeId}",produces = "application/json")
     Appointment newAppointment(@RequestBody Appointment newAppointment,@PathVariable Long employeeId) throws IOException {
         var employee = employeeService.findById(employeeId);
         if(employee.isEmpty()){
@@ -43,7 +43,7 @@ public class AppointmentController {
 
     // Aggregate root
     // tag::get-aggregate-root[]
-    @GetMapping("/{employeeId}")
+    @GetMapping(value ="/{employeeId}",produces = "application/json")
     List<Appointment> allByEmployee(@PathVariable Long employeeId) throws IOException {
         return appointmentService.findAll().stream().
                 filter(app -> app.getEmployeeId()==employeeId).
@@ -52,13 +52,13 @@ public class AppointmentController {
 
     // Single item
 
-    @GetMapping("/{employeeId}/{appointmentId}")
+    @GetMapping(value ="/{employeeId}/{appointmentId}",produces = "application/json")
     Appointment one(@PathVariable Long employeeId,@PathVariable Long appointmentId) throws IOException {
         return appointmentService.findById(employeeId,appointmentId)
                 .orElseThrow(() -> new ItemNotFoundException(employeeId.toString()+":"+appointmentId.toString()));
     }
 
-    @PutMapping("/{employeeId}/{appointmentId}")
+    @PutMapping(value ="/{employeeId}/{appointmentId}",produces = "application/json")
     Appointment replaceAppointment(@RequestBody Appointment newAppointment, @PathVariable Long employeeId,@PathVariable Long appointmentId) throws IOException {
             return appointmentService.findById(employeeId,appointmentId)
                 .map(appointment -> {
@@ -73,12 +73,12 @@ public class AppointmentController {
                 });
     }
 
-    @DeleteMapping("/{employeeId}/{appointmentId}")
+    @DeleteMapping(value ="/{employeeId}/{appointmentId}",produces = "application/json")
     void deleteAppointment(@PathVariable Long employeeId,@PathVariable Long appointmentId) throws IOException {
         appointmentService.deleteById(employeeId,appointmentId);
     }
 
-    @PutMapping("/{employeeId}/{appointmentId}/state")
+    @PutMapping(value ="/{employeeId}/{appointmentId}/state",produces = "application/json")
     Appointment changeState(@PathVariable Long employeeId,@PathVariable Long appointmentId) throws IOException {
         return appointmentService.findById(employeeId,appointmentId)
                 .map(appointment -> {

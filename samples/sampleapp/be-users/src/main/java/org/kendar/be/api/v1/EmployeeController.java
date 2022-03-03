@@ -21,27 +21,27 @@ public class EmployeeController {
 
     // Aggregate root
     // tag::get-aggregate-root[]
-    @GetMapping("")
+    @GetMapping(value ="",produces = "application/json")
     List<Employee> all() {
         return repository.findAll();
     }
     // end::get-aggregate-root[]
 
-    @PostMapping("")
+    @PostMapping(value ="",produces = "application/json")
     Employee newEmployee(@RequestBody Employee newEmployee) {
         return repository.save(newEmployee);
     }
 
     // Single item
 
-    @GetMapping("/{id}")
+    @GetMapping(value ="/{id}",produces = "application/json")
     Employee one(@PathVariable Long id) {
 
         return repository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id.toString()));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value ="/{id}",produces = "application/json")
     Employee replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
 
         return repository.findById(id)
@@ -56,7 +56,7 @@ public class EmployeeController {
                 });
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value ="/{id}",produces = "application/json")
     void deleteEmployee(@PathVariable Long id) {
         repository.deleteById(id);
     }
