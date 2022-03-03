@@ -51,6 +51,14 @@ public class JsonVerificationTests extends BaseUtils {
         var target = new DiffInferrer();
         assertTrue(target.diff(xml1,xml2));
     }
+    @Test
+    public void correctEmptyArray() throws IOException, XmlException {
+        var xml1 = "[]";
+        var xml2 = "[]";
+
+        var target = new DiffInferrer();
+        assertTrue(target.diff(xml1,xml2));
+    }
 
     @Test
     public void arrayCorrect() throws IOException, XmlException {

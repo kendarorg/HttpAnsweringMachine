@@ -25,7 +25,7 @@ public class AppointmentController {
 
     // Aggregate root
     // tag::get-aggregate-root[]
-    @GetMapping("")
+    @GetMapping(value ="",produces = "application/json")
     List<AppointmentDto> all() {
         return appointmentRepository.findAll()
                 .stream().map(app->AppointmentDto.convert(app)).
@@ -33,7 +33,7 @@ public class AppointmentController {
     }
     // end::get-aggregate-root[]
 
-    @PostMapping("/{employeeId}")
+    @PostMapping(value ="/{employeeId}",produces = "application/json")
     AppointmentDto newAppointment(@RequestBody AppointmentDto newAppointment,@PathVariable Long employeeId) {
         var employee = employeeRepository.getById(employeeId);
         if(employee==null){
@@ -46,7 +46,7 @@ public class AppointmentController {
 
     // Aggregate root
     // tag::get-aggregate-root[]
-    @GetMapping("/{employeeId}")
+    @GetMapping(value ="/{employeeId}",produces = "application/json")
     List<AppointmentDto> allByEmployee(@PathVariable Long employeeId) {
         return appointmentRepository.findAll().stream().
                 filter(app -> app.getEmployeeId()==employeeId).
@@ -56,14 +56,14 @@ public class AppointmentController {
 
     // Single item
 
-    @GetMapping("/{employeeId}/{appointmentId}")
+    @GetMapping(value ="/{employeeId}/{appointmentId}",produces = "application/json")
     AppointmentDto one(@PathVariable Long employeeId,@PathVariable Long appointmentId) {
         var id = new AppointmentId(appointmentId,employeeId);
         return AppointmentDto.convert(appointmentRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id.toString())));
     }
 
-    @PutMapping("/{employeeId}/{appointmentId}")
+    @PutMapping(value ="/{employeeId}/{appointmentId}",produces = "application/json")
     AppointmentDto replaceAppointment(@RequestBody AppointmentDto newAppointment, @PathVariable Long employeeId,@PathVariable Long appointmentId) {
         var id = new AppointmentId(appointmentId,employeeId);
         var newAppointmentEntity = AppointmentDto.convert(newAppointment);
@@ -80,13 +80,13 @@ public class AppointmentController {
                 }));
     }
 
-    @DeleteMapping("/{employeeId}/{appointmentId}")
+    @DeleteMapping(value ="/{employeeId}/{appointmentId}",produces = "application/json")
     void deleteAppointment(@PathVariable Long employeeId,@PathVariable Long appointmentId) {
         var id = new AppointmentId(appointmentId,employeeId);
         appointmentRepository.deleteById(id);
     }
 
-    @PutMapping("/{employeeId}/{appointmentId}/state")
+    @PutMapping(value ="/{employeeId}/{appointmentId}/state",produces = "application/json")
     Appointment changeState(@PathVariable Long employeeId,@PathVariable Long appointmentId) {
         var id = new AppointmentId(appointmentId,employeeId);
         return appointmentRepository.findById(id)

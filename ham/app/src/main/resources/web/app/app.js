@@ -443,14 +443,14 @@ const flashMessage = function (msg) {
 const setChecked = function (jqueryObj, checked) {
     if(jqueryObj.is(":hidden"))return;
     if (checked) {
-        jqueryObj.prop("checked","true");
+        //jqueryObj.prop("checked","true");
         jqueryObj.attr("value","true");
-        // jqueryObj.attr('checked', 'checked');
+        jqueryObj.attr('checked', 'checked');
         // jqueryObj.attr('value', "true");
     } else {
-        jqueryObj.prop("checked","false");
-        jqueryObj.attr("value","false");
-        // jqueryObj.removeAttr('checked');
+        //jqueryObj.prop("checked","false");
+        jqueryObj.attr("value","");
+        jqueryObj.removeAttr('checked');
         // jqueryObj.attr('value', "false");
     }
 };

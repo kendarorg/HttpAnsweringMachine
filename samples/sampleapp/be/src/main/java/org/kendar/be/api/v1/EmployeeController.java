@@ -22,33 +22,33 @@ public class EmployeeController {
 
     // Aggregate root
     // tag::get-aggregate-root[]
-    @GetMapping("")
+    @GetMapping(value ="",produces = "application/json")
     List<Employee> all() throws IOException {
         return service.findAll();
     }
     // end::get-aggregate-root[]
 
-    @PostMapping("")
+    @PostMapping(value ="",produces = "application/json")
     Employee newEmployee(@RequestBody Employee newEmployee) throws IOException {
         return service.save(newEmployee);
     }
 
     // Single item
 
-    @GetMapping("/{id}")
+    @GetMapping(value ="/{id}",produces = "application/json")
     Employee one(@PathVariable Long id) throws IOException {
 
         return service.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id.toString()));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value ="/{id}",produces = "application/json")
     Employee replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) throws IOException {
 
         return service.replaceEmployee(newEmployee,id);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value ="/{id}",produces = "application/json")
     void deleteEmployee(@PathVariable Long id) throws IOException {
         service.deleteById(id);
     }
