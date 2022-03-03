@@ -167,6 +167,24 @@ public class ReplayerAPICrud implements FilteringClass {
     res.setStatusCode(200);
   }
 
+
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/replayer/recording/{id}/full",
+          method = "GET",
+          id = "4003daa6-277f-11ec-9621-full")
+  public void getFull(Request req, Response res) throws IOException {
+    var id = req.getPathParameter("id");
+    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
+    if (Files.exists(rootPath)) {
+      var fileContent = Files.readString(rootPath);
+      res.setResponseText(fileContent);
+      res.setStatusCode(200);
+    }else {
+      res.setStatusCode(404);
+    }
+  }
+
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording",
@@ -205,18 +223,28 @@ public class ReplayerAPICrud implements FilteringClass {
     var id = req.getPathParameter("id");
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
     if (Files.exists(rootPath)) {
+      var index = new HashSet<Integer>();
       var fileContent = Files.readString(rootPath);
       var result = mapper.readValue(fileContent, ReplayerResult.class);
       for(var i = result.getDynamicRequests().size()-1;i>=0;i--){
         var dq = result.getDynamicRequests().get(i);
         if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
+          index.add(dq.getId());
           result.getDynamicRequests().remove(i);
+
         }
       }
       for(var i = result.getStaticRequests().size()-1;i>=0;i--){
         var dq = result.getStaticRequests().get(i);
         if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
+          index.add(dq.getId());
           result.getStaticRequests().remove(i);
+        }
+      }
+      for(var i = result.getIndexes().size()-1;i>=0;i--){
+        var dq = result.getIndexes().get(i);
+        if(index.contains(dq.getReference())){
+          result.getIndexes().remove(i);
         }
       }
 

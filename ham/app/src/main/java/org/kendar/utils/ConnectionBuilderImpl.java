@@ -56,7 +56,7 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
             @Override
             public InetAddress[] resolve(final String host) throws UnknownHostException {
                 var result = multiResolver.resolve(host);
-                if(result.size()>1) {
+                if(result.size()>=1) {
                     return new InetAddress[]{InetAddress.getByName(result.get(0))};
                 }
                 return new InetAddress[]{};
