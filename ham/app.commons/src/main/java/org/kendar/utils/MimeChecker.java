@@ -11,11 +11,13 @@ public class MimeChecker {
 
   @SuppressWarnings("RedundantIfStatement")
   public static boolean isBinary(String mime, String contentEncoding) {
-    if (contentEncoding != null) {
+    if (contentEncoding == null) {
       return true;
     }
     var mimeLow = mime.toLowerCase(Locale.ROOT);
     if (mimeLow.contains("text")) return false;
+    if (mimeLow.contains("xml")) return false;
+    if (mimeLow.contains("soap")) return false;
     if (mimeLow.contains("javascript")) return false;
     if (mimeLow.contains("json")) return false;
     if (mimeLow.contains("application/x-www-form-urlencoded")) return false;

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -142,6 +143,17 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         request = requestResponseBuilder.fromExchange(httpExchange, "https");
       } else {
         request = requestResponseBuilder.fromExchange(httpExchange, "http");
+      }
+      if(request.getHeader("X-BLOCK-RECURSIVE")!=null){
+        var uri = new URI(request.getHeader("X-BLOCK-RECURSIVE"));
+        if(uri.getHost().equalsIgnoreCase(request.getHost()) &&
+                uri.getPath().equalsIgnoreCase(request.getPath())) {
+          response.addHeader("ERROR","Recursive call on "+request.getHeader("X-BLOCK-RECURSIVE"));
+          response.setStatusCode(404);
+          sendResponse(response,httpExchange);
+          return;
+        }
+
       }
 
       handleOverwriteHost(request);

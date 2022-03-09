@@ -443,14 +443,14 @@ const flashMessage = function (msg) {
 const setChecked = function (jqueryObj, checked) {
     if(jqueryObj.is(":hidden"))return;
     if (checked) {
-        jqueryObj.prop("checked","true");
+        //jqueryObj.prop("checked","true");
         jqueryObj.attr("value","true");
-        // jqueryObj.attr('checked', 'checked');
+        jqueryObj.attr('checked', 'checked');
         // jqueryObj.attr('value', "true");
     } else {
-        jqueryObj.prop("checked","false");
-        jqueryObj.attr("value","false");
-        // jqueryObj.removeAttr('checked');
+        //jqueryObj.prop("checked","false");
+        jqueryObj.attr("value","");
+        jqueryObj.removeAttr('checked');
         // jqueryObj.attr('value', "false");
     }
 };
@@ -484,7 +484,9 @@ const downloadFile = function (urlToSend) {
 
 const buildGenericModal = function(modal, table, value, idField, extraContent, randomId, openAsEdit) {
     //var encodedValue = value[valueField].replace('"','\\"');
-    $(modal).find(".modal-title").empty().append(`${table.objType}`);
+    if(table!=undefined && table!=null) {
+        $(modal).find(".modal-title").empty().append(`${table.objType}`);
+    }
     let readonly = "readonly";
     if (!openAsEdit) {
         readonly = "";

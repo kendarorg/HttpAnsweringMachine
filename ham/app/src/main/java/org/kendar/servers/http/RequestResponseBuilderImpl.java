@@ -113,7 +113,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
     result.setSoapRequest(result.getHeader(H_SOAPA_CTION) != null);
     setupAuthHeaders(result);
 
-    result.setBinaryRequest(MimeChecker.isBinary(headerContentType, null));
+    result.setBinaryRequest(MimeChecker.isBinary(headerContentType, ""));
     result.setStaticRequest(MimeChecker.isStatic(headerContentType, result.getPath())
            // && result.getQuery().size()==0
     );
@@ -153,7 +153,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
     if (responseEntity != null) {
       InputStream in = responseEntity.getContent();
 
-      String contentEncoding = null;
+      String contentEncoding = "";
       if (null != responseEntity.getContentEncoding()) {
         contentEncoding = responseEntity.getContentEncoding().getValue().toLowerCase(Locale.ROOT);
       }
