@@ -30,9 +30,7 @@ public class JsReplayerExecutor {
         if(data==null||data.isEmpty()) return null;
         StringBuilder scriptSrc =
                 new StringBuilder(
-                        "var globalFilterResult=runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON),JSON.parse(EXPECTEDRESPONSEJSON));\n"
-                                + "globalResult.put('request', JSON.stringify(globalFilterResult.request));\n"
-                                + "globalResult.put('response', JSON.stringify(globalFilterResult.response));\n");
+                        "runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON),JSON.parse(EXPECTEDRESPONSEJSON));\n");
         scriptSrc.append("\r\nfunction runFilter(request,response,expectedresponse){");
         String[] lines = LINE_SEP_PATTERN.split(data);
         for (var sourceLine :lines) {
