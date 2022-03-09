@@ -53,6 +53,15 @@ public class XmlMatcher {
     }
 
     private void matchesTag(XmlElement template, XmlElement toCheck, DiffPath diffResult) throws XmlException {
+        if(template.getTag()!=null && toCheck.getTag()==null){
+            throw new XmlException(diffResult.getPath()+" WRONG TAG");
+        }
+        if(template.getTag()==null && toCheck.getTag()!=null){
+            throw new XmlException(diffResult.getPath()+" WRONG TAG");
+        }
+        if(template.getTag()==null && toCheck.getTag()==null){
+            return;
+        }
         if(!template.getTag().equalsIgnoreCase(toCheck.getTag())){
             throw new XmlException(diffResult.getPath()+" WRONG TAG");
         }
