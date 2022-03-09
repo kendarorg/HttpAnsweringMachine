@@ -13,13 +13,16 @@ public class ListAllRecordList {
     private List<ReplayerRow> lines = new ArrayList<>();
     private List<CallIndex> indexes = new ArrayList<>();
 
-    public ListAllRecordList(ReplayerResult datasetContent,String id) {
+    public ListAllRecordList(ReplayerResult datasetContent,String id,boolean cleanJs) {
         for (var staticLine :
                 datasetContent.getStaticRequests()) {
             staticLine.getRequest().setRequestText(null);
             staticLine.getRequest().setRequestBytes(null);
             staticLine.getResponse().setResponseBytes(null);
             staticLine.getResponse().setResponseText(null);
+            if(staticLine.getJsCallback()!=null && !staticLine.getJsCallback().isEmpty()  && cleanJs){
+                staticLine.setJsCallback("PRESENT");
+            }
             getLines().add((staticLine));
         }
         for (var dynamicLine :
@@ -28,9 +31,15 @@ public class ListAllRecordList {
             dynamicLine.getRequest().setRequestBytes(null);
             dynamicLine.getResponse().setResponseBytes(null);
             dynamicLine.getResponse().setResponseText(null);
+            if(dynamicLine.getJsCallback()!=null && !dynamicLine.getJsCallback().isEmpty() && cleanJs){
+                dynamicLine.setJsCallback("PRESENT");
+            }
             getLines().add((dynamicLine));
         }
         for(var index: datasetContent.getIndexes()){
+            if(index.getJsCallback()!=null && !index.getJsCallback().isEmpty()  && cleanJs){
+                index.setJsCallback("PRESENT");
+            }
             getIndexes().add(index);
         }
         this.setId(id);

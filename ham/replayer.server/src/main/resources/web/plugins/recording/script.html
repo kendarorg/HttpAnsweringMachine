@@ -109,6 +109,8 @@
                             <th>Res.Status</th>
                             <th>Req.Body</th>
                             <th>Res.Body</th>
+                            <th>Script</th>
+                            <th></th>
                             <th colspan="2">
                                 <button class="btn btn-danger form-control"
                                         id="script_addline" name="script_addline"
@@ -141,6 +143,8 @@
                             <th>Res.Status</th>
                             <th>Req.Body</th>
                             <th>Res.Body</th>
+                            <th>Script</th>
+                            <th></th>
                             <th colspan="2">
                                 <!--<button class="btn btn-danger form-control"
                                         onClick="addLine();">Add</button>-->
@@ -155,8 +159,74 @@
 
     </div>
 </div>
+<!-- Modal -->
+<div aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Update User</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
 <script src="/app/app.js"></script>
 <script>
+
+    var scriptModal = `
+            <div class="form-group">
+    <label for="line">line</label>
+    <input class="form-control" type="text" name="line"  id="line" />
+    </div>
+            <div class="form-group">
+                <label for="jsScript">jsScript</label>
+                <textarea class="form-control" rows="6" cols="50" name="jsScript" id="jsScript"></textarea>
+            </div>
+    `;
+
+    var saveScript = function(url,data){
+
+        $.ajax({
+            url: url,
+            type: 'PUT',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(response){
+                location.reload();
+            }});
+    }
+    var setScript = function(line,isIndexLine){
+
+        var url = "/api/plugins/replayer/recording/"+getUrlParameter("id")+"/";
+        url+= isIndexLine?"lineindex":"line";
+        url+= "/"+line;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (res) {
+                var modal=".modal";
+                var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
+                var target = {
+                    compositeId :getUrlParameter("id")+"|"+line+"|"+(isIndexLine?1:0),
+                    id : getUrlParameter("id"),
+                    line : line,
+                    index : isIndexLine,
+                    data:res,
+                    jsScript:res['jsCallback']
+                };
+                buildGenericModal(modal, null,target, "compositeId", scriptModal, randomId,true);
+                $(modal).find("#jsScript").val(res["jsCallback"]);
+                $(modal).find("#line").val(line);
+                $(modal).find("#"+randomId).click(function(){
+                    target.data['jsCallback']=$(modal).find("#jsScript").val();
+                    saveScript(url,res)
+                });
+            }});
+    }
 
     var buttonsMask=[
         {id:["startreplaying"],states:["PAUSED_REPLAYING","NONE"]},
@@ -225,6 +295,7 @@
                     var line = _.find(lines, function (o) {
                         return indexline['reference'] == o['id'];
                     });
+                    if(line == undefined) continue;
                     line = JSON.parse(JSON.stringify(line));
                     line['id'] = indexline['id'];
                     line['_selected'] = `<div class="form-check">
@@ -249,8 +320,10 @@
                     setChecked($('#allCalls #pactTest_'+line['id']),indexline['pactTest']);
                     setChecked($('#allCalls #stimulatorTest_'+line['id']),indexline['stimulatorTest']);
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
+                    line['_script'] = indexline['jsCallback']=="PRESENT"?"Yes":"No";
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
+                    line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`,true)" class="btn btn-default">Edit</button>`;
                     //tSource,tableId,id,data,fields
                     allCalls.appendToTable(line,false);
                 }
@@ -281,21 +354,25 @@
             </div>`;
                     line['_responseHashCalc'] = "No";
                     line['_requestHashCalc'] = "No";
+                    var checkedItem = line['stimulatedTest']?"checked='checked' value='true'":"value='false'";
                     line['_stimulatedTest'] = `<div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="stimulatedTest_` + line['id'] + `" name="stimulatedTest_`+line['id']+`">
+                <input class="form-check-input" type="checkbox" `+checkedItem+` value="" id="stimulatedTest_` + line['id'] + `" name="stimulatedTest_`+line['id']+`">
             </div>`;
+
+                    line['_script'] = line['jsCallback']=="PRESENT"?"Yes":"No";
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
                     //tSource,tableId,id,data,fields
-                    linesTable.appendToTable(line);
                     setChecked($('#linesTable #stimulatedTest_'+line['id']),line['stimulatedTest']);
+                    line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`,false)" class="btn btn-default">Edit</button>`;
+                    linesTable.appendToTable(line);
                 }
             }
         });
     }
     var fields = ['_selected','id','_stimulatedTest','request.method','request.host','request.path','_queryCalc','response.statusCode',
-        '_requestHashCalc','_responseHashCalc'];
+        '_requestHashCalc','_responseHashCalc','_script','_editScript'];
     var linesTable = new SimpleGrid("Request-Response","linesTable","id",fields,
         function(table) {
             loadTableData(table);
@@ -319,11 +396,12 @@
         },null,[
             {id:"id",type:"string"},
             {id:"_stimulatedTest",type:"bool"},
+            {id:"_script",type:"bool"},
             {id:"request.host",type:"string"},
             {id:"request.path",type:"string"},
             {id:"request.query",type:"string"}]);
     var fieldsAllCalls = ['_selected','id','_pactTest','_stimulatorTest','request.method','request.host','request.path','_queryCalc','response.statusCode',
-        '_requestHashCalc','_responseHashCalc'];
+        '_requestHashCalc','_responseHashCalc','_script','_editScript'];
     var allCalls = new SimpleGrid("Request-Response","allCalls","id",fieldsAllCalls,
         function (table){
             loadIndexData(table);
@@ -348,10 +426,11 @@
             {id:"_stimulatorTest",type:"bool"},
             {id:"request.host",type:"string"},
             {id:"request.path",type:"string"},
+            {id:"_script",type:"bool"},
             {id:"request.query",type:"string"}]);
 
     function download(){
-        window.open("/api/plugins/replayer/recording/"+getUrlParameter("id"));
+        window.open("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/full");
     }
 
     function downloadTest(){

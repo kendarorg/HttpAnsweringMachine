@@ -51,6 +51,14 @@ public class JsonVerificationTests extends BaseUtils {
         var target = new DiffInferrer();
         assertTrue(target.diff(xml1,xml2));
     }
+    @Test
+    public void correctEmptyArray() throws IOException, XmlException {
+        var xml1 = "[]";
+        var xml2 = "[]";
+
+        var target = new DiffInferrer();
+        assertTrue(target.diff(xml1,xml2));
+    }
 
     @Test
     public void arrayCorrect() throws IOException, XmlException {
@@ -103,5 +111,15 @@ public class JsonVerificationTests extends BaseUtils {
         assertException(XmlException.class, () -> {
             target.diff(xml1,xml2);
         }, "#object#.a MISSING CHILD b");
+    }
+    @Test
+    public void correctWeirdStuffs() throws IOException, XmlException {
+        var xml1 = "[{\"a\":\"b\",\"c\":\"d\"}]";
+        var xml2 = "[{\"a\":\"b\"}]";
+         xml1 = "{\"a\":\"b\",\"c\":\"d\"}";
+         xml2 = "{\"a\":\"b\"}";
+
+        var target = new DiffInferrer();
+        assertTrue(target.diff(xml1,xml2));
     }
 }

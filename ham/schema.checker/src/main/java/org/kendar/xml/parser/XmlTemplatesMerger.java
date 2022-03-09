@@ -56,7 +56,11 @@ public class XmlTemplatesMerger {
                 var newChild = result.getChildren().get(child.getTag());
                 newChild.setTag(child.getTag());
                 //It's the first template building, what it finds IS MANDATORY
-                newChild.setConstraint(XmlConstraint.MANDATORY_VALUE);
+                if(child.getItems().size()>0) {
+                    newChild.setConstraint(XmlConstraint.MANDATORY_VALUE);
+                }else{
+                    newChild.setConstraint(XmlConstraint.NULLABLE_VALUE);
+                }
                 //Now should merge all the otjer elements
                 var subFirst = true;
                 var newItem = new XmlElement();

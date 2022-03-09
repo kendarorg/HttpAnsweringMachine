@@ -30,10 +30,8 @@ public class JsReplayerExecutor {
         if(data==null||data.isEmpty()) return null;
         StringBuilder scriptSrc =
                 new StringBuilder(
-                        "var globalFilterResult=runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON),JSON.parse(EXPECTEDRESPONSEJSON));\n"
-                                + "globalResult.put('request', JSON.stringify(globalFilterResult.request));\n"
-                                + "globalResult.put('response', JSON.stringify(globalFilterResult.response));\n");
-        scriptSrc.append("\r\nfunction runFilter(request,response){");
+                        "runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON),JSON.parse(EXPECTEDRESPONSEJSON));\n");
+        scriptSrc.append("\r\nfunction runFilter(request,response,expectedresponse){");
         String[] lines = LINE_SEP_PATTERN.split(data);
         for (var sourceLine :lines) {
             scriptSrc
@@ -54,7 +52,7 @@ public class JsReplayerExecutor {
         }
     }
 
-    public void run(Request request, Response response,Response expectedResponse,Script script) {
+    public void run(Request request, Response response,Response expectedResponse,Script script) throws Exception{
         Context cx = Context.enter();
         cx.setOptimizationLevel(9);
         cx.setLanguageVersion(Context.VERSION_1_8);
@@ -75,8 +73,7 @@ public class JsReplayerExecutor {
             //
             //cx.setClassShutter(sandboxClassShutter);
             script.exec(cx, currentScope);
-        }catch (Exception ex){
-        } finally {
+        }finally {
             Context.exit();
         }
     }

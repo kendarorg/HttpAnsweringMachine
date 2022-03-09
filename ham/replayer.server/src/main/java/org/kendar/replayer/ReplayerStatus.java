@@ -84,7 +84,7 @@ public class ReplayerStatus {
     }
 
     public boolean replay(Request req, Response res) {
-        if (state != ReplayerState.REPLAYING||state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) return false;
+        if (state != ReplayerState.REPLAYING  && state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) return false;
         Response response = ((ReplayerDataset)dataset).findResponse(req);
         if (response != null) {
             res.setBinaryResponse(response.isBinaryResponse());

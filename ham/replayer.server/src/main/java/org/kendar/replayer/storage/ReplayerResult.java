@@ -68,4 +68,5 @@ public class ReplayerResult {
     public void setIndexes(List<CallIndex> indexes) {
         this.indexes = indexes;
     }
+
 }

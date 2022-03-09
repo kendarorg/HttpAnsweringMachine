@@ -72,12 +72,13 @@ public class NullDataset extends ReplayerDataset{
         var result = new TestResults();
         result.setType("NullInfrastructure");
         result.setTimestamp(Calendar.getInstance());
+        result.setRecordingId(name);
         long start = System.currentTimeMillis();
         var rootPath = Path.of(replayerDataDir);
 
         var stringPath = Path.of(rootPath + File.separator + name + ".json");
         var nullDir = Path.of(rootPath + File.separator + "null" + File.separator);
-        var resultsFile =  Path.of(rootPath + File.separator + "null" + File.separator+ id+".json");
+        var resultsFile =  Path.of(rootPath + File.separator + "null" + File.separator+ name+"."+id+".json");
         try {
             if (!Files.isDirectory(rootPath)) {
                 Files.createDirectory(rootPath);
@@ -97,18 +98,30 @@ public class NullDataset extends ReplayerDataset{
                     .filter(a -> a.isStimulatorTest())
                     .sorted(Comparator.comparingInt(CallIndex::getId))
                     .collect(Collectors.toList());
+            boolean onIndex = false;
+            int currentIndex = 0;
             try {
                 for (var toCall : indexes) {
+                    onIndex = false;
+                    currentIndex = toCall.getId();
                     if (!running.get()) break;
                     var reqResp = maps.get(toCall.getReference());
                     var response = new Response();
                     internalRequester.callSite(reqResp.getRequest(), response);
-                    var script = executor.prepare(toCall.getJsCallback());
-                    executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
+                    if(reqResp.getJsCallback()!=null && !reqResp.getJsCallback().isEmpty()) {
+                        var script = executor.prepare(reqResp.getJsCallback());
+                        executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
+                    }
+                    if(toCall.getJsCallback()!=null && !toCall.getJsCallback().isEmpty()) {
+                        onIndex = true;
+                        var script = executor.prepare(toCall.getJsCallback());
+                        executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
+                    }
                     result.getExecuted().add(toCall.getId());
                 }
             } catch (Exception ex) {
-                result.setError(ex.getMessage());
+                var extra = "Error calling index "+currentIndex+" running "+(onIndex?"index script":"optimized script. ");
+                result.setError(extra+ex.getMessage());
             }
         }catch (Exception e){
             result.setError(e.getMessage());

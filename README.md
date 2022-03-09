@@ -114,7 +114,8 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 ## Utils
 
 * [Special DNS Server](docs/dnsserver.md) Add DNS servers with their...DNS name
-=====================
+
+## Examples
   
 * [Running in docker single instance](docs/dockersingle.md)
-* [Running in docker](docs/docker.md)
+* [Running in docker multiple instances](docs/dockermulti.md)
