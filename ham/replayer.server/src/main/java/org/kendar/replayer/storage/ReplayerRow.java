@@ -13,7 +13,6 @@ public class ReplayerRow {
     private String responseHash;
     private int id;
     private boolean stimulatedTest;
-    private String jsCallback;
 
     public Calendar getTimestamp() {
         return timestamp;
@@ -80,11 +79,4 @@ public class ReplayerRow {
         this.stimulatedTest = stimulatedTest;
     }
 
-    public String getJsCallback() {
-        return jsCallback;
-    }
-
-    public void setJsCallback(String jsCallback) {
-        this.jsCallback = jsCallback;
-    }
 }

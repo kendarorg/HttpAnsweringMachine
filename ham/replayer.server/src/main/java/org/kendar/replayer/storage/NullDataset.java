@@ -107,14 +107,15 @@ public class NullDataset extends ReplayerDataset{
                     if (!running.get()) break;
                     var reqResp = maps.get(toCall.getReference());
                     var response = new Response();
-                    internalRequester.callSite(reqResp.getRequest(), response);
-                    if(reqResp.getJsCallback()!=null && !reqResp.getJsCallback().isEmpty()) {
-                        var script = executor.prepare(reqResp.getJsCallback());
+                    if(replayerResult.getPreScript().containsKey(currentIndex+"")){
+                        var jsCallback = replayerResult.getPreScript().get(currentIndex+"");
+                        var script = executor.prepare(jsCallback);
                         executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
                     }
-                    if(toCall.getJsCallback()!=null && !toCall.getJsCallback().isEmpty()) {
-                        onIndex = true;
-                        var script = executor.prepare(toCall.getJsCallback());
+                    internalRequester.callSite(reqResp.getRequest(), response);
+                    if(replayerResult.getPostScript().containsKey(currentIndex+"")){
+                        var jsCallback = replayerResult.getPostScript().get(currentIndex+"");
+                        var script = executor.prepare(jsCallback);
                         executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
                     }
                     result.getExecuted().add(toCall.getId());

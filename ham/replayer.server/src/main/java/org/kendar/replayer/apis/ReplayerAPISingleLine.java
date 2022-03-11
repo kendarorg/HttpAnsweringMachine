@@ -207,8 +207,6 @@ public class ReplayerAPISingleLine implements FilteringClass {
     destination.getRequest().setPostParameters(source.getRequest().getPostParameters());
     destination.getRequest().setStaticRequest(source.getRequest().isStaticRequest());
     destination.getRequest().setSoapRequest(source.getRequest().isSoapRequest());
-
-    destination.setJsCallback(source.getJsCallback());
     destination.setStimulatedTest(source.isStimulatedTest());
   }
 
@@ -274,6 +272,5 @@ public class ReplayerAPISingleLine implements FilteringClass {
     destination.setPactTest(source.isPactTest());
     destination.setReference(source.getReference());
     destination.setDescription(source.getDescription());
-    destination.setJsCallback(source.getJsCallback());
   }
 }
