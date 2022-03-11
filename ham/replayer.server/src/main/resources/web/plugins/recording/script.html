@@ -109,6 +109,7 @@
                             <th>Res.Status</th>
                             <th>Req.Body</th>
                             <th>Res.Body</th>
+                            <th>Pre Script</th>
                             <th>Script</th>
                             <th></th>
                             <th colspan="2">
@@ -143,6 +144,7 @@
                             <th>Res.Status</th>
                             <th>Req.Body</th>
                             <th>Res.Body</th>
+                            <th>Pre Script</th>
                             <th>Script</th>
                             <th></th>
                             <th colspan="2">
@@ -193,17 +195,17 @@
         $.ajax({
             url: url,
             type: 'PUT',
-            data: JSON.stringify(data),
-            contentType: "application/json",
+            data: data,
+            contentType: "text/plains",
             success: function(response){
                 location.reload();
             }});
     }
-    var setScript = function(line,isIndexLine){
 
-        var url = "/api/plugins/replayer/recording/"+getUrlParameter("id")+"/";
-        url+= isIndexLine?"lineindex":"line";
-        url+= "/"+line;
+    var setScript = function(line,isPre){
+
+        var url = "/api/plugins/replayer/recording/"+getUrlParameter("id")+"/script/"+line+"?pre=";
+        url+= isPre?"true":"false";
         $.ajax({
             url: url,
             type: 'GET',
@@ -211,18 +213,18 @@
                 var modal=".modal";
                 var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
                 var target = {
-                    compositeId :getUrlParameter("id")+"|"+line+"|"+(isIndexLine?1:0),
+                    compositeId :getUrlParameter("id")+"|"+line+"|"+(isPre?1:0),
                     id : getUrlParameter("id"),
                     line : line,
-                    index : isIndexLine,
+                    index : isPre,
                     data:res,
-                    jsScript:res['jsCallback']
+                    jsScript:res
                 };
                 buildGenericModal(modal, null,target, "compositeId", scriptModal, randomId,true);
-                $(modal).find("#jsScript").val(res["jsCallback"]);
+                $(modal).find("#jsScript").val(res);
                 $(modal).find("#line").val(line);
                 $(modal).find("#"+randomId).click(function(){
-                    target.data['jsCallback']=$(modal).find("#jsScript").val();
+                    target.data=$(modal).find("#jsScript").val();
                     saveScript(url,res)
                 });
             }});
@@ -290,6 +292,8 @@
                 var lines = res["lines"];
                 //Load indexes
                 var indexes = res['indexes'];
+                var prescripts= res['preScript'];
+                var postscripts= res['postScript'];
                 for (var v = 0; v < indexes.length; v++) {
                     var indexline = indexes[v];
                     var line = _.find(lines, function (o) {
@@ -320,10 +324,12 @@
                     setChecked($('#allCalls #pactTest_'+line['id']),indexline['pactTest']);
                     setChecked($('#allCalls #stimulatorTest_'+line['id']),indexline['stimulatorTest']);
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
-                    line['_script'] = indexline['jsCallback']=="PRESENT"?"Yes":"No";
+                    line['_script'] = (line['id'] in postscripts)?"Yes":"No";
+                    line['_preScript'] = (line['id'] in prescripts)?"Yes":"No";
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
-                    line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`,true)" class="btn btn-default">Edit</button>`;
+                    line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`,false)" class="btn btn-default">Edit</button>`;
+                    line['_editPreScript'] = `<button type="button" onclick="setScript(`+line['id']+`,true)" class="btn btn-default">Edit</button>`;
                     //tSource,tableId,id,data,fields
                     allCalls.appendToTable(line,false);
                 }
@@ -359,20 +365,22 @@
                 <input class="form-check-input" type="checkbox" `+checkedItem+` value="" id="stimulatedTest_` + line['id'] + `" name="stimulatedTest_`+line['id']+`">
             </div>`;
 
-                    line['_script'] = line['jsCallback']=="PRESENT"?"Yes":"No";
+                    line['_script'] = (line['id'] in postscripts)?"Yes":"No";
+                    line['_preScript'] = (line['id'] in prescripts)?"Yes":"No";
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
                     //tSource,tableId,id,data,fields
                     setChecked($('#linesTable #stimulatedTest_'+line['id']),line['stimulatedTest']);
                     line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`,false)" class="btn btn-default">Edit</button>`;
+                    line['_editPreScript'] = `<button type="button" onclick="setScript(`+line['id']+`,true)" class="btn btn-default">Edit</button>`;
                     linesTable.appendToTable(line);
                 }
             }
         });
     }
     var fields = ['_selected','id','_stimulatedTest','request.method','request.host','request.path','_queryCalc','response.statusCode',
-        '_requestHashCalc','_responseHashCalc','_script','_editScript'];
+        '_requestHashCalc','_responseHashCalc','_preScript','_script','_editPreScript','_editScript'];
     var linesTable = new SimpleGrid("Request-Response","linesTable","id",fields,
         function(table) {
             loadTableData(table);
@@ -397,11 +405,12 @@
             {id:"id",type:"string"},
             {id:"_stimulatedTest",type:"bool"},
             {id:"_script",type:"bool"},
+            {id:"_preScript",type:"bool"},
             {id:"request.host",type:"string"},
             {id:"request.path",type:"string"},
             {id:"request.query",type:"string"}]);
     var fieldsAllCalls = ['_selected','id','_pactTest','_stimulatorTest','request.method','request.host','request.path','_queryCalc','response.statusCode',
-        '_requestHashCalc','_responseHashCalc','_script','_editScript'];
+        '_requestHashCalc','_responseHashCalc','_preScript','_script','_editPreScript','_editScript'];
     var allCalls = new SimpleGrid("Request-Response","allCalls","id",fieldsAllCalls,
         function (table){
             loadIndexData(table);
@@ -427,6 +436,7 @@
             {id:"request.host",type:"string"},
             {id:"request.path",type:"string"},
             {id:"_script",type:"bool"},
+            {id:"_preScript",type:"bool"},
             {id:"request.query",type:"string"}]);
 
     function download(){
