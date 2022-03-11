@@ -5,6 +5,7 @@ import org.kendar.replayer.storage.ReplayerResult;
 import org.kendar.replayer.storage.ReplayerRow;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ListAllRecordList {
@@ -12,6 +13,9 @@ public class ListAllRecordList {
     private String description;
     private List<ReplayerRow> lines = new ArrayList<>();
     private List<CallIndex> indexes = new ArrayList<>();
+    private HashMap<String,String> variables = new HashMap<>();
+    private HashMap<String,String> preScript = new HashMap<>();
+    private HashMap<String,String> postScript = new HashMap<>();
 
     public ListAllRecordList(ReplayerResult datasetContent,String id,boolean cleanJs) {
         for (var staticLine :
@@ -22,6 +26,9 @@ public class ListAllRecordList {
             staticLine.getResponse().setResponseText(null);
             getLines().add((staticLine));
         }
+        variables = datasetContent.getVariables();
+        preScript = datasetContent.getPreScript();
+        postScript= datasetContent.getPostScript();
         for (var dynamicLine :
                 datasetContent.getDynamicRequests()) {
             dynamicLine.getRequest().setRequestText(null);
@@ -67,5 +74,29 @@ public class ListAllRecordList {
 
     public void setIndexes(List<CallIndex> indexes) {
         this.indexes = indexes;
+    }
+
+    public HashMap<String, String> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(HashMap<String, String> variables) {
+        this.variables = variables;
+    }
+
+    public HashMap<String, String> getPreScript() {
+        return preScript;
+    }
+
+    public void setPreScript(HashMap<String, String> preScript) {
+        this.preScript = preScript;
+    }
+
+    public HashMap<String, String> getPostScript() {
+        return postScript;
+    }
+
+    public void setPostScript(HashMap<String, String> postScript) {
+        this.postScript = postScript;
     }
 }

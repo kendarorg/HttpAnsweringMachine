@@ -196,7 +196,7 @@
             url: url,
             type: 'PUT',
             data: data,
-            contentType: "text/plains",
+            contentType: "text/plain",
             success: function(response){
                 location.reload();
             }});
@@ -225,7 +225,7 @@
                 $(modal).find("#line").val(line);
                 $(modal).find("#"+randomId).click(function(){
                     target.data=$(modal).find("#jsScript").val();
-                    saveScript(url,res)
+                    saveScript(url,target.data)
                 });
             }});
     }
@@ -352,6 +352,8 @@
 
                 //Load lines
                 var lines = res["lines"];
+                var prescripts= res['preScript'];
+                var postscripts= res['postScript'];
                 for (var v = 0; v < lines.length; v++) {
                     var line = lines[v];
                     line['_selected'] = `<div class="form-check">
