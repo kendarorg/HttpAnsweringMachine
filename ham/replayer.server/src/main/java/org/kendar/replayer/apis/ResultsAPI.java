@@ -65,7 +65,7 @@ public class ResultsAPI  implements FilteringClass {
         var rootPath = getRootPath();
         var result = new ArrayList<RecordingItem>();
         loadFileResults(rootPath, result, "null");
-        loadFileResults(rootPath, result, "pact");
+        loadFileResults(rootPath, result, "pacts");
         var founded = result.stream().filter(a-> a.getFileId().equalsIgnoreCase(id)).findFirst();
 
         if(founded.isPresent()){
@@ -91,7 +91,7 @@ public class ResultsAPI  implements FilteringClass {
         var rootPath = getRootPath();
         var result = new ArrayList<RecordingItem>();
         loadFileResults(rootPath, result, "null");
-        loadFileResults(rootPath, result, "pact");
+        loadFileResults(rootPath, result, "pacts");
 
         var founded = result.stream().filter(a-> a.getFileId().equalsIgnoreCase(id)).findFirst();
 
