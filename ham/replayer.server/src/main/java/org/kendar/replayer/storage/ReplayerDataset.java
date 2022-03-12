@@ -216,14 +216,20 @@ public class ReplayerDataset implements BaseDataset{
     replayerResult.setStaticRequests(new ArrayList<>());
     replayerResult.setDynamicRequests(new ArrayList<>());
     dataReorganizer.reorganizeData(replayerResult, partialResult);
+    justSave(replayerResult);
+  }
+
+  public void justSave(Object data) throws IOException {
     var rootPath = Path.of(replayerDataDir);
-    var allDataString = mapper.writeValueAsString(replayerResult);
+    var allDataString = mapper.writeValueAsString(data);
     var stringPath = rootPath + File.separator + name + ".json";
     FileWriter myWriter = new FileWriter(stringPath);
     myWriter.write(allDataString);
     myWriter.close();
   }
-    public void deleteIndex(int line) {
+
+
+  public void deleteIndex(int line) {
       List<CallIndex> steps = replayerResult.getIndexes();
       for (int i = steps.size()-1; i >=0 ; i--) {
         CallIndex entry = steps.get(i);
