@@ -40,8 +40,24 @@ services:
     ports:
       - "11080:80"
       - "11443:443"
+  ham.sampleapp.multi.gateway:
+    container_name: gateway.sample.test
+    privileged: true
+    environment:
+      - DNS_HIJACK_SERVER=ham.sampleapp.multi.master
+      - ROOT_PWD=root
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    image: ham.sampleapp.gateway
+    networks:
+      - multisampleappnet
+    depends_on:
+      - ham.sampleapp.multi.master
   ham.sampleapp.multi.be:
-    container_name: api.sample.test
+    container_name: be.sample.test
     privileged: true
     environment:
       - DNS_HIJACK_SERVER=ham.sampleapp.multi.master
@@ -52,22 +68,6 @@ services:
     dns:
       - 127.0.0.1
     image: ham.sampleapp.be
-    networks:
-      - multisampleappnet
-    depends_on:
-      - ham.sampleapp.multi.master
-  ham.sampleapp.multi.be-useres:
-    container_name: users.sample.test
-    privileged: true
-    environment:
-      - DNS_HIJACK_SERVER=ham.sampleapp.multi.master
-      - ROOT_PWD=root
-    cap_add:
-      - NET_ADMIN
-      - DAC_READ_SEARCH
-    dns:
-      - 127.0.0.1
-    image: ham.sampleapp.be.users
     networks:
       - multisampleappnet
     depends_on:

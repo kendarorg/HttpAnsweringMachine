@@ -15,9 +15,9 @@
     <artifactId>ExampleApp</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>be</module>
+        <module>gateway</module>
         <module>fe</module>
-        <module>be-users</module>
+        <module>be</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -29,12 +29,12 @@
       },
       {
         "id": "4",
-        "dns": "api.sample.test",
+        "dns": "gateway.sample.test",
         "ip": "127.0.0.1"
       },
       {
         "id": "5",
-        "dns": "users.sample.test",
+        "dns": "be.sample.test",
         "ip": "127.0.0.1"
       }
     ]
@@ -51,13 +51,13 @@
     "proxies": [
       {
         "id": "2",
-        "when": "http://api.sample.test",
+        "when": "http://gateway.sample.test",
         "where": "http://127.0.0.1:8090",
         "test": "127.0.0.1:8090"
       },
       {
         "id": "3",
-        "when": "http://users.sample.test",
+        "when": "http://be.sample.test",
         "where": "http://127.0.0.1:8100",
         "test": "127.0.0.1:8100"
       },
@@ -123,9 +123,6 @@
         "org.kendar.servers.http.DynamicRequest": "OFF",
         "org.kendar.dns.DnsQueries": "OFF"
       }
-    },
-    "filters": {
-      "12363272": false
     }
   },
   {
