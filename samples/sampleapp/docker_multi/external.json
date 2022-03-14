@@ -34,12 +34,12 @@
       },
       {
         "id": "4",
-        "dns": "api.sample.test",
+        "dns": "gateway.sample.test",
         "ip": "127.0.0.1"
       },
       {
         "id": "5",
-        "dns": "users.sample.test",
+        "dns": "be.sample.test",
         "ip": "127.0.0.1"
       }
     ]

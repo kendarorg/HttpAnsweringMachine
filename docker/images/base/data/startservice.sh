@@ -1,7 +1,7 @@
 #!/bin/bash
 
-rootAppDir=~/test/etc/app
-rootServicesDir=~/test/etc/services
+rootAppDir=/etc/app
+rootServicesDir=/etc/service
 
 mkdir -p $rootAppDir
 mkdir -p $rootServicesDir
@@ -73,7 +73,7 @@ if [[ "$isConfig" == "true" ]]; then     ## GOOD
 fi
 
 chmod +x "${rootServicesDir}/${appDir}/run"
-chmod +x "${runner}s"
+chmod +x "${runner}"
 #chmod +x "${rootAppDir}/${appDir}/${appDir}.sh"
 
 if [ "$captureLogs" == "true" ]; then     ## GOOD
