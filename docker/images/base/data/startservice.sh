@@ -62,10 +62,12 @@ chmod +x "${rootServicesDir}/${appDir}/run"
 #chmod +x "${rootAppDir}/${appDir}/${appDir}.sh"
 
 if [ "$captureLogs" == "true" ]; then     ## GOOD
-  mkdir -p ${rootAppDir}/${appDir}/log
-  mkdir -p ${rootServicesDir}/${appDir}/log
-  echo '#!/bin/bash\nexec svlogd -tt ${rootAppDir}/${appDir}/log\n' > $rootServicesDir/$appDir/log/run
-  chmod +x ${rootServicesDir}/${appDir}/log/run
+  mkdir -p "${rootAppDir}/${appDir}/log"
+  mkdir -p "${rootServicesDir}/${appDir}/log"
+  
+  echo '#!/bin/bash' > $rootServicesDir/$appDir/log/run
+  echo "exec svlogd -tt ${rootAppDir}/${appDir}/log" >> $rootServicesDir/$appDir/log/run
+  chmod +x "${rootServicesDir}/${appDir}/log/run"
 fi
 
 #RUN mkdir -p /etc/service/${appDir} \
