@@ -8,6 +8,3 @@ iptables --table nat --flush
 iptables --table nat --append POSTROUTING --out-interface ppp0 -j MASQUERADE
 # Assuming one NIC to local LAN
 iptables --append FORWARD --in-interface eth0 -j ACCEPT         
-
-
-sleep infinity

@@ -6,8 +6,8 @@ networks:
       config:
         - subnet: 172.25.8.0/24
 services:
-  ham.master.openvpn:
-    container_name: ham.master.openvpn
+  ham.vpn.openvpn:
+    container_name: ham.vpn.openvpn
     privileged: true
     cap_add:
       - NET_ADMIN
@@ -15,30 +15,35 @@ services:
     ports:
       - "3000:1194/udp"
     networks:
-      - masternet
+      - vpnnet
+    image: ham.openvpn
     environment:
       - ROOT_PWD=root
-  ham.forticlient:
-    container_name: ham.forticlient
+  ham.vpn.forticlient:
+    container_name: ham.vpn.forticlient
     privileged: true
     cap_add:
       - NET_ADMIN
       - DAC_READ_SEARCH
-    ports:
-      - "3000:1194/udp"
+    dns:
+      - "8.8.8.8"
+      - "8.8.4.4"
     networks:
-      - masternet
+      - vpnnet
+    image: ham.forticlient
     environment:
       - ROOT_PWD=root
-  ham.openconnect:
-    container_name: ham.openconnect
+  ham.vpn.openconnect:
+    container_name: ham.vpn.openconnect
     privileged: true
     cap_add:
       - NET_ADMIN
       - DAC_READ_SEARCH
-    ports:
-      - "3000:1194/udp"
+    dns:
+      - "8.8.8.8"
+      - "8.8.4.4"
     networks:
-      - masternet
+      - vpnnet
+    image: ham.openconnect
     environment:
       - ROOT_PWD=root
