@@ -5,6 +5,17 @@ set DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 cd base
 docker build -t ham.base .
 
+cd ..\externalvpn\forticlient
+copy /Y ..\..\base\data\startservice.sh data/
+copy /Y ..\..\base\data\sshd_config data/
+copy /Y ..\..\base\data\ca.crt data/
+echo Build Vpn/forticlient
+docker build -t ham.forticlient .
+
+
+cd ..\
+exit
+
 cd ../master
 md "data\app" 2>NUL
 del /q data\app\*.*
