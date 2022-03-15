@@ -6,6 +6,20 @@ networks:
       config:
         - subnet: 172.25.8.0/24
 services:
+  ham.test:
+    container_name: ham.test
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    networks:
+      - vpnnet
+    image: ham.base
+    dns:
+      - "10.129.9.43"
+      - "10.129.9.44"
+    environment:
+      - ROOT_PWD=root
   ham.vpn.openvpn:
     container_name: ham.vpn.openvpn
     privileged: true
@@ -17,6 +31,9 @@ services:
     networks:
       - vpnnet
     image: ham.openvpn
+    dns:
+      - "10.129.9.43"
+      - "10.129.9.44"
     environment:
       - ROOT_PWD=root
   ham.vpn.forticlient:
@@ -32,6 +49,7 @@ services:
       - vpnnet
     image: ham.forticlient
     environment:
+      - DNS_HIJACK_SERVER=
       - ROOT_PWD=root
   ham.vpn.openconnect:
     container_name: ham.vpn.openconnect
