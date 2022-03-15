@@ -1,0 +1,67 @@
+version: "2"
+networks:
+  vpnnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.8.0/24
+services:
+  ham.test:
+    container_name: ham.test
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    networks:
+      - vpnnet
+    image: ham.base
+    dns:
+      - "10.129.9.43"
+      - "10.129.9.44"
+    environment:
+      - ROOT_PWD=root
+  ham.vpn.openvpn:
+    container_name: ham.vpn.openvpn
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    ports:
+      - "3000:1194/udp"
+    networks:
+      - vpnnet
+    image: ham.openvpn
+    dns:
+      - "10.129.9.43"
+      - "10.129.9.44"
+    environment:
+      - ROOT_PWD=root
+  ham.vpn.forticlient:
+    container_name: ham.vpn.forticlient
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - "8.8.8.8"
+      - "8.8.4.4"
+    networks:
+      - vpnnet
+    image: ham.forticlient
+    environment:
+      - DNS_HIJACK_SERVER=
+      - ROOT_PWD=root
+  ham.vpn.openconnect:
+    container_name: ham.vpn.openconnect
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - "8.8.8.8"
+      - "8.8.4.4"
+    networks:
+      - vpnnet
+    image: ham.openconnect
+    environment:
+      - ROOT_PWD=root

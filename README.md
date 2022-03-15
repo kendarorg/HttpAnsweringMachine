@@ -85,7 +85,7 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 
 * [Basic local configuration](docs/basic.md)
 * [Logging](docs/logging.md)
-* [Docker configuration](docs/docker.md)
+* [Docker configuration](docs/docker/commons.md)
 
 ## Basic functions  
 
@@ -109,7 +109,6 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
   * [Java filters](docs/plugins/java/jfilters.md)
   * [Java pages](docs/plugins/java/jstatic.md)
   * [Java server](docs/plugins/java/jserver.md)
-* [Docker generator](docs/plugins/dockergen.md)
 
 ## Utils
 
@@ -117,5 +116,9 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 
 ## Examples
   
-* [Running in docker single instance](docs/dockersingle.md)
-* [Running in docker multiple instances](docs/dockermulti.md)
+* [Sample Application](docs/sample.md)
+* [Running on localhost](docs/localsample.md)
+* [Running in docker single instance](docs/docker/single.md)
+* [Running in docker multiple instances](docs/docker/multi.md)
+* [PACT test](docs/test/pact.md) To verify against changes on real server
+* [NULL test](docs/test/null.md) To test without any infrastructure

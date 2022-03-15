@@ -1,60 +1,82 @@
+#FROM golang:alpine as builder
+FROM alpine:latest as builder
+
+ARG OPENFORTIVPN_VERSION=v1.17.1
+#ARG GLIDER_VERSION=v0.9.2
+
+#https://github.com/adrienverge/openfortivpn/archive/refs/tags/v1.17.1.tar.gz
+RUN \
+  apk add --no-cache \
+    autoconf automake build-base ca-certificates curl git openssl-dev ppp tar && \
+  #update-ca-certificates && \
+  # build openfortivpn
+  mkdir -p /usr/src/openfortivpn && \
+  curl -sL https://github.com/adrienverge/openfortivpn/archive/refs/tags/${OPENFORTIVPN_VERSION}.tar.gz \
+  | tar xz -C /usr/src/openfortivpn --strip-components=1 
+ RUN  cd /usr/src/openfortivpn && \
+  ./autogen.sh && \
+  ./configure --prefix=/usr --sysconfdir=/etc && \
+  make -j$(nproc) && \
+  make install
+
+#RUN \
+  # build glider
+#  mkdir -p /go/src/github.com/nadoo/glider && \
+#  curl -sL https://github.com/nadoo/glider/archive/${GLIDER_VERSION}.tar.gz \
+#    | tar xz -C /go/src/github.com/nadoo/glider --strip-components=1 && \
+#  cd /go/src/github.com/nadoo/glider && \
+#  go get -v ./...
+
 #docker run --privileged --dns 8.8.8.8  --dns 10.136.49.21 --dns 10.110.49.21 --cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH --name myvpn myvpn
 #docker run --privileged --cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH --name myvpn myvpn
-FROM ubuntu:latest
-RUN apt-get update
-RUN apt-get upgrade -y
+FROM ham.base:latest
+RUN apk update
+RUN apk upgrade
+
+COPY --from=builder /usr/bin/openfortivpn  /usr/bin/
+#/go/bin/glider
 
 # Block timezone request prompt
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Rome"
 
-RUN apt-get install -y bash curl vim iptables wget unzip forticlient iptables-persistent screen
-
-# Prepare runit
-RUN apk add --no-cache runit \
-    && mkdir -p /etc/service \
-    && mkdir -p /etc/app
+RUN apk add --no-cache  bash curl vim iptables wget unzip screen ppp 
 
 # Update iptables
 RUN echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
-RUN update-alternatives --set iptables /usr/sbin/iptables-legacy
+#RUN update-alternatives --set iptables /usr/sbin/iptables-legacy
 
-# Install sshd
-RUN apt-get install -y \ 
-        openssh-server \
-    && ssh-keygen -A \
-    && mkdir /root/.ssh \
-    && chmod 0700 /root/.ssh
     
-COPY data/sshd_config /etc/ssh/
-RUN mkdir /etc/app/setuproute
+#COPY data/sshd_config /etc/ssh/
+#RUN mkdir /etc/app/setuproute
 COPY data/setuproute.sh /etc/app/setuproute/
 RUN chmod +x /etc/app/setuproute/*
 
-RUN mkdir -p /etc/service/sshd \
-    && mkdir -p /etc/app/sshd \
-    && mkdir -p /etc/app/sshd/log \
-    && mkdir -p /etc/service/sshd/log \
-    && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/sshd/log\n" > /etc/service/sshd/log/run \
-    && chmod +x /etc/service/sshd/log/run \
-    && echo -e "#!/bin/bash\nexec 2>&1\nexec /usr/sbin/sshd\n" > /etc/service/sshd/run \
-    && chmod +x /etc/service/sshd/run
+
+#COPY data/sshd_config /etc/ssh/
+#COPY data/startservice.sh /etc/startservice.sh
+#RUN chmod +x /etc/startservice.sh
+
+# Setup the sshd
+#RUN /etc/startservice.sh --app=sshd --capturelogs --run=/usr/sbin/sshd
 
 
 # Setup the route
-RUN mkdir -p /etc/service/setuproute \
-    && mkdir -p /etc/app/setuproute \
-    && mkdir -p /etc/app/setuproute/log \
-    && mkdir -p /etc/service/setuproute/log \
-    && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/setuproute/log\n" > /etc/service/setuproute/log/run \
-    && chmod +x /etc/service/setuproute/log/run \
-    && echo -e "#!/bin/bash\nexec 2>&1\nexec /etc/app/setuproute/setuproute.sh\n" > /etc/service/setuproute/run \
-    && chmod +x /etc/service/setuproute/run  
+#RUN /etc/startservice.sh --app=setuproute --config --run=/etc/app/setuproute/setuproute.sh
     
+#MUST RUN mknod /dev/ppp c 108 0
+#openfortivpn connect-nexus2.lastminutegroup.com:443 -u edaros --set-dns=0 --pppd-use-peerdns=1
+# Setup the basic dns servers
+#RUN /etc/startservice.sh --app=dns --config --run=/etc/app/dns/dns.sh
+#COPY data/dns.sh /etc/app/dns/dns.sh
+#RUN chmod +x /etc/app/dns/dns.sh
     
 # Force root password
-RUN mkdir -p /etc/service/rootforce \
-    && echo -e "#!/bin/bash\nexec 2>&1\necho \"root:\${ROOT_PWD}\"|chpasswd\nsleep infinity\n" > /etc/service/rootforce/run \
-    && chmod +x /etc/service/rootforce/run 
+#RUN mkdir -p /etc/service/rootforce \
+#    && echo "#!/bin/bash" > /etc/service/rootforce/run \
+#    && echo "exec 2>&1" >> /etc/service/rootforce/run \
+#    && echo 'echo "root:\${ROOT_PWD}"|chpasswd' >> /etc/service/rootforce/run \
+#    && echo "sleep infinity" >> /etc/service/rootforce/run \
+#    && chmod +x /etc/service/rootforce/run 
 
 # Start everythin
 CMD ["runsvdir", "/etc/service"]
