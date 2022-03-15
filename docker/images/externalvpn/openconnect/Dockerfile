@@ -7,10 +7,10 @@ RUN apt-get upgrade -y
 # Block timezone request prompt
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Rome"
 
-RUN apt-get install -y bash curl vim iptables  wget unzip openconnect iptables-persistent screen
+RUN apt-get install -y bash curl vim iptables  wget unzip openconnect iptables-persistent screen dnsutils iputils-ping
 
 # Prepare runit
-RUN apk add --no-cache runit \
+RUN apt-get install -y runit \
     && mkdir -p /etc/service \
     && mkdir -p /etc/app
 
@@ -30,30 +30,28 @@ RUN mkdir /etc/app/setuproute
 COPY data/setuproute.sh /etc/app/setuproute/
 RUN chmod +x /etc/app/setuproute/*
 
-RUN mkdir -p /etc/service/sshd \
-    && mkdir -p /etc/app/sshd \
-    && mkdir -p /etc/app/sshd/log \
-    && mkdir -p /etc/service/sshd/log \
-    && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/sshd/log\n" > /etc/service/sshd/log/run \
-    && chmod +x /etc/service/sshd/log/run \
-    && echo -e "#!/bin/bash\nexec 2>&1\nexec /usr/sbin/sshd\n" > /etc/service/sshd/run \
-    && chmod +x /etc/service/sshd/run
+COPY data/sshd_config /etc/ssh/
+COPY data/startservice.sh /etc/startservice.sh
+RUN chmod +x /etc/startservice.sh
+
+# Setup the sshd
+RUN /etc/startservice.sh --app=sshd --capturelogs --run=/usr/sbin/sshd
 
 
 # Setup the route
-RUN mkdir -p /etc/service/setuproute \
-    && mkdir -p /etc/app/setuproute \
-    && mkdir -p /etc/app/setuproute/log \
-    && mkdir -p /etc/service/setuproute/log \
-    && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/setuproute/log\n" > /etc/service/setuproute/log/run \
-    && chmod +x /etc/service/setuproute/log/run \
-    && echo -e "#!/bin/bash\nexec 2>&1\nexec /etc/app/setuproute/setuproute.sh\n" > /etc/service/setuproute/run \
-    && chmod +x /etc/service/setuproute/run  
-    
-    
+#RUN /etc/startservice.sh --app=setuproute --config --run=/etc/app/setuproute/setuproute.sh
+      
+# Setup the basic dns servers
+#RUN /etc/startservice.sh --app=dns --config --run=/etc/app/dns/dns.sh
+#COPY data/dns.sh /etc/app/dns/dns.sh
+#RUN chmod +x /etc/app/dns/dns.sh
+
 # Force root password
 RUN mkdir -p /etc/service/rootforce \
-    && echo -e "#!/bin/bash\nexec 2>&1\necho \"root:\${ROOT_PWD}\"|chpasswd\nsleep infinity\n" > /etc/service/rootforce/run \
+    && echo "#!/bin/bash" > /etc/service/rootforce/run \
+    && echo "exec 2>&1" >> /etc/service/rootforce/run \
+    && echo 'echo "root:\${ROOT_PWD}"|chpasswd' >> /etc/service/rootforce/run \
+    && echo "sleep infinity" >> /etc/service/rootforce/run \
     && chmod +x /etc/service/rootforce/run 
 
 # Start everythin

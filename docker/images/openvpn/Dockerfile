@@ -32,12 +32,13 @@ RUN chmod +x /etc/app/openvpn/*.sh
 COPY data/openvpn.conf /etc/openvpn
 
 # Start Openvpn
-RUN mkdir -p /etc/service/openvpn \
-    && mkdir -p /etc/app/openvpn \
-    #&& mkdir -p /etc/app/openvpn/log \
-    #&& mkdir -p /etc/service/openvpn/log \
-    #&& echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/openvpn/log\n" > /etc/service/openvpn/log/run \
-    #&& chmod +x /etc/service/openvpn/log/run \
-    && mkdir -p /etc/service/openvpn \
-    && echo -e "#!/bin/bash\nexec 2>&1\nexec /etc/app/openvpn/openvpn.sh\n" > /etc/service/openvpn/run \
-    && chmod +x /etc/service/openvpn/run
+RUN /etc/startservice.sh --app=openvpn --run=/etc/app/openvpn/openvpn.sh
+#RUN mkdir -p /etc/service/openvpn \
+#    && mkdir -p /etc/app/openvpn \
+#    #&& mkdir -p /etc/app/openvpn/log \
+#    #&& mkdir -p /etc/service/openvpn/log \
+#    #&& echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/openvpn/log\n" > /etc/service/openvpn/log/run \
+#    #&& chmod +x /etc/service/openvpn/log/run \
+#    && mkdir -p /etc/service/openvpn \
+#    && echo -e "#!/bin/bash\nexec 2>&1\nexec /etc/app/openvpn/openvpn.sh\n" > /etc/service/openvpn/run \
+#    && chmod +x /etc/service/openvpn/run

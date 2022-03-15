@@ -1,0 +1,4 @@
+logging.level.root=INFO
+server.port=80
+employee.location=http://gateway.sample.test
+appointment.location=http://gateway.sample.test
