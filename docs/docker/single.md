@@ -120,4 +120,6 @@ This will be a bit harder.
 
 Load the configuration on docker/images/openvpn/mainuser.local.ovpn for your openvpn client and have fun!
 
-Now you can start testing everything with [PACT](test/pact.md) or [NULL infrastructure tests](test/null.md)
+Now you can start testing everything with [PACT](plugins/replayer/pact.md) 
+or [NULL infrastructure tests](plugins/replayer/null.md)
+or [UI tests](plugins/replayer/ui.md)
