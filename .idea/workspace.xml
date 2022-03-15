@@ -2,14 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Writing documentations...">
-      <change beforePath="$PROJECT_DIR$/docs/docker/multi.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docker/multi.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/docker/single.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docker/single.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/localsample.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/localsample.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/plugins/replayer/ui.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/plugins/replayer.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/plugins/replayer/replayer.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/test/null.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/plugins/replayer/null.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/test/pact.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/plugins/replayer/pact.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="feature/testsRefinement" />
   </component>
   <component name="Git.Settings">
     <option name="PUSH_TAGS">
@@ -20,7 +24,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature/demoaware" />
+        <entry key="$PROJECT_DIR$" value="feature/testsRefinement" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
