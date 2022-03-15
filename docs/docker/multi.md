@@ -42,12 +42,15 @@ Then the properties file
 
 ### Dockerfile
 
-Should setup the dockerfile with the external.json and set the master as base image
+Should setup the dockerfile of the master with the external.json and set the master as base image
 
     FROM ham.master:latest
     COPY ./docker/external.json /etc/app/ham/app/
 
-Then the fe section of the docker file
+Then the fe docker file
+
+    FROM ham.client:latest
+    # Dockerfile.fe
 
     # Run the service and hide logs (we are on single)
     RUN /etc/startservice.sh --app=fe --run=/etc/app/fe/run-fe.sh --capturelogs
@@ -73,49 +76,75 @@ This will be a bit harder.
         * DNS_HIJACK_SERVER: This will be the ham machine name. The DNS that the openvpn will really use
         * ROOT_PWD: the root password, to ssh
 * Add the master image. The dns hijack is not needed because..it's itself
+* Add the fe/be/gateway. Here is the example for fe only but on source there is everything
+    * cap_add: rights to mess with dns and network structure
+    * privileged: rights to mess even more with the internal network and config
+    * environment
+        * DNS_HIJACK_SERVER: This will be the ham machine name. The DNS that the openvpn will really use
+        * ROOT_PWD: the root password, to ssh
 
-    version: "2"
+version: "2"
+networks:
+  multisampleappnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.3.0/24
+services:
+  ham.sampleapp.multi.openvpn:
+    container_name: ham.sampleapp.multi.openvpn
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    ports:
+      - "3000:1194/udp"
     networks:
-    sampleappnet:
-        driver: bridge
-        ipam:
-        config:
-            - subnet: 172.25.0.0/24
-    services:
-    ham.sampleapp.single.openvpn:
-        container_name: ham.sampleapp.single.openvpn
-        privileged: true
-        cap_add:
-        - NET_ADMIN
-        - DAC_READ_SEARCH
-        dns:
-        - 127.0.0.1
-        ports:
-        - "3000:1194/udp"
-        networks:
-        - sampleappnet
-        environment:
-        - DNS_HIJACK_SERVER=ham.sampleapp.single.master
-        - ROOT_PWD=root
-        image: ham.openvpn
-        depends_on:
-        - ham.sampleapp.single.master
-    ham.sampleapp.single.master:
-        container_name: ham.sampleapp.single.master
-        privileged: true
-        environment:
-        - ROOT_PWD=root
-        cap_add:
-        - NET_ADMIN
-        - DAC_READ_SEARCH
-        dns:
-        - 127.0.0.1
-        image: ham.sampleapp.single
-        networks:
-        - sampleappnet
-        ports:
-        - "11080:80"
-        - "11443:443"
+      - multisampleappnet
+    environment:
+      - DNS_HIJACK_SERVER=ham.sampleapp.multi.master
+      - ROOT_PWD=root
+    image: ham.openvpn
+    depends_on:
+      - ham.sampleapp.multi.master
+  ham.sampleapp.multi.master:
+    container_name: ham.sampleapp.multi.master
+    privileged: true
+    environment:
+      - ROOT_PWD=root
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    image: ham.sampleapp.multi
+    networks:
+      - multisampleappnet
+    ports:
+      - "11080:80"
+      - "11443:443"
+  ham.sampleapp.multi.gateway:
+    ... as FE
+  ham.sampleapp.multi.be:
+    ... as FE
+  ham.sampleapp.multi.fe:
+    container_name: www.sample.test
+    privileged: true
+    environment:
+      - DNS_HIJACK_SERVER=ham.sampleapp.multi.master
+      - ROOT_PWD=root
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    image: ham.sampleapp.fe
+    networks:
+      - multisampleappnet
+    depends_on:
+      - ham.sampleapp.multi.master
 
 ## 5: Testing 
 
