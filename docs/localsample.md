@@ -109,4 +109,6 @@ Following this approach the libs files will be loaded as library
 
 ## 5: Testing 
 
-Now you can start testing everything with [PACT](test/pact.md) or [NULL infrastructure tests](test/null.md)
+Now you can start testing everything with [PACT](plugins/replayer/pact.md) 
+or [NULL infrastructure tests](plugins/replayer/null.md)
+or [UI tests](plugins/replayer/ui.md)

@@ -102,7 +102,7 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 ## Plugins
 
 * [OIDC](docs/plugins/oidc.md)
-* [Replayer](docs/plugins/replayer.md)
+* [Replayer](docs/plugins/replayer/replayer.md)
 * [Js filters](docs/plugins/js.md)
 * [Derby](docs/plugins/derby.md)
 * [Custom Java plugins](docs/plugins/java.md)
@@ -120,5 +120,6 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 * [Running on localhost](docs/localsample.md)
 * [Running in docker single instance](docs/docker/single.md)
 * [Running in docker multiple instances](docs/docker/multi.md)
-* [PACT test](docs/test/pact.md) To verify against changes on real server
-* [NULL test](docs/test/null.md) To test without any infrastructure
+* [PACT test](docs/plugins/replayer/pact.md) To verify against changes on real server
+* [NULL test](ddocs/plugins/replayer/null.md) To test without any infrastructure
+* [UI test](ddocs/plugins/replayer/ui.md) To test UI without any infrastructure
