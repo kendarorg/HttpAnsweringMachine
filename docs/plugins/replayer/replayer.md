@@ -1,3 +1,4 @@
+With the standard setup the plugin can be found on [http://www.local.test/plugins/replayer](http://www.local.test/plugins/replayer)
 
 To have some example you can check
 
@@ -26,10 +27,19 @@ The filters involved acts in the following [phases](../lifecycle.md)
 ### JS Interception
 
 The javascript filter calls are in the following form. In case of pact and null tests
-the exception is directly logged
+the exception is directly logged. Notice that for the simple replaying no script is
+run AT ALL
 
-	function(request,response,expectedresponse){
+	function(runid,request,response,expectedresponse){
 		//HERE IS THE EDITABLE CODE
+	}
+
+The function can return null (and no problem) or a structure containing (all optional)
+the modified request and response
+		return {
+			request:modifiedRequest,
+			response:modifiedResponse
+		}
 	}
 
 To check the differences from templates you can add the following code.
@@ -38,3 +48,11 @@ on the text contents (that must be unserialized beforehand)
 
 	var diffEngine = new org.kendar.xml.DiffInferrer();
 	diffEngine.diff(expectedresponse.responseText,response.responseText);
+
+A cache for string variables is available, null means not present. This
+can be used to change values in response/request according to the real
+context
+
+	var cache = new org.kendar.replayer.Cache();
+	cache.get(runid,"key");
+	cache.set(runid,"key","value");
