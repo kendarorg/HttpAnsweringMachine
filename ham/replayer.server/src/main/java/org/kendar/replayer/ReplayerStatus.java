@@ -155,7 +155,7 @@ public class ReplayerStatus {
     public String startPact(String id) throws IOException {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
-        dataset = new PactDataset(loggerBuilder,eventQueue,externalRequester);
+        dataset = new PactDataset(loggerBuilder,eventQueue,externalRequester,new Cache());
         dataset.load(id, rootPath.toString(),null);
         var runId = ((PactDataset)dataset).start();
         state = ReplayerState.PLAYING_PACT;
@@ -172,7 +172,7 @@ public class ReplayerStatus {
     public String startNull(String id) throws IOException {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
-        dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue,internalRequester);
+        dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue,internalRequester, new Cache());
         dataset.load(id, rootPath.toString(),null);
         var runId = ((NullDataset)dataset).start();
         state = ReplayerState.PLAYING_NULL_INFRASTRUCTURE;

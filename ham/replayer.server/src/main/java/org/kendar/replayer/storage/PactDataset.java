@@ -2,6 +2,7 @@ package org.kendar.replayer.storage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
+import org.kendar.replayer.Cache;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.utils.JsReplayerExecutor;
@@ -27,6 +28,7 @@ public class PactDataset implements BaseDataset {
     private final Logger logger;
     private EventQueue eventQueue;
     private ExternalRequester externalRequester;
+    private Cache cache;
     private String name;
     private String replayerDataDir;
     private Thread thread;
@@ -35,11 +37,13 @@ public class PactDataset implements BaseDataset {
     private AtomicBoolean running = new AtomicBoolean(false);
     private JsReplayerExecutor executor = new JsReplayerExecutor();
 
-    public PactDataset(LoggerBuilder loggerBuilder, EventQueue eventQueue, ExternalRequester externalRequester) {
+    public PactDataset(LoggerBuilder loggerBuilder, EventQueue eventQueue, ExternalRequester externalRequester
+            , Cache cache) {
 
         this.logger = loggerBuilder.build(PactDataset.class);
         this.eventQueue = eventQueue;
         this.externalRequester = externalRequester;
+        this.cache = cache;
     }
 
     @Override
@@ -63,7 +67,9 @@ public class PactDataset implements BaseDataset {
         id = UUID.randomUUID().toString();
         thread = new Thread(() -> {
             try {
+                cache.set(id,"runid",id);
                 runPactDataset(id);
+                cache.remove(id);
             } catch (IOException e) {
                 logger.error("ERROR EXECUTING RECORDING",e);
             }
@@ -115,17 +121,18 @@ public class PactDataset implements BaseDataset {
                     var reqResp = maps.get(toCall.getReference());
 
                     var response = new Response();
+                    var request = reqResp.getRequest().copy();
                     //Call request
                     if(replayerResult.getPreScript().containsKey(currentIndex+"")){
                         var jsCallback = replayerResult.getPreScript().get(currentIndex+"");
                         var script = executor.prepare(jsCallback);
-                        executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
+                        executor.run(this.id,request, response, reqResp.getResponse(), script);
                     }
-                    externalRequester.callSite(reqResp.getRequest(), response);
+                    externalRequester.callSite(request, response);
                     if(replayerResult.getPostScript().containsKey(currentIndex+"")){
                         var jsCallback = replayerResult.getPostScript().get(currentIndex+"");
                         var script = executor.prepare(jsCallback);
-                        executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
+                        executor.run(this.id,request, response, reqResp.getResponse(), script);
                     }
                     result.getExecuted().add(toCall.getId());
                 }
