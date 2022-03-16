@@ -1,6 +1,7 @@
 package org.kendar.replayer.storage;
 
 import org.kendar.events.EventQueue;
+import org.kendar.replayer.Cache;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.events.NullCompleted;
 import org.kendar.replayer.utils.JsReplayerExecutor;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class NullDataset extends ReplayerDataset{
     private EventQueue eventQueue;
     private InternalRequester internalRequester;
+    private Cache cache;
     private Thread thread;
     private String id;
     private AtomicBoolean running = new AtomicBoolean(false);
@@ -32,10 +34,11 @@ public class NullDataset extends ReplayerDataset{
     public NullDataset(
             LoggerBuilder loggerBuilder,
             DataReorganizer dataReorganizer,
-            Md5Tester md5Tester, EventQueue eventQueue, InternalRequester internalRequester) {
+            Md5Tester md5Tester, EventQueue eventQueue, InternalRequester internalRequester, Cache cache) {
         super(loggerBuilder,dataReorganizer,md5Tester);
         this.eventQueue = eventQueue;
         this.internalRequester = internalRequester;
+        this.cache = cache;
     }
 
 
@@ -53,7 +56,9 @@ public class NullDataset extends ReplayerDataset{
         id = UUID.randomUUID().toString();
         thread = new Thread(()-> {
             try {
+                cache.set(id,"runid",id);
                 runNullDataset(id);
+                cache.remove(id);
             } catch (Exception e) {
                 logger.error("ERROR EXECUTING RECORDING",e);
             }
@@ -107,16 +112,17 @@ public class NullDataset extends ReplayerDataset{
                     if (!running.get()) break;
                     var reqResp = maps.get(toCall.getReference());
                     var response = new Response();
+                    var request = reqResp.getRequest().copy();
                     if(replayerResult.getPreScript().containsKey(currentIndex+"")){
                         var jsCallback = replayerResult.getPreScript().get(currentIndex+"");
                         var script = executor.prepare(jsCallback);
-                        executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
+                        executor.run(this.id,request, response, reqResp.getResponse(), script);
                     }
-                    internalRequester.callSite(reqResp.getRequest(), response);
+                    internalRequester.callSite(request, response);
                     if(replayerResult.getPostScript().containsKey(currentIndex+"")){
                         var jsCallback = replayerResult.getPostScript().get(currentIndex+"");
                         var script = executor.prepare(jsCallback);
-                        executor.run(reqResp.getRequest(), response, reqResp.getResponse(), script);
+                        executor.run(this.id,request, response, reqResp.getResponse(), script);
                     }
                     result.getExecuted().add(toCall.getId());
                 }
