@@ -55,13 +55,8 @@ instruction on [Https hijacking module](../https.md) to se tup the dns
     "blocking": true,
     "priority": 100,
     "source":[
-        "if(request.headers['Host']=="www.test.com")response.statusCode=404;",
-        "var result ={",
-        "    request:request,",
-        "    response:response,",
-        "    continue:false",
-        "};",
-        "return result;"
+        "if(request.getHeader('Host')=="www.test.com")response.setStatusCode(404);",
+        "return false;"
     ]
 }
 </pre>
@@ -76,11 +71,9 @@ The source will be always wrapped automatically with this declaration
 The request and response will be exactly the Request and Response java class used inside the
 system.
 
-The result must be an object containing
+The result will be a boolean: weather should continue (true) with the next filters. False will break the execution (running by the way all post render action) 
 
-* request: the request even if not modified
-* response: the response even if not modified
-* continue: weather should continue (true) with the next filters. False will break the execution (running by the way all post render action) 
+The object modified inside the filter will be used directly! Beware!
 
     Please notice that if returning true this means the filter is in fact 
     an object that changes the request, and the response will not be used
@@ -88,16 +81,11 @@ The result must be an object containing
 This filter will return a specific response test with the current data
 <pre>
         "var today = new Date().toISOString();",
-        "response.responseText = '{\"value\":\"This is a calculated javascript response\",\"date\":\"'+today+'\"}';",
-        "response.headers['Content-Type']='application/json';",
-        "response.statusCode = 200;",
-        "request.headers['Host']='test.com';",
-        "var result ={",
-        "    request:request,",
-        "    response:response,",
-        "    continue:false",
-        "};",
-        "return result;"
+        "response.setResponseText('{\"value\":\"This is a calculated javascript response\",\"date\":\"'+today+'\"}');",
+        "response.putHeader('Content-Type','application/json');",
+        "response.setStatusCode(200);",
+        "request.putHeader('Host','test.com');",
+        "return false;"
 </pre>
 
 ## Utils
@@ -136,3 +124,10 @@ you can load their content on the global scope like this:
   (1,eval)(fileContent);
   
 After that the content of the file will be retrieved
+
+### Call java functions
+
+You can always add calls to native java objects and functions, simply create stuffs
+with the FQDN, like this:
+
+	var diffEngine = new org.kendar.xml.DiffInferrer()
