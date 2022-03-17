@@ -5,28 +5,28 @@ set DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 cd base
 docker build -t ham.base .
 
-cd ..\externalvpn\forticlient
-copy /Y ..\..\base\data\startservice.sh data/
-copy /Y ..\..\base\data\sshd_config data/
-copy /Y ..\..\base\data\ca.crt data/
-echo Build Vpn/forticlient
-docker build -t ham.forticlient .
-cd ..\
+REM cd ..\externalvpn\forticlient
+REM copy /Y ..\..\base\data\startservice.sh data/
+REM copy /Y ..\..\base\data\sshd_config data/
+REM copy /Y ..\..\base\data\ca.crt data/
+REM echo Build Vpn/forticlient
+REM docker build -t ham.forticlient .
+REM cd ..\
 
 
-cd ..\externalvpn\openconnect
-copy /Y ..\..\base\data\startservice.sh data/
-copy /Y ..\..\base\data\sshd_config data/
-copy /Y ..\..\base\data\ca.crt data/
-echo Build Vpn/Openconnect
-docker build -t ham.openconnect .
-cd ..\
+REM cd ..\externalvpn\openconnect
+REM copy /Y ..\..\base\data\startservice.sh data/
+REM copy /Y ..\..\base\data\sshd_config data/
+REM copy /Y ..\..\base\data\ca.crt data/
+REM echo Build Vpn/Openconnect
+REM docker build -t ham.openconnect .
+REM cd ..\
 
 
 cd ../openvpn
 docker build -t ham.openvpn .
 
-exit
+REM exit
 
 cd ../master
 md "data\app" 2>NUL

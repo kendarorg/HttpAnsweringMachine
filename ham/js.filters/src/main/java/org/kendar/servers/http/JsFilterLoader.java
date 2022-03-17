@@ -186,10 +186,8 @@ public class JsFilterLoader implements CustomFiltersLoader {
   private void precompileFilter(JsFilterDescriptor filterDescriptor) throws Exception {
     StringBuilder scriptSrc =
         new StringBuilder(
-            "var globalFilterResult=runFilter(JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON),utils);\n"
-                + "globalResult.put('request', JSON.stringify(globalFilterResult.request));\n"
-                + "globalResult.put('response', JSON.stringify(globalFilterResult.response));\n"
-                + "globalResult.put('continue', globalFilterResult.continue);\n");
+            "var globalFilterResult=runFilter(REQUESTJSON,RESPONSEJSON,utils);\n"
+                + "globalResult.put('continue', globalFilterResult);\n");
     // Load all scripts
     if(filterDescriptor.getRequires()!=null) {
       for (var file : filterDescriptor.getRequires()) {

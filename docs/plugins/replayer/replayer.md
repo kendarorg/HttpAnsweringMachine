@@ -34,20 +34,15 @@ run AT ALL
 		//HERE IS THE EDITABLE CODE
 	}
 
-The function can return null (and no problem) or a structure containing (all optional)
-the modified request and response
-		return {
-			request:modifiedRequest,
-			response:modifiedResponse
-		}
-	}
+The function never returns. The modifications made to the request/response/expected
+will affect directly the objects used further in the execution outside JS
 
 To check the differences from templates you can add the following code.
 This DOES NOT CHECK THE CONTENT. Any content matching is to be made by hand 
 on the text contents (that must be unserialized beforehand)
 
 	var diffEngine = new org.kendar.xml.DiffInferrer();
-	diffEngine.diff(expectedresponse.responseText,response.responseText);
+	diffEngine.diff(expectedresponse.getResponseText(),response.getResponseText());
 
 A cache for string variables is available, null means not present. This
 can be used to change values in response/request according to the real

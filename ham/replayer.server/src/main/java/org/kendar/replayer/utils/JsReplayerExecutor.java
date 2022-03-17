@@ -1,6 +1,5 @@
 package org.kendar.replayer.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -31,9 +30,7 @@ public class JsReplayerExecutor {
         if(data==null||data.isEmpty()) return null;
         StringBuilder scriptSrc =
                 new StringBuilder(
-                        "var globalFilterResult = JSON.stringify(runFilter(RUNID,JSON.parse(REQUESTJSON),JSON.parse(RESPONSEJSON),JSON.parse(EXPECTEDRESPONSEJSON)));\n"
-                                + "if(globalFilterResult!=null)globalResult.put('request', JSON.stringify(globalFilterResult.request));\n"
-                                + "if(globalFilterResult!=null)globalResult.put('response', JSON.stringify(globalFilterResult.response));\n");
+                        "runFilter(RUNID,REQUESTJSON,RESPONSEJSON,EXPECTEDRESPONSEJSON);\n");
         scriptSrc.append("\r\nfunction runFilter(runid,request,response,expectedresponse){");
         String[] lines = LINE_SEP_PATTERN.split(data);
         for (var sourceLine :lines) {
@@ -62,71 +59,24 @@ public class JsReplayerExecutor {
         cx.initStandardObjects();
 
         try {
-            if(expectedResponse==null){
+            if (expectedResponse == null) {
                 expectedResponse = new Response();
             }
             Map<Object, Object> result = new HashMap<>();
             Scriptable currentScope = getNewScope(cx);
             currentScope.put("RUNID", currentScope,
                     id);
-            currentScope.put("REQUESTJSON", currentScope,
-                    mapper.writeValueAsString(request));
-            currentScope.put("RESPONSEJSON", currentScope,
-                    mapper.writeValueAsString(response));
-            currentScope.put("globalResult", currentScope, result);
-            currentScope.put("EXPECTEDRESPONSEJSON", currentScope,
-                    mapper.writeValueAsString(expectedResponse));
+            currentScope.put("REQUESTJSON", currentScope,request);
+            currentScope.put("RESPONSEJSON", currentScope,response);
+            currentScope.put("EXPECTEDRESPONSEJSON",currentScope, expectedResponse);
             //
             //cx.setClassShutter(sandboxClassShutter);
             script.exec(cx, currentScope);
-            if(result.containsKey("response")) {
-                fromJsonResponse(response, (String) result.get("response"));
-            }
-            if(result.containsKey("request")) {
-                fromJsonRequest(request, (String) result.get("request"));
-            }
+        }catch(Exception ex){
+            throw new Exception(ex);
         }finally {
             Context.exit();
         }
     }
 
-    private void fromJsonRequest(Request result, String request1) throws Exception {
-        try {
-            var request = mapper.readValue(request1,Request.class);
-            result.setMethod(request.getMethod());
-            result.setBinaryRequest(request.isBinaryRequest());
-            result.setRequestText(request.getRequestText());
-            result.setRequestBytes(request.getRequestBytes());
-            result.setHeaders(request.getHeaders());
-            result.setProtocol(request.getProtocol());
-            result.setSoapRequest(request.isSoapRequest());
-            result.setBasicPassword(request.getBasicPassword());
-            result.setBasicUsername(request.getBasicUsername());
-            result.setMultipartData(request.getMultipartData());
-            result.setStaticRequest(request.isStaticRequest());
-            result.setHost ( request.getHost());
-            result.setPath ( request.getPath());
-            result.setPostParameters ( request.getPostParameters());
-            result.setPort ( request.getPort());
-            result.setQuery (request.getQuery());
-        } catch (JsonProcessingException e) {
-            throw new Exception("Unable to deserialize response");
-        }
-    }
-
-    private void fromJsonResponse(Response response, String response1) throws Exception {
-        try {
-            var serResponse = mapper.readValue(response1,Response.class);
-            response.setBinaryResponse(serResponse.isBinaryResponse());
-            if(serResponse.isBinaryResponse()){
-                response.setResponseBytes(serResponse.getResponseBytes());
-            }else{
-                response.setResponseText(serResponse.getResponseText());
-            }
-            response.setHeaders(serResponse.getHeaders());
-            response.setStatusCode(serResponse.getStatusCode());
-        } catch (JsonProcessingException e) {
-            throw new Exception("Unable to deserialize response");
-        }
-    }
 }
