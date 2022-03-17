@@ -1,4 +1,4 @@
 logging.level.root=INFO
 server.port=80
-employee.location=http://users.sample.test
-appointment.location=http://users.sample.test
+employee.location=http://be.sample.test
+appointment.location=http://be.sample.test

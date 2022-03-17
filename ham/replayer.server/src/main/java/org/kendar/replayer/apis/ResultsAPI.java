@@ -51,7 +51,7 @@ public class ResultsAPI  implements FilteringClass {
         var rootPath = getRootPath();
         var result = new ArrayList<RecordingItem>();
         loadFileResults(rootPath, result, "null");
-        loadFileResults(rootPath, result, "pact");
+        loadFileResults(rootPath, result, "pacts");
         response.addHeader("content-type","application/json");
         response.setResponseText(mapper.writeValueAsString(result));
     }

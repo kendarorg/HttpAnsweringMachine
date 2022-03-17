@@ -352,6 +352,8 @@
 
                 //Load lines
                 var lines = res["lines"];
+                var prescripts= res['preScript'];
+                var postscripts= res['postScript'];
                 for (var v = 0; v < lines.length; v++) {
                     var line = lines[v];
                     line['_selected'] = `<div class="form-check">
