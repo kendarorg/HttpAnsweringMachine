@@ -42,18 +42,24 @@ public class DiffInferrer {
         var diffResult = new DiffPath();
         var templates = new ArrayList<XmlElement>();
         XmlElement toCheck = null;
+
         if (first.startsWith("{") || first.startsWith("[")) {
             //IS JSON
             toCheck = jsonBuilder.load(toJson(xmls[xmls.length - 1]), 0, diffResult);
             for (var i = 0; i < xmls.length - 1; i++) {
                 templates.add(jsonBuilder.load(toJson(xmls[i]), 0, diffResult));
             }
-        } else {
+        } else if (first.startsWith("<")) {
             //IS XML
             toCheck = xmlBuilder.load(toXml(xmls[xmls.length - 1]).getDocumentElement(), 0, diffResult);
             for (var i = 0; i < xmls.length - 1; i++) {
                 templates.add(xmlBuilder.load(toXml(xmls[i]).getDocumentElement(), 0, diffResult));
             }
+        }else{
+            if(!first.equals((xmls[xmls.length - 1]))){
+                throw new XmlException(first+"\r\n"+xmls[xmls.length - 1]);
+            }
+            return true;
         }
         var template = merger.mergeTemplates(templates, diffResult);
         matcher.matches(template, toCheck, diffResult);
