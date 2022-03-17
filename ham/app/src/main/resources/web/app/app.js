@@ -140,7 +140,7 @@ class SimpleGrid {
         const msgError = this.objType + " cannot be deleted!";
         const self = this;
         this.data.forEach(function (row, i) {
-            if (row[self.idField] == id && action != false) {
+            if (row[self.idField].replaceAll("_",".") == id.replaceAll("_",".") && action != false) {
                 if (callback == null) {
                     self.data.splice(i, 1);
                     $("#" + self.tableId + " #" + self.tableId + "-" + id).remove();

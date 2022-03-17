@@ -1,5 +1,5 @@
-var apiHost="http://api.sample.test";
-var useresHost="http://users.sample.test";
+var apiHost="http://gateway.sample.test";
+var useresHost="http://gateway.sample.test";
 
 
 

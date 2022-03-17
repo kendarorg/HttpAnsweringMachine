@@ -1,6 +1,5 @@
 package org.kendar.servers.http;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.GenericFilterExecutor;
 import org.kendar.http.HttpFilterType;
@@ -43,18 +42,14 @@ public class JsFilterExecutor extends GenericFilterExecutor {
         try {
             Map<Object, Object> result = new HashMap<>();
             Scriptable currentScope = jsFilterLoader.getNewScope(cx);
-            currentScope.put("REQUESTJSON", currentScope,
-                    mapper.writeValueAsString(request));
-            currentScope.put("RESPONSEJSON", currentScope,
-                    mapper.writeValueAsString(response));
+            currentScope.put("REQUESTJSON", currentScope,request);
+            currentScope.put("RESPONSEJSON", currentScope,response);
             currentScope.put("globalResult", currentScope, result);
             currentScope.put("utils",currentScope,
                     Context.toObject(filterDescriptor.retrieveQueue(),currentScope));
             //
             //cx.setClassShutter(sandboxClassShutter);
             filterDescriptor.getScript().exec(cx, currentScope);
-            fromJsonRequest(request,(String)result.get("request"));
-            fromJsonResponse(response,(String)result.get("response"));
 
             var isBlocking =!(boolean)result.get("continue");
             if(response.getStatusCode()==500){
@@ -68,46 +63,6 @@ public class JsFilterExecutor extends GenericFilterExecutor {
             return false;
         } finally {
             Context.exit();
-        }
-    }
-
-    private void fromJsonResponse(Response response, String response1) throws Exception {
-        try {
-            var serResponse = mapper.readValue(response1,Response.class);
-            response.setBinaryResponse(serResponse.isBinaryResponse());
-            if(serResponse.isBinaryResponse()){
-                response.setResponseBytes(serResponse.getResponseBytes());
-            }else{
-                response.setResponseText(serResponse.getResponseText());
-            }
-            response.setHeaders(serResponse.getHeaders());
-            response.setStatusCode(serResponse.getStatusCode());
-        } catch (JsonProcessingException e) {
-            throw new Exception("Unable to deserialize response");
-        }
-    }
-
-    private void fromJsonRequest(Request result, String request1) throws Exception {
-        try {
-            var request = mapper.readValue(request1,Request.class);
-            result.setMethod(request.getMethod());
-            result.setBinaryRequest(request.isBinaryRequest());
-            result.setRequestText(request.getRequestText());
-            result.setRequestBytes(request.getRequestBytes());
-            result.setHeaders(request.getHeaders());
-            result.setProtocol(request.getProtocol());
-            result.setSoapRequest(request.isSoapRequest());
-            result.setBasicPassword(request.getBasicPassword());
-            result.setBasicUsername(request.getBasicUsername());
-            result.setMultipartData(request.getMultipartData());
-            result.setStaticRequest(request.isStaticRequest());
-            result.setHost ( request.getHost());
-            result.setPath ( request.getPath());
-            result.setPostParameters ( request.getPostParameters());
-            result.setPort ( request.getPort());
-            result.setQuery (request.getQuery());
-        } catch (JsonProcessingException e) {
-            throw new Exception("Unable to deserialize response");
         }
     }
 
