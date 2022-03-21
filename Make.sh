@@ -1,6 +1,7 @@
 #!/bin/sh
 
-mypath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"\
+mypath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/
+
 cd $mypath
 
 function pause(){

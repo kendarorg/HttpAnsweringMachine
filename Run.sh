@@ -1,6 +1,9 @@
+#!/bin/sh
 
-mypath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"\
+mypath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/
+
 cd $mypath
+
 
 function pause(){
  read -s -n 1 -p "Press any key to continue . . ."
@@ -42,24 +45,24 @@ if [ "$rundocker" == "n" ]; then
  
 	pause
 
-	cd $mypathham/app/target
+	cd "$mypath"ham/app/target
 
-	cp -f $mypathsamples/sampleapp/docker/external.json $mypathham/app/target/
-	java "-Dloader.path=$mypathham/app/libs"  -Dloader.main=org.kendar.Main  ^
-	  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
+	cp -f "$mypath"samples/sampleapp/docker/external.json "$mypath"ham/app/target/
+	java "-Dloader.path=$mypath/ham/app/libs"  -Dloader.main=org.kendar.Main  \
+	  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
 		-jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher &
 		
-	cd $mypathsamples/sampleapp
+	cd "$mypath"samples/sampleapp
 
 
-	cp -f $mypathsamples/sampleapp/docker/application.properties.gateway $mypathsamples/sampleapp/gateway/target/application.properties
-	java -jar $mypathsamples/sampleapp/gateway/target/gateway-1.0-SNAPSHOT.jar &
+	cp -f "$mypath"samples/sampleapp/docker/application.properties.gateway "$mypath"samples/sampleapp/gateway/target/application.properties
+	java -jar "$mypath"samples/sampleapp/gateway/target/gateway-1.0-SNAPSHOT.jar &
 		
-	cp -f $mypathsamples/sampleapp/docker/application.properties.be $mypathsamples/sampleapp/be/target/application.properties
-	java -jar $mypathsamples/sampleapp/be/target/be-1.0-SNAPSHOT.jar &
+	cp -f "$mypath"samples/sampleapp/docker/application.properties.be "$mypath"samples/sampleapp/be/target/application.properties
+	java -jar "$mypath"samples/sampleapp/be/target/be-1.0-SNAPSHOT.jar &
 		
-	cp -f $mypathsamples/sampleapp/docker/application.properties.fe $mypathsamples/sampleapp/fe/target/application.properties
-	java -jar $mypathsamples/sampleapp/fe/target/fe-1.0-SNAPSHOT.jar &
+	cp -f "$mypath"samples/sampleapp/docker/application.properties.fe "$mypath"samples/sampleapp/fe/target/application.properties
+	java -jar "$mypath"samples/sampleapp/fe/target/fe-1.0-SNAPSHOT.jar &
 	
 fi
 
