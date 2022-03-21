@@ -114,12 +114,14 @@ public class JsonVerificationTests extends BaseUtils {
     }
     @Test
     public void correctWeirdStuffs() throws IOException, XmlException {
-        var xml1 = "[{\"a\":\"b\",\"c\":\"d\"}]";
-        var xml2 = "[{\"a\":\"b\"}]";
-         xml1 = "{\"a\":\"b\",\"c\":\"d\"}";
-         xml2 = "{\"a\":\"b\"}";
+       // var xml1 = "[{\"a\":\"b\",\"c\":\"d\"}]";
+        //var xml2 = "[{\"a\":\"b\"}]";
+        final String xml1 = "{\"a\":\"b\",\"c\":\"d\"}";
+        final String  xml2 = "{\"a\":\"b\"}";
 
         var target = new DiffInferrer();
-        assertTrue(target.diff(xml1,xml2));
+        assertException(XmlException.class, () -> {
+             target.diff(xml1,xml2);
+        }, "#object# MISSING CHILD c");
     }
 }
