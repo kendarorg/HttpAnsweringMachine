@@ -8,7 +8,6 @@ import java.net.UnknownHostException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.Callable;
 
 public class DnsRunnable implements Callable<List<String>> {
@@ -41,7 +40,7 @@ public class DnsRunnable implements Callable<List<String>> {
             lookup.setHostsFileParser(null);
             var records = lookup.run();
             if(records!=null){
-                for (Record record:records) {
+                for (org.xbill.DNS.Record record:records) {
                     String realip = ((ARecord) records[0]).getAddress().getHostAddress();
                     logger.debug("Resolved with "+requestedServer+" for "+requestedDomain+ ": "+realip);
                     result.add(realip);

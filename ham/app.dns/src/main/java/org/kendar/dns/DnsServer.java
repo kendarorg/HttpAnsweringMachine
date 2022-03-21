@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -69,7 +68,7 @@ public class DnsServer {
     }
   }
 
-  byte[] buildErrorMessage(Header header, int rcode, Record question) {
+  byte[] buildErrorMessage(Header header, int rcode, org.xbill.DNS.Record question) {
     Message response = new Message();
     response.setHeader(header);
     for (int i = 0; i < 4; i++) {
@@ -119,7 +118,7 @@ public class DnsServer {
           logger.debug("FOUNDED IP " + ip + " FOR " + requestedDomain);
           // Add answers as needed
           response.addRecord(
-              Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.fromString(requestedDomain)),
+                  org.xbill.DNS.Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.fromString(requestedDomain)),
               Section.ANSWER);
           /*response.addRecord(
                   Record.fromString(Name.root, Type.NS, DClass.IN, 86400, ip, Name.fromString("localdns")),
