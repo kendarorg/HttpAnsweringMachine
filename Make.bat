@@ -2,6 +2,9 @@
 SET mypath=%~dp0
 cd %mypath%
 
+
+set /p builddocker="Build docker images (y/n): "
+
 echo Building HAM
 cd ham
 call mvn clean install
@@ -14,7 +17,6 @@ cd ..
 cd ..
 pause
 
-set /p builddocker="Build docker images (y/n): "
 if "%builddocker%"=="n" goto end
 
 echo Building main docker images

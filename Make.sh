@@ -9,6 +9,17 @@ function pause(){
  echo ""
 }
 
+
+
+while true; do
+    read -p "Build docker images (y/n): " yn
+    case $yn in
+        [Yy]* ) { builddocker="y" ; break ; } ;;
+        [Nn]* ) { builddocker="n" ; break ; } ;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
 echo Building HAM
 cd ham
 mvn clean install
@@ -20,15 +31,6 @@ mvn clean install
 cd ..
 cd ..
 pause
-
-while true; do
-    read -p "Build docker images (y/n): " yn
-    case $yn in
-        [Yy]* ) { builddocker="y" ; break ; } ;;
-        [Nn]* ) { builddocker="n" ; break ; } ;;
-        * ) echo "Please answer yes or no.";;
-    esac
-done
 
 if [ "$builddocker" == "y" ]; then
     echo Building main docker images
