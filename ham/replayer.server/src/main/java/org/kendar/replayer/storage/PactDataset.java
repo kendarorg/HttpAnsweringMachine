@@ -7,6 +7,7 @@ import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.utils.JsReplayerExecutor;
 import org.kendar.servers.http.ExternalRequester;
+import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.LoggerBuilder;
@@ -127,6 +128,15 @@ public class PactDataset implements BaseDataset {
                     var response = new Response();
                     var request = reqResp.getRequest().copy();
                     var expectedResponse = reqResp.getResponse().copy();
+
+                    var stringRequest = mapper.writeValueAsString(request);
+                    stringRequest = cache.replaceAll(this.id,stringRequest);
+                    request = mapper.readValue(stringRequest, Request.class);
+
+                    var stringResponse = mapper.writeValueAsString(expectedResponse);
+                    stringResponse = cache.replaceAll(this.id,stringResponse);
+                    expectedResponse = mapper.readValue(stringResponse, Response.class);
+
                     //Call request
                     if(replayerResult.getPreScript().containsKey(currentIndex+"")){
                         var jsCallback = replayerResult.getPreScript().get(currentIndex+"");
