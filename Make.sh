@@ -32,12 +32,14 @@ done
 if [ "$builddocker" == "y" ]; then
     echo Building main docker images
 	cd docker/images
+	chmod 777 *.sh
 	./ImagesBuild.sh
 	cd .. 
 	cd ..
 
 	echo Building sampleapp docker images
 	cd samples/sampleapp/docker_multi
+	chmod 777 *.sh
 	./ImagesBuild.sh
 	cd ..
 	cd ..
