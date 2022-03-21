@@ -16,8 +16,8 @@ if "%builddocker%"=="Y" (
 )
 goto requery
 
-:ok
 
+:ok
 
 echo Building HAM
 cd ham
@@ -31,16 +31,18 @@ cd ..
 cd ..
 pause
 
+
 if "%builddocker%"=="n" goto end
 
+
 echo Building main docker images
-cd docker\images
+cd %mypath%docker\images
 call ImagesBuild.bat
 cd ..
 cd ..
 
 echo Building sampleapp docker images
-cd samples\sampleapp\docker_multi
+cd %mypath%samples\sampleapp\docker_multi
 call ImagesBuild.bat
 cd ..
 cd ..

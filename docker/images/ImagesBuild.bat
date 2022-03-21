@@ -1,6 +1,4 @@
-﻿set ROOT_PWD=root
-set HAM_DEBUG=false
-set DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
+
 
 cd base
 docker build -t ham.base .
