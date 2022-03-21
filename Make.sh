@@ -33,7 +33,7 @@ if [ "$builddocker" == "y" ]; then
     echo Building main docker images
 	cd docker/images
 	./ImagesBuild.sh
-	cd ..
+	cd .. 
 	cd ..
 
 	echo Building sampleapp docker images

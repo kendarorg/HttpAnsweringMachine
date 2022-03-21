@@ -38,7 +38,7 @@ if [ "$builddocker" == "n" ]; then
 	echo 127.0.0.1  www.sample.test
 	echo 127.0.0.1  gateway.sample.test
 	echo 127.0.0.1  be.sample.test
-
+ 
 	pause
 
 	cd $mypathham/app/target
