@@ -21,7 +21,7 @@ done
 if [ "$builddocker" == "y" ]; then
 	
 	
-	echo Please install OpenVpn connect (https://openvpn.net/vpn-client/)
+	echo Please install OpenVpn connect \(https://openvpn.net/vpn-client/\)
 	pause
 	echo and import $mypathdocker/images/openvpn/mainuser.local.ovpn profile
 	echo then after connecting you will have full access!

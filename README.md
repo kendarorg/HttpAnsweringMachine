@@ -55,7 +55,7 @@ connecting to it the [Special DNS Server](docs/dnsserver.md)
 		127.0.0.1  www.local.test
 		127.0.0.1  www.sample.test
 		127.0.0.1  gateway.sample.test
-		127.0.0.1  be.sample.test 
+		127.0.0.1  be.sample.test
 	* If on docker 
 		* Import the profile in docker/images/openvpn/mainuser.local.ovpn on OpenVPN
 		* After the startup connect through the profile just installed
