@@ -34,7 +34,6 @@ pause
 
 if "%builddocker%"=="n" goto end
 
-
 echo Building main docker images
 cd %mypath%docker\images
 call ImagesBuild.bat

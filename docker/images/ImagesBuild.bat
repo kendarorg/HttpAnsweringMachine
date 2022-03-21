@@ -1,5 +1,6 @@
-
-
+SET mypath=%~dp0
+cd %mypath%
+echo %mypath%
 cd base
 docker build -t ham.base .
 
