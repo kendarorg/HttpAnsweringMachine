@@ -55,15 +55,15 @@ if [ "$rundocker" == "n" ]; then
 	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
 		-jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher &
 		
-	cd "$mypath"samples/sampleapp
-
-
+	cd "$mypath"samples/sampleapp/gateway/target/
 	cp -f "$mypath"samples/sampleapp/docker/application.properties.gateway "$mypath"samples/sampleapp/gateway/target/application.properties
 	java -jar "$mypath"samples/sampleapp/gateway/target/gateway-1.0-SNAPSHOT.jar &
 		
+	cd "$mypath"samples/sampleapp/be/target/
 	cp -f "$mypath"samples/sampleapp/docker/application.properties.be "$mypath"samples/sampleapp/be/target/application.properties
 	java -jar "$mypath"samples/sampleapp/be/target/be-1.0-SNAPSHOT.jar &
 		
+	cd "$mypath"samples/sampleapp/fe/target/
 	cp -f "$mypath"samples/sampleapp/docker/application.properties.fe "$mypath"samples/sampleapp/fe/target/application.properties
 	java -jar "$mypath"samples/sampleapp/fe/target/fe-1.0-SNAPSHOT.jar &
 	
