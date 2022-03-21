@@ -30,9 +30,13 @@ pause
 
 cd %mypath%ham\app\target
 
+md "%mypath%ham\app\target\libs" 2>NUL
+del /q %mypath%ham\app\target\libs\*.*
+copy /Y %mypath%\libs\*.jar %mypath%ham\app\target\libs\
+
 copy /Y %mypath%samples\sampleapp\docker\external.json %mypath%ham\app\target\
-start java "-Dloader.path=%mypath%ham\app\libs"  -Dloader.main=org.kendar.Main  ^
-  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
+start java "-Dloader.path=%mypath%ham\app\target\libs"  -Dloader.main=org.kendar.Main  ^
+  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
 	-jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher
 	
 cd %mypath%samples\sampleapp
