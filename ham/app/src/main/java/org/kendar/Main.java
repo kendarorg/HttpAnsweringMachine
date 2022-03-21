@@ -95,7 +95,8 @@ public class Main implements CommandLineRunner {
   private JsonConfiguration loadConfigurationFile() {
     var configuration = applicationContext.getBean(JsonConfiguration.class);
     try {
-      configuration.loadConfiguration("external.json");
+      var externalPath = System.getProperty("jsonconfig","external.json");
+      configuration.loadConfiguration(externalPath);
     } catch (Exception e) {
       e.printStackTrace();
     }

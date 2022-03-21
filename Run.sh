@@ -46,10 +46,13 @@ if [ "$rundocker" == "n" ]; then
 	pause
 
 	cd "$mypath"ham/app/target
+	mkdir -p "$mypath"ham/app/target/libs
+	rm -rf "$mypath"ham/app/target/libs/*.*
+	cp -f "$mypath"ham/libs/*.jar "$mypath"ham/app/target/libs/
 
 	cp -f "$mypath"samples/sampleapp/docker/external.json "$mypath"ham/app/target/
-	java "-Dloader.path=$mypath/ham/app/libs"  -Dloader.main=org.kendar.Main  \
-	  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
+	java "-Dloader.path=$mypath/ham/app/target/libs"  -Dloader.main=org.kendar.Main  \
+	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
 		-jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher &
 		
 	cd "$mypath"samples/sampleapp
