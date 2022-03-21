@@ -40,7 +40,4 @@ fi
 
 
 
-
-:end
-
 pause
