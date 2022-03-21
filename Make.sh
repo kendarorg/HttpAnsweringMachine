@@ -1,7 +1,12 @@
 #!/bin/sh
 
-mypath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+mypath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"\
 cd $mypath
+
+function pause(){
+ read -s -n 1 -p "Press any key to continue . . ."
+ echo ""
+}
 
 echo Building HAM
 cd ham
