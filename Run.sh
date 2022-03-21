@@ -27,6 +27,7 @@ if [ "$builddocker" == "y" ]; then
 	echo then after connecting you will have full access!
 	pause
 	cd $mypathsamples/sampleapp/docker_multi
+	chmod 777 *.sh
 	./ImagesRun.sh
 fi
 

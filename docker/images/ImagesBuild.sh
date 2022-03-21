@@ -1,5 +1,10 @@
 #!/bin/sh
 
+function pause(){
+ read -s -n 1 -p "Press any key to continue . . ."
+ echo ""
+}
+
 ROOT_PWD=root
 HAM_DEBUG=false
 DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
@@ -45,6 +50,5 @@ cp -f  ../../../ham/simpledns/target/*.jar data/
 docker build -t ham.client .
 
 
-:end
 cd ..
 pause
