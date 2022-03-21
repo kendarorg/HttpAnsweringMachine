@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Running make on windows">
+    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Death to the BOMs!!!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Make.bat" beforeDir="false" afterPath="$PROJECT_DIR$/Make.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker/images/ImagesBuild.bat" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/ImagesBuild.bat" afterDir="false" />
@@ -63,7 +63,7 @@
       <workItem from="1647294150071" duration="96000" />
       <workItem from="1647375023935" duration="603000" />
       <workItem from="1647879042517" duration="17000" />
-      <workItem from="1647879209927" duration="1566000" />
+      <workItem from="1647879209927" duration="2418000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>
@@ -100,7 +100,14 @@
       <option name="project" value="LOCAL" />
       <updated>1647880456229</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Death to the BOMs!!!">
+      <created>1647881590339</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1647881590339</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -122,6 +129,7 @@
     <MESSAGE value="Writing documentations..." />
     <MESSAGE value="Writing documentation..." />
     <MESSAGE value="Running make on windows" />
-    <option name="LAST_COMMIT_MESSAGE" value="Running make on windows" />
+    <MESSAGE value="Death to the BOMs!!!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Death to the BOMs!!!" />
   </component>
 </project>
