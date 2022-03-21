@@ -2,8 +2,15 @@
 SET mypath=%~dp0
 cd %mypath%
 
+:requery
 set /p rundocker="Run sample docker (y/n): "
 if "%rundocker%"=="n" goto simple
+if "%rundocker%"=="N" goto simple
+if "%rundocker%"=="y" goto docker
+if "%rundocker%"=="Y" goto docker
+goto requery
+
+:docker
 
 echo Please install OpenVpn connect (https://openvpn.net/client-connect-vpn-for-windows/)
 call explorer https://openvpn.net/client-connect-vpn-for-windows/

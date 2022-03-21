@@ -2,8 +2,22 @@
 SET mypath=%~dp0
 cd %mypath%
 
-
+:requery
 set /p builddocker="Build docker images (y/n): "
+if "%rundocker%"=="n" goto ok
+if "%rundocker%"=="y" goto ok
+if "%rundocker%"=="N" (
+	rundocker=n
+	goto ok
+)
+if "%rundocker%"=="Y" (
+	rundocker=y
+	goto ok
+)
+goto requery
+
+:ok
+
 
 echo Building HAM
 cd ham
