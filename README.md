@@ -41,6 +41,28 @@ The AnsweringMachine is built to overcome this troubles
 * Can be used an alternative dns server on docker, supposed you add on the machines
 connecting to it the [Special DNS Server](docs/dnsserver.md)
 
+## Hyper-Fast start
+
+* Install JDK11 and maven
+* If you want to try the docker version install
+	* Docker
+	* [OpenVPN client](https://openvpn.net/vpn-client)
+* Make all running Make.sh/bat
+	* Choose if you want to build the docker images
+* Run everything starting Run.sh/bat
+	* If you are running locally modify the hosts file adding the following
+
+		127.0.0.1  www.local.test
+		127.0.0.1  www.sample.test
+		127.0.0.1  gateway.sample.test
+		127.0.0.1  be.sample.test 
+	* If on docker 
+		* Import the profile in docker/images/openvpn/mainuser.local.ovpn on OpenVPN
+		* After the startup connect through the profile just installed
+* Then navigate
+	* [http://www.local.test](http://www.local.test) For the main UI
+	* [http://www.sample.test](http://www.sample.test) For the sample application
+
 ## History 
 
 This project was born as a way to intercept http/s calls through a PHP application with 
