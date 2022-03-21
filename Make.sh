@@ -14,7 +14,7 @@ mvn clean install
 cd ..
 pause
 echo Building sample applications
-cd samples\sampleapp
+cd samples/sampleapp
 mvn clean install
 cd ..
 cd ..
