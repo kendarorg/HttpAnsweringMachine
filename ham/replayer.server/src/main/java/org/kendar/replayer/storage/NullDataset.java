@@ -7,6 +7,7 @@ import org.kendar.replayer.events.NullCompleted;
 import org.kendar.replayer.utils.JsReplayerExecutor;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.http.InternalRequester;
+import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.LoggerBuilder;
@@ -118,6 +119,15 @@ public class NullDataset extends ReplayerDataset{
                     var response = new Response();
                     var request = reqResp.getRequest().copy();
                     var expectedResponse = reqResp.getResponse().copy();
+
+                    var stringRequest = mapper.writeValueAsString(request);
+                    stringRequest = cache.replaceAll(this.id,stringRequest);
+                    request = mapper.readValue(stringRequest, Request.class);
+
+                    var stringResponse = mapper.writeValueAsString(expectedResponse);
+                    stringResponse = cache.replaceAll(this.id,stringResponse);
+                    expectedResponse = mapper.readValue(stringResponse, Response.class);
+
                     if(replayerResult.getPreScript().containsKey(currentIndex+"")){
                         var jsCallback = replayerResult.getPreScript().get(currentIndex+"");
                         var script = executor.prepare(jsCallback);
