@@ -8,6 +8,7 @@ import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.utils.JsReplayerExecutor;
 import org.kendar.servers.http.ExternalRequester;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,7 @@ public class PactDataset implements BaseDataset {
     private EventQueue eventQueue;
     private ExternalRequester externalRequester;
     private Cache cache;
+    private SimpleProxyHandler simpleProxyHandler;
     private String name;
     private String replayerDataDir;
     private Thread thread;
@@ -38,12 +40,14 @@ public class PactDataset implements BaseDataset {
     private JsReplayerExecutor executor = new JsReplayerExecutor();
 
     public PactDataset(LoggerBuilder loggerBuilder, EventQueue eventQueue, ExternalRequester externalRequester
-            , Cache cache) {
+            , Cache cache,
+                       SimpleProxyHandler simpleProxyHandler) {
 
         this.logger = loggerBuilder.build(PactDataset.class);
         this.eventQueue = eventQueue;
         this.externalRequester = externalRequester;
         this.cache = cache;
+        this.simpleProxyHandler = simpleProxyHandler;
     }
 
     @Override
@@ -129,6 +133,7 @@ public class PactDataset implements BaseDataset {
                         var script = executor.prepare(jsCallback);
                         executor.run(this.id,request, response, expectedResponse, script);
                     }
+                    request = simpleProxyHandler.translate(request);
                     externalRequester.callSite(request, response);
                     if(replayerResult.getPostScript().containsKey(currentIndex+"")){
                         var jsCallback = replayerResult.getPostScript().get(currentIndex+"");

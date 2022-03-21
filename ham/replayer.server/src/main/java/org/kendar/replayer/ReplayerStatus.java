@@ -12,6 +12,7 @@ import org.kendar.servers.http.ExternalRequester;
 import org.kendar.servers.http.InternalRequester;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,7 @@ public class ReplayerStatus {
     private ExternalRequester externalRequester;
     private DnsMultiResolver multiResolver;
     private InternalRequester internalRequester;
+    private SimpleProxyHandler simpleProxyHandler;
     private BaseDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
 
@@ -44,7 +46,8 @@ public class ReplayerStatus {
             Md5Tester md5Tester,
             JsonConfiguration configuration,
             EventQueue eventQueue, ExternalRequester externalRequester,
-            DnsMultiResolver multiResolver, InternalRequester internalRequester) {
+            DnsMultiResolver multiResolver, InternalRequester internalRequester,
+            SimpleProxyHandler simpleProxyHandler) {
 
         this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.loggerBuilder = loggerBuilder;
@@ -55,6 +58,7 @@ public class ReplayerStatus {
         this.externalRequester = externalRequester;
         this.multiResolver = multiResolver;
         this.internalRequester = internalRequester;
+        this.simpleProxyHandler = simpleProxyHandler;
         eventQueue.register((a)->pactCompleted(), PactCompleted.class);
         eventQueue.register((a)->nullCompleted(), NullCompleted.class);
     }
@@ -155,7 +159,7 @@ public class ReplayerStatus {
     public String startPact(String id) throws IOException {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
-        dataset = new PactDataset(loggerBuilder,eventQueue,externalRequester,new Cache());
+        dataset = new PactDataset(loggerBuilder,eventQueue,externalRequester,new Cache(),simpleProxyHandler);
         dataset.load(id, rootPath.toString(),null);
         var runId = ((PactDataset)dataset).start();
         state = ReplayerState.PLAYING_PACT;
@@ -172,7 +176,7 @@ public class ReplayerStatus {
     public String startNull(String id) throws IOException {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
-        dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue,internalRequester, new Cache());
+        dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue,internalRequester, new Cache(),simpleProxyHandler);
         dataset.load(id, rootPath.toString(),null);
         var runId = ((NullDataset)dataset).start();
         state = ReplayerState.PLAYING_NULL_INFRASTRUCTURE;
