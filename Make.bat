@@ -27,8 +27,6 @@ pause
 echo Building sample applications
 cd samples\sampleapp
 call mvn clean install
-cd ..
-cd ..
 pause
 
 
@@ -37,14 +35,11 @@ if "%builddocker%"=="n" goto end
 echo Building main docker images
 cd %mypath%docker\images
 call ImagesBuild.bat
-cd ..
-cd ..
 
 echo Building sampleapp docker images
 cd %mypath%samples\sampleapp\docker_multi
 call ImagesBuild.bat
-cd ..
-cd ..
+
 
 
 :end

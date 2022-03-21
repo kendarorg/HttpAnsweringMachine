@@ -44,6 +44,7 @@ connecting to it the [Special DNS Server](docs/dnsserver.md)
 ## Hyper-Fast start
 
 * Install JDK11 and maven
+* On windows when checking out remember to set  git core.autocrlf to false
 * If you want to try the docker version install
 	* Docker
 	* [OpenVPN client](https://openvpn.net/vpn-client)
