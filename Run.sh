@@ -43,7 +43,10 @@ if [ "$rundocker" == "n" ]; then
 	echo 127.0.0.1  gateway.sample.test
 	echo 127.0.0.1  be.sample.test
  
+ 	echo To kill all should call Kill.sh
 	pause
+	
+	echo '#!/bin/bash' > $mypath/Kill.sh
 
 	cd "$mypath"ham/app/target
 	mkdir -p "$mypath"ham/app/target/libs
@@ -54,6 +57,8 @@ if [ "$rundocker" == "n" ]; then
 	java "-Dloader.path=$mypath/ham/app/target/libs"  -Dloader.main=org.kendar.Main  \
 	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
 		-jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher &
+	tokill=$1
+	echo "kill -9 $tokill" >> $mypath/Kill.sh  
 		
 	cd "$mypath"samples/sampleapp/gateway/target/
 	cp -f "$mypath"samples/sampleapp/docker/application.properties.gateway "$mypath"samples/sampleapp/gateway/target/application.properties
