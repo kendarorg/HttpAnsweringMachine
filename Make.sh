@@ -1,6 +1,7 @@
-@ECHO OFF
-SET mypath=%~dp0
-cd %mypath%
+#!/bin/sh
+
+mypath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $mypath
 
 echo Building HAM
 cd ham
@@ -14,20 +15,30 @@ cd ..
 cd ..
 pause
 
-set /p builddocker="Build docker images (y/n): "
-if "%builddocker%"=="n" goto end
+while true; do
+    read -p "Build docker images (y/n): " yn
+    case $yn in
+        [Yy]* ) { builddocker="y" ; break ; } ;;
+        [Nn]* ) { builddocker="n" ; break ; } ;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
 
-echo Building main docker images
-cd docker\images
-call ImagesBuild.bat
-cd ..
-cd ..
+if [ "$builddocker" == "y" ]; then
+    echo Building main docker images
+	cd docker/images
+	./ImagesBuild.sh
+	cd ..
+	cd ..
 
-echo Building sampleapp docker images
-cd samples\sampleapp\docker_multi
-call ImagesBuild.bat
-cd ..
-cd ..
+	echo Building sampleapp docker images
+	cd samples/sampleapp/docker_multi
+	./ImagesBuild.sh
+	cd ..
+	cd ..
+fi
+
+
 
 
 :end
