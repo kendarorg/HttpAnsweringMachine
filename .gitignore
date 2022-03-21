@@ -29,6 +29,8 @@ hs_err_pid*
 /ham/recording
 /ham/replayerdata
 /ham/pacts
+/ham/app-1.0-SNAPSHOT.jar
+
 
 target
 !/externals/json-schema-inferrer-0.1.4.jar
