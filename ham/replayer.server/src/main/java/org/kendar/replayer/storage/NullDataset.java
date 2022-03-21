@@ -8,6 +8,7 @@ import org.kendar.replayer.utils.JsReplayerExecutor;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.http.InternalRequester;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.LoggerBuilder;
 
 import java.io.File;
@@ -26,6 +27,7 @@ public class NullDataset extends ReplayerDataset{
     private EventQueue eventQueue;
     private InternalRequester internalRequester;
     private Cache cache;
+    private SimpleProxyHandler simpleProxyHandler;
     private Thread thread;
     private String id;
     private AtomicBoolean running = new AtomicBoolean(false);
@@ -34,11 +36,13 @@ public class NullDataset extends ReplayerDataset{
     public NullDataset(
             LoggerBuilder loggerBuilder,
             DataReorganizer dataReorganizer,
-            Md5Tester md5Tester, EventQueue eventQueue, InternalRequester internalRequester, Cache cache) {
+            Md5Tester md5Tester, EventQueue eventQueue, InternalRequester internalRequester, Cache cache,
+            SimpleProxyHandler simpleProxyHandler) {
         super(loggerBuilder,dataReorganizer,md5Tester);
         this.eventQueue = eventQueue;
         this.internalRequester = internalRequester;
         this.cache = cache;
+        this.simpleProxyHandler = simpleProxyHandler;
     }
 
 
