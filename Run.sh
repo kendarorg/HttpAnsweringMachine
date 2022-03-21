@@ -18,7 +18,7 @@ while true; do
 done
 
 
-if [ "$builddocker" == "y" ]; then
+if [ "$rundocker" == "y" ]; then
 	
 	
 	echo Please install OpenVpn connect \(https://openvpn.net/vpn-client/\)
@@ -31,7 +31,7 @@ if [ "$builddocker" == "y" ]; then
 	./ImagesRun.sh
 fi
 
-if [ "$builddocker" == "n" ]; then
+if [ "$rundocker" == "n" ]; then
 
 	echo Open with sudo vi /etc/hosts
 	echo and add the following lines:
