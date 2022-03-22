@@ -35,6 +35,28 @@ echo 127.0.0.1  be.sample.test
 
 pause
 
+
+
+cd %mypath%samples\sampleapp\gateway\target
+copy /Y %mypath%samples\sampleapp\docker\application.properties.gateway %mypath%samples\sampleapp\gateway\target\application.properties
+start java -jar %mypath%samples\sampleapp\gateway\target\gateway-1.0-SNAPSHOT.jar
+
+sleep 10
+pause
+
+cd %mypath%samples\sampleapp\be\target
+copy /Y %mypath%samples\sampleapp\docker\application.properties.be %mypath%samples\sampleapp\be\target\application.properties
+start java -jar %mypath%samples\sampleapp\be\target\be-1.0-SNAPSHOT.jar
+
+sleep 10
+pause
+
+cd %mypath%samples\sampleapp\fe\target
+copy /Y %mypath%samples\sampleapp\docker\application.properties.fe %mypath%samples\sampleapp\fe\target\application.properties
+start java -jar %mypath%samples\sampleapp\fe\target\fe-1.0-SNAPSHOT.jar
+
+sleep 10
+pause
 cd %mypath%ham\app\target
 
 md "%mypath%ham\app\target\libs" 2>NUL
@@ -45,24 +67,6 @@ copy /Y %mypath%samples\sampleapp\standalone.external.json %mypath%ham\app\targe
 start java "-Dloader.path=%mypath%ham\app\target\libs"  -Dloader.main=org.kendar.Main  ^
   	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
 	-jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher
-
-pause
-
-cd %mypath%samples\sampleapp\gateway\target
-copy /Y %mypath%samples\sampleapp\docker\application.properties.gateway %mypath%samples\sampleapp\gateway\target\application.properties
-start java -jar %mypath%samples\sampleapp\gateway\target\gateway-1.0-SNAPSHOT.jar
-
-pause
-
-cd %mypath%samples\sampleapp\be\target
-copy /Y %mypath%samples\sampleapp\docker\application.properties.be %mypath%samples\sampleapp\be\target\application.properties
-start java -jar %mypath%samples\sampleapp\be\target\be-1.0-SNAPSHOT.jar
-
-pause
-
-cd %mypath%samples\sampleapp\fe\target
-copy /Y %mypath%samples\sampleapp\docker\application.properties.fe %mypath%samples\sampleapp\fe\target\application.properties
-start java -jar %mypath%samples\sampleapp\fe\target\fe-1.0-SNAPSHOT.jar
 
 
 :end

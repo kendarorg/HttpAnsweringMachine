@@ -130,14 +130,20 @@ public class NullDataset extends ReplayerDataset{
 
                     if(replayerResult.getPreScript().containsKey(currentIndex+"")){
                         var jsCallback = replayerResult.getPreScript().get(currentIndex+"");
-                        var script = executor.prepare(jsCallback);
-                        executor.run(this.id,request, response, expectedResponse, script);
+
+                        if(jsCallback!=null && jsCallback.trim().length()>0) {
+                            var script = executor.prepare(jsCallback);
+                            executor.run(this.id, request, response, expectedResponse, script);
+                        }
                     }
                     internalRequester.callSite(request, response);
                     if(replayerResult.getPostScript().containsKey(currentIndex+"")){
                         var jsCallback = replayerResult.getPostScript().get(currentIndex+"");
-                        var script = executor.prepare(jsCallback);
-                        executor.run(this.id,request, response, expectedResponse, script);
+
+                        if(jsCallback!=null && jsCallback.trim().length()>0) {
+                            var script = executor.prepare(jsCallback);
+                            executor.run(this.id, request, response, expectedResponse, script);
+                        }
                     }
                     result.getExecuted().add(toCall.getId());
                 }
