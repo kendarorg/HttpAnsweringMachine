@@ -8,17 +8,32 @@ if "%builddocker%"=="n" goto ok
 if "%builddocker%"=="y" goto ok
 if "%builddocker%"=="N" (
 	builddocker=n
-	goto ok
+	goto requery2
 )
 if "%builddocker%"=="Y" (
 	builddocker=y
-	goto ok
+	goto requery2
 )
 goto requery
+
+:requery2
+set /p mavenbuild="Build java packages (y/n): "
+if "%mavenbuild%"=="n" goto ok
+if "%mavenbuild%"=="y" goto ok
+if "%mavenbuild%"=="N" (
+	mavenbuild=n
+	goto ok
+)
+if "%mavenbuild%"=="Y" (
+	mavenbuild=y
+	goto ok
+)
+goto requery2
 
 
 :ok
 
+if "%mavenbuild%"=="n" goto buildocker
 echo Building HAM
 cd ham
 call mvn clean install
@@ -29,7 +44,7 @@ cd samples\sampleapp
 call mvn clean install
 pause
 
-
+:buildocker
 if "%builddocker%"=="n" goto end
 
 echo Building main docker images

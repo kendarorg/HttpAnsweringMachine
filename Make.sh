@@ -20,17 +20,28 @@ while true; do
     esac
 done
 
-echo Building HAM
-cd ham
-mvn clean install
-cd ..
-pause
-echo Building sample applications
-cd samples/sampleapp
-mvn clean install
-cd ..
-cd ..
-pause
+while true; do
+    read -p "Build java packages (y/n): " yn
+    case $yn in
+        [Yy]* ) { mavenbuild="y" ; break ; } ;;
+        [Nn]* ) { mavenbuild="n" ; break ; } ;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
+if [ "$mavenbuild" == "y" ]; then
+  echo Building HAM
+  cd ham
+  mvn clean install
+  cd ..
+  pause
+  echo Building sample applications
+  cd samples/sampleapp
+  mvn clean install
+  cd ..
+  cd ..
+  pause
+fi
 
 if [ "$builddocker" == "y" ]; then
     echo Building main docker images
