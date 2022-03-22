@@ -29,7 +29,7 @@ public class Cache {
         if(!values.containsKey(runId))return src;
         var keys = this.getKeys(runId);
         for(var vv:values.get(runId).entrySet()){
-            src = src.replaceAll("##"+vv.getKey()+"##",get(runId,vv.getValue()));
+            src = src.replaceAll("##"+vv.getKey()+"##",vv.getValue());
         }
         return src;
     }
