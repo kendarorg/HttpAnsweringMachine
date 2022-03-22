@@ -16,7 +16,7 @@
         </div>
         <div class="col-md-8">
             <h3>Proxyes</h3>
-            <table class="table table-striped" id="proxiesTable">
+            <table class="table table-striped" id="certificatesTable">
                 <tr>
                     <th>Id</th>
                     <th>Download</th>
@@ -30,17 +30,17 @@
 
 
 
-    var scriptsTable = new SimpleGrid("Certificates","proxiesTable","id",["id","_download"],
+    var scriptsTable = new SimpleGrid("Certificates","certificatesTable","id",["id","_download"],
         function(table){
             $.ajax({
                 url: "/api/certificates",
                 type: 'GET',
                 success: function(realRes) {
                     var res=[];
-                    for(var v=0;v<res.length;v++) {
+                    for(var v=0;v<realRes.length;v++) {
                         res.push([])
-                        res[v]["_download"]='Download';
-                        res[v]["id"]=realRes[i];
+                        res[v]["_download"]="<a href='/api/certificates/"+realRes[v]+"'>Download</a>";
+                        res[v]["id"]=realRes[v];
                     }
                     $.each(res, function(i, script) {
                         table.appendToTable(script,false);

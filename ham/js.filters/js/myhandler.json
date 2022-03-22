@@ -15,9 +15,9 @@
         "var today = getCurrentDate()+utils.loadFile('test.txt',false);",
         "utils.handleEvent('test','{}');",
         "response.setResponseText('{\"value\":\"This is a calculated javascript response\",\"date\":\"'+today+'\"}');",
-        "response.setHeader('Content-Type','application/json');",
+        "response.addHeader('Content-Type','application/json');",
         "response.setStatusCode(200);",
-        "request.setHeader('Host','test.com');",
+        "request.addHeader('Host','test.com');",
         "return false;"
     ]
 }
