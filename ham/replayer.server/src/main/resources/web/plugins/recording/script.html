@@ -80,13 +80,20 @@
         </div>
 
         <div class="col-md-8">
-        <ul class="nav nav-tabs">
+            <ul>
+                <li class="tab-switcher" data-tab-index="0" tabindex="0">
+                    Script
+                </li>
+                <li class="tab-switcher" data-tab-index="1" tabindex="0">
+                    Full path
+                </li>
+            </ul>
+        <!--<ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#optimizedscript">Script</a></li>
             <li><a data-toggle="tab" href="#fullpath">Full path</a></li>
-        </ul>
-
-        <div class="tab-content">
-            <div id="optimizedscript" class="tab-pane fade in active">
+        </ul>-->
+            <div id="allTabsContainer">
+                <div class="tab-container" data-tab-index="0">
                 <h3>Script</h3>
                 <div class="col-md-8">
                     <button id="script_deleteselected" name="script_deleteselected" type="button"  class="btn btn-default" onClick="deleteSelected();">Delete Selected</button>
@@ -121,7 +128,7 @@
                     </table>
                 </div>
             </div>
-            <div id="fullpath" class="tab-pane fade">
+                <div class="tab-container" data-tab-index="1"  style="display:none;">
                 <h3>Full path</h3>
                 <div class="col-md-8">
                     <button id="full_togglepactselected" name="full_togglepactselected" type="button"  class="btn btn-default" onClick="togglepactselected();">Toggle selected as PACT</button>
@@ -178,6 +185,24 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
+
+    var previousActiveTabIndex = 0;
+    $(".tab-switcher").on('click keypress', function (event) {
+        // event.which === 13 means the "Enter" key is pressed
+        if ((event.type === "keypress" && event.which === 13) || event.type === "click") {
+            var tabClicked = $(this).data("tab-index");
+            if(tabClicked != previousActiveTabIndex) {
+                $("#allTabsContainer .tab-container").each(function () {
+                    if($(this).data("tab-index") == tabClicked) {
+                        $(".tab-container").hide();
+                        $(this).show();
+                        previousActiveTabIndex = $(this).data("tab-index");
+                        return;
+                    }
+                });
+            }
+        }
+    });
 
     var scriptModal = `
             <div class="form-group">

@@ -2,7 +2,7 @@
   {
     "id": "dns",
     "system": true,
-    "active": true,
+    "active": false,
     "port": 53,
     "logQueries": false,
     "extraServers": [
