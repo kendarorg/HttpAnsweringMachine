@@ -258,6 +258,6 @@ public class ValidatorAPITestXml {
         target.validateXml(req,res);
         var result = mapper.readValue(res.getResponseText(), ValidatorResult.class);
         assertTrue(result.isError());
-        assertEquals(2,result.getErrors().size());
+        assertEquals(1,result.getErrors().size());
     }
 }
