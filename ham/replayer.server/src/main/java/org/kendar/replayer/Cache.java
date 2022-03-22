@@ -25,6 +25,7 @@ public class Cache {
     }
 
     public String replaceAll(String runId,String src){
+        if(src==null) return src;
         if(!values.containsKey(runId))return src;
         var keys = this.getKeys(runId);
         for(var vv:values.get(runId).entrySet()){

@@ -57,6 +57,7 @@ public class XmlMatcher {
             throw new XmlException(diffResult.getPath()+" WRONG TAG");
         }
         if(template.getTag()==null && toCheck.getTag()!=null){
+            if(template.getConstraint()==XmlConstraint.NONE)return;
             throw new XmlException(diffResult.getPath()+" WRONG TAG");
         }
         if(template.getTag()==null && toCheck.getTag()==null){
