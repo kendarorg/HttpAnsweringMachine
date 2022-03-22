@@ -4,8 +4,8 @@ cd %mypath%
 
 :requery
 set /p builddocker="Build docker images (y/n): "
-if "%builddocker%"=="n" goto ok
-if "%builddocker%"=="y" goto ok
+if "%builddocker%"=="n" goto requery2
+if "%builddocker%"=="y" goto requery2
 if "%builddocker%"=="N" (
 	builddocker=n
 	goto requery2

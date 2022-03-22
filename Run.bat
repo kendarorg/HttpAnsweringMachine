@@ -35,18 +35,7 @@ echo 127.0.0.1  be.sample.test
 
 pause
 
-cd %mypath%ham\app\target
 
-md "%mypath%ham\app\target\libs" 2>NUL
-del /q %mypath%ham\app\target\libs\*.*
-copy /Y %mypath%\libs\*.jar %mypath%ham\app\target\libs\
-
-copy /Y %mypath%samples\sampleapp\docker\external.json %mypath%ham\app\target\
-start java "-Dloader.path=%mypath%ham\app\target\libs"  -Dloader.main=org.kendar.Main  ^
-  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
-	-jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher
-	
-cd %mypath%samples\sampleapp
 
 
 cd %mypath%samples\sampleapp\gateway\target
@@ -62,6 +51,16 @@ copy /Y %mypath%samples\sampleapp\docker\application.properties.fe %mypath%sampl
 start java -jar %mypath%samples\sampleapp\fe\target\fe-1.0-SNAPSHOT.jar
 	
 	
+cd %mypath%ham\app\target
+
+md "%mypath%ham\app\target\libs" 2>NUL
+del /q %mypath%ham\app\target\libs\*.*
+copy /Y %mypath%\libs\*.jar %mypath%ham\app\target\libs\
+
+copy /Y %mypath%samples\sampleapp\standalone.external.json %mypath%ham\app\target\external.json
+start java "-Dloader.path=%mypath%ham\app\target\libs"  -Dloader.main=org.kendar.Main  ^
+  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
+	-jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher
 	
 	
 	
