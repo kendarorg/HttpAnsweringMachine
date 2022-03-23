@@ -60,6 +60,23 @@ public class ReplayerAPIScripts implements FilteringClass {
                 new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
         dataset.load(id, rootPath.toString(),null);
         var datasetContent = dataset.load();
+        var prev = -1;
+        var next = -1;
+        for(var i=0;i<datasetContent.getIndexes().size();i++){
+            var singleLine = datasetContent.getIndexes().get(i);
+            if (singleLine.getId() == Integer.parseInt(id)) {
+
+                if (i > 0) {
+                    prev = datasetContent.getIndexes().get(i - 1).getId();
+                }
+                if (i < (datasetContent.getIndexes().size() - 1)) {
+                    next = datasetContent.getIndexes().get(i + 1).getId();
+                }
+                break;
+            }
+        }
+        res.addHeader("X-NEXT", ""+next);
+        res.addHeader("X-PREV", ""+prev);
         String script = "";
         if(isPre){
             if(datasetContent.getPreScript().containsKey(line)){
