@@ -120,6 +120,7 @@ public class ReplayerAPIScripts implements FilteringClass {
         var datasetContent = dataset.load();
         datasetContent.getPostScript().remove(line);
         datasetContent.getPreScript().remove(line);
+        dataset.justSave(datasetContent);
     }
 
     @HttpMethodFilter(
