@@ -68,7 +68,7 @@ public class ReplayerAPIScripts implements FilteringClass {
         datasetContent.getIndexes().sort(Comparator.comparingInt(CallIndex::getId));
         for(var i=0;i<datasetContent.getIndexes().size();i++){
             var singleLine = datasetContent.getIndexes().get(i);
-            if (singleLine.getId() == Integer.parseInt(id)) {
+            if (singleLine.getId() == Integer.parseInt(line)) {
 
                 if (i > 0) {
                     prev = datasetContent.getIndexes().get(i - 1).getId();
