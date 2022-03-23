@@ -75,6 +75,7 @@ public class ReplayerAPIScripts implements FilteringClass {
             var singleLine = datasetContent.getIndexes().get(i);
             if (singleLine.getId() == Integer.parseInt(line)) {
                 var ref= allItems.stream().filter(a->a.getId()==singleLine.getReference()).findFirst().get();
+                result.setId(singleLine.getId());
                 result.setHost(ref.getRequest().getHost());
                 result.setPath(ref.getRequest().getPath());
                 result.setMethod(ref.getRequest().getMethod());
