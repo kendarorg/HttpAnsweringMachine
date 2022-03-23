@@ -25,7 +25,7 @@
         <div class="col-md-8">
             <br>
             <button id="save" name="save" type="button"  class="btn btn-default" onClick="save();">Save</button>
-            <button id="delete" name="delete" type="button"  class="btn btn-default" onClick="delete();">Delete</button>
+            <button id="doDelete" name="doDelete" type="button"  class="btn btn-default" onClick="doDelete();">Delete</button>
 
         </div>
 
@@ -143,6 +143,18 @@
         .html("Line: "+getUrlParameter("line"));
 
 
+    function doDelete(){
+
+        var id = getUrlParameter("id");
+        var line = getUrlParameter("line");
+        $.ajax({
+            url: '/api/plugins/replayer/recording/'+id+'/script/'+line,
+            type: 'DELETE',
+            success: function(response){
+                location.reload();
+            }
+        });
+    }
 
     function save(){
         var id = getUrlParameter("id");
