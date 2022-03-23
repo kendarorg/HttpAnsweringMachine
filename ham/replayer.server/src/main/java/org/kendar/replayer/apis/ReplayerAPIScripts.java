@@ -6,6 +6,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.replayer.ReplayerConfig;
+import org.kendar.replayer.apis.models.Scripts;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
@@ -47,6 +49,7 @@ public class ReplayerAPIScripts implements FilteringClass {
         this.dataReorganizer = dataReorganizer;
         this.md5Tester = md5Tester;
     }
+
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
@@ -54,7 +57,6 @@ public class ReplayerAPIScripts implements FilteringClass {
             id = "5000daa6-277f-11ec-9621-0242ac1afe002script")
     public void retrieveScript(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
-        var isPre = req.getQuery("pre").equalsIgnoreCase("true");
         var line = req.getPathParameter("line");
 
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
@@ -65,11 +67,18 @@ public class ReplayerAPIScripts implements FilteringClass {
         var datasetContent = dataset.load();
         var prev = -1;
         var next = -1;
+        var result = new Scripts();
+        var allItems = datasetContent.getDynamicRequests().stream().collect(Collectors.toList());
+        allItems.addAll(datasetContent.getStaticRequests().stream().collect(Collectors.toList()));
         datasetContent.getIndexes().sort(Comparator.comparingInt(CallIndex::getId));
         for(var i=0;i<datasetContent.getIndexes().size();i++){
             var singleLine = datasetContent.getIndexes().get(i);
             if (singleLine.getId() == Integer.parseInt(line)) {
-
+                var ref= allItems.stream().filter(a->a.getId()==singleLine.getReference()).findFirst().get();
+                result.setId(singleLine.getId());
+                result.setHost(ref.getRequest().getHost());
+                result.setPath(ref.getRequest().getPath());
+                result.setMethod(ref.getRequest().getMethod());
                 if (i > 0) {
                     prev = datasetContent.getIndexes().get(i - 1).getId();
                 }
@@ -81,19 +90,37 @@ public class ReplayerAPIScripts implements FilteringClass {
         }
         res.addHeader("X-NEXT", ""+next);
         res.addHeader("X-PREV", ""+prev);
-        String script = "";
-        if(isPre){
-            if(datasetContent.getPreScript().containsKey(line)){
-                script = datasetContent.getPreScript().get(line);
-            }
-        }else{
-            if(datasetContent.getPostScript().containsKey(line)){
-                script = datasetContent.getPostScript().get(line);
-            }
+        if(datasetContent.getPreScript().containsKey(line)){
+            result.setPre(datasetContent.getPreScript().get(line));
+        }
+        if(datasetContent.getPostScript().containsKey(line)){
+            result.setPost(datasetContent.getPostScript().get(line));
         }
 
-        res.addHeader("Content-type", "text/plain");
-        res.setResponseText(script);
+        res.addHeader("Content-type", "application/json");
+        res.setResponseText(mapper.writeValueAsString(result));
+    }
+
+
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
+            method = "DELETE",
+            id = "5000dafa-277f-11ec-9621-0242ac1afe002script")
+    public void deleteScript(Request req, Response res) throws IOException {
+        var id = req.getPathParameter("id");
+        var line = req.getPathParameter("line");
+
+        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+
+        var dataset =
+                new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
+        dataset.load(id, rootPath.toString(),null);
+        var datasetContent = dataset.load();
+        datasetContent.getPostScript().remove(line);
+        datasetContent.getPreScript().remove(line);
+        dataset.justSave(datasetContent);
     }
 
     @HttpMethodFilter(
@@ -103,20 +130,43 @@ public class ReplayerAPIScripts implements FilteringClass {
             id = "5000daa6-277f-11ec-9621-0242ac1afe002scriptput")
     public void putScript(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
-        var isPre = req.getQuery("pre").equalsIgnoreCase("true");
-        var line = req.getPathParameter("line");
+        var line = Integer.parseInt(req.getPathParameter("line"));
 
-        var data = req.getRequestText().trim();
+        var data = mapper.readValue(req.getRequestText(),Scripts.class);
+
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
         var dataset =
                 new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
         dataset.load(id, rootPath.toString(),null);
         var datasetContent = dataset.load();
-        if(isPre){
-            datasetContent.getPreScript().put(line,data);
+        if(data.getPre()==null || data.getPre().trim().isEmpty()){
+            datasetContent.getPreScript().remove(line+"");
         }else{
-            datasetContent.getPostScript().put(line,data);
+            datasetContent.getPreScript().put(line+"",data.getPre().trim());
+        }
+
+        if(data.getPost()==null || data.getPost().trim().isEmpty()){
+            datasetContent.getPostScript().remove(line+"");
+        }else{
+            datasetContent.getPostScript().put(line+"",data.getPost().trim());
+        }
+        ReplayerRow foundedRow = null;
+        for(var dyr:datasetContent.getDynamicRequests()){
+            if(dyr.getId()==line){
+                foundedRow = dyr;
+                break;
+            }
+        }
+        for(var dyr:datasetContent.getStaticRequests()){
+            if(dyr.getId()==line){
+                foundedRow = dyr;
+                break;
+            }
+        }
+        if(foundedRow!=null){
+            foundedRow.getRequest().setHost(data.getHost());
+            foundedRow.getRequest().setPath(data.getPath());
         }
         dataset.justSave(datasetContent);
     }
