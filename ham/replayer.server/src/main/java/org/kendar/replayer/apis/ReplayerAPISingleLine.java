@@ -68,9 +68,20 @@ public class ReplayerAPISingleLine implements FilteringClass {
         new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
     dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
-    ListAllRecordList result = new ListAllRecordList(datasetContent, id,false);
-    for (var singleLine : result.getLines()) {
+    var result = new ListAllRecordList(datasetContent, id,false).getLines();
+    for (var i=0;i<result.size();i++) {
+      var singleLine = result.get(i);
       if (singleLine.getId() == line) {
+        var prev = -1;
+        var next = -1;
+        if(i>0){
+          prev=result.get(i-1).getId();
+        }
+        if(i<(result.size()-1)){
+          next=result.get(i+1).getId();
+        }
+        res.addHeader("X-NEXT", ""+next);
+        res.addHeader("X-PREV", ""+prev);
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(singleLine));
         return;
