@@ -114,7 +114,8 @@
             success: function(response){
                 window.uploadScript=[];
                 document.getElementById("uploadScriptShow").value ="";
-                alert("File Uploaded")
+                alert("File Uploaded");
+                location.href = "script.html?id="+id;
             }
         });
     });
