@@ -14,6 +14,8 @@
             <button type="button"  class="btn btn-default" onClick="location.href='../../index.html'">Main</button>
             <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Scripts</button>
             <button type="button"  class="btn btn-default" id="backToSingle"  name="backToSingle" >???</button>
+            <button type="button"  class="btn btn-default" id="backToLine"  name="backToLine" >???</button>
+            <br>
             <button type="button" id="prev" name="prev"  class="btn btn-default" onClick="prev()">Prev</button>
             <button type="button" id="next" name="next" class="btn btn-default" onClick="next()">Next</button>
         </div>
@@ -383,7 +385,12 @@
 
     $("#backToSingle").click(function(){
         location.href="script.html?id="+getUrlParameter("id"); })
-        .html(getUrlParameter("id"));
+        .html("Script: "+getUrlParameter("id"));
+
+
+    $("#backToLine").click(function(){
+        location.href="js.html?id="+getUrlParameter("id")+"&line="+getUrlParameter("line"); })
+        .html("Js: "+getUrlParameter("line"));
 
 
 
