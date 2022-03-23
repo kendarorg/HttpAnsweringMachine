@@ -64,7 +64,7 @@
         </div>
         <div class="col-md-8">
             <div class="form-group">
-                <label for="jsScriptPre">POST</label>
+                <label for="jsScriptPost">POST</label>
                 <textarea class="form-control" rows="6" cols="50" name="jsScriptPost" id="jsScriptPost"></textarea>
             </div>
         </div>
@@ -93,64 +93,19 @@
     var nextLine=-1;
 
 
-    var defaultSaveAction = "put";
-    var request_headerTable = new SimpleGrid("Request-Headers","request_headerTable","key",["key","value"],
-        null,
-        function (table,id) {
-            editKvp(".modal",table,id,"key","value")
-        },
-        function (table,id) {
-            deleteKvp(".modal",table,id,"key","value")
-        },
-        function (table,id,saveOrUpdate) {
-            updateKvp(".modal",table,id,"key","value")
-        });
-    var request_queryTable = new SimpleGrid("Query","request_queryTable","key",["key","value"],
-        null,
-        function (table,id) {
-            editKvp(".modal",table,id,"key","value")
-        },
-        function (table,id) {
-            deleteKvp(".modal",table,id,"key","value")
-        },
-        function (table,id,saveOrUpdate) {
-            updateKvp(".modal",table,id,"key","value")
-        });
-    var request_postTable = new SimpleGrid("PostParameters","request_postTable","key",["key","value"],
-        null,
-        function (table,id) {
-            editKvp(".modal",table,id,"key","value")
-        },
-        function (table,id) {
-            deleteKvp(".modal",table,id,"key","value")
-        },
-        function (table,id,saveOrUpdate) {
-            updateKvp(".modal",table,id,"key","value")
-        });
-    var response_headerTable = new SimpleGrid("Response-Headers","response_headerTable","key",["key","value"],
-        null,
-        function (table,id) {
-            editKvp(".modal",table,id,"key","value")
-        },
-        function (table,id) {
-            deleteKvp(".modal",table,id,"key","value")
-        },
-        function (table,id,saveOrUpdate) {
-            updateKvp(".modal",table,id,"key","value")
-        });
+
 
     var prev = function(){
-        location.href="line.html?id="+getUrlParameter("id")+"&line="+prevLine;
+        location.href="js.html?id="+getUrlParameter("id")+"&line="+prevLine;
     }
     var next = function(){
-        location.href="line.html?id="+getUrlParameter("id")+"&line="+nextLine;
+        location.href="js.html?id="+getUrlParameter("id")+"&line="+nextLine;
     }
 
     $.ajax({
-        url: "/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line"),
+        url: "/api/plugins/replayer/recording/" + getUrlParameter("id")+"/script/"+getUrlParameter("line"),
         type: 'GET',
         success: function (res, textStatus, request) {
-            $("#timestamp").val(res['timestamp']);
             $("#id").val(res['id']);
 
             prevLine= parseInt(request.getResponseHeader('X-PREV'));
@@ -164,92 +119,18 @@
             }
 
             //Request
-            $("#request_method").val(res['request']['method']);
-            $("#request_protocol").val(res['request']['protocol']);
-            $("#request_host").val(res['request']['host']);
-            $("#request_path").val(res['request']['path']);
-            $("#request_port").val(res['request']['port']);
-            setChecked($("#request_static"),res['request']['staticRequest']);
-            setChecked($("#request_soap"),res['request']['soapRequest']);
-            setChecked($("#request_binary"),res['request']['binaryRequest']);
-            setChecked($("#stimulatedTest"),res['request']['stimulatedTest']);
-            var editContent = "text.html";
-            if(res['request']['binaryRequest']){
-                editContent = "binary.html";
-            }
-            $("#request_content").click(
-                function(){
-                    editContent = "text.html";
-                    if($("#request_binary").prop("checked")){
-                        editContent = "binary.html";
-                    }
-                    location.href=editContent+"?type=request"+
-                        "&id="+getUrlParameter("id")+
-                        "&line="+getUrlParameter("line"); });
-
-            $.each(res["request"]["headers"], function (i, v) {
-                var line = {key:i,value:v};
-                request_headerTable.appendToTable( line);
-            });
-            $.each(res["request"]["query"], function (i, v) {
-                var line = {key:i,value:v};
-                request_queryTable.appendToTable(line);
-            });
-            $.each(res["request"]["postParameters"], function (i, v) {
-                var line = {key:i,value:v};
-                request_postTable.appendToTable(line);
-            });
-
-            //Response
-            $("#response_code").val(res['response']['statusCode']);
-            setChecked($("#response_binary"),res['response']['binaryResponse']);
-
-            $("#response_content").click(
-                function(){
-                    editContent = "text.html";
-                    if($("#response_binary").prop("checked")){
-                        editContent = "binary.html";
-                    }
-                    location.href=editContent+"?type=response"+
-                        "&id="+getUrlParameter("id")+
-                        "&line="+getUrlParameter("line"); });
-
-            $.each(res["response"]["headers"], function (i, v) {
-                var line = {key:i,value:v};
-                response_headerTable.appendToTable(line);
-            });
-
-            if(res["requestHash"]!="0" && res["requestHash"]!=""){
-                $("#request_content_download").show();
-            }else{
-                $("#request_content_download").hide();
-            }
-            if(res["responseHash"]!="0" && res["responseHash"]!=""){
-                $("#response_content_download").show();
-            }else{
-                $("#response_content_download").hide();
-            }
+            $("#request_method").val(res['method']);
+            $("#request_host").val(res['host']);
+            $("#request_path").val(res['path']);
+            $("#jsScriptPre").val(res['pre']);
+            $("#jsScriptPost").val(res['post']);
         },
         error: function( xhr, textStatus, errorThrown ){
-            if(xhr.status==404) {
-                $("#timestamp").val(Math.floor(Date.now() / 1000));
-                $("#id").val(getUrlParameter("line"));
-                $("#request_content").hide();
-                $("#response_content").hide();
-                $("#request_content_download").hide();
-                $("#response_content_download").hide();
-                defaultSaveAction="post";
-            }
+
         }
     });
 
-    $("#request_content_download").click(function(){
-        downloadFile("/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/request");
-    });
 
-    $("#response_content_download").click(function(){
-        downloadFile("/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/response");
-    });
 
     $("#backToSingle").click(function(){
         location.href="script.html?id="+getUrlParameter("id"); })
@@ -263,51 +144,21 @@
         var data = {
             id:$("#id").val(),
             timestamp: $("#timestamp").val(),
-            stimulatedTest:$("#stimulatedTest").prop("checked"),
-            request:{
-                method:$("#request_method").val(),
-                protocol:$("#request_protocol").val(),
-                host:$("#request_host").val(),
-                path:$("#request_path").val(),
-                port:$("#request_port").val(),
-                staticRequest:$("#request_static").prop("checked"),
-                soapRequest:$("#request_soap").prop("checked"),
-                binaryRequest:$("#request_binary").prop("checked"),
-                headers:getKvpData(request_headerTable,"key","value"),
-                query:getKvpData(request_queryTable,"key","value"),
-                postParameters:getKvpData(request_postTable,"key","value"),
-            },
-            response:{
-                statusCode:$("#response_code").val(),
-                binaryResponse:$("#response_binary").prop("checked"),
-                headers:getKvpData(response_headerTable,"key","value"),
-            }
+            method:$("#request_method").val(),
+            host:$("#request_host").val(),
+            path:$("#request_path").val(),
+            pre:$("#jsScriptPre").val(),
+            post:$("#jsScriptPost").val()
         };
         $.ajax({
-            url: '/api/plugins/replayer/recording/'+id+'/line/'+line,
-            type: defaultSaveAction,
+            url: '/api/plugins/replayer/recording/'+id+'/script/'+line,
+            type: 'PUT',
             data: JSON.stringify(data),
             contentType: "application/json",
             success: function(response){
                 location.reload();
             }
         });
-    }
-
-    function addRequestQuery(){
-        addKvp('.modal',request_queryTable,'key','value');
-    }
-
-    function addRequestPost(){
-        addKvp('.modal',request_postTable,'key','value');
-    }
-
-    function addRequestHeader(){
-        addKvp('.modal',request_headerTable,'key','value');
-    }
-
-    function addResponseHeader(){
-        addKvp('.modal',response_headerTable,'key','value');
     }
 </script>
 </body>
