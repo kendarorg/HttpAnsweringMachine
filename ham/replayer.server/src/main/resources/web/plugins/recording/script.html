@@ -226,32 +226,9 @@
             }});
     }
 
-    var setScript = function(line,isPre){
+    var setScript = function(line){
+        location.href="js.html?id="+getUrlParameter("id")+"&line="+line;
 
-        var url = "/api/plugins/replayer/recording/"+getUrlParameter("id")+"/script/"+line+"?pre=";
-        url+= isPre?"true":"false";
-        $.ajax({
-            url: url,
-            type: 'GET',
-            success: function (res) {
-                var modal=".modal";
-                var randomId = "BUTTON"+Math.floor(Math.random() * 999999999);
-                var target = {
-                    compositeId :getUrlParameter("id")+"|"+line+"|"+(isPre?1:0),
-                    id : getUrlParameter("id"),
-                    line : line,
-                    index : isPre,
-                    data:res,
-                    jsScript:res
-                };
-                buildGenericModal(modal, null,target, "compositeId", scriptModal, randomId,true);
-                $(modal).find("#jsScript").val(res);
-                $(modal).find("#line").val(line);
-                $(modal).find("#"+randomId).click(function(){
-                    target.data=$(modal).find("#jsScript").val();
-                    saveScript(url,target.data)
-                });
-            }});
     }
 
     var buttonsMask=[
@@ -352,8 +329,7 @@
                     line['_preScript'] = (line['id'] in prescripts)?"Yes":"No";
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
-                    line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`,false)" class="btn btn-default">Edit</button>`;
-                    line['_editPreScript'] = `<button type="button" onclick="setScript(`+line['id']+`,true)" class="btn btn-default">Edit</button>`;
+                    line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`)" class="btn btn-default">Edit</button>`;
                     //tSource,tableId,id,data,fields
                     allCalls.appendToTable(line,false);
                 }
@@ -398,15 +374,14 @@
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
                     //tSource,tableId,id,data,fields
                     setChecked($('#linesTable #stimulatedTest_'+line['id']),line['stimulatedTest']);
-                    line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`,false)" class="btn btn-default">Edit</button>`;
-                    line['_editPreScript'] = `<button type="button" onclick="setScript(`+line['id']+`,true)" class="btn btn-default">Edit</button>`;
+                    line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`)" class="btn btn-default">Edit</button>`;
                     linesTable.appendToTable(line);
                 }
             }
         });
     }
     var fields = ['_selected','id','_stimulatedTest','request.method','request.host','request.path','_queryCalc','response.statusCode',
-        '_requestHashCalc','_responseHashCalc','_preScript','_script','_editPreScript','_editScript'];
+        '_requestHashCalc','_responseHashCalc','_preScript','_script','_editScript'];
     var linesTable = new SimpleGrid("Request-Response","linesTable","id",fields,
         function(table) {
             loadTableData(table);
@@ -436,7 +411,7 @@
             {id:"request.path",type:"string"},
             {id:"request.query",type:"string"}]);
     var fieldsAllCalls = ['_selected','id','_pactTest','_stimulatorTest','request.method','request.host','request.path','_queryCalc','response.statusCode',
-        '_requestHashCalc','_responseHashCalc','_preScript','_script','_editPreScript','_editScript'];
+        '_requestHashCalc','_responseHashCalc','_preScript','_script','_editScript'];
     var allCalls = new SimpleGrid("Request-Response","allCalls","id",fieldsAllCalls,
         function (table){
             loadIndexData(table);
