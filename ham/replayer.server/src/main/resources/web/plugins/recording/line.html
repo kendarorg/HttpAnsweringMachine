@@ -14,6 +14,8 @@
             <button type="button"  class="btn btn-default" onClick="location.href='../../index.html'">Main</button>
             <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Scripts</button>
             <button type="button"  class="btn btn-default" id="backToSingle"  name="backToSingle" >???</button>
+            <button type="button" id="prev" name="prev"  class="btn btn-default" onClick="prev()">Prev</button>
+            <button type="button" id="next" name="next" class="btn btn-default" onClick="next()">Next</button>
         </div>
         <div class="col-md-8">
             <h3>LINE</h3>
@@ -200,6 +202,9 @@
         {id:["save"],states:["NONE","OTHER_RUNNING"]}
     ];
 
+    var prevLine=-1;
+    var nextLine=-1;
+
     var checkButtons = function(){
         $.ajax({
             url: "/api/plugins/replayer/status",
@@ -264,12 +269,29 @@
             updateKvp(".modal",table,id,"key","value")
         });
 
+    var prev = function(){
+        location.href="line.html?id="+getUrlParameter("id")+"&line="+prevLine;
+    }
+    var next = function(){
+        location.href="line.html?id="+getUrlParameter("id")+"&line="+nextLine;
+    }
+
     $.ajax({
         url: "/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line"),
         type: 'GET',
-        success: function (res) {
+        success: function (res, textStatus, request) {
             $("#timestamp").val(res['timestamp']);
             $("#id").val(res['id']);
+
+            prevLine= parseInt(request.getResponseHeader('X-PREV'));
+            nextLine= parseInt(request.getResponseHeader('X-NEXT'));
+
+            if(prevLine==-1){
+                $("#prev").hide();
+            }
+            if(nextLine==-1){
+                $("#next").hide();
+            }
 
             //Request
             $("#request_method").val(res['request']['method']);
