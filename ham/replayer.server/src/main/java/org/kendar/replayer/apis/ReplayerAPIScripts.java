@@ -117,9 +117,6 @@ public class ReplayerAPIScripts implements FilteringClass {
                 new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
         dataset.load(id, rootPath.toString(),null);
         var datasetContent = dataset.load();
-        var prev = -1;
-        var next = -1;
-
         datasetContent.getPostScript().remove(line);
         datasetContent.getPreScript().remove(line);
     }
