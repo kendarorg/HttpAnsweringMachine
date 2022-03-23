@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Comparator;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
@@ -69,6 +70,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
     dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
     var result = new ListAllRecordList(datasetContent, id,false).getLines();
+    result.sort(Comparator.comparingInt(ReplayerRow::getId));
     for (var i=0;i<result.size();i++) {
       var singleLine = result.get(i);
       if (singleLine.getId() == line) {

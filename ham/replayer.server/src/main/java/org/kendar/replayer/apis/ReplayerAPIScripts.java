@@ -6,8 +6,10 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.replayer.ReplayerConfig;
+import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
+import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Comparator;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
@@ -62,6 +65,7 @@ public class ReplayerAPIScripts implements FilteringClass {
         var datasetContent = dataset.load();
         var prev = -1;
         var next = -1;
+        datasetContent.getIndexes().sort(Comparator.comparingInt(CallIndex::getId));
         for(var i=0;i<datasetContent.getIndexes().size();i++){
             var singleLine = datasetContent.getIndexes().get(i);
             if (singleLine.getId() == Integer.parseInt(id)) {
