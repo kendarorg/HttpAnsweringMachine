@@ -10,6 +10,8 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
+[Presentation and super quick start](raw/main/docs/HAM.pptx)
+
 ## Features
 
 * Proxying of any kind of http/https calls
