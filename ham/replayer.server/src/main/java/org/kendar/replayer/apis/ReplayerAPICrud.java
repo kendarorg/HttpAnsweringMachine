@@ -179,6 +179,8 @@ public class ReplayerAPICrud implements FilteringClass {
     if (Files.exists(rootPath)) {
       var fileContent = Files.readString(rootPath);
       res.setResponseText(fileContent);
+      res.addHeader("Content-type","application/json");
+      res.addHeader("Content-Disposition", id+".json");
       res.setStatusCode(200);
     }else {
       res.setStatusCode(404);

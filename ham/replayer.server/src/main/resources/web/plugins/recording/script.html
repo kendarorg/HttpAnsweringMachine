@@ -440,12 +440,12 @@
             {id:"request.query",type:"string"}]);
 
     function download(){
-        window.open("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/full");
+        window.location = ("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/full");
     }
 
     function downloadTest(){
         var pack = prompt("Insert the package");
-        window.open("/api/plugins/replayer/generator/"+getUrlParameter("id")+"?package="+pack);
+        window.location = ("/api/plugins/replayer/generator/"+getUrlParameter("id")+"?package="+pack);
     }
 
     linesTable.load();
