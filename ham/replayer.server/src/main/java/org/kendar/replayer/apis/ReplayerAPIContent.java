@@ -119,9 +119,13 @@ public class ReplayerAPIContent implements FilteringClass {
       if(res.getHeader("Content-Type") == null) {
         if (res.isBinaryResponse()) {
           res.addHeader("Content-Type", "application/octet-stream");
-          res.addHeader("Content-Disposition","request."+ line +".bin");
         } else {
           res.addHeader("Content-Type", "text/plain");
+        }
+      }else{
+        if (res.isBinaryResponse()) {
+          res.addHeader("Content-Disposition","request."+ line +".bin");
+        } else {
           res.addHeader("Content-Disposition","request."+ line +".txt");
         }
       }
