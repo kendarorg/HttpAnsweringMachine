@@ -10,7 +10,7 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
-[Presentation and super quick start](https://github.com/kendarorg/HttpAnsweringMachine/../HttpAnsweringMachine/raw/main/docs/HAM.pptx)
+[Presentation and super quick start (Power Point)](https://github.com/kendarorg/HttpAnsweringMachine/../HttpAnsweringMachine/raw/main/docs/HAM.pptx)
 
 ## Features
 
