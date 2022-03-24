@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -48,7 +49,9 @@ public class DnsServer {
 
   @SuppressWarnings("InfiniteLoopStatement")
   public void run() throws IOException {
-    DatagramSocket socket = new DatagramSocket(dnsPort);
+    DatagramSocket socket = new DatagramSocket(null);
+    socket.setReuseAddress(true);
+    socket.bind(new InetSocketAddress("0.0.0.0",dnsPort));
     // socket.setSoTimeout(0);
     logger.info("Dns server LOADED, port: " + dnsPort);
     byte[] in = new byte[UDP_SIZE];
