@@ -147,9 +147,11 @@ public class ProxyHandlerApis implements FilteringClass {
   public void addProxy(Request req, Response res) throws JsonProcessingException {
     var cloneConf = configuration.getConfiguration(SimpleProxyConfig.class).copy();
     var proxyes = cloneConf.getProxies();
-    var newData = mapper.readValue(req.getRequestText(), RemoteServerStatus.class);
-    proxyes.add(newData);
-    configuration.setConfiguration(cloneConf);
+    if(req.getRequestText()!=null && !req.getRequestText().isEmpty()) {
+      var newData = mapper.readValue(req.getRequestText(), RemoteServerStatus.class);
+      proxyes.add(newData);
+      configuration.setConfiguration(cloneConf);
+    }
     eventQueue.handle(new ProxyConfigChanged());
     res.setStatusCode(200);
   }
