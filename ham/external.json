@@ -6,12 +6,7 @@
     "staticPages": [
     ]
   },
-  {
-    "id": "proxy",
-    "system": true,
-    "proxies": [
-    ]
-  },
+  "#include:external/proxy.json",
   "#include:external/ssl.json",
   "#include:external/http.json",
   "#include:external/https.json",
