@@ -2,24 +2,9 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
-      <option name="id" value="provisioning-release" />
-      <option name="name" value="prov-libs-release" />
-      <option name="url" value="https://integrazione.mgmt.infocert.it:443/artifactory/provisioning-release-local" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo.maven.apache.org/maven2" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="central1" />
-      <option name="name" value="Central Repository" />
-      <option name="url" value="https://repo1.maven.org/maven2/" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="example-repo" />
-      <option name="name" value="Example Repository" />
-      <option name="url" value="file://C:\Private\HttpAnsweringMachine\ham\app/externals" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
@@ -30,21 +15,6 @@
       <option name="id" value="central" />
       <option name="name" value="libs-release" />
       <option name="url" value="https://integrazione.mgmt.infocert.it:443/artifactory/libs-release" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="jboss.community" />
-      <option name="name" value="JBoss Community repository" />
-      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="central2" />
-      <option name="name" value="Central Repository2" />
-      <option name="url" value="https://repo.maven.apache.org/maven2" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="provisioning-snapshots" />
-      <option name="name" value="prov-libs-snapshot" />
-      <option name="url" value="https://integrazione.mgmt.infocert.it:443/artifactory/provisioning-snapshot-local" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
@@ -60,6 +30,41 @@
       <option name="id" value="central" />
       <option name="name" value="Maven Repository Switchboard" />
       <option name="url" value="http://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="provisioning-release" />
+      <option name="name" value="prov-libs-release" />
+      <option name="url" value="https://integrazione.mgmt.infocert.it:443/artifactory/provisioning-release-local" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central1" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo1.maven.org/maven2/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="example-repo" />
+      <option name="name" value="Example Repository" />
+      <option name="url" value="file://C:\Private\Github\HttpAnsweringMachine\ham\app/externals" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="example-repo" />
+      <option name="name" value="Example Repository" />
+      <option name="url" value="file://C:\Private\HttpAnsweringMachine\ham\app/externals" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central2" />
+      <option name="name" value="Central Repository2" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="provisioning-snapshots" />
+      <option name="name" value="prov-libs-snapshot" />
+      <option name="url" value="https://integrazione.mgmt.infocert.it:443/artifactory/provisioning-snapshot-local" />
     </remote-repository>
   </component>
 </project>
