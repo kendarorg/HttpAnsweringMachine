@@ -17,3 +17,5 @@ ham.sampleapp.multi.proxy:
     image: ham.proxy
     depends_on:
       - ham.sampleapp.multi.master
+
+      chrome --proxy-server="socks5://localhost:1080"
