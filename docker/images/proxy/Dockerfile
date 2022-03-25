@@ -19,10 +19,11 @@ RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /etc/ssl/certs /etc/ssl/certs
-COPY --from=builder /socks5 /
+COPY --from=builder /go/src/github.com/serjs/socks5/socks5 /
+COPY data/proxy.sh /
 
 # Start socks5
-RUN /etc/startservice.sh --app=socks5 --run=/socks5
+RUN /etc/startservice.sh --app=socks5 --run=/proxy.sh
 
 # Start everythin
 CMD ["runsvdir", "/etc/service"]
