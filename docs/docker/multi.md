@@ -68,13 +68,21 @@ Then the fe docker file
 This will be a bit harder.
 
 * Configure a specific bridge network with its subnet
-* Add the openvpn to access the whole thing
-    * ports: to access via openvpn
-    * cap_add: rights to mess with dns and network structure
-    * privileged: rights to mess even more with the internal network and config
-    * environment
-        * DNS_HIJACK_SERVER: This will be the ham machine name. The DNS that the openvpn will really use
-        * ROOT_PWD: the root password, to ssh
+* Add one way to access the system
+	* OpenVPN
+	    * ports: to access via openvpn
+	    * cap_add: rights to mess with dns and network structure
+	    * privileged: rights to mess even more with the internal network and config
+	    * environment
+	        * DNS_HIJACK_SERVER: This will be the ham machine name. The DNS that the openvpn will really use
+	        * ROOT_PWD: the root password, to ssh
+	* Socks5 Proxy
+	    * ports: to access via openvpn
+	    * cap_add: rights to mess with dns and network structure
+	    * privileged: rights to mess even more with the internal network and config
+	    * environment
+	        * DNS_HIJACK_SERVER: This will be the ham machine name. The DNS that the openvpn will really use
+	        * ROOT_PWD: the root password, to ssh
 * Add the master image. The dns hijack is not needed because..it's itself
 * Add the fe/be/gateway. Here is the example for fe only but on source there is everything
     * cap_add: rights to mess with dns and network structure
@@ -91,6 +99,24 @@ networks:
       config:
         - subnet: 172.25.3.0/24
 services:
+  ham.sampleapp.multi.proxy:
+    container_name: ham.sampleapp.multi.proxy
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    ports:
+      - "1080:1080"
+    networks:
+      - multisampleappnet
+    environment:
+      - DNS_HIJACK_SERVER=ham.sampleapp.multi.master
+      - ROOT_PWD=root
+    image: ham.proxy
+    depends_on:
+      - ham.sampleapp.multi.master
   ham.sampleapp.multi.openvpn:
     container_name: ham.sampleapp.multi.openvpn
     privileged: true
@@ -148,8 +174,27 @@ services:
 
 ## 5: Testing 
 
+### With OpenVPN
+
 Load the configuration on docker/images/openvpn/mainuser.local.ovpn for your openvpn client and have fun!
 
 Now you can start testing everything with [PACT](plugins/replayer/pact.md) 
 or [NULL infrastructure tests](plugins/replayer/null.md)
 or [UI tests](plugins/replayer/ui.md)
+
+### With Proxy
+
+**chrome** Launch it with
+
+	chrome --proxy-server="socks5://localhost:1080"
+	
+**Java** Add the parameters
+
+	-DsocksProxyHost=localhost -DsocksProxyPort=1080
+	
+**Others** Configure the system proxy!
+
+Some suggestion for .Net (NOT TESTED)
+
+* http://vbrainstorm.com/configuring-system-wide-proxy-for-net-web-applications-including-sharepoint/
+* https://stackoverflow.com/questions/14011789/how-to-set-proxy-settings-for-my-application-in-net
