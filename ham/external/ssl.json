@@ -1,0 +1,15 @@
+{
+  "id": "ssl",
+  "system": true,
+  "cname": "C=US,O=Local Development,CN=local.org",
+  "domains": [
+    {
+      "id": "0",
+      "address": "*.local.test"
+    },
+    {
+      "id": "1",
+      "address": "local.test"
+    }
+  ]
+}
