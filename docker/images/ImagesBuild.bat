@@ -12,8 +12,8 @@ del /q data\app\*.*
 copy /Y ..\..\..\ham\simpledns\target\*.jar data\
 docker build -t ham.client .
 
-REM cd ../proxy
-REM docker build -t ham.proxy .
+cd ../proxy
+docker build -t ham.proxy .
 
 REM cd ..\externalvpn\forticlient
 REM copy /Y ..\..\base\data\startservice.sh data/

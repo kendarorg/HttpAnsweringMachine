@@ -3,8 +3,11 @@ package socks5
 import (
 	"net"
 	"os"
-	"time"
+	"strings"
 	"golang.org/x/net/context"
+	"io/ioutil"
+	"errors"
+	"net/http"
 )
 
 // NameResolver is used to implement custom name resolution
@@ -19,22 +22,23 @@ func (d DNSResolver) Resolve(ctx context.Context, name string) (context.Context,
 	dns := os.Getenv("PROXY_DNS")
 	
 	if dns != "" {
-		r := &net.Resolver{
-			PreferGo: true,
-			Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-				d := net.Dialer{
-					Timeout: time.Millisecond * time.Duration(10000),
-				}
-				return d.DialContext(ctx, "udp", dns + ":53")
-			},
-		}
-		ip, err := r.LookupHost(context.Background(), name)
+		apiUri := "http://"+dns+"/api/dns/lookup/"+name
+		resp, err := http.Get(apiUri)
 		if err != nil {
 			return ctx, nil, err
 		}
-		realIp := net.ParseIP(ip[0])
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return ctx, nil, err
+		}
+		bodyString := string(body)
+		splitted := strings.Split(strings.ReplaceAll(bodyString, "\r\n", "\n"), "\n")
+		if len(splitted) == 0 {
+			return ctx, nil, errors.New("Nothing founded")
+		}
+		realIp := net.ParseIP(splitted[0])
 		
-		return ctx, realIp, err
+		return ctx, realIp, nil
 	} else {
 		addr, err := net.ResolveIPAddr("ip", name)
 		if err != nil {
