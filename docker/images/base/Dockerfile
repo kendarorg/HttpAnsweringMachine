@@ -33,14 +33,6 @@ COPY data/startservice.sh /etc/startservice.sh
 RUN chmod +x /etc/startservice.sh
 
 RUN /etc/startservice.sh --app=sshd --capturelogs --run=/usr/sbin/sshd
-#RUN mkdir -p /etc/service/sshd \
-#    && mkdir -p /etc/app/sshd \
-#    && mkdir -p /etc/app/sshd/log \
-#    && mkdir -p /etc/service/sshd/log \
-#    && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/sshd/log\n" > /etc/service/sshd/log/run \
-##    && chmod +x /etc/service/sshd/log/run \
-#    && echo -e "#!/bin/bash\nexec 2>&1\nexec /usr/sbin/sshd\n" > /etc/service/sshd/run \
-#    && chmod +x /etc/service/sshd/run
 
 # Force root password
 RUN mkdir -p /etc/service/rootforce \

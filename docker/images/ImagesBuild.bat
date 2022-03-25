@@ -1,8 +1,19 @@
+@echo off
 SET mypath=%~dp0
 cd %mypath%
 echo %mypath%
 cd base
 docker build -t ham.base .
+
+
+cd ../client
+md "data\app" 2>NUL
+del /q data\app\*.*
+copy /Y ..\..\..\ham\simpledns\target\*.jar data\
+docker build -t ham.client .
+
+cd ../proxy
+docker build -t ham.proxy .
 
 REM cd ..\externalvpn\forticlient
 REM copy /Y ..\..\base\data\startservice.sh data/
@@ -36,11 +47,7 @@ copy /Y ..\..\..\ham\app\target\*.jar data\app\
 copy /Y ..\..\..\ham\libs\*.jar data\app\libs\
 docker build -t ham.master .
 
-cd ../client
-md "data\app" 2>NUL
-del /q data\app\*.*
-copy /Y ..\..\..\ham\simpledns\target\*.jar data\
-docker build -t ham.client .
+
 
 :end
 cd ..
