@@ -2,9 +2,17 @@
 
 Simply copy the main jar where you want with the "libs" folder at the same level. It works with Java 11!!
 
+Just a note, you can include jsons with the followint syntax, using single or double quotes
+The quotes are used to avoid messing with json formatting
+
+The content of the target file will replace AS-IS the include statement
+
+	"#include:/absolute/path/file.json"
+	"#include:relative/to/external/json/path/file.json"
+
 ### Http and Https configuration
 
-Prepare a basic configuration in an "external.properties" file in the same dir of the Jar
+Prepare a basic configuration in an "external.json" file in the same dir of the Jar
 
 The name for which the server will respond
 
