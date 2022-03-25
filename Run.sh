@@ -26,10 +26,10 @@ if [ "$rundocker" == "y" ]; then
 	
 	echo Please install OpenVpn connect \(https://openvpn.net/vpn-client/\)
 	pause
-	echo and import $mypathdocker/images/openvpn/mainuser.local.ovpn profile
+	echo and import "$mypath"docker/images/openvpn/mainuser.local.ovpn profile
 	echo then after connecting you will have full access!
 	pause
-	cd $mypathsamples/sampleapp/docker_multi
+	cd "$mypath"samples/sampleapp/docker_multi
 	chmod 777 *.sh
 	./ImagesRun.sh
 fi
