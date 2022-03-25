@@ -49,13 +49,8 @@ rm -rf data/app/*.*
 cp -f  ../../../ham/simpledns/target/*.jar data/
 docker build -t ham.client .
 
-cd ../proxy
-mkdir -p cliendata
-rm -rf cliendata/*.*
-md "cliendata" 2>NUL
-cp -f -r  ../base/data clientdata
-cp -f -r  ../client/data clientdata
-docker build -t ham.proxy .
+#cd ../proxy
+#docker build -t ham.proxy .
 
 cd ..
 pause
