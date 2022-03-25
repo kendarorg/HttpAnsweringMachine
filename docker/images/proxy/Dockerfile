@@ -1,4 +1,4 @@
-FROM serjs/go-socks5-proxy:latest as builder
+FROM ham.socks5 as builder
 
 FROM ham.client:latest
 
