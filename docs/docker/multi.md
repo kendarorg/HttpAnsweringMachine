@@ -187,6 +187,10 @@ or [UI tests](plugins/replayer/ui.md)
 **chrome** Launch it with
 
 	chrome --proxy-server="socks5://localhost:1080"
+
+On mac:
+
+    /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --proxy-server="socks5://localhost:1080"
 	
 **Java** Add the parameters
 
