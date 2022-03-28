@@ -296,6 +296,16 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     }
     return result;
   }
+
+  @Override
+  public HashMap<String, String> listDomains() {
+    var result = new HashMap<String,String>();
+    for(var kvp:localDomains.entrySet()){
+      result.put(kvp.getKey(),(String)kvp.getValue().toArray()[0]);
+    }
+    return result;
+  }
+
   private ThreeParamsFunction<String, String, LoggerBuilder, Callable<List<String>>> runnable = (a,b,c)-> new DnsRunnable(a,b,c);
 
   @Override

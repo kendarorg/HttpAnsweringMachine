@@ -62,7 +62,7 @@ class SimpleGrid {
         for (let i = 0; i < this.showSearch.length; i++) {
             const str = this.showSearch[i];
             const content = this.retrieveFieldComplexContent(inputData, str.id);
-            const realId =  str.id.replace(".", "_") + `_` + str.type;
+            const realId =  str.id.replaceAll("\.","_") + `_` + str.type;
             const valueToCompareWith = $("#" + this.tableId + " #"+realId).val();
             if(valueToCompareWith=="" || valueToCompareWith===undefined)continue;
             if (str.type == "string") {
@@ -123,7 +123,7 @@ class SimpleGrid {
         var self = this;
         this.data.forEach(function (row, i) {
             let id = row[self.idField];
-            let selectedItem = $("#" + self.tableId + " #" + self.tableId + "-" + id);
+            let selectedItem = $("#" + self.tableId + " #" + self.tableId + "-" + id.replaceAll("\.","_"));
             if (selectedItem) {
                 selectedItem.remove();
             }
@@ -174,7 +174,7 @@ class SimpleGrid {
                 continue;
             }
             const foundedType = founded.type;
-            const id = index.replace(".", "_") + `_` + foundedType;
+            const id = index.replaceAll("\.","_") + `_` + foundedType;
             toWrite += `<td><div class="form-group">
                 <input class="form-control" type="text" name="${id}" id="${id}" />
             </div></td>`;
