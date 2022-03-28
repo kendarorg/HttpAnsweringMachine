@@ -1,0 +1,58 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <script src="/libs/lodash.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Dns Utils</button>
+
+        </div>
+        <div class="col-md-8">
+            <h3>DNS Resolved</h3>
+            <table class="table table-striped" id="dnsTable">
+                <tr>
+                    <th>Name</th>
+                    <th>Resolved</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+
+
+    var dnsTable = new SimpleGrid("Dns","dnsTable","ip",["name","ip"],
+        function(table){
+            $.ajax({
+                url: "/api/dns/list",
+                type: 'GET',
+                success: function(res) {
+
+                    $.each(res, function(i, script) {
+                        table.appendToTable(script,false);
+                    });
+                }
+            });
+        },
+        null,
+        null,
+       null,[{id:"ip",type:"string"},
+            {id:"name",type:"string"}]).load();
+
+
+
+
+
+
+</script>
+</body>
+</html>
