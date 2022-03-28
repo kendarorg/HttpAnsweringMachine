@@ -21,10 +21,12 @@ while true; do
 done
 
 
+
 if [ "$rundocker" == "y" ]; then
 	
 	
 	echo Please install OpenVpn connect \(https://openvpn.net/vpn-client/\)
+	echo Or use socks5://localhost:1080 proxy
 	pause
 	echo and import "$mypath"docker/images/openvpn/mainuser.local.ovpn profile
 	echo then after connecting you will have full access!
