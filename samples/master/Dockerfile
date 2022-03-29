@@ -1,4 +1,14 @@
-FROM ham.master:latest
+FROM ham.singlemaster:latest
 
-COPY ./external.json /etc/app/ham/app/
+COPY ./config/*.json /etc/app/ham/app/
+RUN mkdir -p /etc/app/app
+COPY ./config/app.sh /etc/app/
+RUN /etc/startservice.sh --app=app
 
+# Ham interface
+EXPOSE 80
+EXPOSE 443
+# Ham remote debug port
+EXPOSE 5025
+
+TODO: Add the ports exposed by your application

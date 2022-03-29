@@ -2,8 +2,7 @@
 SET mypath=%~dp0
 cd %mypath%
 
-:requery
-set /p builddocker="Build docker images (y/n): "
+set /p builddocker="Build docker images (y/N): "
 if "%builddocker%"=="n" goto requery2
 if "%builddocker%"=="y" goto requery2
 if "%builddocker%"=="N" (
@@ -14,10 +13,10 @@ if "%builddocker%"=="Y" (
 	builddocker=y
 	goto requery2
 )
-goto requery
+builddocker=n
 
 :requery2
-set /p mavenbuild="Build java packages (y/n): "
+set /p mavenbuild="Build java packages (y/N): "
 if "%mavenbuild%"=="n" goto ok
 if "%mavenbuild%"=="y" goto ok
 if "%mavenbuild%"=="N" (
@@ -28,7 +27,7 @@ if "%mavenbuild%"=="Y" (
 	mavenbuild=y
 	goto ok
 )
-goto requery2
+mavenbuild=n
 
 
 :ok
