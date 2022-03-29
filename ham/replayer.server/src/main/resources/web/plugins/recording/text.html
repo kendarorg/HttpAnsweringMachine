@@ -109,6 +109,8 @@
     $("#direction").val(getUrlParameter("type"));
     $.ajax({
         url: urlData,
+        dataType: 'text',
+        contentType: "text/plain",
         type: 'GET',
         success: function (res) {
             $("#free_content").text(JSON.stringify(res));
