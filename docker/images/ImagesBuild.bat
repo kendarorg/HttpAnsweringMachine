@@ -47,7 +47,8 @@ copy /Y ..\..\..\ham\app\target\*.jar data\app\
 copy /Y ..\..\..\ham\libs\*.jar data\app\libs\
 docker build -t ham.master .
 
-
+cd ../singlemaster
+docker build -t ham.singlemaster .
 
 :end
 cd ..
