@@ -36,3 +36,4 @@ target
 !/externals/json-schema-inferrer-0.1.4.jar
 
 .DS_Store
+sonarlint

@@ -53,8 +53,8 @@ rm -rf data/app/*.*
 cp -f  ../../../ham/simpledns/target/*.jar data/
 docker build -t ham.client .
 
-#cd ../proxy
-#docker build -t ham.proxy .
+cd ../singlemaster
+docker build -t ham.singlemaster .
 
 cd ..
 pause
