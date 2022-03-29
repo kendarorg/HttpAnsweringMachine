@@ -12,20 +12,20 @@ function pause(){
 
 
 while true; do
-    read -p "Build docker images (y/n): " yn
+    read -p "Build docker images (y/N): " yn
     case $yn in
         [Yy]* ) { builddocker="y" ; break ; } ;;
         [Nn]* ) { builddocker="n" ; break ; } ;;
-        * ) echo "Please answer yes or no.";;
+        * ) { builddocker="n" ; break ; } ;;
     esac
 done
 
 while true; do
-    read -p "Build java packages (y/n): " yn
+    read -p "Build java packages (y/N): " yn
     case $yn in
         [Yy]* ) { mavenbuild="y" ; break ; } ;;
         [Nn]* ) { mavenbuild="n" ; break ; } ;;
-        * ) echo "Please answer yes or no.";;
+        * ) { mavenbuild="n" ; break ; } ;;
     esac
 done
 

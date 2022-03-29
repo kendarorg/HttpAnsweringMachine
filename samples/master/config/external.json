@@ -1,0 +1,82 @@
+[
+	{
+		"id": "dns",
+		"system": true,
+		"active": true,
+		"port": 53,
+		"logQueries": false,
+		"extraServers": "#include:external.dns.servers.json",
+		"blocked": [
+			"wpad.*",
+			"*.trafficmanager.net"
+		],
+		"resolved": "#include:external.dns.json"
+	},
+	{
+		"id": "staticPage",
+		"system": true,
+		"staticPages": [
+		]
+	},
+	{
+		"id": "proxy",
+		"system": true,
+		"proxies": "#include:external.proxy.json"
+	},
+	{
+		"id": "ssl",
+		"system": true,
+		"cname": "C=US,O=Local Development,CN=local.org",
+		"domains": "#include:external.ssl.json"
+	},
+	{
+		"id": "https",
+		"system": true,
+		"active": true,
+		"port": 443,
+		"backlog": 50,
+		"useCachedExecutor": true
+	},
+	{
+		"id": "http",
+		"system": true,
+		"active": true,
+		"port": 80,
+		"backlog": 50,
+		"useCachedExecutor": true
+	},
+	{
+		"id": "global",
+		"system": true,
+		"localAddress": "www.local.test",
+		"logging": "#include:external.logging.json"
+	},
+	{
+		"id": "derby",
+		"active": false,
+		"port": 1527,
+		"user": "root",
+		"password": "root",
+		"path": "derbydata"
+	},
+	{
+		"id": "oidc.server",
+		"tokenExpiration": 86400,
+		"active": true
+	},
+	{
+		"id": "js.filters",
+		"path": "jsplugins",
+		"active": true
+	},
+	{
+		"id": "replayer.server",
+		"path": "replayerdata",
+		"active": true
+	},
+	{
+		"id": "pacts.server",
+		"path": "pacts",
+		"active": true
+	}
+]
