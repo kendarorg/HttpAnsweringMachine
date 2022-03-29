@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Death to the BOMs!!!">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/docker/multi.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docker/multi.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/master/config/external.dns.servers.json" beforeDir="false" afterPath="$PROJECT_DIR$/samples/master/config/external.dns.servers.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,6 +66,7 @@
       <workItem from="1647936899383" duration="2642000" />
       <workItem from="1647948445744" duration="9000" />
       <workItem from="1648478275207" duration="659000" />
+      <workItem from="1648565966421" duration="327000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>
