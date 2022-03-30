@@ -150,10 +150,16 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
   @Override
   public List<String> resolveLocal(String requestedDomain) {
+
     var config = configuration.getConfiguration(DnsConfig.class);
     var data = new ArrayList<String>();
     if (localDns.match(requestedDomain)) {
       data.add(localDns.getIp());
+      return data;
+    }
+    Matcher ipPatternMatcher = ipPattern.matcher(requestedDomain);
+    if (ipPatternMatcher.matches()) {
+      data.add(requestedDomain);
       return data;
     }
     if (requestedDomain.equalsIgnoreCase("localhost")) {
@@ -201,6 +207,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
   @Override
   public List<String> resolveRemote(String requestedDomain) {
+
     if(forgetThem.contains(requestedDomain) )return new ArrayList<>();
     var config = configuration.getConfiguration(DnsConfig.class);
     var data = new HashSet<String>();
@@ -209,6 +216,12 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     }
     if (localDns.match(requestedDomain)) {
       data.add(localDns.getIp());
+      return new ArrayList<>( data);
+    }
+
+    Matcher ipPatternMatcher = ipPattern.matcher(requestedDomain);
+    if (ipPatternMatcher.matches()) {
+      data.add(requestedDomain);
       return new ArrayList<>( data);
     }
     if (requestedDomain.equalsIgnoreCase("localhost".toUpperCase(Locale.ROOT))) {
