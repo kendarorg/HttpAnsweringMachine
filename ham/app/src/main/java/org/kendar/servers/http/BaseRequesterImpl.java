@@ -7,6 +7,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -17,12 +18,14 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.ConnectionBuilder;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.MimeChecker;
 import org.slf4j.Logger;
 
+import javax.net.ssl.SSLContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,10 +63,15 @@ public abstract class BaseRequesterImpl implements BaseRequester{
             response.setStatusCode(500);
             return;
         }
+        final SSLContext sslContext = new SSLContextBuilder()
+                .loadTrustMaterial(null, (x509CertChain, authType) -> true)
+                .build();
         CloseableHttpClient httpClient;
         if(request.getHost().equalsIgnoreCase("127.0.0.1")||
                 request.getHost().equalsIgnoreCase("localhost")){
             httpClient = HttpClientBuilder.create().
+                    setSSLContext(sslContext).
+                    setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).
                     disableRedirectHandling().
                     build();
         }else {
