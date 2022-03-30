@@ -25,7 +25,8 @@ public class Main implements CommandLineRunner {
   @Autowired private ApplicationContext applicationContext;
 
   public static void main(String[] args) {
-
+    javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+            (hostname, sslSession) -> true);
     SpringApplication app = new SpringApplication(Main.class);
     app.setLazyInitialization(true);
     app.run(args);
