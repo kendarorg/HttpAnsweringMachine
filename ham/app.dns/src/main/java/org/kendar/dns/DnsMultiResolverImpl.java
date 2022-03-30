@@ -268,9 +268,9 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
             }
             futures.clear();
             if (data.size() > 0) {
-              localDomains.put(requestedDomain, new HashSet<>(data));
+              localDomains.put(requestedDomain.toLowerCase(Locale.ROOT), new HashSet<>(data));
             } else {
-              localDomains.remove(requestedDomain);
+              localDomains.remove(requestedDomain.toLowerCase(Locale.ROOT));
             }
             return new ArrayList<>(data);
           } catch (Exception e) {
@@ -338,7 +338,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
   @Override
   public List<String> resolve(String requestedDomain) {
-
+    requestedDomain = requestedDomain.toLowerCase(Locale.ROOT);
 
     if (localDomains.containsKey(requestedDomain)) {
       return new ArrayList<>(localDomains.get(requestedDomain));
