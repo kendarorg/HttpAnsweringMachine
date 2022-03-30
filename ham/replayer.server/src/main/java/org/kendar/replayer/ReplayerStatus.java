@@ -139,6 +139,7 @@ public class ReplayerStatus {
         dataset =
                 new ReplayerDataset(  loggerBuilder, dataReorganizer, md5Tester);
         dataset.load(id, rootPath.toString(),null);
+        ((ReplayerDataset)dataset).load();
     }
 
     public void restartReplaying() {
