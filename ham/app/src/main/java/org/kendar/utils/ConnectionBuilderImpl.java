@@ -6,6 +6,7 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.net.ssl.SSLContext;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
@@ -212,10 +214,20 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
     public CloseableHttpClient buildClient(boolean remoteDns, boolean checkSsl, int port,String protocol) {
         var dnsResolver = remoteDns?this.remoteDnsResolver:this.fullDnsResolver;
         var connectionManager = this.getConnectionManger(remoteDns,checkSsl);
+        SSLContext sslContext = null;
+        try {
+            sslContext = new SSLContextBuilder()
+                    .loadTrustMaterial(null, (x509CertChain, authType) -> true)
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return HttpClientBuilder.create()
+                .setSSLContext(sslContext).
+                setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).
                 //.setRetryHandler(requestRetryHandler)
                 //.setConnectionManager(connectionManager)
-                .setDnsResolver(dnsResolver)
+                setDnsResolver(dnsResolver)
                 /*.setSchemePortResolver(httpHost -> {
                     if(port>0) {
                         return port;
