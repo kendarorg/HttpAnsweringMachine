@@ -63,12 +63,13 @@ public abstract class BaseRequesterImpl implements BaseRequester{
             response.setStatusCode(500);
             return;
         }
-        final SSLContext sslContext = new SSLContextBuilder()
-                .loadTrustMaterial(null, (x509CertChain, authType) -> true)
-                .build();
+
         CloseableHttpClient httpClient;
         if(request.getHost().equalsIgnoreCase("127.0.0.1")||
                 request.getHost().equalsIgnoreCase("localhost")){
+            final SSLContext sslContext = new SSLContextBuilder()
+                    .loadTrustMaterial(null, (x509CertChain, authType) -> true)
+                    .build();
             httpClient = HttpClientBuilder.create().
                     setSSLContext(sslContext).
                     setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).
