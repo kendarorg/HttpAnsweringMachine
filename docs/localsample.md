@@ -103,7 +103,7 @@ e.g.
 To start HAM you should use the Spring Boot propery loader
 
     java "-Dloader.path=FULLPATHTOHAMROOT/libs/"  -Dloader.main=org.kendar.Main  \
-        -jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher
+        -jar app-2.1.3.jar org.springframework.boot.loader.PropertiesLauncher
 
 Following this approach the libs files will be loaded as library
 

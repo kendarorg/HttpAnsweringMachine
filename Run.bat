@@ -67,7 +67,7 @@ copy /Y %mypath%ham\libs\*.jar %mypath%ham\app\target\libs\
 copy /Y %mypath%samples\sampleapp\standalone.external.json %mypath%ham\app\target\external.json
 start java "-Dloader.path=%mypath%ham\app\target\libs"  -Dloader.main=org.kendar.Main  ^
   	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
-	-jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher
+	-jar app-2.1.3.jar org.springframework.boot.loader.PropertiesLauncher
 
 
 :end
