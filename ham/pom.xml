@@ -65,4 +65,25 @@
         <module>app.dns</module>
         <module>schema.checker</module>
     </modules>
+    <build>
+        <extensions>
+            <extension>
+                <artifactId>wagon-ftp</artifactId>
+                <groupId>org.apache.maven.wagon</groupId>
+                <version>3.5.1</version>
+            </extension>
+        </extensions>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>releases.ftp</id>
+            <url>ftp://maven.kendar.org/maven2/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots.ftp</id>
+            <url>ftp://maven.kendar.org/maven2/snapshots</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
