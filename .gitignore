@@ -29,7 +29,7 @@ hs_err_pid*
 /ham/recording
 /ham/replayerdata
 /ham/pacts
-/ham/app-1.0-SNAPSHOT.jar
+/ham/app-*.jar
 
 
 target

@@ -1,20 +1,20 @@
 Simple Run (all server)
-java -cp app-1.0-SNAPSHOT.jar \
+java -cp app-2.1.3.jar \
 -Djsfilter.path=plugins -Dloader.path=lib/ \
--Dloader.main=org.kendar.Main -jar app-1.0-SNAPSHOT.jar\
+-Dloader.main=org.kendar.Main -jar app-2.1.3.jar\
 org.springframework.boot.loader.PropertiesLauncher
 
-        java "-Dloader.path=/start/services/answering/libs" -Dloader.main=org.kendar.Main -jar app-1.0-SNAPSHOT.jar \
+        java "-Dloader.path=/start/services/answering/libs" -Dloader.main=org.kendar.Main -jar app-2.1.3.jar \
         	 org.springframework.boot.loader.PropertiesLauncher &
 
         java "-Dloader.path=/start/services/answering/libs"  -Dloader.main=org.kendar.Main  \
         	 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005 \
         	 -Dother.dns=127.0.0.11 -Djdk.tls.acknowledgeCloseNotify=true \
-        	 -jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher &
+        	 -jar app-2.1.3.jar org.springframework.boot.loader.PropertiesLauncher &
 
 Simple Run (dns server only)
 java -Dother.dns=dns.google,dns.local.com \
--jar simpledns-1.0-SNAPSHOT.jar
+-jar simpledns-2.1.3.jar
 
 curl -i -H "X-TEST-OVERWRITE-HOST:https:\\www.kendar.org" -XGET "http://localhost:20080"
 
@@ -47,7 +47,7 @@ Inside the jar be sure to add the lib definitions download, here will be loaded 
 
 Copy the target of the plugin inside the lib dir AND the dependencies not present in boot uber-jar
 Run with
-java -cp app-1.0-SNAPSHOT.jar -Djsfilter.path=plugins -Dloader.path=lib/ -Dloader.main=org.kendar.Main org.springframework.boot.loader.PropertiesLauncher
+java -cp app-2.1.3.jar -Djsfilter.path=plugins -Dloader.path=lib/ -Dloader.main=org.kendar.Main org.springframework.boot.loader.PropertiesLauncher
 
 Those are the c:\Windows\System32\Drivers\etc\hosts entries
 

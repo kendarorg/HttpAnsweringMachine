@@ -10,4 +10,4 @@ export PROXY_DNS=$dnsServer
 #java -Dother.dns=127.0.0.11,${DNS_HIJACK_SERVER} \
 #  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005 \
 #	-Djdk.tls.acknowledgeCloseNotify=true \
-#  -jar /etc/app/simpledns/simpledns-1.0-SNAPSHOT.jar
+#  -jar /etc/app/simpledns/simpledns-2.1.3.jar

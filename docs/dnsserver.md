@@ -57,7 +57,7 @@ To start it you can use the following command line to start the service. The oth
 the main ham server (192.168.1.2)
 
     java -Dother.dns=192.168.1.2 \
-        -jar simpledns-1.0-SNAPSHOT.jar
+        -jar simpledns-2.1.3.jar
 
 This way you could start the image as with the single instance described before adding the 127.0.0.1 as
 dns server. The simpledns will take care of resolving the value of main.local.self with the preceding

@@ -179,8 +179,8 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
   }
 
   /**
-   * Handles file:\C:\Private\HttpAnsweringMachine\ham\app-1.0-SNAPSHOT.jar!\BOOT-INF\classes!
-   * @param path  /C:/Private/HttpAnsweringMachine/ham/libs/docker.builder-1.0-SNAPSHOT.jar
+   * Handles file:\C:\Private\HttpAnsweringMachine\ham\app-2.1.3.jar!\BOOT-INF\classes!
+   * @param path  /C:/Private/HttpAnsweringMachine/ham/libs/docker.builder-2.1.3.jar
    * @param result
    * @param classLoader
    * @param jarFile

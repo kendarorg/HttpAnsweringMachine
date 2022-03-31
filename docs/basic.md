@@ -66,7 +66,7 @@ Then run the following command
     java "-Dloader.path=/start/services/answering/libs" \
         -Djdk.tls.acknowledgeCloseNotify=true \
         -Dloader.main=org.kendar.Main  \
-        -jar app-1.0-SNAPSHOT.jar \
+        -jar app-2.1.3.jar \
         org.springframework.boot.loader.PropertiesLauncher
 
 The loader.main is a specific Spring Boot variables to force the loading of

@@ -58,7 +58,7 @@ if [ "$rundocker" == "n" ]; then
 	cp -f "$mypath"samples/sampleapp/docker/external.json "$mypath"ham/app/target/
 	java "-Dloader.path=$mypath/ham/app/target/libs"  -Dloader.main=org.kendar.Main  \
 	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
-		-jar app-1.0-SNAPSHOT.jar org.springframework.boot.loader.PropertiesLauncher &
+		-jar app-2.1.3.jar org.springframework.boot.loader.PropertiesLauncher &
 	tokill=$1
 	echo "kill -9 $tokill" >> $mypath/Kill.sh  
 		
