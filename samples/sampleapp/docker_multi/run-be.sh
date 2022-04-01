@@ -4,6 +4,10 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk/
 export PATH="${JAVA_HOME}/bin:${PATH}"
 
 cd /etc/app/be
+
+ls -lA | awk -F':[0-9]* ' '/:/{print $2}'|grep .jar$ > tmp_txt
+export JAR_NAME=$(head -1 tmp_txt)
+
 java -jar -Dserver.port=80 \
        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005 \
-       /etc/app/be/be-1.0-SNAPSHOT.jar
+       /etc/app/be/"$JAR_NAME"

@@ -1,8 +1,11 @@
 @echo off
 set VERSION=2.1.3
 
+call Make.bat
+
 SET mypath=%~dp0
 cd %mypath%
+
 
 del /q /s docker\images\client\data\app >NUL 2>&1
 rmdir /q /s docker\images\client\data\app >NUL 2>&1
@@ -17,7 +20,7 @@ md release\target\libs >NUL 2>&1
 md release\target\external >NUL 2>&1
 md release\target\docker >NUL 2>&1
 
-REM mvn clean install 
+
 echo Preparing Jars
 copy ham\app\target\app-%VERSION%.jar release\target\ 1>NUL
 copy ham\simpledns\target\simpledns-%VERSION%.jar release\target\ 1>NUL

@@ -9,10 +9,12 @@ cd /etc/app/ham/app
 #	"-Dloader.path=/etc/app/ham/app/libs" -Dloader.main=org.kendar.Main -jar app-2.1.3.jar \
 #	 org.springframework.boot.loader.PropertiesLauncher
 
+ls -lA | awk -F':[0-9]* ' '/:/{print $2}'|grep .jar$ > tmp_txt
+export JAR_NAME=$(head -1 tmp_txt)
 
 java "-Dloader.path=/etc/app/ham/app/libs/"  -Dloader.main=org.kendar.Main  \
   -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
-	-jar app-2.1.3.jar org.springframework.boot.loader.PropertiesLauncher
+	-jar "$JAR_NAME" org.springframework.boot.loader.PropertiesLauncher
 	
 #-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005 \
 
