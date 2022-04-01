@@ -1,5 +1,6 @@
 @ECHO OFF
 SET mypath=%~dp0
+SET mypathx=%~dp0
 cd %mypath%
 
 set /p builddocker="Build docker images (y/N): "
@@ -51,8 +52,10 @@ cd %mypath%docker\images
 call ImagesBuild.bat
 
 echo Building sampleapp docker images
-cd %mypath%samples\sampleapp\docker_multi
+cd %mypathx%samples\sampleapp\docker_multi
 call ImagesBuild.bat
+
+cd %mypathx%
 
 
 
