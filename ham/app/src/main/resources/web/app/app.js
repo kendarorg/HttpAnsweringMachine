@@ -141,7 +141,7 @@ class SimpleGrid {
         const self = this;
         this.data.forEach(function (row, i) {
             if (row[self.idField].replaceAll("_",".") == id.replaceAll("_",".") && action != false) {
-                if (callback == null) {
+                if (callback == null || callback === undefined) {
                     self.data.splice(i, 1);
                     $("#" + self.tableId + " #" + self.tableId + "-" + id).remove();
                     flashMessage(msg);
@@ -351,7 +351,7 @@ const editKvp = function (modal, table, id, idField, valueField) {
     const randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
     const localTable = table;
     localTable.data.forEach(function (value, i) {
-        if (value[idField] == id) {
+        if (value[idField].replaceAll(".", "_") == id) {
             buildKvpModalDialog(modal, table, value, idField, valueField, randomId);
             $(modal).find("#" + randomId).click(function () {
                 localTable.saveFunction(localTable, id, false);
@@ -369,14 +369,14 @@ const getKvpData = function (table, idField, valueField) {
     return result;
 };
 
-const updateKvp = function (modal, table, id, idField, valueField) {
+const updateKvp = function (modal, table, id, idField, valueField,callback) {
     const msg = table.objType + " updated successfully!";
 
     if (id[idField] == undefined) {
         const user = {};
         user[idField] = id;
         table.data.forEach(function (user, i) {
-            if (user[idField] == id) {
+            if (user[idField].replaceAll(".", "_") == id) {
                 $(modal).find("#editKvp").children("input").each(function () {
                     const value = $(this).val();
                     const attr = $(this).attr("name");
@@ -395,6 +395,10 @@ const updateKvp = function (modal, table, id, idField, valueField) {
                         user[valueField] = value;
                     }
                 });
+
+                if(undefined !== callback){
+                    callback(user[idField],user[valueField],false);
+                }
                 table.data.splice(i, 1);
                 table.data.splice(user[idField] - 1, 0, user);
 
@@ -419,6 +423,9 @@ const updateKvp = function (modal, table, id, idField, valueField) {
         });
     } else {
         const line = {key: id[idField], value: id[valueField]};
+        if(undefined !== callback){
+            callback(id[idField],id[valueField],true);
+        }
         table.appendToTable(line);
         $(modal).modal("toggle");
         flashMessage(msg);
@@ -426,8 +433,14 @@ const updateKvp = function (modal, table, id, idField, valueField) {
 };
 
 
-const deleteKvp = function (modal, table, id, idField, valueField) {
-    table.deleteFromTable(id, null);
+const deleteKvp = function (modal, table, id, idField, valueField,callback) {
+
+    table.data.forEach(function (user, i) {
+        if (user[idField].replaceAll(".", "_") == id) {
+            table.deleteFromTable(id, callback);
+        }
+    });
+
 };
 
 

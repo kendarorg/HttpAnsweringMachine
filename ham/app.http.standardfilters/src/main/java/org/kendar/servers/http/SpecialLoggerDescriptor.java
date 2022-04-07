@@ -3,6 +3,7 @@ package org.kendar.servers.http;
 public class SpecialLoggerDescriptor {
   private String path;
   private String description;
+  private String level;
 
   public String getPath() {
     return path;
@@ -18,5 +19,13 @@ public class SpecialLoggerDescriptor {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public String getLevel() {
+    return level;
+  }
+
+  public void setLevel(String level) {
+    this.level = level;
   }
 }

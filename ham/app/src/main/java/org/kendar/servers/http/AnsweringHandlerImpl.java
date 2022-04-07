@@ -62,7 +62,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     pluginsInitializer.addSpecialLogger(
         StaticRequest.class.getName(), "Log static requests as file (DEBUG)");
     pluginsInitializer.addSpecialLogger(
-        StaticRequest.class.getName(), "Log dynamic requests as file (DEBUG)");
+        DynamicReqest.class.getName(), "Log dynamic requests as file (DEBUG)");
   }
 
 

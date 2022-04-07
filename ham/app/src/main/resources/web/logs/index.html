@@ -1,0 +1,107 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <script src="/libs/lodash.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+        </div>
+        <div class="col-md-8">
+            <h3>Special loggers</h3>
+            <table class="table table-striped" id="specialLoggers">
+                <tr>
+                    <th>Path</th>
+                    <th>Level</th>
+                    <th>Description</th>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-8">
+            <h3>Standard loggers</h3>
+            <table class="table table-striped" id="standardLoggers">
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                    <th colspan="2">
+                        <button class="btn btn-danger form-control"
+                                onClick="addLogger();">Add</button>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Update User</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+    var standardLoggers = new SimpleGrid("StandardLoggers","standardLoggers","key",["key","value"],
+        function(table){
+            $.ajax({
+                url: "/api/log/logger",
+                type: 'GET',
+                success: function(realRes) {
+                    $.each(realRes, function(i, script) {
+                        table.appendToTable(script);
+                    });
+                }
+            });
+        },
+        function (table,id) {
+            editKvp(".modal",table,id,"key","value");
+        },
+        function (table,id) {
+            deleteKvp(".modal",table,id,"key","value",function(id,success,error){
+                alert("delete:"+id);
+                success();
+            });
+        },
+        function (table,id,saveOrUpdate) {
+            updateKvp(".modal",table,id,"key","value",function(k,v,saveOrUpdate){
+                alert((saveOrUpdate?"save:":"update:")+k+"=>"+v);
+            });
+        }).load();
+
+
+    var addLogger = function(){
+        addKvp('.modal',standardLoggers,'key','value');
+    }
+    var specialLoggers = new SimpleGrid("Special Loggers","specialLoggers","path",["path","level","description"],
+        function(table){
+            $.ajax({
+                url: "/api/log/special",
+                type: 'GET',
+                success: function(realRes) {
+                    $.each(realRes, function(i, script) {
+                        table.appendToTable(script,false);
+                    });
+                }
+            });
+        },
+        null,
+        null,
+        null).load();
+</script>
+</body>
+</html>
