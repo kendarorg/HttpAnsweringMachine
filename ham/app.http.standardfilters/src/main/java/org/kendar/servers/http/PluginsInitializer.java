@@ -2,6 +2,7 @@ package org.kendar.servers.http;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public interface PluginsInitializer {
     void addPluginAddress(String address, String description);

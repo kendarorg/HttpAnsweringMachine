@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Death to the BOMs!!!">
-      <change beforePath="$PROJECT_DIR$/samples/master/config/external.dns.servers.json" beforeDir="false" afterPath="$PROJECT_DIR$/samples/master/config/external.dns.servers.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/logging/LogDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ham/app/src/main/resources/web/logs/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/8/58f21c59a0938917ae2ad14f4edb8745c2fdcc87" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/a/daf33132f5b851a1f8daaf48d12e820cb2b61a3f" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ham/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/logging/LoggingApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/logging/LoggingApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ham/app/src/main/resources/web/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/ham/app/src/main/resources/web/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,6 +74,7 @@
       <workItem from="1647948445744" duration="9000" />
       <workItem from="1648478275207" duration="659000" />
       <workItem from="1648565966421" duration="327000" />
+      <workItem from="1649348321423" duration="38000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>

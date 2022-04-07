@@ -15,6 +15,9 @@ import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 @Component
@@ -49,7 +52,18 @@ public class LoggingApi implements FilteringClass {
   public void getLoggers(Request req, Response res) throws JsonProcessingException {
     var config = configuration.getConfiguration(GlobalConfig.class);
     res.addHeader("Content-type", "application/json");
-    res.setResponseText(mapper.writeValueAsString(config.getLogging().getLoggers()));
+    res.setResponseText(mapper.writeValueAsString(convertLoggers(config.getLogging().getLoggers())));
+  }
+
+  private List<LogDTO> convertLoggers(HashMap<String, Level> loggers) {
+    var result = new ArrayList<LogDTO>();
+    for(var kvp:loggers.entrySet()){
+      var dto = new LogDTO();
+      dto.setKey(kvp.getKey());
+      dto.setValue(kvp.getValue().levelStr);
+      result.add(dto);
+    }
+    return result;
   }
 
   @HttpMethodFilter(
