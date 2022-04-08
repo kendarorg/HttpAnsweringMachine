@@ -105,6 +105,7 @@
             return;
         }
         var toUpload = window.uploadScript[0];
+        var name = toUpload["name"].substr(0,toUpload["name"].length-5);
         $.ajax({
             url: '/api/plugins/replayer/recording',
             type: 'post',
@@ -115,7 +116,7 @@
                 window.uploadScript=[];
                 document.getElementById("uploadScriptShow").value ="";
                 alert("File Uploaded");
-                location.href = "script.html?id="+id;
+                location.href = "script.html?id="+name;
             }
         });
     });

@@ -136,7 +136,7 @@
     $("#method").val("GET").change();
     $("#phase").val("NONE").change();
     $.ajax({
-        url: "/api/plugins/jsfilter/" + getUrlParameter("id"),
+        url: "/api/plugins/jsfilter/filters/" + getUrlParameter("id"),
         type: 'GET',
         success: function (res) {
             $("#id").val(res['id']);
@@ -204,7 +204,7 @@
         console.log(data);
 
         $.ajax({
-            url: "/api/plugins/jsfilter/" + getUrlParameter("id"),
+            url: "/api/plugins/jsfilter/filters/" + getUrlParameter("id"),
             type: "POST",
             data: JSON.stringify(data),
             contentType: "application/json",
