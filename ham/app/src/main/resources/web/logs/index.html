@@ -73,13 +73,25 @@
         },
         function (table,id) {
             deleteKvp(".modal",table,id,"key","value",function(id,success,error){
-                alert("delete:"+id);
-                success();
+                $.ajax({
+                    url: "/api/log/logger/"+id,
+                    type: 'DELETE',
+                    success: function(realRes) {
+                        success();
+                    }
+                });
+
             });
         },
         function (table,id,saveOrUpdate) {
             updateKvp(".modal",table,id,"key","value",function(k,v,saveOrUpdate){
-                alert((saveOrUpdate?"save:":"update:")+k+"=>"+v);
+                $.ajax({
+                    url: "/api/log/logger/"+k+"?level="+v,
+                    type: 'POST',
+                    success: function(realRes) {
+                        success();
+                    }
+                });
             });
         }).load();
 

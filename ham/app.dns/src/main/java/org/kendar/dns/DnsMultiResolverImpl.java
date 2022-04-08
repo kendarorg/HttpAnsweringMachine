@@ -281,13 +281,12 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
             }
             futures.clear();
             if (data.size() > 0) {
-              localDomains.put(requestedDomain.toLowerCase(Locale.ROOT), new HashSet<>(data));
-            } else {
-              localDomains.remove(requestedDomain.toLowerCase(Locale.ROOT));
+              //localDomains.put(requestedDomain.toLowerCase(Locale.ROOT), new HashSet<>(data));
+              finished=0;
+              break;
             }
-            return new ArrayList<>(data);
           } catch (Exception e) {
-            e.printStackTrace();
+            logger.debug("Unable to try resolve "+requestedDomain);
           }
         }
       }
@@ -295,7 +294,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     var result = new ArrayList<>(data);
     if (logQueries.isDebugEnabled() || logQueries.isTraceEnabled()) {
       if (result.size() > 0) {
-        logger.info("Resolved remote " + requestedDomain + result.get(0));
+        logger.info("Resolved remote " + requestedDomain +"=>"+ result.get(0));
       }
     }
 
@@ -306,6 +305,8 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     }
     if(result.size()==0){
       forgetThem.put(requestedDomain,requestedDomain);
+    }else{
+      localDomains.put(requestedDomain.toLowerCase(Locale.ROOT), new HashSet<>(data));
     }
     return result;
   }
