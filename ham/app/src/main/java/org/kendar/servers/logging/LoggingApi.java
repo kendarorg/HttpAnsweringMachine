@@ -52,7 +52,9 @@ public class LoggingApi implements FilteringClass {
   public void getLoggers(Request req, Response res) throws JsonProcessingException {
     var config = configuration.getConfiguration(GlobalConfig.class);
     res.addHeader("Content-type", "application/json");
-    res.setResponseText(mapper.writeValueAsString(convertLoggers(config.getLogging().getLoggers())));
+    res.setResponseText(mapper.writeValueAsString(convertLoggers(config.getLogging().getLoggers())
+                    .stream().filter(a->!a.getValue().equalsIgnoreCase("OFF")))
+            );
   }
 
   private List<LogDTO> convertLoggers(HashMap<String, Level> loggers) {
@@ -98,7 +100,6 @@ public class LoggingApi implements FilteringClass {
   public void deleteLogger(Request req, Response res) {
     var config = configuration.getConfiguration(GlobalConfig.class);
     var id = req.getPathParameter("id");
-    var level = req.getQuery("level").toUpperCase(Locale.ROOT);
     setLevelOfLog(id, Level.OFF);
     config.getLogging().getLoggers().remove(id);
     configuration.setConfiguration(config);
