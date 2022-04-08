@@ -112,7 +112,8 @@
             processData: false,
             success: function(response){
                 if(response != 0){
-                    alert("File Uploaded")
+                    alert("File Uploaded");
+                    location.reload();
                 }else{
                     alert("file not uploaded");
                 }
@@ -129,15 +130,11 @@
             hostAddress:"www.change.me",
             pathAddress:"changeme",
             source:[
-                "//You have request,response and utils",
                 "//Here you can examine the request and produce a response",
-                "var result ={",
-                "    request:request,",
-                "    response:response,",
-                "    //If continue is false the response will be sent directly",
-                "    continue:false",
-                "};",
-                "return result;"
+                "response.setResponseText('To implement');",
+                "response.setStatusCode(404);",
+                "//If return is false and blocking is false the response will be sent immediatly",
+                "return false;"
             ]
         }
         $.ajax({
