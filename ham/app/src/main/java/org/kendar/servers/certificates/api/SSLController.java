@@ -100,8 +100,7 @@ public class SSLController implements FilteringClass {
 
     var newList = new ArrayList<SSLDomain>();
     for (var item : domains) {
-      if (item.getId().equalsIgnoreCase(newData.getId()))
-        throw new Exception("Duplicate dns resolution");
+      if (item.getId().equalsIgnoreCase(newData.getId())) continue;
       newList.add(item);
     }
     newList.add(newData);
