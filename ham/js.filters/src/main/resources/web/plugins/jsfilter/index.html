@@ -55,7 +55,7 @@
     var scriptsTable = new SimpleGrid("Script","scriptTable","id",["id"],
         function(table){
             $.ajax({
-                url: "/api/plugins/jsfilter",
+                url: "/api/plugins/jsfilter/filters",
                 type: 'GET',
                 success: function(res) {
                     $.each(res, function(i, script) {
@@ -73,7 +73,7 @@
         function (table,id) {
             table.deleteFromTable(id,function(id,success,error){
                 $.ajax({
-                    url: "/api/plugins/replayer/recording/" + id,
+                    url: '/api/plugins/jsfilter/filters/' + id,
                     type: 'DELETE',
                     success: function (res) {
                         success();
@@ -105,7 +105,7 @@
         var toUpload = window.uploadScript[0];
 
         $.ajax({
-            url: '/api/plugins/replayer/recording',
+            url: '/api/plugins/jsfilter/filters',
             type: 'post',
             data: JSON.stringify(toUpload),
             contentType: "application/json",
@@ -141,7 +141,7 @@
             ]
         }
         $.ajax({
-            url: '/api/plugins/jsfilter/'+name,
+            url: '/api/plugins/jsfilter/filters/'+name,
             type: 'post',
             data: JSON.stringify(data),
             contentType: "application/json",

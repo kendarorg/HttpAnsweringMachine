@@ -59,7 +59,7 @@ public class JsFilterGeneratorAPI implements FilteringClass {
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
-            pathAddress = "/api/plugins/jsfiltergen/generate/{recording}/{line}/{type}",
+            pathAddress = "/api/plugins/jsfilter/generator/{recording}/{line}/{type}",
             method = "GET",
             id = "1000a4b4-297id-11ec-9621-02galac130002")
     public void getJsFiltersList(Request req, Response res) throws IOException, InterruptedException {
@@ -121,7 +121,7 @@ public class JsFilterGeneratorAPI implements FilteringClass {
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
-            pathAddress = "/api/plugins/jsfiltergen/generators",
+            pathAddress = "/api/plugins/jsfilter/generator",
             method = "GET",
             id = "1000a777297id-11ecfluk1-0242ac130002")
     public void getGenerators(Request req, Response res) throws JsonProcessingException {

@@ -1,0 +1,27 @@
+PROXIES
+    UI:add new
+JSPLUGIN
+    BE: change template from //You have request,response and utils to real one
+    UI:refresh on upload
+SSL
+    UI:edit ssl hosts list
+RECORDING
+    BE: Set default pact schema verification on checking pact (if script empty)
+    BE: Set exact match verification on null infrastrucutre stimulator
+    UI: refresh on upload
+DNS
+    UI:refresh on save/delete
+    UI:show banner on save delete instead of messagebox
+LOGS
+    UI: specify special results
+
+
+
+JSPLUGIN
+    UI/BE: implement delete external files
+LOGS
+    BE/UI: hint on existing classes
+SSL
+    BE:specify ssl certificates on config
+    UI/BE:generate root certificate
+    UI/BE:generate site certificate from specified(or not) root

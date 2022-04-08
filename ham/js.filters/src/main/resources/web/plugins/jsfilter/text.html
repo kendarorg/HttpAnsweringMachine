@@ -61,7 +61,7 @@
             alert(exception);
         });
     });
-    var urlData = "/api/plugins/jsfilter/"+getUrlParameter("id")+'/'+getUrlParameter("file");
+    var urlData = "/api/plugins/jsfilter/filters/"+getUrlParameter("id")+'/'+getUrlParameter("file");
     $("#createScriptBt").click(function(){
         var name = $('#createScriptName').val();
         $.ajax({
@@ -99,7 +99,7 @@
             return;
         }
         $.ajax({
-            url: "/api/plugins/jsfilter/"+getUrlParameter("id")+'/'+$('#file').val(),
+            url: "/api/plugins/jsfilter/filters/"+getUrlParameter("id")+'/'+$('#file').val(),
             type: 'post',
             data: name,
             contentType: "text/plain",
