@@ -24,7 +24,9 @@
                     <th>Where</th>
                     <th>Test</th>
                     <th>Running</th>
-                    <th colspan="2"></th>
+                    <th colspan="2"><button id="addProxy" name="addProxy" type="button"
+                                            class="btn btn-default" onClick="addProxy();">Add new proxy</button>
+                    </th>
                 </tr>
             </table>
         </div>
@@ -72,7 +74,8 @@
         };
         var id = target.id;
         buildGenericModal(modal, scriptsTable, target, "id", proxyModal, randomId,false);
-        $(modal).find("#"+randomId).click(function(){ scriptsTable.saveFunction(scriptsTable,id,true); });
+        $(modal).find("#"+randomId).click(function(){
+            scriptsTable.saveFunction(scriptsTable,id,true); });
     }
     var editProxy=function(table,id) {
         var modal=".modal";
@@ -136,6 +139,7 @@
                 contentType: "application/json",
                 success: function (res) {
                     success();
+                    location.reload();
                 },
                 error:function(res){
                     error();

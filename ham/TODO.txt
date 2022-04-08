@@ -1,5 +1,5 @@
 PROXIES
-    UI:add new
+    * UI:add new
 JSPLUGIN
     BE: change template from //You have request,response and utils to real one
     UI:refresh on upload
@@ -10,10 +10,11 @@ RECORDING
     BE: Set exact match verification on null infrastrucutre stimulator
     UI: refresh on upload
 DNS
-    UI:refresh on save/delete
+    * UI:refresh on save/delete
     UI:show banner on save delete instead of messagebox
 LOGS
     UI: specify special results
+    * UI:refresh on save/delete
 
 
 

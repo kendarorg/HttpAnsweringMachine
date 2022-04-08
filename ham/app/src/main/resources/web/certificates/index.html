@@ -15,13 +15,41 @@
             <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
         </div>
         <div class="col-md-8">
-            <h3>Proxyes</h3>
+            <h3>Certificates</h3>
             <table class="table table-striped" id="certificatesTable">
                 <tr>
                     <th>Id</th>
                     <th>Download</th>
                 </tr>
             </table>
+        </div>
+        <div class="col-md-8">
+            <h3>Websites</h3>
+            <table class="table table-striped" id="websites">
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th colspan="2">
+                        <button id="addSite" name="addSite" type="button"
+                                class="btn btn-default" onClick="addSite();">Add new site</button>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Update User</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
         </div>
     </div>
 </div>
@@ -30,7 +58,7 @@
 
 
 
-    var scriptsTable = new SimpleGrid("Certificates","certificatesTable","id",["id","_download"],
+    var certificatesTable = new SimpleGrid("Certificates","certificatesTable","id",["id","_download"],
         function(table){
             $.ajax({
                 url: "/api/certificates",
@@ -51,6 +79,57 @@
         null,
         null,
         null).load();
+
+
+    var websites = new SimpleGrid("WebSites","websites","id",["id","address"],
+        function(table){
+            $.ajax({
+                url: "/api/ssl",
+                type: 'GET',
+                success: function(realRes) {
+                    $.each(realRes, function(i, script) {
+                        table.appendToTable(script);
+                    });
+                }
+            });
+        },
+        function (table,id) {
+            editKvp(".modal",table,id,"id","address");
+        },
+        function (table,id) {
+            deleteKvp(".modal",table,id,"id","address",function(id,success,error){
+                $.ajax({
+                    url: "/api/ssl/"+id,
+                    type: 'DELETE',
+                    success: function(realRes) {
+                        success();
+                    }
+                });
+
+            });
+        },
+        function (table,id,saveOrUpdate) {
+            updateKvp(".modal",table,id,"id","address",function(k,v,saveOrUpdate){
+                var data = {
+                    id:k,
+                    address:v
+                };
+                $.ajax({
+                    url: "/api/ssl",
+                    data:JSON.stringify(data),
+                    type: 'POST',
+                    success: function(realRes) {
+                        success();
+                        location.reload();
+                    }
+                });
+            });
+        }).load();
+
+
+    var addLogger = function(){
+        addKvp('.modal',websites,'key','value');
+    }
 
 </script>
 </body>
