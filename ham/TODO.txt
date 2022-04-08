@@ -1,19 +1,19 @@
 * PROXIES
     * UI:add new
 JSPLUGIN
-    BE: change template from //You have request,response and utils to real one
-    UI:refresh on upload
+    * BE: change template from //You have request,response and utils to real one
+    * UI:refresh on upload
 * SSL
     * UI:edit ssl hosts list
 RECORDING
     BE: Set default pact schema verification on checking pact (if script empty)
     BE: Set exact match verification on null infrastrucutre stimulator
-    UI: refresh on upload
+    * UI: refresh on upload
 DNS
     * UI:refresh on save/delete
     X UI:show banner on save delete instead of messagebox
 LOGS
-    UI: specify special results
+    X UI: specify special results
     * UI:refresh on save/delete
 
 
