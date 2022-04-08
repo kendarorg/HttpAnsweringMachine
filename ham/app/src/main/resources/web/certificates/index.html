@@ -117,6 +117,7 @@
                 $.ajax({
                     url: "/api/ssl",
                     data:JSON.stringify(data),
+                    contentType: "application/json",
                     type: 'POST',
                     success: function(realRes) {
                         success();
@@ -127,8 +128,8 @@
         }).load();
 
 
-    var addLogger = function(){
-        addKvp('.modal',websites,'key','value');
+    var addSite = function(){
+        addKvp('.modal',websites,'id','address');
     }
 
 </script>
