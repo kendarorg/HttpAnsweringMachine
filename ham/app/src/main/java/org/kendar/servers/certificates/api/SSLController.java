@@ -92,7 +92,7 @@ public class SSLController implements FilteringClass {
       phase = HttpFilterType.API,
       pathAddress = "/api/ssl",
       method = "POST",
-      id = "1011a4b4-277d-11ec-9621-0242ac130002")
+      id = "1011a4b4-2ASD77d-11ec-9621-0242ac130002")
   public void addDnsServer(Request req, Response res) throws Exception {
     var cloned = configuration.getConfiguration(SSLConfig.class).copy();
     var newData = mapper.readValue(req.getRequestText(), SSLDomain.class);
