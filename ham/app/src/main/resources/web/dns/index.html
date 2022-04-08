@@ -17,31 +17,28 @@
         </div>
         <div class="col-md-8">
             <h3>DNS Servers</h3>
-            <br>
-            <button id="addDns" name="addDns" type="button"  class="btn btn-default" onClick="addDns();">Add new server</button>
-            <br>
             <table class="table table-striped" id="dnsTable">
                 <tr>
                     <th>Id</th>
                     <th>Address</th>
                     <th>Resolved</th>
                     <th>Enabled</th>
-                    <th colspan="2"></th>
+                    <th colspan="2">
+                        <button id="addDns" name="addDns" type="button"  class="btn btn-default" onClick="addDns();">Add new server</button>
+                    </th>
                 </tr>
             </table>
         </div>
         <div class="col-md-8">
             <h3>DNS Mappings</h3>
-
-            <br>
-            <button id="addDnsMapping" name="addDnsMapping" type="button"  class="btn btn-default" onClick="addDnsMapping();">Add new mapping</button>
-            <br>
             <table class="table table-striped" id="dnsMappingTable">
                 <tr>
                     <th>Id</th>
                     <th>Ip</th>
                     <th>Dns</th>
-                    <th colspan="2"></th>
+                    <th colspan="2">
+                        <button id="addDnsMapping" name="addDnsMapping" type="button"  class="btn btn-default" onClick="addDnsMapping();">Add new mapping</button>
+                    </th>
                 </tr>
             </table>
         </div>
@@ -124,6 +121,7 @@
                     type: 'DELETE',
                     success: function (res) {
                         success();
+                        location.reload();
                     },
                     error:function(res){
                         error();
@@ -145,6 +143,7 @@
                 contentType: "application/json",
                 success: function (res) {
                     success();
+                    location.reload();
                 },
                 error:function(res){
                     error();
