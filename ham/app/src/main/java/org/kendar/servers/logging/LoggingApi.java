@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
@@ -52,9 +53,9 @@ public class LoggingApi implements FilteringClass {
   public void getLoggers(Request req, Response res) throws JsonProcessingException {
     var config = configuration.getConfiguration(GlobalConfig.class);
     res.addHeader("Content-type", "application/json");
-    res.setResponseText(mapper.writeValueAsString(convertLoggers(config.getLogging().getLoggers())
-                    .stream().filter(a->!a.getValue().equalsIgnoreCase("OFF")))
-            );
+    var loggers = convertLoggers(config.getLogging().getLoggers())
+            .stream().filter(a->!a.getValue().equalsIgnoreCase("OFF")).collect(Collectors.toList());
+    res.setResponseText(mapper.writeValueAsString(loggers));
   }
 
   private List<LogDTO> convertLoggers(HashMap<String, Level> loggers) {
