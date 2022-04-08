@@ -81,23 +81,24 @@
         null).load();
 
 
-    var websites = new SimpleGrid("WebSites","websites","id",["id","address"],
+    var websites = new SimpleGrid("WebSites","websites","key",["key","value"],
         function(table){
             $.ajax({
                 url: "/api/ssl",
                 type: 'GET',
                 success: function(realRes) {
                     $.each(realRes, function(i, script) {
-                        table.appendToTable(script);
+                        var line = {key:script["id"],value:script["address"]};
+                        table.appendToTable(line);
                     });
                 }
             });
         },
         function (table,id) {
-            editKvp(".modal",table,id,"id","address");
+            editKvp(".modal",table,id,"key","value");
         },
         function (table,id) {
-            deleteKvp(".modal",table,id,"id","address",function(id,success,error){
+            deleteKvp(".modal",table,id,"key","value",function(id,success,error){
                 $.ajax({
                     url: "/api/ssl/"+id,
                     type: 'DELETE',
@@ -109,7 +110,7 @@
             });
         },
         function (table,id,saveOrUpdate) {
-            updateKvp(".modal",table,id,"id","address",function(k,v,saveOrUpdate){
+            updateKvp(".modal",table,id,"key","value",function(k,v,saveOrUpdate){
                 var data = {
                     id:k,
                     address:v
@@ -129,7 +130,7 @@
 
 
     var addSite = function(){
-        addKvp('.modal',websites,'id','address');
+        addKvp('.modal',websites,'key','value');
     }
 
 </script>
