@@ -1,5 +1,6 @@
 package org.kendar.replayer.storage;
 
+import org.apache.commons.io.FileUtils;
 import org.kendar.events.EventQueue;
 import org.kendar.replayer.Cache;
 import org.kendar.replayer.ReplayerState;
@@ -97,7 +98,7 @@ public class NullDataset extends ReplayerDataset{
                 Files.createDirectory(nullDir);
             }
             var maps = new HashMap<Integer, ReplayerRow>();
-            var replayerResult = mapper.readValue(Files.readString(stringPath), ReplayerResult.class);
+            var replayerResult = mapper.readValue(FileUtils.readFileToString(stringPath.toFile(), "UTF-8"), ReplayerResult.class);
             for (var call : replayerResult.getStaticRequests()) {
                 maps.put(call.getId(), call);
             }

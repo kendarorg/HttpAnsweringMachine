@@ -1,6 +1,7 @@
 package org.kendar.replayer.storage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.http.Request;
@@ -8,11 +9,13 @@ import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 
+import javax.sound.sampled.AudioFormat;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.spec.EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +69,7 @@ public class ReplayerDataset implements BaseDataset{
       Files.createDirectory(rootPath);
     }
     var stringPath = Path.of(rootPath + File.separator + name + ".json");
-    replayerResult = mapper.readValue(Files.readString(stringPath), ReplayerResult.class);
+    replayerResult = mapper.readValue(FileUtils.readFileToString(stringPath.toFile(), "UTF-8"), ReplayerResult.class);
     return replayerResult;
   }
 
