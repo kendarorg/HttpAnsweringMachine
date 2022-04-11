@@ -122,7 +122,7 @@ class SimpleGrid {
     clearTable(callback) {
         var self = this;
         this.data.forEach(function (row, i) {
-            let id = row[self.idField];
+            let id = row[self.idField]+"";
             let selectedItem = $("#" + self.tableId + " #" + self.tableId + "-" + id.replaceAll("\.","_"));
             if (selectedItem) {
                 selectedItem.remove();
@@ -181,7 +181,8 @@ class SimpleGrid {
         }
         const buttonId = this.tableId + "-" + idContent + "-search";
         toWrite += `<td><button id="${buttonId}" name="${buttonId}" 
-        type="button"  class="btn btn-default" >Search</button></td>`;
+        type="button"  class="btn btn-default" >
+        <i class="bi bi-search"></i>Search</button></td>`;
         toWrite += `</tr>`;
 
         const self = this;

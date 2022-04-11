@@ -66,7 +66,7 @@ public class ReplayerDataset implements BaseDataset{
       Files.createDirectory(rootPath);
     }
     var stringPath = Path.of(rootPath + File.separator + name + ".json");
-    replayerResult = mapper.readValue(stringPath.toFile(), ReplayerResult.class);
+    replayerResult = mapper.readValue(Files.readString(stringPath), ReplayerResult.class);
     return replayerResult;
   }
 
