@@ -5,6 +5,7 @@
     <script src="/libs/bootstrap.min.js"></script>
     <script src="/libs/lodash.js"></script>
     <link href="/app/app.css" rel="stylesheet"/>
+    <link href="/icons/bootstrap-icons.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="container">
@@ -18,34 +19,46 @@
         <div class="col-md-8">
             <br>
             <button id="startrecording" name="startrecording" type="button"  class="btn btn-default" onClick="executeAct('start','record');">Start Recording</button>
-            <button id="pauserecording" name="pauserecording" type="button"  class="btn btn-default" onClick="executeAct('pause','record');">Pause Recording</button>
-            <button id="stoprecording" name="stoprecording" type="button"  class="btn btn-default" onClick="executeAct('stop','record');">Stop Recording</button>
+            <button id="pauserecording" name="pauserecording" type="button"  class="btn btn-default" onClick="executeAct('pause','record');">
+                <i class="bi bi-pause-fill"></i>Pause Recording</button>
+            <button id="stoprecording" name="stoprecording" type="button"  class="btn btn-default" onClick="executeAct('stop','record');">
+                <i class="bi bi-stop-fill"></i>Stop Recording</button>
 
         </div>
         <div class="col-md-8">
             <br>
-            <button id="startreplaying" name="startreplaying" type="button"  class="btn btn-default" onClick="executeAct('start','replay');">Start Replaying</button>
-            <button id="pausereplaying" name="pausereplaying" type="button"  class="btn btn-default" onClick="executeAct('pause','replay');">Pause Replaying</button>
-            <button id="stopreplaying" name="stopreplaying" type="button"  class="btn btn-default" onClick="executeAct('stop','replay');">Stop Replaying</button>
+            <button id="startreplaying" name="startreplaying" type="button"  class="btn btn-default" onClick="executeAct('start','replay');">
+                <i class="bi bi-play-fill"></i>Start Replaying</button>
+            <button id="pausereplaying" name="pausereplaying" type="button"  class="btn btn-default" onClick="executeAct('pause','replay');">
+                <i class="bi bi-pause-fill"></i>Pause Replaying</button>
+            <button id="stopreplaying" name="stopreplaying" type="button"  class="btn btn-default" onClick="executeAct('stop','replay');">
+                <i class="bi bi-stop-fill"></i>Stop Replaying</button>
         </div>
         <div class="col-md-8">
             <br>
-            <button id="play_pact" name="play_pact" type="button"  class="btn btn-default" onClick="executeAct('start','pact');">Start PACT</button>
-            <button id="stop_pact" name="stop_pact" type="button"  class="btn btn-default" onClick="executeAct('stop','pact');">Stop PACT</button>
+            <button id="play_pact" name="play_pact" type="button"  class="btn btn-default" onClick="executeAct('start','pact');">
+                <i class="bi bi-umbrella-fill"></i>Start PACT</button>
+            <button id="stop_pact" name="stop_pact" type="button"  class="btn btn-default" onClick="executeAct('stop','pact');">
+                <i class="bi bi-stop-fill"></i>Stop PACT</button>
         </div>
         <div class="col-md-8">
             <br>
-            <button id="play_null" name="play_null" type="button"  class="btn btn-default" onClick="executeAct('start','null');">Start NULL</button>
-            <button id="stop_null" name="stop_null" type="button"  class="btn btn-default" onClick="executeAct('stop','null');">Stop NULL</button>
+            <button id="play_null" name="play_null" type="button"  class="btn btn-default" onClick="executeAct('start','null');">
+                <i class="bi bi-chat"></i>Start NULL</button>
+            <button id="stop_null" name="stop_null" type="button"  class="btn btn-default" onClick="executeAct('stop','null');">
+                <i class="bi bi-chat-fill"></i>Stop NULL</button>
         </div>
         <div class="col-md-8">
             <h3>SCRIPT</h3>
         </div>
         <div class="col-md-8">
             <br>
-            <button id="save" name="save" type="button"  class="btn btn-default" onClick="save();">Save</button>
-            <button id="download" name="download" type="button"  class="btn btn-default" onClick="download();">Download</button>
-            <button id="downloadTest" name="downloadTest" type="button"  class="btn btn-default" onClick="downloadTest();">Download test project</button>
+            <button id="save" name="save" type="button"  class="btn btn-default" onClick="save();">
+                <i class="bi bi-save"></i>Save</button>
+            <button id="download" name="download" type="button"  class="btn btn-default" onClick="download();">
+                <i class="bi bi-filetype-json"></i>Download</button>
+            <button id="downloadTest" name="downloadTest" type="button"  class="btn btn-default" onClick="downloadTest();">
+                <i class="bi bi-file-zip"></i>Download test project</button>
         </div>
         <div class="col-md-8">
             <br>
@@ -79,27 +92,42 @@
         </div>
 
         <div class="col-md-8">
-            <ul>
+            <!--<ul>
                 <li class="tab-switcher" data-tab-index="0" tabindex="0">
-                    Script
+                    API Calls
                 </li>
                 <li class="tab-switcher" data-tab-index="1" tabindex="0">
-                    Full path
+                    Calls History
                 </li>
-            </ul>
+            </ul>-->
+            <div class="btn-group btn-group-toggle " data-toggle="buttons">
+                <label class="btn btn-primary active tab-switcher btn-lg" data-tab-index="0" tabindex="0">
+                    <input class="tab-switcher" data-tab-index="0" tabindex="0"
+                           type="radio" name="options" id="option1" autocomplete="off" checked> API Calls
+                </label>
+                <label class="btn btn-primary tab-switcher btn-lg" data-tab-index="1" tabindex="0">
+                    <input class="tab-switcher" data-tab-index="1" tabindex="0"
+                            type="radio" name="options" id="option2" autocomplete="off">Full Calls History
+                </label>
+            </div>
+            <br>
         <!--<ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#optimizedscript">Script</a></li>
             <li><a data-toggle="tab" href="#fullpath">Full path</a></li>
         </ul>-->
             <div id="allTabsContainer">
                 <div class="tab-container" data-tab-index="0">
-                <h3>Script</h3>
                 <div class="col-md-8">
-                    <button id="script_deleteselected" name="script_deleteselected" type="button"  class="btn btn-default" onClick="deleteSelected();">Delete Selected</button>
-                    <button id="script_selectall" name="script_selectall" type="button"  class="btn btn-default" onClick="selectall();">Select All</button>
-                    <button id="script_deselectall" name="script_deselectall" type="button"  class="btn btn-default" onClick="unselectall();">Unselect All</button>
-                    <button id="script_clone" name="script_clone" type="button"  class="btn btn-default" onClick="cloneselected();">Clone Selected</button>
-                    <button id="script_togglestimulatedselected" name="script_togglestimulatedselected" type="button"  class="btn btn-default" onClick="togglestimulatedselected();">Toggle selected as stimulated</button>
+                    <button id="script_deleteselected" name="script_deleteselected" type="button"  class="btn btn-default" onClick="deleteSelected();">
+                        <i class="bi bi-eraser-fill"></i>Delete Selected</button>
+                    <button id="script_selectall" name="script_selectall" type="button"  class="btn btn-default" onClick="selectall();">
+                        <i class="bi bi-check2-square"></i>Select All</button>
+                    <button id="script_deselectall" name="script_deselectall" type="button"  class="btn btn-default" onClick="unselectall();">
+                        <i class="bi bi-square"></i>Unselect All</button>
+                    <!--<button id="script_clone" name="script_clone" type="button"  class="btn btn-default" onClick="cloneselected();">
+                        Clone Selected</button>-->
+                    <button id="script_togglestimulatedselected" name="script_togglestimulatedselected" type="button"  class="btn btn-default" onClick="togglestimulatedselected();">
+                        <i class="bi bi-headphones"></i>Toggle selected as stimulated</button>
                     <br>
                 </div>
                 <div class="col-md-8">
@@ -128,12 +156,15 @@
                 </div>
             </div>
                 <div class="tab-container" data-tab-index="1"  style="display:none;">
-                <h3>Full path</h3>
                 <div class="col-md-8">
-                    <button id="full_togglepactselected" name="full_togglepactselected" type="button"  class="btn btn-default" onClick="togglepactselected();">Toggle selected as PACT</button>
-                    <button id="full_togglestimulatorselected" name="full_togglestimulatorselected" type="button"  class="btn btn-default" onClick="togglestimulatorselected();">Toggle selected as stimulator</button>
-                    <button id="full_selectall" name="full_selectall" type="button"  class="btn btn-default" onClick="full_selectall();">Select All</button>
-                    <button id="full_deselectall" name="full_deselectall" type="button"  class="btn btn-default" onClick="full_unselectall();">Unselect All</button>
+                    <button id="full_togglepactselected" name="full_togglepactselected" type="button"  class="btn btn-default" onClick="togglepactselected();">
+                        <i class="bi bi-fingerprint"></i>Toggle selected as PACT</button>
+                    <button id="full_togglestimulatorselected" name="full_togglestimulatorselected" type="button"  class="btn btn-default" onClick="togglestimulatorselected();">
+                        <i class="bi bi-mic"></i>Toggle selected as stimulator</button>
+                    <button id="full_selectall" name="full_selectall" type="button"  class="btn btn-default" onClick="full_selectall();">
+                        <i class="bi bi-check2-square"></i>Select All</button>
+                    <button id="full_deselectall" name="full_deselectall" type="button"  class="btn btn-default" onClick="full_unselectall();">
+                        <i class="bi bi-square"></i>Unselect All</button>
                     <br>
                 </div>
                 <div class="col-md-8">

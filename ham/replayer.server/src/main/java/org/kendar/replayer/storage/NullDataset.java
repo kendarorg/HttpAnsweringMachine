@@ -97,7 +97,7 @@ public class NullDataset extends ReplayerDataset{
                 Files.createDirectory(nullDir);
             }
             var maps = new HashMap<Integer, ReplayerRow>();
-            var replayerResult = mapper.readValue(stringPath.toFile(), ReplayerResult.class);
+            var replayerResult = mapper.readValue(Files.readString(stringPath), ReplayerResult.class);
             for (var call : replayerResult.getStaticRequests()) {
                 maps.put(call.getId(), call);
             }
