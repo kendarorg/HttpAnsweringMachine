@@ -34,13 +34,13 @@ if [ "$mavenbuild" == "y" ]; then
   cd ham
   mvn clean install
   cd ..
-  pause
+
   echo Building sample applications
   cd samples/sampleapp
   mvn clean install
   cd ..
   cd ..
-  pause
+
 fi
 
 if [ "$builddocker" == "y" ]; then
@@ -58,7 +58,5 @@ if [ "$builddocker" == "y" ]; then
 	cd ..
 	cd ..
 fi
-
-
 
 pause

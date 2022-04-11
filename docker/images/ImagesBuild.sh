@@ -57,4 +57,3 @@ cd ../singlemaster
 docker build -t ham.singlemaster .
 
 cd ..
-pause
