@@ -54,13 +54,13 @@ if [ "$rundocker" == "n" ]; then
 	mkdir -p "$mypath"ham/app/target/libs
 	rm -rf "$mypath"ham/app/target/libs/*.*
 	cp -f "$mypath"ham/libs/*.jar "$mypath"ham/app/target/libs/
+	
+	ls -lA | awk -F':[0-9]* ' '/:/{print $2}'|grep .jar$ > tmp_txt
+	export JAR_NAME=$(head -1 tmp_txt)
 
-	cp -f "$mypath"samples/sampleapp/docker/external.json "$mypath"ham/app/target/
-	java "-Dloader.path=$mypath/ham/app/target/libs"  -Dloader.main=org.kendar.Main  \
-	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
-		-jar app-2.1.3.jar org.springframework.boot.loader.PropertiesLauncher &
+	
 	tokill=$1
-	echo "kill -9 $tokill" >> $mypath/Kill.sh  
+	#echo "kill -9 $tokill" >> $mypath/Kill.sh  
 		
 	cd "$mypath"samples/sampleapp/gateway/target/
 	cp -f "$mypath"samples/sampleapp/docker/application.properties.gateway "$mypath"samples/sampleapp/gateway/target/application.properties
@@ -74,6 +74,11 @@ if [ "$rundocker" == "n" ]; then
 	cp -f "$mypath"samples/sampleapp/docker/application.properties.fe "$mypath"samples/sampleapp/fe/target/application.properties
 	java -jar "$mypath"samples/sampleapp/fe/target/fe-1.0-SNAPSHOT.jar &
 	
+	cd "$mypath"ham/app/target
+	cp -f "$mypath"samples/sampleapp/docker/external.json "$mypath"ham/app/target/
+	java "-Dloader.path=$mypath/ham/app/target/libs"  -Dloader.main=org.kendar.Main  \
+	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
+		-jar "$JAR_NAME" org.springframework.boot.loader.PropertiesLauncher &
 fi
 
 pause

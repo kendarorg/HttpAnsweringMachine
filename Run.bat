@@ -42,32 +42,34 @@ cd %mypath%samples\sampleapp\gateway\target
 copy /Y %mypath%samples\sampleapp\docker\application.properties.gateway %mypath%samples\sampleapp\gateway\target\application.properties
 start java -jar %mypath%samples\sampleapp\gateway\target\gateway-1.0-SNAPSHOT.jar
 
-sleep 10
-pause
+timeout /t 10 /nobreak
+
 
 cd %mypath%samples\sampleapp\be\target
 copy /Y %mypath%samples\sampleapp\docker\application.properties.be %mypath%samples\sampleapp\be\target\application.properties
 start java -jar %mypath%samples\sampleapp\be\target\be-1.0-SNAPSHOT.jar
 
-sleep 10
-pause
+timeout /t 10 /nobreak
 
 cd %mypath%samples\sampleapp\fe\target
 copy /Y %mypath%samples\sampleapp\docker\application.properties.fe %mypath%samples\sampleapp\fe\target\application.properties
 start java -jar %mypath%samples\sampleapp\fe\target\fe-1.0-SNAPSHOT.jar
 
-sleep 10
-pause
+timeout /t 10 /nobreak
+
 cd %mypath%ham\app\target
 
 md "%mypath%ham\app\target\libs" 2>NUL
 del /q %mypath%ham\app\target\libs\*.*
 copy /Y %mypath%ham\libs\*.jar %mypath%ham\app\target\libs\
 
+dir /b %mypath%ham\app\target\*.jar > .temp.txt
+set /p APPJAR=<.temp.txt
+
 copy /Y %mypath%samples\sampleapp\standalone.external.json %mypath%ham\app\target\external.json
 start java "-Dloader.path=%mypath%ham\app\target\libs"  -Dloader.main=org.kendar.Main  ^
   	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
-	-jar app-2.1.3.jar org.springframework.boot.loader.PropertiesLauncher
+	-jar %APPJAR% org.springframework.boot.loader.PropertiesLauncher
 
 
 :end

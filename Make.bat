@@ -38,11 +38,11 @@ echo Building HAM
 cd ham
 call mvn clean install
 cd ..
-pause
+
 echo Building sample applications
 cd samples\sampleapp
 call mvn clean install
-pause
+
 
 :buildocker
 if "%builddocker%"=="n" goto end
