@@ -73,7 +73,7 @@ public class JsFilterGeneratorAPI implements FilteringClass {
         var generator = this.generators.get(type);
         var result = generator.generate(recordingLineRequest, recordingLineResponse);
         res.setResponseText(result);
-        res.addHeader("Content-Disposition", fileName);
+        res.addHeader("Content-Disposition","attachment;"+ fileName);
         res.addHeader("content-type", "text/plain");
         res.setStatusCode(200);
     }

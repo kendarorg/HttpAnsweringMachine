@@ -2,6 +2,7 @@ package org.kendar.replayer.apis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
@@ -139,7 +140,7 @@ public class ReplayerAPICrud implements FilteringClass {
     var id = req.getPathParameter("id");
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
     if (Files.exists(rootPath)) {
-      var fileContent = Files.readString(rootPath);
+      var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
       var result = mapper.readValue(fileContent, ReplayerResult.class);
       var scriptData = mapper.readValue(req.getRequestText(), ScriptData.class);
       result.setDescription(scriptData.getDescription());
@@ -177,10 +178,10 @@ public class ReplayerAPICrud implements FilteringClass {
     var id = req.getPathParameter("id");
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
     if (Files.exists(rootPath)) {
-      var fileContent = Files.readString(rootPath);
+      var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
       res.setResponseText(fileContent);
       res.addHeader("Content-type","application/json");
-      res.addHeader("Content-Disposition", id+".json");
+      res.addHeader("Content-Disposition", "attachment;"+id+".json");
       res.setStatusCode(200);
     }else {
       res.setStatusCode(404);
@@ -226,7 +227,7 @@ public class ReplayerAPICrud implements FilteringClass {
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
     if (Files.exists(rootPath)) {
       var index = new HashSet<Integer>();
-      var fileContent = Files.readString(rootPath);
+      var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
       var result = mapper.readValue(fileContent, ReplayerResult.class);
       for(var i = result.getDynamicRequests().size()-1;i>=0;i--){
         var dq = result.getDynamicRequests().get(i);
@@ -269,7 +270,7 @@ public class ReplayerAPICrud implements FilteringClass {
     var newRootPath = Path.of(fileResourcesUtils.buildPath(replayerData, newid + ".json"));
 
     if (Files.exists(rootPath)) {
-      var fileContent = Files.readString(rootPath);
+      var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
       var result = mapper.readValue(fileContent, ReplayerResult.class);
 
       var newReplayerData = new ReplayerResult();

@@ -124,9 +124,9 @@ public class ReplayerAPIContent implements FilteringClass {
         }
       }else{
         if (res.isBinaryResponse()) {
-          res.addHeader("Content-Disposition","request."+ line +".bin");
+          res.addHeader("Content-Disposition","attachment;request."+ line +".bin");
         } else {
-          res.addHeader("Content-Disposition","request."+ line +".txt");
+          res.addHeader("Content-Disposition","attachment;request."+ line +".txt");
         }
       }
       return true;
@@ -138,9 +138,9 @@ public class ReplayerAPIContent implements FilteringClass {
     try {
       MimeType mimeType = allTypes.forName(contentType);
       String ext = mimeType.getExtension();
-      res.addHeader("Content-Disposition","request."+ line +ext);
+      res.addHeader("Content-Disposition","attachment;request."+ line +ext);
     } catch (MimeTypeException e) {
-      res.addHeader("Content-Disposition","request."+ line +".bin");
+      res.addHeader("Content-Disposition","attachment;request."+ line +".bin");
     }
   }
 
