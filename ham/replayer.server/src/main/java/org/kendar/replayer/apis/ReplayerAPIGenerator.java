@@ -1,6 +1,7 @@
 package org.kendar.replayer.apis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
@@ -71,7 +72,7 @@ public class ReplayerAPIGenerator implements FilteringClass {
         Map<String, byte[]> result=null;
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
         if (Files.exists(rootPath)) {
-            var fileContent = Files.readString(rootPath);
+            var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
             var replayer = mapper.readValue(fileContent, ReplayerResult.class);
             result = singleRequestGenerator.generateRequestResponse(pack,id,replayer);
 
