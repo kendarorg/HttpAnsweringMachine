@@ -271,7 +271,9 @@
     }
 
     var buttonsMask=[
-        {id:["startreplaying"],states:["PAUSED_REPLAYING","NONE"]},
+        {id:["startreplaying"],states:["PAUSED_REPLAYING","NONE"],callback:function(){
+                return allCalls.data.length>0;
+            }},
         {id:["stopreplaying"],states:["PAUSED_REPLAYING","REPLAYING"]},
         {id:["pausereplaying"],states:["REPLAYING"]},
         {id:["startrecording"],states:["NONE","PAUSED_RECORDING"],callback:function(){
@@ -286,10 +288,14 @@
 
         {id:["script_togglestimulatorseleted","script_togglepactselected"],states:["NONE","OTHER_RUNNING"]},
 
-        {id:["play_pact"],states:["NONE"]},
+        {id:["play_pact"],states:["NONE"],callback:function(){
+                return allCalls.data.length>0;
+            }},
         {id:["stop_pact"],states:["PLAYING_PACT"]},
 
-        {id:["play_null"],states:["NONE"]},
+        {id:["play_null"],states:["NONE"],callback:function(){
+                return allCalls.data.length>0;
+            }},
         {id:["stop_null"],states:["PLAYING_NULL_INFRASTRUCTURE"]}
     ];
 
