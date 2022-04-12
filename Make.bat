@@ -43,6 +43,9 @@ echo Building sample applications
 cd samples\sampleapp
 call mvn clean install
 
+cd ..
+cd ..
+
 
 :buildocker
 if "%builddocker%"=="n" goto end
