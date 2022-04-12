@@ -40,6 +40,7 @@ class SimpleGrid {
     loadFunction;
     showSearch;
     addbutton;
+    editFunction;
 
     constructor(objType, name, idField, fields, loadFunction, editFunction, deleteFunction, saveFunction, showSearch = []) {
         this.objType = objType;

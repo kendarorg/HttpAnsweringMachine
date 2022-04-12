@@ -5,7 +5,7 @@
     <script src="/libs/bootstrap.min.js"></script>
     <script src="/libs/lodash.js"></script>
     <link href="/app/app.css" rel="stylesheet"/>
-    <link href="/icons/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="container">
@@ -24,29 +24,22 @@
             <button id="stoprecording" name="stoprecording" type="button"  class="btn btn-default" onClick="executeAct('stop','record');">
                 <i class="bi bi-stop-fill"></i>Stop Recording</button>
 
-        </div>
-        <div class="col-md-8">
-            <br>
             <button id="startreplaying" name="startreplaying" type="button"  class="btn btn-default" onClick="executeAct('start','replay');">
                 <i class="bi bi-play-fill"></i>Start Replaying</button>
             <button id="pausereplaying" name="pausereplaying" type="button"  class="btn btn-default" onClick="executeAct('pause','replay');">
                 <i class="bi bi-pause-fill"></i>Pause Replaying</button>
             <button id="stopreplaying" name="stopreplaying" type="button"  class="btn btn-default" onClick="executeAct('stop','replay');">
                 <i class="bi bi-stop-fill"></i>Stop Replaying</button>
-        </div>
-        <div class="col-md-8">
-            <br>
+
             <button id="play_pact" name="play_pact" type="button"  class="btn btn-default" onClick="executeAct('start','pact');">
-                <i class="bi bi-umbrella-fill"></i>Start PACT</button>
+                <i class="bi bi-fingerpring"></i>Start PACT</button>
             <button id="stop_pact" name="stop_pact" type="button"  class="btn btn-default" onClick="executeAct('stop','pact');">
                 <i class="bi bi-stop-fill"></i>Stop PACT</button>
-        </div>
-        <div class="col-md-8">
-            <br>
+
             <button id="play_null" name="play_null" type="button"  class="btn btn-default" onClick="executeAct('start','null');">
-                <i class="bi bi-chat"></i>Start NULL</button>
+                <i class="bi bi-mic"></i>Start NULL</button>
             <button id="stop_null" name="stop_null" type="button"  class="btn btn-default" onClick="executeAct('stop','null');">
-                <i class="bi bi-chat-fill"></i>Stop NULL</button>
+                <i class="bi bi-stop-fill"></i>Stop NULL</button>
         </div>
         <div class="col-md-8">
             <h3>SCRIPT</h3>
@@ -100,7 +93,7 @@
                     Calls History
                 </li>
             </ul>-->
-            <div class="btn-group btn-group-toggle " data-toggle="buttons">
+            <!--<div class="btn-group btn-group-toggle " data-toggle="buttons">
                 <label class="btn btn-primary active tab-switcher btn-lg" data-tab-index="0" tabindex="0">
                     <input class="tab-switcher" data-tab-index="0" tabindex="0"
                            type="radio" name="options" id="option1" autocomplete="off" checked> API Calls
@@ -110,57 +103,59 @@
                             type="radio" name="options" id="option2" autocomplete="off">Full Calls History
                 </label>
             </div>
-            <br>
+            <br>-->
         <!--<ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#optimizedscript">Script</a></li>
             <li><a data-toggle="tab" href="#fullpath">Full path</a></li>
         </ul>-->
-            <div id="allTabsContainer">
+            <!--<div id="allTabsContainer">
                 <div class="tab-container" data-tab-index="0">
-                <div class="col-md-8">
-                    <button id="script_deleteselected" name="script_deleteselected" type="button"  class="btn btn-default" onClick="deleteSelected();">
-                        <i class="bi bi-eraser-fill"></i>Delete Selected</button>
-                    <button id="script_selectall" name="script_selectall" type="button"  class="btn btn-default" onClick="selectall();">
-                        <i class="bi bi-check2-square"></i>Select All</button>
-                    <button id="script_deselectall" name="script_deselectall" type="button"  class="btn btn-default" onClick="unselectall();">
-                        <i class="bi bi-square"></i>Unselect All</button>
-                    <!--<button id="script_clone" name="script_clone" type="button"  class="btn btn-default" onClick="cloneselected();">
-                        Clone Selected</button>-->
-                    <button id="script_togglestimulatedselected" name="script_togglestimulatedselected" type="button"  class="btn btn-default" onClick="togglestimulatedselected();">
-                        <i class="bi bi-headphones"></i>Toggle selected as stimulated</button>
-                    <br>
+                    <div class="col-md-8">
+                        <button id="script_deleteselected" name="script_deleteselected" type="button"  class="btn btn-default" onClick="deleteSelected();">
+                            <i class="bi bi-eraser-fill"></i>Delete Selected</button>
+                        <button id="script_selectall" name="script_selectall" type="button"  class="btn btn-default" onClick="selectall();">
+                            <i class="bi bi-check2-square"></i>Select All</button>
+                        <button id="script_deselectall" name="script_deselectall" type="button"  class="btn btn-default" onClick="unselectall();">
+                            <i class="bi bi-square"></i>Unselect All</button>
+                        <button id="script_clone" name="script_clone" type="button"  class="btn btn-default" onClick="cloneselected();">
+                            Clone Selected</button>
+                        <button id="script_togglestimulatedselected" name="script_togglestimulatedselected" type="button"  class="btn btn-default" onClick="togglestimulatedselected();">
+                            <i class="bi bi-headphones"></i>Toggle selected as stimulated</button>
+                        <br>
+                    </div>
+                    <div class="col-md-8">
+                        <table class="table table-striped" id="linesTable" id="linesTable">
+                            <tr>
+                                <th>Selected</th>
+                                <th>Id</th>
+                                <th>Stimulated Test</th>
+                                <th>Method</th>
+                                <th>Host</th>
+                                <th>Path</th>
+                                <th>Query</th>
+                                <th>Res.Status</th>
+                                <th>Req.Body</th>
+                                <th>Res.Body</th>
+                                <th>Pre Script</th>
+                                <th>Script</th>
+                                <th></th>
+                                <th colspan="2">
+                                    <button class="btn btn-danger form-control"
+                                            id="script_addline" name="script_addline"
+                                            onClick="addLine();">Add</button>
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
-                <div class="col-md-8">
-                    <table class="table table-striped" id="linesTable" id="linesTable">
-                        <tr>
-                            <th>Selected</th>
-                            <th>Id</th>
-                            <th>Stimulated Test</th>
-                            <th>Method</th>
-                            <th>Host</th>
-                            <th>Path</th>
-                            <th>Query</th>
-                            <th>Res.Status</th>
-                            <th>Req.Body</th>
-                            <th>Res.Body</th>
-                            <th>Pre Script</th>
-                            <th>Script</th>
-                            <th></th>
-                            <th colspan="2">
-                                <button class="btn btn-danger form-control"
-                                        id="script_addline" name="script_addline"
-                                        onClick="addLine();">Add</button>
-                            </th>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-                <div class="tab-container" data-tab-index="1"  style="display:none;">
+                <div class="tab-container" data-tab-index="1"  style="display:none;">-->
                 <div class="col-md-8">
                     <button id="full_togglepactselected" name="full_togglepactselected" type="button"  class="btn btn-default" onClick="togglepactselected();">
                         <i class="bi bi-fingerprint"></i>Toggle selected as PACT</button>
                     <button id="full_togglestimulatorselected" name="full_togglestimulatorselected" type="button"  class="btn btn-default" onClick="togglestimulatorselected();">
                         <i class="bi bi-mic"></i>Toggle selected as stimulator</button>
+                    <button id="script_togglestimulatedselected" name="script_togglestimulatedselected" type="button"  class="btn btn-default" onClick="togglestimulatedselected();">
+                        <i class="bi bi-headphones"></i>Toggle selected as stimulated</button>
                     <button id="full_selectall" name="full_selectall" type="button"  class="btn btn-default" onClick="full_selectall();">
                         <i class="bi bi-check2-square"></i>Select All</button>
                     <button id="full_deselectall" name="full_deselectall" type="button"  class="btn btn-default" onClick="full_unselectall();">
@@ -171,9 +166,14 @@
                     <table class="table table-striped" id="allCalls" name="allCalls">
                         <tr>
                             <th>Selected</th>
+                            <th colspan="3">
+                                <!--<button class="btn btn-danger form-control"
+                                        onClick="addLine();">Add</button>-->
+                            </th>
                             <th>Id</th>
-                            <th>Pact Test</th>
-                            <th>Stimulator Test</th>
+                            <th>Pact</th>
+                            <th>Stimulator</th>
+                            <th>Stimulated</th>
                             <th>Method</th>
                             <th>Host</th>
                             <th>Path</th>
@@ -183,16 +183,11 @@
                             <th>Res.Body</th>
                             <th>Pre Script</th>
                             <th>Script</th>
-                            <th></th>
-                            <th colspan="2">
-                                <!--<button class="btn btn-danger form-control"
-                                        onClick="addLine();">Add</button>-->
-                            </th>
                         </tr>
                     </table>
                 </div>
-            </div>
-        </div>
+            <!--</div>
+        </div>-->
             </div>
 
 
@@ -266,7 +261,7 @@
         {id:["stopreplaying"],states:["PAUSED_REPLAYING","REPLAYING"]},
         {id:["pausereplaying"],states:["REPLAYING"]},
         {id:["startrecording"],states:["NONE","PAUSED_RECORDING"],callback:function(){
-                return linesTable.data.length==0;
+                return allCalls.data.length==0;
             }},
         {id:["stoprecording"],states:["RECORDING","PAUSED_RECORDING"]},
         {id:["pauserecording"],states:["RECORDING"]},
@@ -352,21 +347,39 @@
                 <input class="form-check-input"  type="checkbox" `+checkedItem+` id="stimulatorTest_` + line['id'] + `" name="stimulatorTest_`+line['id']+`">
 </label>
             </div>`;
+                    checkedItem = line['stimulatedTest']?"checked='checked' value='true'":"value='false'";
+                    line['_stimulatedTest'] = `<div class="form-check">
+                <input class="form-check-input" type="checkbox" `+checkedItem+` value="" id="stimulatedTest_` + line['id'] + `" name="stimulatedTest_`+line['id']+`">
+            </div>`;
+
+
                     setChecked($('#allCalls #pactTest_'+line['id']),indexline['pactTest']);
                     setChecked($('#allCalls #stimulatorTest_'+line['id']),indexline['stimulatorTest']);
+                    setChecked($('#allCalls #stimulatedTest_'+line['id']),line['stimulatedTest']);
+
+
+
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
                     line['_script'] = (line['id'] in postscripts)?"Yes":"No";
                     line['_preScript'] = (line['id'] in prescripts)?"Yes":"No";
                     if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
                     if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
-                    line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`)" class="btn btn-default">Edit</button>`;
+                    line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`)" class="btn btn-default form-control"><i class="bi bi-filetype-js"></i></button>`;
+                    line['_edit'] = `<button type="button" onclick="doEditFunc(`+indexline['reference']+`)" class="btn btn-success form-control"><i class="bi bi-pencil"></i></button>`;
+                    line['_delete'] = `<button type="button" onclick="doDeleteFunc(`+indexline['reference']+`)" class="btn btn-danger form-control"><i class="bi bi-trash"></i></button>`;
                     //tSource,tableId,id,data,fields
                     allCalls.appendToTable(line,false);
                 }
             }
         });
     }
-    var loadTableData = function(table){
+    var doEditFunc = function(id){
+        allCalls.editFunction(allCalls, id);
+    }
+    var doDeleteFunc = function(id){
+        allCalls.deleteFunction(allCalls, id);
+    }
+    /*var loadTableData = function(table){
 
         $.ajax({
             url: "/api/plugins/replayer/recording/" + getUrlParameter("id"),
@@ -409,10 +422,10 @@
                 }
             }
         });
-    }
-    var fields = ['_selected','id','_stimulatedTest','request.method','request.host','request.path','_queryCalc','response.statusCode',
-        '_requestHashCalc','_responseHashCalc','_preScript','_script','_editScript'];
-    var linesTable = new SimpleGrid("Request-Response","linesTable","id",fields,
+    }*/
+    /*var fields = ['_selected','id','_stimulatedTest','request.method','request.host','request.path','_queryCalc','response.statusCode',
+        '_requestHashCalc','_responseHashCalc','_preScript','_script','_editScript'];*/
+    /*var linesTable = new SimpleGrid("Request-Response","linesTable","id",fields,
         function(table) {
             loadTableData(table);
         },
@@ -439,14 +452,17 @@
             {id:"_preScript",type:"bool"},
             {id:"request.host",type:"string"},
             {id:"request.path",type:"string"},
-            {id:"request.query",type:"string"}]);
-    var fieldsAllCalls = ['_selected','id','_pactTest','_stimulatorTest','request.method','request.host','request.path','_queryCalc','response.statusCode',
-        '_requestHashCalc','_responseHashCalc','_preScript','_script','_editScript'];
+            {id:"request.query",type:"string"}]);*/
+    var fieldsAllCalls = ['_selected','_editScript','_edit','_delete','id','_pactTest','_stimulatorTest','_stimulatedTest',
+        'request.method','request.host','request.path','_queryCalc','response.statusCode',
+        '_requestHashCalc','_responseHashCalc','_preScript','_script'];
     var allCalls = new SimpleGrid("Request-Response","allCalls","id",fieldsAllCalls,
         function (table){
             loadIndexData(table);
         },
-        null,
+        function (table,id) {
+            location.href = "line.html?line="+id+"&id="+getUrlParameter("id");
+        },
         function (table,id) {
             table.deleteFromTable(id,function(id,success,error){
                 $.ajax({
@@ -464,6 +480,7 @@
             {id:"id",type:"string"},
             {id:"_pactTest",type:"bool"},
             {id:"_stimulatorTest",type:"bool"},
+            {id:"_stimulatedTest",type:"bool"},
             {id:"request.host",type:"string"},
             {id:"request.path",type:"string"},
             {id:"_script",type:"bool"},
@@ -479,7 +496,7 @@
         window.location = ("/api/plugins/replayer/generator/"+getUrlParameter("id")+"?package="+pack);
     }
 
-    linesTable.load();
+    //linesTable.load();
     allCalls.load();
 
 
