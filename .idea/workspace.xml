@@ -2,15 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Death to the BOMs!!!">
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/8/58f21c59a0938917ae2ad14f4edb8745c2fdcc87" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/a/daf33132f5b851a1f8daaf48d12e820cb2b61a3f" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/HAM.EP.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/docs/HAM.EP.pptx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/app/src/main/resources/web/app/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/ham/app/src/main/resources/web/app/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/hosts.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ham/hosts.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/NullDataset.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/NullDataset.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/PactDataset.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/PactDataset.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/ReplayerDataset.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/ReplayerDataset.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/resources/web/plugins/recording/script.html" beforeDir="false" afterPath="$PROJECT_DIR$/ham/replayer.server/src/main/resources/web/plugins/recording/script.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Make.bat" beforeDir="false" afterPath="$PROJECT_DIR$/Make.bat" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,6 +73,7 @@
       <workItem from="1648565966421" duration="327000" />
       <workItem from="1649348321423" duration="38000" />
       <workItem from="1649687587786" duration="68000" />
+      <workItem from="1649758831285" duration="28000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>
