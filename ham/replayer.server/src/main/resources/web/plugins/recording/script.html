@@ -150,16 +150,25 @@
                 </div>
                 <div class="tab-container" data-tab-index="1"  style="display:none;">-->
                 <div class="col-md-8">
-                    <button id="full_togglepactselected" name="full_togglepactselected" type="button"  class="btn btn-default" onClick="togglepactselected();">
-                        <i class="bi bi-fingerprint"></i>Toggle selected as PACT</button>
-                    <button id="full_togglestimulatorselected" name="full_togglestimulatorselected" type="button"  class="btn btn-default" onClick="togglestimulatorselected();">
-                        <i class="bi bi-mic"></i>Toggle selected as stimulator</button>
-                    <button id="script_togglestimulatedselected" name="script_togglestimulatedselected" type="button"  class="btn btn-default" onClick="togglestimulatedselected();">
-                        <i class="bi bi-headphones"></i>Toggle selected as stimulated</button>
                     <button id="full_selectall" name="full_selectall" type="button"  class="btn btn-default" onClick="full_selectall();">
-                        <i class="bi bi-check2-square"></i>Select All</button>
+                        <i class="bi bi-check-all"></i>Select All</button>
                     <button id="full_deselectall" name="full_deselectall" type="button"  class="btn btn-default" onClick="full_unselectall();">
                         <i class="bi bi-square"></i>Unselect All</button>
+
+                    <div class="card" style="width: fit-content;">
+
+                        <div class="card-body">
+                            <h4>Selected operations</h4>
+                    <button id="selected_script_edit" name="selected_script_edit" type="button"  class="btn btn-default" onClick="selected_script_edit();">
+                        <i class="bi bi-filetype-js"></i>Edit Js</button><br><br>
+                    <button id="full_togglepactselected" name="full_togglepactselected" type="button"  class="btn btn-default" onClick="togglepactselected();">
+                        <i class="bi bi-fingerprint"></i>Set as PACT</button><br><br>
+                    <button id="full_togglestimulatorselected" name="full_togglestimulatorselected" type="button"  class="btn btn-default" onClick="togglestimulatorselected();">
+                        <i class="bi bi-mic"></i>Set stimulatOR</button>
+                    <button id="script_togglestimulatedselected" name="script_togglestimulatedselected" type="button"  class="btn btn-default" onClick="togglestimulatedselected();">
+                        <i class="bi bi-headphones"></i>Set stimulatED</button>
+                            </div>
+                        </div>
                     <br>
                 </div>
                 <div class="col-md-8">
@@ -210,7 +219,12 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
-
+    var selected_script_edit = function(){
+        var selected= getSelectedLines();
+        if(selected.length==0)return;
+        var line = selected.join(",");
+        location.href="js.html?id="+getUrlParameter("id")+"&line="+line;
+    }
     var previousActiveTabIndex = 0;
     $(".tab-switcher").on('click keypress', function (event) {
         // event.which === 13 means the "Enter" key is pressed
@@ -512,8 +526,8 @@
 
     function addLine(){
         var maxValue = 0;
-        for(var i=0;i<linesTable.data.length;i++){
-            var curr = linesTable.data[i];
+        for(var i=0;i<allCalls.data.length;i++){
+            var curr = allCalls.data[i];
             if(curr['id']>maxValue){
                 maxValue=curr['id'];
             }
@@ -537,8 +551,8 @@
     function getSelectedLines(){
 
         var result = [];
-        linesTable.data.forEach(function (row, i) {
-            if($('#linesTable #selected_'+row['id']).prop("checked")) {
+        allCalls.data.forEach(function (row, i) {
+            if($('#allCalls #selected_'+row['id']).prop("checked")) {
                 result.push(row['id']);
             }
         });
@@ -576,12 +590,6 @@
     }
 
 
-    function selectall(){
-        linesTable.data.forEach(function (row, i) {
-            setChecked($('#linesTable #selected_'+row['id']),true);
-        });
-    }
-
     function full_selectall(){
         allCalls.data.forEach(function (row, i) {
             setChecked($('#allCalls #selected_'+row['id']),true);
@@ -595,9 +603,9 @@
     }
 
     function togglestimulatedselected(){
-        linesTable.data.forEach(function (row, i) {
-            if(!$('#linesTable #selected_'+row['id']).prop("checked"))return;
-            toggleCheck($('#linesTable #stimulatedTest_'+row['id']));
+        allCalls.data.forEach(function (row, i) {
+            if(!$('#allCalls #selected_'+row['id']).prop("checked"))return;
+            toggleCheck($('#allCalls #stimulatedTest_'+row['id']));
         });
     }
 
@@ -615,11 +623,7 @@
         });
     }
 
-    function unselectall(){
-        linesTable.data.forEach(function (row, i) {
-            setChecked($('#linesTable #selected_'+row['id']),false);
-        });
-    }
+
 
     function save(){
         var id = getUrlParameter("id");
@@ -627,8 +631,8 @@
         var stimulatedTest = [];
         var pactTest = [];
         var stimulatorTest = [];
-        linesTable.data.forEach(function (row, i) {
-            if($('#linesTable #stimulatedTest_'+row['id']).prop("checked")){
+        allCalls.data.forEach(function (row, i) {
+            if($('#allCalls #stimulatedTest_'+row['id']).prop("checked")){
                 stimulatedTest.push(row['id']);
             }
         });
