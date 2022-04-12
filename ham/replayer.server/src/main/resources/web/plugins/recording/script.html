@@ -154,7 +154,6 @@
                         <i class="bi bi-check-all"></i>Select All</button>
                     <button id="full_deselectall" name="full_deselectall" type="button"  class="btn btn-default" onClick="full_unselectall();">
                         <i class="bi bi-square"></i>Unselect All</button>
-
                     <div class="card" style="width: fit-content;">
 
                         <div class="card-body">
@@ -167,6 +166,10 @@
                         <i class="bi bi-mic"></i>Set stimulatOR</button>
                     <button id="script_togglestimulatedselected" name="script_togglestimulatedselected" type="button"  class="btn btn-default" onClick="togglestimulatedselected();">
                         <i class="bi bi-headphones"></i>Set stimulatED</button>
+                            <br>
+                            <br>
+                            <button id="script_deleteselected" name="script_deleteselected" type="button"  class="btn btn-default" onClick="deleteSelected();">
+                                <i class="bi bi-eraser-fill"></i>Delete Selected</button>
                             </div>
                         </div>
                     <br>
@@ -355,21 +358,26 @@
             </div>`
                     line['_responseHashCalc'] = "No";
                     line['_requestHashCalc'] = "No";
+                    line['pactTest']=indexline['pactTest'];
                     var checkedItem = indexline['pactTest']?"checked='checked' value='true'":"value='false'";
                     line['_pactTest'] = `<div class="form-check">
 <label class="form-check-label">
-                <input class="form-check-input"  type="checkbox" `+checkedItem+` id="pactTest_` + line['id'] + `" name="pactTest_`+line['id']+`">
+                <input class="form-check-input"  type="checkbox" `+checkedItem+` id="pactTest_` + line['id'] + `" name="pactTest_`+
+                        line['id']+`">
 </label>
             </div>`;
                     checkedItem = indexline['stimulatorTest']?"checked='checked' value='true'":"value='false'";
+                    line['stimulatorTest']=indexline['stimulatorTest'];
                     line['_stimulatorTest'] = `<div class="form-check">
 <label class="form-check-label">
-                <input class="form-check-input"  type="checkbox" `+checkedItem+` id="stimulatorTest_` + line['id'] + `" name="stimulatorTest_`+line['id']+`">
+                <input class="form-check-input"  type="checkbox" `+checkedItem+` id="stimulatorTest_` + line['id'] + `" name="stimulatorTest_`+
+                        line['id']+`">
 </label>
             </div>`;
                     checkedItem = line['stimulatedTest']?"checked='checked' value='true'":"value='false'";
                     line['_stimulatedTest'] = `<div class="form-check">
-                <input class="form-check-input" type="checkbox" `+checkedItem+` value="" id="stimulatedTest_` + line['id'] + `" name="stimulatedTest_`+line['id']+`">
+                <input class="form-check-input" type="checkbox" `+checkedItem+` value="" id="stimulatedTest_` + line['id'] + `" name="stimulatedTest_`+
+                        line['id']+`">
             </div>`;
 
 
@@ -377,7 +385,43 @@
                     setChecked($('#allCalls #stimulatorTest_'+line['id']),indexline['stimulatorTest']);
                     setChecked($('#allCalls #stimulatedTest_'+line['id']),line['stimulatedTest']);
 
-
+                    const lineid= line['id'];
+                    $(document).on('change', '#allCalls #pactTest_'+line['id'], function() {
+                        var checkbox = $(this); // Selected or current checkbox
+                        var index=-1;
+                        allCalls.data.forEach(function (row, i,array) {
+                            if(row['id']==lineid && index<0) {
+                                index=i;
+                            }
+                        });
+                        if(index==-1)return;
+                        allCalls.data[index]['pactTest']=setChecked($('#allCalls #pactTest_'+
+                            allCalls.data[index]['id']),checkbox.is(':checked'));
+                    });
+                    $(document).on('change', '#allCalls #stimulatorTest_'+line['id'], function() {
+                        var checkbox = $(this); // Selected or current checkbox
+                        var index=-1;
+                        allCalls.data.forEach(function (row, i,array) {
+                            if(row['id']==lineid && index<0) {
+                                index=i;
+                            }
+                        });
+                        if(index==-1)return;
+                        allCalls.data[index]['stimulatorTest']=setChecked($('#allCalls #stimulatorTest_'+
+                            allCalls.data[index]['id']),checkbox.is(':checked'));
+                    });
+                    $(document).on('change', '#allCalls #stimulatedTest_'+line['id'], function() {
+                        var checkbox = $(this); // Selected or current checkbox
+                        var index=-1;
+                        allCalls.data.forEach(function (row, i,array) {
+                            if(row['id']==lineid && index<0) {
+                                index=i;
+                            }
+                        });
+                        if(index==-1)return;
+                        allCalls.data[index]['stimulatedTest']=setChecked($('#allCalls #stimulatedTest_'+
+                            allCalls.data[index]['id']),checkbox.is(':checked'));
+                    });
 
                     line['_queryCalc'] = calculateQuery(line['request']['query']);
                     line['_script'] = (line['id'] in postscripts)?"Yes":"No";
@@ -581,18 +625,23 @@
     }
 
     function deleteSelected(){
-        var id = getUrlParameter("id");
-        var data = getSelectedLines();
-        //
-        $.ajax({
-            url: '/api/plugins/replayer/recording/'+id+'/deletelines',
-            type: 'post',
-            data: JSON.stringify(data),
-            contentType: "application/json",
-            success: function(response){
-                location.reload();
-            }
-        });
+
+        let confirmAction = confirm("Are you sure to delete the line");
+        if (confirmAction) {
+
+            var id = getUrlParameter("id");
+            var data = getSelectedLines();
+            //
+            $.ajax({
+                url: '/api/plugins/replayer/recording/'+id+'/deletelines',
+                type: 'post',
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function(response){
+                    location.reload();
+                }
+            });
+        }
     }
 
 
@@ -609,23 +658,23 @@
     }
 
     function togglestimulatedselected(){
-        allCalls.data.forEach(function (row, i) {
+        allCalls.data.forEach(function (row, i,array) {
             if(!$('#allCalls #selected_'+row['id']).prop("checked"))return;
-            toggleCheck($('#allCalls #stimulatedTest_'+row['id']));
+            allCalls.data[i]['stimulatedTest']=toggleCheck($('#allCalls #stimulatedTest_'+row['id']));
         });
+        debugger;
     }
 
     function togglestimulatorselected(){
-
-        allCalls.data.forEach(function (row, i) {
+        allCalls.data.forEach(function (row, i,array) {
             if(!$('#allCalls #selected_'+row['id']).prop("checked"))return;
-            toggleCheck($('#allCalls #stimulatorTest_'+row['id']));
+            allCalls.data[i]['stimulatorTest']= toggleCheck($('#allCalls #stimulatorTest_'+row['id']));
         });
     }
     function togglepactselected(){
-        allCalls.data.forEach(function (row, i) {
+        allCalls.data.forEach(function (row, i, array) {
             if(!$('#allCalls #selected_'+row['id']).prop("checked"))return;
-            toggleCheck($('#allCalls #pactTest_'+row['id']));
+            allCalls.data[i]['pactTest'] =toggleCheck($('#allCalls #pactTest_'+row['id']));
         });
     }
 
@@ -638,18 +687,13 @@
         var pactTest = [];
         var stimulatorTest = [];
         allCalls.data.forEach(function (row, i) {
-            if($('#allCalls #stimulatedTest_'+row['id']).prop("checked")){
+            if(row['stimulatedTest']==true){
                 stimulatedTest.push(row['id']);
             }
-        });
-
-        allCalls.data.forEach(function (row, i) {
-            if($('#allCalls #pactTest_'+row['id']).prop("checked")){
+            if(row['pactTest']==true){
                 pactTest.push(row['id']);
             }
-        });
-        allCalls.data.forEach(function (row, i) {
-            if($('#allCalls #stimulatorTest_'+row['id']).prop("checked")){
+            if(row['stimulatorTest']==true){
                 stimulatorTest.push(row['id']);
             }
         });

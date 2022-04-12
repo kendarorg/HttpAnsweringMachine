@@ -468,6 +468,7 @@ const setChecked = function (jqueryObj, checked) {
         jqueryObj.removeAttr('checked');
         // jqueryObj.attr('value', "false");
     }
+    return checked;
 };
 const toggleCheck = function (jqueryObj) {
     if(jqueryObj.is(":hidden"))return;
@@ -479,6 +480,7 @@ const toggleCheck = function (jqueryObj) {
         jqueryObj.attr('checked', 'checked');
     }
     jqueryObj.attr('value', !checked);
+    return !checked;
 };
 
 const downloadFile = function (urlToSend) {
