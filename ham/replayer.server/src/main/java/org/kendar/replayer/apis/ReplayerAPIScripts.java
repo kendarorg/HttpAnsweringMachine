@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -75,7 +76,7 @@ public class ReplayerAPIScripts implements FilteringClass {
             var singleLine = datasetContent.getIndexes().get(i);
             if (singleLine.getId() == Integer.parseInt(line)) {
                 var ref= allItems.stream().filter(a->a.getId()==singleLine.getReference()).findFirst().get();
-                result.setId(singleLine.getId());
+                result.setId(Integer.toString(singleLine.getId()));
                 result.setHost(ref.getRequest().getHost());
                 result.setPath(ref.getRequest().getPath());
                 result.setMethod(ref.getRequest().getMethod());
@@ -130,7 +131,9 @@ public class ReplayerAPIScripts implements FilteringClass {
             id = "5000daa6-277f-11ec-9621-0242ac1afe002scriptput")
     public void putScript(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
-        var line = Integer.parseInt(req.getPathParameter("line"));
+        var lines = Arrays.stream(req.getPathParameter("line").split(","))
+                .map(a->Integer.parseInt(a)).collect(Collectors.toList());
+
 
         var data = mapper.readValue(req.getRequestText(),Scripts.class);
 
@@ -140,33 +143,40 @@ public class ReplayerAPIScripts implements FilteringClass {
                 new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
         dataset.load(id, rootPath.toString(),null);
         var datasetContent = dataset.load();
-        if(data.getPre()==null || data.getPre().trim().isEmpty()){
-            datasetContent.getPreScript().remove(line+"");
-        }else{
-            datasetContent.getPreScript().put(line+"",data.getPre().trim());
+
+        for(var line:lines) {
+            if (data.getPre() == null || data.getPre().trim().isEmpty()) {
+                datasetContent.getPreScript().remove(line + "");
+            } else {
+                datasetContent.getPreScript().put(line + "", data.getPre().trim());
+            }
+
+            if (data.getPost() == null || data.getPost().trim().isEmpty()) {
+                datasetContent.getPostScript().remove(line + "");
+            } else {
+                datasetContent.getPostScript().put(line + "", data.getPost().trim());
+            }
         }
 
-        if(data.getPost()==null || data.getPost().trim().isEmpty()){
-            datasetContent.getPostScript().remove(line+"");
-        }else{
-            datasetContent.getPostScript().put(line+"",data.getPost().trim());
-        }
-        ReplayerRow foundedRow = null;
-        for(var dyr:datasetContent.getDynamicRequests()){
-            if(dyr.getId()==line){
-                foundedRow = dyr;
-                break;
+        if(lines.size()==1) {
+            var line = lines.get(0);
+            ReplayerRow foundedRow = null;
+            for (var dyr : datasetContent.getDynamicRequests()) {
+                if (dyr.getId() == line) {
+                    foundedRow = dyr;
+                    break;
+                }
             }
-        }
-        for(var dyr:datasetContent.getStaticRequests()){
-            if(dyr.getId()==line){
-                foundedRow = dyr;
-                break;
+            for (var dyr : datasetContent.getStaticRequests()) {
+                if (dyr.getId() == line) {
+                    foundedRow = dyr;
+                    break;
+                }
             }
-        }
-        if(foundedRow!=null){
-            foundedRow.getRequest().setHost(data.getHost());
-            foundedRow.getRequest().setPath(data.getPath());
+            if (foundedRow != null) {
+                foundedRow.getRequest().setHost(data.getHost());
+                foundedRow.getRequest().setPath(data.getPath());
+            }
         }
         dataset.justSave(datasetContent);
     }
