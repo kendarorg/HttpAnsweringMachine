@@ -17,11 +17,6 @@
       <option name="url" value="https://integrazione.mgmt.infocert.it:443/artifactory/libs-release" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="example-repo" />
-      <option name="name" value="Example Repository" />
-      <option name="url" value="file://$PROJECT_DIR$/app/externals" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo1.maven.org/maven2/" />
@@ -60,6 +55,11 @@
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="example-repo" />
+      <option name="name" value="Example Repository" />
+      <option name="url" value="file://$PROJECT_DIR$/app/externals" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central2" />

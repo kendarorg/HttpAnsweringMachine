@@ -2,15 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Death to the BOMs!!!">
-      <change afterPath="$PROJECT_DIR$/release/Run.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/release/Run.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Release.bat" beforeDir="false" afterPath="$PROJECT_DIR$/Release.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Release.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Release.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/images/ImagesBuild.bat" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/ImagesBuild.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/release/ImagesBuild.bat" beforeDir="false" afterPath="$PROJECT_DIR$/release/ImagesBuild.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/release/ImagesBuild.sh" beforeDir="false" afterPath="$PROJECT_DIR$/release/ImagesBuild.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ham/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/ReplayerStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/ReplayerStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/NullDataset.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/NullDataset.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/sampleapp/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/samples/sampleapp/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/sampleapp/.idea/runConfigurations/MainBeUsers.xml" beforeDir="false" afterPath="$PROJECT_DIR$/samples/sampleapp/.idea/runConfigurations/MainBeUsers.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/sampleapp/data/NullTest.json" beforeDir="false" afterPath="$PROJECT_DIR$/samples/sampleapp/data/NullTest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/sampleapp/gateway/src/main/java/org/kendar/be/MainBe.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/sampleapp/gateway/src/main/java/org/kendar/be/MainGa.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/sampleapp/gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/samples/sampleapp/gateway/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,6 +86,7 @@
       <workItem from="1649758831285" duration="263000" />
       <workItem from="1649777362449" duration="867000" />
       <workItem from="1649834593317" duration="1011000" />
+      <workItem from="1649858346995" duration="42000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>
