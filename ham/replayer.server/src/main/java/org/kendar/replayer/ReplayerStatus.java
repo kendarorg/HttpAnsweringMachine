@@ -193,6 +193,7 @@ public class ReplayerStatus {
         logger.info("NULL START");
         dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue,internalRequester, new Cache(),simpleProxyHandler);
         dataset.load(id, rootPath.toString(),null);
+        ((ReplayerDataset)dataset).load();
         var runId = ((NullDataset)dataset).start();
         state = ReplayerState.PLAYING_NULL_INFRASTRUCTURE;
         return runId;

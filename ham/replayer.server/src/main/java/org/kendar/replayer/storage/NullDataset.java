@@ -137,6 +137,7 @@ public class NullDataset extends ReplayerDataset{
                             executor.run(this.id, request, response, expectedResponse, script);
                         }
                     }
+                    request = simpleProxyHandler.translate(request);
                     internalRequester.callSite(request, response);
                     if(replayerResult.getPostScript().containsKey(currentIndex+"")){
                         var jsCallback = replayerResult.getPostScript().get(currentIndex+"");
