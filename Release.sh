@@ -31,3 +31,4 @@ rm -f "$mypath"release/target/docker/*.sh
 
 rm -rf "$mypath"release/target/docker/externalvpn
 cp "$mypath"release/ImagesBuild.* "$mypath"release/target/docker
+cp "$mypath"release/Run.* "$mypath"release/target/

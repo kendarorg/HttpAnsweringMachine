@@ -15,8 +15,6 @@ a
 1samples/sampleapp/docker_multi/docker-compose.yml,0/e/0e57bbff3cf19dc1ebf53a4a18ce5335c79b168a
 Q
 !docker/images/proxy/data/proxy.sh,0/0/00cfa11ecdf3fdb85ec150a618b455c44602405a
-M
-docker/images/ImagesBuild.bat,d/a/daf33132f5b851a1f8daaf48d12e820cb2b61a3f
 N
 docker/images/proxy/Dockerfile,5/d/5d630e09bb45edeecb1646960d1c1cf111d8da68
 7

@@ -21,8 +21,6 @@ docker build -t ham.proxy .
 cd ../openvpn
 docker build -t ham.openvpn .
 
-#exit 0
-
 cd ../master
 mkdir -p data/app
 rm -rf data/app/*.*
