@@ -35,3 +35,4 @@ del /q release\target\docker\*.sh >NUL 2>&1
 del /q /s release\target\docker\externalvpn >NUL 2>&1
 rmdir /q /s release\target\docker\externalvpn >NUL 2>&1
 copy release\ImagesBuild.* release\target\docker 1>NUL
+copy release\Run.* release\target 1>NUL

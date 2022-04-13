@@ -15,24 +15,6 @@ docker build -t ham.client .
 cd ../proxy
 docker build -t ham.proxy .
 
-REM cd ..\externalvpn\forticlient
-REM copy /Y ..\..\base\data\startservice.sh data/
-REM copy /Y ..\..\base\data\sshd_config data/
-REM copy /Y ..\..\base\data\ca.crt data/
-REM echo Build Vpn/forticlient
-REM docker build -t ham.forticlient .
-REM cd ..\
-
-
-REM cd ..\externalvpn\openconnect
-REM copy /Y ..\..\base\data\startservice.sh data/
-REM copy /Y ..\..\base\data\sshd_config data/
-REM copy /Y ..\..\base\data\ca.crt data/
-REM echo Build Vpn/Openconnect
-REM docker build -t ham.openconnect .
-REM cd ..\
-
-
 cd ../openvpn
 docker build -t ham.openvpn .
 
