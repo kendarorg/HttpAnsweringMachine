@@ -22,6 +22,10 @@ This plugin has several roles
 The filters involved acts in the following [phases](../lifecycle.md)
 
 * replaying: pre-render
+  * Run pre scripts
+  * Handle internal proxying
+  * Execute the request against the recorded data
+  * Run post scripts
 * recording: post-render
 
 ### JS Interception
@@ -51,3 +55,12 @@ context
 	var cache = new org.kendar.replayer.Cache();
 	cache.get(runid,"key");
 	cache.set(runid,"key","value");
+
+The variables are automatically replaced inside the request and response 
+and set with the following inside the whole content of the Request object
+
+    ##varname##
+
+A simple idea to verify the contents
+
+    if(expectedresponse.getResponseText()!=response.getResponseText()) throw "ERROR!";
