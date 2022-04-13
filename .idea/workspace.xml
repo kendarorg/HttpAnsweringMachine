@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Death to the BOMs!!!">
-      <change afterPath="$PROJECT_DIR$/Release.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/release/ImagesBuild.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Release.bat" beforeDir="false" afterPath="$PROJECT_DIR$/Release.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/.idea/jarRepositories.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +45,7 @@
     <property name="SONARLINT_PRECOMMIT_ANALYSIS" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -74,7 +73,8 @@
       <workItem from="1649348321423" duration="38000" />
       <workItem from="1649687587786" duration="68000" />
       <workItem from="1649758831285" duration="263000" />
-      <workItem from="1649777362449" duration="710000" />
+      <workItem from="1649777362449" duration="867000" />
+      <workItem from="1649834593317" duration="237000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>
@@ -127,11 +127,41 @@
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
+        <entry key="7fb184d6-bcd1-463c-a00b-79549b4cb95c">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="structure">
+                    <value>
+                      <list>
+                        <option value="dir:/Users/edaros/Personal/Github/HttpAnsweringMachine/release" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State />
           </value>
         </entry>
+      </map>
+    </option>
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="7fb184d6-bcd1-463c-a00b-79549b4cb95c" value="TOOL_WINDOW" />
       </map>
     </option>
   </component>
