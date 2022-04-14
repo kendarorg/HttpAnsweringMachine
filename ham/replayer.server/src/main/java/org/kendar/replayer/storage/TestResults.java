@@ -1,10 +1,13 @@
 package org.kendar.replayer.storage;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class TestResults {
+    private String isoDate;
     private String recordingId;
     private Calendar timestamp;
     private long duration;
@@ -26,6 +29,13 @@ public class TestResults {
 
     public void setTimestamp(Calendar timestamp) {
         this.timestamp = timestamp;
+        if(timestamp!=null){
+            Date date = timestamp.getTime();
+
+// Conversion
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            isoDate = sdf.format(date);
+        }
     }
 
     public long getDuration() {
@@ -60,4 +70,11 @@ public class TestResults {
         this.type = type;
     }
 
+    public String getIsoDate() {
+        return isoDate;
+    }
+
+    public void setIsoDate(String isoDate) {
+        this.isoDate = isoDate;
+    }
 }
