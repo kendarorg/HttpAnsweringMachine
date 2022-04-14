@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Death to the BOMs!!!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/plugins/replayer/replayer.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/plugins/replayer/replayer.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +80,8 @@
       <workItem from="1649834593317" duration="1011000" />
       <workItem from="1649858346995" duration="42000" />
       <workItem from="1649881073719" duration="36000" />
-      <workItem from="1649883018407" duration="435000" />
+      <workItem from="1649883018407" duration="566000" />
+      <workItem from="1649925456266" duration="25000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>

@@ -7,14 +7,14 @@ set /p builddocker="Build docker images (y/N): "
 if "%builddocker%"=="n" goto requery2
 if "%builddocker%"=="y" goto requery2
 if "%builddocker%"=="N" (
-	builddocker=n
+	set builddocker=n
 	goto requery2
 )
 if "%builddocker%"=="Y" (
-	builddocker=y
+	set builddocker=y
 	goto requery2
 )
-builddocker=n
+set builddocker=n
 
 :requery2
 set /p mavenbuild="Build java packages (y/N): "

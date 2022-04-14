@@ -16,12 +16,14 @@
             <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Scripts</button>
         </div>
         <div class="col-md-8">
-            <h3>Proxyes</h3>
+            <h3>Test results</h3>
             <table class="table table-striped" id="resultsTable">
                 <tr>
+                    <th>Date</th>
                     <th>Id</th>
                     <th>Name</th>
                     <th>Type</th>
+                    <th>Successful</th>
                     <th colspan="2"></th>
                 </tr>
             </table>
@@ -31,13 +33,14 @@
 <script src="/app/app.js"></script>
 <script>
 
-    var scriptsTable = new SimpleGrid("Results","resultsTable","fileId",["fileId","name","testType"],
+    var scriptsTable = new SimpleGrid("Results","resultsTable","fileId",["date","fileId","name","testType","_successful"],
         function(table){
             $.ajax({
                 url: "/api/plugins/replayer/results",
                 type: 'GET',
                 success: function(res) {
                     $.each(res, function(i, script) {
+                        script["_successful"]=script["successful"]?"Yes":"No";
                         table.appendToTable(script);
                     });
                 }

@@ -1,4 +1,4 @@
-package org.kendar.be.services;
+package org.kendar.ga.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

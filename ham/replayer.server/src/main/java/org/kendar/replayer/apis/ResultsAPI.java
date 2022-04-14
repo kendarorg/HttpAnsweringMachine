@@ -1,12 +1,14 @@
 package org.kendar.replayer.apis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.RecordingItem;
+import org.kendar.replayer.storage.TestResults;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -117,6 +119,18 @@ public class ResultsAPI  implements FilteringClass {
             Path fileName = path.getFileName();
             var parts = fileName.toString().split("\\.");
             var ra = new RecordingItem();
+            ra.setSuccessful(true);
+            try {
+                var rp = Path.of(nullDir.toString(),fileName.toString());
+                var fcc = FileUtils.readFileToString(rp.toFile(),"UTF-8");
+                var ts =mapper.readValue(fcc, TestResults.class);
+                ra.setDate(ts.getIsoDate());
+                if(ts.getError()!=null && !ts.getError().isEmpty()){
+                    ra.setSuccessful(false);
+                }
+            } catch (Exception e) {
+                continue;
+            }
             ra.setTestType(type);
             ra.setFileId(fileName.toString());
             ra.setName(parts[0]);

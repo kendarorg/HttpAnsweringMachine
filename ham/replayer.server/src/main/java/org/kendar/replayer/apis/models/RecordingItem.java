@@ -1,10 +1,11 @@
 package org.kendar.replayer.apis.models;
 
 public class RecordingItem {
+    private String date;
     private String testType;
     private String name;
     private String fileId;
-    private int successful=-1;
+    private boolean successful=false;
 
     public String getTestType() {
         return testType;
@@ -30,11 +31,19 @@ public class RecordingItem {
         this.fileId = fileId;
     }
 
-    public int getSuccessful() {
+    public boolean getSuccessful() {
         return successful;
     }
 
-    public void setSuccessful(int successful) {
+    public void setSuccessful(boolean successful) {
         this.successful = successful;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
