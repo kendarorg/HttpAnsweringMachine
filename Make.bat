@@ -21,14 +21,14 @@ set /p mavenbuild="Build java packages (y/N): "
 if "%mavenbuild%"=="n" goto ok
 if "%mavenbuild%"=="y" goto ok
 if "%mavenbuild%"=="N" (
-	mavenbuild=n
+	set mavenbuild=n
 	goto ok
 )
 if "%mavenbuild%"=="Y" (
-	mavenbuild=y
+	set mavenbuild=y
 	goto ok
 )
-mavenbuild=n
+set mavenbuild=n
 
 
 :ok
