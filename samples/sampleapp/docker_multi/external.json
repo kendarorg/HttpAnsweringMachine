@@ -19,7 +19,12 @@
     ],
     "blocked": [
       "wpad.*",
-      "*.trafficmanager.net"
+      "*.trafficmanager.net",
+      "www.google.com",
+      "update.googleapis.com",
+      "accounts.googleapis.com",
+      "optimizationguide-pa.googleapis.com",
+      "clientservices.googleapis.com"
     ],
     "resolved": [
       {
