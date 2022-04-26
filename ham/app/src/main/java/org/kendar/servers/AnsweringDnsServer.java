@@ -40,7 +40,7 @@ public class AnsweringDnsServer implements AnsweringServer {
 
     try {
       dnsServer.run();
-    } catch (IOException e) {
+    } catch (IOException | InterruptedException e) {
       logger.error("Error running DNS server",e);
     } finally {
       running = false;

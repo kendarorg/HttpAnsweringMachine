@@ -83,4 +83,13 @@ public class Response {
 
         return r;
     }
+
+    public void removeHeader(String s) {
+        for(var kvp : headers.keySet()){
+            if(s.equalsIgnoreCase(kvp)){
+                headers.remove(kvp);
+                return;
+            }
+        }
+    }
 }

@@ -56,7 +56,7 @@ public class SimpleDns implements CommandLineRunner {
     while (true) {
       try {
         dnsServer.run();
-      } catch (IOException e) {
+      } catch (IOException | InterruptedException e) {
         e.printStackTrace();
       }
     }
