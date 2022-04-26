@@ -40,9 +40,9 @@ public class ReplayFilter implements FilteringClass {
   public boolean replay(Request req, Response res) {
     if (req.getHost().equalsIgnoreCase(localAddress)) return false;
     if (replayerStatus.getStatus() != ReplayerState.REPLAYING && replayerStatus.getStatus() != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) return false;
-    logger.info("Recording "+
+    logger.info("Replaying "+
             req.getProtocol()+"://"+
-            req.getHost()+"/"+
+            req.getHost()+
             req.getPath());
     return replayerStatus.replay(req, res);
   }
