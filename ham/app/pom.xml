@@ -194,7 +194,7 @@
         <dependency>
             <groupId>org.brotli</groupId>
             <artifactId>dec</artifactId>
-            <version>0.1.2</version>
+            <version>${brotli.dec.version}</version>
         </dependency>
 
     </dependencies>

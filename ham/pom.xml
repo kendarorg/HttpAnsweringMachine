@@ -51,6 +51,7 @@
         <version.common-lang3>3.7</version.common-lang3>
         <json.schema.validator.version>1.0.66</json.schema.validator.version>
         <mockito.version>3.5.9</mockito.version>
+        <brotli.dec.version>0.1.2</brotli.dec.version>
     </properties>
 
     <modules>
