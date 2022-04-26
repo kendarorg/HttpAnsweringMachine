@@ -27,7 +27,6 @@
     </parent>
 
     <dependencies>
-
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>app.commons</artifactId>
@@ -191,6 +190,12 @@
             <artifactId>xom</artifactId>
             <version>1.2.10</version>
         </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.brotli/dec -->
+        <dependency>
+            <groupId>org.brotli</groupId>
+            <artifactId>dec</artifactId>
+            <version>0.1.2</version>
+        </dependency>
 
     </dependencies>
 

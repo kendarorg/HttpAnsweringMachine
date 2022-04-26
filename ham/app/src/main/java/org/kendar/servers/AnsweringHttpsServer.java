@@ -3,6 +3,9 @@ package org.kendar.servers;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
+import org.kendar.events.Event;
+import org.kendar.events.EventQueue;
+import org.kendar.events.events.SSLChangedEvent;
 import org.kendar.servers.certificates.CertificatesManager;
 import org.kendar.servers.certificates.GeneratedCert;
 import org.kendar.servers.config.HttpsWebServerConfig;
@@ -35,6 +38,7 @@ import java.util.stream.Collectors;
 @Component
 public class AnsweringHttpsServer implements AnsweringServer {
   private final JsonConfiguration configuration;
+  private EventQueue eventQueue;
   private final Logger logger;
   private final AnsweringHandler handler;
   private final CertificatesManager certificatesManager;
@@ -44,14 +48,21 @@ public class AnsweringHttpsServer implements AnsweringServer {
   private HttpsServer httpsServer;
 
   public AnsweringHttpsServer(
-      LoggerBuilder loggerBuilder,
-      AnsweringHandler handler,
-      CertificatesManager certificatesManager,
-      JsonConfiguration configuration) {
+          LoggerBuilder loggerBuilder,
+          AnsweringHandler handler,
+          CertificatesManager certificatesManager,
+          JsonConfiguration configuration,
+          EventQueue eventQueue) {
     this.logger = loggerBuilder.build(AnsweringHttpsServer.class);
     this.handler = handler;
     this.certificatesManager = certificatesManager;
     this.configuration = configuration;
+    this.eventQueue = eventQueue;
+    eventQueue.register((e)->handleCertificateChange(e), SSLChangedEvent.class);
+  }
+
+  public void handleCertificateChange(SSLChangedEvent t) {
+    sslTimestamp.set(-1);
   }
 
   public void isSystem() {}
@@ -102,7 +113,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
                 params.setSSLParameters(sslParameters);
 
               } catch (Exception ex) {
-                System.out.println("Failed to create HTTPS port");
+                logger.debug("Failed to create HTTPS port");
               }
             }
           });

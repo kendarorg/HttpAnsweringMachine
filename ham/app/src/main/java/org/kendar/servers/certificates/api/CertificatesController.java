@@ -1,6 +1,7 @@
 package org.kendar.servers.certificates.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
@@ -24,12 +25,15 @@ import java.util.zip.ZipOutputStream;
 public class CertificatesController implements FilteringClass {
   final ObjectMapper mapper = new ObjectMapper();
   private final FileResourcesUtils fileResourcesUtils;
+  private EventQueue eventQueue;
   private final Logger logger;
 
-  public CertificatesController(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
+  public CertificatesController(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder,
+                                EventQueue eventQueue) {
     logger = loggerBuilder.build(CertificatesController.class);
 
     this.fileResourcesUtils = fileResourcesUtils;
+    this.eventQueue = eventQueue;
   }
 
   @Override

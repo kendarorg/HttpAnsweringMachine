@@ -5,12 +5,15 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.brotli.dec.BrotliInputStream;
 import org.kendar.utils.MimeChecker;
 import org.kendar.utils.SimpleStringUtils;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Locale;
@@ -150,20 +153,37 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
   public void fromHttpResponse(HttpResponse httpResponse, Response response)
       throws IOException {
     HttpEntity responseEntity = httpResponse.getEntity();
+
+    var brotli = false;
+    String contentEncoding = "";
     if (responseEntity != null) {
       InputStream in = responseEntity.getContent();
 
-      String contentEncoding = "";
       if (null != responseEntity.getContentEncoding()) {
         contentEncoding = responseEntity.getContentEncoding().getValue().toLowerCase(Locale.ROOT);
       }
+      if(contentEncoding==null)contentEncoding="";
+
+
+      brotli = contentEncoding.equalsIgnoreCase("br");
       if (responseEntity.getContentType() != null
           && responseEntity.getContentType().getValue() != null
           && MimeChecker.isBinary(responseEntity.getContentType().getValue(), contentEncoding)) {
-        response.setResponseBytes(IOUtils.toByteArray(in));
+
+        if(brotli){
+          response.setResponseBytes(IOUtils.toByteArray(new BrotliInputStream(in)));
+          response.removeHeader("content-encoding");
+        }else {
+          response.setResponseBytes(IOUtils.toByteArray(in));
+        }
         response.setBinaryResponse(true);
       } else {
-        response.setResponseText(IOUtils.toString(in, StandardCharsets.UTF_8));
+        if(brotli){
+          response.setResponseText(IOUtils.toString(new BrotliInputStream(in), StandardCharsets.UTF_8));
+          response.removeHeader("content-encoding");
+        }else {
+          response.setResponseText(IOUtils.toString(in, StandardCharsets.UTF_8));
+        }
       }
     } else {
       response.setBinaryResponse(true);
@@ -173,6 +193,9 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
     for (var header : httpResponse.getAllHeaders()) {
       if (header.getName().equalsIgnoreCase("transfer-encoding")) continue;
       response.addHeader(header.getName(), header.getValue());
+    }
+    if(brotli){
+      response.removeHeader("content-encoding");
     }
   }
 }

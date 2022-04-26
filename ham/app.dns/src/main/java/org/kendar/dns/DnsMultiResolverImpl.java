@@ -208,7 +208,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
   @Override
   public List<String> resolveRemote(String requestedDomain) {
 
-    if(forgetThem.contains(requestedDomain) )return new ArrayList<>();
+    //if(forgetThem.contains(requestedDomain) )return new ArrayList<>();
     var config = configuration.getConfiguration(DnsConfig.class);
     var data = new HashSet<String>();
     if (isBlockedDomainQuery(requestedDomain, config)) {
@@ -304,7 +304,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
       }
     }
     if(result.size()==0){
-      forgetThem.put(requestedDomain,requestedDomain);
+      //forgetThem.put(requestedDomain,requestedDomain);
     }else{
       localDomains.put(requestedDomain.toLowerCase(Locale.ROOT), new HashSet<>(data));
     }
@@ -354,13 +354,12 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
   public List<String> resolve(String requestedDomain) {
     requestedDomain = requestedDomain.toLowerCase(Locale.ROOT);
 
-    if (localDomains.containsKey(requestedDomain)) {
-      return new ArrayList<>(localDomains.get(requestedDomain));
-    }
-
     var localData = resolveLocal(requestedDomain);
     if (localData.size() > 0) {
       return localData;
+    }
+    if (localDomains.containsKey(requestedDomain)) {
+      return new ArrayList<>(localDomains.get(requestedDomain));
     }
     return resolveRemote(requestedDomain);
   }

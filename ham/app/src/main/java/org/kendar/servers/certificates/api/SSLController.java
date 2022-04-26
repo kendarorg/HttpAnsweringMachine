@@ -2,6 +2,8 @@ package org.kendar.servers.certificates.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.events.EventQueue;
+import org.kendar.events.events.SSLChangedEvent;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
@@ -20,10 +22,13 @@ import java.util.ArrayList;
 public class SSLController implements FilteringClass {
   final ObjectMapper mapper = new ObjectMapper();
   private final JsonConfiguration configuration;
+  private EventQueue eventQueue;
 
-  public SSLController(JsonConfiguration configuration) {
+  public SSLController(JsonConfiguration configuration,
+                       EventQueue eventQueue) {
 
     this.configuration = configuration;
+    this.eventQueue = eventQueue;
   }
 
   @Override
@@ -62,6 +67,7 @@ public class SSLController implements FilteringClass {
     cloned.setDomains(newList);
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);
+    eventQueue.handle(new SSLChangedEvent());
   }
 
   @HttpMethodFilter(
@@ -86,6 +92,7 @@ public class SSLController implements FilteringClass {
     domains.set(id2Index, id1Clone);
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);
+    eventQueue.handle(new SSLChangedEvent());
   }
 
   @HttpMethodFilter(
@@ -107,5 +114,6 @@ public class SSLController implements FilteringClass {
     cloned.setDomains(newList);
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);
+    eventQueue.handle(new SSLChangedEvent());
   }
 }

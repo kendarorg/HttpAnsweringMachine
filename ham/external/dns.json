@@ -7,6 +7,11 @@
   "extraServers": [
     {
       "id": "1",
+      "address": "8.8.8.8",
+      "enabled": true
+    },
+    {
+      "id": "5",
       "address": "8.8.4.4",
       "enabled": true
     }
