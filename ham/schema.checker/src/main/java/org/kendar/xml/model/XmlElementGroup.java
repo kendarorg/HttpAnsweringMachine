@@ -19,7 +19,7 @@ public class XmlElementGroup {
                 ", \"tag\":\"" + tag + "\"" +
                 ", \"constraint\":\"" + constraint +"\"" +
                 ", \"items\":[" + String.join(",",items.stream()
-                .sorted(Comparator.comparing(XmlElement::getTag)).map(a->a.toString()).collect(Collectors.toList())) +"]"+
+                .sorted(Comparator.comparing(XmlElement::getTag)).map(XmlElement::toString).collect(Collectors.toList())) +"]"+
                 '}';
     }
 

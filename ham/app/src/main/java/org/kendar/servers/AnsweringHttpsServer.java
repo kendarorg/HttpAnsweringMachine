@@ -57,7 +57,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
     this.handler = handler;
     this.certificatesManager = certificatesManager;
     this.configuration = configuration;
-    eventQueue.register((e)->handleCertificateChange(e), SSLChangedEvent.class);
+    eventQueue.register(this::handleCertificateChange, SSLChangedEvent.class);
   }
 
   boolean restart = false;

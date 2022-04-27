@@ -47,7 +47,7 @@ public class DnsMappingsApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/hosts",
             method = "GET",id="1000a4b4asd-277d-11ef-9621-0242ac130002")
-    public void getHostsFile(Request req, Response res) throws JsonProcessingException {
+    public void getHostsFile(Request req, Response res)  {
         var records = configuration.getConfiguration(DnsConfig.class).getResolved();
         StringBuilder result = new StringBuilder();
         for(var record:records){
@@ -110,7 +110,7 @@ public class DnsMappingsApis implements FilteringClass {
 
         final var newList2= newList;
         var notNew = cloned.getResolved().stream()
-                .filter(a->!newList2.stream().anyMatch(m-> m.getDns().equalsIgnoreCase(a.getDns())))
+                .filter(a-> newList2.stream().noneMatch(m-> m.getDns().equalsIgnoreCase(a.getDns())))
                 .collect(Collectors.toList());
         newList.addAll(notNew);
 

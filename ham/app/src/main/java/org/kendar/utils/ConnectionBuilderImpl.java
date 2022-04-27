@@ -98,12 +98,7 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
     private Registry<ConnectionSocketFactory> buildSslUncheckedRegistry() {
         SSLContextBuilder contextBuilder = new SSLContextBuilder();
         try {
-            contextBuilder.loadTrustMaterial(null, new TrustStrategy() {
-                @Override
-                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                    return true;
-                }
-            });
+            contextBuilder.loadTrustMaterial(null, (TrustStrategy) (chain, authType) -> true);
             SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(contextBuilder.build(),
                     SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
             //SSLConnectionSocketFactory sslsf = SSLConnectionSocketFactory.getSocketFactory()).build()

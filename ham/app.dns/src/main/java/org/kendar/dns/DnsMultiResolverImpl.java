@@ -320,7 +320,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     return result;
   }
 
-  private ThreeParamsFunction<String, String, LoggerBuilder, Callable<List<String>>> runnable = (a,b,c)-> new DnsRunnable(a,b,c);
+  private ThreeParamsFunction<String, String, LoggerBuilder, Callable<List<String>>> runnable = DnsRunnable::new;
 
   @Override
   public void setRunnable(ThreeParamsFunction<String, String, LoggerBuilder, Callable<List<String>>> runnable) {

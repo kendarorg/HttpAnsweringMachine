@@ -73,7 +73,7 @@ public class RecordingDataset implements BaseDataset{
                 if(rowValue.size()==1) {
                     partialResult.add(rowValue.get(0));
                 }else{
-                    rowValue.stream().forEach(a->a.getRequest().setStaticRequest(false));
+                    rowValue.forEach(a->a.getRequest().setStaticRequest(false));
                     partialResult.addAll(rowValue);
                 }
             }
@@ -90,7 +90,7 @@ public class RecordingDataset implements BaseDataset{
             }
 
             result.setDescription(description);
-            result.setIndexes(indexes.stream().collect(Collectors.toList()));
+            result.setIndexes(new ArrayList<>(indexes));
             dataReorganizer.reorganizeData(result, partialResult);
 
             var allDataString = mapper.writeValueAsString(result);

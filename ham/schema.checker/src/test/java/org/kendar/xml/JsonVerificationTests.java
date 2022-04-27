@@ -11,7 +11,7 @@ public class JsonVerificationTests extends BaseUtils {
 
 
     @Test
-    public void missingChild() throws IOException, XmlException {
+    public void missingChild()  {
         var xml1 = read("/json/template.json");
         var xml2 = read("/json/missingChild.json");
 
@@ -22,7 +22,7 @@ public class JsonVerificationTests extends BaseUtils {
     }
 
     @Test
-    public void missingValue() throws IOException, XmlException {
+    public void missingValue()  {
         var xml1 = read("/json/template.json");
         var xml2 = read("/json/missingValue.json");
 
@@ -33,7 +33,7 @@ public class JsonVerificationTests extends BaseUtils {
     }
 
     @Test
-    public void missingValueEmpty() throws IOException, XmlException {
+    public void missingValueEmpty()  {
         var xml1 = read("/json/template.json");
         var xml2 = read("/json/missingValueEmpty.json");
 
@@ -44,7 +44,7 @@ public class JsonVerificationTests extends BaseUtils {
     }
 
     @Test
-    public void correct() throws IOException, XmlException {
+    public void correct() throws  XmlException {
         var xml1 = read("/json/template.json");
         var xml2 = read("/json/correct.json");
 
@@ -52,7 +52,7 @@ public class JsonVerificationTests extends BaseUtils {
         assertTrue(target.diff(xml1,xml2));
     }
     @Test
-    public void correctEmptyArray() throws IOException, XmlException {
+    public void correctEmptyArray() throws  XmlException {
         var xml1 = "[]";
         var xml2 = "[]";
 
@@ -61,7 +61,7 @@ public class JsonVerificationTests extends BaseUtils {
     }
 
     @Test
-    public void arrayCorrect() throws IOException, XmlException {
+    public void arrayCorrect() throws XmlException {
         var xml1 = read("/json/templateArray.json");
         var xml2 = read("/json/arrayCorrect.json");
 
@@ -70,7 +70,7 @@ public class JsonVerificationTests extends BaseUtils {
     }
 
     @Test
-    public void arrayFailEmpty() throws IOException, XmlException {
+    public void arrayFailEmpty()  {
         var xml1 = read("/json/templateArray.json");
         var xml2 = read("/json/arrayFailEmpty.json");
 
@@ -81,7 +81,7 @@ public class JsonVerificationTests extends BaseUtils {
     }
 
     @Test
-    public void arrayFail() throws IOException, XmlException {
+    public void arrayFail()  {
         var xml1 = read("/json/templateArray.json");
         var xml2 = read("/json/arrayFail.json");
 
@@ -92,7 +92,7 @@ public class JsonVerificationTests extends BaseUtils {
     }
 
     @Test
-    public void missingObject() throws IOException, XmlException {
+    public void missingObject()  {
         var xml1 = read("/json/template.json");
         var xml2 = read("/json/missingObject.json");
 
@@ -103,7 +103,7 @@ public class JsonVerificationTests extends BaseUtils {
     }
 
     @Test
-    public void missingObject2() throws IOException, XmlException {
+    public void missingObject2()  {
         var xml1 = read("/json/object.json");
         var xml2 = read("/json/objectMissing.json");
 
@@ -113,7 +113,7 @@ public class JsonVerificationTests extends BaseUtils {
         }, "#object#.a MISSING CHILD b");
     }
     @Test
-    public void correctWeirdStuffs() throws IOException, XmlException {
+    public void correctWeirdStuffs()  {
        
         final String xml1 = "{\"a\":\"b\",\"c\":\"d\"}";
         final String  xml2 = "{\"a\":\"b\"}";

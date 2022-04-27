@@ -53,9 +53,7 @@ public class DnsServer {
   }
 
   private void runTcp(){
-    try {
-      ServerSocket serverSocket = new ServerSocket(dnsPort);
-
+    try (ServerSocket serverSocket = new ServerSocket(dnsPort)) {
 
 
       while (running.get()) {
@@ -106,9 +104,8 @@ public class DnsServer {
   private final AtomicBoolean running = new AtomicBoolean(false);
 
   private void runUdp()  {
-    try {
-      DatagramSocket socket = new DatagramSocket(null);
-      socket.setReuseAddress(true);
+    try(DatagramSocket socket = new DatagramSocket(null)) {
+        socket.setReuseAddress(true);
       socket.bind(new InetSocketAddress("0.0.0.0", dnsPort));
       // socket.setSoTimeout(0);
       logger.info("Dns server LOADED, port: " + dnsPort);
@@ -125,12 +122,10 @@ public class DnsServer {
           var inCopy = in.clone();
           var inAddress = indp.getAddress();
           var inPort = indp.getPort();
-          executorService.submit(()->{
-            resolveAll(inAddress,inPort, socket, inCopy);
-          });
+          executorService.submit(()-> resolveAll(inAddress,inPort, socket, inCopy));
 
         } catch (InterruptedIOException e) {
-          continue;
+
         }
       }
     }catch (Exception ex){
@@ -152,12 +147,9 @@ public class DnsServer {
     }
   }
 
-
-
-  @SuppressWarnings("InfiniteLoopStatement")
   public void run() throws IOException, InterruptedException {
-    var udpThread = new Thread(() -> runUdp());
-    var tcpThread = new Thread(() -> runTcp());
+    var udpThread = new Thread(this::runUdp);
+    var tcpThread = new Thread(this::runTcp);
     running.set(true);
     udpThread.start();
     tcpThread.start();

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -69,14 +70,14 @@ public class ReplayerAPIScripts implements FilteringClass {
         var prev = -1;
         var next = -1;
         var result = new Scripts();
-        var allItems = datasetContent.getDynamicRequests().stream().collect(Collectors.toList());
-        allItems.addAll(datasetContent.getStaticRequests().stream().collect(Collectors.toList()));
+        var allItems = new ArrayList<>(datasetContent.getDynamicRequests());
+        allItems.addAll(new ArrayList<>(datasetContent.getStaticRequests()));
         datasetContent.getIndexes().sort(Comparator.comparingInt(CallIndex::getId));
         for(var i=0;i<datasetContent.getIndexes().size();i++){
             var singleLine = datasetContent.getIndexes().get(i);
             if (singleLine.getId() == Integer.parseInt(line)) {
                 var possible = allItems.stream().filter(a->a.getId()==singleLine.getReference()).findFirst();
-                if(!possible.isPresent()){
+                if(possible.isEmpty()){
                     continue;
                 }
                 var ref= possible.get();
@@ -136,7 +137,7 @@ public class ReplayerAPIScripts implements FilteringClass {
     public void putScript(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var lines = Arrays.stream(req.getPathParameter("line").split(","))
-                .map(a->Integer.parseInt(a)).collect(Collectors.toList());
+                .map(Integer::parseInt).collect(Collectors.toList());
 
 
         var data = mapper.readValue(req.getRequestText(),Scripts.class);

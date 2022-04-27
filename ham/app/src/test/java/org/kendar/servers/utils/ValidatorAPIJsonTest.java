@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class ValidatorAPITestJson {
+public class ValidatorAPIJsonTest {
     private final String TEMPLATE= "{\n" +
             "  \"squadName\": \"Super hero squad\",\n" +
             "  \"homeTown\": \"Metro City\",\n" +
