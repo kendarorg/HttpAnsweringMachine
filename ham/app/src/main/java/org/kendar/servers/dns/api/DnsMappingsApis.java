@@ -45,6 +45,23 @@ public class DnsMappingsApis implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/dns/hosts",
+            method = "GET",id="1000a4b4asd-277d-11ef-9621-0242ac130002")
+    public void getHostsFile(Request req, Response res) throws JsonProcessingException {
+        var records = configuration.getConfiguration(DnsConfig.class).getResolved();
+        var result = "";
+        for(var record:records){
+            if(!record.patternMatcher()){
+                result+=record.getIp()+" "+record.getDns()+"\r\n";
+            }
+        }
+        res.addHeader("Content-type", "text/plain");
+        res.addHeader("Content-disposition", "inline;filename=hosts");
+
+        res.setResponseText(result);
+    }
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
       pathAddress = "/api/dns/mappings/{id}",
       method = "PUT",id="1000a4f4-277d-11ef-9621-0242ac130002")
     public void saveDnsMappings(Request req, Response res) throws JsonProcessingException {
@@ -63,6 +80,8 @@ public class DnsMappingsApis implements FilteringClass {
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(newMapped));
     }
+
+
 
     @HttpMethodFilter(phase = HttpFilterType.API,
       pathAddress = "/api/dns/mappings",
