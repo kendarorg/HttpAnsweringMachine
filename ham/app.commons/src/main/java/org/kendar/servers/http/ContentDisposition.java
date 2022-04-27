@@ -20,7 +20,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class ContentDisposition {
 
   private static final Pattern BASE64_ENCODED_PATTERN =
-      Pattern.compile("=\\?([0-9a-zA-Z-_]+)\\?B\\?([+/0-9a-zA-Z]+=*)\\?=");
+      Pattern.compile("=\\?([\\da-zA-Z-_]+)\\?B\\?([+/\\da-zA-Z]+=*)\\?=");
 
   private static final String INVALID_HEADER_FIELD_PARAMETER_FORMAT =
       "Invalid header field parameter format (as defined in RFC 5987)";
@@ -390,7 +390,7 @@ public class ContentDisposition {
   /**
    * Return the value of the {@literal size} parameter, or {@code null} if not defined.
    *
-   * @deprecated since 5.2.3 as per <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC
+   * @deprecated since 5.2.3 as per <a href="<a href="https://tools.ietf.org/html/rfc6266#appendix-B">https://tools.ietf.org/html/rfc6266#appendix-B</a>">RFC
    *     6266, Appendix B</a>, to be removed in a future release.
    */
   @Deprecated
@@ -402,7 +402,7 @@ public class ContentDisposition {
   /**
    * Return the value of the {@literal creation-date} parameter, or {@code null} if not defined.
    *
-   * @deprecated since 5.2.3 as per <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC
+   * @deprecated since 5.2.3 as per <a href="<a href="https://tools.ietf.org/html/rfc6266#appendix-B">https://tools.ietf.org/html/rfc6266#appendix-B</a>">RFC
    *     6266, Appendix B</a>, to be removed in a future release.
    */
   @Deprecated
@@ -414,7 +414,7 @@ public class ContentDisposition {
   /**
    * Return the value of the {@literal modification-date} parameter, or {@code null} if not defined.
    *
-   * @deprecated since 5.2.3 as per <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC
+   * @deprecated since 5.2.3 as per <a href="<a href="https://tools.ietf.org/html/rfc6266#appendix-B">https://tools.ietf.org/html/rfc6266#appendix-B</a>">RFC
    *     6266, Appendix B</a>, to be removed in a future release.
    */
   @Deprecated
@@ -426,7 +426,7 @@ public class ContentDisposition {
   /**
    * Return the value of the {@literal read-date} parameter, or {@code null} if not defined.
    *
-   * @deprecated since 5.2.3 as per <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC
+   * @deprecated since 5.2.3 as per <a href="<a href="https://tools.ietf.org/html/rfc6266#appendix-B">https://tools.ietf.org/html/rfc6266#appendix-B</a>">RFC
    *     6266, Appendix B</a>, to be removed in a future release.
    */
   @Deprecated
@@ -532,7 +532,7 @@ public class ContentDisposition {
      * Only the US-ASCII, UTF-8 and ISO-8859-1 charsets are supported.
      *
      * <p><strong>Note:</strong> Do not use this for a {@code "multipart/form-data"} requests as per
-     * <a link="https://tools.ietf.org/html/rfc7578#section-4.2">RFC 7578, Section 4.2</a> and also
+     * <a link="<a href="https://tools.ietf.org/html/rfc7578#section-4.2">https://tools.ietf.org/html/rfc7578#section-4.2</a>">RFC 7578, Section 4.2</a> and also
      * RFC 5987 itself mentions it does not apply to multipart requests.
      */
     Builder filename(String filename, String charset);
@@ -540,7 +540,7 @@ public class ContentDisposition {
     /**
      * Set the value of the {@literal size} parameter.
      *
-     * @deprecated since 5.2.3 as per <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC
+     * @deprecated since 5.2.3 as per <a href="<a href="https://tools.ietf.org/html/rfc6266#appendix-B">https://tools.ietf.org/html/rfc6266#appendix-B</a>">RFC
      *     6266, Appendix B</a>, to be removed in a future release.
      */
     @Deprecated
@@ -549,7 +549,7 @@ public class ContentDisposition {
     /**
      * Set the value of the {@literal creation-date} parameter.
      *
-     * @deprecated since 5.2.3 as per <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC
+     * @deprecated since 5.2.3 as per <a href="<a href="https://tools.ietf.org/html/rfc6266#appendix-B">https://tools.ietf.org/html/rfc6266#appendix-B</a>">RFC
      *     6266, Appendix B</a>, to be removed in a future release.
      */
     @Deprecated
@@ -558,7 +558,7 @@ public class ContentDisposition {
     /**
      * Set the value of the {@literal modification-date} parameter.
      *
-     * @deprecated since 5.2.3 as per <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC
+     * @deprecated since 5.2.3 as per <a href="<a href="https://tools.ietf.org/html/rfc6266#appendix-B">https://tools.ietf.org/html/rfc6266#appendix-B</a>">RFC
      *     6266, Appendix B</a>, to be removed in a future release.
      */
     @Deprecated
@@ -567,7 +567,7 @@ public class ContentDisposition {
     /**
      * Set the value of the {@literal read-date} parameter.
      *
-     * @deprecated since 5.2.3 as per <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC
+     * @deprecated since 5.2.3 as per <a href="<a href="https://tools.ietf.org/html/rfc6266#appendix-B">https://tools.ietf.org/html/rfc6266#appendix-B</a>">RFC
      *     6266, Appendix B</a>, to be removed in a future release.
      */
     @Deprecated

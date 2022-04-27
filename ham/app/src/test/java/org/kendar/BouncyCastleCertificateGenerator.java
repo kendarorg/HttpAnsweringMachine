@@ -202,14 +202,7 @@ public class BouncyCastleCertificateGenerator {
         fos.flush();
         fos.close();
 
-         /*var p8encryptorBuilder = new JceOpenSSLPKCS8EncryptorBuilder(PKCSObjectIdentifiers.pbeWithSHAAnd3_KeyTripleDES_CBC);
-        builder = new JcaPKCS8EncryptedPrivateKeyInfoBuilder(priv);
-        outputBuilder = p8encryptorBuilder.build();
-         privKeyObj = builder.build(outputBuilder);
-         fos = new FileOutputStream(fileName+".key");
-        fos.write(privKeyObj.getEncoded());
-        fos.flush();
-        fos.close();*/
+
          sw = new StringWriter();
         try (JcaPEMWriter  writer  = new JcaPEMWriter(sw)) {
             writer.writeObject(priv);
@@ -218,17 +211,5 @@ public class BouncyCastleCertificateGenerator {
          bw = new BufferedWriter(new FileWriter(fileName+".key"));
         bw.write(pem);
         bw.close();
-
-        //PublicKey pub = rootKeyPair.getPublic();
-        /*//var datt = pub.getEncoded();
-         sw = new StringWriter();
-        JcaPEMWriter pemWriter = new JcaPEMWriter(sw);
-        pemWriter.writeObject(pub);
-        pemWriter.close();
-        var data = sw.toString();
-        FileOutputStream pubOut = new FileOutputStream(fileName+".pub.key");
-        pubOut.write(data.getBytes());
-        pubOut.close();*/
-
     }
 }

@@ -14,43 +14,26 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BaseUtils {
     protected ObjectMapper mapper = new ObjectMapper();
 
-    private XmlBuilder builder = new XmlBuilder();
+    private final XmlBuilder builder = new XmlBuilder();
     protected XmlElement toXmlElement(String xml){
         return builder.load(toXml(xml).getDocumentElement(),0,new DiffPath());
     }
 
     protected String read(String path){
         try {
-            return IOUtils.toString( this.getClass().getResourceAsStream(path), "UTF-8");
+            return IOUtils.toString( this.getClass().getResourceAsStream(path), StandardCharsets.UTF_8);
         } catch (IOException e) {
             return null;
         }
     }
 
-    /*
-    protected Document readJson(String path){
-        try {
-            var str = read(path);
-            JsonNode node = mapper.readValue(str, JsonNode.class);
-            XmlMapper xmlMapper = new XmlMapper();
-            xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
-            xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_1_1, true);
-            ObjectWriter ow = xmlMapper.writer().withRootName("root");
-            StringWriter w = new StringWriter();
-            ow.writeValue(w, node);
-            var xml = w.toString();
-            return toXml(xml);
-        }catch(Exception ex){
-            return null;
-        }
-
-    }*/
 
     protected Document readXml(String path){
         return toXml(read(path));

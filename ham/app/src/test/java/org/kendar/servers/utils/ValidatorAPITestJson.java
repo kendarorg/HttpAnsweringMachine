@@ -13,32 +13,6 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 public class ValidatorAPITestJson {
-    private final String S_VALID = "{\n" +
-            "  \"firstName\": \"John\",\n" +
-            "  \"lastName\": \"Doe\",\n" +
-            "  \"age\": 21\n" +
-            "}";
-    private final String SCHEMA ="{\n" +
-            "  \"$id\": \"https://example.com/person.schema.json\",\n" +
-            "  \"$schema\": \"https://json-schema.org/draft-07/schema\",\n" +
-            "  \"title\": \"Person\",\n" +
-            "  \"type\": \"object\",\n" +
-            "  \"properties\": {\n" +
-            "    \"firstName\": {\n" +
-            "      \"type\": \"string\",\n" +
-            "      \"description\": \"The person's first name.\"\n" +
-            "    },\n" +
-            "    \"lastName\": {\n" +
-            "      \"type\": \"string\",\n" +
-            "      \"description\": \"The person's last name.\"\n" +
-            "    },\n" +
-            "    \"age\": {\n" +
-            "      \"description\": \"Age in years which must be equal to or greater than zero.\",\n" +
-            "      \"type\": \"integer\",\n" +
-            "      \"minimum\": 0\n" +
-            "    }\n" +
-            "  }\n" +
-            "}";
     private final String TEMPLATE= "{\n" +
             "  \"squadName\": \"Super hero squad\",\n" +
             "  \"homeTown\": \"Metro City\",\n" +
@@ -81,68 +55,6 @@ public class ValidatorAPITestJson {
             "  ]\n" +
             "}";
 
-    private final String VALID = "{\n" +
-            "  \"squadName\": \"Super hero squad\",\n" +
-            "  \"homeTown\": \"Metro City\",\n" +
-            "  \"formed\": 2016,\n" +
-            "  \"secretBase\": \"Super tower\",\n" +
-            "  \"active\": true,\n" +
-            "  \"members\": [\n" +
-            "    {\n" +
-            "      \"name\": \"Molecule Man\",\n" +
-            "      \"age\": 29,\n" +
-            "      \"secretIdentity\": \"Dan Jukes\",\n" +
-            "      \"powers\": [\n" +
-            "        \"Radiation resistance\"\n" +
-            "      ]\n" +
-            "    }\n" +
-            "  ]\n" +
-            "}";
-
-    private final String VALID_NULL = "{\n" +
-            "  \"squadName\": \"Super hero squad\",\n" +
-            "  \"homeTown\": \"Metro City\",\n" +
-            "  \"formed\": 2016,\n" +
-            "  \"secretBase\": \"Super tower\",\n" +
-            "  \"active\": true,\n" +
-            "  \"members\": [\n" +
-            "    {\n" +
-            "      \"name\": \"Molecule Man\",\n" +
-            "      \"age\": 29,\n" +
-            //"      \"secretIdentity\": \"Dan Jukes\",\n" +
-            "      \"powers\": [\n" +
-            "        \"Radiation resistance\"\n" +
-            "      ]\n" +
-            "    }\n" +
-            "  ]\n" +
-            "}";
-    private final String INVALID_NULL = "{\n" +
-            "  \"squadName\": \"Super hero squad\",\n" +
-            "  \"homeTown\": \"Metro City\",\n" +
-            "  \"formed\": 2016,\n" +
-            "  \"secretBase\": \"Super tower\",\n" +
-            "  \"active\": true,\n" +
-            "  \"members\": [\n" +
-            "    {\n" +
-            "      \"name\": null,\n" +
-            "      \"age\": 29,\n" +
-            //"      \"secretIdentity\": \"Dan Jukes\",\n" +
-            "      \"powers\": [\n" +
-            "        \"Radiation resistance\"\n" +
-            "      ]\n" +
-            "    }\n" +
-            "  ]\n" +
-            "}";
-
-    private final String VALID_EMPTYARRAY = "{\n" +
-            "  \"squadName\": \"Super hero squad\",\n" +
-            "  \"homeTown\": \"Metro City\",\n" +
-            "  \"formed\": 2016,\n" +
-            "  \"secretBase\": \"Super tower\",\n" +
-            "  \"active\": true,\n" +
-            "  \"members\": [\n" +
-            "  ]\n" +
-            "}";
     ObjectMapper mapper = new ObjectMapper();
 
     @Test
@@ -152,6 +64,23 @@ public class ValidatorAPITestJson {
         var res = new Response();
         var input = new ValidatorData();
         input.setTemplate(TEMPLATE);
+        String VALID = "{\n" +
+                "  \"squadName\": \"Super hero squad\",\n" +
+                "  \"homeTown\": \"Metro City\",\n" +
+                "  \"formed\": 2016,\n" +
+                "  \"secretBase\": \"Super tower\",\n" +
+                "  \"active\": true,\n" +
+                "  \"members\": [\n" +
+                "    {\n" +
+                "      \"name\": \"Molecule Man\",\n" +
+                "      \"age\": 29,\n" +
+                "      \"secretIdentity\": \"Dan Jukes\",\n" +
+                "      \"powers\": [\n" +
+                "        \"Radiation resistance\"\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
         input.setSource(VALID);
         req.setRequestText(mapper.writeValueAsString(input));
 
@@ -185,6 +114,15 @@ public class ValidatorAPITestJson {
         var res = new Response();
         var input = new ValidatorData();
         input.setTemplate(TEMPLATE);
+        String VALID_EMPTYARRAY = "{\n" +
+                "  \"squadName\": \"Super hero squad\",\n" +
+                "  \"homeTown\": \"Metro City\",\n" +
+                "  \"formed\": 2016,\n" +
+                "  \"secretBase\": \"Super tower\",\n" +
+                "  \"active\": true,\n" +
+                "  \"members\": [\n" +
+                "  ]\n" +
+                "}";
         input.setSource(VALID_EMPTYARRAY);
         req.setRequestText(mapper.writeValueAsString(input));
 
@@ -201,6 +139,24 @@ public class ValidatorAPITestJson {
         var res = new Response();
         var input = new ValidatorData();
         input.setTemplate(TEMPLATE);
+        //"      \"secretIdentity\": \"Dan Jukes\",\n" +
+        String VALID_NULL = "{\n" +
+                "  \"squadName\": \"Super hero squad\",\n" +
+                "  \"homeTown\": \"Metro City\",\n" +
+                "  \"formed\": 2016,\n" +
+                "  \"secretBase\": \"Super tower\",\n" +
+                "  \"active\": true,\n" +
+                "  \"members\": [\n" +
+                "    {\n" +
+                "      \"name\": \"Molecule Man\",\n" +
+                "      \"age\": 29,\n" +
+                //"      \"secretIdentity\": \"Dan Jukes\",\n" +
+                "      \"powers\": [\n" +
+                "        \"Radiation resistance\"\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
         input.setSource(VALID_NULL);
         req.setRequestText(mapper.writeValueAsString(input));
 
@@ -216,6 +172,24 @@ public class ValidatorAPITestJson {
         var res = new Response();
         var input = new ValidatorData();
         input.setTemplate(TEMPLATE);
+        //"      \"secretIdentity\": \"Dan Jukes\",\n" +
+        String INVALID_NULL = "{\n" +
+                "  \"squadName\": \"Super hero squad\",\n" +
+                "  \"homeTown\": \"Metro City\",\n" +
+                "  \"formed\": 2016,\n" +
+                "  \"secretBase\": \"Super tower\",\n" +
+                "  \"active\": true,\n" +
+                "  \"members\": [\n" +
+                "    {\n" +
+                "      \"name\": null,\n" +
+                "      \"age\": 29,\n" +
+                //"      \"secretIdentity\": \"Dan Jukes\",\n" +
+                "      \"powers\": [\n" +
+                "        \"Radiation resistance\"\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
         input.setSource(INVALID_NULL);
         req.setRequestText(mapper.writeValueAsString(input));
 
@@ -231,8 +205,34 @@ public class ValidatorAPITestJson {
         var req = new Request();
         var res = new Response();
         var input = new ValidatorData();
+        String SCHEMA = "{\n" +
+                "  \"$id\": \"https://example.com/person.schema.json\",\n" +
+                "  \"$schema\": \"https://json-schema.org/draft-07/schema\",\n" +
+                "  \"title\": \"Person\",\n" +
+                "  \"type\": \"object\",\n" +
+                "  \"properties\": {\n" +
+                "    \"firstName\": {\n" +
+                "      \"type\": \"string\",\n" +
+                "      \"description\": \"The person's first name.\"\n" +
+                "    },\n" +
+                "    \"lastName\": {\n" +
+                "      \"type\": \"string\",\n" +
+                "      \"description\": \"The person's last name.\"\n" +
+                "    },\n" +
+                "    \"age\": {\n" +
+                "      \"description\": \"Age in years which must be equal to or greater than zero.\",\n" +
+                "      \"type\": \"integer\",\n" +
+                "      \"minimum\": 0\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
         input.setSchema(SCHEMA);
-        input.setSource(S_VALID);
+        String s_VALID = "{\n" +
+                "  \"firstName\": \"John\",\n" +
+                "  \"lastName\": \"Doe\",\n" +
+                "  \"age\": 21\n" +
+                "}";
+        input.setSource(s_VALID);
         req.setRequestText(mapper.writeValueAsString(input));
 
         target.validate(req,res);

@@ -34,7 +34,7 @@ public class RecordingDataset implements BaseDataset{
     private String name;
     private String replayerDataDir;
     private String description;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public String getName(){
         return this.name;

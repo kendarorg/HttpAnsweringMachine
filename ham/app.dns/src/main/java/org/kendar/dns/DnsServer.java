@@ -3,7 +3,7 @@ package org.kendar.dns;
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
-import java.util.Scanner;
+
 import org.kendar.dns.configurations.DnsConfig;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.xbill.DNS.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -34,7 +33,6 @@ public class DnsServer {
   private final Logger logger;
   private final DnsMultiResolver multiResolver;
   private final ConcurrentHashMap<String, Integer> loopBlocker = new ConcurrentHashMap<>();
-  private final String localAddress;
   private Function<String, String> blocker;
 
 
@@ -47,7 +45,7 @@ public class DnsServer {
     this.logger = loggerBuilder.build(DnsServer.class);
     this.multiResolver = multiResolver;
     this.dnsPort = configuration.getConfiguration(DnsConfig.class).getPort();
-    this.localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
+    String localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
   }
 
   public void setDnsRunnable(ThreeParamsFunction<String,String,LoggerBuilder, Callable<List<String>>> runnable){
@@ -75,24 +73,7 @@ public class DnsServer {
             }
             resolveAll(clientSocket.getOutputStream(),data);
             clientSocket.close();
-          /*String sReturn = new String(data);
-          try (
-                  PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                  Scanner in = new Scanner(clientSocket.getInputStream());
-          ) {
-            while (in.hasNextLine()) {
-              String input = in.nextLine();
-              if (input.equalsIgnoreCase("exit")) {
-                break;
-              }
-              System.out.println("Received radius from client: " + input);
 
-              double radius = Double.valueOf(input);
-              double area = Math.PI * radius * radius;
-              out.println(area);
-            }
-          } catch (IOException e) {
-          }*/
           } catch (IOException e) {
             logger.error("ERror reading from DNS tcp stream",e);
           }
@@ -122,7 +103,7 @@ public class DnsServer {
   private final ExecutorService executorService = Executors.newFixedThreadPool(20);
 
 
-  private AtomicBoolean running = new AtomicBoolean(false);
+  private final AtomicBoolean running = new AtomicBoolean(false);
 
   private void runUdp()  {
     try {
@@ -261,16 +242,6 @@ public class DnsServer {
         response.addRecord(
                 Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.fromString(requestedDomain)),
                 Section.ANSWER);
-
-        /*response.addRecord(
-                Record.fromString(Name.root, Type.NS, DClass.IN, 86400, ip, Name.fromString("localdns")),
-                Section.AUTHORITY);
-        response.addRecord(
-                Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.fromString("localdns")),
-                Section.ADDITIONAL);*/
-        /*response.addRecord(
-                Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.root),
-                Section.AUTHORITY);*/
       }
       resp = response.toWire();
     } else {

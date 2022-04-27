@@ -25,7 +25,7 @@ public class DiffInferrer {
     private final JsonBuilder jsonBuilder = new JsonBuilder();
     private final XmlTemplatesMerger merger = new XmlTemplatesMerger();
     private final XmlMatcher matcher = new XmlMatcher();
-    private DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    private final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
     private Document toXml(String data) {
         try {
@@ -41,7 +41,7 @@ public class DiffInferrer {
         var first = xmls[0].trim();
         var diffResult = new DiffPath();
         var templates = new ArrayList<XmlElement>();
-        XmlElement toCheck = null;
+        XmlElement toCheck ;
 
         if (first.startsWith("{") || first.startsWith("[")) {
             //IS JSON

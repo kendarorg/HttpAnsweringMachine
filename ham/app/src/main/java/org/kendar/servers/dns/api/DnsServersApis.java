@@ -189,10 +189,7 @@ public class DnsServersApis implements FilteringClass {
     }
     if (prepareResolvedResponse(res, newList, newData, newData)) return ;
 
-    /*for (var item : newList) {
-      if (item.getResolved().equalsIgnoreCase(newData.getResolved()))
-        throw new Exception("Duplicate dns resolution");
-    }*/
+
     cloned.setExtraServers(newList);
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);

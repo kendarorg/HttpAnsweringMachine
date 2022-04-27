@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiffPath {
-    private List<String> position = new ArrayList<>();
+    private final List<String> position = new ArrayList<>();
 
     public void push(String s) {
         position.add(s);

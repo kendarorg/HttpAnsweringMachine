@@ -65,7 +65,7 @@ public class RegexpAPI implements FilteringClass {
             result.setError(ex.getMessage()+" "+ex.getDescription()+" "+ex.getPattern()+" "+ex.getIndex());
         }catch (Exception ex){
             result.setFailed(true);
-            result.setError(ex.getMessage()+" "+ex.toString());
+            result.setError(ex.getMessage()+" "+ ex);
         }
         res.setStatusCode(200);
         res.addHeader("content-type","application/json");

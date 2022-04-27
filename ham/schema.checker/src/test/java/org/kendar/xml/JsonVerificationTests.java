@@ -114,8 +114,7 @@ public class JsonVerificationTests extends BaseUtils {
     }
     @Test
     public void correctWeirdStuffs() throws IOException, XmlException {
-       // var xml1 = "[{\"a\":\"b\",\"c\":\"d\"}]";
-        //var xml2 = "[{\"a\":\"b\"}]";
+       
         final String xml1 = "{\"a\":\"b\",\"c\":\"d\"}";
         final String  xml2 = "{\"a\":\"b\"}";
 

@@ -181,10 +181,6 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
   /**
    * Handles file:\C:\Private\HttpAnsweringMachine\ham\app-2.1.3.jar!\BOOT-INF\classes!
    * @param path  /C:/Private/HttpAnsweringMachine/ham/libs/docker.builder-2.1.3.jar
-   * @param result
-   * @param classLoader
-   * @param jarFile
-   * @param ress
    */
   private void loadNestedJar(String path, HashMap<String, Object> result, ClassLoader classLoader, File jarFile, ArrayList<String> ress) throws IOException {
     var splitted = jarFile.getPath().split("!");
@@ -196,6 +192,7 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
 
   private boolean isCanonical(File jarFile) {
     try {
+      //noinspection ResultOfMethodCallIgnored
       jarFile.getCanonicalPath();
       return true && !jarFile.getPath().contains("!");
     } catch (IOException e) {

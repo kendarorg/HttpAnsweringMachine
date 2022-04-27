@@ -5,7 +5,7 @@ public enum XmlConstraint {
     MANDATORY_VALUE(0x01),
     NULLABLE_VALUE(0x02);
 
-    private long flag;
+    private final long flag;
 
     XmlConstraint(long flag) {
         this.flag = flag;

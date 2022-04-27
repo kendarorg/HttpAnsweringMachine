@@ -13,9 +13,9 @@ public class ListAllRecordList {
     private String description;
     private List<ReplayerRow> lines = new ArrayList<>();
     private List<CallIndex> indexes = new ArrayList<>();
-    private HashMap<String,String> variables = new HashMap<>();
-    private HashMap<String,String> preScript = new HashMap<>();
-    private HashMap<String,String> postScript = new HashMap<>();
+    private HashMap<String,String> variables;
+    private HashMap<String,String> preScript;
+    private HashMap<String,String> postScript;
 
     public ListAllRecordList(ReplayerResult datasetContent,String id,boolean cleanJs) {
         for (var staticLine :

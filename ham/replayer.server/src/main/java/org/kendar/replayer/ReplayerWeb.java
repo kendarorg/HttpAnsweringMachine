@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "${global.localAddress}")
 public class ReplayerWeb extends StaticWebFilter {
 
-    private final Logger logger;
-
     @Override
     public String getDescription(){
         return "Replayer web";
@@ -25,7 +23,7 @@ public class ReplayerWeb extends StaticWebFilter {
 
     public ReplayerWeb(FileResourcesUtils fileResourcesUtils,LoggerBuilder loggerBuilder) {
         super(fileResourcesUtils);
-        logger = loggerBuilder.build(ReplayerWeb.class);
+        Logger logger = loggerBuilder.build(ReplayerWeb.class);
         logger.info("Replayer server LOADED");
     }
 

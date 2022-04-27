@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class JsReplayerExecutor {
     private static final Pattern LINE_SEP_PATTERN = Pattern.compile("\\R");
     private ScriptableObject globalScope;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     protected Scriptable getNewScope(Context cx) {
         // global scope lazy initialization
@@ -69,8 +69,6 @@ public class JsReplayerExecutor {
             currentScope.put("REQUESTJSON", currentScope,request);
             currentScope.put("RESPONSEJSON", currentScope,response);
             currentScope.put("EXPECTEDRESPONSEJSON",currentScope, expectedResponse);
-            //
-            //cx.setClassShutter(sandboxClassShutter);
             script.exec(cx, currentScope);
         }catch(Exception ex){
             throw new Exception(ex);

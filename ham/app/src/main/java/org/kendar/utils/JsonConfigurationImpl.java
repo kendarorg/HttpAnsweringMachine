@@ -121,16 +121,13 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     while (treeMap.hasNext()) {
       var pluginRoot = treeMap.next();
       var id = pluginRoot.get("id").asText().toLowerCase(Locale.ROOT);
-      var system = false;
-      if (pluginRoot.has("system")) {
-        system = pluginRoot.get("system").asBoolean();
-      }
+
       configurations.put(id, pluginRoot);
     }
   }
 
   private String handleIncludes(String fullConfig, Path dirPath) throws IOException {
-    var regex = "(?m)[\"']#include:([0-9a-zA-Z_\\-\\.\\\\/]+)[\"']";
+    var regex = "(?m)[\"']#include:([\\da-zA-Z_\\-\\.\\\\/]+)[\"']";
     Pattern pattern = Pattern.compile(regex);
     Matcher matcher = pattern.matcher(fullConfig);
     var hasMatches = true;

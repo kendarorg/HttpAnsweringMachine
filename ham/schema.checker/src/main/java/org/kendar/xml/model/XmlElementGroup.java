@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class XmlElementGroup {
-    private List<XmlElement> items = new ArrayList<>();
+    private List<XmlElement> items;
     private String tag;
 
     public XmlElementGroup(){

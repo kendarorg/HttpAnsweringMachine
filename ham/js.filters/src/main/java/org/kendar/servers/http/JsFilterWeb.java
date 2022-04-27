@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}")
 public class JsFilterWeb extends StaticWebFilter {
-    private final Logger logger;
 
     @Override
     public String getDescription(){
@@ -34,7 +33,7 @@ public class JsFilterWeb extends StaticWebFilter {
 
     public JsFilterWeb(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
         super(fileResourcesUtils);
-        logger = loggerBuilder.build(JsFilterWeb.class);
+        Logger logger = loggerBuilder.build(JsFilterWeb.class);
         logger.info("JsFilter server LOADED");
     }
 }

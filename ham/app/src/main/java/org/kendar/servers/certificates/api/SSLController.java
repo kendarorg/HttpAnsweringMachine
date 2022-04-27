@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class SSLController implements FilteringClass {
   final ObjectMapper mapper = new ObjectMapper();
   private final JsonConfiguration configuration;
-  private EventQueue eventQueue;
+  private final EventQueue eventQueue;
 
   public SSLController(JsonConfiguration configuration,
                        EventQueue eventQueue) {

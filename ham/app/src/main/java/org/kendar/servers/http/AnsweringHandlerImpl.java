@@ -35,7 +35,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
   private final Logger requestLogger;
   private final JsonConfiguration configuration;
   private final ExternalRequester externalRequester;
-  private ConnectionBuilder connectionBuilder;
+  private final ConnectionBuilder connectionBuilder;
 
   public AnsweringHandlerImpl(
           LoggerBuilder loggerBuilder,

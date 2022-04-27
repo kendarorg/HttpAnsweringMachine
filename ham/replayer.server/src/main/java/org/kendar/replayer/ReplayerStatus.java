@@ -34,10 +34,9 @@ public class ReplayerStatus {
     private final Md5Tester md5Tester;
     private final EventQueue eventQueue;
     private final Logger logger;
-    private ExternalRequester externalRequester;
-    private DnsMultiResolver multiResolver;
-    private InternalRequester internalRequester;
-    private SimpleProxyHandler simpleProxyHandler;
+    private final ExternalRequester externalRequester;
+    private final InternalRequester internalRequester;
+    private final SimpleProxyHandler simpleProxyHandler;
     private BaseDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
 
@@ -59,7 +58,6 @@ public class ReplayerStatus {
         this.md5Tester = md5Tester;
         this.eventQueue = eventQueue;
         this.externalRequester = externalRequester;
-        this.multiResolver = multiResolver;
         this.internalRequester = internalRequester;
         this.simpleProxyHandler = simpleProxyHandler;
         eventQueue.register((a)->pactCompleted(), PactCompleted.class);
