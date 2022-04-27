@@ -468,6 +468,7 @@ const setChecked = function (jqueryObj, checked) {
         jqueryObj.removeAttr('checked');
         // jqueryObj.attr('value', "false");
     }
+    jqueryObj.prop('checked', checked);
     return checked;
 };
 const toggleCheck = function (jqueryObj) {

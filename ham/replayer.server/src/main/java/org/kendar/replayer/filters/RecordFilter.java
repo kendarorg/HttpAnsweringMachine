@@ -36,6 +36,7 @@ public class RecordFilter  implements FilteringClass {
     public boolean record(Request reqArrived, Response res){
         var req = reqArrived.retrieveOriginal();
         if(req.getHost().equalsIgnoreCase(localAddress))return false;
+        if(req.getPath().contains("api/dns/lookup"))return false;
         if(replayerStatus.getStatus()!= ReplayerState.RECORDING)return false;
         try {
             logger.info("Recording: "+
