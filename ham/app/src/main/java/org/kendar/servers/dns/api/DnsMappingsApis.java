@@ -14,6 +14,9 @@ import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}",
@@ -65,22 +68,37 @@ public class DnsMappingsApis implements FilteringClass {
       pathAddress = "/api/dns/mappings",
       method = "POST",id="3000a4f4-277k-11ef-9621-0242ac130002")
     public void addDnsMappings(Request req, Response res) throws Exception {
-        var newObject = mapper.readValue(req.getRequestText(), PatternItem.class);
-        newObject.initialize();
-        var dnsConfig = configuration.getConfiguration(DnsConfig.class).copy();
 
-        for(var config :dnsConfig.getResolved()){
-            if(config.getId().equalsIgnoreCase(newObject.getId())) {
-                throw new Exception("Duplicate");
-            }
-            if(config.getDns().equalsIgnoreCase(newObject.getDns())) {
-                throw new Exception("Duplicate");
-            }
+        var cloned = configuration.getConfiguration(DnsConfig.class).copy();
+
+        List<PatternItem> newList = new ArrayList<>();
+        if(req.getRequestText().startsWith("[")){
+            newList = (List<PatternItem>)mapper.readValue(req.getRequestText(), List.class).stream()
+                    .map(a->{
+                        var newDomain = new PatternItem();
+                        newDomain.setId(UUID.randomUUID().toString());
+                        newDomain.setIp("127.0.0.1");
+                        newDomain.setDns((String)a);
+                        newDomain.initialize();
+                        return newDomain;
+                    }).collect(Collectors.toList());
+
+        }else {
+            var newITem = mapper.readValue(req.getRequestText(), PatternItem.class);
+            newITem.initialize();
+            newList.add( newITem);
         }
-        dnsConfig.getResolved().add(newObject);
-        configuration.setConfiguration(dnsConfig);
+
+        final var newList2= newList;
+        var notNew = cloned.getResolved().stream()
+                .filter(a->!newList2.stream().anyMatch(m-> m.getDns().equalsIgnoreCase(a.getDns())))
+                .collect(Collectors.toList());
+        newList.addAll(notNew);
+
+        cloned.setResolved(newList);
+        configuration.setConfiguration(cloned);
         res.addHeader("Content-type", "application/json");
-        res.setResponseText(mapper.writeValueAsString(newObject));
+        res.setResponseText(mapper.writeValueAsString(cloned));
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
