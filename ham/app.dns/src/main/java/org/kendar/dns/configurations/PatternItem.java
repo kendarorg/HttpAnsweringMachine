@@ -36,11 +36,14 @@ public class PatternItem implements Copyable<PatternItem> {
         initialize();
     }
 
-
     public boolean match(String domain){
         initialize();
         if(name!=null) return name.equalsIgnoreCase(domain);
         return compile.matcher(domain).matches();
+    }
+
+    public boolean patternMatcher(){
+        return name==null || name.isEmpty();
     }
 
     public String getIp() {
