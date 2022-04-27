@@ -16,6 +16,9 @@ import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
@@ -102,15 +105,25 @@ public class SSLController implements FilteringClass {
       id = "1011a4b4-2ASD77d-11ec-9621-0242ac130002")
   public void addDnsServer(Request req, Response res) throws Exception {
     var cloned = configuration.getConfiguration(SSLConfig.class).copy();
-    var newData = mapper.readValue(req.getRequestText(), SSLDomain.class);
-    var domains = cloned.getDomains();
 
-    var newList = new ArrayList<SSLDomain>();
-    for (var item : domains) {
-      if (item.getId().equalsIgnoreCase(newData.getId())) continue;
-      newList.add(item);
+    List<SSLDomain> newList = new ArrayList<>();
+    if(req.getRequestText().startsWith("[")){
+      newList = (List<SSLDomain>)mapper.readValue(req.getRequestText(), List.class).stream()
+              .map(a->{
+                var newDomain = new SSLDomain();
+                newDomain.setId(UUID.randomUUID().toString());
+                newDomain.setAddress((String)a);
+                return newDomain;
+              }).collect(Collectors.toList());
+
+    }else {
+      newList.add( mapper.readValue(req.getRequestText(), SSLDomain.class));
     }
-    newList.add(newData);
+    final var newList2= newList;
+    var notNew = cloned.getDomains().stream()
+                    .filter(a->!newList2.stream().anyMatch(m->m.getAddress().equalsIgnoreCase(a.getAddress())))
+            .collect(Collectors.toList());
+    newList.addAll(notNew);
     cloned.setDomains(newList);
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);
