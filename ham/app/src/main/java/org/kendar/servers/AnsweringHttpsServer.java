@@ -3,7 +3,6 @@ package org.kendar.servers;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
-import org.kendar.events.Event;
 import org.kendar.events.EventQueue;
 import org.kendar.events.events.SSLChangedEvent;
 import org.kendar.servers.certificates.CertificatesManager;
@@ -27,6 +26,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -47,6 +47,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
   private final AtomicReference<SSLContext> sslSharedContext = new AtomicReference<>();
   private boolean running = false;
   private HttpsServer httpsServer;
+  private ExecutorService executor;
 
   public AnsweringHttpsServer(
           LoggerBuilder loggerBuilder,
@@ -62,9 +63,9 @@ public class AnsweringHttpsServer implements AnsweringServer {
     eventQueue.register((e)->handleCertificateChange(e), SSLChangedEvent.class);
   }
 
+  boolean restart = false;
   public void handleCertificateChange(SSLChangedEvent t) {
-    httpsServer.stop(0);
-    httpsServer = null;
+    restart =true;
   }
 
   public void isSystem() {}
@@ -78,95 +79,94 @@ public class AnsweringHttpsServer implements AnsweringServer {
 
     try {
 
-      while(true) {
-        runHttpsServer(config);
-        var localConfig = configuration.getConfiguration(HttpsWebServerConfig.class);
-        while (running && localConfig.isActive()) {
-          if(httpsServer==null){
-            break;
-          }
-          Thread.sleep(1000);
-        }
-        if(!(running && localConfig.isActive())){
-          break;
-        }
+      // setup the socket address
+      InetSocketAddress address = new InetSocketAddress(config.getPort());
+
+      // initialise the HTTPS server
+      setupHttpsServer(config, address);
+
+      httpsServer.start();
+      logger.info("Https server LOADED, port: " + config.getPort());
+      var localConfig = configuration.getConfiguration(HttpsWebServerConfig.class);
+      while (running && localConfig.isActive()) {
+        Thread.sleep(1000);
+        if(restart)break;
       }
+      //if(executor!=null)executor.shutdownNow();
+      httpsServer.stop(0);
+      restart = false;
+
 
     } catch (Exception ex) {
       logger.error(
-          "Failed to create HTTPS server on port " + config.getPort() + " of localhost", ex);
+              "Failed to create HTTPS server on port " + config.getPort() + " of localhost", ex);
     } finally {
       running = false;
     }
   }
 
-  private void runHttpsServer(WebServerConfig config) throws Exception {
-    // setup the socket address
-    InetSocketAddress address = new InetSocketAddress(config.getPort());
-
-    // initialise the HTTPS server
+  private void setupHttpsServer(WebServerConfig config, InetSocketAddress address) throws Exception {
     httpsServer = HttpsServer.create(address, config.getBacklog());
     final SSLContext sslContextInt =
-        getSslContext(configuration.getConfiguration(SSLConfig.class));
+            getSslContext(configuration.getConfiguration(SSLConfig.class));
 
     var sslConfigTimestamp = configuration.getConfigurationTimestamp(SSLConfig.class);
     sslTimestamp.set(sslConfigTimestamp);
     sslSharedContext.set(sslContextInt);
-    setupSslConfig(sslContextInt);
+    setupSll(sslContextInt);
     httpsServer.createContext("/", handler);
     if (config.isUseCachedExecutor()) {
-      httpsServer.setExecutor(Executors.newCachedThreadPool()); // creates a cached
+      executor = Executors.newCachedThreadPool();
+      httpsServer.setExecutor(executor); // creates a cached
     } else {
       httpsServer.setExecutor(null); // creates a default executor
     }
-    httpsServer.start();
-    logger.info("Https server LOADED, port: " + config.getPort());
   }
 
-  private void setupSslConfig(SSLContext sslContextInt) {
+  private void setupSll(SSLContext sslContextInt) {
     httpsServer.setHttpsConfigurator(
-        new HttpsConfigurator(sslContextInt) {
-          public void configure(HttpsParameters params) {
-            try {
-              // initialise the SSL context
-              SSLContext context = sslSharedContext.get();
-              var sslConfigTimestamp = configuration.getConfigurationTimestamp(SSLConfig.class);
-              if (sslConfigTimestamp > sslTimestamp.get()) {
-                var sslConfig = configuration.getConfiguration(SSLConfig.class);
-                sslTimestamp.set(sslConfigTimestamp);
-                context = getSslContext(sslConfig);
-                sslSharedContext.set(context);
-              }
-              SSLEngine engine = context.createSSLEngine();
-              params.setNeedClientAuth(false);
-              params.setCipherSuites(engine.getEnabledCipherSuites());
-              params.setProtocols(engine.getEnabledProtocols());
+            new HttpsConfigurator(sslContextInt) {
+              public void configure(HttpsParameters params) {
+                try {
+                  // initialise the SSL context
+                  SSLContext context = sslSharedContext.get();
+                  var sslConfigTimestamp = configuration.getConfigurationTimestamp(SSLConfig.class);
+                  if (sslConfigTimestamp > sslTimestamp.get()) {
+                    var sslConfig = configuration.getConfiguration(SSLConfig.class);
+                    sslTimestamp.set(sslConfigTimestamp);
+                    context = getSslContext(sslConfig);
+                    sslSharedContext.set(context);
+                  }
+                  SSLEngine engine = context.createSSLEngine();
+                  params.setNeedClientAuth(false);
+                  params.setCipherSuites(engine.getEnabledCipherSuites());
+                  params.setProtocols(engine.getEnabledProtocols());
 
-              // Set the SSL parameters
-              SSLParameters sslParameters = context.getSupportedSSLParameters();
-              //sslParameters.setProtocols(new String[]{"TLSv1.2","TLSv1.1","TLSv1"});
+                  // Set the SSL parameters
+                  SSLParameters sslParameters = context.getSupportedSSLParameters();
+                  //sslParameters.setProtocols(new String[]{"TLSv1.2","TLSv1.1","TLSv1"});
                /*sslParameters.setCipherSuites(new String[]
                {"TLS_RSA_WITH_AES_256_CBC_SHA256"});*/
-              params.setSSLParameters(sslParameters);
+                  params.setSSLParameters(sslParameters);
 
-            } catch (Exception ex) {
-              logger.debug("Failed to create HTTPS port");
-            }
-          }
-        });
+                } catch (Exception ex) {
+                  logger.debug("Failed to create HTTPS port");
+                }
+              }
+            });
   }
 
   private SSLContext getSslContext(SSLConfig sslConfig) throws Exception {
     var root =
-        certificatesManager.loadRootCertificate("certificates/ca.der", "certificates/ca.key");
+            certificatesManager.loadRootCertificate("certificates/ca.der", "certificates/ca.key");
 
     GeneratedCert domain =
-        certificatesManager.createCertificate(
-            sslConfig.getCname(),
-            null,
-            root,
-            sslConfig.getDomains().stream().map(SSLDomain::getAddress).collect(Collectors.toList()),
-            false);
+            certificatesManager.createCertificate(
+                    sslConfig.getCname(),
+                    null,
+                    root,
+                    sslConfig.getDomains().stream().map(SSLDomain::getAddress).collect(Collectors.toList()),
+                    false);
 
     KeyStore keyStoreTs = setupKeystore(domain);
     // now lets do the same with the keystore
@@ -179,7 +179,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
     keyStore.setKeyEntry("privateCert", domain.privateKey, "passphrase".toCharArray(), chain);
 
     TrustManagerFactory tmf =
-        TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
     tmf.init(keyStoreTs);
 
     KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
@@ -194,7 +194,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
   }
 
   private KeyStore setupKeystore(GeneratedCert domain)
-      throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+          throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
     KeyStore ksTemp = KeyStore.getInstance("jks"); //PKCS12
     ksTemp.load(null, null); // Initialize it
     ksTemp.setCertificateEntry("Alias", domain.certificate);
@@ -214,13 +214,8 @@ public class AnsweringHttpsServer implements AnsweringServer {
   }
 
   public void stop() {
-    httpsServer.stop(1);
+    httpsServer.stop(0);
     running = false;
 
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
   }
 }
