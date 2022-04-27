@@ -99,10 +99,10 @@ public abstract class BaseRequesterImpl implements BaseRequester{
                 }
             }
             fullRequest.addHeader("Host", request.getHost());
-            if (request.isSoapRequest()) {
+            /*if (request.isSoapRequest()) {
                 HttpEntity entity = handleSoapRequest(request);
                 ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
-            } else if (request.getPostParameters().size() > 0) {
+            } else */if (request.getPostParameters().size() > 0) {
                 List<NameValuePair> form = new ArrayList<>();
                 for (var par : request.getPostParameters().entrySet()) {
                     form.add(new BasicNameValuePair(par.getKey(), par.getValue()));
@@ -178,10 +178,6 @@ public abstract class BaseRequesterImpl implements BaseRequester{
 
     protected abstract boolean useRemoteDnsOnly();
 
-
-    private HttpEntity handleSoapRequest(Request request) {
-        return null;
-    }
 
     private HttpRequestBase createFullRequest(Request request, String stringAdress) throws Exception {
         //var partialAddress= new URI(stringAdress).toString();

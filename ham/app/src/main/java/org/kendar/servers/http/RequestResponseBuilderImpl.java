@@ -10,10 +10,8 @@ import org.kendar.utils.MimeChecker;
 import org.kendar.utils.SimpleStringUtils;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Locale;
@@ -22,7 +20,7 @@ import java.util.regex.Pattern;
 @Component
 public class RequestResponseBuilderImpl implements RequestResponseBuilder {
   private static final String H_CONTENT_TYPE = "Content-Type";
-  private static final String H_SOAPA_CTION = "SOAPAction";
+  private static final String H_SOAP_ACTION = "SOAPAction";
   private static final String H_AUTHORIZATION = "Authorization";
   private static final String BASIC_AUTH_MARKER = "basic";
   private static final String BASIC_AUTH_SEPARATOR = ":";
@@ -113,7 +111,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
       headerContentType = "application/octet-stream";
       result.addHeader(H_CONTENT_TYPE, headerContentType);
     }
-    result.setSoapRequest(result.getHeader(H_SOAPA_CTION) != null);
+    result.setSoapRequest(result.getHeader(H_SOAP_ACTION) != null);
     setupAuthHeaders(result);
 
     result.setBinaryRequest(MimeChecker.isBinary(headerContentType, ""));
