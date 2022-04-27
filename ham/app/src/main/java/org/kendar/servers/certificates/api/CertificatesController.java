@@ -25,7 +25,6 @@ import java.util.zip.ZipOutputStream;
 public class CertificatesController implements FilteringClass {
   final ObjectMapper mapper = new ObjectMapper();
   private final FileResourcesUtils fileResourcesUtils;
-  private EventQueue eventQueue;
   private final Logger logger;
 
   public CertificatesController(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder,
@@ -33,7 +32,6 @@ public class CertificatesController implements FilteringClass {
     logger = loggerBuilder.build(CertificatesController.class);
 
     this.fileResourcesUtils = fileResourcesUtils;
-    this.eventQueue = eventQueue;
   }
 
   @Override

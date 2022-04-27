@@ -13,7 +13,8 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class ValidatorAPITestXml {
+@SuppressWarnings("HttpUrlsUsage")
+public class ValidatorAPIXmlTest {
     final String XML_INVALID="<?xml version = \"1.0\"?>\n" +
             "\n" +
             "<class>  \n" +

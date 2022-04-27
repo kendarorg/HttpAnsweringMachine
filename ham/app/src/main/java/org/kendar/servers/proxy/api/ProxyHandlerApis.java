@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class ProxyHandlerApis implements FilteringClass {
   final ObjectMapper mapper = new ObjectMapper();
   private final JsonConfiguration configuration;
-  private EventQueue eventQueue;
+  private final EventQueue eventQueue;
 
   public ProxyHandlerApis(JsonConfiguration configuration, EventQueue eventQueue) {
     this.configuration = configuration;

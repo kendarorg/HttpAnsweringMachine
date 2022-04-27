@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
   private final Logger logger;
-  private EventQueue eventQueue;
   private final DnsMultiResolver multiResolver;
   private final JsonConfiguration configuration;
   private boolean startedOnce = false;
@@ -37,7 +36,6 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     this.multiResolver = multiResolver;
     this.configuration = configuration;
     logger = loggerBuilder.build(SimpleProxyHandlerImpl.class);
-    this.eventQueue = eventQueue;
     eventQueue.register((a)->handleConfigChange(a),ProxyConfigChanged.class);
   }
 

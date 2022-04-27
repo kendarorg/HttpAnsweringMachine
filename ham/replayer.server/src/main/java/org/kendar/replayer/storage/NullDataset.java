@@ -26,14 +26,13 @@ import java.util.stream.Collectors;
 
 
 public class NullDataset extends ReplayerDataset{
-    private EventQueue eventQueue;
-    private InternalRequester internalRequester;
-    private Cache cache;
-    private SimpleProxyHandler simpleProxyHandler;
-    private Thread thread;
+    private final EventQueue eventQueue;
+    private final InternalRequester internalRequester;
+    private final Cache cache;
+    private final SimpleProxyHandler simpleProxyHandler;
     private String id;
-    private AtomicBoolean running = new AtomicBoolean(false);
-    private JsReplayerExecutor executor = new JsReplayerExecutor();
+    private final AtomicBoolean running = new AtomicBoolean(false);
+    private final JsReplayerExecutor executor = new JsReplayerExecutor();
 
     public NullDataset(
             LoggerBuilder loggerBuilder,
@@ -60,13 +59,13 @@ public class NullDataset extends ReplayerDataset{
 
     public String start() {
         id = UUID.randomUUID().toString();
-        thread = new Thread(()-> {
+        Thread thread = new Thread(() -> {
             try {
-                cache.set(id,"runid",id);
+                cache.set(id, "runid", id);
                 runNullDataset(id);
                 cache.remove(id);
             } catch (Exception e) {
-                logger.error("ERROR EXECUTING RECORDING",e);
+                logger.error("ERROR EXECUTING RECORDING", e);
             }
         });
         thread.start();

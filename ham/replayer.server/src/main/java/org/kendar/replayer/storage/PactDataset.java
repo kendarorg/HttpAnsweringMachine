@@ -29,17 +29,16 @@ import java.util.stream.Collectors;
 @Component
 public class PactDataset implements BaseDataset {
     private final Logger logger;
-    private EventQueue eventQueue;
-    private ExternalRequester externalRequester;
-    private Cache cache;
-    private SimpleProxyHandler simpleProxyHandler;
+    private final EventQueue eventQueue;
+    private final ExternalRequester externalRequester;
+    private final Cache cache;
+    private final SimpleProxyHandler simpleProxyHandler;
     private String name;
     private String replayerDataDir;
-    private Thread thread;
     private String id;
-    private ObjectMapper mapper = new ObjectMapper();
-    private AtomicBoolean running = new AtomicBoolean(false);
-    private JsReplayerExecutor executor = new JsReplayerExecutor();
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final AtomicBoolean running = new AtomicBoolean(false);
+    private final JsReplayerExecutor executor = new JsReplayerExecutor();
 
     public PactDataset(LoggerBuilder loggerBuilder, EventQueue eventQueue, ExternalRequester externalRequester
             , Cache cache,
@@ -71,13 +70,13 @@ public class PactDataset implements BaseDataset {
 
     public String start() {
         id = UUID.randomUUID().toString();
-        thread = new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
-                cache.set(id,"runid",id);
+                cache.set(id, "runid", id);
                 runPactDataset(id);
                 cache.remove(id);
             } catch (IOException e) {
-                logger.error("ERROR EXECUTING RECORDING",e);
+                logger.error("ERROR EXECUTING RECORDING", e);
             }
         });
         thread.start();

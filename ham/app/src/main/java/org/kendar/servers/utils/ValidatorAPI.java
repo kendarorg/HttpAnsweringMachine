@@ -71,7 +71,7 @@ public class ValidatorAPI implements FilteringClass {
             method = "POST",
             id = "1000a4b4-29tad-1jsc-9621-0242ac130002")
     public void validate(Request req, Response res) throws IOException {
-        Set<ValidationMessage> errors = new HashSet<>();
+        Set<ValidationMessage> errors;
         var result = new ValidatorResult();
         result.setError(false);
 

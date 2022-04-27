@@ -39,7 +39,7 @@ public abstract class BaseRequesterImpl implements BaseRequester{
     private PoolingHttpClientConnectionManager connManager;
     private final RequestResponseBuilder requestResponseBuilder;
     protected final DnsMultiResolver multiResolver;
-    private ConnectionBuilder connectionBuilder;
+    private final ConnectionBuilder connectionBuilder;
     protected final ConcurrentHashMap<String, ResolvedDomain> domains = new ConcurrentHashMap<>();
     private SystemDefaultDnsResolver dnsResolver;
 
@@ -82,14 +82,6 @@ public abstract class BaseRequesterImpl implements BaseRequester{
         HttpRequestBase fullRequest = null;
         try {
             String fullAddress = RequestUtils.buildFullAddress(request,true);
-            /*var httpPort = request.getPort();if(httpPort<=0){
-                if(request.getProtocol().equalsIgnoreCase("http")){
-                    httpPort = 80;
-                }else if(request.getProtocol().equalsIgnoreCase("http")){
-                    httpPort = 443;
-                }
-            }*/
-            //var httpHost = new HttpHost(request.getHost(),httpPort,request.getProtocol());
             fullRequest = createFullRequest(request, fullAddress);
             fullRequest.addHeader(BLOCK_RECURSION, fullAddress);
             for (var header : request.getHeaders().entrySet()) {

@@ -36,10 +36,11 @@ public class JsUtils {
 
             String absolute = new File(path).getCanonicalPath();
             if (absolute.toLowerCase(Locale.ROOT).startsWith(rootPath.toLowerCase(Locale.ROOT))) {
+                Path of = Path.of(absolute);
                 if (!binary) {
-                    return Files.readString(Path.of(absolute));
+                    return Files.readString(of);
                 } else {
-                    var bytes = Files.readAllBytes(Path.of(absolute));
+                    var bytes = Files.readAllBytes(of);
                     return Base64.encodeBase64String(bytes);
                 }
             }

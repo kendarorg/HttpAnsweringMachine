@@ -34,12 +34,11 @@ import java.util.stream.Collectors;
 
 /**
  * Inspired by
- * https://stackoverflow.com/questions/67720003/tls-1-3-server-socket-with-java-11-and-self-signed-certificates
+ * <a href="https://stackoverflow.com/questions/67720003/tls-1-3-server-socket-with-java-11-and-self-signed-certificates">https://stackoverflow.com/questions/67720003/tls-1-3-server-socket-with-java-11-and-self-signed-certificates</a>
  */
 @Component
 public class AnsweringHttpsServer implements AnsweringServer {
   private final JsonConfiguration configuration;
-  private EventQueue eventQueue;
   private final Logger logger;
   private final AnsweringHandler handler;
   private final CertificatesManager certificatesManager;
@@ -47,7 +46,6 @@ public class AnsweringHttpsServer implements AnsweringServer {
   private final AtomicReference<SSLContext> sslSharedContext = new AtomicReference<>();
   private boolean running = false;
   private HttpsServer httpsServer;
-  private ExecutorService executor;
 
   public AnsweringHttpsServer(
           LoggerBuilder loggerBuilder,
@@ -59,7 +57,6 @@ public class AnsweringHttpsServer implements AnsweringServer {
     this.handler = handler;
     this.certificatesManager = certificatesManager;
     this.configuration = configuration;
-    this.eventQueue = eventQueue;
     eventQueue.register((e)->handleCertificateChange(e), SSLChangedEvent.class);
   }
 
@@ -116,7 +113,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
     setupSll(sslContextInt);
     httpsServer.createContext("/", handler);
     if (config.isUseCachedExecutor()) {
-      executor = Executors.newCachedThreadPool();
+      ExecutorService executor = Executors.newCachedThreadPool();
       httpsServer.setExecutor(executor); // creates a cached
     } else {
       httpsServer.setExecutor(null); // creates a default executor
@@ -144,9 +141,6 @@ public class AnsweringHttpsServer implements AnsweringServer {
 
                   // Set the SSL parameters
                   SSLParameters sslParameters = context.getSupportedSSLParameters();
-                  //sslParameters.setProtocols(new String[]{"TLSv1.2","TLSv1.1","TLSv1"});
-               /*sslParameters.setCipherSuites(new String[]
-               {"TLS_RSA_WITH_AES_256_CBC_SHA256"});*/
                   params.setSSLParameters(sslParameters);
 
                 } catch (Exception ex) {

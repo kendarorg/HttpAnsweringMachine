@@ -17,12 +17,10 @@ import java.util.stream.Collectors;
 
 @Component
 public class SingleRequestGenerator {
-    private FileResourcesUtils fileResourcesUtils;
-private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public SingleRequestGenerator(FileResourcesUtils fileResourcesUtils) {
 
-        this.fileResourcesUtils = fileResourcesUtils;
     }
 
     public Map<String, byte[]> generateRequestResponse(String pack,String recordingId, ReplayerResult data) throws JsonProcessingException {
@@ -173,10 +171,11 @@ private ObjectMapper mapper = new ObjectMapper();
         }
     }
 
-    private String[] bodyMethod = new String[]{
+    private final String[] bodyMethod = new String[]{
             "post","put","patch"
     };
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void makeTheCall(SpecialStringBuilder a, String recordingId, CallIndex line, ReplayerRow row, String pack) {
         var request = row.getRequest();
         var response = row.getResponse();

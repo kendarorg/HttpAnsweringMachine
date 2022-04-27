@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class FilterDescriptor {
 
   private static final Pattern namedGroupsPattern =
-      Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9]*)>");
+      Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z\\d]*)>");
   private final int priority;
   private final String method;
   private final boolean methodBlocking;

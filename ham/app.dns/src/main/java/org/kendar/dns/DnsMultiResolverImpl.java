@@ -203,7 +203,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     return data;
   }
 
-  private ConcurrentHashMap<String,String> forgetThem = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String,String> forgetThem = new ConcurrentHashMap<>();
 
   @Override
   public List<String> resolveRemote(String requestedDomain) {

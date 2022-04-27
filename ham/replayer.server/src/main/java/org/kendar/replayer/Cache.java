@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Cache {
-    private static ConcurrentHashMap<String,ConcurrentHashMap<String,String>> values = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String,ConcurrentHashMap<String,String>> values = new ConcurrentHashMap<>();
 
     public String get(String runId,String key){
         runId = runId.toLowerCase(Locale.ROOT);

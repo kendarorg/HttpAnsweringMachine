@@ -49,16 +49,16 @@ public class DnsMappingsApis implements FilteringClass {
             method = "GET",id="1000a4b4asd-277d-11ef-9621-0242ac130002")
     public void getHostsFile(Request req, Response res) throws JsonProcessingException {
         var records = configuration.getConfiguration(DnsConfig.class).getResolved();
-        var result = "";
+        StringBuilder result = new StringBuilder();
         for(var record:records){
             if(!record.patternMatcher()){
-                result+=record.getIp()+" "+record.getDns()+"\r\n";
+                result.append(record.getIp()).append(" ").append(record.getDns()).append("\r\n");
             }
         }
         res.addHeader("Content-type", "text/plain");
         res.addHeader("Content-disposition", "inline;filename=hosts");
 
-        res.setResponseText(result);
+        res.setResponseText(result.toString());
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,

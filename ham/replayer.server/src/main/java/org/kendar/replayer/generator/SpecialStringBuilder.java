@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class SpecialStringBuilder {
-    private List<String> data = new ArrayList<>();
+    private final List<String> data = new ArrayList<>();
     private int length =0;
 
     public SpecialStringBuilder add(String inputString){
-        var toAdd = "";
-        for(var i=0;i<length;i++)toAdd+="\t";
+        StringBuilder toAdd = new StringBuilder();
+        for(var i=0;i<length;i++) toAdd.append("\t");
 
         this.data.add(toAdd+inputString);
         return this;

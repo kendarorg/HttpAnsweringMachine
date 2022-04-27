@@ -10,7 +10,6 @@ import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
-import org.kendar.servers.config.HttpsWebServerConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.http.generators.BaseGenerator;
@@ -32,10 +31,9 @@ import java.util.Locale;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class JsFilterGeneratorAPI implements FilteringClass {
-    private final Logger logger;
     private final HashMap<String, BaseGenerator> generators;
     final ObjectMapper mapper = new ObjectMapper();
-    private JsonConfiguration configuration;
+    private final JsonConfiguration configuration;
 
 
     @Override
@@ -54,7 +52,7 @@ public class JsFilterGeneratorAPI implements FilteringClass {
                 generators) {
             this.generators.put(bg.getType(), bg);
         }
-        this.logger = loggerBuilder.build(JsFilterAPI.class);
+        Logger logger = loggerBuilder.build(JsFilterAPI.class);
     }
 
     @HttpMethodFilter(
@@ -89,6 +87,7 @@ public class JsFilterGeneratorAPI implements FilteringClass {
         return req;
     }
 
+    @SuppressWarnings("HttpUrlsUsage")
     private HttpResponse<String> retrieveRecordingLine(String recording, int line) throws IOException, InterruptedException {
         var config = configuration.getConfiguration(GlobalConfig.class);
         var targetAddress = "http://" + config.getLocalAddress() + "/api/plugins/replayer/recording/" + recording + "/line/" + line;

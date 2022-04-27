@@ -215,7 +215,7 @@ public class OidcController implements FilteringClass {
 
   /**
    * Provides OIDC metadata. See the spec at
-   * https://openid.net/specs/openid-connect-discovery-1_0.html
+   * <a href="https://openid.net/specs/openid-connect-discovery-1_0.html">https://openid.net/specs/openid-connect-discovery-1_0.html</a>
    */
   @HttpMethodFilter(
       phase = HttpFilterType.API,

@@ -25,13 +25,11 @@ import java.util.ArrayList;
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class ResultsAPI  implements FilteringClass {
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
     private final String replayerData;
-    private FileResourcesUtils fileResourcesUtils;
-    private final JsonConfiguration configuration;
+    private final FileResourcesUtils fileResourcesUtils;
 
     public ResultsAPI(JsonConfiguration configuration, FileResourcesUtils fileResourcesUtils){
-        this.configuration = configuration;
         this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.fileResourcesUtils = fileResourcesUtils;
     }

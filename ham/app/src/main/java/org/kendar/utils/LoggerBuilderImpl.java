@@ -20,7 +20,7 @@ public class LoggerBuilderImpl implements LoggerBuilder {
 
     @Override
     public Level getLevel(String loggerName) {
-        if(!loggers.contains(loggerName)) return Level.OFF;
+        if(!loggers.containsKey(loggerName)) return Level.OFF;
         var logger = loggers.get(loggerName);
         if(logger.isDebugEnabled()&& logger.isTraceEnabled() && logger.isErrorEnabled() &&
                 logger.isInfoEnabled() && logger.isWarnEnabled()) return Level.ALL;

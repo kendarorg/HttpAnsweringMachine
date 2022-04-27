@@ -31,11 +31,8 @@ import java.util.zip.ZipOutputStream;
 public class ReplayerAPIGenerator implements FilteringClass {
 
     private final FileResourcesUtils fileResourcesUtils;
-    private final LoggerBuilder loggerBuilder;
-    private final DataReorganizer dataReorganizer;
     final ObjectMapper mapper = new ObjectMapper();
-    private final Md5Tester md5Tester;
-    private SingleRequestGenerator singleRequestGenerator;
+    private final SingleRequestGenerator singleRequestGenerator;
     private final String replayerData;
 
     public ReplayerAPIGenerator(
@@ -50,9 +47,6 @@ public class ReplayerAPIGenerator implements FilteringClass {
         this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
 
         this.fileResourcesUtils = fileResourcesUtils;
-        this.loggerBuilder = loggerBuilder;
-        this.dataReorganizer = dataReorganizer;
-        this.md5Tester = md5Tester;
     }
     @Override
     public String getId() {
@@ -69,7 +63,7 @@ public class ReplayerAPIGenerator implements FilteringClass {
         var id = req.getPathParameter("id");
         var pack = req.getQuery("package");
 
-        Map<String, byte[]> result=null;
+        Map<String, byte[]> result;
         var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
         if (Files.exists(rootPath)) {
             var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");

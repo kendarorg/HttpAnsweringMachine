@@ -15,8 +15,8 @@ import java.util.ArrayList;
 @Component
 @HttpTypeFilter(hostAddress = "*", blocking = true)
 public class DnsLookupApi implements FilteringClass {
-    private DnsMultiResolver dnsMultiResolver;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final DnsMultiResolver dnsMultiResolver;
+    private final ObjectMapper mapper = new ObjectMapper();
     public DnsLookupApi(DnsMultiResolver dnsMultiResolver){
 
         this.dnsMultiResolver = dnsMultiResolver;

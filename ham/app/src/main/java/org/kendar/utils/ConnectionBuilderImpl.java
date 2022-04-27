@@ -38,19 +38,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectionBuilderImpl implements ConnectionBuilder{
     private static final HttpRequestRetryHandler requestRetryHandler =
             (exception, executionCount, context) -> executionCount != 3;
-    private final Logger logger;
-    private DnsMultiResolver multiResolver;
+    private final DnsMultiResolver multiResolver;
     protected final ConcurrentHashMap<String, ResolvedDomain> domains = new ConcurrentHashMap<>();
     private SystemDefaultDnsResolver remoteDnsResolver;
     private SystemDefaultDnsResolver fullDnsResolver;
-    private Registry<ConnectionSocketFactory> defaultRegistry;
-    private Registry<ConnectionSocketFactory> sslUncheckedRegistry;
-    private ConcurrentHashMap<String,HttpClientConnectionManager> connectionManagers = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,HttpClientConnectionManager> connectionManagers = new ConcurrentHashMap<>();
 
     public ConnectionBuilderImpl(DnsMultiResolver multiResolver,
                                  LoggerBuilder loggerBuilder){
         this.multiResolver = multiResolver;
-        this.logger = loggerBuilder.build(ConnectionBuilder.class);
+        Logger logger = loggerBuilder.build(ConnectionBuilder.class);
     }
 
     private SystemDefaultDnsResolver buildFullResolver() {
@@ -139,8 +136,8 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
     public void init(){
         this.remoteDnsResolver= buildRemoteResolver();
         this.fullDnsResolver = buildFullResolver();
-        this.defaultRegistry = buildDefaultRegistry();
-        this.sslUncheckedRegistry = buildSslUncheckedRegistry();
+        Registry<ConnectionSocketFactory> defaultRegistry = buildDefaultRegistry();
+        Registry<ConnectionSocketFactory> sslUncheckedRegistry = buildSslUncheckedRegistry();
     }
 
     public HttpClientConnectionManager getConnectionManger(boolean remoteDns){
@@ -148,72 +145,12 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
     }
 
     public HttpClientConnectionManager getConnectionManger(boolean remoteDns, boolean checkSsl){
-        var key = remoteDns+":"+checkSsl;
-        //return new BasicHttpClientConnectionManager();
-//        return connectionManagers.computeIfAbsent(key,(k)->{
-//
-//            var dnsResolver = remoteDns?this.remoteDnsResolver:this.fullDnsResolver;
-//            var registry = checkSsl?this.defaultRegistry:this.sslUncheckedRegistry;
-//
-//            /*var result = new PoolingHttpClientConnectionManager(
-//                            // We're forced to create a SocketFactory Registry.  Passing null
-//                            //   doesn't force a default Registry, so we re-invent the wheel.
-//                            registry,
-//                            dnsResolver // Our DnsResolver
-//                    );
-//            result.setDefaultMaxPerRoute(10);
-//            result.setMaxTotal(100);*/
-//            BasicHttpClientConnectionManager result = new BasicHttpClientConnectionManager(
-//    /* We're forced to create a SocketFactory Registry.  Passing null
-//       doesn't force a default Registry, so we re-invent the wheel. */
-//                    registry,
-//                    null, /* Default ConnectionFactory */
-//                    null, /* Default SchemePortResolver */
-//                    dnsResolver  /* Our DnsResolver */
-//            );
-//            return result;
-//        });
-
-        var dnsResolver = remoteDns?this.remoteDnsResolver:this.fullDnsResolver;
-        var registry = checkSsl?this.defaultRegistry:this.sslUncheckedRegistry;
-
-            /*var result = new PoolingHttpClientConnectionManager(
-                            // We're forced to create a SocketFactory Registry.  Passing null
-                            //   doesn't force a default Registry, so we re-invent the wheel.
-                            registry,
-                            dnsResolver // Our DnsResolver
-                    );
-            result.setDefaultMaxPerRoute(10);
-            result.setMaxTotal(100);*/
-        HttpClientConnectionManager result = new BasicHttpClientConnectionManager(
-    /* We're forced to create a SocketFactory Registry.  Passing null
-       doesn't force a default Registry, so we re-invent the wheel. */
-                RegistryBuilder.<ConnectionSocketFactory>create()
-                        .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                        .register("https", SSLConnectionSocketFactory.getSocketFactory())
-                        .build(),
-                null, /* Default ConnectionFactory */
-                null, /* Default SchemePortResolver */
-                dnsResolver  /* Our DnsResolver */
-        );
-        result = new PoolingHttpClientConnectionManager();
-                // We're forced to create a SocketFactory Registry.  Passing null
-                //   doesn't force a default Registry, so we re-invent the wheel.
-       /*         RegistryBuilder.<ConnectionSocketFactory>create()
-                        .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                        .register("https", SSLConnectionSocketFactory.getSocketFactory())
-                        .build(),
-                dnsResolver // Our DnsResolver
-        );*/
-        //result.setDefaultMaxPerRoute(10);
-        //result.setMaxTotal(100);
-        return result;
+        return new PoolingHttpClientConnectionManager();
     }
 
     @Override
     public CloseableHttpClient buildClient(boolean remoteDns, boolean checkSsl, int port,String protocol) {
         var dnsResolver = remoteDns?this.remoteDnsResolver:this.fullDnsResolver;
-        var connectionManager = this.getConnectionManger(remoteDns,checkSsl);
         SSLContext sslContext = null;
         try {
             sslContext = new SSLContextBuilder()
@@ -225,33 +162,9 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
         return HttpClientBuilder.create()
                 .setSSLContext(sslContext).
                 setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).
-                //.setRetryHandler(requestRetryHandler)
-                //.setConnectionManager(connectionManager)
-                setDnsResolver(dnsResolver)
-                /*.setSchemePortResolver(httpHost -> {
-                    if(port>0) {
-                        return port;
-                    }
-                    if(protocol!=null && protocol.equalsIgnoreCase("https")) return 443;
-                    return 80;
-                })*/
-                //.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-                //.setSSLContext(sc)
+                        setDnsResolver(dnsResolver)
                 .setConnectionManagerShared(true)
-                //.disableConnectionState()
                 .disableRedirectHandling()
-                /*.setSchemePortResolver((host)->{
-                    var result = port;
-                    if(result>0) {
-                        return result;
-                    }
-                    if(protocol!=null && protocol.equalsIgnoreCase("https")) {
-                        result = 443;
-                    }else {
-                        result = 80;
-                    }
-                    return result;
-                })*/
                 .build();
     }
 }
