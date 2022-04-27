@@ -43,25 +43,50 @@
 <script src="/app/app.js"></script>
 <script>
     var selectedasssl = function(){
-        var addSsl = [];
+        var data = [];
         dnsTable.data.forEach(function (row, i) {
             let ip = row['ip'].replaceAll("\.","_");
             if($('#dnsTable #selected_'+ip).is(":checked")){
-                addSsl.push(row['name']);
+                data.push(row['name']);
             }
         });
         //Ajax call
+        $.ajax({
+            url: "/api/ssl",
+            type: "POST",
+            data:JSON.stringify(data),
+            contentType: "application/json",
+            success: function (res) {
+                success();
+            },
+            error:function(res){
+                error();
+            }
+        });
     }
 
     var selectedasdns = function(){
-        var addDns = [];
+        var data = [];
         dnsTable.data.forEach(function (row, i) {
             let ip = row['ip'].replaceAll("\.","_");
             if($('#dnsTable #selected_'+ip).is(":checked")){
-                addDns.push(row['name']);
+                data.push(row['name']);
             }
         });
         //Ajax call
+        //Ajax call
+        $.ajax({
+            url: "/api/dns/mappings",
+            type: "POST",
+            data:JSON.stringify(data),
+            contentType: "application/json",
+            success: function (res) {
+                success();
+            },
+            error:function(res){
+                error();
+            }
+        });
     }
 
     var selectall = function(){
