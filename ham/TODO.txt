@@ -1,6 +1,6 @@
 * DNS
-    * Add dns from resolved
-    * Add ssl from resolved
+    * Add dns from resolved DnsMappingsApis::addDnsMappings handle string array
+    * Add ssl from resolved SSLController::addDnsServer handle string array
 * Global
     * Save settings
     * Download settings
