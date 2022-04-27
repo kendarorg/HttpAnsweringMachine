@@ -126,6 +126,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
   @Override
   public void handle(HttpExchange httpExchange) {
+
     var requestUri = httpExchange.getRequestURI();
     var host = httpExchange.getRequestHeaders().getFirst("Host");
     if (requestLogger.isInfoEnabled()

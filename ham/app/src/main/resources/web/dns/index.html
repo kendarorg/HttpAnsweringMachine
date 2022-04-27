@@ -211,6 +211,7 @@
                     type: 'DELETE',
                     success: function (res) {
                         success();
+                        location.reload();
                     },
                     error:function(res){
                         error();
@@ -232,6 +233,7 @@
                 contentType: "application/json",
                 success: function (res) {
                     success();
+                    location.reload();
                 },
                 error:function(res){
                     error();

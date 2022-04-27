@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 public class DnsRunnable implements Callable<List<String>> {
@@ -34,7 +35,7 @@ public class DnsRunnable implements Callable<List<String>> {
             ExtendedResolver extendedResolver = new ExtendedResolver(resolvers);
             extendedResolver.setTimeout(Duration.ofSeconds(1));
             extendedResolver.setRetries(2);
-            Lookup lookup = new Lookup(requestedDomain, Type.A);
+            Lookup lookup = new Lookup(requestedDomain.toUpperCase(Locale.ROOT), Type.A);
             lookup.setResolver(extendedResolver);
             lookup.setCache(null);
             lookup.setHostsFileParser(null);
