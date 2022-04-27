@@ -113,7 +113,7 @@ public class PactDataset implements BaseDataset {
                 maps.put(call.getId(), call);
             }
             var indexes = replayerResult.getIndexes().stream()
-                    .filter(a -> a.isPactTest())
+                    .filter(CallIndex::isPactTest)
                     .sorted(Comparator.comparingInt(CallIndex::getId))
                     .collect(Collectors.toList());
             boolean onIndex = false;

@@ -121,7 +121,7 @@ public class SSLController implements FilteringClass {
     }
     final var newList2= newList;
     var notNew = cloned.getDomains().stream()
-                    .filter(a->!newList2.stream().anyMatch(m->m.getAddress().equalsIgnoreCase(a.getAddress())))
+                    .filter(a-> newList2.stream().noneMatch(m->m.getAddress().equalsIgnoreCase(a.getAddress())))
             .collect(Collectors.toList());
     newList.addAll(notNew);
     cloned.setDomains(newList);

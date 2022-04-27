@@ -10,7 +10,7 @@ public class SpecialStringBuilder {
 
     public SpecialStringBuilder add(String inputString){
         StringBuilder toAdd = new StringBuilder();
-        for(var i=0;i<length;i++) toAdd.append("\t");
+        toAdd.append("\t".repeat(Math.max(0, length)));
 
         this.data.add(toAdd+inputString);
         return this;

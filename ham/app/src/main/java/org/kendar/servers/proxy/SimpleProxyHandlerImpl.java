@@ -36,7 +36,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     this.multiResolver = multiResolver;
     this.configuration = configuration;
     logger = loggerBuilder.build(SimpleProxyHandlerImpl.class);
-    eventQueue.register((a)->handleConfigChange(a),ProxyConfigChanged.class);
+    eventQueue.register(this::handleConfigChange,ProxyConfigChanged.class);
   }
 
   public void handleConfigChange(ProxyConfigChanged event){

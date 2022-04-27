@@ -45,8 +45,8 @@ public class SingleRequestGenerator {
         var resourceFileData = rsrcDir+"/recording.json";
         result.put(resourceFileData,replayData.getBytes(StandardCharsets.UTF_8));
         byte[] pom = new byte[0];
-        try {
-            pom = this.getClass().getResourceAsStream("/standards/pom.xml").readAllBytes();
+        try (var stream = this.getClass().getResourceAsStream("/standards/pom.xml")){
+            pom = stream.readAllBytes();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -139,12 +139,10 @@ public class SingleRequestGenerator {
         a
                 //.add("@Test")
                 .add("private void " + methodName + "() throws IOException{")
-                .tab(b -> {
-                    b
-                            .add(c -> makeTheCall(c,recordingId, line, row,pack))
-                            .add(c -> retrieveTheData(c,recordingId, line, row,pack))
-                            .add(c -> checkTheReturn(c,recordingId, line, row,pack));
-                })
+                .tab(b -> b
+                        .add(c -> makeTheCall(c,recordingId, line, row,pack))
+                        .add(c -> retrieveTheData(c,recordingId, line, row,pack))
+                        .add(c -> checkTheReturn(c,recordingId, line, row,pack)))
                 .add("}")
                 .add();
     }
@@ -229,7 +227,7 @@ public class SingleRequestGenerator {
     }
 
     private boolean isRequestWithBody(Request request) {
-        if(!Arrays.stream(bodyMethod).anyMatch(a->a.equalsIgnoreCase(request.getMethod()))){
+        if(Arrays.stream(bodyMethod).noneMatch(a->a.equalsIgnoreCase(request.getMethod()))){
             return false;
         }
         if(request.isBinaryRequest() && request.getRequestBytes()!=null && request.getRequestBytes().length >0 ){

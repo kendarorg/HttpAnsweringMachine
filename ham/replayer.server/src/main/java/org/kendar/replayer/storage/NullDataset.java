@@ -105,7 +105,7 @@ public class NullDataset extends ReplayerDataset{
                 maps.put(call.getId(), call);
             }
             var indexes = replayerResult.getIndexes().stream()
-                    .filter(a -> a.isStimulatorTest())
+                    .filter(CallIndex::isStimulatorTest)
                     .sorted(Comparator.comparingInt(CallIndex::getId))
                     .collect(Collectors.toList());
             boolean onIndex = false;
