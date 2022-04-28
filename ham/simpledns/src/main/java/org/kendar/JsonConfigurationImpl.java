@@ -11,8 +11,11 @@ import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Component
 public class JsonConfigurationImpl implements JsonConfiguration {
@@ -46,9 +49,28 @@ public class JsonConfigurationImpl implements JsonConfiguration {
                 deserializedConfigurations.put(sanitizedId, parsedConfig);
             }
             var founded = deserializedConfigurations.get(sanitizedId);
+            if(founded==null || founded.deserialized==null){
+                return handleMissing(aClass);
+            }
             return (T) founded.deserialized;
         } catch (Exception e) {
-            throw new RuntimeException();
+            return handleMissing(aClass);
+        }
+    }
+
+    private <T extends BaseJsonConfig> T handleMissing(Class<T> aClass) {
+        logger.warn("Missing configuration "+ aClass.getName()+  " going default");
+        var nopars = Arrays.stream(aClass.getConstructors()).
+                filter(c->c.getParameterCount()==0).collect(Collectors.toList());
+        if(nopars.isEmpty()){
+            logger.error(aClass.getName()+" Must have default constructor");
+            throw new RuntimeException(aClass.getName()+" Must have default constructor");
+        }
+        try {
+            return (T) nopars.get(0).newInstance(new Object[]{});
+        } catch (InstantiationException|IllegalAccessException|InvocationTargetException ex) {
+            logger.error(aClass.getName()+" Must have default constructor");
+            throw new RuntimeException(ex);
         }
     }
 
