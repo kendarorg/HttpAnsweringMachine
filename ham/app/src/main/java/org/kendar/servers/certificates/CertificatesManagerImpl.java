@@ -91,7 +91,7 @@ public class CertificatesManagerImpl implements CertificatesManager {
     BigInteger serialNumber = BigInteger.valueOf(System.currentTimeMillis());
     Instant now = Instant.now();
     Instant validFrom = now.minus(360, ChronoUnit.DAYS);
-    Instant validUntil = now.plus(10 * 360, ChronoUnit.DAYS);
+    Instant validUntil = now.plus( 360, ChronoUnit.DAYS);
 
     // If there is no issuer, we self-sign our certificate.
     X500Name issuerName;
