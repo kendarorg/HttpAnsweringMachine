@@ -9,10 +9,6 @@ e
 ,docker/images/externalvpn/docker-compose.yml,6/9/693a16f1b29539959bf89ff85a963b8e49a57c24
 ?
 docs/logging.md,1/1/1167a7d81d4b5b59b9f4959031a6fe4cd98f9edd
-8
-Make.bat,4/2/428f0dbe47e4d25cd041d0b96c016eb430a03837
-a
-1samples/sampleapp/docker_multi/docker-compose.yml,0/e/0e57bbff3cf19dc1ebf53a4a18ce5335c79b168a
 Q
 !docker/images/proxy/data/proxy.sh,0/0/00cfa11ecdf3fdb85ec150a618b455c44602405a
 N

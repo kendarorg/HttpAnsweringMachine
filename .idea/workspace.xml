@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Added internal socks5 server &#10;Removed old docks" />
+    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Added internal socks5 server &#10;Removed old docks">
+      <change beforePath="$PROJECT_DIR$/docker/images/ImagesBuild.bat" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/ImagesBuild.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/images/ImagesBuild.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/ImagesBuild.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ham/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/ImagesBuild.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/calendar/docker_multi/ImagesBuild.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/ImagesRun.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/calendar/docker_multi/ImagesRun.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/run-be.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/calendar/docker_multi/run-be.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/run-fe.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/calendar/docker_multi/run-fe.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/run-gateway.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/calendar/docker_multi/run-gateway.sh" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -35,11 +44,9 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "WebServerToolWindowFactoryState": "false"
-  }
-}]]></component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/release" />
@@ -78,6 +85,7 @@
       <workItem from="1649883018407" duration="566000" />
       <workItem from="1649925456266" duration="25000" />
       <workItem from="1651140940736" duration="350000" />
+      <workItem from="1651157161112" duration="53000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>
