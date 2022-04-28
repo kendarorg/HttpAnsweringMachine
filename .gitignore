@@ -28,6 +28,7 @@ hs_err_pid*
 /ham/libs
 /ham/recording
 /ham/replayerdata
+/ham/calllogs
 /ham/pacts
 /ham/app-*.jar
 

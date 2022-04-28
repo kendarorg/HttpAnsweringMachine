@@ -1,6 +1,6 @@
 {
 	"logPath": null,
-	"logRoundtripsPath": "recording",
+	"logRoundtripsPath": "calllogs",
 	"logLevel": "INFO",
 	"loggers": {
 		"org.kendar.servers.http.Request": "OFF",
