@@ -144,8 +144,8 @@
     "active": true
   },
   {
-    "id": "pacts.server",
-    "path": "pacts",
+    "id": "socks5.server",
+    "port": 1080,
     "active": true
   }
 ]
