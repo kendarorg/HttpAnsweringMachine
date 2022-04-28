@@ -36,6 +36,7 @@ public class HttpProxyHandler extends Thread {
 
                 final Socket forwardSocket;
                 try {
+                    //TODO HERE SHOULD ADD THE DNS LOOKUP
                     forwardSocket = new Socket(matcher.group(1), Integer.parseInt(matcher.group(2)));
                     System.out.println(forwardSocket);
                 } catch (IOException | NumberFormatException e) {
