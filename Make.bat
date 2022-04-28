@@ -40,7 +40,7 @@ call mvn clean install
 cd ..
 
 echo Building sample applications
-cd samples\sampleapp
+cd samples\calendar
 call mvn clean install
 
 cd ..
@@ -54,8 +54,8 @@ echo Building main docker images
 cd %mypath%docker\images
 call ImagesBuild.bat
 
-echo Building sampleapp docker images
-cd %mypathx%samples\sampleapp\docker_multi
+echo Building calendar docker images
+cd %mypathx%samples\calendar\docker_multi
 call ImagesBuild.bat
 
 cd %mypathx%
