@@ -49,21 +49,6 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
   public void init() {
     localDns = new PatternItem("id", globalConfig.getLocalAddress(), localHostAddress);
     var cloned = configuration.getConfiguration(DnsConfig.class).copy();
-    StringBuilder hostsFile = new StringBuilder();
-    for (int i = 0; i < cloned.getResolved().size(); i++) {
-      var record = cloned.getResolved().get(i);
-      hostsFile.append(record.writeHostsLine()).append("\n");
-    }
-
-    if (hostsFile.length() > 0) {
-      try {
-        var myWriter = new FileWriter("hosts.txt");
-        myWriter.write(hostsFile.toString());
-        myWriter.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
 
     for (int i = 0; i < cloned.getExtraServers().size(); i++) {
       var extraServer = cloned.getExtraServers().get(i);

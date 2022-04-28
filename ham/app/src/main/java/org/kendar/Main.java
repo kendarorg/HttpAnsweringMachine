@@ -12,6 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -24,13 +25,14 @@ public class Main implements CommandLineRunner {
   private static final int MAX_THREADS = 10;
   @Autowired private ApplicationContext applicationContext;
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
             (hostname, sslSession) -> true);
     SpringApplication app = new SpringApplication(Main.class);
     app.setLazyInitialization(true);
     app.run(args);
   }
+
 
   @SuppressWarnings("InfiniteLoopStatement")
   @Override
@@ -44,6 +46,7 @@ public class Main implements CommandLineRunner {
 
     var logger = applicationContext.getBean(LoggerBuilder.class).build(this.getClass());
     Map<AnsweringServer, Future<?>> futures = setupFakeFutures(answeringServers);
+
     while (true) {
       intializeRunners(executor, futures);
       runRunners(executor, futures);

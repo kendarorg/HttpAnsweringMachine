@@ -15,6 +15,7 @@ The AnsweringMachine is built to overcome this troubles
 ## Features
 
 * Proxying of any kind of http/https calls
+* Internal socks5 proxy to run even dockerless
 * Spy mode to log all traffic  
 * Configurable Https hijacking with auto generated SSL certificates
 * Redirection of services through other destinations  
@@ -129,7 +130,7 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 * [OIDC](docs/plugins/oidc.md)
 * [Replayer](docs/plugins/replayer/replayer.md)
 * [Js filters](docs/plugins/js.md)
-* [Derby](docs/plugins/derby.md)
+* [Socks5 Proxy](docs/plugins/socks5.md)
 * [Custom Java plugins](docs/plugins/java.md)
   * [Java filters](docs/plugins/java/jfilters.md)
   * [Java pages](docs/plugins/java/jstatic.md)
