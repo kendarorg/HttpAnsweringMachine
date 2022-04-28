@@ -12,8 +12,8 @@ del /q data\app\*.*
 copy /Y ..\..\..\ham\simpledns\target\*.jar data\
 docker build -t ham.client .
 
-cd ../proxy
-docker build -t ham.proxy .
+REM cd ../proxy
+REM docker build -t ham.proxy .
 
 cd ../openvpn
 docker build -t ham.openvpn .

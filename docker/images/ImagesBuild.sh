@@ -13,9 +13,9 @@ cd base
 echo Build Base
 docker build -t ham.base .
 
-cd ../proxy
-echo Build Proxy
-docker build -t ham.proxy .
+# cd ../proxy
+# echo Build Proxy
+# docker build -t ham.proxy .
 
 #cd ../externalvpn/forticlient
 #cp -f ../../base/data/startservice.sh data/
