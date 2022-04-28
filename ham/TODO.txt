@@ -2,3 +2,8 @@
     * Save settings
     * Download settings
     * Upload settings
+    * Check for missing configuration in json
+* Http proxy
+    * //TODO HERE SHOULD ADD THE DNS LOOKUP
+    * Logs
+    * Code cleanup
