@@ -6,12 +6,14 @@ import org.kendar.servers.config.ConfigAttribute;
 @ConfigAttribute(id="socks5.server")
 public class Socks5Config extends BaseJsonConfig<Socks5Config> {
   private int port;
+  private int httpProxyPort;
   private boolean active = false;
 
   @Override public Socks5Config copy() {
     var result = new Socks5Config();
     result.setPort(this.getPort());
     result.setActive(this.active);
+    result.setHttpProxyPort(this.httpProxyPort);
     return result;
   }
 
@@ -29,5 +31,13 @@ public class Socks5Config extends BaseJsonConfig<Socks5Config> {
 
   public void setActive(boolean active) {
     this.active = active;
+  }
+
+  public int getHttpProxyPort() {
+    return httpProxyPort;
+  }
+
+  public void setHttpProxyPort(int httpProxyPort) {
+    this.httpProxyPort = httpProxyPort;
   }
 }
