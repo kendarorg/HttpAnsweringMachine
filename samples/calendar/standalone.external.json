@@ -147,5 +147,10 @@
     "id": "replayer.server",
     "path": "replayerdata",
     "active": true
+  },
+  {
+    "id": "socks5.server",
+    "port": 1080,
+    "active": true
   }
 ]

@@ -74,9 +74,9 @@
 		"path": "replayerdata",
 		"active": true
 	},
-	{
-		"id": "pacts.server",
-		"path": "pacts",
-		"active": true
-	}
+  {
+    "id": "socks5.server",
+    "port": 1080,
+    "active": true
+  }
 ]
