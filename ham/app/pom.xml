@@ -27,6 +27,8 @@
     </parent>
 
     <dependencies>
+
+
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>app.commons</artifactId>

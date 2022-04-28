@@ -66,6 +66,7 @@
         <module>app.dns</module>
         <module>schema.checker</module>
         <module>api.ham</module>
+        <module>socks5.server</module>
     </modules>
     <build>
         <extensions>

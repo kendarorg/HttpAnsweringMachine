@@ -15,6 +15,7 @@
         <module name="app.http" />
         <module name="simpledns" />
         <module name="app.dns" />
+        <module name="socks5.server" />
         <module name="api.ham" />
         <module name="js.filters" />
         <module name="app.commons" />
@@ -46,6 +47,7 @@
       <module name="replayer.server" options="-parameters" />
       <module name="schema.checker" options="-parameters" />
       <module name="simpledns" options="-parameters" />
+      <module name="socks5.server" options="-parameters" />
       <module name="starter" options="-parameters" />
     </option>
   </component>
