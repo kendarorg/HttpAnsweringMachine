@@ -31,7 +31,7 @@ if [ "$rundocker" == "y" ]; then
 	echo and import "$mypath"docker/images/openvpn/mainuser.local.ovpn profile
 	echo then after connecting you will have full access!
 	pause
-	cd "$mypath"samples/sampleapp/docker_multi
+	cd "$mypath"samples/calendar/docker_multi
 	chmod 777 *.sh
 	./ImagesRun.sh
 fi
@@ -62,20 +62,20 @@ if [ "$rundocker" == "n" ]; then
 	tokill=$1
 	#echo "kill -9 $tokill" >> $mypath/Kill.sh  
 		
-	cd "$mypath"samples/sampleapp/gateway/target/
-	cp -f "$mypath"samples/sampleapp/docker/application.properties.gateway "$mypath"samples/sampleapp/gateway/target/application.properties
-	java -jar "$mypath"samples/sampleapp/gateway/target/gateway-1.0-SNAPSHOT.jar &
+	cd "$mypath"samples/calendar/gateway/target/
+	cp -f "$mypath"samples/calendar/docker/application.properties.gateway "$mypath"samples/calendar/gateway/target/application.properties
+	java -jar "$mypath"samples/calendar/gateway/target/gateway-1.0-SNAPSHOT.jar &
 		
-	cd "$mypath"samples/sampleapp/be/target/
-	cp -f "$mypath"samples/sampleapp/docker/application.properties.be "$mypath"samples/sampleapp/be/target/application.properties
-	java -jar "$mypath"samples/sampleapp/be/target/be-1.0-SNAPSHOT.jar &
+	cd "$mypath"samples/calendar/be/target/
+	cp -f "$mypath"samples/calendar/docker/application.properties.be "$mypath"samples/calendar/be/target/application.properties
+	java -jar "$mypath"samples/calendar/be/target/be-1.0-SNAPSHOT.jar &
 		
-	cd "$mypath"samples/sampleapp/fe/target/
-	cp -f "$mypath"samples/sampleapp/docker/application.properties.fe "$mypath"samples/sampleapp/fe/target/application.properties
-	java -jar "$mypath"samples/sampleapp/fe/target/fe-1.0-SNAPSHOT.jar &
+	cd "$mypath"samples/calendar/fe/target/
+	cp -f "$mypath"samples/calendar/docker/application.properties.fe "$mypath"samples/calendar/fe/target/application.properties
+	java -jar "$mypath"samples/calendar/fe/target/fe-1.0-SNAPSHOT.jar &
 	
 	cd "$mypath"ham/app/target
-	cp -f "$mypath"samples/sampleapp/docker/external.json "$mypath"ham/app/target/
+	cp -f "$mypath"samples/calendar/docker/external.json "$mypath"ham/app/target/
 	java "-Dloader.path=$mypath/ham/app/target/libs"  -Dloader.main=org.kendar.Main  \
 	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
 		-jar "$JAR_NAME" org.springframework.boot.loader.PropertiesLauncher &
