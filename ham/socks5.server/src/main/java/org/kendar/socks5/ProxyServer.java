@@ -2,7 +2,6 @@ package org.kendar.socks5;
 
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
-import org.kendar.servers.config.HttpWebServerConfig;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -12,16 +11,16 @@ import sockslib.server.SocksProxyServer;
 import sockslib.server.SocksServerBuilder;
 
 @Component
-public class DnsSocks5Server implements AnsweringServer {
+public class ProxyServer implements AnsweringServer {
     private final Logger logger;
     private JsonConfiguration configuration;
     private DnsMultiResolver multiResolver;
     private boolean running = false;
 
-    public DnsSocks5Server(DnsMultiResolver multiResolver, LoggerBuilder loggerBuilder, JsonConfiguration configuration){
+    public ProxyServer(DnsMultiResolver multiResolver, LoggerBuilder loggerBuilder, JsonConfiguration configuration){
 
         this.multiResolver = multiResolver;
-        this.logger = loggerBuilder.build(DnsSocks5Server.class);
+        this.logger = loggerBuilder.build(ProxyServer.class);
         this.configuration = configuration;
     }
     @Override
