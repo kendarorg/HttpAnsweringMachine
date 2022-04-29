@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Added internal socks5 server &#10;Removed old docks">
-      <change beforePath="$PROJECT_DIR$/docker/images/ImagesBuild.bat" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/ImagesBuild.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/images/ImagesBuild.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/ImagesBuild.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/ImagesBuild.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/calendar/docker_multi/ImagesBuild.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/ImagesRun.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/calendar/docker_multi/ImagesRun.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/run-be.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/calendar/docker_multi/run-be.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/run-fe.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/calendar/docker_multi/run-fe.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/run-gateway.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/calendar/docker_multi/run-gateway.sh" afterDir="false" />
+    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Removed old docker proxy">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +38,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="SONARLINT_PRECOMMIT_ANALYSIS" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
   </component>
   <component name="RecentsManager">
@@ -85,7 +79,7 @@
       <workItem from="1649883018407" duration="566000" />
       <workItem from="1649925456266" duration="25000" />
       <workItem from="1651140940736" duration="350000" />
-      <workItem from="1651157161112" duration="53000" />
+      <workItem from="1651157161112" duration="1378000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>
@@ -136,7 +130,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651141271909</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Removed old docker proxy">
+      <created>1651157525809</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1651157525809</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -190,6 +191,7 @@
     <MESSAGE value="Running make on windows" />
     <MESSAGE value="Death to the BOMs!!!" />
     <MESSAGE value="Added internal socks5 server &#10;Removed old docks" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added internal socks5 server &#10;Removed old docks" />
+    <MESSAGE value="Removed old docker proxy" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed old docker proxy" />
   </component>
 </project>

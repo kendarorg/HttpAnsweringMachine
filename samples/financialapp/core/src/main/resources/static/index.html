@@ -59,17 +59,17 @@ document.write('<script src="assets/js/vendor/jquery-3.2.1.min.js"><\/script><sc
         (function getStocks(){
             // Do something here
             $.ajax({
-                url: "/stock-quote-last-price/"+stock,
+                url: "/api/stock/"+stock,
                 success: function (result) {
-                    $("#stock-quote-last-price").html(result);
-                    var warning = parseFloat(result) < 10;
+                    $("#stock-quote-last-price").html(result.price);
+                    var warning = result.price < 10;
                     $("#quote-warning").css("display", warning ? "inline" : "none");
                     $("#stock-quote-last-price").css("color", warning ? "red" : "green");
                     $("#stock-quote-last-update").html(new Date().toUTCString());
-                    items.push({
+                    /*items.push({
                         value: parseInt(result),
                         title: stock
-                    });
+                    });*/
                     /*$("#chart").linechart({
                         data: items,
                         width: 1,

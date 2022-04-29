@@ -25,3 +25,7 @@ I
 images/openvpn/Dockerfile,f/d/fd1d7f6f97edc1274fa116b700c1520f63b6f0a4
 N
 images/singlemaster/Dockerfile,5/8/58d6b5ce2be40ee1deee01f3bf00b81845872b7b
+F
+images/base/Dockerfile,8/4/84b17c859c5791ea12b2de536ca15f3dd7eab1dd
+O
+images/client/data/simpledns.sh,d/8/d86225706fb42bfd923ca6a3394b4754dfebb049
