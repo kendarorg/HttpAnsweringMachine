@@ -9,12 +9,6 @@ e
 ,docker/images/externalvpn/docker-compose.yml,6/9/693a16f1b29539959bf89ff85a963b8e49a57c24
 ?
 docs/logging.md,1/1/1167a7d81d4b5b59b9f4959031a6fe4cd98f9edd
-Q
-!docker/images/proxy/data/proxy.sh,0/0/00cfa11ecdf3fdb85ec150a618b455c44602405a
-N
-docker/images/proxy/Dockerfile,5/d/5d630e09bb45edeecb1646960d1c1cf111d8da68
-7
-Run.bat,d/3/d3f964104248ac3ac69ae9d88bb84930e0cabcb8
 :
 
 Release.sh,2/1/213e040cdb1f69887457bbff4323340ac376b58a
@@ -27,8 +21,6 @@ G
 release/ImagesBuild.bat,1/5/152b92a87ab007a225a41426f2f9b27180952493
 F
 release/ImagesBuild.sh,3/2/32fd2c97688fa540ec812359e114c16691753c28
-6
-Run.sh,8/0/80affa0a2ab006fd06a3b8ad943d736e9c708f0b
 8
 Make.bat,4/2/428f0dbe47e4d25cd041d0b96c016eb430a03837
 U
@@ -39,22 +31,12 @@ H
 samples/master/README.md,f/6/f6dab43956cf7c4b3483c889723b5ae457d91c22
 L
 samples/master/ImagesRun.bat,2/b/2b19ab7d22762af7f4caa5104cbdb26301c1c5db
-]
--samples/calendar/docker_multi/ImagesBuild.bat,f/7/f788c47c4de02cf0502e8c8200bbf37813da75bf
-[
-+samples/calendar/docker_multi/external.json,b/3/b3c2fb8c8726d3a4f11798daf6004d0bd397117f
-R
-"samples/calendar/docker/Dockerfile,c/7/c7ec15de8d222fdb62caa1948fc6beb16334d082
-Z
-*samples/calendar/docker/docker-compose.yml,f/0/f0ee76d9fb65688f6abecf5e87743618fcb03eea
 S
 #.idea/sonarlint/issuestore/index.pb,9/f/9fe84ebb15faf917b7def6236dba604453cc61e0
 `
 0samples/calendar/docker_multi/docker-compose.yml,5/a/5a9a70196a88a73b0c71bc31f3593afa0a142a6e
 I
 samples/master/Dockerfile,2/8/28097ec8580e778129032c3c057dcabf9020a271
-Z
-*samples/calendar/docker_multi/ImagesRun.sh,2/9/29f7124f0524e2f31d3a3e92367c1b08bb28366c
 \
 ,samples/calendar/docker_multi/ImagesBuild.sh,c/5/c5a35b74ee6cff9d72bca2eb41d57eb2d2aeade8
 M
@@ -67,13 +49,3 @@ W
 'samples/calendar/docker_multi/run-fe.sh,1/7/174fc3e77785ecb495a721b3013c7f1e27b62dac
 W
 'samples/calendar/docker_multi/run-be.sh,5/2/52d9f8fba128fcd72435a1088009210e09225068
-t
-Dham/app/src/main/java/org/kendar/servers/dns/api/DnsServersApis.java,4/8/481f9c617f81b3fd27c7529dea80eb4a4e19ab9e
-m
-=ham/app/src/main/java/org/kendar/servers/dns/api/DnsItem.java,c/7/c7af315d716ea331f80dd0c04829f35b0d758501
-r
-Bham/app/src/main/java/org/kendar/servers/dns/api/DnsLookupApi.java,b/f/bfe8e400de4b17585adf38d78bfa6950084ef018
-u
-Eham/app/src/main/java/org/kendar/servers/dns/api/DnsMappingsApis.java,8/9/89e08ea2010ec22d298981e799b2f9aa20867214
-`
-0ham/app/src/main/resources/web/dns/resolved.html,9/7/97d2b0b1827f53672123c1cfc72b238ed2a2dd5a
