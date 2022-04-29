@@ -21,8 +21,6 @@ G
 release/ImagesBuild.bat,1/5/152b92a87ab007a225a41426f2f9b27180952493
 F
 release/ImagesBuild.sh,3/2/32fd2c97688fa540ec812359e114c16691753c28
-8
-Make.bat,4/2/428f0dbe47e4d25cd041d0b96c016eb430a03837
 U
 %docker/images/singlemaster/Dockerfile,1/8/189881b46de70b34df12dcc42d3a60c9b28f3ab3
 S

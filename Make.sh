@@ -38,6 +38,8 @@ if [ "$mavenbuild" == "y" ]; then
   echo Building sample applications
   cd samples/calendar
   mvn clean install
+  cd ../quotes
+  mvn clean install
   cd ..
   cd ..
 

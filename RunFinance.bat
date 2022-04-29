@@ -14,11 +14,11 @@ goto simple
 
 echo Please install OpenVpn connect (https://openvpn.net/client-connect-vpn-for-windows/)
 echo Or use socks5://localhost:1080 proxy
-call explorer https://openvpn.net/client-connect-vpn-for-windows/
+REM call explorer https://openvpn.net/client-connect-vpn-for-windows/
 echo and import %mypath%docker\images\openvpn\mainuser.local.ovpn profile
 echo then after connecting you will have full access!
 pause
-cd %mypath%samples\calendar\docker_multi
+cd %mypath%samples\quotes\docker_multi
 call ImagesRun.bat
 
 
@@ -30,30 +30,15 @@ echo Open with notepad (administrative rights)
 echo the file C:\Windows\System32\drivers\etc\hosts
 echo and add the following lines:
 echo 127.0.0.1  www.local.test
-echo 127.0.0.1  www.sample.test
-echo 127.0.0.1  gateway.sample.test
-echo 127.0.0.1  be.sample.test
+echo 127.0.0.1  www.quotes.test
 
 pause
 
 
 
-cd %mypath%samples\calendar\gateway\target
-copy /Y %mypath%samples\calendar\docker\application.properties.gateway %mypath%samples\calendar\gateway\target\application.properties
-start java -jar %mypath%samples\calendar\gateway\target\gateway-1.0-SNAPSHOT.jar
-
-timeout /t 10 /nobreak
-
-
-cd %mypath%samples\calendar\be\target
-copy /Y %mypath%samples\calendar\docker\application.properties.be %mypath%samples\calendar\be\target\application.properties
-start java -jar %mypath%samples\calendar\be\target\be-1.0-SNAPSHOT.jar
-
-timeout /t 10 /nobreak
-
-cd %mypath%samples\calendar\fe\target
-copy /Y %mypath%samples\calendar\docker\application.properties.fe %mypath%samples\calendar\fe\target\application.properties
-start java -jar %mypath%samples\calendar\fe\target\fe-1.0-SNAPSHOT.jar
+cd %mypath%samples\quotes\core\target
+copy /Y %mypath%samples\quotes\docker\application.properties.fi %mypath%samples\quotes\core\target\application.properties
+start java -jar %mypath%samples\quotes\core\target\core-1.0-SNAPSHOT.jar
 
 timeout /t 10 /nobreak
 
@@ -66,7 +51,7 @@ copy /Y %mypath%ham\libs\*.jar %mypath%ham\app\target\libs\
 dir /b %mypath%ham\app\target\*.jar > .temp.txt
 set /p APPJAR=<.temp.txt
 
-copy /Y %mypath%samples\calendar\standalone.external.json %mypath%ham\app\target\external.json
+copy /Y %mypath%samples\quotes\standalone.external.json %mypath%ham\app\target\external.json
 start java "-Dloader.path=%mypath%ham\app\target\libs"  -Dloader.main=org.kendar.Main  ^
   	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
 	-jar %APPJAR% org.springframework.boot.loader.PropertiesLauncher
