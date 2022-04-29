@@ -2,7 +2,71 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Removed old docker proxy">
+      <change afterPath="$PROJECT_DIR$/samples/quotes/standalone.external.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Make.bat" beforeDir="false" afterPath="$PROJECT_DIR$/Make.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Make.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Make.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RunFinance.bat" beforeDir="false" afterPath="$PROJECT_DIR$/RunFinance.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RunFinance.sh" beforeDir="false" afterPath="$PROJECT_DIR$/RunFinance.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/.idea/uiDesigner.xml" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/.idea/uiDesigner.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/FinanceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/FinanceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/api/AggregatedStocksController.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/api/AggregatedStocksController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/api/MyStockController.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/api/MyStockController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/api/ReadyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/api/ReadyController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/api/StockController.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/api/StockController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/api/model/StockData.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/api/model/StockData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/config/BasicAuthEntryPoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/config/BasicAuthEntryPoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/config/CustomFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/config/CustomFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/config/LoggerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/config/LoggerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/data/MyStocksRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/data/MyStocksRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/data/UsersRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/data/UsersRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/data/entities/MyStock.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/data/entities/MyStock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/data/entities/MyStockId.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/data/entities/MyStockId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/data/entities/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/data/entities/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/service/PlainPasswordEncoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/service/PlainPasswordEncoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/service/SimpleAuthenticationProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/service/SimpleAuthenticationProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/java/com/kendar/finance/utils/MimeTypes.java" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/utils/MimeTypes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/assets/js/ie10-viewport-bug-workaround.js" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/assets/js/ie10-viewport-bug-workaround.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/assets/js/vendor/jquery-1.11.3.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/assets/js/vendor/jquery-1.11.3.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/assets/js/vendor/jquery-3.2.1.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/assets/js/vendor/jquery-3.2.1.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/assets/js/vendor/scale.css" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/assets/js/vendor/scale.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/assets/js/vendor/scale.js" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/assets/js/vendor/scale.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/assets/navbar.css" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/assets/navbar.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap-theme.css" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap-theme.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap-theme.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap-theme.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap.css" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.eot" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.eot" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.svg" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.woff" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/bootstrap-3.3.6-dist/js/bootstrap.js" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/js/bootstrap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/bootstrap-3.3.6-dist/js/npm.js" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/js/npm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/favicon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/core/src/main/resources/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/docker_multi/Dockerfile.fi" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/Dockerfile.fi" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/docker_multi/Dockerfile.master" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/Dockerfile.master" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/docker_multi/ImagesBuild.bat" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/ImagesBuild.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/docker_multi/ImagesBuild.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/ImagesBuild.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/docker_multi/ImagesRun.bat" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/ImagesRun.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/docker_multi/ImagesRun.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/ImagesRun.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/docker_multi/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/README.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/docker_multi/application.properties.fi" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/application.properties.fi" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/docker_multi/external.json" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/external.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/docker_multi/run-fi.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/run-fi.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/financialapp/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,9 +104,12 @@
   <component name="PropertiesComponent">
     <property name="SONARLINT_PRECOMMIT_ANALYSIS" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/samples/quotes" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/samples/quotes" />
+      <recent name="$PROJECT_DIR$/samples/financialapp/docker_multi" />
       <recent name="$PROJECT_DIR$/release" />
     </key>
   </component>
@@ -80,6 +147,7 @@
       <workItem from="1649925456266" duration="25000" />
       <workItem from="1651140940736" duration="350000" />
       <workItem from="1651157161112" duration="1378000" />
+      <workItem from="1651227977822" duration="448000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>

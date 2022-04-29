@@ -42,7 +42,8 @@ cd ..
 echo Building sample applications
 cd samples\calendar
 call mvn clean install
-
+cd ..\quotes
+call mvn clean install
 cd ..
 cd ..
 
