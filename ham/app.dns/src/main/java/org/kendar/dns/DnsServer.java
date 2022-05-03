@@ -147,6 +147,7 @@ public class DnsServer {
     }
   }
 
+
   public void run() throws IOException, InterruptedException {
     var udpThread = new Thread(this::runUdp);
     var tcpThread = new Thread(this::runTcp);
@@ -198,6 +199,7 @@ public class DnsServer {
 
 
 
+
   private byte[] buildResponse(byte[] in) throws IOException {
     Message request;
     request = new Message(in);
@@ -233,6 +235,9 @@ public class DnsServer {
         // Add answers as needed
         response.addRecord(
                 org.xbill.DNS.Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.fromString(requestedDomain)),
+                Section.ANSWER);
+        response.addRecord(
+                org.xbill.DNS.Record.fromString(Name.root, Type.TXT, DClass.IN, 86400, ip, Name.fromString(requestedDomain)),
                 Section.ANSWER);
       }
       resp = response.toWire();
