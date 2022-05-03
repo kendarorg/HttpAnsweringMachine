@@ -3,8 +3,11 @@ package org.kendar.servers.http;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpsExchange;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClassesHandler;
 import org.kendar.http.HttpFilterType;
+import org.kendar.remote.ExecuteRemoteRequest;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.proxy.SimpleProxyHandler;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -45,7 +49,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
           PluginsInitializer pluginsInitializer,
           JsonConfiguration configuration,
           ExternalRequester externalRequester,
-          ConnectionBuilder connectionBuilder) {
+          ConnectionBuilder connectionBuilder,
+          EventQueue eventQueue) {
     this.logger = loggerBuilder.build(AnsweringHandlerImpl.class);
     this.requestLogger = loggerBuilder.build(Request.class);
     this.filteringClassesHandler = filteringClassesHandler;
@@ -63,8 +68,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         StaticRequest.class.getName(), "Log static requests as file (DEBUG)");
     pluginsInitializer.addSpecialLogger(
         DynamicReqest.class.getName(), "Log dynamic requests as file (DEBUG)");
+    eventQueue.register(e->{return remoteRequest(e);}, ExecuteRemoteRequest.class);
   }
-
 
 
   private void mirrorRequest(Request request, HttpExchange httpExchange) {
@@ -124,6 +129,61 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     return false;
   }
 
+  private Response remoteRequest(ExecuteRemoteRequest e) {
+    try {
+      var connManager = connectionBuilder.getConnectionManger(true, true);
+      var config = configuration.getConfiguration(GlobalConfig.class);
+      var response = new Response();
+      var request = e.getRequest();
+      try {
+        handleInternal(null, null, config, connManager);
+
+      } catch (Exception ex) {
+        throw new RuntimeException(ex);
+      } finally {
+        filteringClassesHandler.handle(
+                config, HttpFilterType.POST_RENDER, request, response, connManager);
+      }
+      return response;
+    }catch (InvocationTargetException| IllegalAccessException ex){
+      return null;
+    }
+  }
+
+  private void handleInternal(Request request, Response response, GlobalConfig config, HttpClientConnectionManager connManager) throws Exception {
+    if (filteringClassesHandler.handle(
+            config, HttpFilterType.PRE_RENDER, request, response, connManager)) {
+
+      return;
+    }
+
+    if (filteringClassesHandler.handle(
+            config, HttpFilterType.API, request, response, connManager)) {
+      // ALWAYS WHEN CALLED
+      return;
+    }
+
+    if (filteringClassesHandler.handle(
+            config, HttpFilterType.STATIC, request, response, connManager)) {
+      // ALWAYS WHEN CALLED
+      return;
+    }
+
+    request = simpleProxyHandler.translate(request);
+
+    if (filteringClassesHandler.handle(
+            config, HttpFilterType.PRE_CALL, request, response, connManager)) {
+      return;
+    }
+
+    externalRequester.callSite(request, response);
+
+    if (filteringClassesHandler.handle(
+            config, HttpFilterType.POST_CALL, request, response, connManager)) {
+      return;
+    }
+  }
+
   @Override
   public void handle(HttpExchange httpExchange) {
 
@@ -145,6 +205,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
       } else {
         request = requestResponseBuilder.fromExchange(httpExchange, "http");
       }
+
+      //START REQUEST
       if(request.getHeader("X-BLOCK-RECURSIVE")!=null){
         var uri = new URI(request.getHeader("X-BLOCK-RECURSIVE"));
         if(uri.getHost().equalsIgnoreCase(request.getHost()) &&
@@ -163,42 +225,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         return;
       }
 
-      if (filteringClassesHandler.handle(
-          config, HttpFilterType.PRE_RENDER, request, response, connManager)) {
-        sendResponse(response, httpExchange);
-        return;
-      }
-
-      if (filteringClassesHandler.handle(
-          config, HttpFilterType.API, request, response, connManager)) {
-        // ALWAYS WHEN CALLED
-        sendResponse(response, httpExchange);
-        return;
-      }
-
-      if (filteringClassesHandler.handle(
-          config, HttpFilterType.STATIC, request, response, connManager)) {
-        // ALWAYS WHEN CALLED
-        sendResponse(response, httpExchange);
-        return;
-      }
-
-      request = simpleProxyHandler.translate(request);
-
-      if (filteringClassesHandler.handle(
-          config, HttpFilterType.PRE_CALL, request, response, connManager)) {
-        sendResponse(response, httpExchange);
-        return;
-      }
-
-      externalRequester.callSite(request, response);
-
-      if (filteringClassesHandler.handle(
-          config, HttpFilterType.POST_CALL, request, response, connManager)) {
-        sendResponse(response, httpExchange);
-        return;
-      }
-
+      handleInternal(request,response,config,connManager);
       sendResponse(response, httpExchange);
 
     } catch (Exception rex) {
