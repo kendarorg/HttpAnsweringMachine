@@ -39,7 +39,7 @@ class DnsBuilderImpl implements DnsBuilder {
     }
 
     @Override
-    public void removeDnsName(String id) {
+    public void removeDnsName(String id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withDelete()
                 .withPath("/api/dns/mappings/"+id);
@@ -77,7 +77,7 @@ class DnsBuilderImpl implements DnsBuilder {
     }
 
     @Override
-    public void removeDnsServer(String id) {
+    public void removeDnsServer(String id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withDelete()
                 .withPath("/api/dns/servers/"+id);

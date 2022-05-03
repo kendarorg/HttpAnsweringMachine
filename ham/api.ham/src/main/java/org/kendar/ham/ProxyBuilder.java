@@ -11,7 +11,7 @@ public interface ProxyBuilder {
     }
 
     String addProxy(String when,String where, String test) throws HamException;
-    void removeProxy(String id);
+    void removeProxy(String id) throws HamException;
     List<Proxy> retrieveProxies() throws HamException;
-    void refresh();
+    void refresh() throws HamException;
 }

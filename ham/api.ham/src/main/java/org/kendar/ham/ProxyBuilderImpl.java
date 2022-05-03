@@ -40,7 +40,7 @@ class ProxyBuilderImpl implements ProxyBuilder{
     }
 
     @Override
-    public void removeProxy(String id) {
+    public void removeProxy(String id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withDelete()
                 .withPath("/api/proxyes/"+id);
@@ -55,7 +55,7 @@ class ProxyBuilderImpl implements ProxyBuilder{
     }
 
     @Override
-    public void refresh() {
+    public void refresh() throws HamException {
         var request = hamBuilder.newRequest()
                 .withPost()
                 .withPath("/api/proxyes");

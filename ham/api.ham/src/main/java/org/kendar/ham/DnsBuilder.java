@@ -20,10 +20,10 @@ public interface DnsBuilder {
         public boolean enabled;
     }
     String addDnsName(String ip, String name) throws HamException;
-    void removeDnsName(String id);
+    void removeDnsName(String id) throws HamException;
     List<DnsName> retrieveDnsNames() throws HamException;
     String addDnsServer(String address,boolean enabled) throws HamException;
-    void removeDnsServer(String id);
+    void removeDnsServer(String id) throws HamException;
     List<DnsServer> retrieveDnsServers() throws HamException;
     List<ResolvedNames> retrieveResolvedNames() throws HamException;
 }

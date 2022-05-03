@@ -9,6 +9,6 @@ public interface CertificatesBuilder {
     }
 
     String addAltName(String address) throws HamException;
-    void removeAltName(String id);
+    void removeAltName(String id) throws HamException;
     List<SubjectAltName> retrieveAltNames() throws HamException;
 }

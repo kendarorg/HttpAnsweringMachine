@@ -37,6 +37,29 @@
             <artifactId>commons-io</artifactId>
             <version>${commons.io.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>LATEST</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+
+        </dependency>
+        <dependency>
+            <groupId>dnsjava</groupId>
+            <artifactId>dnsjava</artifactId>
+            <version>${dns.java.version}</version>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -44,4 +67,16 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M6</version>
+                <configuration>
+                    <skipITs>true</skipITs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

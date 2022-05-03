@@ -36,7 +36,7 @@ class CertificatesBuilderImpl implements CertificatesBuilder{
     }
 
     @Override
-    public void removeAltName(String id) {
+    public void removeAltName(String id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withDelete()
                 .withPath("/api/ssl/"+id);
