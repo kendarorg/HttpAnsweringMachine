@@ -6,11 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class HamBuilder implements HamBasicBuilder{
+public class HamBuilder implements HamInternalBuilder{
 
     String host;
     Integer port;
@@ -23,6 +26,11 @@ public class HamBuilder implements HamBasicBuilder{
         result.port = null;
         result.protocol = "http";
         return result;
+    }
+    private static HashMap<String,Function<HamInternalBuilder,Object>> pluginBuilders;
+    public static void register(String index, Function<HamInternalBuilder,Object> clazz) {
+        if(pluginBuilders==null) pluginBuilders = new HashMap<>();
+        pluginBuilders.put(index.toLowerCase(Locale.ROOT),clazz);
     }
 
     public HamBasicBuilder withPort(int port){
@@ -48,6 +56,8 @@ public class HamBuilder implements HamBasicBuilder{
     ObjectMapper mapper = new ObjectMapper();
 
     public Response call(Request request){
+        //TODO CALL WITH APACHE
+
         return null;
     }
 
@@ -100,7 +110,7 @@ public class HamBuilder implements HamBasicBuilder{
     public ProxyBuilder proxyes(){
         return new ProxyBuilderImpl(this);
     }
-    public <T extends Object> T plugin(Class<T> clazz){
-        return null;
+    public Object pluginBuilder(String name) {
+        return pluginBuilders.get(name.toLowerCase(Locale.ROOT)).apply(this);
     }
 }

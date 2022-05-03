@@ -48,7 +48,7 @@ public class EventQueueImpl implements EventQueue {
     }
 
     @Override
-    public <T extends Event> void register(Function<T, Object> function, Class<T> clazz) {
+    public <T extends Event> void registerCommand(Function<T, Object> function, Class<T> clazz) {
         var eventName = clazz.getSimpleName().toLowerCase(Locale.ROOT);
         conversions.put(eventName,clazz);
         var realConsumer = new Function<Event,Object>(){

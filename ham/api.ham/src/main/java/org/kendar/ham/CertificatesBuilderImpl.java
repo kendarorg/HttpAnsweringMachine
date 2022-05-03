@@ -5,7 +5,7 @@ import java.util.List;
 import static org.kendar.ham.HamBuilder.pathId;
 import static org.kendar.ham.HamBuilder.updateMethod;
 
-public class CertificatesBuilderImpl implements CertificatesBuilder{
+class CertificatesBuilderImpl implements CertificatesBuilder{
     private HamBuilder hamBuilder;
 
     public CertificatesBuilderImpl(HamBuilder hamBuilder) {

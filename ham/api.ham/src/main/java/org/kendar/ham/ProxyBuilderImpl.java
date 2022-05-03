@@ -5,7 +5,7 @@ import java.util.List;
 import static org.kendar.ham.HamBuilder.pathId;
 import static org.kendar.ham.HamBuilder.updateMethod;
 
-public class ProxyBuilderImpl implements ProxyBuilder{
+class ProxyBuilderImpl implements ProxyBuilder{
     private HamBuilder hamBuilder;
 
     public ProxyBuilderImpl(HamBuilder hamBuilder) {
