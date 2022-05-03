@@ -65,8 +65,9 @@
         <module>simpledns</module>
         <module>app.dns</module>
         <module>schema.checker</module>
-        <module>api.ham</module>
         <module>socks5.server</module>
+        <module>api.ham</module>
+        <module>api.replayer</module>
     </modules>
     <build>
         <extensions>

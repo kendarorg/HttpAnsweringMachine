@@ -16,12 +16,16 @@ public class CertificatesBuilderImpl implements CertificatesBuilder{
     public String addAltName(String address) throws HamException {
         var alreadyExisting = retrieveAltNames()
                 .stream().filter(d->d.address.equalsIgnoreCase(address)).findAny();
+        var altName = new SubjectAltName();
+        altName.address = address;
+        altName.id = alreadyExisting.isPresent()?alreadyExisting.get().id:null;
         var request = hamBuilder.newRequest()
                 .withMethod(updateMethod(alreadyExisting))
                 .withPath(pathId(
                         "/api/ssl",
                         alreadyExisting,
-                        ()->alreadyExisting.get().id));
+                        ()->alreadyExisting.get().id))
+                .withJsonBody(altName);
         hamBuilder.call(request.build());
         var inserted = retrieveAltNames()
                 .stream().filter(d->d.address.equalsIgnoreCase(address)).findAny();

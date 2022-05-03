@@ -75,7 +75,9 @@ public class EventQueueTest {
         EventQueue target = new EventQueueImpl(loggerBuilder);
 
         target.register((c)->{
+            if(true)
             throw new RuntimeException();
+            return;
         }, TestEvent.class);
 
         var te = new TestEvent();
@@ -92,7 +94,9 @@ public class EventQueueTest {
         EventQueue target = new EventQueueImpl(loggerBuilder);
 
         target.register((c)->{
+            if(true)
             throw new RuntimeException();
+            return;
         }, TestEvent.class);
 
         target.register((c)->{

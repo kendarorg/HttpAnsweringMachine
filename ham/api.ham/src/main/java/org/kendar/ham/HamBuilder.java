@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class HamBuilder {
+public class HamBuilder implements HamBasicBuilder{
 
     String host;
     Integer port;
     String protocol;
 
     private HamBuilder(){}
-    public static HamBuilder newHam(String host){
+    public static HamBasicBuilder newHam(String host){
         var result = new HamBuilder();
         result.host = host;
         result.port = null;
@@ -25,12 +25,12 @@ public class HamBuilder {
         return result;
     }
 
-    public HamBuilder withPort(int port){
+    public HamBasicBuilder withPort(int port){
         this.port = port;
         return this;
     }
 
-    public HamBuilder withHttps(){
+    public HamBasicBuilder withHttps(){
         this.protocol = "https";
         return this;
     }
@@ -39,7 +39,7 @@ public class HamBuilder {
         return new DnsBuilderImpl(this);
     }
 
-    HamRequestBuilder newRequest(){
+    public HamRequestBuilder newRequest(){
         var result = HamRequestBuilder.newRequest(protocol,host);
         if(port!=null)result.withPort(port);
         return result;
@@ -47,24 +47,24 @@ public class HamBuilder {
 
     ObjectMapper mapper = new ObjectMapper();
 
-    Response call(Request request){
+    public Response call(Request request){
         return null;
     }
 
-    Response expectCode(Response response,int code,Supplier<String> getExceptionMessage) throws HamException {
+    public Response expectCode(Response response,int code,Supplier<String> getExceptionMessage) throws HamException {
         if(response.getStatusCode()!=code){
             throw new HamException(getExceptionMessage.get());
         }
         return response;
     }
 
-    Response expectCode(Response response,int code,String getExceptionMessage) throws HamException {
+    public Response expectCode(Response response,int code,String getExceptionMessage) throws HamException {
         if(response.getStatusCode()!=code){
             throw new HamException(getExceptionMessage);
         }
         return response;
     }
-    <T> T callJson(Request request,Class<T> clazz) throws HamException {
+    public <T> T callJson(Request request,Class<T> clazz) throws HamException {
         try {
             return (T)mapper.readValue(request.getRequestText(),clazz);
         } catch (JsonProcessingException e) {
@@ -73,7 +73,7 @@ public class HamBuilder {
     }
 
 
-    <T> List<T> callJsonList(Request request,Class<T> clazz) throws HamException {
+    public <T> List<T> callJsonList(Request request,Class<T> clazz) throws HamException {
         try {
             return (List<T>)mapper.readValue(request.getRequestText(), new TypeReference<List<T>>() {
             });
@@ -82,13 +82,13 @@ public class HamBuilder {
         }
     }
 
-    static String updateMethod(Optional val){
+    public static String updateMethod(Optional val){
         return val.isPresent()?"PUT":"POST";
     }
-    static String pathId(String path,Optional val, Supplier<String> idSupplier){
+    public static String pathId(String path,Optional val, Supplier<String> idSupplier){
         return path+(val.isPresent()?"/"+idSupplier.get():"");
     }
-    static void queryId(Request request,Optional val, String name, Supplier<String> idSupplier){
+    public static void queryId(Request request,Optional val, String name, Supplier<String> idSupplier){
         if(val.isPresent()){
             request.addQuery(name,idSupplier.get());
         }
@@ -96,5 +96,11 @@ public class HamBuilder {
 
     public CertificatesBuilder certificates(){
         return new CertificatesBuilderImpl(this);
+    }
+    public ProxyBuilder proxyes(){
+        return new ProxyBuilderImpl(this);
+    }
+    public <T extends Object> T plugin(Class<T> clazz){
+        return null;
     }
 }

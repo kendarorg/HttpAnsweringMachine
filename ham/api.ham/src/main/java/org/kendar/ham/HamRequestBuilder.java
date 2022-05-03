@@ -1,5 +1,7 @@
 package org.kendar.ham;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.servers.http.Request;
 
 import java.io.IOException;
@@ -26,6 +28,20 @@ public class HamRequestBuilder {
 
     public HamRequestBuilder withMethod(String method){
         request.setMethod(method);
+        return this;
+    }
+
+    ObjectMapper mapper = new ObjectMapper();
+
+    public HamRequestBuilder withJsonBody(Object body){
+        String text = null;
+        try {
+            text = mapper.writeValueAsString(body);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        this.withText(text);
+        this.withContentType("application/json");
         return this;
     }
 

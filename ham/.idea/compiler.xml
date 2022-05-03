@@ -10,15 +10,16 @@
         <module name="app" />
         <module name="oidc.server" />
         <module name="replayer.server" />
+        <module name="app.dns" />
+        <module name="socks5.server" />
+        <module name="api.replayer" />
+        <module name="app.commons" />
         <module name="schema.checker" />
         <module name="app.http.standardfilters" />
         <module name="app.http" />
         <module name="simpledns" />
-        <module name="app.dns" />
-        <module name="socks5.server" />
         <module name="api.ham" />
         <module name="js.filters" />
-        <module name="app.commons" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -34,6 +35,7 @@
       <module name="HttpAnsweringMachine" options="-parameters" />
       <module name="answer.jdbc" options="-parameters" />
       <module name="api.ham" options="-parameters" />
+      <module name="api.replayer" options="-parameters" />
       <module name="app" options="-parameters" />
       <module name="app.commons" options="-parameters" />
       <module name="app.dns" options="-parameters" />

@@ -21,7 +21,7 @@ public interface DnsBuilder {
     }
     String addDnsName(String ip, String name) throws HamException;
     void removeDnsName(String id);
-    List<DnsName> retrieveDnsNames() throws JsonProcessingException, HamException;
+    List<DnsName> retrieveDnsNames() throws HamException;
     String addDnsServer(String address,boolean enabled) throws HamException;
     void removeDnsServer(String id);
     List<DnsServer> retrieveDnsServers() throws HamException;

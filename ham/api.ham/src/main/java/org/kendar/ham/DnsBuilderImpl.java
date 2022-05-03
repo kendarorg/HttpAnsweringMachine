@@ -19,6 +19,10 @@ class DnsBuilderImpl implements DnsBuilder {
     public String addDnsName(String ip, String name) throws HamException {
         var alreadyExisting = retrieveDnsNames()
                 .stream().filter(d->d.dns.equalsIgnoreCase(name)).findAny();
+        var dnsName = new DnsName();
+        dnsName.dns = name;
+        dnsName.ip = ip;
+        dnsName.id = alreadyExisting.isPresent()?alreadyExisting.get().id:null;
         var request = hamBuilder.newRequest()
                 .withMethod(updateMethod(alreadyExisting))
                 .withPath(pathId(
@@ -53,6 +57,10 @@ class DnsBuilderImpl implements DnsBuilder {
     public String addDnsServer(String address,boolean enabled) throws HamException {
         var alreadyExisting = retrieveDnsServers()
                 .stream().filter(d->d.address.equalsIgnoreCase(address)).findAny();
+        var dnsServer = new DnsServer();
+        dnsServer.address = address;
+        dnsServer.enabled = enabled;
+        dnsServer.id = alreadyExisting.isPresent()?alreadyExisting.get().id:null;
         var request = hamBuilder.newRequest()
                 .withMethod(updateMethod(alreadyExisting))
                 .withPath(pathId(
