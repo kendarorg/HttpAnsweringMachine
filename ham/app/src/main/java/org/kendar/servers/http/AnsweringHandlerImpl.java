@@ -136,7 +136,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
       var response = new Response();
       var request = e.getRequest();
       try {
-        handleInternal(null, null, config, connManager);
+        handleInternal(request, response, config, connManager);
 
       } catch (Exception ex) {
         throw new RuntimeException(ex);

@@ -199,11 +199,16 @@ public class DnsServer {
 
 
 
+  static final short QR_RESPONSE = (short) (1 << 15);
+  static final short AA_BIT = 1 << 10;
 
   private byte[] buildResponse(byte[] in) throws IOException {
     Message request;
     request = new Message(in);
     Message response = new Message(request.getHeader().getID());
+    response.getHeader().setFlag(Flags.QR );
+    //response.getHeader().setFlag(Flags.AA );
+
     String requestedDomain = request.getQuestion().getName().toString(true);
 
     logger.debug("Requested domain " + requestedDomain);
@@ -227,6 +232,10 @@ public class DnsServer {
         ips = this.multiResolver.resolve(blocker.apply(requestedDomain));
       }
     }
+    if(requestedDomain.equalsIgnoreCase("1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa")){
+      ips = new ArrayList<>();
+      ips.add("127.0.0.1");
+    }
 
     byte[] resp;
     if (ips.size() > 0) {
@@ -234,10 +243,7 @@ public class DnsServer {
         logger.debug("FOUNDED IP " + ip + " FOR " + requestedDomain);
         // Add answers as needed
         response.addRecord(
-                org.xbill.DNS.Record.fromString(Name.root, Type.A, DClass.IN, 86400, ip, Name.fromString(requestedDomain)),
-                Section.ANSWER);
-        response.addRecord(
-                org.xbill.DNS.Record.fromString(Name.root, Type.TXT, DClass.IN, 86400, ip, Name.fromString(requestedDomain)),
+                org.xbill.DNS.Record.fromString(Name.fromString(requestedDomain+"."), Type.A, DClass.IN, 86400, ip, Name.fromString("www.local.test")),
                 Section.ANSWER);
       }
       resp = response.toWire();
