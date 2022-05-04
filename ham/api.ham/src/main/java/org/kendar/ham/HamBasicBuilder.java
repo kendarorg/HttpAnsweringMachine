@@ -1,5 +1,10 @@
 package org.kendar.ham;
 
+import org.kendar.servers.http.Request;
+import org.kendar.servers.http.Response;
+
+import java.util.List;
+
 /**
  * Basic builder functions, exposed for general usage
  */
@@ -56,6 +61,37 @@ public interface HamBasicBuilder  {
      * Start the proxies calls builder
      * @return
      */
-    ProxyBuilder proxyes();
+    ProxyBuilder proxies();
+
+
+
+    /**
+     * Make a call to HAM remote invocation and return a parsed JSON object
+     * @param request
+     * @param clazz
+     * @return
+     * @param <T>
+     * @throws HamException
+     */
+    <T> T callJson(Request request, Class<T> clazz) throws HamException;
+
+    /**
+     * Make a call to HAM remote invocation and return a parsed List of JSON object
+     * @param request
+     * @param clazz
+     * @return
+     * @param <T>
+     * @throws HamException
+     */
+    <T> List<T> callJsonList(Request request, Class<T> clazz) throws HamException;
+
+
+    /**
+     * Execute a call through HAM remote invocation
+     * @param request
+     * @return
+     * @throws HamException
+     */
+    Response call(Request request) throws HamException;
 
 }

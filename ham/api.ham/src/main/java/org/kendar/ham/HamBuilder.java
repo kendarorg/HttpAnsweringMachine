@@ -127,14 +127,6 @@ public class HamBuilder implements HamInternalBuilder {
         return response;
     }
 
-    public <T> T callJson(Request request, Class<T> clazz) throws HamException {
-        try {
-            return (T) mapper.readValue(request.getRequestText(), clazz);
-        } catch (JsonProcessingException e) {
-            throw new HamException(e);
-        }
-    }
-
     public static String updateMethod(Optional val) {
         return val.isPresent() ? "PUT" : "POST";
     }
@@ -153,7 +145,7 @@ public class HamBuilder implements HamInternalBuilder {
         return new CertificatesBuilderImpl(this);
     }
 
-    public ProxyBuilder proxyes() {
+    public ProxyBuilder proxies() {
         return new ProxyBuilderImpl(this);
     }
 
@@ -161,6 +153,16 @@ public class HamBuilder implements HamInternalBuilder {
         return pluginBuilders.get(name.toLowerCase(Locale.ROOT)).apply(this);
     }
 
+
+
+    public <T> T callJson(Request request, Class<T> clazz) throws HamException {
+        try {
+            var response = call(request);
+            return mapper.readValue(response.getResponseText(), clazz);
+        } catch (JsonProcessingException e) {
+            throw new HamException(e);
+        }
+    }
 
     public <T> List<T> callJsonList(Request request, Class<T> clazz) throws HamException {
         try {
