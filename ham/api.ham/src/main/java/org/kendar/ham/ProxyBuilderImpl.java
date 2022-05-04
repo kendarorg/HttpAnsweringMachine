@@ -1,6 +1,7 @@
 package org.kendar.ham;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.kendar.ham.HamBuilder.pathId;
 import static org.kendar.ham.HamBuilder.updateMethod;
@@ -21,7 +22,7 @@ class ProxyBuilderImpl implements ProxyBuilder{
         proxy.setTest(test);
         proxy.setWhen(when);
         proxy.setWhere(where);
-        proxy.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() :null);
+        proxy.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() : UUID.randomUUID().toString());
         var request = hamBuilder.newRequest()
                 .withMethod(updateMethod(alreadyExisting))
                 .withPath(pathId(
