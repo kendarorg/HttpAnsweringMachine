@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 
 public interface DnsBuilder {
+    String resolve(String s) throws HamException;
+
     public class DnsName {
         private String id;
         private String ip;
@@ -57,6 +59,8 @@ public interface DnsBuilder {
     public class DnsServer {
         private String id;
         private String address;
+
+        private String resolved;
         private boolean enabled;
 
         public String getId() {
@@ -81,6 +85,14 @@ public interface DnsBuilder {
 
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
+        }
+
+        public String getResolved() {
+            return resolved;
+        }
+
+        public void setResolved(String resolved) {
+            this.resolved = resolved;
         }
     }
     String addDnsName(String ip, String name) throws HamException;

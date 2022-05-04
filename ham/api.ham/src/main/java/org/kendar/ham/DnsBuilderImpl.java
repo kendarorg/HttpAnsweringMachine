@@ -16,6 +16,15 @@ class DnsBuilderImpl implements DnsBuilder {
     }
 
     @Override
+    public String resolve(String requestedDomain) throws HamException {
+        var request = hamBuilder.newRequest()
+                .withMethod("GET")
+                .withPath("/api/dns/lookup/"+requestedDomain);
+        var response = hamBuilder.call(request.build());
+        return response.getResponseText();
+    }
+
+    @Override
     public String addDnsName(String ip, String name) throws HamException {
         var nn = retrieveDnsNames();
         var alreadyExisting = nn
@@ -58,20 +67,21 @@ class DnsBuilderImpl implements DnsBuilder {
     @Override
     public String addDnsServer(String address,boolean enabled) throws HamException {
         var alreadyExisting = retrieveDnsServers()
-                .stream().filter(d-> d.getAddress().equalsIgnoreCase(address)).findAny();
+                .stream().filter(d-> d.getAddress().equalsIgnoreCase(address) ||  d.getResolved().equalsIgnoreCase(address)).findAny();
         var dnsServer = new DnsServer();
         dnsServer.setAddress(address);
         dnsServer.setEnabled(enabled);
-        dnsServer.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() :null);
+        dnsServer.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() :UUID.randomUUID().toString());
         var request = hamBuilder.newRequest()
                 .withMethod(updateMethod(alreadyExisting))
                 .withPath(pathId(
                         "/api/dns/servers",
                         alreadyExisting,
-                        ()-> alreadyExisting.get().getId()));
+                        ()-> alreadyExisting.get().getId()))
+                .withJsonBody(dnsServer);;
         hamBuilder.call(request.build());
         var inserted = retrieveDnsServers()
-                .stream().filter(d-> d.getAddress().equalsIgnoreCase(address)).findAny();
+                .stream().filter(d-> d.getAddress().equalsIgnoreCase(address) || d.getResolved().equalsIgnoreCase(address)).findAny();
         if(inserted.isPresent()){
             return inserted.get().getId();
         }

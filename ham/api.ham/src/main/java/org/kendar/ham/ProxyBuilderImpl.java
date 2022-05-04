@@ -16,25 +16,25 @@ class ProxyBuilderImpl implements ProxyBuilder{
     @Override
     public String addProxy(String when, String where, String test) throws HamException {
         var alreadyExisting = retrieveProxies()
-                .stream().filter(d->d.when.equalsIgnoreCase(when)).findAny();
+                .stream().filter(d-> d.getWhen().equalsIgnoreCase(when)).findAny();
         var proxy = new Proxy();
-        proxy.test = test;
-        proxy.when = when;
-        proxy.where = where;
-        proxy.id = alreadyExisting.isPresent()?alreadyExisting.get().id:null;
+        proxy.setTest(test);
+        proxy.setWhen(when);
+        proxy.setWhere(where);
+        proxy.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() :null);
         var request = hamBuilder.newRequest()
                 .withMethod(updateMethod(alreadyExisting))
                 .withPath(pathId(
                         "/api/proxyes",
                         alreadyExisting,
-                        ()->alreadyExisting.get().id))
+                        ()-> alreadyExisting.get().getId()))
                 .withJsonBody(proxy);
 
         hamBuilder.call(request.build());
         var inserted = retrieveProxies()
-                .stream().filter(d->d.when.equalsIgnoreCase(when)).findAny();
+                .stream().filter(d-> d.getWhen().equalsIgnoreCase(when)).findAny();
         if(inserted.isPresent()){
-            return inserted.get().id;
+            return inserted.get().getId();
         }
         throw new HamException("Missing id");
     }

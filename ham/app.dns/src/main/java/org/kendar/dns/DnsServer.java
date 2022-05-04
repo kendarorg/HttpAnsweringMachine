@@ -243,7 +243,8 @@ public class DnsServer {
         logger.debug("FOUNDED IP " + ip + " FOR " + requestedDomain);
         // Add answers as needed
         response.addRecord(
-                org.xbill.DNS.Record.fromString(Name.fromString(requestedDomain+"."), Type.A, DClass.IN, 86400, ip, Name.fromString("www.local.test")),
+                org.xbill.DNS.Record.fromString(Name.fromString(requestedDomain+"."), Type.A, DClass.IN, 86400, ip,
+                        Name.empty),
                 Section.ANSWER);
       }
       resp = response.toWire();

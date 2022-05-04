@@ -23,7 +23,7 @@
         "org.kendar.servers.http.Response": "OFF",
         "org.kendar.servers.http.StaticRequest": "OFF",
         "org.kendar.servers.http.DynamicRequest": "OFF",
-        "org.kendar.dns.DnsQueries": "DEBUG"
+        "org.kendar.dns.DnsQueries": "OFF"
       }
     },
     "filters": {

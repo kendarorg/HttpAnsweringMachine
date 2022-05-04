@@ -1,5 +1,6 @@
 package org.kendar.ham;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import org.xbill.DNS.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,6 +39,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class HamBuilder implements HamInternalBuilder {
+    static ObjectMapper mapper;
+    static {
+        mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     String host;
     Integer port;
@@ -105,8 +111,6 @@ public class HamBuilder implements HamInternalBuilder {
         if (port != null) result.withPort(port);
         return result;
     }
-
-    ObjectMapper mapper = new ObjectMapper();
 
 
     public Response expectCode(Response response, int code, Supplier<String> getExceptionMessage) throws HamException {

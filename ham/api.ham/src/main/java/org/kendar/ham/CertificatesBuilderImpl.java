@@ -13,26 +13,20 @@ class CertificatesBuilderImpl implements CertificatesBuilder{
     }
 
     @Override
-    public String addAltName(String address) throws HamException {
+    public void addAltName(String address) throws HamException {
         var alreadyExisting = retrieveAltNames()
-                .stream().filter(d->d.address.equalsIgnoreCase(address)).findAny();
+                .stream().filter(d-> d.getAddress().equalsIgnoreCase(address)).findAny();
         var altName = new SubjectAltName();
-        altName.address = address;
-        altName.id = alreadyExisting.isPresent()?alreadyExisting.get().id:null;
+        altName.setAddress(address);
+        altName.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() :null);
         var request = hamBuilder.newRequest()
                 .withMethod(updateMethod(alreadyExisting))
                 .withPath(pathId(
                         "/api/ssl",
                         alreadyExisting,
-                        ()->alreadyExisting.get().id))
+                        ()-> alreadyExisting.get().getId()))
                 .withJsonBody(altName);
         hamBuilder.call(request.build());
-        var inserted = retrieveAltNames()
-                .stream().filter(d->d.address.equalsIgnoreCase(address)).findAny();
-        if(inserted.isPresent()){
-            return inserted.get().id;
-        }
-        throw new HamException("Missing id");
     }
 
     @Override
