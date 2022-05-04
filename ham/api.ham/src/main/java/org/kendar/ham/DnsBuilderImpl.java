@@ -1,8 +1,7 @@
 package org.kendar.ham;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.kendar.ham.HamBuilder.pathId;
@@ -18,23 +17,25 @@ class DnsBuilderImpl implements DnsBuilder {
 
     @Override
     public String addDnsName(String ip, String name) throws HamException {
-        var alreadyExisting = retrieveDnsNames()
-                .stream().filter(d->d.dns.equalsIgnoreCase(name)).findFirst();
+        var nn = retrieveDnsNames();
+        var alreadyExisting = nn
+                .stream().filter(d-> d.getDns().equalsIgnoreCase(name)).findFirst();
         var dnsName = new DnsName();
-        dnsName.dns = name;
-        dnsName.ip = ip;
-        dnsName.id = alreadyExisting.isPresent()?alreadyExisting.get().id:null;
+        dnsName.setDns(name);
+        dnsName.setIp(ip);
+        dnsName.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() : UUID.randomUUID().toString());
         var request = hamBuilder.newRequest()
                 .withMethod(updateMethod(alreadyExisting))
                 .withPath(pathId(
                         "/api/dns/mappings",
                         alreadyExisting,
-                        ()->alreadyExisting.get().id));
+                        ()-> alreadyExisting.get().getId()))
+                .withJsonBody(dnsName);
         hamBuilder.call(request.build());
         var inserted = retrieveDnsNames()
-                .stream().filter(d->d.dns.equalsIgnoreCase(name)).findFirst();
+                .stream().filter(d-> d.getDns().equalsIgnoreCase(name)).findFirst();
         if(inserted.isPresent()){
-            return inserted.get().id;
+            return inserted.get().getId();
         }
         throw new HamException("Missing id");
     }
@@ -57,22 +58,22 @@ class DnsBuilderImpl implements DnsBuilder {
     @Override
     public String addDnsServer(String address,boolean enabled) throws HamException {
         var alreadyExisting = retrieveDnsServers()
-                .stream().filter(d->d.address.equalsIgnoreCase(address)).findAny();
+                .stream().filter(d-> d.getAddress().equalsIgnoreCase(address)).findAny();
         var dnsServer = new DnsServer();
-        dnsServer.address = address;
-        dnsServer.enabled = enabled;
-        dnsServer.id = alreadyExisting.isPresent()?alreadyExisting.get().id:null;
+        dnsServer.setAddress(address);
+        dnsServer.setEnabled(enabled);
+        dnsServer.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() :null);
         var request = hamBuilder.newRequest()
                 .withMethod(updateMethod(alreadyExisting))
                 .withPath(pathId(
                         "/api/dns/servers",
                         alreadyExisting,
-                        ()->alreadyExisting.get().id));
+                        ()-> alreadyExisting.get().getId()));
         hamBuilder.call(request.build());
         var inserted = retrieveDnsServers()
-                .stream().filter(d->d.address.equalsIgnoreCase(address)).findAny();
+                .stream().filter(d-> d.getAddress().equalsIgnoreCase(address)).findAny();
         if(inserted.isPresent()){
-            return inserted.get().id;
+            return inserted.get().getId();
         }
         throw new HamException("Missing id");
     }

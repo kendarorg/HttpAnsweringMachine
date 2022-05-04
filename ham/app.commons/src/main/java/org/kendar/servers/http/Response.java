@@ -65,6 +65,7 @@ public class Response {
     }
 
     public String getHeader(String s) {
+        if(this.headers==null) this.headers = new HashMap<>();
         return RequestUtils.getFromMap(this.headers,s);
     }
 

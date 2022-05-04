@@ -1,5 +1,6 @@
 package org.kendar.ham;
 
+import com.fasterxml.jackson.databind.type.CollectionType;
 import org.xbill.DNS.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -160,8 +161,10 @@ public class HamBuilder implements HamInternalBuilder {
     public <T> List<T> callJsonList(Request request, Class<T> clazz) throws HamException {
         try {
             var response = call(request);
-            return (List<T>) mapper.readValue(response.getResponseText(), new TypeReference<List<T>>() {
-            });
+            CollectionType javaType = mapper.getTypeFactory()
+                    .constructCollectionType(List.class, clazz);
+            var responseData = mapper.readValue(response.getResponseText(), javaType);
+            return (List<T>) responseData;
         } catch (JsonProcessingException e) {
             throw new HamException(e);
         }

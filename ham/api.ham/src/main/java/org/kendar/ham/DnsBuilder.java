@@ -6,18 +6,82 @@ import java.util.List;
 
 public interface DnsBuilder {
     public class DnsName {
-        public String id;
-        public String ip;
-        public String dns;
+        private String id;
+        private String ip;
+        private String dns;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getIp() {
+            return ip;
+        }
+
+        public void setIp(String ip) {
+            this.ip = ip;
+        }
+
+        public String getDns() {
+            return dns;
+        }
+
+        public void setDns(String dns) {
+            this.dns = dns;
+        }
     }
     public class ResolvedNames {
-        public String ip;
-        public String name;
+        private String ip;
+        private String name;
+
+        public String getIp() {
+            return ip;
+        }
+
+        public void setIp(String ip) {
+            this.ip = ip;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
     public class DnsServer {
-        public String id;
-        public String address;
-        public boolean enabled;
+        private String id;
+        private String address;
+        private boolean enabled;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
     }
     String addDnsName(String ip, String name) throws HamException;
     void removeDnsName(String id) throws HamException;

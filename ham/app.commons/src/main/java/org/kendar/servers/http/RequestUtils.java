@@ -24,7 +24,7 @@ public class RequestUtils {
   }
 
   public static String getFromMap(Map<String, String> map, String index) {
-
+    if(map==null) return null;
     if (map.containsKey(index)) {
       return map.get(index);
     }
@@ -37,7 +37,6 @@ public class RequestUtils {
   }
 
   public static void addToMap(Map<String, String> map, String key, String value) {
-
     for (var entry : map.entrySet()) {
       if (entry.getKey().equalsIgnoreCase(key)) {
         map.put(entry.getKey(), value);
