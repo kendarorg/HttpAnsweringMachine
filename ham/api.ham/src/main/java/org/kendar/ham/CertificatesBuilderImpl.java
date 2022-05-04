@@ -1,6 +1,10 @@
 package org.kendar.ham;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.kendar.ham.HamBuilder.pathId;
 import static org.kendar.ham.HamBuilder.updateMethod;
@@ -13,19 +17,12 @@ class CertificatesBuilderImpl implements CertificatesBuilder{
     }
 
     @Override
-    public void addAltName(String address) throws HamException {
-        var alreadyExisting = retrieveAltNames()
-                .stream().filter(d-> d.getAddress().equalsIgnoreCase(address)).findAny();
-        var altName = new SubjectAltName();
-        altName.setAddress(address);
-        altName.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() :null);
+    public void addAltName(String ... addresses) throws HamException {
+
         var request = hamBuilder.newRequest()
-                .withMethod(updateMethod(alreadyExisting))
-                .withPath(pathId(
-                        "/api/ssl",
-                        alreadyExisting,
-                        ()-> alreadyExisting.get().getId()))
-                .withJsonBody(altName);
+                .withPost()
+                .withPath("/api/ssl")
+                .withJsonBody(addresses);
         hamBuilder.call(request.build());
     }
 
