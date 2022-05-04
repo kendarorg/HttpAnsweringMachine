@@ -160,6 +160,7 @@ public class Request {
     }
 
     public void addPathParameter(String key, String value) {
+        if(this.pathParameters==null) this.pathParameters = new HashMap<>();
         RequestUtils.addToMap(this.pathParameters,key,value);
     }
 
@@ -181,10 +182,13 @@ public class Request {
         return result;
     }
     public void addHeader(String key, String value) {
+        if(this.headers==null) this.headers = new HashMap<>();
         RequestUtils.addToMap(this.headers,key,value);
     }
 
     public void addQuery(String key, String value) {
+
+        if(this.query==null) this.query = new HashMap<>();
         RequestUtils.addToMap(this.query,key,value);
     }
 
