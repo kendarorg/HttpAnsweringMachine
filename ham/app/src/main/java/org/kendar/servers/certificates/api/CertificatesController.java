@@ -91,24 +91,32 @@ public class CertificatesController implements FilteringClass {
       throws IOException {
     var resources = fileResourcesUtils.loadResources(this, "certificates");
     var name = req.getPathParameter("file");
+    var returnClear = req.getQuery("clear")!=null;
 
     for (var resource : resources.keySet()) {
       var path = Path.of(resource).getFileName().toString();
       if (path.equalsIgnoreCase(name)) {
         var result = fileResourcesUtils.getFileFromResourceAsByteArray("certificates/" + path);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ZipOutputStream zos = new ZipOutputStream(baos);
-        ZipEntry entry = new ZipEntry(path);
-        entry.setSize(result.length);
-        zos.putNextEntry(entry);
-        zos.write(result);
-        zos.closeEntry();
-        zos.close();
-        res.addHeader("Content-type", "application/zip");
-        res.addHeader("Content-disposition", "inline;filename=" + path + ".zip");
+        if(returnClear) {
+          ByteArrayOutputStream baos = new ByteArrayOutputStream();
+          ZipOutputStream zos = new ZipOutputStream(baos);
+          ZipEntry entry = new ZipEntry(path);
+          entry.setSize(result.length);
+          zos.putNextEntry(entry);
+          zos.write(result);
+          zos.closeEntry();
+          zos.close();
+          res.addHeader("Content-type", "application/zip");
+          res.addHeader("Content-disposition", "inline;filename=" + path + ".zip");
+          res.setResponseBytes(baos.toByteArray());
+          res.setBinaryResponse(true);
+        }else{
+          res.setResponseBytes(result);
+          res.setBinaryResponse(true);
+          res.addHeader("Content-type", "application/octect-stream");
+        }
 
-        res.setResponseBytes(baos.toByteArray());
         res.setBinaryResponse(true);
         return;
       }

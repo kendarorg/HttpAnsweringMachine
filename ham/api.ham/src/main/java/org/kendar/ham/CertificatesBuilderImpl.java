@@ -3,11 +3,7 @@ package org.kendar.ham;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static org.kendar.ham.HamBuilder.pathId;
-import static org.kendar.ham.HamBuilder.updateMethod;
 
 class CertificatesBuilderImpl implements CertificatesBuilder{
     private HamBuilder hamBuilder;
@@ -17,13 +13,23 @@ class CertificatesBuilderImpl implements CertificatesBuilder{
     }
 
     @Override
-    public void addAltName(String ... addresses) throws HamException {
+    public List<String> addAltName(String ... addresses) throws HamException {
 
-        var request = hamBuilder.newRequest()
-                .withPost()
-                .withPath("/api/ssl")
-                .withJsonBody(addresses);
-        hamBuilder.call(request.build());
+        try {
+            var result = new ArrayList<String>();
+            var request = hamBuilder.newRequest()
+                    .withPost()
+                    .withPath("/api/ssl")
+                    .withJsonBody(addresses);
+            hamBuilder.call(request.build());
+            Thread.sleep(1000);
+            return retrieveAltNames().stream()
+                    .filter(inserted-> Arrays.stream(addresses).anyMatch(add->add.equalsIgnoreCase(inserted.getAddress())))
+                    .map(add->add.getId())
+                    .collect(Collectors.toList());
+        }catch (InterruptedException ex){
+            throw new HamException(ex);
+        }
     }
 
     @Override
