@@ -1,9 +1,9 @@
 package org.kendar.ham;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import static org.kendar.ham.HamBuilder.pathId;
-import static org.kendar.ham.HamBuilder.updateMethod;
+import java.util.stream.Collectors;
 
 class CertificatesBuilderImpl implements CertificatesBuilder{
     private HamBuilder hamBuilder;
@@ -13,20 +13,23 @@ class CertificatesBuilderImpl implements CertificatesBuilder{
     }
 
     @Override
-    public void addAltName(String address) throws HamException {
-        var alreadyExisting = retrieveAltNames()
-                .stream().filter(d-> d.getAddress().equalsIgnoreCase(address)).findAny();
-        var altName = new SubjectAltName();
-        altName.setAddress(address);
-        altName.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() :null);
-        var request = hamBuilder.newRequest()
-                .withMethod(updateMethod(alreadyExisting))
-                .withPath(pathId(
-                        "/api/ssl",
-                        alreadyExisting,
-                        ()-> alreadyExisting.get().getId()))
-                .withJsonBody(altName);
-        hamBuilder.call(request.build());
+    public List<String> addAltName(String ... addresses) throws HamException {
+
+        try {
+            var result = new ArrayList<String>();
+            var request = hamBuilder.newRequest()
+                    .withPost()
+                    .withPath("/api/ssl")
+                    .withJsonBody(addresses);
+            hamBuilder.call(request.build());
+            Thread.sleep(1000);
+            return retrieveAltNames().stream()
+                    .filter(inserted-> Arrays.stream(addresses).anyMatch(add->add.equalsIgnoreCase(inserted.getAddress())))
+                    .map(add->add.getId())
+                    .collect(Collectors.toList());
+        }catch (InterruptedException ex){
+            throw new HamException(ex);
+        }
     }
 
     @Override

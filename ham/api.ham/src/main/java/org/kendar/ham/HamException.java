@@ -10,4 +10,7 @@ public class HamException extends Throwable {
     public HamException(Exception e) {
         super(e);
     }
+    public HamException(String message,Exception e) {
+        super(message,e);
+    }
 }

@@ -1,7 +1,9 @@
 package org.kendar.ham;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.kendar.ham.HamBuilder.pathId;
@@ -10,6 +12,9 @@ import static org.kendar.ham.HamBuilder.updateMethod;
 class DnsBuilderImpl implements DnsBuilder {
 
     private HamBuilder hamBuilder;
+    private ArrayList<ResolvedNames> toAddDnsAndOrTls;
+    private boolean generateDns;
+    private boolean generateTls;
 
     DnsBuilderImpl(HamBuilder hamBuilder) {
         this.hamBuilder = hamBuilder;
@@ -47,6 +52,15 @@ class DnsBuilderImpl implements DnsBuilder {
             return inserted.get().getId();
         }
         throw new HamException("Missing id");
+    }
+
+    @Override
+    public void addLocalDnsNames(String... names) throws HamException {
+        var request = hamBuilder.newRequest()
+                .withPost()
+                .withPath("/api/dns/mappings")
+                .withJsonBody(names);
+        hamBuilder.call(request.build());
     }
 
     @Override
@@ -108,5 +122,46 @@ class DnsBuilderImpl implements DnsBuilder {
         var request = hamBuilder.newRequest()
                 .withPath("/api/dns/list");
         return hamBuilder.callJsonList(request.build(),ResolvedNames.class).stream().collect(Collectors.toList());
+    }
+
+    @Override
+    public DnsCertsAndNamesBuilder withResolvedNames(Function<ResolvedNames, Boolean> filter) throws HamException {
+        toAddDnsAndOrTls = new ArrayList<ResolvedNames>();
+        toAddDnsAndOrTls.addAll(retrieveResolvedNames().stream()
+                .filter(f->filter.apply(f)).collect(Collectors.toList()));
+        return this;
+    }
+
+    @Override
+    public DnsCertsAndNamesBuilder withResolvedNames(List<ResolvedNames> with) {
+        toAddDnsAndOrTls = new ArrayList<ResolvedNames>();
+        toAddDnsAndOrTls.addAll(with);
+        return this;
+    }
+
+    @Override
+    public DnsCertsAndNamesBuilder addDns() {
+        generateDns = true;
+        return this;
+    }
+
+    @Override
+    public DnsCertsAndNamesBuilder addSslTl() {
+        generateTls = true;
+        return this;
+    }
+
+    @Override
+    public void createDnsSslTls() throws HamException {
+        if(generateDns){
+            new DnsBuilderImpl(hamBuilder)
+                    .addLocalDnsNames(toAddDnsAndOrTls.stream().map(d->d.getName()).collect(Collectors.toList())
+                            .toArray(new String[]{}));
+        }
+        if(generateTls){
+            new CertificatesBuilderImpl(hamBuilder)
+                    .addAltName(toAddDnsAndOrTls.stream().map(d->d.getName()).collect(Collectors.toList())
+                            .toArray(new String[]{}));
+        }
     }
 }
