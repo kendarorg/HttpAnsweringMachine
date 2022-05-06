@@ -2,21 +2,22 @@ package org.kendar.ham;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CertificatesIT {
+    private HamBasicBuilder hamBuilder = GlobalSettings.builder();
     @Test
     public void testAddingCertificate() throws HamException, InterruptedException {
-        GlobalSettings.builder()
-                .certificates()
+        var inserted = hamBuilder.certificates()
                 .addAltName("www.google.com");
-        Thread.sleep(1000);
-        var names = GlobalSettings.builder()
-                .certificates()
-                .retrieveAltNames();
-        assertNotNull(names);
-        assertTrue(names.size()>0);
-        assertTrue(names.stream().anyMatch(r->r.getAddress().equalsIgnoreCase("www.google.com")));
+        assertNotNull(inserted);
+        assertTrue(inserted.size()==1);
+        var newItems = hamBuilder.certificates().retrieveAltNames().stream()
+                        .filter(add->
+                                add.getAddress().equalsIgnoreCase("www.google.com")
+                                && add.getId().equalsIgnoreCase(inserted.get(0))
+                        ).count();
+        assertEquals(1,newItems);
+        hamBuilder.certificates().removeAltName(inserted.get(0));
     }
 }
