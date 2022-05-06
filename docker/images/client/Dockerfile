@@ -1,9 +1,8 @@
 FROM ham.base:latest
-RUN apk update
-RUN apk upgrade
 
+# Setup localdns
+RUN mkdir -p /etc/app/simpledns/
 COPY data/*.* /etc/app/simpledns/
-RUN chmod +x /etc/app/simpledns/*.sh
-
-# Start LocalDNS
-RUN /etc/startservice.sh --app=simpledns --capturelogs --run=/etc/app/simpledns/simpledns.sh
+COPY data/clientsetup.sh /etc/clientsetup.sh
+RUN chmod +x /etc/*.sh \
+    && /etc/clientsetup.sh

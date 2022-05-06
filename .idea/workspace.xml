@@ -1,76 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Removed old docker proxy">
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/api/stock/index.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/assets/js/ie10-viewport-bug-workaround.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/assets/js/vendor/jquery-1.11.3.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/assets/js/vendor/jquery-3.2.1.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/assets/js/vendor/scale.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/assets/js/vendor/scale.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/assets/navbar.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/bootstrap-3.3.6-dist/css/bootstrap-theme.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/bootstrap-3.3.6-dist/css/bootstrap-theme.css.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/bootstrap-3.3.6-dist/css/bootstrap.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/bootstrap-3.3.6-dist/js/bootstrap.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/bootstrap-3.3.6-dist/js/npm.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/index.html" afterDir="false" />
+    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="Changed quotes demo to work on php">
+      <change afterPath="$PROJECT_DIR$/docker/images/base/data/basesetup.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker/images/client/data/clientsetup.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/Dockerfile.core" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/FinanceApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/api/AggregatedStocksController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/api/MyStockController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/api/ReadyController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/api/StockController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/api/model/StockData.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/config/BasicAuthEntryPoint.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/config/CustomFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/config/LoggerConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/config/SecurityConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/data/MyStocksRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/data/UsersRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/data/entities/MyStock.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/data/entities/MyStockId.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/data/entities/User.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/service/PlainPasswordEncoder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/service/SimpleAuthenticationProvider.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/java/com/kendar/finance/utils/MimeTypes.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/assets/js/ie10-viewport-bug-workaround.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/assets/js/vendor/jquery-1.11.3.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/assets/js/vendor/jquery-3.2.1.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/assets/js/vendor/scale.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/assets/js/vendor/scale.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/assets/navbar.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap-theme.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap-theme.css.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/css/bootstrap.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.eot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/fonts/glyphicons-halflings-regular.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/js/bootstrap.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/bootstrap-3.3.6-dist/js/npm.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/favicon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/core/src/main/resources/static/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Make.bat" beforeDir="false" afterPath="$PROJECT_DIR$/Make.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/images/base/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/base/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/images/client/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/client/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/quotes/docker_multi/Dockerfile.fi" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/quotes/docker_multi/ImagesBuild.bat" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/ImagesBuild.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/quotes/docker_multi/application.properties.fi" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/quotes/docker_multi/external.json" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/external.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/samples/quotes/docker_multi/run-fi.sh" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,11 +51,15 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "WebServerToolWindowFactoryState": "false"
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Data/Github/HttpAnsweringMachine/samples/quotes/docker_multi"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Data\Github\HttpAnsweringMachine\samples\quotes\docker_multi" />
       <recent name="$PROJECT_DIR$/samples/quotes" />
       <recent name="$PROJECT_DIR$/samples/financialapp/docker_multi" />
       <recent name="$PROJECT_DIR$/release" />
@@ -152,7 +100,8 @@
       <workItem from="1651140940736" duration="350000" />
       <workItem from="1651157161112" duration="1378000" />
       <workItem from="1651227977822" duration="448000" />
-      <workItem from="1651831930509" duration="955000" />
+      <workItem from="1651831930509" duration="1135000" />
+      <workItem from="1651843713546" duration="5034000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>
@@ -210,7 +159,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651157525809</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Changed quotes demo to work on php">
+      <created>1651834199567</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1651834199567</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -265,6 +221,7 @@
     <MESSAGE value="Death to the BOMs!!!" />
     <MESSAGE value="Added internal socks5 server &#10;Removed old docks" />
     <MESSAGE value="Removed old docker proxy" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed old docker proxy" />
+    <MESSAGE value="Changed quotes demo to work on php" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed quotes demo to work on php" />
   </component>
 </project>
