@@ -3,11 +3,12 @@ package org.kendar.ham;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * To contact the DNS APIs
  */
-public interface DnsBuilder {
+public interface DnsBuilder extends DnsCertsAndNamesBuilder {
     /**
      * Resolve the given dns name.
      * @param domain
@@ -115,6 +116,13 @@ public interface DnsBuilder {
     String addDnsName(String ip, String name) throws HamException;
 
     /**
+     * Add new DNS resolutionS to localhost
+     * @param names the name resolved
+     * @throws HamException
+     */
+    void addLocalDnsNames(String ... names) throws HamException;
+
+    /**
      * Remove an id by name
      * @param id
      * @throws HamException
@@ -157,4 +165,19 @@ public interface DnsBuilder {
      * @throws HamException
      */
     List<ResolvedNames> retrieveResolvedNames() throws HamException;
+
+    /**
+     * Set dns/tls for the selected sites
+     * @param filter to select from founded items
+     * @return
+     */
+    DnsCertsAndNamesBuilder withResolvedNames(Function<ResolvedNames,Boolean> filter) throws HamException;
+
+    /**
+     * List of names to search within
+     * @param with
+     * @return
+     */
+    DnsCertsAndNamesBuilder withResolvedNames(List<ResolvedNames> with);
+
 }

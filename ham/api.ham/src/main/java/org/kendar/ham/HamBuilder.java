@@ -2,6 +2,8 @@ package org.kendar.ham;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.xbill.DNS.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,12 +29,19 @@ import org.apache.http.ssl.SSLContexts;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLHandshakeException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
@@ -176,10 +185,120 @@ public class HamBuilder implements HamInternalBuilder {
         }
     }
 
+    public CloseableHttpResponse execute(HttpUriRequest request) throws HamException {
+        return execute(request,false);
+    }
+
+    public CloseableHttpResponse execute(HttpUriRequest request,boolean ignoreSSLCertificates) throws HamException {
+        try {
+            var dnsServer = this.dnsServer;
+            var dnsPort = this.dnsPort;
+            DnsResolver dnsResolver = new SystemDefaultDnsResolver() {
+                @Override
+                public InetAddress[] resolve(final String requestedDomain) throws UnknownHostException {
+                    try {
+                        var resolver = new SimpleResolver(dnsServer);
+                        resolver.setPort(dnsPort);
+                        var resolvers = new ArrayList<Resolver>();
+                        resolvers.add(resolver);
+                        ExtendedResolver extendedResolver = new ExtendedResolver(resolvers);
+                        extendedResolver.setTimeout(Duration.ofSeconds(1));
+                        extendedResolver.setRetries(0);
+                        Lookup lookup = new Lookup(requestedDomain, Type.A);
+                        lookup.setResolver(extendedResolver);
+                        lookup.setCache(null);
+                        lookup.setHostsFileParser(null);
+                        var records = lookup.run();
+                        if (records != null) {
+                            for (org.xbill.DNS.Record record : records) {
+                                String realip = ((ARecord) records[0]).getAddress().getHostAddress();
+                                return new InetAddress[]{InetAddress.getByName(realip)};
+                            }
+                        }
+                        return new InetAddress[]{};
+                    } catch (Exception ex) {
+                        return new InetAddress[]{};
+                    }
+                }
+            };
+            SSLConnectionSocketFactory ssfs = null;
+
+            if (this.proxyIp != null) {
+                if (ignoreSSLCertificates) {
+                    TrustStrategy acceptingTrustStrategy = (cert, authType) -> true;
+                    SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
+                    ssfs = new MyConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+                } else {
+                    ssfs = new MyConnectionSocketFactory(SSLContexts.createSystemDefault());
+                }
+                Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
+                        .register("http", PlainConnectionSocketFactory.INSTANCE)
+                        .register("https", ssfs)
+                        .build();
+                PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(reg, dnsResolver);
+                CloseableHttpClient httpclient = HttpClients.custom()
+                        .setDnsResolver(dnsResolver)
+                        .setSSLSocketFactory(ssfs)
+                        .setConnectionManager(cm)
+                        .build();
+
+                InetSocketAddress socksaddr = new InetSocketAddress(this.proxyIp, this.proxyPort);
+                HttpClientContext context = HttpClientContext.create();
+                context.setAttribute("socks.address", socksaddr);
+
+                return httpclient.execute(request, context);
+            } else {
+                PoolingHttpClientConnectionManager cm;
+                if (ignoreSSLCertificates) {
+                    TrustStrategy acceptingTrustStrategy = (cert, authType) -> true;
+                    SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
+                    ssfs = new SSLConnectionSocketFactory(sslContext,
+                            NoopHostnameVerifier.INSTANCE);
+                    Registry<ConnectionSocketFactory> socketFactoryRegistry =
+                            RegistryBuilder.<ConnectionSocketFactory>create()
+                                    .register("https", ssfs)
+                                    .register("http", new PlainConnectionSocketFactory())
+                                    .build();
+                    cm = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+                } else {
+                    cm = new PoolingHttpClientConnectionManager();
+                }
+                var builder = HttpClients.custom()
+                        .setDnsResolver(dnsResolver)
+                        .setConnectionManager(cm);
+                if (ssfs != null) {
+                    builder.setSSLSocketFactory(ssfs);
+                }
+                CloseableHttpClient httpClient = builder
+                        .build();
+
+                return httpClient.execute(request);
+            }
+        }catch (SSLHandshakeException sslHandshakeException){
+            final String message="You probably should import the certificate from HAM certificates \r\n" +
+                    "in your local keystore. You can find it on "+getHamAddress()+"/api/certificates/ca.der\r\n" +
+                    "Linux: $JAVA_HOME/bin/keytool -import -file ca.der -alias HamCert \\\r\n" +
+                    "    -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt\r\n"+
+                    "Windows: %JAVA_HOME%\\bin\\keytool -import -file ca.der -alias HamCert ^\r\n" +
+                    "    -keystore %JAVA_HOME%\\lib\\security\\cacerts -storepass changeit -noprompt\r\n";
+            throw new HamException(message,sslHandshakeException);
+        }catch(Exception ex){
+            throw new HamException(ex);
+        }
+    }
+
+
+    /**
+     * https://stackoverflow.com/questions/2642777/trusting-all-certificates-using-httpclient-over-https
+     */
     static class MyConnectionSocketFactory extends SSLConnectionSocketFactory {
 
         public MyConnectionSocketFactory(final SSLContext sslContext) {
             super(sslContext);
+        }
+
+        public MyConnectionSocketFactory(SSLContext sslContext, HostnameVerifier hostnameVerifier) {
+            super(sslContext,hostnameVerifier);
         }
 
         @Override
@@ -191,69 +310,32 @@ public class HamBuilder implements HamInternalBuilder {
 
     }
 
-
-
-    private CloseableHttpResponse execute(HttpUriRequest request) throws IOException {
-        var dnsServer = this.dnsServer;
-        var dnsPort = this.dnsPort;
-        DnsResolver dnsResolver = new SystemDefaultDnsResolver() {
-            @Override
-            public InetAddress[] resolve(final String requestedDomain) throws UnknownHostException {
-                try {
-
-                    var resolver = new SimpleResolver(dnsServer);
-                    resolver.setPort(dnsPort);
-                    var resolvers = new ArrayList<Resolver>();
-                    resolvers.add(resolver);
-                    ExtendedResolver extendedResolver = new ExtendedResolver(resolvers);
-                    extendedResolver.setTimeout(Duration.ofSeconds(1));
-                    extendedResolver.setRetries(0);
-                    Lookup lookup = new Lookup(requestedDomain, Type.A);
-                    lookup.setResolver(extendedResolver);
-                    lookup.setCache(null);
-                    lookup.setHostsFileParser(null);
-                    var records = lookup.run();
-                    if(records!=null){
-                        for (org.xbill.DNS.Record record:records) {
-                            String realip = ((ARecord) records[0]).getAddress().getHostAddress();
-                            return new InetAddress[]{InetAddress.getByName(realip)};
-                        }
-                    }
-                    return new InetAddress[]{};
-                }catch (Exception ex){
-                    return new InetAddress[]{};
-                }
-            }
-        };
-        if(this.proxyIp!=null) {
-            Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
-                    .register("http", PlainConnectionSocketFactory.INSTANCE)
-                    .register("https", new MyConnectionSocketFactory(SSLContexts.createSystemDefault()))
-                    .build();
-            PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(reg,dnsResolver);
-            CloseableHttpClient httpclient = HttpClients.custom()
-                    .setDnsResolver(dnsResolver)
-                    .setConnectionManager(cm)
-                    .build();
-
-            InetSocketAddress socksaddr = new InetSocketAddress(this.proxyIp, this.proxyPort);
-            HttpClientContext context = HttpClientContext.create();
-            context.setAttribute("socks.address", socksaddr);
-
-            return httpclient.execute(request, context);
-        }else{
-            PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-            CloseableHttpClient httpClient = HttpClients.custom()
-                    .setDnsResolver(dnsResolver)
-                    .setConnectionManager(cm)
-                    .build();
-
-            return httpClient.execute(request);
-        }
-    }
+    private static Path certificatePath;
 
     public Response call(Request request) throws HamException {
+       /* try {
+            if (certificatePath == null) {
+                certificatePath = Files.createTempFile(UUID.randomUUID().toString(), ".ham.der");
+                var
+                HttpPost httpPost = new HttpPost(getHamAddress() + "/api/certificates/ca.der?clear=true");
+                httpPost.addHeader("content-type", "application/json");
+                httpPost.setEntity(new StringEntity(mapper.writeValueAsString(request)));
+
+                CloseableHttpResponse clientResponse = execute(httpPost);
+                String json = IOUtils.toString(clientResponse.getEntity().getContent(), StandardCharsets.UTF_8);
+                var certResponse = mapper.readValue(json, Response.class);
+                Files.write(certificatePath,certResponse.getResponseBytes());
+            }
+        }catch(IOException ex){
+
+        }*/
+        return callInternal(request);
+    }
+
+    private Response callInternal(Request request) throws HamException {
         try {
+
+
             HttpPost httpPost = new HttpPost(getHamAddress() + "/api/remote/execute");
 
             httpPost.addHeader("content-type", "application/json");

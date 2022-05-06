@@ -19,6 +19,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DnsSocks5Handler implements SocksHandler {
     protected static final Logger logger = LoggerFactory.getLogger(Socks5Handler.class);
@@ -83,11 +85,13 @@ public class DnsSocks5Handler implements SocksHandler {
         InetAddress bindAddress = null;
         int bindPort = 0;
         InetAddress remoteServerAddress;
-        var realHost = multiResolver.resolve( commandMessage.getHost());
+        List<String> realHost  = new ArrayList<>();
+        if(commandMessage.getHost()!=null && !commandMessage.getHost().isEmpty()) {
+            realHost = multiResolver.resolve(commandMessage.getHost());
+        }
 
         if(realHost!=null && !realHost.isEmpty()){
             remoteServerAddress = InetAddress.getByName(realHost.get(0));
-
         }else{
             remoteServerAddress = commandMessage.getInetAddress();
         }

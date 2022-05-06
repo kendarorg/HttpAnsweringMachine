@@ -93,5 +93,4 @@ public interface HamBasicBuilder  {
      * @throws HamException
      */
     Response call(Request request) throws HamException;
-
 }

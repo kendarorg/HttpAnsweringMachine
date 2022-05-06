@@ -31,15 +31,17 @@ public interface CertificatesBuilder {
 
     /**
      * Add an alt name to generate the TLS/SSL certificate
-     * <B>THIS RESTART THE HTTPS SERVER</B>
-     * @param address DNS name
+     * <B>THIS RESTART THE HTTPS SERVER AND WAIT 1 second</B>
+     *
+     * @param addresses DNS names
+     * @return The ids inserted
      * @throws HamException
      */
-    void addAltName(String address) throws HamException;
+    List<String> addAltName(String ... addresses) throws HamException;
 
     /**
      * Remove the alt-name via id
-     * <B>THIS RESTART THE HTTPS SERVER</B>
+     * <B>THIS RESTART THE HTTPS SERVER AND WAIT 1 second</B>
      * @param id
      * @throws HamException
      */
