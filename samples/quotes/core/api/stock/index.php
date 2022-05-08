@@ -25,7 +25,11 @@ if (curl_errno($ch)) {
 curl_close($ch);
 
 $jsonObject = json_decode($jsonString,true);
-echo 'Pre lastSalePrice->'.$jsonObject['data']['primaryData']['lastSalePrice']."\n";
-echo '  '.$jsonObject['data']['primaryData']['lastTradeTimestamp']."\n";
-echo 'Las lastSalePrice->'.$jsonObject['data']['secondaryData']['lastSalePrice']."\n";
-echo '  '.$jsonObject['data']['secondaryData']['lastTradeTimestamp']."\n";
+
+$result = [];
+if($jsonObject['data']['secondaryData']!=null){
+    $result['price']=substr($jsonObject['data']['secondaryData']['lastSalePrice'],1);
+}else{
+    $result['price']=substr($jsonObject['data']['primaryData']['lastSalePrice']);
+}
+echo json_encode($result);

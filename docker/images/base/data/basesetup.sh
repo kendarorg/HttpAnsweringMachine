@@ -19,6 +19,6 @@ chmod 0700 /root/.ssh
 /etc/startservice.sh --app=sshd --capturelogs --run=/usr/sbin/sshd
 
 # Force root password
-mkdir -p /etc/service/rootforce
-echo -e "#!/bin/bash\nexec 2>&1\necho \"root:\${ROOT_PWD}\"|chpasswd\nsleep infinity\n" > /etc/service/rootforce/run 
+mkdir -p /etc/service/rootforce 
+echo -e "#"'!'"/bin/bash\nexec 2>&1\necho \"root:\${ROOT_PWD}\"|chpasswd\nsleep infinity\n" > /etc/service/rootforce/run
 chmod +x /etc/service/rootforce/run
