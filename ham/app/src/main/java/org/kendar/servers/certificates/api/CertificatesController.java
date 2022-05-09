@@ -98,7 +98,7 @@ public class CertificatesController implements FilteringClass {
       if (path.equalsIgnoreCase(name)) {
         var result = fileResourcesUtils.getFileFromResourceAsByteArray("certificates/" + path);
 
-        if(returnClear) {
+        if(!returnClear) {
           ByteArrayOutputStream baos = new ByteArrayOutputStream();
           ZipOutputStream zos = new ZipOutputStream(baos);
           ZipEntry entry = new ZipEntry(path);
