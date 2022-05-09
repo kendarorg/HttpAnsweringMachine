@@ -207,6 +207,7 @@ public class DnsServer {
     request = new Message(in);
     Message response = new Message(request.getHeader().getID());
     response.getHeader().setFlag(Flags.QR );
+    response.getHeader().setFlag(Flags.RA );
     //response.getHeader().setFlag(Flags.AA );
 
     String requestedDomain = request.getQuestion().getName().toString(true);

@@ -361,7 +361,8 @@ if [ ${#OVPN_ROUTES[@]} -gt 0 ]; then
   for i in "${OVPN_ROUTES[@]}"; do
     process_route_config "$i"
   done
-  echo -e "\n### Route Configurations Below" >> "$conf"
+  echo "
+### Route Configurations Below" >> "$conf"
   cat $TMP_ROUTE_CONFIGFILE >> "$conf"
 fi
 
@@ -378,12 +379,15 @@ fi
   process_push_config "$i"
 done
 
-echo -e "\n### Push Configurations Below" >> "$conf"
+echo "
+### Push Configurations Below" >> "$conf"
 cat $TMP_PUSH_CONFIGFILE >> "$conf"
 
 # Append optional OTP authentication support
 if [ -n "${OVPN_OTP_AUTH:-}" ]; then
-    echo -e "\n\n# Enable OTP+PAM for user authentication" >> "$conf"
+    echo "
+
+# Enable OTP+PAM for user authentication" >> "$conf"
     echo "plugin /usr/lib/openvpn/plugins/openvpn-plugin-auth-pam.so openvpn" >> "$conf"
     echo "reneg-sec 0" >> "$conf"
 fi
@@ -393,7 +397,8 @@ if [ ${#OVPN_EXTRA_SERVER_CONFIG[@]} -gt 0 ]; then
   for i in "${OVPN_EXTRA_SERVER_CONFIG[@]}"; do
     process_extra_config "$i"
   done
-  echo -e "\n### Extra Configurations Below" >> "$conf"
+  echo "
+### Extra Configurations Below" >> "$conf"
   cat $TMP_EXTRA_CONFIGFILE >> "$conf"
 fi
 

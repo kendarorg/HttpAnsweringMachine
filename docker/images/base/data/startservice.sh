@@ -69,11 +69,13 @@ echo '#!/bin/bash' > $rootServicesDir/$appDir/run
 echo "exec 2>&1" >> $rootServicesDir/$appDir/run
 echo "exec ${runner}" >> $rootServicesDir/$appDir/run
 if [[ "$isConfig" == "true" ]]; then     ## GOOD
-  echo "sleep infinity" >> $rootServicesDir/$appDir/run
+  echo "/etc/DoSleep.sh" >> $rootServicesDir/$appDir/run
 fi
 
 chmod +x "${rootServicesDir}/${appDir}/run"
-chmod +x "${runner}"
+if [ -f "${runner}" ]; then
+  chmod +x "${runner}"
+fi
 #chmod +x "${rootAppDir}/${appDir}/${appDir}.sh"
 
 if [ "$captureLogs" == "true" ]; then     ## GOOD
@@ -84,11 +86,3 @@ if [ "$captureLogs" == "true" ]; then     ## GOOD
   echo "exec svlogd -tt ${rootAppDir}/${appDir}/log" >> $rootServicesDir/$appDir/log/run
   chmod +x "${rootServicesDir}/${appDir}/log/run"
 fi
-
-#RUN mkdir -p /etc/service/${appDir} \
-#    && mkdir -p /etc/app/${appDir}/log \
-#    && mkdir -p /etc/service/${appDir}/log \
-#    && echo -e "#!/bin/bash\nexec svlogd -tt /etc/app/${appDir}/log\n" > /etc/service/${appDir}/log/run \
-#    && chmod +x /etc/service/${appDir}/log/run \
-#    && echo -e "#!/bin/bash\nexec 2>&1\nexec /etc/app/${appDir}/${appDir}.sh\n" > /etc/service/${appDir}/run \
-#    && chmod +x /etc/service/${appDir}/run

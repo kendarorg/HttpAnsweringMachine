@@ -13,6 +13,7 @@ if(isset($_GET['id'])){
 
 $ch=curl_init();
 curl_setopt($ch,CURLOPT_URL,'https://api.nasdaq.com/api/quote/'.$stockId.'/info?assetclass=stocks');
+//https://api.nasdaq.com/api/quote/AAPL/info?assetclass=stocks
 curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 curl_setopt($ch,CURLOPT_HEADER, false);
 $jsonString=curl_exec($ch);
