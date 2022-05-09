@@ -51,7 +51,7 @@ RUN mkdir -p /etc/service/rootforce \
     && echo "#!/bin/bash" > /etc/service/rootforce/run \
     && echo "exec 2>&1" >> /etc/service/rootforce/run \
     && echo 'echo "root:\${ROOT_PWD}"|chpasswd' >> /etc/service/rootforce/run \
-    && echo "sleep infinity" >> /etc/service/rootforce/run \
+    && echo "/etc/DoSleep.sh" >> /etc/service/rootforce/run \
     && chmod +x /etc/service/rootforce/run 
 
 # Start everythin
