@@ -68,6 +68,7 @@
         <module>socks5.server</module>
         <module>api.ham</module>
         <module>api.replayer</module>
+        <module>api.js.builder</module>
     </modules>
     <build>
         <extensions>

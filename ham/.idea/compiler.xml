@@ -20,6 +20,7 @@
         <module name="simpledns" />
         <module name="api.ham" />
         <module name="js.filters" />
+        <module name="api.js.builder" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -35,6 +36,7 @@
       <module name="HttpAnsweringMachine" options="-parameters" />
       <module name="answer.jdbc" options="-parameters" />
       <module name="api.ham" options="-parameters" />
+      <module name="api.js.builder" options="-parameters" />
       <module name="api.replayer" options="-parameters" />
       <module name="app" options="-parameters" />
       <module name="app.commons" options="-parameters" />
