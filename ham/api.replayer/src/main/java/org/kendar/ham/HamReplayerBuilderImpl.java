@@ -3,7 +3,7 @@ package org.kendar.ham;
 class HamReplayerBuilderImpl implements HamReplayerBuilder {
 
     static {
-        HamBuilder.register("replayer.server", (b)-> new HamReplayerBuilderImpl(b));
+        HamBuilder.register("replayer.server", HamReplayerBuilderImpl::new);
     }
     private HamInternalBuilder hamBuilder;
 

@@ -45,7 +45,7 @@ public class JsFilterAPI implements FilteringClass {
 
   @Override
   public String getId() {
-    return "org.kendar.servers.http.api.JsFilterController";
+    return this.getClass().getName();
   }
 
   @HttpMethodFilter(
@@ -96,7 +96,6 @@ public class JsFilterAPI implements FilteringClass {
     try {
       File f;
       var realPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor+".json");
-      var subPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor);
       var result = loadSinglePlugin(realPath,jsFilterPath);
 
       res.addHeader("Content-type", "application/json");

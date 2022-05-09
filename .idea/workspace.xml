@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="* Creating a php-based demo&#10;* Setup a debian based image (Dockerfile.core)&#10;* Optimize the dockerfiles">
-      <change beforePath="$PROJECT_DIR$/ham/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ham/api.ham/src/main/java/org/kendar/ham/FilterPhase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsBuilderImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsBuilderImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ham/api.replayer/src/main/java/org/kendar/ham/HamReplayerBuilderImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.replayer/src/main/java/org/kendar/ham/HamReplayerBuilderImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/api/JsFilterAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/api/JsFilterAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +98,7 @@
       <workItem from="1652037625535" duration="4807000" />
       <workItem from="1652103059479" duration="249000" />
       <workItem from="1652105622662" duration="1217000" />
-      <workItem from="1652106984117" duration="3388000" />
+      <workItem from="1652106984117" duration="3645000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>
