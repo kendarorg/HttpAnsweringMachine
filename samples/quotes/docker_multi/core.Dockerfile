@@ -1,43 +1,37 @@
-FROM ham.client:latest as builder
+FROM ham.client:latest
 
-FROM php:8.0-apache
+COPY docker_multi/core/startapache.sh /etc/startapache.sh
+COPY docker_multi/core/xdebug.ini /etc/php8/conf.d/docker-php-ext-xdebug.ini
+COPY docker_multi/core/error_reporting.ini /etc/php8/conf.d/error_reporting.ini
+COPY core/ /htdocs/
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV JAVA11_HOME /usr/lib/jvm/java-11-openjdk-amd64
-ENV RESOL_CONF /etc/resolvconf/resolv.conf.d/base
-
-# https://kifarunix.com/make-permanent-dns-changes-on-resolv-conf-in-linux/
-RUN apt update \
-    && apt upgrade -y \
-    && apt install wget curl bash openssl tar ca-certificates openjdk-11-jdk runit openssh-server iputils-ping apt-utils apt-transport-https -y \
-    && mkdir -p /etc/app/simpledns \
-    && mkdir -p etc/ssh
-
-RUN apt-get install -y apt-utils debconf-utils dialog
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
-RUN apt-get update
-RUN apt-get install -y resolvconf
-
-RUN apt install vim bind9-dnsutils  -y
-
-# Update certificates
-COPY --from=builder /usr/local/share/ca-certificates/ca.crt /usr/local/share/ca-certificates/ca.crt
-COPY --from=builder /etc/ssh/sshd_config /etc/ssh/sshd_config
-COPY --from=builder /etc/*.sh /etc/
-COPY --from=builder /etc/DoSleep.* /etc/
-COPY --from=builder /etc/app/simpledns/simpledns*.* /etc/app/simpledns/
-
-RUN sed -i "s%#POSTRESOLVCONF%resolvconf -u%g" $RESOL_CONF
-
-
-COPY core/ /var/www/html/
-
-# Prepare base setup and add apache to run
-RUN chmod 777 /etc/*.sh \
-    && /etc/basesetup.sh \
-    && /etc/clientsetup.sh \
-    && /etc/startservice.sh --app=apache --run=/usr/local/bin/apache2-foreground
-
-# Start everything
-CMD ["runsvdir", "/etc/service"]
+RUN apk --no-cache --update \
+    add apache2 \
+    apache2-ssl \
+    curl \
+    php8-apache2 \
+    php8-bcmath \
+    php8-bz2 \
+    php8-calendar \
+    php8-common \
+    php8-ctype \
+    php8-curl \
+    php8-dom \
+    php8-gd \
+    php8-iconv \
+    php8-mbstring \
+    php8-mysqli \
+    php8-mysqlnd \
+    php8-openssl \
+    php8-pdo_mysql \
+    php8-pdo_pgsql \
+    php8-pdo_sqlite \
+    php8-phar \
+    php8-session \
+    php8-xml \
+    php8-pear \
+    php8-xdebug \
+    && mkdir -p docker/php/conf.d \
+    && pear8 config-set php_ini /etc/php8/php.ini \
+    && chmod +x /etc/*.sh \
+    && /etc/startservice.sh --app=apache --run=/etc/startapache.sh

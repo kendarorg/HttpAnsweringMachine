@@ -44,6 +44,8 @@ services:
     container_name: ham.quotes.core
     privileged: true
     environment:
+      - HTTP_SERVER_NAME=ham.quotes.core
+      - HTTPS_SERVER_NAME=ham.quotes.core
       - DNS_HIJACK_SERVER=ham.quotes.master
       - ROOT_PWD=root
     cap_add:
