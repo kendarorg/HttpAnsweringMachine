@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="* Creating a php-based demo&#10;* Setup a debian based image (Dockerfile.core)&#10;* Optimize the dockerfiles" />
+    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="* Creating a php-based demo&#10;* Setup a debian based image (Dockerfile.core)&#10;* Optimize the dockerfiles">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,14 +38,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Data/Github/HttpAnsweringMachine/samples/quotes/docker_multi&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Data/Github/HttpAnsweringMachine/samples/quotes/docker_multi"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "TEXT"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Data\Github\HttpAnsweringMachine\samples\quotes\docker_multi" />
@@ -93,6 +100,7 @@
       <workItem from="1652103059479" duration="249000" />
       <workItem from="1652105622662" duration="1217000" />
       <workItem from="1652106984117" duration="3645000" />
+      <workItem from="1652214419049" duration="1994000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>
