@@ -5,6 +5,7 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.utils.FakeFuture;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -50,11 +51,7 @@ public class Main implements CommandLineRunner {
     while (true) {
       intializeRunners(executor, futures);
       runRunners(executor, futures);
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException e) {
-        logger.trace(e.getMessage());
-      }
+        Sleeper.sleep(1000);
     }
   }
 

@@ -75,12 +75,8 @@ public class HamBuilder implements HamInternalBuilder {
         return result;
     }
 
-    private static HashMap<String, Function<HamInternalBuilder, Object>> pluginBuilders;
+    private static HashMap<String, Function<HamInternalBuilder, Object>> pluginBuilders = new HashMap<>();
 
-    public static void register(String index, Function<HamInternalBuilder, Object> clazz) {
-        if (pluginBuilders == null) pluginBuilders = new HashMap<>();
-        pluginBuilders.put(index.toLowerCase(Locale.ROOT), clazz);
-    }
 
     public HamBasicBuilder withPort(int port) {
         this.port = port;
@@ -158,8 +154,24 @@ public class HamBuilder implements HamInternalBuilder {
         return new ProxyBuilderImpl(this);
     }
 
-    public Object pluginBuilder(String name) {
-        return pluginBuilders.get(name.toLowerCase(Locale.ROOT)).apply(this);
+    public  <T> T pluginBuilder(Class<T> clazz) {
+        var initMethod = Arrays.stream(clazz.getMethods()).filter(m->
+                m.getName().equalsIgnoreCase("init") &&
+                m.getParameterCount()==0).findFirst();
+        var className = initMethod.get().getReturnType();
+        if(!pluginBuilders.containsKey(clazz.getName().toLowerCase(Locale.ROOT))) {
+            pluginBuilders.put(clazz.getName().toLowerCase(Locale.ROOT), (h)->{
+                try {
+                    var constr = className.getConstructor(HamInternalBuilder.class);
+                    var result = constr.newInstance(h);
+                    return result;
+                }catch(Exception ex){
+                    return null;
+                }
+            });
+        }
+
+        return (T)pluginBuilders.get(clazz.getName().toLowerCase(Locale.ROOT)).apply(this);
     }
 
 

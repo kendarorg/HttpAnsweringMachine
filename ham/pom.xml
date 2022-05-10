@@ -58,16 +58,17 @@
         <module>app</module>
         <module>app.commons</module>
         <module>app.http</module>
-        <module>oidc.server</module>
-        <module>replayer.server</module>
-        <module>js.filters</module>
+        <module>plugin.oidc.server</module>
+        <module>plugin.replayer.server</module>
+        <module>plugin.js.filters</module>
         <module>app.http.standardfilters</module>
         <module>simpledns</module>
         <module>app.dns</module>
-        <module>schema.checker</module>
-        <module>socks5.server</module>
+        <module>lib.schema.checker</module>
+        <module>plugin.socks5.server</module>
         <module>api.ham</module>
         <module>api.replayer</module>
+        <module>api.js.builder</module>
     </modules>
     <build>
         <extensions>
@@ -91,3 +92,21 @@
         </snapshotRepository>
     </distributionManagement>
 </project>
+<!-- Settings.xml
+Generate the passwords (double dash)
+    mvn - -encrypt-password <password>
+<?xml version="1.0"?>
+<settings>
+    <servers>
+        <server>
+            <id>releases.ftp</id>
+            <username>USERID</username>
+            <password>ENCRYPTEDPASSWORD</password>
+        </server>
+        <server>
+            <id>snapshots.ftp</id>
+            <username>USERID</username>
+            <password>ENCRYPTEDPASSWORD</password>
+        </server>
+    </servers>
+</settings>-->

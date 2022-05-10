@@ -13,6 +13,7 @@ import org.kendar.servers.config.SSLDomain;
 import org.kendar.servers.config.WebServerConfig;
 import org.kendar.servers.http.AnsweringHandler;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -86,7 +87,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
       logger.info("Https server LOADED, port: " + config.getPort());
       var localConfig = configuration.getConfiguration(HttpsWebServerConfig.class);
       while (running && localConfig.isActive()) {
-        Thread.sleep(1000);
+        Sleeper.sleep(1000);
         if(restart)break;
       }
       //if(executor!=null)executor.shutdownNow();

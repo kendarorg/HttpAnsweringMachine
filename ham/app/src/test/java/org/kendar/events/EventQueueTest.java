@@ -7,6 +7,7 @@ import org.kendar.events.samples.OtherEvent;
 import org.kendar.events.samples.TestEvent;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.LoggerBuilderImpl;
+import org.kendar.utils.Sleeper;
 
 import java.util.ArrayList;
 
@@ -29,7 +30,7 @@ public class EventQueueTest {
         te.setString("string");
         te.setInteger(1);
         target.handle(te);
-        Thread.sleep(500);
+        Sleeper.sleep(500);
 
         assertEquals(1,results.size());
         assertEquals(mapper.writeValueAsString(te),mapper.writeValueAsString(results.get(0)));
@@ -49,7 +50,7 @@ public class EventQueueTest {
         te.setInteger(1);
         var tes = mapper.writeValueAsString(te);
         target.handle("TestEvent",tes);
-        Thread.sleep(500);
+        Sleeper.sleep(500);
 
         assertEquals(1,results.size());
     }
@@ -65,7 +66,7 @@ public class EventQueueTest {
 
         var te = new OtherEvent();
         target.handle(te);
-        Thread.sleep(500);
+        Sleeper.sleep(500);
 
         assertEquals(0,results.size());
     }
@@ -82,7 +83,7 @@ public class EventQueueTest {
         te.setString("string");
         te.setInteger(1);
         target.handle(te);
-        Thread.sleep(500);
+        Sleeper.sleep(500);
     }
 
 
@@ -103,7 +104,7 @@ public class EventQueueTest {
         te.setString("string");
         te.setInteger(1);
         target.handle(te);
-        Thread.sleep(500);
+        Sleeper.sleep(500);
 
         assertEquals(1,results.size());
     }

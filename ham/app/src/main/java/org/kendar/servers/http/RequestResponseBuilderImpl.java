@@ -126,6 +126,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
   @Override
   public boolean isMultipart(Request request) {
     var headerContentType = request.getHeader(H_CONTENT_TYPE);
+    if(headerContentType==null) return false;
     return headerContentType.toLowerCase(Locale.ROOT).startsWith("multipart");
   }
 

@@ -2,12 +2,14 @@ package org.kendar.ham;
 
 class HamReplayerBuilderImpl implements HamReplayerBuilder {
 
-    static {
-        HamBuilder.register("replayer.server", (b)-> new HamReplayerBuilderImpl(b));
-    }
     private HamInternalBuilder hamBuilder;
 
-    private HamReplayerBuilderImpl(HamInternalBuilder hamBuilder){
+    public HamReplayerBuilderImpl(HamInternalBuilder hamBuilder){
         this.hamBuilder = hamBuilder;
+    }
+
+    @Override
+    public HamReplayerBuilderImpl init() {
+        return null;
     }
 }
