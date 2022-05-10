@@ -1,7 +1,8 @@
 #!/bin/bash
 
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk/
+export JAVA_HOME=${JAVA11_HOME}/
 export PATH="${JAVA_HOME}/bin:${PATH}"
+
 dnsServer=`ping -c 4 $DNS_HIJACK_SERVER|head -n 1| grep -Eo "([0-9]+\.?){4}"`
 
 

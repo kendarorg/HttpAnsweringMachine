@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpServer;
 import org.kendar.servers.config.HttpWebServerConfig;
 import org.kendar.servers.http.AnsweringHandler;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -54,7 +55,7 @@ public class AnsweringHttpServer implements AnsweringServer {
       logger.info("Http server LOADED, port: " + config.getPort());
       var localConfig = configuration.getConfiguration(HttpWebServerConfig.class);
       while (running && localConfig.isActive()) {
-        Thread.sleep(10000);
+        Sleeper.sleep(10000);
         localConfig = configuration.getConfiguration(HttpWebServerConfig.class);
       }
     } catch (Exception ex) {
@@ -74,11 +75,6 @@ public class AnsweringHttpServer implements AnsweringServer {
   public void stop() {
     httpServer.stop(1);
     running = false;
-
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
+    Sleeper.sleep(1000);
   }
 }

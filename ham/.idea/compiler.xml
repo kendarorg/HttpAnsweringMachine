@@ -8,25 +8,31 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="app" />
-        <module name="oidc.server" />
-        <module name="replayer.server" />
+        <module name="plugin.oidc.server" />
         <module name="app.dns" />
-        <module name="socks5.server" />
+        <module name="plugin.js.filters" />
+        <module name="lib.schema.checker" />
         <module name="api.replayer" />
         <module name="app.commons" />
-        <module name="schema.checker" />
         <module name="app.http.standardfilters" />
         <module name="app.http" />
         <module name="simpledns" />
+        <module name="plugin.replayer.server" />
         <module name="api.ham" />
-        <module name="js.filters" />
+        <module name="api.js.builder" />
+        <module name="plugin.socks5.server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="answer.jdbc" target="11" />
       <module name="docker.builder" target="11" />
       <module name="http.jdbc" target="11" />
+      <module name="js.filters" target="11" />
+      <module name="oidc.server" target="11" />
       <module name="pacts.server" target="11" />
+      <module name="replayer.server" target="11" />
+      <module name="schema.checker" target="11" />
+      <module name="socks5.server" target="11" />
       <module name="starter" target="11" />
     </bytecodeTargetLevel>
   </component>
@@ -35,6 +41,7 @@
       <module name="HttpAnsweringMachine" options="-parameters" />
       <module name="answer.jdbc" options="-parameters" />
       <module name="api.ham" options="-parameters" />
+      <module name="api.js.builder" options="-parameters" />
       <module name="api.replayer" options="-parameters" />
       <module name="app" options="-parameters" />
       <module name="app.commons" options="-parameters" />
@@ -44,8 +51,13 @@
       <module name="docker.builder" options="-parameters" />
       <module name="http.jdbc" options="-parameters" />
       <module name="js.filters" options="-parameters" />
+      <module name="lib.schema.checker" options="-parameters" />
       <module name="oidc.server" options="-parameters" />
       <module name="pacts.server" options="-parameters" />
+      <module name="plugin.js.filters" options="-parameters" />
+      <module name="plugin.oidc.server" options="-parameters" />
+      <module name="plugin.replayer.server" options="-parameters" />
+      <module name="plugin.socks5.server" options="-parameters" />
       <module name="replayer.server" options="-parameters" />
       <module name="schema.checker" options="-parameters" />
       <module name="simpledns" options="-parameters" />

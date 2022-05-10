@@ -1,5 +1,7 @@
 package org.kendar.ham;
 
+import org.kendar.utils.Sleeper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,21 +17,17 @@ class CertificatesBuilderImpl implements CertificatesBuilder{
     @Override
     public List<String> addAltName(String ... addresses) throws HamException {
 
-        try {
             var result = new ArrayList<String>();
             var request = hamBuilder.newRequest()
                     .withPost()
                     .withPath("/api/ssl")
                     .withJsonBody(addresses);
             hamBuilder.call(request.build());
-            Thread.sleep(1000);
+            Sleeper.sleep(1000);
             return retrieveAltNames().stream()
                     .filter(inserted-> Arrays.stream(addresses).anyMatch(add->add.equalsIgnoreCase(inserted.getAddress())))
                     .map(add->add.getId())
                     .collect(Collectors.toList());
-        }catch (InterruptedException ex){
-            throw new HamException(ex);
-        }
     }
 
     @Override
