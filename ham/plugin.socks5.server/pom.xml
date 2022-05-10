@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>socks5.server</artifactId>
+    <artifactId>plugin.socks5.server</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
