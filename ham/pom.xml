@@ -92,3 +92,21 @@
         </snapshotRepository>
     </distributionManagement>
 </project>
+<!-- Settings.xml
+Generate the passwords (double dash)
+    mvn - -encrypt-password <password>
+<?xml version="1.0"?>
+<settings>
+    <servers>
+        <server>
+            <id>releases.ftp</id>
+            <username>USERID</username>
+            <password>ENCRYPTEDPASSWORD</password>
+        </server>
+        <server>
+            <id>snapshots.ftp</id>
+            <username>USERID</username>
+            <password>ENCRYPTEDPASSWORD</password>
+        </server>
+    </servers>
+</settings>-->
