@@ -34,17 +34,7 @@
       },
       {
         "id": "3",
-        "dns": "www.sample.test",
-        "ip": "127.0.0.1"
-      },
-      {
-        "id": "4",
-        "dns": "gateway.sample.test",
-        "ip": "127.0.0.1"
-      },
-      {
-        "id": "5",
-        "dns": "be.sample.test",
+        "dns": "www.quotes.test",
         "ip": "127.0.0.1"
       }
     ]
@@ -76,11 +66,11 @@
       },
       {
         "id": "2",
-        "address": "*.sample.test"
+        "address": "*.quotes.test"
       },
       {
         "id": "3",
-        "address": "sample.test"
+        "address": "quotes.test"
       }
     ]
   },
