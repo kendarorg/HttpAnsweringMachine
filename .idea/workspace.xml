@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="* Creating a php-based demo&#10;* Setup a debian based image (Dockerfile.core)&#10;* Optimize the dockerfiles">
-      <change afterPath="$PROJECT_DIR$/ham/api.ham/src/main/java/org/kendar/ham/FilterPhase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsBuilderImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsBuilderImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/api.replayer/src/main/java/org/kendar/ham/HamReplayerBuilderImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.replayer/src/main/java/org/kendar/ham/HamReplayerBuilderImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/api/JsFilterAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/api/JsFilterAPI.java" afterDir="false" />
-    </list>
+    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="* Creating a php-based demo&#10;* Setup a debian based image (Dockerfile.core)&#10;* Optimize the dockerfiles" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

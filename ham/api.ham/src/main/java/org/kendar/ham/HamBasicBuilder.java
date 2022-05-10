@@ -93,4 +93,6 @@ public interface HamBasicBuilder  {
      * @throws HamException
      */
     Response call(Request request) throws HamException;
+
+    <T> T pluginBuilder(Class<T> clazz);
 }

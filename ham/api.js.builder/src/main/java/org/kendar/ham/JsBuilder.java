@@ -6,7 +6,7 @@ import java.util.List;
 public interface JsBuilder {
 
     public class FilterDescriptor{
-        private String method;
+        private Methods method;
         private String hostAddress;
         private String hostRegexp;
         private String pathAddress;
@@ -19,11 +19,11 @@ public interface JsBuilder {
         private List<String> source = new ArrayList<>();
         private String id;
 
-        public String getMethod() {
+        public Methods getMethod() {
             return method;
         }
 
-        public void setMethod(String method) {
+        public void setMethod(Methods method) {
             this.method = method;
         }
 
@@ -120,8 +120,10 @@ public interface JsBuilder {
      * /api/plugins/jsfilter/filters
      * @return
      */
-    List<String> filterIds();
-    FilterDescriptor filterById(String id);
-    String addFilter(FilterDescriptor descriptor);
-    void deleteFilter(String id);
+    List<String> filterIds() throws HamException;
+    FilterDescriptor filterById(String id) throws HamException;
+    JsFilterBuilder addFilter(String id);
+    void deleteFilter(String id) throws HamException;
+
+    JsBuilderImpl init();
 }
