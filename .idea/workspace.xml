@@ -2,314 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="* Creating a php-based demo&#10;* Setup a debian based image (Dockerfile.core)&#10;* Optimize the dockerfiles">
-      <change afterPath="$PROJECT_DIR$/docker/images/base/data/DoSleep.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker/images/base/data/basesetup.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker/images/client/data/clientsetup.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/api.ham/src/main/java/org/kendar/ham/FilterPhase.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/api.ham/src/main/java/org/kendar/ham/Methods.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/GlobalSettings.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsBuilderImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsFilterBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsFilterBuilderImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/api.js.builder/src/main/java/org/kendar/ham/JsSourceBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/api.js.builder/src/test/java/JsBuilderIT.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/api.replayer/src/main/java/org/kendar/ham/GlobalSettings.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/app.commons/src/main/java/org/kendar/utils/Sleeper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/main/java/org/kendar/xml/DiffInferrer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/main/java/org/kendar/xml/model/DiffPath.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/main/java/org/kendar/xml/model/XmlAttribute.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/main/java/org/kendar/xml/model/XmlConstraint.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/main/java/org/kendar/xml/model/XmlElement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/main/java/org/kendar/xml/model/XmlElementGroup.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/main/java/org/kendar/xml/model/XmlException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/main/java/org/kendar/xml/parser/JsonBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/main/java/org/kendar/xml/parser/Utils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/main/java/org/kendar/xml/parser/XmlBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/main/java/org/kendar/xml/parser/XmlMatcher.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/main/java/org/kendar/xml/parser/XmlTemplatesMerger.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/java/org/kendar/xml/BaseUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/java/org/kendar/xml/JsonLoaderTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/java/org/kendar/xml/JsonVerificationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/java/org/kendar/xml/MergerTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/java/org/kendar/xml/SimpleXmlTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/java/org/kendar/xml/XmlVerificationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/json/arrayCorrect.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/json/arrayFail.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/json/arrayFailEmpty.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/json/correct.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/json/missingChild.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/json/missingObject.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/json/missingValue.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/json/missingValueEmpty.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/json/object.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/json/objectMissing.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/json/template.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/json/templateArray.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/xml/correct.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/xml/missingAttribute.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/xml/missingChild.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/xml/missingValue.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/xml/missingValueTemplate.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/xml/template.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/lib.schema.checker/src/test/resources/xml/templateMissingChild.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/js/myhandler.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/js/myhandler/lib.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/js/test.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/js/usejava.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/JsFilterConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/JsFilterDescriptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/JsFilterExecutor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/JsFilterLoader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/JsFilterWeb.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/JsResult.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/JsUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/api/GeneratorModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/api/JsFilterAPI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/api/JsFilterGeneratorAPI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/generators/BaseGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/generators/CurlGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/generators/JUnitGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/java/org/kendar/servers/http/generators/JsFilterGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/resources/web/plugins/jsfilter/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/resources/web/plugins/jsfilter/replayer/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/resources/web/plugins/jsfilter/replayer/interaction.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/resources/web/plugins/jsfilter/script.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/main/resources/web/plugins/jsfilter/text.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.js.filters/src/test/java/org/kendar/test/JsTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.oidc.server/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.oidc.server/src/main/java/org/kendar/oidc/OidcConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.oidc.server/src/main/java/org/kendar/oidc/OidcController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.oidc.server/src/main/java/org/kendar/oidc/OidcCors.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.oidc.server/src/main/java/org/kendar/oidc/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.oidc.server/src/main/resources/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.oidc.server/src/main/resources/jwks.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.oidc.server/src/main/resources/keystore.p12" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/Cache.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/ReplayerConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/ReplayerState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/ReplayerStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/ReplayerWeb.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPIActions.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPIContent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPICrud.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPIGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPIScripts.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPISingleLine.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPIStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/ResultsAPI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/models/ListAllRecordList.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/models/LocalRecording.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/models/RecordingItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/models/RedirectFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/models/ScriptData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/apis/models/Scripts.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/events/NullCompleted.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/events/PactCompleted.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/filters/RecordFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/filters/ReplayFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/generator/SingleRequestGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/generator/SpecialStringBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/storage/BaseDataset.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/storage/CallIndex.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/storage/DataReorganizer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/storage/NullDataset.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/storage/PactDataset.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/storage/RecordingDataset.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/storage/ReplayerDataset.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/storage/ReplayerResult.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/storage/ReplayerRow.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/storage/TestResults.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/utils/JsReplayerExecutor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/java/org/kendar/replayer/utils/Md5Tester.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/resources/standards/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/resources/web/plugins/recording/binary.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/resources/web/plugins/recording/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/resources/web/plugins/recording/js.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/resources/web/plugins/recording/line.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/resources/web/plugins/recording/results.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/resources/web/plugins/recording/script.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.replayer.server/src/main/resources/web/plugins/recording/text.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.socks5.server/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.socks5.server/src/main/java/org/kendar/socks5/DnsSocks5Handler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.socks5.server/src/main/java/org/kendar/socks5/HttpProxyHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.socks5.server/src/main/java/org/kendar/socks5/HttpProxyServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.socks5.server/src/main/java/org/kendar/socks5/ProxyServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.socks5.server/src/main/java/org/kendar/socks5/Socks5Config.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.socks5.server/src/main/java/org/kendar/socks5/Socks5Web.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ham/plugin.socks5.server/src/main/resources/web/plugins/socks5/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/core/api/stock/index.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/core.Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/core/error_reporting.ini" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/core/startapache.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/core/xdebug.ini" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/master.Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/master/Nasdaq.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/images/base/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/base/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/images/base/data/startservice.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/base/data/startservice.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/images/client/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/client/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/images/client/data/simpledns.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/client/data/simpledns.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/images/externalvpn/forticlient/data/startservice.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/externalvpn/forticlient/data/startservice.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/images/externalvpn/openconnect/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/externalvpn/openconnect/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/images/externalvpn/openconnect/data/startservice.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/externalvpn/openconnect/data/startservice.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/images/master/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/master/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/images/openvpn/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/openvpn/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/images/openvpn/data/openvpn.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/images/openvpn/data/openvpn.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/api.ham/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.ham/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/api.ham/src/main/java/org/kendar/ham/CertificatesBuilderImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.ham/src/main/java/org/kendar/ham/CertificatesBuilderImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/api.ham/src/main/java/org/kendar/ham/HamBasicBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.ham/src/main/java/org/kendar/ham/HamBasicBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/api.ham/src/main/java/org/kendar/ham/HamBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.ham/src/main/java/org/kendar/ham/HamBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/api.replayer/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.replayer/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/api.replayer/src/main/java/org/kendar/ham/HamReplayerBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.replayer/src/main/java/org/kendar/ham/HamReplayerBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/api.replayer/src/main/java/org/kendar/ham/HamReplayerBuilderImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/api.replayer/src/main/java/org/kendar/ham/HamReplayerBuilderImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/app.dns/src/main/java/org/kendar/dns/DnsServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/app.dns/src/main/java/org/kendar/dns/DnsServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/app/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/app/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/AnsweringDerbyServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/AnsweringDerbyServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/AnsweringHttpServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/AnsweringHttpServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/AnsweringHttpsServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/AnsweringHttpsServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/certificates/api/CertificatesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/certificates/api/CertificatesController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/http/RequestResponseBuilderImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/app/src/main/java/org/kendar/servers/http/RequestResponseBuilderImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/app/src/test/java/org/kendar/events/EventQueueTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/ham/app/src/test/java/org/kendar/events/EventQueueTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/js/myhandler.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/js/myhandler/lib.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/js/test.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/js/usejava.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/JsFilterConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/JsFilterDescriptor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/JsFilterExecutor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/JsFilterLoader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/JsFilterWeb.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/JsResult.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/JsUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/api/GeneratorModel.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/api/JsFilterAPI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/api/JsFilterGeneratorAPI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/generators/BaseGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/generators/CurlGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/generators/JUnitGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/java/org/kendar/servers/http/generators/JsFilterGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/replayer/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/replayer/interaction.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/script.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/main/resources/web/plugins/jsfilter/text.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/js.filters/src/test/java/org/kendar/test/JsTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/oidc.server/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/oidc.server/src/main/java/org/kendar/oidc/OidcConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/oidc.server/src/main/java/org/kendar/oidc/OidcController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/oidc.server/src/main/java/org/kendar/oidc/OidcCors.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/oidc.server/src/main/java/org/kendar/oidc/User.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/oidc.server/src/main/resources/application.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/oidc.server/src/main/resources/jwks.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/oidc.server/src/main/resources/keystore.p12" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ham/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/Cache.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/ReplayerConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/ReplayerState.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/ReplayerStatus.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/ReplayerWeb.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPIActions.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPIContent.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPICrud.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPIGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPIScripts.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPISingleLine.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/ReplayerAPIStatus.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/ResultsAPI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/models/ListAllRecordList.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/models/LocalRecording.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/models/RecordingItem.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/models/RedirectFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/models/ScriptData.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/apis/models/Scripts.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/events/NullCompleted.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/events/PactCompleted.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/filters/RecordFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/filters/ReplayFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/generator/SingleRequestGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/generator/SpecialStringBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/BaseDataset.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/CallIndex.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/DataReorganizer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/NullDataset.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/PactDataset.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/RecordingDataset.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/ReplayerDataset.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/ReplayerResult.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/ReplayerRow.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/storage/TestResults.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/utils/JsReplayerExecutor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/java/org/kendar/replayer/utils/Md5Tester.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/resources/standards/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/resources/web/plugins/recording/binary.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/resources/web/plugins/recording/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/resources/web/plugins/recording/js.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/resources/web/plugins/recording/line.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/resources/web/plugins/recording/results.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/resources/web/plugins/recording/script.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/replayer.server/src/main/resources/web/plugins/recording/text.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/main/java/org/kendar/xml/DiffInferrer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/main/java/org/kendar/xml/model/DiffPath.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/main/java/org/kendar/xml/model/XmlAttribute.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/main/java/org/kendar/xml/model/XmlConstraint.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/main/java/org/kendar/xml/model/XmlElement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/main/java/org/kendar/xml/model/XmlElementGroup.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/main/java/org/kendar/xml/model/XmlException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/main/java/org/kendar/xml/parser/JsonBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/main/java/org/kendar/xml/parser/Utils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/main/java/org/kendar/xml/parser/XmlBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/main/java/org/kendar/xml/parser/XmlMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/main/java/org/kendar/xml/parser/XmlTemplatesMerger.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/java/org/kendar/xml/BaseUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/java/org/kendar/xml/JsonLoaderTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/java/org/kendar/xml/JsonVerificationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/java/org/kendar/xml/MergerTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/java/org/kendar/xml/SimpleXmlTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/java/org/kendar/xml/XmlVerificationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/json/arrayCorrect.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/json/arrayFail.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/json/arrayFailEmpty.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/json/correct.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/json/missingChild.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/json/missingObject.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/json/missingValue.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/json/missingValueEmpty.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/json/object.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/json/objectMissing.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/json/template.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/json/templateArray.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/xml/correct.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/xml/missingAttribute.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/xml/missingChild.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/xml/missingValue.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/xml/missingValueTemplate.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/xml/template.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/schema.checker/src/test/resources/xml/templateMissingChild.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/socks5.server/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/socks5.server/src/main/java/org/kendar/socks5/DnsSocks5Handler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/socks5.server/src/main/java/org/kendar/socks5/HttpProxyHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/socks5.server/src/main/java/org/kendar/socks5/HttpProxyServer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/socks5.server/src/main/java/org/kendar/socks5/ProxyServer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/socks5.server/src/main/java/org/kendar/socks5/Socks5Config.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/socks5.server/src/main/java/org/kendar/socks5/Socks5Web.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ham/socks5.server/src/main/resources/web/plugins/socks5/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/Dockerfile.be" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/Dockerfile.fe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/Dockerfile.gateway" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/Dockerfile.master" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/ImagesBuild.bat" beforeDir="false" afterPath="$PROJECT_DIR$/samples/calendar/docker_multi/ImagesBuild.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/calendar/docker_multi/ImagesBuild.sh" beforeDir="false" afterPath="$PROJECT_DIR$/samples/calendar/docker_multi/ImagesBuild.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -328,10 +21,11 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature/remoteapis" />
+        <entry key="$PROJECT_DIR$" value="feature/debian_client" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="WARN_ABOUT_CRLF" value="false" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -344,13 +38,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="SONARLINT_PRECOMMIT_ANALYSIS" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/samples/quotes" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Data/Github/HttpAnsweringMachine/samples/quotes/docker_multi"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "TEXT"
+    ]
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Data\Github\HttpAnsweringMachine\samples\quotes\docker_multi" />
       <recent name="$PROJECT_DIR$/samples/quotes" />
       <recent name="$PROJECT_DIR$/samples/financialapp/docker_multi" />
       <recent name="$PROJECT_DIR$/release" />
@@ -391,6 +94,13 @@
       <workItem from="1651140940736" duration="350000" />
       <workItem from="1651157161112" duration="1378000" />
       <workItem from="1651227977822" duration="448000" />
+      <workItem from="1651831930509" duration="1135000" />
+      <workItem from="1651843713546" duration="5307000" />
+      <workItem from="1652037625535" duration="4807000" />
+      <workItem from="1652103059479" duration="249000" />
+      <workItem from="1652105622662" duration="1217000" />
+      <workItem from="1652106984117" duration="3645000" />
+      <workItem from="1652214419049" duration="1994000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>
@@ -448,7 +158,21 @@
       <option name="project" value="LOCAL" />
       <updated>1651157525809</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Changed quotes demo to work on php">
+      <created>1651834199567</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1651834199567</updated>
+    </task>
+    <task id="LOCAL-00010" summary="* Creating a php-based demo&#10;* Setup a debian based image (Dockerfile.core)&#10;* Optimize the dockerfiles">
+      <created>1651849029474</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1651849029474</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -484,19 +208,7 @@
         </entry>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="origin/main" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </State>
+            <State />
           </value>
         </entry>
       </map>
@@ -504,21 +216,6 @@
     <option name="OPEN_GENERIC_TABS">
       <map>
         <entry key="7fb184d6-bcd1-463c-a00b-79549b4cb95c" value="TOOL_WINDOW" />
-      </map>
-    </option>
-    <option name="RECENT_FILTERS">
-      <map>
-        <entry key="Branch">
-          <value>
-            <list>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="origin/main" />
-                </option>
-              </RecentGroup>
-            </list>
-          </value>
-        </entry>
       </map>
     </option>
   </component>
@@ -530,6 +227,8 @@
     <MESSAGE value="Death to the BOMs!!!" />
     <MESSAGE value="Added internal socks5 server &#10;Removed old docks" />
     <MESSAGE value="Removed old docker proxy" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed old docker proxy" />
+    <MESSAGE value="Changed quotes demo to work on php" />
+    <MESSAGE value="* Creating a php-based demo&#10;* Setup a debian based image (Dockerfile.core)&#10;* Optimize the dockerfiles" />
+    <option name="LAST_COMMIT_MESSAGE" value="* Creating a php-based demo&#10;* Setup a debian based image (Dockerfile.core)&#10;* Optimize the dockerfiles" />
   </component>
 </project>
