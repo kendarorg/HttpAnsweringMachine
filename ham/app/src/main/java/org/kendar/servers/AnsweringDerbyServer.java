@@ -5,6 +5,7 @@ import org.kendar.servers.db.DerbyApplication;
 import org.kendar.servers.db.DerbyServerConfig;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -61,7 +62,7 @@ public class AnsweringDerbyServer implements AnsweringServer {
       logger.info("Derby server LOADED, port: " + config.getPort());
       while (config.isActive()) {
         try {
-          Thread.sleep(1000);
+          Sleeper.sleep(1000);
           nsc.ping();
           config = configuration.getConfiguration(DerbyServerConfig.class);
         } catch (Exception e) {
@@ -110,7 +111,7 @@ public class AnsweringDerbyServer implements AnsweringServer {
       } catch (Exception e) {
         System.out.println(e.getMessage());
       }
-      Thread.sleep(10);
+      Sleeper.sleep(10);
     }
   }
 

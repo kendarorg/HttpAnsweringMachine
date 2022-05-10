@@ -4,6 +4,7 @@ import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import sockslib.common.methods.NoAuthenticationRequiredMethod;
@@ -37,7 +38,7 @@ public class ProxyServer implements AnsweringServer {
             logger.info("Socks5 server LOADED, port: " + config.getPort());
             var localConfig = configuration.getConfiguration(Socks5Config.class);
             while (running && localConfig.isActive()) {
-                Thread.sleep(10000);
+                Sleeper.sleep(10000);
                 localConfig = configuration.getConfiguration(Socks5Config.class);
             }
             proxyServer.shutdown();

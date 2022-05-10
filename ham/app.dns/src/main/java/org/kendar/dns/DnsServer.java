@@ -9,6 +9,7 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.Sleeper;
 import org.kendar.utils.ThreeParamsFunction;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -154,18 +155,18 @@ public class DnsServer {
     running.set(true);
     udpThread.start();
     tcpThread.start();
-    Thread.sleep(1000);
+    Sleeper.sleep(1000);
 
     while(
             udpThread.isAlive() &&
                     tcpThread.isAlive()) {
-      Thread.sleep(60000);
+      Sleeper.sleep(60000);
     }
     running.set(false);
     while(
             udpThread.isAlive() ||
                     tcpThread.isAlive()) {
-      Thread.sleep(1000);
+      Sleeper.sleep(1000);
     }
   }
 

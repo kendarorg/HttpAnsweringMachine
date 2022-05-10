@@ -3,6 +3,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.jupiter.api.Test;
 import org.kendar.ham.*;
+import org.kendar.utils.Sleeper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -62,7 +63,7 @@ public class JsBuilderIT {
 
         ValueDate result = requestJsApiTestThing(hamBuilder,HTTP_SIMPLE_TEST_TEST_THING);
         assertEquals(result.getValue(),"A value");
-        Thread.sleep(500);
+        Sleeper.sleep(500);
 
         ValueDate result2 = requestJsApiTestThing(hamBuilder,HTTP_SIMPLE_TEST_TEST_THING);
         assertNotEquals(result.getDate(),result2.getDate());
@@ -109,7 +110,7 @@ public class JsBuilderIT {
 
         ValueDate result = requestJsApiTestThing(hamBuilder, HTTP_SIMPLE_TEST_TEST_THING);
         assertEquals(result.getValue(),"A value");
-        Thread.sleep(500);
+        Sleeper.sleep(500);
 
         ValueDate result2 = requestJsApiTestThing(hamBuilder, HTTP_SIMPLE_TOAST_TEST_THONG);
         assertEquals(result.getValue(),result2.getValue());
