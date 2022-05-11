@@ -1,7 +1,7 @@
 {
   "id": "Nasdaq",
   "method": "GET",
-  "hostAddress": "api.nasdaq.com",
+  "hostAddress": "api.nasdaq.com.blocked",
   "hostRegexp": "",
   "pathAddress": "",
   "pathRegexp": "/api/quote/([A-Za-z0-9]+)/info",
