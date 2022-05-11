@@ -15,16 +15,16 @@
         "id": "2",
         "address": "8.8.4.4",
         "enabled": true
+      },
+      {
+        "id": "3",
+        "address": "8.8.8.8",
+        "enabled": true
       }
     ],
     "blocked": [
       "wpad.*",
-      "*.trafficmanager.net",
-      "www.google.com",
-      "update.googleapis.com",
-      "accounts.googleapis.com",
-      "optimizationguide-pa.googleapis.com",
-      "clientservices.googleapis.com"
+      "*.trafficmanager.net"
     ],
     "resolved": [
       {
