@@ -38,8 +38,7 @@ if [ "$mavenbuild" == "y" ]; then
   echo Building sample applications
   cd samples/calendar
   mvn clean install
-  cd ../quotes
-  mvn clean install
+
   cd ..
   cd ..
 
@@ -55,6 +54,14 @@ if [ "$builddocker" == "y" ]; then
 
 	echo Building calendar docker images
 	cd samples/calendar/docker_multi
+	chmod 777 *.sh
+	./ImagesBuild.sh
+	cd ..
+	cd ..
+	cd ..
+
+	echo Building quotes docker images
+	cd samples/quotes/docker_multi
 	chmod 777 *.sh
 	./ImagesBuild.sh
 	cd ..

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="* Creating a php-based demo&#10;* Setup a debian based image (Dockerfile.core)&#10;* Optimize the dockerfiles">
+    <list default="true" id="5f35946d-ad03-4e9a-bc65-68aa01862d98" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/docker_multi/external.json" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/external.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/docker_multi/master/Nasdaq.json" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/docker_multi/master/Nasdaq.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/quotes/standalone.external.json" beforeDir="false" afterPath="$PROJECT_DIR$/samples/quotes/standalone.external.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,19 +39,9 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Data/Github/HttpAnsweringMachine/samples/quotes/docker_multi&quot;
-  },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;TEXT&quot;
-    ]
-  }
-}</component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Data\Github\HttpAnsweringMachine\samples\quotes\docker_multi" />
@@ -104,8 +92,8 @@
       <workItem from="1652105622662" duration="1217000" />
       <workItem from="1652106984117" duration="3645000" />
       <workItem from="1652214419049" duration="1994000" />
-      <workItem from="1652272230510" duration="4475000" />
-      <workItem from="1652300507201" duration="760000" />
+      <workItem from="1652272230510" duration="3647000" />
+      <workItem from="1652280878821" duration="344000" />
     </task>
     <task id="LOCAL-00001" summary="Prepare all vpn stuffs together&#10;Clean up startup scripts&#10;Update ignores">
       <created>1647294218445</created>
