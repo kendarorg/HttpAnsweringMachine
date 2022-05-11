@@ -38,5 +38,5 @@ target
 
 .DS_Store
 sonarlint
-
+.java-version
 
