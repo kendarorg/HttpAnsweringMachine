@@ -1,37 +1,35 @@
-FROM ham.client:latest
+FROM ham.client:latest as builder
+FROM dre1080/alpine-apache-php8
 
-COPY docker_multi/core/startapache.sh /etc/startapache.sh
-COPY docker_multi/core/xdebug.ini /etc/php8/conf.d/docker-php-ext-xdebug.ini
-COPY docker_multi/core/error_reporting.ini /etc/php8/conf.d/error_reporting.ini
-COPY core/ /htdocs/
+# CLIENT SECTION
+RUN apk add --no-cache bash openssl ca-certificates openjdk11 runit openssh
+ENV JAVA11_HOME /usr/lib/jvm/java-11-openjdk
 
-RUN apk --no-cache --update \
-    add apache2 \
-    apache2-ssl \
-    curl \
-    php8-apache2 \
-    php8-bcmath \
-    php8-bz2 \
-    php8-calendar \
-    php8-common \
-    php8-ctype \
-    php8-curl \
-    php8-dom \
-    php8-gd \
-    php8-iconv \
-    php8-mbstring \
-    php8-mysqli \
-    php8-mysqlnd \
-    php8-openssl \
-    php8-pdo_mysql \
-    php8-pdo_pgsql \
-    php8-pdo_sqlite \
-    php8-phar \
-    php8-session \
-    php8-xml \
-    php8-pear \
-    php8-xdebug \
-    && mkdir -p docker/php/conf.d \
-    && pear8 config-set php_ini /etc/php8/php.ini \
-    && chmod +x /etc/*.sh \
-    && /etc/startservice.sh --app=apache --run=/etc/startapache.sh
+COPY --from=builder /usr/local/share/ca-certificates/ca.crt /usr/local/share/ca-certificates/ca.crt
+COPY --from=builder /etc/ssh/sshd_config /etc/ssh/sshd_config
+COPY --from=builder /etc/*.sh /etc/
+COPY --from=builder /etc/DoSleep.* /etc/
+COPY --from=builder /etc/app/simpledns/simpledns*.* /etc/app/simpledns/
+
+RUN chmod 777 /etc/*.sh \
+        && /etc/basesetup.sh \
+        && /etc/clientsetup.sh
+
+# SERVER SECTION
+
+# Mimic the call made in dre1080/alpine-apache-php8
+# ENTRYPOINT ["docker-entrypoint.sh"]
+# CMD ["httpd", "-D", "FOREGROUND"]
+# Then call the client setups
+RUN echo "#"'!'"/bin/bash" >/etc/stap.sh \
+    && echo "/usr/local/bin/docker-entrypoint.sh echo Starting ">> /etc/stap.sh \
+    && echo "httpd -D FOREGROUND" >> /etc/stap.sh \
+    && /etc/startservice.sh --app=apache --run=/etc/stap.sh
+
+# Copy the source files
+COPY core/ /app/public/
+
+# Reset the entrypoint
+ENTRYPOINT []
+# Run as it should with runit
+CMD ["runsvdir", "/etc/service"]
