@@ -188,3 +188,43 @@ https://github.com/springfox/springfox/blob/ab5868471cdbaf54dac01af12933fe0437cf
 
 
 =======================================================
+
+
+C:\Data\PortableApps\PortableApps\GoogleChromePortable\GoogleChromePortable.exe --proxy-server="socks5://192.168.56.2:1080"
+
+C:\Data\PortableApps\PortableApps\GoogleChromePortable\GoogleChromePortable.exe --proxy-server="socks5://localhost:1080"
+mkdir -p /Users/edaros/tmp/chrome
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome "--proxy-server=socks5://localhost:1080" --user-data-dir=/Users/edaros/tmp/chrome
+
+
+docker image prune -f
+
+chrome://net-internals/#dns
+
+
+https://www.microsoft.com/en-gb/download/details.aspx?id=17148
+portqry -n 127.0.0.1 -e 53
+portqry -n 172.25.3.2 -e 53
+
+"%JAVA_HOME%\bin\keytool" -import -file ca.der -alias HamCert ^
+-keystore "%JAVA_HOME%\lib\security\cacerts" -storepass changeit -noprompt
+
+
+
+curl -isb -I --socks5-hostname localhost:1080 http://www.local.test/index.html
+curl -isb -I --socks5-hostname localhost:1080 https://www.repubblica.it
+curl -isb -I --socks5-hostname localhost:1080 https://www.libero.it
+curl -isb -I --socks5-hostname localhost:1080 http://www.local.test/api/dns/list
+
+
+openjdk11-demos
+openjdk11-doc
+
+cleanup
+demo
+jmods
+include
+man
+
+
+
