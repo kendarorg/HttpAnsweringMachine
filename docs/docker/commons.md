@@ -1,4 +1,16 @@
-All the available docker images are in docker/images
+All the available docker images are in docker/images, samples and on Docker Hub: [https://hub.docker.com/u/kendarorg](https://hub.docker.com/u/kendarorg)
+
+## TLDR
+
+To start at once installing the demo applications just download and run with "docker-compose up" the following composer files. The HAM server is at http://www.local.test
+
+* [Calendar app](https://github.com/kendarorg/HttpAnsweringMachine/../HttpAnsweringMachine/raw/main/samples/calendar/hub_composer/docker-compose.yml). The application is at http://www.sample.test
+* [Quotes app](https://github.com/kendarorg/HttpAnsweringMachine/../HttpAnsweringMachine/raw/main/samples/quotes/hub_composer/docker-compose.yml). The application is at http://ham.quotes.master
+
+Then connect using as socks5 proxy [dockerip]:1080
+
+* For chrome you can launch it (as ONLY instance): [chrome location]chrome "--proxy-server=socks5://dockerip:1080"
+
 
 ## Base (ham.base)
 
