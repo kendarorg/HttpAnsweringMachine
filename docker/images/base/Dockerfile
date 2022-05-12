@@ -3,9 +3,18 @@ RUN apk update
 RUN apk upgrade
 
 
-# Add needed packages
-RUN apk add --no-cache wget curl bash openssl tar ca-certificates openjdk11 runit openssh
 ENV JAVA11_HOME /usr/lib/jvm/java-11-openjdk
+
+# Add needed packages
+RUN apk add --no-cache bash openssl ca-certificates openjdk11 runit openssh \
+    rm -rf $JAVA11_HOME/demo \
+    rm -rf $JAVA11_HOME/jmods \
+    rm -rf $JAVA11_HOME/include \
+    rm -rf $JAVA11_HOME/man
+
+
+
+
 RUN mkdir -p /etc/ssh
 # Load certificates
 COPY data/ca.crt /usr/local/share/ca-certificates/

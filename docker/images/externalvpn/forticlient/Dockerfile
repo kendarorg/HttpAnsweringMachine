@@ -39,7 +39,7 @@ COPY --from=builder /usr/bin/openfortivpn  /usr/bin/
 # Block timezone request prompt
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Rome"
 
-RUN apk add --no-cache  bash  iptables wget unzip screen ppp
+RUN apk add --no-cache  bash  iptables unzip ppp
 
 # Update iptables
 RUN echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
