@@ -7,7 +7,7 @@ RUN apt-get upgrade -y
 # Block timezone request prompt
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Rome"
 
-RUN apt-get install -y bash  iptables  wget unzip openconnect iptables-persistent screen dnsutils iputils-ping
+RUN apt-get install -y bash  iptables  unzip openconnect iptables-persistent dnsutils iputils-ping
 
 # Prepare runit
 RUN apt-get install -y runit \
