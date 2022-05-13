@@ -35,8 +35,6 @@ echo 127.0.0.1  be.sample.test
 
 pause
 
-
-
 cd %mypath%samples\calendar\gateway\target
 copy /Y %mypath%samples\calendar\docker\application.properties.gateway %mypath%samples\calendar\gateway\target\application.properties
 start java -jar %mypath%samples\calendar\gateway\target\gateway-1.0-SNAPSHOT.jar
