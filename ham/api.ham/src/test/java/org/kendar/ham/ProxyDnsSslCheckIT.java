@@ -3,6 +3,7 @@ package org.kendar.ham;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,6 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProxyDnsSslCheckIT {
+    @BeforeAll
+    public static void beforeAll() throws HamException {
+        GlobalSettings.runHamJar();
+    }
     @Test
     public void verifyProxyDnsHttpsStuffs() throws HamException, IOException {
         var hamCertificateNotInstalledOnJvm = true;
