@@ -61,7 +61,7 @@ cd %mypath%ham\app\target
 md "%mypath%ham\app\target\libs" 2>NUL
 del /q %mypath%ham\app\target\libs\*.*
 copy /Y %mypath%ham\libs\*.jar %mypath%ham\app\target\libs\
-
+
 dir /b %mypath%ham\app\target\*.jar > .temp.txt
 set /p APPJAR=<.temp.txt
 

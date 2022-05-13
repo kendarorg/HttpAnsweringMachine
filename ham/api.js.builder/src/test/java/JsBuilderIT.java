@@ -1,6 +1,7 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpGet;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kendar.ham.*;
 import org.kendar.utils.Sleeper;
@@ -13,6 +14,10 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JsBuilderIT {
+    @BeforeAll
+    public static void beforeAll() throws HamException {
+        GlobalSettings.runHamJar();
+    }
 
     public static final String HTTP_SIMPLE_TEST_TEST_THING = "http://simple.test/test/thing";
     public static final String HTTP_SIMPLE_TOAST_TEST_THONG = "http://simple.toast/test/thong";

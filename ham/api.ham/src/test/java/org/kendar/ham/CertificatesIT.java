@@ -1,10 +1,15 @@
 package org.kendar.ham;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CertificatesIT {
+    @BeforeAll
+    public static void beforeAll() throws HamException {
+        GlobalSettings.runHamJar();
+    }
     private HamBasicBuilder hamBuilder = GlobalSettings.builder();
     @Test
     public void testAddingCertificate() throws HamException, InterruptedException {
