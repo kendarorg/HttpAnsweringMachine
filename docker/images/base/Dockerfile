@@ -7,10 +7,10 @@ ENV JAVA11_HOME /usr/lib/jvm/java-11-openjdk
 
 # Add needed packages
 RUN apk add --no-cache bash openssl ca-certificates openjdk11 runit openssh \
-    rm -rf $JAVA11_HOME/demo \
-    rm -rf $JAVA11_HOME/jmods \
-    rm -rf $JAVA11_HOME/include \
-    rm -rf $JAVA11_HOME/man
+    && rm -rf $JAVA11_HOME/demo \
+    && rm -rf $JAVA11_HOME/jmods \
+    && rm -rf $JAVA11_HOME/include \
+    && rm -rf $JAVA11_HOME/man
 
 
 
