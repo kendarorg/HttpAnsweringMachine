@@ -13,6 +13,7 @@ import org.kendar.servers.http.Response;
 import org.kendar.servers.logging.model.FileLogListItem;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.xml.model.XmlAttribute;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -22,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -75,7 +77,8 @@ public class FileLogsApi implements FilteringClass {
             System.err.println(x);
         }
         res.addHeader("Content-type", "application/json");
-        res.setResponseText(mapper.writeValueAsString(result));
+        res.setResponseText(mapper.writeValueAsString(result.stream().sorted(Comparator.comparing(FileLogListItem::getTimestamp)).collect(Collectors.toList())));
+
     }
 
     @HttpMethodFilter(
