@@ -88,7 +88,7 @@
     "id": "https",
     "system": true,
     "active": true,
-    "port": 443,
+    "port": "443",
     "backlog": 50,
     "useCachedExecutor": true
   },
@@ -96,7 +96,7 @@
     "id": "http",
     "system": true,
     "active": true,
-    "port": 80,
+    "port": "80",
     "backlog": 50,
     "useCachedExecutor": true
   },

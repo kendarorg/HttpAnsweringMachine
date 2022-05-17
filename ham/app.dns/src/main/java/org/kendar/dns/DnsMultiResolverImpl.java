@@ -12,8 +12,6 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.*;
@@ -40,7 +38,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     this.logger = loggerBuilder.build(DnsMultiResolverImpl.class);
     this.loggerBuilder = loggerBuilder;
     this.logQueries = loggerBuilder.build(DnsQueries.class);
-    this.localHostAddress = getLocalHostLANAddress();
+    this.localHostAddress = getLocalHostLANAddress(configuration);
     this.configuration = configuration;
     this.globalConfig = configuration.getConfiguration(GlobalConfig.class);
   }
@@ -87,7 +85,11 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     configuration.setConfiguration(cloned);
   }
 
-  private String getLocalHostLANAddress() {
+  private String getLocalHostLANAddress(JsonConfiguration configuration) {
+    var config = configuration.getConfiguration(DnsConfig.class);
+    if(config.getForceLocalAddress()!=null && !config.getForceLocalAddress().isEmpty()){
+      return config.getForceLocalAddress();
+    }
     try {
       InetAddress candidateAddress = null;
       // Iterate all NICs (network interface cards)...

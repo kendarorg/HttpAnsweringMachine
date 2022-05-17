@@ -1,5 +1,6 @@
 package org.kendar.servers;
 
+import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
@@ -27,10 +28,10 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -43,10 +44,10 @@ public class AnsweringHttpsServer implements AnsweringServer {
   private final Logger logger;
   private final AnsweringHandler handler;
   private final CertificatesManager certificatesManager;
-  private final AtomicLong sslTimestamp = new AtomicLong(0);
-  private final AtomicReference<SSLContext> sslSharedContext = new AtomicReference<>();
+  //private final AtomicLong sslTimestamp = new AtomicLong(0);
+  //private final AtomicReference<SSLContext> sslSharedContext = new AtomicReference<>();
   private boolean running = false;
-  private HttpsServer httpsServer;
+  private HashMap<String, HttpsServer> httpsServers = new HashMap<>();
 
   public AnsweringHttpsServer(
           LoggerBuilder loggerBuilder,
@@ -74,24 +75,29 @@ public class AnsweringHttpsServer implements AnsweringServer {
     if (running) return;
     if (!config.isActive()) return;
     running = true;
+    httpsServers = new HashMap<>();
 
     try {
+      var ports= config.getPort().split(";");
+      for(var port:ports) {
+        // setup the socket address
+        InetSocketAddress address = new InetSocketAddress(Integer.parseInt(port));
 
-      // setup the socket address
-      InetSocketAddress address = new InetSocketAddress(config.getPort());
+        // initialise the HTTPS server
+        var httpsServer = setupHttpsServer(config, address,port);
 
-      // initialise the HTTPS server
-      setupHttpsServer(config, address);
-
-      httpsServer.start();
-      logger.info("Https server LOADED, port: " + config.getPort());
+        httpsServer.start();
+        logger.info("Https server LOADED, port: " + port);
+      }
       var localConfig = configuration.getConfiguration(HttpsWebServerConfig.class);
       while (running && localConfig.isActive()) {
         Sleeper.sleep(1000);
         if(restart)break;
       }
       //if(executor!=null)executor.shutdownNow();
-      httpsServer.stop(0);
+      for(var httpsServer:httpsServers.entrySet()) {
+        httpsServer.getValue().stop(0);
+      }
       restart = false;
 
 
@@ -103,15 +109,14 @@ public class AnsweringHttpsServer implements AnsweringServer {
     }
   }
 
-  private void setupHttpsServer(WebServerConfig config, InetSocketAddress address) throws Exception {
-    httpsServer = HttpsServer.create(address, config.getBacklog());
+  private HttpsServer setupHttpsServer(WebServerConfig config, InetSocketAddress address, String port) throws Exception {
+    var httpsServer = HttpsServer.create(address, config.getBacklog());
+
+    httpsServers.put(port,httpsServer);
     final SSLContext sslContextInt =
             getSslContext(configuration.getConfiguration(SSLConfig.class));
 
-    var sslConfigTimestamp = configuration.getConfigurationTimestamp(SSLConfig.class);
-    sslTimestamp.set(sslConfigTimestamp);
-    sslSharedContext.set(sslContextInt);
-    setupSll(sslContextInt);
+    setupSll(sslContextInt,port);
     httpsServer.createContext("/", handler);
     if (config.isUseCachedExecutor()) {
       ExecutorService executor = Executors.newCachedThreadPool();
@@ -119,22 +124,17 @@ public class AnsweringHttpsServer implements AnsweringServer {
     } else {
       httpsServer.setExecutor(null); // creates a default executor
     }
+    return httpsServer;
   }
 
-  private void setupSll(SSLContext sslContextInt) {
-    httpsServer.setHttpsConfigurator(
+  private void setupSll(SSLContext sslContextInt, String port) {
+    var context = sslContextInt;
+    httpsServers.get(port).setHttpsConfigurator(
             new HttpsConfigurator(sslContextInt) {
               public void configure(HttpsParameters params) {
                 try {
                   // initialise the SSL context
-                  SSLContext context = sslSharedContext.get();
-                  var sslConfigTimestamp = configuration.getConfigurationTimestamp(SSLConfig.class);
-                  if (sslConfigTimestamp > sslTimestamp.get()) {
-                    var sslConfig = configuration.getConfiguration(SSLConfig.class);
-                    sslTimestamp.set(sslConfigTimestamp);
-                    context = getSslContext(sslConfig);
-                    sslSharedContext.set(context);
-                  }
+
                   SSLEngine engine = context.createSSLEngine();
                   params.setNeedClientAuth(false);
                   params.setCipherSuites(engine.getEnabledCipherSuites());
@@ -209,7 +209,9 @@ public class AnsweringHttpsServer implements AnsweringServer {
   }
 
   public void stop() {
-    httpsServer.stop(0);
+    for(var httpServer:httpsServers.entrySet()) {
+      httpServer.getValue().stop(0);
+    }
     running = false;
 
   }
