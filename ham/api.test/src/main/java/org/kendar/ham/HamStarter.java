@@ -6,22 +6,16 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class GlobalSettings {
+public class HamStarter {
     public static class ThreadAndProc{
         public Thread thread;
         public Process process;
         public HashSet<String> trace;
     }
-    public static HamBasicBuilder builder(){
-        return HamBuilder
-                .newHam("www.local.test")
-                .withSocksProxy("127.0.0.1",1080)
-                .withDns("127.0.0.1");
-    }
 
     private static String getRootPath(){
         final File jarFile =
-                new File(GlobalSettings.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+                new File(HamStarter.class.getProtectionDomain().getCodeSource().getLocation().getPath());
         var path = Path.of(jarFile.getAbsolutePath());
         return path.getParent()    //target
                 .getParent()    //api.ham
@@ -29,7 +23,7 @@ public class GlobalSettings {
                 .getParent().toAbsolutePath().toString();
     }
     private static ConcurrentHashMap<String,ThreadAndProc> processes = new ConcurrentHashMap<>();
-    public static void runHamJar() throws HamException {
+    public static void runHamJar() throws HamTestException {
         String commandLine = "java ";
 
         var externalJsonPath  =Path.of(getRootPath(),"ham","external.json").toString();
@@ -57,7 +51,7 @@ public class GlobalSettings {
     }
 
     public static boolean shutdownHookInitialized =false;
-    public static void runJar(String command,String ... expected) throws HamException {
+    public static void runJar(String command,String ... expected) throws HamTestException {
 
         System.out.println("STARTING "+command);
         initShutdownHook();
@@ -106,7 +100,7 @@ public class GlobalSettings {
             });
 
         }catch (Exception ex){
-            throw new HamException("Unable to start "+command);
+            throw new HamTestException("Unable to start "+command);
         }
     }
 

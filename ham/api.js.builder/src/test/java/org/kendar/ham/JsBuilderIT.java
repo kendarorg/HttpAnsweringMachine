@@ -1,3 +1,5 @@
+package org.kendar.ham;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpGet;
@@ -15,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JsBuilderIT {
     @BeforeAll
-    public static void beforeAll() throws HamException {
-        GlobalSettings.runHamJar();
+    public static void beforeAll() throws HamTestException {
+        HamStarter.runHamJar();
     }
 
     public static final String HTTP_SIMPLE_TEST_TEST_THING = "http://simple.test/test/thing";

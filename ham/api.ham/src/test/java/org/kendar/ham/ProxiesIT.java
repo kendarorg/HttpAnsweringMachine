@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProxiesIT {
     @BeforeAll
-    public static void beforeAll() throws HamException {
-        GlobalSettings.runHamJar();
+    public static void beforeAll() throws HamTestException {
+        HamStarter.runHamJar();
     }
     private HamBasicBuilder hamBuilder = GlobalSettings.builder();
     @Test
