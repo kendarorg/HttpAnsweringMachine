@@ -1,5 +1,5 @@
 @echo off
-set VERSION=2.1.6
+set VERSION=3.0.0-SNAPSHOT
 set SAMPLE_VERSION=1.0.0
 
 call Make.bat
