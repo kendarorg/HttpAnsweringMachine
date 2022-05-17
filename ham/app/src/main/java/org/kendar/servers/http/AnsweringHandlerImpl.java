@@ -65,9 +65,14 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     pluginsInitializer.addSpecialLogger(
         Response.class.getName(), "Responses Logging (DEBUG,TRACE)");
     pluginsInitializer.addSpecialLogger(
-        StaticRequest.class.getName(), "Log static requests as file (DEBUG)");
+        StaticRequest.class.getName(), "Log static requests as file (DEBUG), precedence over Req/Res");
     pluginsInitializer.addSpecialLogger(
-        DynamicReqest.class.getName(), "Log dynamic requests as file (DEBUG)");
+            DynamicReqest.class.getName(), "Log dynamic requests as file (DEBUG), precedence over Req/Res");
+    pluginsInitializer.addSpecialLogger(
+            InternalRequest.class.getName(), "Log internal requests (DEBUG)");
+
+
+
     eventQueue.registerCommand(e->{return remoteRequest(e);}, ExecuteRemoteRequest.class);
   }
 
