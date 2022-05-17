@@ -11,20 +11,89 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8">
-<textarea spellcheck="false"
-          class="form-control"
-          rows="6" cols="50"  name="source" id="source"></textarea>
+            <br>
+            <button type="button" class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+        </div>
+        <div class="col-md-8">
+            <br>
+            <span id="prev" name="prev"></span>
+            <span id="next" name="next"></span>
+        </div>
+        <div class="col-md-8">
+            <label htmlFor="source">source</label>
+            <textarea spellcheck="false"
+                      class="form-control"
+                      rows="6" cols="50" name="source" id="source"></textarea>
+        </div>
+        <div class="col-md-8">
+            <label htmlFor="request">request</label>
+            <textarea spellcheck="false"
+                      class="form-control"
+                      rows="6" cols="50" name="request" id="request"></textarea>
+        </div>
+        <div class="col-md-8">
+            <label htmlFor="request_body">request_body</label>
+            <textarea spellcheck="false"
+                      class="form-control"
+                      rows="6" cols="50" name="request_body" id="request_body"></textarea>
+        </div>
+        <div class="col-md-8">
+            <label htmlFor="response">response</label>
+            <textarea spellcheck="false"
+                      class="form-control"
+                      rows="6" cols="50" name="response" id="response"></textarea>
+        </div>
+        <div class="col-md-8">
+            <label htmlFor="response_body">response_body</label>
+            <textarea spellcheck="false"
+                      class="form-control"
+                      rows="6" cols="50" name="response_body" id="response_body"></textarea>
         </div>
     </div>
 </div>
 <script src="/app/app.js"></script>
 <script>
     $.ajax({
-        url: "/api/log/files/"+getUrlParameter("id"),
+        url: "/api/log/files/" + getUrlParameter("id"),
         type: 'GET',
         contentType: "text/plain",
-        success: function(res) {
-            $("#source").text(JSON.stringify(res, null, 2));
+        success: function (res, textStatus, rr) {
+
+            if ((rr.getResponseHeader("X-NEXT") + "") != "" && rr.getResponseHeader("X-NEXT")!=null) {
+                $("#next").html(`<button type="button"  class="btn btn-default" onClick="location.href='single.html?id=` +
+                    rr.getResponseHeader("X-NEXT")
+                    + `'">Next</button>`);
+            } else {
+                $("#next").html( ``);
+            }
+            if ((rr.getResponseHeader("X-PAST") + "") != "" && rr.getResponseHeader("X-PAST")!=null) {
+                $("#prev").html(`<button type="button"  class="btn btn-default" onClick="location.href='single.html?id=` +
+                    rr.getResponseHeader("X-PAST")
+                    + `'">Prev</button>`);
+            } else {
+                $("#prev").html( ``);
+            }
+            var cloned = JSON.parse(JSON.stringify(res));
+            cloned['request'] = "NA";
+            cloned['response'] = "NA";
+            $("#source").text(JSON.stringify(cloned, null, 2));
+
+            var request = JSON.parse(JSON.stringify(res['request']));
+            request['requestBytes'] = "NA";
+            request['requestText'] = "NA";
+            $("#request").text(JSON.stringify(request, null, 2));
+            if (!request['binaryRequest']) {
+                $("#request_body").text(res['request']['requestText']);
+            }
+
+
+            var response = JSON.parse(JSON.stringify(res['response']));
+            response['responseBytes'] = "NA";
+            response['responseText'] = "NA";
+            $("#response").text(JSON.stringify(response, null, 2));
+            if (!response['binaryResponse']) {
+                $("#response_body").text(res['response']['responseText']);
+            }
         }
     });
 </script>

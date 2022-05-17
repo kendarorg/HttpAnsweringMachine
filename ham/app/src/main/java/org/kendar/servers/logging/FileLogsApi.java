@@ -57,6 +57,13 @@ public class FileLogsApi implements FilteringClass {
             method = "GET",
             id = "1000aab4-2987-a1ef-5621-0242ac130002")
     public void getLogFiles(Request req, Response res) throws JsonProcessingException {
+        ArrayList<FileLogListItem> result = getFileLogListItems();
+        res.addHeader("Content-type", "application/json");
+        res.setResponseText(mapper.writeValueAsString(result.stream().sorted(Comparator.comparing(FileLogListItem::getTimestamp)).collect(Collectors.toList())));
+
+    }
+
+    private ArrayList<FileLogListItem> getFileLogListItems() {
         var result = new ArrayList<FileLogListItem>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS", Locale.ROOT);
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(roundtripsPath)) {
@@ -76,9 +83,7 @@ public class FileLogsApi implements FilteringClass {
             // In this snippet, it can only be thrown by newDirectoryStream.
             System.err.println(x);
         }
-        res.addHeader("Content-type", "application/json");
-        res.setResponseText(mapper.writeValueAsString(result.stream().sorted(Comparator.comparing(FileLogListItem::getTimestamp)).collect(Collectors.toList())));
-
+        return result;
     }
 
     @HttpMethodFilter(
@@ -87,7 +92,30 @@ public class FileLogsApi implements FilteringClass {
             method = "GET",
             id = "1000aab489a6s7-a1ef-5621-0242ac130002")
     public void getLogFile(Request req, Response res) throws IOException {
-        var data = Files.readString(Path.of(roundtripsPath.toString(),req.getPathParameter("id")));
+        String id = req.getPathParameter("id");
+        var data = Files.readString(Path.of(roundtripsPath.toString(),id));
+        ArrayList<FileLogListItem> result = getFileLogListItems();
+        String past=null;
+        String founded = null;
+        String next = null;
+        for(var resu :result){
+            if(founded!=null){
+                next = resu.getId();
+                break;
+            }
+            if(founded == null && id.equalsIgnoreCase(resu.getId())){
+                founded = id;
+            }
+            if(founded == null) {
+                past = resu.getId();
+            }
+        }
+        if(next!=null){
+            res.addHeader("X-NEXT", next);
+        }
+        if(past!=null){
+            res.addHeader("X-PAST", past);
+        }
         res.addHeader("Content-type", "application/json");
         res.setResponseText(data);
     }

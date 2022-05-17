@@ -112,7 +112,7 @@ public class RequestResponseFileLogging implements FilteringClass {
       FileWriter myWriter = new FileWriter(filePath);
 
       var toWrite = new RequestResponseFileLoggingModel();
-      toWrite.setHost(serReq.getMethod());
+      toWrite.setMethod(serReq.getMethod());
       toWrite.setProtocol(serReq.getProtocol());
       toWrite.setHost(serReq.getHost());
       toWrite.setPath(serReq.getPath());
