@@ -1,0 +1,58 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <script src="/libs/lodash.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+    <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+        </div>
+        <div class="col-md-8">
+            <h3>Logs</h3>
+            <table class="table table-striped" id="logsTable">
+                <tr>
+                    <th style="widht:0px">Id</th>
+                    <th>Time</th>
+                    <th>Host</th>
+                    <th>Path</th>
+                    <th></th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+    var logsTable = new SimpleGrid("Plugin","logsTable","id",["time","host","path","_show"],
+        function(table){
+            $.ajax({
+                url: "/api/log/files",
+                type: 'GET',
+                success: function(res) {
+                    $.each(res, function(i, script) {
+                        //script["id"]=script["id"].replaceAll("\.","_");
+                        script["_show"]="<a class='unlinked' href='single.html?id="+script['id']+"'>Show</a>";
+                        //tSource,tableId,id,data,fields
+                        //table.appendToTable({id:"test"});
+                        table.appendToTable(script,false);
+                    });
+                }
+            });
+        },
+        function (table,id) {
+
+        },
+        function (table,id) {
+
+        },null).load();
+
+</script>
+</body>
+</html>
