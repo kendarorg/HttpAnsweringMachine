@@ -79,8 +79,12 @@ class SimpleGrid {
     }
 
     compareString(valueToCompareWith, content) {
-        if(content.indexOf(valueToCompareWith)>=0) return true;
-        return false;
+        //NOT
+        if(valueToCompareWith.substring(0,2)=="!!"){
+            return !(content.indexOf(valueToCompareWith.substring(2))>=0);
+        }
+        //CONTAINS
+        return (content.indexOf(valueToCompareWith)>=0);
     }
 
     compareNumber(valueToCompareWith, content) {

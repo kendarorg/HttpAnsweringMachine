@@ -102,7 +102,7 @@ public class RequestResponseFileLogging implements FilteringClass {
     var filePath =
         roundtripsPath
             + File.separator
-            + cleanUp(serReq.getMs() + "_" + serReq.getHost() + "_" + serReq.getPath());
+            + cleanUp(serReq.getMs() + "___" + serReq.getHost() + "___" + serReq.getPath());
     if (extension != null) {
       filePath += "." + extension;
     }
@@ -110,22 +110,15 @@ public class RequestResponseFileLogging implements FilteringClass {
 
     try {
       FileWriter myWriter = new FileWriter(filePath);
-      myWriter.write(
-          serReq.getMethod()
-              + " "
-              + serReq.getProtocol()
-              + " "
-              + serReq.getHost()
-              + " "
-              + serReq.getPath()
-              + "\n");
-      myWriter.write("==========================\n");
-      myWriter.write("REQUEST:\n");
-      myWriter.write(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(serReq) + "\n");
-      myWriter.write("==========================\n");
-      myWriter.write("RESPONSE:\n");
-      myWriter.write(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(serRes) + "\n");
-      myWriter.write("==========================\n");
+
+      var toWrite = new RequestResponseFileLoggingModel();
+      toWrite.setHost(serReq.getMethod());
+      toWrite.setProtocol(serReq.getProtocol());
+      toWrite.setHost(serReq.getHost());
+      toWrite.setPath(serReq.getPath());
+      toWrite.setRequest(serReq);
+      toWrite.setResponse(serRes);
+      myWriter.write(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(toWrite));
       myWriter.close();
     } catch (Exception ex) {
       logger.trace(ex.getMessage());
