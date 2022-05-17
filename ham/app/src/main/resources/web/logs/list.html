@@ -18,11 +18,12 @@
             <h3>Logs</h3>
             <table class="table table-striped" id="logsTable">
                 <tr>
-                    <th style="widht:0px">Id</th>
+                    <th style="width:0px">Id</th>
                     <th>Time</th>
                     <th>Host</th>
                     <th>Path</th>
                     <th></th>
+                    <th colspan="2"></th>
                 </tr>
             </table>
         </div>
@@ -30,7 +31,7 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
-    var logsTable = new SimpleGrid("Plugin","logsTable","id",["time","host","path","_show"],
+    var logsTable = new SimpleGrid("Plugin","logsTable","id",["id","time","host","path","_show"],
         function(table){
             $.ajax({
                 url: "/api/log/files",
@@ -51,7 +52,11 @@
         },
         function (table,id) {
 
-        },null).load();
+        },[
+            {id:"time",type:"string"},
+            {id:"host",type:"string"},
+            {id:"path",type:"string"}
+        ]).load();
 
 </script>
 </body>

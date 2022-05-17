@@ -68,11 +68,12 @@ public class FileLogsApi implements FilteringClass {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS", Locale.ROOT);
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(roundtripsPath)) {
             for (Path file: stream) {
+                var all =file.getFileName().toString().split("\\.");
                 var expl = file.getFileName().toString().split("___",3);
                 var newItem = new FileLogListItem();
                 newItem.setId(file.getFileName().toString());
-                newItem.setHost(expl[1]);
-                newItem.setPath(expl[2]);
+                newItem.setHost(expl[1].replaceAll("\\-","."));
+                newItem.setPath(expl[2].substring(0,expl[2].length()-all.length-2).replaceAll("\\-","/"));
                 newItem.setTimestamp(Long.parseLong(expl[0]));
                 var date = new Date(newItem.getTimestamp());
                 newItem.setTime(sdf.format(date));
