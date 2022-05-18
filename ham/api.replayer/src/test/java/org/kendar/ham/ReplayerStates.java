@@ -5,8 +5,23 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 public class ReplayerStates   extends BaseStates{
+
+
+
+    @Given("^users upload '(.+)'$")
+    public void users_upload(String string) {
+        // Write code here that turns the phrase above into concrete actions
+
+    }
+
+    @Given("^user start replaying '(.+)'$")
+    public void user_start_replaying(String string) {
+        // Write code here that turns the phrase above into concrete actions\
+    }
     @When("^user create a recording '(.+)'$")
     public void userCreateRecording(String name){
+        var builder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
+        builder.createRecording(name);
 
     }
 

@@ -51,17 +51,6 @@ public class HamStates  extends BaseStates{
         return server;
     }
 
-    @Given("^users upload '(.+)'$")
-    public void users_upload(String string) {
-        // Write code here that turns the phrase above into concrete actions
-
-    }
-
-    @Given("^user start replaying '(.+)'$")
-    public void user_start_replaying(String string) {
-        // Write code here that turns the phrase above into concrete actions\
-    }
-
     @Given("^user calls '(.+)'$\"")
     public void user_calls_url(String url) throws HamException, IOException {
         var httpGet = new HttpGet(url);
