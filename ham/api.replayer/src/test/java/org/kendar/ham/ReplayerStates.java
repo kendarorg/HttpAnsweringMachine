@@ -7,8 +7,9 @@ import io.cucumber.java.en.When;
 public class ReplayerStates   extends BaseStates{
 
 
+    private static HamReplayerBuilder replayerBuilder;
 
-    @Given("^users upload '(.+)'$")
+    @Given("^user upload '(.+)'$")
     public void users_upload(String string) {
         // Write code here that turns the phrase above into concrete actions
 
@@ -19,25 +20,20 @@ public class ReplayerStates   extends BaseStates{
         // Write code here that turns the phrase above into concrete actions\
     }
     @When("^user create a recording '(.+)'$")
-    public void userCreateRecording(String name){
+    public void userCreateRecording(String name) throws HamException {
         var builder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
         builder.createRecording(name);
-
     }
 
     @When("^user start recording '(.+)'$")
-    public void userStartsRecording(String name){
-
+    public void userStartsRecording(String name) throws HamException {
+        replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
+        replayerBuilder.startRecording(name);
     }
 
     @When("^user stop recording '(.+)'$")
-    public void userStopRecording(String name){
-
-    }
-
-    @Given("^users create a recording '(.+)'$")
-    public void users_create_a_recording(String string) {
-
+    public void userStopRecording(String name) throws HamException {
+        ((HamReplayerRecorderStop)replayerBuilder).stop();
     }
 
     @Then("$user can download '(.+)' as '(.+)'")
@@ -48,11 +44,12 @@ public class ReplayerStates   extends BaseStates{
 
 
     @When("^user delete recording '(.+)'$")
-    public void userDeleteRecording(String name){
-
+    public void userDeleteRecording(String name) throws HamException {
+        replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
+        replayerBuilder.deleteRecording(name);
     }
 
-    @When("user calls '(.+)'$")
+    @When("^user calls '(.+)'$")
     public void userCalls(String url){
 
     }

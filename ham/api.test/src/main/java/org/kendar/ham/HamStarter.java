@@ -7,6 +7,12 @@ import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HamStarter {
+
+    private static boolean showTrace = true;
+
+    public static void showTrace(){
+        showTrace = true;
+    }
     public static class ThreadAndProc{
         public Thread thread;
         public Process process;
@@ -81,6 +87,9 @@ public class HamStarter {
                             try {
                                 while ((line = input.readLine()) != null && ntpc.process.isAlive()) {
                                     var lineFixed = line;
+                                    if(showTrace){
+                                        System.out.println(lineFixed);
+                                    }
                                     var founded = ntpc.trace.stream().filter(a->lineFixed.contains(a)).findFirst();
                                     if(founded.isPresent()){
                                         ntpc.trace.remove(founded.get());
