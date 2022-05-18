@@ -1,6 +1,6 @@
 package org.kendar.ham;
 
-public class HamTestException extends Throwable {
+public class HamTestException extends Exception {
     public HamTestException(String message) {
         super(message);
     }

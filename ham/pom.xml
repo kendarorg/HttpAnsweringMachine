@@ -52,6 +52,7 @@
         <json.schema.validator.version>1.0.66</json.schema.validator.version>
         <mockito.version>3.5.9</mockito.version>
         <brotli.dec.version>0.1.2</brotli.dec.version>
+        <cucumber.version>6.8.0</cucumber.version>
     </properties>
 
     <modules>

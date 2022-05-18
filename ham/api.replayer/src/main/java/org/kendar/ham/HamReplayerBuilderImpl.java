@@ -9,7 +9,5 @@ class HamReplayerBuilderImpl implements HamReplayerBuilder {
     }
 
     @Override
-    public HamReplayerBuilderImpl init() {
-        return null;
-    }
+    public HamReplayerBuilderImpl init() { return null; }
 }
