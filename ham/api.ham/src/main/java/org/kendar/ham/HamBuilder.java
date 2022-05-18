@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.TrustStrategy;
+import org.kendar.utils.Sleeper;
 import org.xbill.DNS.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -341,7 +342,17 @@ public class HamBuilder implements HamInternalBuilder {
         }catch(IOException ex){
 
         }*/
-        return callInternal(request);
+        for(int i=1;i>=0;i--){
+            try{
+                return callInternal(request);
+            }catch(Exception ex){
+                if(i==0){
+                    throw new HamException(ex);
+                }
+                Sleeper.sleep(1000);
+            }
+        }
+        throw new HamException("Unable to try call");
     }
 
     private Response callInternal(Request request) throws HamException {

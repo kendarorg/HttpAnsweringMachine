@@ -1,5 +1,7 @@
 package org.kendar.ham;
 
+import org.kendar.utils.Sleeper;
+
 import java.io.*;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -8,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class HamStarter {
 
-    private static boolean showTrace = true;
+    private static boolean showTrace = false;
 
     public static void showTrace(){
         showTrace = true;
@@ -71,6 +73,7 @@ public class HamStarter {
                 }
                 processes.remove(command);
             }
+
             processes.computeIfAbsent(command,(cm)->{
                 try {
 
@@ -102,7 +105,7 @@ public class HamStarter {
                     });
                     ntpc.thread.start();
                     while(!ntpc.trace.isEmpty()){
-                        Thread.sleep(1000);
+                        Sleeper.sleep(1000);
                     }
                     return ntpc;
                 }catch (Exception ex){
@@ -113,6 +116,7 @@ public class HamStarter {
         }catch (Exception ex){
             throw new HamTestException("Unable to start "+command);
         }
+        Sleeper.sleep(10*1000);
     }
 
     private static void initShutdownHook() {

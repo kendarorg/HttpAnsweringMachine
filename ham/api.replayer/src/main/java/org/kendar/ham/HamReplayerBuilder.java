@@ -9,4 +9,6 @@ public interface HamReplayerBuilder {
     HamReplayerWait startReplaying(String id) throws HamException;
     HamReplayerWait startPact(String id) throws HamException;
     HamReplayerWait startNullInfrastructure(String id) throws HamException;
+
+    String downloadRecording(String id) throws HamException;
 }

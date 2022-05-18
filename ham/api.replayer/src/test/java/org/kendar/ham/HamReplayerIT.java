@@ -3,12 +3,15 @@ package org.kendar.ham;
 import com.sun.net.httpserver.HttpServer;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpGet;
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kendar.utils.Sleeper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class HamReplayerIT {
 
@@ -32,6 +35,15 @@ public class HamReplayerIT {
     }
     private HamBuilder hamBuilder = (HamBuilder)GlobalSettings.builder();
 
+    @Test
+    public void shouldBeAbleToUpload() throws IOException, HamException {
+        var jsonContent = Files.readString(Path.of("test.json"));
+        var request = hamBuilder.newRequest()
+                .withPost()
+                .withPath("/api/plugins/replayer/recording")
+                .withHamFile("test.json",jsonContent,"application/json");
+        hamBuilder.call(request.build());
+    }
     @Test
     public void shouldBeAbleToConnectToServer() throws HamException, HamTestException, IOException {
         int gatewayPort = 9091;

@@ -51,7 +51,7 @@ public class HamStates  extends BaseStates{
         return server;
     }
 
-    @Given("^user calls '(.+)'$\"")
+    @Given("^user calls '(.+)'$")
     public void user_calls_url(String url) throws HamException, IOException {
         var httpGet = new HttpGet(url);
         var clientResponse = hamBuilder.execute(httpGet, true);

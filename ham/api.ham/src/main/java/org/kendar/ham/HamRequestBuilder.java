@@ -88,9 +88,7 @@ public class HamRequestBuilder {
         fileReq.name = fileName;
         fileReq.type =mime;
         fileReq.data = Base64.encodeBase64String(data);
-        request.setMethod("POST");
-        this.withJsonBody(fileReq);
-        return this;
+        return this.withPost().withJsonBody(fileReq);
     }
 
     public HamRequestBuilder withHamFile(String fileName,String data,String mime){

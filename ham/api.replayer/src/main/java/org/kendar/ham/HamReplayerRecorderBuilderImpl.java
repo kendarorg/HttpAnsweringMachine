@@ -26,6 +26,7 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
     @Override
     public void uploadRecording(String id, String jsonContent) throws HamException {
         var request = hamBuilder.newRequest()
+                .withPost()
                 .withPath("/api/plugins/replayer/recording")
                 .withHamFile(id+".json",jsonContent,"application/json");
         hamBuilder.call(request.build());
@@ -69,8 +70,17 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
     }
 
     @Override
+    public String downloadRecording(String id) throws HamException {
+        var request = hamBuilder.newRequest()
+                .withPath("/api/plugins/replayer/recording/"+ id +"/full");
+        var response = hamBuilder.call(request.build());
+        return response.getResponseText();
+    }
+
+    @Override
     public String stop() throws HamException {
          executeAct("stop",lastUsedType, lastUsedId);
+         Sleeper.sleep(1000);
          return null;
     }
 
