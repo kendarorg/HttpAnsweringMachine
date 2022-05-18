@@ -4,7 +4,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-public class ReplayerStates {
+public class ReplayerStates   extends BaseStates{
     @When("^user create a recording '(.+)'$")
     public void userCreateRecording(String name){
 

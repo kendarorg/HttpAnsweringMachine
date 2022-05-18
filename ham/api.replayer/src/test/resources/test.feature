@@ -18,14 +18,14 @@ Feature: Testing recorder
     Given users upload 'test.json'
     And user start replaying 'Test'
     And user calls 'http://gateway.int.test/api/v2/$metadata'
-    And the response should be blahblah
+    And the response should contain ''
     And user delete recording 'Test'
 
   Scenario: PACT
     Given users upload 'test.json'
     And user start replaying 'Test'
     And user calls 'http://gateway.int.test/api/v2/$metadata'
-    And the response should be blahblah
+    And the response should contain ''
     And user delete recording 'Test'
 
 
@@ -33,5 +33,5 @@ Feature: Testing recorder
     Given users upload 'test.json'
     And user start replaying 'Test'
     And user calls 'http://gateway.int.test/api/v2/$metadata'
-    And the response should be blahblah
+    And the response should contain ''
     And user delete recording 'Test'

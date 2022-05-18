@@ -53,7 +53,6 @@ public class HamStarter {
     public static boolean shutdownHookInitialized =false;
     public static void runJar(String command,String ... expected) throws HamTestException {
 
-        System.out.println("STARTING "+command);
         initShutdownHook();
         try {
             if(processes.containsKey(command)){
@@ -68,11 +67,14 @@ public class HamStarter {
             }
             processes.computeIfAbsent(command,(cm)->{
                 try {
+
                     var ntpc = new ThreadAndProc();
                     ntpc.process = Runtime.getRuntime().exec(command);
                     ntpc.trace = new HashSet<String>(Arrays.asList(expected));
                     ntpc.thread = new Thread(new Runnable() {
                         public void run() {
+
+                            System.out.println("STARTING "+command);
                             BufferedReader input = new BufferedReader(new InputStreamReader(ntpc.process.getInputStream()));
                             String line;
 
