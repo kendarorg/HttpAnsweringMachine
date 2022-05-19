@@ -1,10 +1,14 @@
 package org.kendar.ham;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.ConfigurationParameter;
+import org.junit.platform.suite.api.IncludeEngines;
+import org.junit.platform.suite.api.SelectClasspathResource;
+import org.junit.platform.suite.api.Suite;
+import io.cucumber.java.an.Cuan;
+import io.cucumber.junit.platform.engine.Cucumber;
 
-@RunWith(Cucumber.class)
-@CucumberOptions(features = "classpath:")
+@Suite
+@IncludeEngines("cucumber")
+@SelectClasspathResource("classpath")
 public class CucumberIntegrationIT {
 }

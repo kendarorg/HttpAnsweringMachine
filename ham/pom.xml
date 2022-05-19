@@ -52,7 +52,8 @@
         <json.schema.validator.version>1.0.66</json.schema.validator.version>
         <mockito.version>3.5.9</mockito.version>
         <brotli.dec.version>0.1.2</brotli.dec.version>
-        <cucumber.version>6.8.0</cucumber.version>
+        <cucumber.version>7.3.4</cucumber.version>
+        <junit.version>5.8.1</junit.version>
     </properties>
 
     <modules>
@@ -104,9 +105,9 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>3.0.0-M6</version>
-                        <configuration>
+                        <!--<configuration>
                             <skipITs>false</skipITs>
-                        </configuration>
+                        </configuration>-->
                     </plugin>
                 </plugins>
             </build>

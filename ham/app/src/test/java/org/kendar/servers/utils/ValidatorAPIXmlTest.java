@@ -1,7 +1,7 @@
 package org.kendar.servers.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.utils.models.ValidatorData;
@@ -11,7 +11,8 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @SuppressWarnings("HttpUrlsUsage")
 public class ValidatorAPIXmlTest {

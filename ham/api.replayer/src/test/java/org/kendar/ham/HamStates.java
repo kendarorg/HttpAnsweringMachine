@@ -16,13 +16,11 @@ public class HamStates  extends BaseStates{
 
     @Given("^I have a running HAM instance$")
     public void iHaveRunningHamInstance() throws HamTestException {
-        System.out.println("I have a running HAM instance");
         HamStarter.runHamJar();
     }
 
     @Given("^I add a dns mapping from '(.+)' to '(.+)'$")
     public void iAddDnsMapping(String ip,String name) throws HamTestException, HamException {
-        System.out.println("I add a dns mapping from");
         var dnsId =hamBuilder.dns().addDnsName(ip,name);
         hamBuilder.certificates().addAltName(name);
         dnses.add(dnsId);
@@ -30,7 +28,6 @@ public class HamStates  extends BaseStates{
 
     @Given("^I add a proxy from '(.+)' to '(.+)' testing it with '(.+)'$")
     public void iAddAProxy(String from,String to,String test) throws HamTestException, HamException {
-        System.out.println("I add a proxy from");
         var proxyId = hamBuilder.proxies().addProxy(from,to,test);
         proxies.add(proxyId);
     }
@@ -38,7 +35,6 @@ public class HamStates  extends BaseStates{
     @Given("^I have a server listening on port '([0-9]+)'$")
     public void iHaveServerListemimgOn(int port) throws HamTestException {
         if(httpServer!=null)return;
-        System.out.println("I have a server listening on port");
         httpServer =  getHttpServer(port);
     }
 
@@ -47,12 +43,10 @@ public class HamStates  extends BaseStates{
         var server = LocalHttpServer.startServer(gatewayPort,
                 new LocalHttpServer.LocalHandler("/api/v2/$metadata", (call) -> {
                     try {
-                        System.out.println("REQUIRING DATA");
                         var httpGet2 = new HttpGet("https://www.nuget.org/api/v2/$metadata");
                         var clientResponse2 = hamBuilder.execute(httpGet2, true);
                         var data2 = IOUtils.toString(clientResponse2.getEntity().getContent(), StandardCharsets.UTF_8);
 
-                        System.out.println("RETRIEVED DATA");
                         LocalHttpServer.sendResponse(call.httpExchange, 200, data2, null);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
@@ -63,7 +57,6 @@ public class HamStates  extends BaseStates{
 
     @Given("^user calls '(.+)'$")
     public void user_calls_url(String url) throws HamException, IOException {
-        System.out.println("user calls "+url);
         /*var urlReal = new URL(url);
         var request = hamBuilder.newRequest()
                 .withProtocol(urlReal.getProtocol())
@@ -75,7 +68,7 @@ public class HamStates  extends BaseStates{
         var clientResponse = hamBuilder.execute(httpGet, true);
         resultData = IOUtils.toString(clientResponse.getEntity().getContent(), StandardCharsets.UTF_8);
 
-        System.out.println("user calls result");
+
     }
 
     @Given("^the response should contain '(.*)'$")

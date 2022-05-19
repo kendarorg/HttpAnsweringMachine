@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.BufferOverflowException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -143,7 +144,7 @@ public class HamStarter {
                                         }
                                     }
                                 }
-                            }catch (IOException ex){
+                            }catch (IOException | BufferOverflowException ex){
 
                             }
                             //BufferedReader input = new BufferedReader(new InputStreamReader(ntpc.process.getInputStream()));
