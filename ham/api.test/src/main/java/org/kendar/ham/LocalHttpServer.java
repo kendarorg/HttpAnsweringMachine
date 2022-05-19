@@ -52,7 +52,7 @@ public class LocalHttpServer {
             }
             server.setExecutor(null); // creates a default executor
             server.start();
-            Sleeper.sleep(1000);
+            Sleeper.sleep(2000);
             return server;
         }catch(Exception ex){
             throw new HamTestException(ex);

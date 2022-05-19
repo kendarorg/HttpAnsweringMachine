@@ -11,6 +11,15 @@ import java.nio.charset.StandardCharsets;
 
 public class HamRequestBuilder {
 
+
+    public HamRequestBuilder withHost(String host) {
+        this.request.setHost(host);
+        return this;
+    }
+    public HamRequestBuilder withProtocol(String host) {
+        this.request.setProtocol(host);
+        return this;
+    }
     private HamRequestBuilder(){}
     private Request request;
     public static HamRequestBuilder newRequest(String protocol,String host){

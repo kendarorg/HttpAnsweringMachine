@@ -1,14 +1,22 @@
 package org.kendar.ham;
 
 import org.kendar.utils.Sleeper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 public class HamStarter {
+
+    private static Logger logger = LoggerFactory.getLogger(HamStarter.class);
 
     private static boolean showTrace = false;
 
@@ -18,7 +26,7 @@ public class HamStarter {
     public static class ThreadAndProc{
         public Thread thread;
         public Process process;
-        public HashSet<String> trace;
+        public ArrayList<Supplier<Boolean>> trace;
     }
 
     private static String getRootPath(){
@@ -30,14 +38,28 @@ public class HamStarter {
                 .getParent()    //ham
                 .getParent().toAbsolutePath().toString();
     }
+
+    private static boolean deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectory(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
+    }
     private static ConcurrentHashMap<String,ThreadAndProc> processes = new ConcurrentHashMap<>();
     public static void runHamJar() throws HamTestException {
+        var datddd= false;
+        //if(datddd == false)return;
         String commandLine = "java ";
 
         var externalJsonPath  =Path.of(getRootPath(),"ham","external.json").toString();
         commandLine+=" \"-Djsonconfig="+externalJsonPath+"\" ";
         var libsPath  =Path.of(getRootPath(),"ham","libs").toString();
         commandLine+=" \"-Dloader.path="+libsPath+"\" -Dloader.main=org.kendar.Main ";
+
+
 
         var appPathRootPath = Path.of(getRootPath(),"ham","app","target");
         File[] matchingFiles = appPathRootPath.toFile().listFiles(new FilenameFilter() {
@@ -47,20 +69,47 @@ public class HamStarter {
         });
         var appPathRoot  =Path.of(matchingFiles[0].getAbsolutePath()).toString();
         commandLine+=" -jar \""+appPathRoot+"\"";
-        runJar(commandLine,
-                "Start proxy server at port:1080",
-                "Https server LOADED, port: 443",
-                "Standard filters LOADED",
-                "Dns server LOADED, port: 53",
-                "Oidc server LOADED: www.local.test",
-                "JsFilter server LOADED"
-        );
+        runJar(commandLine,()-> {
+            deleteDirectory(Path.of(getRootPath(),"jsplugins").toFile());
+            deleteDirectory(Path.of(getRootPath(),"calllogs").toFile());
+            deleteDirectory(Path.of(getRootPath(),"replayerdata").toFile());
+            return true;
+        },()-> {
+            try {
+                var result = getHTML("http://127.0.0.1/api/dns/lookup/test");
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        });
 
     }
 
-    public static boolean shutdownHookInitialized =false;
-    public static void runJar(String command,String ... expected) throws HamTestException {
+    private static String getHTML(String urlToRead) throws Exception {
+        StringBuilder result = new StringBuilder();
+        URL url = new URL(urlToRead);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(conn.getInputStream()))) {
+            for (String line; (line = reader.readLine()) != null; ) {
+                result.append(line);
+            }
+        }
+        return result.toString();
+    }
 
+    public static boolean shutdownHookInitialized =false;
+    public static void runJar(String command, Supplier<Boolean> ... expected) throws HamTestException {
+
+        var someError = false;
+        for(var i=expected.length-1;i>=0;i--){
+            if(!expected[i].get()){
+                someError = true;
+            }
+        }
+        if(!someError) return;
+        var internalExpected = new ArrayList<>(Arrays.asList(expected));
         initShutdownHook();
         try {
             if(processes.containsKey(command)){
@@ -79,44 +128,55 @@ public class HamStarter {
 
                     var ntpc = new ThreadAndProc();
                     ntpc.process = Runtime.getRuntime().exec(command);
-                    ntpc.trace = new HashSet<String>(Arrays.asList(expected));
+                    ntpc.trace = new ArrayList<>(internalExpected);
                     ntpc.thread = new Thread(new Runnable() {
                         public void run() {
 
-                            System.out.println("STARTING "+command);
-                            BufferedReader input = new BufferedReader(new InputStreamReader(ntpc.process.getInputStream()));
-                            String line;
-
                             try {
-                                while ((line = input.readLine()) != null && ntpc.process.isAlive()) {
-                                    var lineFixed = line;
-                                    if(showTrace){
-                                        System.out.println(lineFixed);
-                                    }
-                                    var founded = ntpc.trace.stream().filter(a->lineFixed.contains(a)).findFirst();
-                                    if(founded.isPresent()){
-                                        ntpc.trace.remove(founded.get());
+                                try (BufferedReader input =
+                                             new BufferedReader(new
+                                                     InputStreamReader(ntpc.process.getInputStream()))) {
+                                    String line;
+                                    while (ntpc.process.isAlive()) {
+                                        while((line = input.readLine()) != null) {
+                                            System.out.println(line);
+                                        }
                                     }
                                 }
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                            }catch (IOException ex){
+
                             }
+                            //BufferedReader input = new BufferedReader(new InputStreamReader(ntpc.process.getInputStream()));
+
+
                         }
                     });
+
+                            System.out.println("STARTING "+command);
                     ntpc.thread.start();
-                    while(!ntpc.trace.isEmpty()){
-                        Sleeper.sleep(1000);
-                    }
+                    //
+                    /*while(ntpc.thread.isAlive()){
+                        Sleeper.sleep(100);
+                    }*/
                     return ntpc;
                 }catch (Exception ex){
                     return null;
                 }
             });
 
+            var ntpc = processes.get(command);
+            while(!ntpc.trace.isEmpty()){
+                for(var i=ntpc.trace.size()-1;i>=0;i--){
+                    if(ntpc.trace.get(i).get()){
+                        ntpc.trace.remove(i);
+                    }
+                }
+                Sleeper.sleep(100);
+            }
+            System.out.println("STARTED");
         }catch (Exception ex){
             throw new HamTestException("Unable to start "+command);
         }
-        Sleeper.sleep(10*1000);
     }
 
     private static void initShutdownHook() {

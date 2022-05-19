@@ -16,6 +16,7 @@ public interface HamBasicBuilder  {
      */
     HamBasicBuilder withPort(int port);
 
+
     /**
      * The dns to use for the requests
      * @param ip

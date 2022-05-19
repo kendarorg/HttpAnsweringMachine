@@ -53,8 +53,7 @@ public class JsBuilderIT {
         //Add dns
         var dnsNameId = hamBuilder.dns().addDnsName("127.0.0.1","simple.test");
         var jsBuilder = hamBuilder.pluginBuilder(JsBuilder.class);
-
-        jsBuilder.addFilter(filterId)
+        var realid = jsBuilder.addFilter(filterId)
                 .inPhase(FilterPhase.API)
                 .withMethod(Methods.GET)
                 .withHost("simple.test")

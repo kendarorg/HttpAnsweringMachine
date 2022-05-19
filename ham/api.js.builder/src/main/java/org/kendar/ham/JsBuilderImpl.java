@@ -1,5 +1,7 @@
 package org.kendar.ham;
 
+import org.kendar.utils.Sleeper;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,7 @@ class JsBuilderImpl implements JsBuilder {
 
     @Override
     public JsFilterBuilder addFilter(String name) {
+
         return new JsFilterBuilderImpl(hamBuilder,name);
     }
 
@@ -36,6 +39,7 @@ class JsBuilderImpl implements JsBuilder {
                 .withDelete()
                 .withPath("/api/plugins/jsfilter/filters/"+id);
         hamBuilder.call(request.build());
+        Sleeper.sleep(500);
     }
 
     @Override

@@ -18,10 +18,13 @@ Feature: Testing recorder
     And user delete recording 'Test'
 
   Scenario: Replaying
+    And I add a dns mapping from '127.0.0.1' to 'www.sticazzi.org'
     Given user upload 'test.json' as 'Test'
-    #And user start replaying 'Test'
-    #And user calls 'http://gateway.int.test/api/v2/$metadata'
-    #And the response should contain ''
+    And user start replaying 'Test'
+    And user calls 'http://gateway.int.test/api/v2/$metadata'
+    And the response should contain 'Edm.String'
+    And user stop replaying 'Test'
+    #
     #And user delete recording 'Test'
 
   #Scenario: PACT
