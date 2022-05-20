@@ -2,7 +2,7 @@ package org.kendar.ham;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-public class HamException extends Throwable {
+public class HamException extends Exception {
     public HamException(String message) {
         super(message);
     }

@@ -22,7 +22,7 @@ Or docker compose
           - 127.0.0.1
 </pre>
 
-Then we have to create a certificate for the website, editing the external.properties
+Then we have to create a certificate for the website, editing the external.json
 adding the certificate generation. The id must be unique
 
     {[  "id" : "ssl",

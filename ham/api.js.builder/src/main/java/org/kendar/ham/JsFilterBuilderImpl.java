@@ -1,6 +1,7 @@
 package org.kendar.ham;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.utils.Sleeper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,6 +129,7 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
                 .withPath("/api/plugins/jsfilter/filters/"+id)
                 .withJsonBody(data);
          hamBuilder.call(request.build());
+        Sleeper.sleep(500);
         return this.id;
     }
 }

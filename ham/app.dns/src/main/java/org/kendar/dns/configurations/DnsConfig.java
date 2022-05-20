@@ -11,6 +11,7 @@ import java.util.List;
 public class DnsConfig extends BaseJsonConfig<DnsConfig> implements SpecialJsonConfig {
     private boolean active;
     private int port;
+    private String forceLocalAddress;
     private List<ExtraDnsServer> extraServers = new ArrayList<>();
     private List<String> blocked = new ArrayList<>();
     private List<PatternItem> resolved = new ArrayList<>();
@@ -65,6 +66,7 @@ public class DnsConfig extends BaseJsonConfig<DnsConfig> implements SpecialJsonC
         result.active =this.active;
         result.blocked = new ArrayList<>( this.blocked);
         result.port = this.port;
+        result.forceLocalAddress = this.forceLocalAddress;
         result.resolved = new ArrayList<>();
         for (int i = 0; i < this.resolved.size(); i++) {
             var resol = this.resolved.get(i);
@@ -86,5 +88,13 @@ public class DnsConfig extends BaseJsonConfig<DnsConfig> implements SpecialJsonC
             newExtraServers.add(ext);
         }
         this.extraServers = newExtraServers;
+    }
+
+    public String getForceLocalAddress() {
+        return forceLocalAddress;
+    }
+
+    public void setForceLocalAddress(String forceLocalAddress) {
+        this.forceLocalAddress = forceLocalAddress;
     }
 }

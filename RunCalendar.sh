@@ -54,8 +54,8 @@ if [ "$rundocker" == "n" ]; then
 	mkdir -p "$mypath"ham/app/target/libs
 	rm -rf "$mypath"ham/app/target/libs/*.*
 	cp -f "$mypath"ham/libs/*.jar "$mypath"ham/app/target/libs/
-	
-	ls -lA | awk -F':[0-9]* ' '/:/{print $2}'|grep .jar$ > tmp_txt
+
+	ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 	export JAR_NAME=$(head -1 tmp_txt)
 
 	

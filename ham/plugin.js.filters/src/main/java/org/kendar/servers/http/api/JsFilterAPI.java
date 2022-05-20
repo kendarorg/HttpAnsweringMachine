@@ -149,6 +149,7 @@ public class JsFilterAPI implements FilteringClass {
       File f;
       var realPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor+".json");
       Path of = Path.of(realPath);
+      System.out.println(of);
       if(Files.exists(of)){
         Files.deleteIfExists(of);
       }

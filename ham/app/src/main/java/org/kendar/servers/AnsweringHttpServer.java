@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 
 @Component
@@ -18,7 +19,7 @@ public class AnsweringHttpServer implements AnsweringServer {
   private final AnsweringHandler handler;
   private final JsonConfiguration configuration;
   private boolean running = false;
-  private HttpServer httpServer;
+  private HashMap<String,HttpServer> httpServers = new HashMap<>();
 
   public AnsweringHttpServer(
       LoggerBuilder loggerBuilder, AnsweringHandler handler, JsonConfiguration configuration) {
@@ -35,24 +36,29 @@ public class AnsweringHttpServer implements AnsweringServer {
     var config = configuration.getConfiguration(HttpWebServerConfig.class).copy();
     if (!config.isActive()) return;
     running = true;
+    httpServers.clear();
 
     try {
       // setup the socket address
-      InetSocketAddress address = new InetSocketAddress(config.getPort());
+      var ports= config.getPort().split(";");
+      for(var port:ports) {
+        InetSocketAddress address = new InetSocketAddress(Integer.parseInt(port));
 
-      // initialise the HTTPS server
-      httpServer = HttpServer.create(address, config.getBacklog());
+        // initialise the HTTPS server
+        var httpServer = HttpServer.create(address, config.getBacklog());
 
-      httpServer.createContext("/", handler);
-      if (config.isUseCachedExecutor()) {
-        httpServer.setExecutor(Executors.newCachedThreadPool()); // creates a cached
-      } else {
-        httpServer.setExecutor(null); // creates a default executor
+        httpServer.createContext("/", handler);
+        if (config.isUseCachedExecutor()) {
+          httpServer.setExecutor(Executors.newCachedThreadPool()); // creates a cached
+        } else {
+          httpServer.setExecutor(null); // creates a default executor
+        }
+
+        httpServer.start();
+        httpServers.put(port,httpServer);
+        logger.info("Http server LOADED, port: " + port);
       }
 
-      httpServer.start();
-
-      logger.info("Http server LOADED, port: " + config.getPort());
       var localConfig = configuration.getConfiguration(HttpWebServerConfig.class);
       while (running && localConfig.isActive()) {
         Sleeper.sleep(10000);
@@ -73,7 +79,9 @@ public class AnsweringHttpServer implements AnsweringServer {
   }
 
   public void stop() {
-    httpServer.stop(1);
+    for(var httpServer:httpServers.entrySet()) {
+      httpServer.getValue().stop(0);
+    }
     running = false;
     Sleeper.sleep(1000);
   }

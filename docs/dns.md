@@ -7,6 +7,15 @@ It can be enabled inside the external.json with active
     [{  "id":"dns",
         "active": true,
 
+### Special definition for "localhost/127.0.0.1" resolution
+
+When running the DNS server search for the lan address of the machine on
+which it runs. When you have multiple interfaces (like while on VPN) you
+can set it to a fixed ip. When you write 127.0.0.1 on the dns resolved names
+it will be translated to the following
+
+    "forceLocalAddress" : "192.168.10.5",
+
 ### Extra servers
 
 This dns server can be used to forward dns requests to other

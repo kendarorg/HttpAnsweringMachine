@@ -84,10 +84,12 @@ public abstract class BaseRequesterImpl implements BaseRequester{
             String fullAddress = RequestUtils.buildFullAddress(request,true);
             fullRequest = createFullRequest(request, fullAddress);
             fullRequest.addHeader(BLOCK_RECURSION, fullAddress);
-            for (var header : request.getHeaders().entrySet()) {
-                if (!header.getKey().equalsIgnoreCase("host")
-                        && !header.getKey().equalsIgnoreCase("content-length")) {
-                    fullRequest.addHeader(header.getKey(), header.getValue());
+            if(request.getHeaders()!=null) {
+                for (var header : request.getHeaders().entrySet()) {
+                    if (!header.getKey().equalsIgnoreCase("host")
+                            && !header.getKey().equalsIgnoreCase("content-length")) {
+                        fullRequest.addHeader(header.getKey(), header.getValue());
+                    }
                 }
             }
             fullRequest.addHeader("Host", request.getHost());

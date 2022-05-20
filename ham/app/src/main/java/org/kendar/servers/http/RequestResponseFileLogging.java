@@ -29,7 +29,9 @@ public class RequestResponseFileLogging implements FilteringClass {
   private final FileResourcesUtils fileResourcesUtils;
   private final JsonConfiguration configuration;
   private final Logger logger;
+  private final Logger internalLogger;
   private String roundtripsPath;
+  private String localAddress;
 
   public RequestResponseFileLogging(
       FileResourcesUtils fileResourcesUtils,
@@ -41,6 +43,7 @@ public class RequestResponseFileLogging implements FilteringClass {
     this.requestLogger = loggerBuilder.build(Request.class);
     this.staticLogger = loggerBuilder.build(StaticRequest.class);
     this.dynamicLogger = loggerBuilder.build(DynamicReqest.class);
+    this.internalLogger = loggerBuilder.build(InternalRequest.class);
     this.configuration = configuration;
     this.logger = loggerBuilder.build(RequestResponseFileLogging.class);
   }
@@ -54,6 +57,8 @@ public class RequestResponseFileLogging implements FilteringClass {
   public void init() throws Exception {
       var config = configuration.getConfiguration(GlobalConfig.class);
       roundtripsPath = fileResourcesUtils.buildPath(config.getLogging().getLogRoundtripsPath());
+
+      localAddress = config.getLocalAddress();
       var np = Path.of(roundtripsPath);
       var dirPath = new File(np.toString());
       if(!dirPath.exists()){
@@ -67,34 +72,43 @@ public class RequestResponseFileLogging implements FilteringClass {
       }
   }
 
+  private boolean isDebugOrMore(Logger le){
+    return le.isDebugEnabled()||le.isTraceEnabled();
+  }
   @HttpMethodFilter(
       phase = HttpFilterType.POST_RENDER,
       pathAddress = "*",
       method = "*",
       id = "1001a4b4-277d-11ec-9621-0242ac130002")
   public boolean doLog(Request serReq, Response serRes) {
-    if (serReq.isStaticRequest() && !staticLogger.isDebugEnabled()) return false;
-    if (!serReq.isStaticRequest() && !dynamicLogger.isDebugEnabled()) return false;
+    if (serReq.isStaticRequest() && !isDebugOrMore(staticLogger)) return false;
+    if (!serReq.isStaticRequest() && !isDebugOrMore(dynamicLogger)) return false;
+
+    if(!isDebugOrMore(internalLogger) && localAddress.equalsIgnoreCase(serReq.getHost())){
+      return false;
+    }
     var rt = serReq.getRequestText();
     var rb = serReq.getRequestBytes();
     var st = serRes.getResponseText();
     var sb = serRes.getResponseBytes();
 
     //TODO ERROR RESETTING req/res
-    if (requestLogger.isDebugEnabled()
+    if (requestLogger.isTraceEnabled()) {
+
+    }else if (requestLogger.isDebugEnabled()
         && serReq.getRequestText() != null
         && serReq.getRequestText().length() > 100) {
       serReq.setRequestText(serReq.getRequestText().substring(0, 100));
-    } else if (!requestLogger.isTraceEnabled()) {
+    } else {
       serReq.setRequestText(null);
     }
     serReq.setRequestBytes(null);
-
-    if (responseLogger.isDebugEnabled()
+    if (responseLogger.isTraceEnabled()) {
+    }else if (responseLogger.isDebugEnabled()
         && serRes.getResponseText() != null
         && serRes.getResponseText().length() > 100) {
       serRes.setResponseText(serRes.getResponseText().substring(0, 100));
-    } else if (!responseLogger.isTraceEnabled()) {
+    } else {
       serRes.setResponseText(null);
     }
     serRes.setResponseBytes(null);
@@ -102,7 +116,7 @@ public class RequestResponseFileLogging implements FilteringClass {
     var filePath =
         roundtripsPath
             + File.separator
-            + cleanUp(serReq.getMs() + "_" + serReq.getHost() + "_" + serReq.getPath());
+            + cleanUp(serReq.getMs() + "___" + serReq.getHost() + "___" + serReq.getPath());
     if (extension != null) {
       filePath += "." + extension;
     }
@@ -110,22 +124,15 @@ public class RequestResponseFileLogging implements FilteringClass {
 
     try {
       FileWriter myWriter = new FileWriter(filePath);
-      myWriter.write(
-          serReq.getMethod()
-              + " "
-              + serReq.getProtocol()
-              + " "
-              + serReq.getHost()
-              + " "
-              + serReq.getPath()
-              + "\n");
-      myWriter.write("==========================\n");
-      myWriter.write("REQUEST:\n");
-      myWriter.write(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(serReq) + "\n");
-      myWriter.write("==========================\n");
-      myWriter.write("RESPONSE:\n");
-      myWriter.write(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(serRes) + "\n");
-      myWriter.write("==========================\n");
+
+      var toWrite = new RequestResponseFileLoggingModel();
+      toWrite.setMethod(serReq.getMethod());
+      toWrite.setProtocol(serReq.getProtocol());
+      toWrite.setHost(serReq.getHost());
+      toWrite.setPath(serReq.getPath());
+      toWrite.setRequest(serReq);
+      toWrite.setResponse(serRes);
+      myWriter.write(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(toWrite));
       myWriter.close();
     } catch (Exception ex) {
       logger.trace(ex.getMessage());

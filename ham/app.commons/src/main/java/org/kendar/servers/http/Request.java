@@ -234,17 +234,25 @@ public class Request {
         r.basicPassword = this.basicPassword;
         r.basicUsername = this.basicUsername;
         r.binaryRequest = this.binaryRequest;
-        r.headers = this.headers.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if(headers!=null) {
+            r.headers = this.headers.entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        }
         r.host = this.host;
         r.method = this.method;
-        r.multipartData = this.multipartData.stream().map(multipartPart -> multipartPart.copy()).collect(Collectors.toList());
+        if(multipartData!=null) {
+            r.multipartData = this.multipartData.stream().map(multipartPart -> multipartPart.copy()).collect(Collectors.toList());
+        }
         r.port = this.port;
-        r.postParameters = this.postParameters.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if(postParameters!=null) {
+            r.postParameters = this.postParameters.entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        }
         r.protocol = this.protocol;
-        r.query = this.query.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if(query!=null) {
+            r.query = this.query.entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        }
         r.requestBytes = this.requestBytes!=null?this.requestBytes.clone():this.requestBytes;
         r.requestText = this.requestText!=null?new String(this.requestText):this.requestText;
         r.soapRequest= this.soapRequest;

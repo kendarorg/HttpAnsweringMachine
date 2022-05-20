@@ -1,5 +1,5 @@
 @echo off
-set VERSION=2.1.5
+set VERSION=3.0.1
 
 call Make.bat
 

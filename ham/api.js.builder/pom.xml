@@ -5,7 +5,7 @@
     <parent>
         <artifactId>HttpAnsweringMachine</artifactId>
         <groupId>org.kendar</groupId>
-        <version>2.1.6</version>
+        <version>3.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,12 +14,18 @@
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>app.commons</artifactId>
-            <version>2.1.6</version>
+            <version>3.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>api.ham</artifactId>
-            <version>2.1.6</version>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>api.test</artifactId>
+            <version>3.0.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -44,7 +50,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>LATEST</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -66,7 +72,7 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
-    <build>
+<!--    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -77,5 +83,5 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>
+    </build>-->
 </project>
