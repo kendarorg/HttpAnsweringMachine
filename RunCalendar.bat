@@ -2,6 +2,8 @@
 SET mypath=%~dp0
 cd %mypath%
 
+echo %mypath%
+
 :requery
 set /p rundocker="Run sample docker (y/N): "
 if "%rundocker%"=="n" goto simple

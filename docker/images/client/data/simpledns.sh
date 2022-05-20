@@ -11,7 +11,7 @@ echo "namserver 127.0.0.11" >> /etc/resolv.conf
 echo "options ndots:0" >> /etc/resolv.conf
 cd /etc/app/simpledns/
 
-ls -lA | awk -F':[0-9]* ' '/:/{print $2}'|grep .jar$ > tmp_txt
+ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 
 java -Dother.dns=${dnsServer} \
