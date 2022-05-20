@@ -304,7 +304,13 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     for (var header : response.getHeaders().entrySet()) {
       httpExchange.getResponseHeaders().add(header.getKey(), header.getValue());
     }
-    httpExchange.sendResponseHeaders(response.getStatusCode(), dataLength);
+    try {
+      httpExchange.sendResponseHeaders(response.getStatusCode(), dataLength);
+    }catch (IOException ex){
+      if(!ex.getMessage().equalsIgnoreCase("output stream is closed")){
+        throw new IOException(ex);
+      }
+    }
 
     try {
       if (dataLength > 0) {

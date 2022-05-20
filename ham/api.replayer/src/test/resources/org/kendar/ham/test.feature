@@ -15,17 +15,33 @@ Feature: Testing recorder
     Then user can download 'Test' as 'test.json'
     And file 'test.json' contains 'www.nuget.org'
     And file 'test.json' contains 'gateway.int.test'
+    And file 'test.json' replace 'microsoft' with 'MARKERTESTWORD'
     And user delete recording 'Test'
 
   Scenario: Replaying
-    And I add a dns mapping from '127.0.0.1' to 'www.sticazzi.org'
     Given user upload 'test.json' as 'Test'
     And user start replaying 'Test'
     And user calls 'http://gateway.int.test/api/v2/$metadata'
-    And the response should contain 'Edm.String'
+    And the response should contain 'MARKERTESTWORD'
     And user stop replaying 'Test'
-    #
-    #And user delete recording 'Test'
+    And user delete recording 'Test'
 
-  #Scenario: PACT
-  #Scenario: Null infrastructure
+
+#  Scenario: Null Working
+#    Given user upload 'test.json' as 'Test'
+#    And user set id '1' as stimulator
+#    And user set id '2' as stimulated
+#    And user start NULL 'Test' and wait
+#    And user check no error on result
+#    And user delete result
+#    And user delete recording 'Test'
+#
+#
+#  Scenario: Pact Working
+#    Given user upload 'test.json' as 'Test'
+#    And user delete id '1'
+#    And user set id '2' as pact
+#    And user start PACT 'Test' and wait
+#    And user check no error on result
+#    And user delete result
+#    And user delete recording 'Test'

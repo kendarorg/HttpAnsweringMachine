@@ -22,7 +22,9 @@ public class ReplayerStates   extends BaseStates{
 
 
     @Given("^user start replaying '(.+)'$")
-    public void user_start_replaying(String string) {
+    public void user_start_replaying(String name) throws HamException {
+        replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
+        replayerBuilder.startReplaying(name);
         // Write code here that turns the phrase above into concrete actions\
     }
     @When("^user create a recording '(.+)'$")
@@ -35,7 +37,7 @@ public class ReplayerStates   extends BaseStates{
     public void userStartsRecording(String name) throws HamException {
         replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
         replayerBuilder.startRecording(name);
-        }
+    }
 
     @Given("^user stop replaying '(.+)'$")
     public void user_stop_replaying(String string) throws HamException {
@@ -66,6 +68,13 @@ public class ReplayerStates   extends BaseStates{
     public void fileContains(String file,String content) throws HamException, IOException {
         var data = Files.readString(Path.of(file)).toLowerCase(Locale.ROOT);
         assertTrue(data.indexOf(content.toLowerCase(Locale.ROOT))>=0);
+    }
+
+    @Then("^file '(.+)' replace '(.+)' with '(.+)'$")
+    public void fileReplace(String file,String replace,String content) throws HamException, IOException {
+        var data = Files.readString(Path.of(file));
+        var replaced = data.replaceAll(replace,content);
+        Files.writeString(Path.of(file),replaced);
     }
     @Given("^user upload '(.+)' as '(.+)'$")
     public void users_upload(String file,String id) throws IOException, HamException {
