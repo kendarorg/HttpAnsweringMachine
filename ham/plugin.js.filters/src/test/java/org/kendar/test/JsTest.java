@@ -1,6 +1,6 @@
 package org.kendar.test;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mozilla.javascript.*;
 
 import java.util.HashMap;

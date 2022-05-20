@@ -1,7 +1,7 @@
 The system can act as a proxy (or API Gateway) for every request it receives
 
 For example if you want to forward all requests to https://www.local.test/myapp to
-https://localhost:8020/app then you can add a proxy entry inside the external.properties
+https://localhost:8020/app then you can add a proxy entry inside the external.json
 file. 
 
 This module is always active by default

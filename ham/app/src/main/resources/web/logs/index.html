@@ -16,6 +16,24 @@
             <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
         </div>
         <div class="col-md-8">
+            <br>
+            <pre>
+
+                ALL > TRACE > DEBUG > INFO > WARN > ERROR > FATAL > OFF
+
+                if(DynamicReqest>DEBUG AND NOT(isStaticRequest)) NOP
+                if(StaticReqest>DEBUG AND isStaticRequest) NOP
+                if(InternalRequest>DEBUG AND FROM(www.local.test)) NOP
+                if(Response==TRACE) Write Full Response
+                    else if(Response==DEBUG) Write Response 0-100
+                    else NOP
+                if(Request==TRACE) Write Full Request
+                    else if(Request==DEBUG) Write Request 0-100
+                    else NOP
+
+            </pre>
+        </div>
+        <div class="col-md-8">
             <h3>Special loggers</h3>
             <table class="table table-striped" id="specialLoggers">
                 <tr>

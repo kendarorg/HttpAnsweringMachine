@@ -65,9 +65,14 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     pluginsInitializer.addSpecialLogger(
         Response.class.getName(), "Responses Logging (DEBUG,TRACE)");
     pluginsInitializer.addSpecialLogger(
-        StaticRequest.class.getName(), "Log static requests as file (DEBUG)");
+        StaticRequest.class.getName(), "Log static requests as file (DEBUG), precedence over Req/Res");
     pluginsInitializer.addSpecialLogger(
-        DynamicReqest.class.getName(), "Log dynamic requests as file (DEBUG)");
+            DynamicReqest.class.getName(), "Log dynamic requests as file (DEBUG), precedence over Req/Res");
+    pluginsInitializer.addSpecialLogger(
+            InternalRequest.class.getName(), "Log internal requests (DEBUG)");
+
+
+
     eventQueue.registerCommand(e->{return remoteRequest(e);}, ExecuteRemoteRequest.class);
   }
 
@@ -299,7 +304,13 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     for (var header : response.getHeaders().entrySet()) {
       httpExchange.getResponseHeaders().add(header.getKey(), header.getValue());
     }
-    httpExchange.sendResponseHeaders(response.getStatusCode(), dataLength);
+    try {
+      httpExchange.sendResponseHeaders(response.getStatusCode(), dataLength);
+    }catch (IOException ex){
+      if(!ex.getMessage().equalsIgnoreCase("output stream is closed")){
+        throw new IOException(ex);
+      }
+    }
 
     try {
       if (dataLength > 0) {

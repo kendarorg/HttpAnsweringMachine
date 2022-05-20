@@ -1,5 +1,6 @@
 package org.kendar.socks5;
 
+import ch.qos.logback.classic.Level;
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
@@ -23,6 +24,7 @@ public class ProxyServer implements AnsweringServer {
         this.multiResolver = multiResolver;
         this.logger = loggerBuilder.build(ProxyServer.class);
         this.configuration = configuration;
+        loggerBuilder.setLevel("sockslib.server.io.SocketPipe", Level.ERROR);
     }
     @Override
     public void run() {

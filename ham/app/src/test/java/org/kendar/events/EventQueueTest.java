@@ -2,7 +2,7 @@ package org.kendar.events;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kendar.events.samples.OtherEvent;
 import org.kendar.events.samples.TestEvent;
 import org.kendar.utils.LoggerBuilder;
@@ -11,7 +11,8 @@ import org.kendar.utils.Sleeper;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class EventQueueTest {
     LoggerBuilder loggerBuilder = new LoggerBuilderImpl();

@@ -4,7 +4,7 @@ import org.kendar.servers.BaseJsonConfig;
 
 public abstract class WebServerConfig extends BaseJsonConfig<WebServerConfig> {
     private boolean active;
-    private int port;
+    private String port;
     private int backlog;
     private boolean useCachedExecutor;
 
@@ -21,11 +21,11 @@ public abstract class WebServerConfig extends BaseJsonConfig<WebServerConfig> {
         this.active = active;
     }
 
-    public int getPort() {
+    public String getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(String port) {
         this.port = port;
     }
 

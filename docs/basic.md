@@ -51,7 +51,7 @@ Under Windows run notepad as administrator and add the following at the end of
 
 #### Local DNS Server
 
-First you need to enable the local dns on external.properties file. Remind that this approach probably 
+First you need to enable the local dns on external.json file. Remind that this approach probably 
 wont work if you are running a VPN client! It does not work (for me) with OpenVPN client and 
 GlobalProtect. 
 

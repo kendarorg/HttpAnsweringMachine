@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DnsIT {
     @BeforeAll
-    public static void beforeAll() throws HamException {
-        GlobalSettings.runHamJar();
+    public static void beforeAll() throws HamTestException {
+        HamStarter.runHamJar(DnsIT.class);
     }
     private HamBasicBuilder hamBuilder = GlobalSettings.builder();
     @Test

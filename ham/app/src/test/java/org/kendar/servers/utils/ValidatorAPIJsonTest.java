@@ -1,8 +1,8 @@
 package org.kendar.servers.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.utils.models.ValidatorData;
@@ -10,7 +10,8 @@ import org.kendar.servers.utils.models.ValidatorResult;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class ValidatorAPIJsonTest {
     private final String TEMPLATE= "{\n" +
@@ -107,7 +108,8 @@ public class ValidatorAPIJsonTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
+
     public void shouldValidateEmptyArray() throws IOException {
         var target = new ValidatorAPI();
         var req = new Request();
@@ -132,7 +134,7 @@ public class ValidatorAPIJsonTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void shouldValidateNUll() throws IOException {
         var target = new ValidatorAPI();
         var req = new Request();

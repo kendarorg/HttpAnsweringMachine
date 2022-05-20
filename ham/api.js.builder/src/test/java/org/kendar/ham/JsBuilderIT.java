@@ -1,3 +1,5 @@
+package org.kendar.ham;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpGet;
@@ -15,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JsBuilderIT {
     @BeforeAll
-    public static void beforeAll() throws HamException {
-        GlobalSettings.runHamJar();
+    public static void beforeAll() throws HamTestException {
+        HamStarter.runHamJar(JsBuilderIT.class);
     }
 
     public static final String HTTP_SIMPLE_TEST_TEST_THING = "http://simple.test/test/thing";
@@ -51,8 +53,7 @@ public class JsBuilderIT {
         //Add dns
         var dnsNameId = hamBuilder.dns().addDnsName("127.0.0.1","simple.test");
         var jsBuilder = hamBuilder.pluginBuilder(JsBuilder.class);
-
-        jsBuilder.addFilter(filterId)
+        var realid = jsBuilder.addFilter(filterId)
                 .inPhase(FilterPhase.API)
                 .withMethod(Methods.GET)
                 .withHost("simple.test")

@@ -6,7 +6,7 @@
 
     <groupId>org.kendar</groupId>
     <artifactId>HttpAnsweringMachine</artifactId>
-    <version>2.1.6</version>
+    <version>3.0.1</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -52,6 +52,8 @@
         <json.schema.validator.version>1.0.66</json.schema.validator.version>
         <mockito.version>3.5.9</mockito.version>
         <brotli.dec.version>0.1.2</brotli.dec.version>
+        <cucumber.version>7.3.4</cucumber.version>
+        <junit.version>5.8.1</junit.version>
     </properties>
 
     <modules>
@@ -69,6 +71,7 @@
         <module>api.ham</module>
         <module>api.replayer</module>
         <module>api.js.builder</module>
+        <module>api.test</module>
     </modules>
     <build>
         <extensions>
@@ -102,9 +105,9 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>3.0.0-M6</version>
-                        <configuration>
+                        <!--<configuration>
                             <skipITs>false</skipITs>
-                        </configuration>
+                        </configuration>-->
                     </plugin>
                 </plugins>
             </build>
