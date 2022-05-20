@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ProxiesIT {
     @BeforeAll
     public static void beforeAll() throws HamTestException {
-        HamStarter.runHamJar();
+        HamStarter.runHamJar(ProxiesIT.class);
     }
     private HamBasicBuilder hamBuilder = GlobalSettings.builder();
     @Test

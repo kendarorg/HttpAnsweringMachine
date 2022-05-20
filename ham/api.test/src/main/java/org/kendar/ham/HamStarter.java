@@ -30,9 +30,9 @@ public class HamStarter {
         public ArrayList<Supplier<Boolean>> trace;
     }
 
-    private static String getRootPath(){
+    private static String getRootPath(Class<?> caller){
         final File jarFile =
-                new File(HamStarter.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+                new File(caller.getProtectionDomain().getCodeSource().getLocation().getPath());
         var path = Path.of(jarFile.getAbsolutePath());
         return path.getParent()    //target
                 .getParent()    //api.ham
@@ -41,6 +41,9 @@ public class HamStarter {
     }
 
     private static boolean deleteDirectory(File directoryToBeDeleted) {
+        if(!directoryToBeDeleted.exists()){
+            return true;
+        }
         File[] allContents = directoryToBeDeleted.listFiles();
         if (allContents != null) {
             for (File file : allContents) {
@@ -50,30 +53,35 @@ public class HamStarter {
         return directoryToBeDeleted.delete();
     }
     private static ConcurrentHashMap<String,ThreadAndProc> processes = new ConcurrentHashMap<>();
-    public static void runHamJar() throws HamTestException {
+    public static void runHamJar(Class<?> caller) throws HamTestException {
         var datddd= false;
         //if(datddd == false)return;
         String commandLine = "java ";
 
-        var externalJsonPath  =Path.of(getRootPath(),"ham","external.json").toString();
+        var externalJsonPath  =Path.of(getRootPath(caller),"ham","external.json").toString();
         commandLine+=" \"-Djsonconfig="+externalJsonPath+"\" ";
-        var libsPath  =Path.of(getRootPath(),"ham","libs").toString();
+        var libsPath  =Path.of(getRootPath(caller),"ham","libs").toString();
         commandLine+=" \"-Dloader.path="+libsPath+"\" -Dloader.main=org.kendar.Main ";
 
 
 
-        var appPathRootPath = Path.of(getRootPath(),"ham","app","target");
+        var appPathRootPath = Path.of(getRootPath(caller),"ham","app","target");
+
+        if(!appPathRootPath.toFile().exists()){
+            throw new HamTestException("WRONG STARTING PATH "+appPathRootPath);
+        }
         File[] matchingFiles = appPathRootPath.toFile().listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
+                if(name == null) return false;
                 return name.startsWith("app-") && name.endsWith(".jar");
             }
         });
         var appPathRoot  =Path.of(matchingFiles[0].getAbsolutePath()).toString();
         commandLine+=" -jar \""+appPathRoot+"\"";
         runJar(commandLine,()-> {
-            deleteDirectory(Path.of(getRootPath(),"jsplugins").toFile());
-            deleteDirectory(Path.of(getRootPath(),"calllogs").toFile());
-            deleteDirectory(Path.of(getRootPath(),"replayerdata").toFile());
+            deleteDirectory(Path.of(getRootPath(caller),"jsplugins").toFile());
+            deleteDirectory(Path.of(getRootPath(caller),"calllogs").toFile());
+            deleteDirectory(Path.of(getRootPath(caller),"replayerdata").toFile());
             return true;
         },()-> {
             try {

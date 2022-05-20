@@ -5,9 +5,11 @@ import io.cucumber.java.en.Given;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpGet;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,7 +18,7 @@ public class HamStates  extends BaseStates{
 
     @Given("^I have a running HAM instance$")
     public void iHaveRunningHamInstance() throws HamTestException {
-        HamStarter.runHamJar();
+        HamStarter.runHamJar(HamStates.class);
     }
 
     @Given("^I add a dns mapping from '(.+)' to '(.+)'$")

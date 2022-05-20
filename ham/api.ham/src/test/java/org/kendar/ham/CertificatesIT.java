@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CertificatesIT {
     @BeforeAll
     public static void beforeAll() throws HamTestException {
-        HamStarter.runHamJar();
+        HamStarter.runHamJar(CertificatesIT.class);
     }
     private HamBasicBuilder hamBuilder = GlobalSettings.builder();
     @Test

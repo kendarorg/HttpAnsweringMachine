@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JsBuilderIT {
     @BeforeAll
     public static void beforeAll() throws HamTestException {
-        HamStarter.runHamJar();
+        HamStarter.runHamJar(JsBuilderIT.class);
     }
 
     public static final String HTTP_SIMPLE_TEST_TEST_THING = "http://simple.test/test/thing";
