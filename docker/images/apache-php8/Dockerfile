@@ -1,7 +1,7 @@
 FROM ham.apache:latest
 
 # Setup apache and php
-RUN apk --no-cache \
+RUN apk add --no-cache \
     php8-apache2 \
     php8-bcmath \
     php8-bz2 \
