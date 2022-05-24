@@ -29,7 +29,7 @@ RUN apk add --no-cache \
 RUN pear8 config-set php_ini /etc/php8/php.ini
 
 COPY config/setupphp8.sh /etc/setupphp8.sh
-COPY docker/error_reporting.ini /etc/php8/conf.d/error_reporting.ini
+COPY config/error_reporting.ini /etc/php8/conf.d/error_reporting.ini
 
 RUN chmod +x /etc/*.sh \
 	&& /etc/setupphp8.sh
