@@ -1,6 +1,6 @@
 @echo off
-set VERSION=3.0.0-SNAPHOST
-set SAMPLE_VERSION=1.0.0
+set VERSION=3.0.2
+set SAMPLE_VERSION=1.0.2
 
 SET mypath=%~dp0
 cd %mypath%
@@ -17,6 +17,11 @@ docker tag ham.client kendarorg/ham.client:v%VERSION%
 docker tag kendarorg/ham.client:v%VERSION% kendarorg/ham.client:latest
 docker push kendarorg/ham.client:v%VERSION%
 docker push kendarorg/ham.client:latest
+
+docker tag ham.apache kendarorg/ham.apache:v%VERSION%
+docker tag kendarorg/ham.apache:v%VERSION% kendarorg/ham.apache:latest
+docker push kendarorg/ham.apache:v%VERSION%
+docker push kendarorg/ham.apache:latest
 
 docker tag ham.master kendarorg/ham.master:v%VERSION%
 docker tag kendarorg/ham.master:v%VERSION% kendarorg/ham.master:latest

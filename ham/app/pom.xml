@@ -23,7 +23,7 @@
     <parent>
         <artifactId>HttpAnsweringMachine</artifactId>
         <groupId>org.kendar</groupId>
-        <version>3.0.1</version>
+        <version>3.0.2</version>
     </parent>
 
     <dependencies>
@@ -170,7 +170,7 @@
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>lib.schema.checker</artifactId>
-            <version>3.0.1</version>
+            <version>3.0.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

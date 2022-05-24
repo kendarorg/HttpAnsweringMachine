@@ -56,4 +56,10 @@ docker build -t ham.client .
 cd ../singlemaster
 docker build -t ham.singlemaster .
 
+cd ../apache
+docker build -t ham.apache .
+
+cd ../apache-php8
+docker build -t ham.apache.php8 .
+
 cd ..
