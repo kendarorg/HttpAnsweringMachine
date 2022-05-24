@@ -11,6 +11,22 @@ public class DnsIT {
         HamStarter.runHamJar(DnsIT.class);
     }
     private HamBasicBuilder hamBuilder = GlobalSettings.builder();
+
+    //
+
+    @Test
+    public void testAddingDnsFix() throws HamException {
+        final String WEIRD_NAME = "casper.core-workload.qa.aws.lmn";
+        final String IP = "10.0.0.1";
+        var dnsId =hamBuilder
+                .dns()
+                .addDnsName(IP, WEIRD_NAME);
+        var resolved = hamBuilder.dns().resolve(WEIRD_NAME);
+        assertNotNull(resolved);
+        assertEquals(IP,resolved);
+        hamBuilder.dns().removeDnsName(dnsId);
+    }
+
     @Test
     public void testAddingDns() throws HamException {
         var dnsId =hamBuilder

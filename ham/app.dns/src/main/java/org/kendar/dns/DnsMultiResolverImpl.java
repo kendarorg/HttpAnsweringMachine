@@ -292,7 +292,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     }
     if(result.size()==0){
       //forgetThem.put(requestedDomain,requestedDomain);
-    }else{
+    }else if(cacheResponses){
       localDomains.put(requestedDomain.toLowerCase(Locale.ROOT), new HashSet<>(data));
     }
     return result;
@@ -312,6 +312,11 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
   @Override
   public void setRunnable(ThreeParamsFunction<String, String, LoggerBuilder, Callable<List<String>>> runnable) {
     this.runnable = runnable;
+  }
+  private boolean cacheResponses = true;
+  @Override
+  public void noResponseCaching(){
+    cacheResponses = false;
   }
 
   private boolean isBlockedDomainQuery(String requestedDomain, DnsConfig config) {
@@ -345,7 +350,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     if (localData.size() > 0) {
       return localData;
     }
-    if (localDomains.containsKey(requestedDomain)) {
+    if (cacheResponses && localDomains.containsKey(requestedDomain)) {
       return new ArrayList<>(localDomains.get(requestedDomain));
     }
     return resolveRemote(requestedDomain);

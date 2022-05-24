@@ -23,6 +23,11 @@ docker tag kendarorg/ham.apache:v%VERSION% kendarorg/ham.apache:latest
 docker push kendarorg/ham.apache:v%VERSION%
 docker push kendarorg/ham.apache:latest
 
+docker tag ham.apache.php8 kendarorg/ham.apache.php8:v%VERSION%
+docker tag kendarorg/ham.apache.php8:v%VERSION% kendarorg/ham.apache.php8:latest
+docker push kendarorg/ham.apache.php8:v%VERSION%
+docker push kendarorg/ham.apache.php8:latest
+
 docker tag ham.master kendarorg/ham.master:v%VERSION%
 docker tag kendarorg/ham.master:v%VERSION% kendarorg/ham.master:latest
 docker push kendarorg/ham.master:v%VERSION%
