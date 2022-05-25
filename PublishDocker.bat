@@ -1,5 +1,5 @@
 @echo off
-set VERSION=3.0.0-SNAPHOST
+set VERSION=3.0.4
 set SAMPLE_VERSION=1.0.0
 
 SET mypath=%~dp0
