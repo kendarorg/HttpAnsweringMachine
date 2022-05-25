@@ -78,6 +78,7 @@ public class DnsServersApis implements FilteringClass {
       method = "DELETE",
       id = "1004a4b4-277d-11ec-9621-0242ac130002")
   public void removeDnsServer(Request req, Response res) {
+
     var cloned = configuration.getConfiguration(DnsConfig.class).copy();
     var dnsServeres = cloned.getExtraServers();
     var name = (getIdPathParameter(req, "id"));
@@ -92,6 +93,7 @@ public class DnsServersApis implements FilteringClass {
     cloned.setExtraServers(newList);
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);
+    dnsMultiResolver.clearCache();
   }
 
 
@@ -126,6 +128,7 @@ public class DnsServersApis implements FilteringClass {
     cloned.setExtraServers(newList);
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);
+    dnsMultiResolver.clearCache();
   }
 
   private boolean prepareResolvedResponse(Response res, ArrayList<ExtraDnsServer> newList, ExtraDnsServer newData, ExtraDnsServer clone) {
@@ -143,31 +146,6 @@ public class DnsServersApis implements FilteringClass {
     clone.setResolved(resolved);
     newList.add(clone);
     return false;
-  }
-
-  @HttpMethodFilter(
-      phase = HttpFilterType.API,
-      pathAddress = "/api/dns/servers/swap/{id1}/{id2}",
-      method = "PUT",
-      id = "1006a4b4-277d-11ec-9621-0242ac130002")
-  public void swapDnsServer(Request req, Response res) {
-    var cloned = configuration.getConfiguration(DnsConfig.class).copy();
-    var dnsServeres = cloned.getExtraServers();
-    var name1 = (getIdPathParameter(req, "id1"));
-    var name2 = (getIdPathParameter(req, "id2"));
-    var id1Index = -1;
-    var id2Index = -1;
-    for (int i = 0; i < dnsServeres.size(); i++) {
-      if (dnsServeres.get(i).getId().equalsIgnoreCase(name1)) id1Index = i;
-      if (dnsServeres.get(i).getId().equalsIgnoreCase(name2)) id2Index = i;
-    }
-    if (dnsServeres.get(id1Index).isEnv()) return ;
-    if (dnsServeres.get(id2Index).isEnv()) return ;
-    var id1Clone = dnsServeres.get(id1Index).copy();
-    dnsServeres.set(id1Index, dnsServeres.get(id2Index));
-    dnsServeres.set(id2Index, id1Clone);
-    configuration.setConfiguration(cloned);
-    res.setStatusCode(200);
   }
 
   @HttpMethodFilter(
@@ -193,5 +171,6 @@ public class DnsServersApis implements FilteringClass {
     cloned.setExtraServers(newList);
     configuration.setConfiguration(cloned);
     res.setStatusCode(200);
+    dnsMultiResolver.clearCache();
   }
 }

@@ -190,8 +190,6 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     return data;
   }
 
-  private final ConcurrentHashMap<String,String> forgetThem = new ConcurrentHashMap<>();
-
   @Override
   public List<String> resolveRemote(String requestedDomain) {
 
@@ -290,9 +288,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         logger.info("Unable to resolve remotely " + requestedDomain);
       }
     }
-    if(result.size()==0){
-      //forgetThem.put(requestedDomain,requestedDomain);
-    }else if(cacheResponses){
+    if(result.size()>0){
       localDomains.put(requestedDomain.toLowerCase(Locale.ROOT), new HashSet<>(data));
     }
     return result;
@@ -317,6 +313,11 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
   @Override
   public void noResponseCaching(){
     cacheResponses = false;
+  }
+
+  @Override
+  public void clearCache() {
+    localDomains.clear();
   }
 
   private boolean isBlockedDomainQuery(String requestedDomain, DnsConfig config) {
