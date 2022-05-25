@@ -57,7 +57,6 @@
 <script src="/app/app.js"></script>
 <script>
 
-
     $("#btLoadFile").click(function(){
         document.getElementById("uploadScript").click();
     });
@@ -118,6 +117,7 @@
 
         }
     });
+
     $("#backToSingle").click(function(){
         location.href="script.html?id="+getUrlParameter("id"); })
         .html(getUrlParameter("id"));
@@ -127,7 +127,7 @@
     $("#btSaveText").click(function(){
         var content = $('#free_content').val();
         var data = {
-            data:btoa(content),
+            data:Base64.encode(content),
             name:"content",
             type:"text/plain"
         }

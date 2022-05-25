@@ -1,6 +1,5 @@
 @echo off
 set VERSION=3.0.4
-
 call Make.bat
 
 SET mypath=%~dp0
