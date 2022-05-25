@@ -1,6 +1,6 @@
 @echo off
-set VERSION=3.0.2
-set SAMPLE_VERSION=1.0.2
+set VERSION=3.0.3
+set SAMPLE_VERSION=1.0.3
 
 SET mypath=%~dp0
 cd %mypath%
