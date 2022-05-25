@@ -3,6 +3,7 @@ package org.kendar;
 import org.kendar.dns.configurations.DnsConfig;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
+import org.kendar.servers.dns.DnsMultiResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -49,6 +50,9 @@ public class SimpleDns implements CommandLineRunner {
       e.printStackTrace();
     }
 
+    var resolver =
+            (DnsMultiResolver) applicationContext.getBean(DnsMultiResolver.class);
+    resolver.noResponseCaching();
     var dnsServer =
         (org.kendar.dns.DnsServer) applicationContext.getBean(org.kendar.dns.DnsServer.class);
     dnsServer.setBlocker((a)-> a.substring(0,1).toUpperCase(Locale.ROOT)+a.substring(1));

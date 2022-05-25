@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 public interface DnsMultiResolver {
+    void noResponseCaching();
+
+    void clearCache();
+
     List<String> resolve(String dnsName);
     List<String> resolveLocal(String dnsName);
     List<String> resolveRemote(String dnsName);

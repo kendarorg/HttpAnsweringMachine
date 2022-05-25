@@ -75,31 +75,6 @@ public class SSLController implements FilteringClass {
 
   @HttpMethodFilter(
       phase = HttpFilterType.API,
-      pathAddress = "/api/ssl/swap/{id1}/{id2}",
-      method = "PUT",
-      id = "1010a4b4-277d-11ec-9621-0242ac130002")
-  public void swapDnsServer(Request req, Response res) {
-    var cloned = configuration.getConfiguration(SSLConfig.class).copy();
-    var domains = cloned.getDomains();
-    var name1 = (req.getPathParameter("id1"));
-    var name2 = (req.getPathParameter("id2"));
-
-    var id1Index = -1;
-    var id2Index = -1;
-    for (int i = 0; i < domains.size(); i++) {
-      if (domains.get(i).getId().equalsIgnoreCase(name1)) id1Index = i;
-      if (domains.get(i).getId().equalsIgnoreCase(name2)) id2Index = i;
-    }
-    var id1Clone = domains.get(id1Index).copy();
-    domains.set(id1Index, domains.get(id2Index));
-    domains.set(id2Index, id1Clone);
-    configuration.setConfiguration(cloned);
-    res.setStatusCode(200);
-    eventQueue.handle(new SSLChangedEvent());
-  }
-
-  @HttpMethodFilter(
-      phase = HttpFilterType.API,
       pathAddress = "/api/ssl",
       method = "POST",
       id = "1011a4b4-2ASD77d-11ec-9621-0242ac130002")
