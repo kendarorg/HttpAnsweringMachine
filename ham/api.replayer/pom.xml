@@ -34,6 +34,7 @@
             <groupId>org.kendar</groupId>
             <artifactId>api.test</artifactId>
             <version>3.0.4</version>
+
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -64,11 +65,13 @@
             <groupId>org.kendar</groupId>
             <artifactId>app.commons</artifactId>
             <version>3.0.4</version>
+
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>api.ham</artifactId>
             <version>3.0.4</version>
+
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

@@ -50,13 +50,22 @@ public class DnsLookupApi implements FilteringClass {
     public void listAll(Request req, Response res) throws Exception {
         var resultList = dnsMultiResolver.listDomains();
         var result = new ArrayList<DnsItem>();
-         for(var item:resultList.entrySet()){
-             var ni = new DnsItem();
-             ni.setName(item.getKey());
-             ni.setIp(item.getValue());
-             result.add(ni);
-         }
+        for(var item:resultList.entrySet()){
+            var ni = new DnsItem();
+            ni.setName(item.getKey());
+            ni.setIp(item.getValue());
+            result.add(ni);
+        }
         res.setResponseText(mapper.writeValueAsString(result));
         res.addHeader("content-type","application/json");
+    }
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/dns/list",
+            method = "DELETE",
+            id = "1005a4b919877d-11ec-9621-0fdns130002")
+    public void clear(Request req, Response res) throws Exception {
+        dnsMultiResolver.clearCache();
     }
 }
