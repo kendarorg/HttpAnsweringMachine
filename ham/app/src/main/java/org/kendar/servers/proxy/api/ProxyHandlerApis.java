@@ -117,30 +117,6 @@ public class ProxyHandlerApis implements FilteringClass {
 
   @HttpMethodFilter(
       phase = HttpFilterType.API,
-      pathAddress = "/api/proxyes/swap/{id1}/{id2}",
-      method = "PUT",
-      id = "1019a4b4-277d-11ec-9621-0242ac130002")
-  public void swapProxy(Request req, Response res) {
-    var cloneConf = configuration.getConfiguration(SimpleProxyConfig.class).copy();
-    var proxyes = cloneConf.getProxies();
-    var id1 = req.getPathParameter("id1");
-    var id2 = req.getPathParameter("id2");
-    var id1Index = -1;
-    var id2Index = -1;
-    for (int i = 0; i < proxyes.size(); i++) {
-      if (proxyes.get(i).getId().equalsIgnoreCase(id1)) id1Index = i;
-      if (proxyes.get(i).getId().equalsIgnoreCase(id2)) id2Index = i;
-    }
-    var id1Clone = proxyes.get(id1Index).copy();
-    proxyes.set(id1Index, proxyes.get(id2Index));
-    proxyes.set(id2Index, id1Clone);
-    configuration.setConfiguration(cloneConf);
-    eventQueue.handle(new ProxyConfigChanged());
-    res.setStatusCode(200);
-  }
-
-  @HttpMethodFilter(
-      phase = HttpFilterType.API,
       pathAddress = "/api/proxyes",
       method = "POST",
       id = "1020a4b4-277d-11ec-9621-0242ac130002")

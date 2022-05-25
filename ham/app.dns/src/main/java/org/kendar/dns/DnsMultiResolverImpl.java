@@ -162,15 +162,26 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
       for (int i = 0; i < config.getResolved().size(); i++) {
         var item = config.getResolved().get(i);
         if (item.match(requestedDomain)) {
+
+          var itemIp = item.getIp();
+          Matcher childIdp = ipPattern.matcher(itemIp);
+          if (!childIdp.matches()) {
+            logger.info("SubResolving " + itemIp);
+            var subitems = resolve(itemIp);
+            if(subitems.isEmpty()) {
+              continue;
+            }
+            itemIp = subitems.get(0);
+          }
           if (logQueries.isDebugEnabled() || logQueries.isTraceEnabled()) {
-            logger.info("Pattern " + item.getIp());
+            logger.info("Pattern " + itemIp);
             logger.info("Request " + requestedDomain);
             logger.info("Ip " + item.getIp());
           }
-          if (item.getIp().equalsIgnoreCase("127.0.0.1")) {
+          if (itemIp.equalsIgnoreCase("127.0.0.1")) {
             data.add(this.localHostAddress);
           } else {
-            data.add(item.getIp());
+            data.add(itemIp);
           }
         }
       }
@@ -189,8 +200,6 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
     return data;
   }
-
-  private final ConcurrentHashMap<String,String> forgetThem = new ConcurrentHashMap<>();
 
   @Override
   public List<String> resolveRemote(String requestedDomain) {
@@ -290,9 +299,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         logger.info("Unable to resolve remotely " + requestedDomain);
       }
     }
-    if(result.size()==0){
-      //forgetThem.put(requestedDomain,requestedDomain);
-    }else{
+    if(result.size()>0){
       localDomains.put(requestedDomain.toLowerCase(Locale.ROOT), new HashSet<>(data));
     }
     return result;
@@ -312,6 +319,16 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
   @Override
   public void setRunnable(ThreeParamsFunction<String, String, LoggerBuilder, Callable<List<String>>> runnable) {
     this.runnable = runnable;
+  }
+  private boolean cacheResponses = true;
+  @Override
+  public void noResponseCaching(){
+    cacheResponses = false;
+  }
+
+  @Override
+  public void clearCache() {
+    localDomains.clear();
   }
 
   private boolean isBlockedDomainQuery(String requestedDomain, DnsConfig config) {
@@ -345,7 +362,7 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     if (localData.size() > 0) {
       return localData;
     }
-    if (localDomains.containsKey(requestedDomain)) {
+    if (cacheResponses && localDomains.containsKey(requestedDomain)) {
       return new ArrayList<>(localDomains.get(requestedDomain));
     }
     return resolveRemote(requestedDomain);

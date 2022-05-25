@@ -9,6 +9,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
@@ -23,11 +24,13 @@ import java.util.stream.Collectors;
         blocking = true)
 public class DnsMappingsApis implements FilteringClass {
     private final JsonConfiguration configuration;
+    private DnsMultiResolver dnsMultiResolver;
     final ObjectMapper mapper = new ObjectMapper();
 
-    public DnsMappingsApis(JsonConfiguration configuration) {
+    public DnsMappingsApis(JsonConfiguration configuration, DnsMultiResolver dnsMultiResolver) {
 
         this.configuration = configuration;
+        this.dnsMultiResolver = dnsMultiResolver;
     }
 
     @Override
@@ -79,6 +82,7 @@ public class DnsMappingsApis implements FilteringClass {
         configuration.setConfiguration(dnsConfig);
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(newMapped));
+        dnsMultiResolver.clearCache();
     }
 
 
@@ -87,7 +91,6 @@ public class DnsMappingsApis implements FilteringClass {
       pathAddress = "/api/dns/mappings",
       method = "POST",id="3000a4f4-277k-11ef-9621-0242ac130002")
     public void addDnsMappings(Request req, Response res) throws Exception {
-
         var cloned = configuration.getConfiguration(DnsConfig.class).copy();
 
         List<PatternItem> newList = new ArrayList<>();
@@ -118,6 +121,7 @@ public class DnsMappingsApis implements FilteringClass {
         configuration.setConfiguration(cloned);
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(cloned));
+        dnsMultiResolver.clearCache();
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
@@ -135,5 +139,6 @@ public class DnsMappingsApis implements FilteringClass {
         configuration.setConfiguration(dnsConfig);
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(newMapped));
+        dnsMultiResolver.clearCache();
     }
 }

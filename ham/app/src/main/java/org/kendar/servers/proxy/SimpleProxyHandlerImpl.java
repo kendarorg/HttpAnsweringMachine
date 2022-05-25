@@ -16,9 +16,11 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Component
 public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
@@ -159,8 +161,11 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
 
     var realSrc = oriSource.getProtocol() + "://" + oriSource.getHost() + oriSource.getPath();
     var config = configuration.getConfiguration(SimpleProxyConfig.class);
-    for (int i = 0; i < config.getProxies().size(); i++) {
-      var status = config.getProxies().get(i);
+    var sorted = config.getProxies().stream()
+            .sorted(Comparator.comparingInt(a -> ((RemoteServerStatus)a).getWhen().length()).reversed())
+            .collect(Collectors.toList());
+    for (int i = 0; i < sorted.size(); i++) {
+      var status = sorted.get(i);
       if (realSrc.startsWith(status.getWhen()) && status.isRunning()) {
         var source = oriSource.copy();
         realSrc = realSrc.replace(status.getWhen(), status.getWhere());
