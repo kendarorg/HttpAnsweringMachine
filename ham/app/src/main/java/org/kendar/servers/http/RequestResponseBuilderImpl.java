@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.brotli.dec.BrotliInputStream;
+import org.kendar.utils.JsonSmile;
 import org.kendar.utils.MimeChecker;
 import org.kendar.utils.SimpleStringUtils;
 import org.springframework.stereotype.Component;
@@ -65,10 +66,15 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
         result.setMultipartData(
             RequestUtils.buildMultipart(data, boundary, result.getHeader("Content-type")));
       } else if (headerContentType
-          .toLowerCase(Locale.ROOT)
-          .startsWith("application/x-www-form-urlencoded")) {
+              .toLowerCase(Locale.ROOT)
+              .startsWith("application/x-www-form-urlencoded")) {
         var requestText = IOUtils.toString(exchange.getRequestBody(), StandardCharsets.UTF_8);
         result.setPostParameters(RequestUtils.queryToMap(requestText));
+      } else if (headerContentType
+              .toLowerCase(Locale.ROOT)
+              .startsWith(JsonSmile.JSON_SMILE_MIME)) {
+        var requestText = JsonSmile.smileToJSON(IOUtils.toByteArray(exchange.getRequestBody())).toPrettyString();
+        result.setRequestText(requestText);
       } else {
         if (result.isBinaryRequest()) {
           result.setRequestBytes(IOUtils.toByteArray(exchange.getRequestBody()));
@@ -177,12 +183,16 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
         }
         response.setBinaryResponse(true);
       } else {
+        String responseText = null;
         if(brotli){
-          response.setResponseText(IOUtils.toString(new BrotliInputStream(in), StandardCharsets.UTF_8));
+          responseText = IOUtils.toString(new BrotliInputStream(in), StandardCharsets.UTF_8);
           response.removeHeader("content-encoding");
+        }else if(responseEntity.getContentType().getValue().equalsIgnoreCase(JsonSmile.JSON_SMILE_MIME)){
+          responseText = JsonSmile.smileToJSON(IOUtils.toByteArray(in)).toPrettyString();
         }else {
-          response.setResponseText(IOUtils.toString(in, StandardCharsets.UTF_8));
+          responseText = IOUtils.toString(in, StandardCharsets.UTF_8);
         }
+        response.setResponseText(responseText);
       }
     } else {
       response.setBinaryResponse(true);
