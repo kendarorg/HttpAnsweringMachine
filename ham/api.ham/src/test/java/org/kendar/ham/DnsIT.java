@@ -27,6 +27,24 @@ public class DnsIT {
         hamBuilder.dns().removeDnsName(dnsId);
     }
 
+
+    @Test
+    public void testNamedDns() throws HamException {
+
+        var dnsId1 =hamBuilder
+                .dns()
+                .addDnsName("10.0.0.1", "test.com");
+
+        var dnsId2 =hamBuilder
+                .dns()
+                .addDnsName("test.com", "prova.com");
+        var resolved = hamBuilder.dns().resolve("prova.com");
+        assertNotNull(resolved);
+        assertEquals("10.0.0.1",resolved);
+        hamBuilder.dns().removeDnsName(dnsId1);
+        hamBuilder.dns().removeDnsName(dnsId2);
+    }
+
     @Test
     public void testAddingDns() throws HamException {
         var dnsId =hamBuilder

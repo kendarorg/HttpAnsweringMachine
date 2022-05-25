@@ -162,15 +162,26 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
       for (int i = 0; i < config.getResolved().size(); i++) {
         var item = config.getResolved().get(i);
         if (item.match(requestedDomain)) {
+
+          var itemIp = item.getIp();
+          Matcher childIdp = ipPattern.matcher(itemIp);
+          if (!childIdp.matches()) {
+            logger.info("SubResolving " + itemIp);
+            var subitems = resolve(itemIp);
+            if(subitems.isEmpty()) {
+              continue;
+            }
+            itemIp = subitems.get(0);
+          }
           if (logQueries.isDebugEnabled() || logQueries.isTraceEnabled()) {
-            logger.info("Pattern " + item.getIp());
+            logger.info("Pattern " + itemIp);
             logger.info("Request " + requestedDomain);
             logger.info("Ip " + item.getIp());
           }
-          if (item.getIp().equalsIgnoreCase("127.0.0.1")) {
+          if (itemIp.equalsIgnoreCase("127.0.0.1")) {
             data.add(this.localHostAddress);
           } else {
-            data.add(item.getIp());
+            data.add(itemIp);
           }
         }
       }
