@@ -328,7 +328,7 @@ public class HamBuilder implements HamInternalBuilder {
                     lookup.setResolver(extendedResolver);
                     lookup.setCache(null);
                     lookup.setHostsFileParser(null);
-                    var records = lookup.run();
+                    org.xbill.DNS.Record[] records = lookup.run();
                     if (records != null) {
                         for (Record record : records) {
                             String realip = ((ARecord) records[0]).getAddress().getHostAddress();

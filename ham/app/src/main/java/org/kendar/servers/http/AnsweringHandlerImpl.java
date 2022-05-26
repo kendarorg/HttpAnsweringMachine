@@ -12,6 +12,7 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.ConnectionBuilder;
+import org.kendar.utils.JsonSmile;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -284,7 +285,12 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
       if (response.isBinaryResponse()) {
         data = response.getResponseBytes();
       } else if (response.getResponseText().length() > 0) {
-        data = (response.getResponseText().getBytes(StandardCharsets.UTF_8));
+
+        if(JsonSmile.JSON_SMILE_MIME.equalsIgnoreCase(response.getHeader("content-type"))){
+          data = JsonSmile.jsonToSmile(response.getResponseText());
+        }else {
+          data = (response.getResponseText().getBytes(StandardCharsets.UTF_8));
+        }
       }
       if (data.length > 0) {
         dataLength = data.length;

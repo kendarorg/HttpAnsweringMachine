@@ -1,8 +1,6 @@
 @echo off
 set VERSION=3.0.5
-set SAMPLE_VERSION=1.0.4
-
-exit
+set SAMPLE_VERSION=1.0.5
 
 SET mypath=%~dp0
 cd %mypath%
@@ -31,18 +29,12 @@ call :pushdata "ham.quotes.core" "%SAMPLE_VERSION%"
 
 goto :eof
 
-:pushdata 
+:pushdata
 set IMAGE_NAME=%~1
 set VERSION_NUMBER=%~2
 
-docker tag %IMAGE_NAME% kendarorg/%IMAGE_NAME%:v%VERSION_NUMBER%
-docker tag kendarorg/%IMAGE_NAME%:v%VERSION_NUMBER% kendarorg/%IMAGE_NAME%:latest
-docker tag kendarorg/%IMAGE_NAME%:v%VERSION_NUMBER% kendarorg/%IMAGE_NAME%:snapshot
-docker push kendarorg/%IMAGE_NAME%:v%VERSION_NUMBER%
-docker push kendarorg/%IMAGE_NAME%:latest
+docker tag %IMAGE_NAME% kendarorg/%IMAGE_NAME%:v%VERSION_NUMBER%-SNAPSHOT
+docker tag kendarorg/%IMAGE_NAME%:v%VERSION_NUMBER%-SNAPSHOT kendarorg/%IMAGE_NAME%:snapshot
+docker push kendarorg/%IMAGE_NAME%:v%VERSION_NUMBER%-SNAPSHOT
 docker push kendarorg/%IMAGE_NAME%:snapshot
 goto :eof
-
-
-
-

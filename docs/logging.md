@@ -52,3 +52,6 @@ to base HttpServer
 * org.kendar.servers.http.DynamicRequest
     * OFF: logs nothing (default)
     * DEBUG: Logs on file the dynamic requests
+* org.kendar.servers.http.InternalRequest
+    * OFF: does not log internal requests
+    * DEBUG: treat internal requests as any other

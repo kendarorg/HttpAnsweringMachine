@@ -29,6 +29,7 @@ The AnsweringMachine is built to overcome this troubles
 * All functions manageable via REST APIs
 * Configurable DNS hijacking (when not using VPNs) or...generated hosts file
 * Internal events system
+* Support for brotli encoding and jackson-smile
 
 ### Docker for development
 

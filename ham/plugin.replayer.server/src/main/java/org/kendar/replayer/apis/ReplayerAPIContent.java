@@ -18,6 +18,7 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
 import org.kendar.utils.FileResourcesUtils;
+import org.kendar.utils.JsonSmile;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
 
@@ -95,7 +96,11 @@ public class ReplayerAPIContent implements FilteringClass {
       var allTypes= MimeTypes.getDefaultMimeTypes();
       if ("request".equalsIgnoreCase(requestOrResponse)) {
         var contentType =singleLine.getRequest().getHeader("Content-Type");
-        res.addHeader("Content-Type", contentType);
+        if(JsonSmile.JSON_SMILE_MIME.equalsIgnoreCase(contentType)){
+          res.addHeader("Content-Type", "application/json");
+        }else {
+          res.addHeader("Content-Type", contentType);
+        }
         res.setBinaryResponse(singleLine.getRequest().isBinaryRequest());
         if (singleLine.getRequest().isBinaryRequest()) {
           res.setResponseBytes(singleLine.getRequest().getRequestBytes());
@@ -107,7 +112,11 @@ public class ReplayerAPIContent implements FilteringClass {
 
       } else if ("response".equalsIgnoreCase(requestOrResponse)) {
         var contentType = singleLine.getResponse().getHeader("Content-Type");
-        res.addHeader("Content-Type", contentType);
+        if(JsonSmile.JSON_SMILE_MIME.equalsIgnoreCase(contentType)){
+          res.addHeader("Content-Type", "application/json");
+        }else {
+          res.addHeader("Content-Type", contentType);
+        }
         res.setBinaryResponse(singleLine.getResponse().isBinaryResponse());
         if (singleLine.getResponse().isBinaryResponse()) {
           res.setResponseBytes(singleLine.getResponse().getResponseBytes());
