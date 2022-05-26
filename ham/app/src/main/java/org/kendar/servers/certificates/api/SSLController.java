@@ -89,7 +89,9 @@ public class SSLController implements FilteringClass {
                 newDomain.setId(UUID.randomUUID().toString());
                 newDomain.setAddress((String)a);
                 return newDomain;
-              }).collect(Collectors.toList());
+              })
+              .distinct()
+              .collect(Collectors.toList());
 
     }else {
       newList.add( mapper.readValue(req.getRequestText(), SSLDomain.class));

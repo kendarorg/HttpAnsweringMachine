@@ -62,7 +62,12 @@ class SimpleGrid {
 
         for (let i = 0; i < this.showSearch.length; i++) {
             const str = this.showSearch[i];
-            const content = this.retrieveFieldComplexContent(inputData, str.id);
+            var content = undefined;
+            if(str.field){
+                content = this.retrieveFieldComplexContent(inputData, str.field);
+            }else{
+                content = this.retrieveFieldComplexContent(inputData, str.id);
+            }
             const realId =  str.id.replaceAll("\.","_") + `_` + str.type;
             const valueToCompareWith = $("#" + this.tableId + " #"+realId).val();
             if(valueToCompareWith=="" || valueToCompareWith===undefined)continue;
@@ -92,8 +97,9 @@ class SimpleGrid {
         return false;
     }
 
-    stringToBoolean(string){
-        switch(string.toLowerCase().trim()){
+    stringToBoolean(value){
+        value+="";
+        switch(value.toLowerCase().trim()){
             case "true":
             case "yes":
             case "1":
@@ -212,6 +218,7 @@ class SimpleGrid {
         const allIndex = id.split(".");
         let content = inputData;
         for (let s = 0; s < allIndex.length; s++) {
+
             content = content[allIndex[s]];
         }
         if (content == undefined) content = "";
@@ -317,7 +324,7 @@ class SimpleGrid {
 ///////////////////////     KVP
 
 
-const buildKvpModalDialog = function(modal, table, value, idField, valueField, randomId) {
+const buildKvpModalDialog = function(modal, table, value, idField, valueField, randomId,keyValue =null) {
     let bodyContent = "";
     if (value[valueField].length > 60) {
         bodyContent += `
@@ -333,16 +340,19 @@ const buildKvpModalDialog = function(modal, table, value, idField, valueField, r
     let openAsEdit = true;
     if (value[idField] == '' || value[idField] === undefined) {
         openAsEdit = false;
+        if(keyValue!=null){
+            value[idField]=keyValue;
+        }
     }
     buildGenericModal(modal, table, value, idField, bodyContent, randomId, openAsEdit);
 }
 
-const addKvp = function (modal, table, idField, valueField) {
+const addKvp = function (modal, table, idField, valueField,keyValue =null) {
     const randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
     const value = {};
     value[idField] = '';
     value[valueField] = '';
-    buildKvpModalDialog(modal, table, value, idField, valueField, randomId);
+    buildKvpModalDialog(modal, table, value, idField, valueField, randomId,keyValue);
     const localTable = table;
     $(modal).find("#" + randomId).click(function () {
         value[idField] = $(modal).find("#key").val();
