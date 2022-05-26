@@ -7,11 +7,10 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.BufferOverflowException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -52,16 +51,42 @@ public class HamStarter {
         }
         return directoryToBeDeleted.delete();
     }
+    private static String findJava(){
+        return "java";
+        /*
+        var possible = System.getProperty("sun.boot.library.path");
+
+        if(possible.endsWith(File.separator)){
+            possible = possible.substring(0,possible.length()-1);
+        }
+        if(possible.endsWith("lib")){
+            possible = possible.substring(0,possible.length()-3)+
+                "bin"+
+                File.separator+
+                "java";
+        }else if(possible.endsWith("bin")){
+            possible = possible.substring(0,possible.length()-3)+
+                    File.separator+
+                    "java";
+        }
+
+        if(!Files.exists(Path.of(possible)) && !Files.exists(Path.of(possible+".exe"))){
+            throw new RuntimeException("Missing java executable");
+
+        }
+
+        return possible;*/
+    }
     private static ConcurrentHashMap<String,ThreadAndProc> processes = new ConcurrentHashMap<>();
     public static void runHamJar(Class<?> caller) throws HamTestException {
-        var datddd= false;
-        //if(datddd == false)return;
-        String commandLine = "java ";
+        var commandLine = new ArrayList<String>();
+        commandLine.add(findJava());
 
         var externalJsonPath  =Path.of(getRootPath(caller),"ham","external.json").toString();
-        commandLine+=" \"-Djsonconfig="+externalJsonPath+"\" ";
+        commandLine.add("-Djsonconfig="+externalJsonPath);
         var libsPath  =Path.of(getRootPath(caller),"ham","libs").toString();
-        commandLine+=" \"-Dloader.path="+libsPath+"\" -Dloader.main=org.kendar.Main ";
+        commandLine.add("-Dloader.path="+libsPath);
+        commandLine.add("-Dloader.main=org.kendar.Main");
 
 
 
@@ -77,8 +102,16 @@ public class HamStarter {
             }
         });
         var appPathRoot  =Path.of(matchingFiles[0].getAbsolutePath()).toString();
-        commandLine+=" -jar \""+appPathRoot+"\"";
-        runJar(commandLine,()-> {
+        /*try {
+            Files.copy(Path.of(appPathRoot),Path.of(appPathRoot+".tmp"), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new HamTestException(e);
+        }*/
+        commandLine.add("-jar");
+        commandLine.add(appPathRoot);
+        var jarDir= Path.of(matchingFiles[0].getAbsolutePath()).getParent().toAbsolutePath().toString();
+        //processBuilder.directory(new File("src"));
+        runJar(commandLine,jarDir,()-> {
             deleteDirectory(Path.of(getRootPath(caller),"jsplugins").toFile());
             deleteDirectory(Path.of(getRootPath(caller),"calllogs").toFile());
             deleteDirectory(Path.of(getRootPath(caller),"replayerdata").toFile());
@@ -109,9 +142,10 @@ public class HamStarter {
     }
 
     public static boolean shutdownHookInitialized =false;
-    public static void runJar(String command, Supplier<Boolean> ... expected) throws HamTestException {
+    public static void runJar(List<String> command, String jarDir, Supplier<Boolean>... expected) throws HamTestException {
 
         var someError = false;
+        var commandIndex = String.join(" ",command);
         for(var i=expected.length-1;i>=0;i--){
             if(!expected[i].get()){
                 someError = true;
@@ -121,31 +155,36 @@ public class HamStarter {
         var internalExpected = new ArrayList<>(Arrays.asList(expected));
         initShutdownHook();
         try {
-            if(processes.containsKey(command)){
-                var process = processes.get(command);
+            if(processes.containsKey(commandIndex)){
+                var process = processes.get(commandIndex);
                 if(process!=null) {
                     if (process.process.isAlive()) {
                         return;
                     }
                     process.thread = null;
                 }
-                processes.remove(command);
+                processes.remove(commandIndex);
             }
 
-            processes.computeIfAbsent(command,(cm)->{
+            processes.computeIfAbsent(commandIndex,(cm)->{
                 try {
 
                     var ntpc = new ThreadAndProc();
-                    ntpc.process = Runtime.getRuntime().exec(command);
+                    var pb = new ProcessBuilder(command);
+                    pb.directory(new File(jarDir));
+                    ntpc.process = pb.start();//Runtime.getRuntime().exec(command);
                     ntpc.trace = new ArrayList<>(internalExpected);
                     ntpc.thread = new Thread(new Runnable() {
                         public void run() {
 
-                            try {
+                            /*try {
                                 try (BufferedReader input =
                                              new BufferedReader(new
                                                      InputStreamReader(ntpc.process.getInputStream()))) {
                                     String line;
+                                    while((line = input.readLine()) != null) {
+                                        System.out.println(line);
+                                    }
                                     while (ntpc.process.isAlive()) {
                                         while((line = input.readLine()) != null) {
                                             System.out.println(line);
@@ -154,15 +193,40 @@ public class HamStarter {
                                 }
                             }catch (IOException | BufferOverflowException ex){
 
+                            }*/
+
+                            InputStream fromProcess = ntpc.process.getInputStream();
+                            InputStream fromError = ntpc.process.getErrorStream();
+
+                            int x;
+
+                            try {
+                                while((x = fromProcess.read()) != -1)
+                                    System.out.print((char)x);
+                            } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
                             }
+                            try {
+                                while((x = fromError.read()) != -1)
+                                    System.err.print((char)x);
+                            } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+
+                            int exit = ntpc.process.exitValue();
+                            System.out.println("Exited with code " + exit);
                             //BufferedReader input = new BufferedReader(new InputStreamReader(ntpc.process.getInputStream()));
 
 
                         }
                     });
-
-                            System.out.println("STARTING "+command);
                     ntpc.thread.start();
+                    System.out.println("STARTING "+commandIndex);
+
+                    Sleeper.sleep(100);
+
                     //
                     /*while(ntpc.thread.isAlive()){
                         Sleeper.sleep(100);
@@ -173,7 +237,12 @@ public class HamStarter {
                 }
             });
 
-            var ntpc = processes.get(command);
+            var ntpc = processes.get(commandIndex);
+
+            if(!ntpc.thread.isAlive()){
+                ntpc.process.destroy();
+                throw new RuntimeException("ERROR STARTING APP");
+            }
             while(!ntpc.trace.isEmpty()){
                 for(var i=ntpc.trace.size()-1;i>=0;i--){
                     if(ntpc.trace.get(i).get()){
