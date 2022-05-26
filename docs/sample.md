@@ -1,9 +1,9 @@
-A sample application is present in the samples/sampleapp folder. It's composed of
-three projects
+A couple of sample application are present in the samples. One with Spring Boot,
+the other one with Apache
+
+## Calendar application
 
 To demonstrate the capabilities of HAM i built a three part application
-
-## Sample composition
 
 ### FE (front end)
 
@@ -35,3 +35,10 @@ Can be used to
 Can be used
 
 * As a source to verify against PACT tests
+
+## Quotes application
+
+### Core (ham.quotes.master)
+
+A simple php application to retrieve NASDAQ quotes.
+Used to understand the inspection capabilities of the system.

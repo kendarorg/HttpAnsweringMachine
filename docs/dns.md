@@ -106,6 +106,15 @@ those names will contain the address exposed by the local machine
 
 Instead for the www.facebook.com DNS entry will be returned the exact ip set
 
+A further possibility is to configure a DNS entry with a name. This is useful when should
+simply use the DNS as is without the need to intercept data: an example is an sql server:
+locally i want to redirect to the address of the container instance
+
+          {
+            "id"  : "a",
+            "ip"  : "running.docker.container.with.mysql"
+            "dns" : "mysql.db.server.com"},
+
 ### Logging
 
 Inside the global logger section you can add a special logger

@@ -21,6 +21,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.ConnectionBuilder;
+import org.kendar.utils.JsonSmile;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.MimeChecker;
 import org.slf4j.Logger;
@@ -132,7 +133,11 @@ public abstract class BaseRequesterImpl implements BaseRequester{
                         var spl = contentType.split(";");
                         contentType = spl[0];
                     }
-                    if (request.isBinaryRequest()) {
+                    if(JsonSmile.JSON_SMILE_MIME.equalsIgnoreCase(contentType)) {
+                        entity =
+                                new ByteArrayEntity(
+                                        JsonSmile.jsonToSmile(request.getRequestText()), ContentType.create(contentType));
+                    } else if (request.isBinaryRequest()) {
                         entity =
                                 new ByteArrayEntity(
                                         request.getRequestBytes(), ContentType.create(contentType));
