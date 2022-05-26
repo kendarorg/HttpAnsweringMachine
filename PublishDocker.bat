@@ -1,11 +1,8 @@
 @echo off
-set VERSION=3.0.4
+set VERSION=3.0.5
 set SAMPLE_VERSION=1.0.4
-GOTO startall
 
-:function_name
-Do_something
-EXIT /B 0
+exit
 
 SET mypath=%~dp0
 cd %mypath%
