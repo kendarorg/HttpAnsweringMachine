@@ -98,17 +98,7 @@ public class ReplayerStatus {
             if (response.isBinaryResponse()) {
                 res.setResponseBytes(response.getResponseBytes());
             } else {
-                if(JsonSmile.JSON_SMILE_MIME.equalsIgnoreCase(response.getHeader("content-type"))){
-                    res.setBinaryResponse(true);
-                    try {
-                        res.setResponseBytes(JsonSmile.jsonToSmile(response.getResponseText()));
-                    }catch(Exception ex){
-                        logger.error("ERROR CONVERTING JSON TO SMILE");
-                        return false;
-                    }
-                }else {
-                    res.setResponseText(response.getResponseText());
-                }
+                res.setResponseText(response.getResponseText());
             }
             res.setHeaders(response.getHeaders());
             res.setStatusCode(response.getStatusCode());
