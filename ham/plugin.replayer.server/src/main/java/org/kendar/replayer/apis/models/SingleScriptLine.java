@@ -14,6 +14,7 @@ public class SingleScriptLine {
     private String requestPath;
     private int responseStatusCode;
     private boolean stimulatedTest;
+    private int reference;
 
     public int getId() {
         return id;
@@ -117,5 +118,13 @@ public class SingleScriptLine {
 
     public boolean isStimulatedTest() {
         return stimulatedTest;
+    }
+
+    public void setReference(int reference) {
+        this.reference = reference;
+    }
+
+    public int getReference() {
+        return reference;
     }
 }

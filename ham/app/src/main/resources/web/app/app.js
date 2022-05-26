@@ -62,7 +62,12 @@ class SimpleGrid {
 
         for (let i = 0; i < this.showSearch.length; i++) {
             const str = this.showSearch[i];
-            const content = this.retrieveFieldComplexContent(inputData, str.id);
+            var content = undefined;
+            if(str.field){
+                content = this.retrieveFieldComplexContent(inputData, str.field);
+            }else{
+                content = this.retrieveFieldComplexContent(inputData, str.id);
+            }
             const realId =  str.id.replaceAll("\.","_") + `_` + str.type;
             const valueToCompareWith = $("#" + this.tableId + " #"+realId).val();
             if(valueToCompareWith=="" || valueToCompareWith===undefined)continue;
@@ -92,8 +97,9 @@ class SimpleGrid {
         return false;
     }
 
-    stringToBoolean(string){
-        switch(string.toLowerCase().trim()){
+    stringToBoolean(value){
+        value+="";
+        switch(value.toLowerCase().trim()){
             case "true":
             case "yes":
             case "1":
@@ -212,6 +218,7 @@ class SimpleGrid {
         const allIndex = id.split(".");
         let content = inputData;
         for (let s = 0; s < allIndex.length; s++) {
+
             content = content[allIndex[s]];
         }
         if (content == undefined) content = "";

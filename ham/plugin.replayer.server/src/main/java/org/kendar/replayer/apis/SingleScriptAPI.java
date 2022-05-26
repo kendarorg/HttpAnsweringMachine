@@ -1,6 +1,7 @@
 package org.kendar.replayer.apis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
@@ -29,7 +30,7 @@ import java.util.List;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
-public class SingleScriptAPI {
+public class SingleScriptAPI implements FilteringClass {
     final ObjectMapper mapper = new ObjectMapper();
 
     private final String replayerData;
@@ -57,7 +58,7 @@ public class SingleScriptAPI {
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/v2/recording/{id}",
             method = "GET",
-            id = "4001daa6-fff-11ec-9621-0242ac1afe002")
+            id = "4001daa6-fff-11ec-9tar1-0242ac1afe002")
     public void listAllRecordingSteps(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
 
@@ -108,6 +109,10 @@ public class SingleScriptAPI {
             var line = referencedRowOption.get();
             var newLine = new SingleScriptLine();
             newLine.setId(index.getId());
+            newLine.setRequestMethod(line.getRequest().getMethod());
+            newLine.setRequestPath(line.getRequest().getPath());
+            newLine.setRequestHost(line.getRequest().getHost());
+            newLine.setReference(index.getReference());
             newLine.setPactTest(index.isPactTest());
             newLine.setStimulatorTest(index.isStimulatorTest());
             newLine.setStimulatedTest(line.isStimulatedTest());
@@ -116,6 +121,7 @@ public class SingleScriptAPI {
             newLine.setScript(datasetContent.getPostScript().containsKey(String.valueOf(line.getId())));
             newLine.setRequestHashCalc(isHashPresent(line.getRequestHash()));
             newLine.setResponseHashCalc(isHashPresent(line.getResponseHash()));
+            newLine.setResponseStatusCode(line.getResponse().getStatusCode());
             result.getLines().add(newLine);
         }
         result.setId(id);
@@ -125,5 +131,10 @@ public class SingleScriptAPI {
 
     private boolean isHashPresent(String hash) {
         return hash!=null && !hash.isEmpty() && !hash.equalsIgnoreCase("0");
+    }
+
+    @Override
+    public String getId() {
+        return this.getClass().getName();
     }
 }
