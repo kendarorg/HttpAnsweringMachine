@@ -13,55 +13,79 @@
 
         <div class="col-md-8">
             <br>
-            <button type="button"  class="btn btn-default" onClick="location.href='../../index.html'">Main</button>
-            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Scripts</button>
+            <button type="button" class="btn btn-default" onClick="location.href='../../index.html'">Main</button>
+            <button type="button" class="btn btn-default" onClick="location.href='index.html'">Scripts</button>
         </div>
         <div class="col-md-8">
             <br>
-            <button id="startrecording" name="startrecording" type="button"  class="btn btn-default" onClick="executeAct('start','record');">Start Recording</button>
-            <button id="pauserecording" name="pauserecording" type="button"  class="btn btn-default" onClick="executeAct('pause','record');">
-                <i class="bi bi-pause-fill"></i>Pause Recording</button>
-            <button id="stoprecording" name="stoprecording" type="button"  class="btn btn-default" onClick="executeAct('stop','record');">
-                <i class="bi bi-stop-fill"></i>Stop Recording</button>
+            <button id="startrecording" name="startrecording" type="button" class="btn btn-default"
+                    onClick="executeAct('start','record');">Start Recording
+            </button>
+            <button id="pauserecording" name="pauserecording" type="button" class="btn btn-default"
+                    onClick="executeAct('pause','record');">
+                <i class="bi bi-pause-fill"></i>Pause Recording
+            </button>
+            <button id="stoprecording" name="stoprecording" type="button" class="btn btn-default"
+                    onClick="executeAct('stop','record');">
+                <i class="bi bi-stop-fill"></i>Stop Recording
+            </button>
 
-            <button id="startreplaying" name="startreplaying" type="button"  class="btn btn-default" onClick="executeAct('start','replay');">
-                <i class="bi bi-play-fill"></i>Start Replaying</button>
-            <button id="pausereplaying" name="pausereplaying" type="button"  class="btn btn-default" onClick="executeAct('pause','replay');">
-                <i class="bi bi-pause-fill"></i>Pause Replaying</button>
-            <button id="stopreplaying" name="stopreplaying" type="button"  class="btn btn-default" onClick="executeAct('stop','replay');">
-                <i class="bi bi-stop-fill"></i>Stop Replaying</button>
+            <button id="startreplaying" name="startreplaying" type="button" class="btn btn-default"
+                    onClick="executeAct('start','replay');">
+                <i class="bi bi-play-fill"></i>Start Replaying
+            </button>
+            <button id="pausereplaying" name="pausereplaying" type="button" class="btn btn-default"
+                    onClick="executeAct('pause','replay');">
+                <i class="bi bi-pause-fill"></i>Pause Replaying
+            </button>
+            <button id="stopreplaying" name="stopreplaying" type="button" class="btn btn-default"
+                    onClick="executeAct('stop','replay');">
+                <i class="bi bi-stop-fill"></i>Stop Replaying
+            </button>
 
-            <button id="play_pact" name="play_pact" type="button"  class="btn btn-default" onClick="executeAct('start','pact');">
-                <i class="bi bi-fingerpring"></i>Start PACT</button>
-            <button id="stop_pact" name="stop_pact" type="button"  class="btn btn-default" onClick="executeAct('stop','pact');">
-                <i class="bi bi-stop-fill"></i>Stop PACT</button>
+            <button id="play_pact" name="play_pact" type="button" class="btn btn-default"
+                    onClick="executeAct('start','pact');">
+                <i class="bi bi-fingerpring"></i>Start PACT
+            </button>
+            <button id="stop_pact" name="stop_pact" type="button" class="btn btn-default"
+                    onClick="executeAct('stop','pact');">
+                <i class="bi bi-stop-fill"></i>Stop PACT
+            </button>
 
-            <button id="play_null" name="play_null" type="button"  class="btn btn-default" onClick="executeAct('start','null');">
-                <i class="bi bi-mic"></i>Start NULL</button>
-            <button id="stop_null" name="stop_null" type="button"  class="btn btn-default" onClick="executeAct('stop','null');">
-                <i class="bi bi-stop-fill"></i>Stop NULL</button>
+            <button id="play_null" name="play_null" type="button" class="btn btn-default"
+                    onClick="executeAct('start','null');">
+                <i class="bi bi-mic"></i>Start NULL
+            </button>
+            <button id="stop_null" name="stop_null" type="button" class="btn btn-default"
+                    onClick="executeAct('stop','null');">
+                <i class="bi bi-stop-fill"></i>Stop NULL
+            </button>
         </div>
         <div class="col-md-8">
             <h3>SCRIPT</h3>
         </div>
         <div class="col-md-8">
             <br>
-            <button id="save" name="save" type="button"  class="btn btn-default" onClick="save();">
-                <i class="bi bi-save"></i>Save</button>
-            <button id="download" name="download" type="button"  class="btn btn-default" onClick="download();">
-                <i class="bi bi-filetype-json"></i>Download</button>
-            <button id="downloadTest" name="downloadTest" type="button"  class="btn btn-default" onClick="downloadTest();">
-                <i class="bi bi-file-zip"></i>Download test project</button>
+            <button id="save" name="save" type="button" class="btn btn-default" onClick="save();">
+                <i class="bi bi-save"></i>Save
+            </button>
+            <button id="download" name="download" type="button" class="btn btn-default" onClick="download();">
+                <i class="bi bi-filetype-json"></i>Download
+            </button>
+            <button id="downloadTest" name="downloadTest" type="button" class="btn btn-default"
+                    onClick="downloadTest();">
+                <i class="bi bi-file-zip"></i>Download test project
+            </button>
         </div>
         <div class="col-md-8">
             <br>
             <div class="form-group">
                 <label for="id">Id</label>
-                <input class="form-control" readonly type="text" name="id" id="id" />
+                <input class="form-control" readonly type="text" name="id" id="id"/>
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
-                <input class="form-control" type="text" name="description" id="description" />
+                <input class="form-control" type="text" name="description" id="description"/>
             </div>
         </div>
 
@@ -72,71 +96,97 @@
             <br>
             <div class="form-group">
                 <label for="src">Source</label>
-                <input class="form-control" type="text" name="src" id="src" />
+                <input class="form-control" type="text" name="src" id="src"/>
             </div>
             <div class="form-group">
                 <label for="dst">Destination</label>
-                <input class="form-control" type="text" name="dst" id="dst" />
+                <input class="form-control" type="text" name="dst" id="dst"/>
             </div>
             <div class="form-group">
                 <label for="test">Test</label>
-                <input class="form-control" type="text" name="test" id="test" />
+                <input class="form-control" type="text" name="test" id="test"/>
             </div>
         </div>
 
         <div class="col-md-8">
-                <div class="col-md-8">
-                    <button id="full_selectall" name="full_selectall" type="button"  class="btn btn-default" onClick="full_selectall();">
-                        <i class="bi bi-check-all"></i>Select All</button>
-                    <button id="full_deselectall" name="full_deselectall" type="button"  class="btn btn-default" onClick="full_unselectall();">
-                        <i class="bi bi-square"></i>Unselect All</button>
-                    <div class="card" style="width: fit-content;">
+            <div class="col-md-8">
+                <button id="full_selectall" name="full_selectall" type="button" class="btn btn-default"
+                        onClick="full_selectall();">
+                    <i class="bi bi-check-all"></i>Select All
+                </button>
+                <button id="full_deselectall" name="full_deselectall" type="button" class="btn btn-default"
+                        onClick="full_unselectall();">
+                    <i class="bi bi-square"></i>Unselect All
+                </button>
+                <div class="card" style="width: fit-content;">
 
-                        <div class="card-body">
-                            <h4>Selected operations</h4>
-                    <button id="selected_script_edit" name="selected_script_edit" type="button"  class="btn btn-default" onClick="selected_script_edit();">
-                        <i class="bi bi-filetype-js"></i>Edit Js</button><br><br>
-                    <button id="full_togglepactselected" name="full_togglepactselected" type="button"  class="btn btn-default" onClick="togglepactselected();">
-                        <i class="bi bi-fingerprint"></i>Set as PACT</button><br><br>
-                    <button id="full_togglestimulatorselected" name="full_togglestimulatorselected" type="button"  class="btn btn-default" onClick="togglestimulatorselected();">
-                        <i class="bi bi-mic"></i>Set stimulatOR</button>
-                    <button id="script_togglestimulatedselected" name="script_togglestimulatedselected" type="button"  class="btn btn-default" onClick="togglestimulatedselected();">
-                        <i class="bi bi-headphones"></i>Set stimulatED</button>
-                            <br>
-                            <br>
-                            <button id="script_deleteselected" name="script_deleteselected" type="button"  class="btn btn-default" onClick="deleteSelected();">
-                                <i class="bi bi-eraser-fill"></i>Delete Selected</button>
-                            </div>
-                        </div>
-                    <br>
+                    <div class="card-body">
+                        <h4>Selected operations</h4>
+                        <button id="selected_script_edit" name="selected_script_edit" type="button"
+                                class="btn btn-default" onClick="selected_script_edit();">
+                            <i class="bi bi-filetype-js"></i>Edit Js
+                        </button>
+                        <br><br>
+                        <button id="full_togglepactselected" name="full_togglepactselected" type="button"
+                                class="btn btn-default" onClick="togglepactselected();">
+                            <i class="bi bi-fingerprint"></i>Set as PACT
+                        </button>
+                        <br><br>
+                        <button id="full_togglestimulatorselected" name="full_togglestimulatorselected" type="button"
+                                class="btn btn-default" onClick="togglestimulatorselected();">
+                            <i class="bi bi-mic"></i>Set stimulatOR
+                        </button>
+                        <button id="script_togglestimulatedselected" name="script_togglestimulatedselected"
+                                type="button" class="btn btn-default" onClick="togglestimulatedselected();">
+                            <i class="bi bi-headphones"></i>Set stimulatED
+                        </button>
+                        <br>
+                        <br>
+                        <button id="script_deleteselected" name="script_deleteselected" type="button"
+                                class="btn btn-default" onClick="deleteSelected();">
+                            <i class="bi bi-eraser-fill"></i>Delete Selected
+                        </button>
+                        <br>
+                        <br>
+                        <button id="script_dnsselected" name="script_dnsselected" type="button"
+                                class="btn btn-default" onClick="dnsSelected();">
+                            <i class="bi bi-signpost"></i>Add DNS for selected
+                        </button>
+                        <button id="script_sslselected" name="script_sslselected" type="button"
+                                class="btn btn-default" onClick="sslSelected();">
+                            <i class="bi bi-lock"></i>Add SSL for selected
+                        </button>
+                    </div>
                 </div>
-                <div class="col-md-8">
-                    <table class="table table-striped" id="allCalls" name="allCalls">
-                        <tr>
-                            <th>Selected</th>
-                            <th colspan="3">
-                                <!--<button class="btn btn-danger form-control"
-                                        onClick="addLine();">Add</button>-->
-                            </th>
-                            <th>Id</th>
-                            <th>Pact</th>
-                            <th>Stimulator</th>
-                            <th>Stimulated</th>
-                            <th>Method</th>
-                            <th>Host</th>
-                            <th>Path</th>
-                            <th>Query</th>
-                            <th>Res.Status</th>
-                            <th>Req.Body</th>
-                            <th>Res.Body</th>
-                            <th>Pre Script</th>
-                            <th>Script</th>
-                        </tr>
-                    </table>
-                </div>
+                <br>
+            </div>
+            <div class="col-md-8">
+                <table class="table table-striped" id="allCalls" name="allCalls">
+                    <tr>
+                        <th>Selected</th>
+                        <th colspan="3">
+                            <!--<button class="btn btn-danger form-control"
+                                    onClick="addLine();">Add</button>-->
+                        </th>
+                        <th>Id&nbsp;&nbsp;</th>
+                        <th>Pact&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th>Stimulator</th>
+                        <th>Stimulated</th>
+                        <th>Method</th>
+                        <th>Host</th>
+                        <th>Path&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th>Query&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th>Res.Status</th>
+                        <th>Req.Body</th>
+                        <th>Res.Body</th>
+                        <th>Pre Script</th>
+                        <th>Script</th>
+                    </tr>
+                </table>
+            </div>
             <!--</div>
         </div>-->
-            </div>
+        </div>
 
 
     </div>
@@ -158,6 +208,7 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
+
     var selected_script_edit = function(){
         var selected= getSelectedLines();
         if(selected.length==0)return;
@@ -569,6 +620,51 @@
                 location.reload();
             }
         });
+    }
+    function getSelectedHosts(){
+
+        var result = [];
+        allCalls.data.forEach(function (row, i) {
+            if($('#allCalls #selected_'+row['id']).prop("checked")) {
+                result.push(row['requestHost']);
+            }
+        });
+        return result;
+    }
+
+    var dnsSelected = function(){
+        var selected= getSelectedHosts();   //List of integers
+        if(selected.length==0)return;
+        $.ajax({
+            url: "/api/dns/mappings",
+            type: "POST",
+            data:JSON.stringify(selected),
+            contentType: "application/json",
+            success: function (res) {
+                success();
+            },
+            error:function(res){
+                error();
+            }
+        });
+
+    }
+    var sslSelected = function(){
+        var selected= getSelectedHosts();
+        if(selected.length==0)return;
+        $.ajax({
+            url: "/api/ssl",
+            type: "POST",
+            data:JSON.stringify(selected),
+            contentType: "application/json",
+            success: function (res) {
+                success();
+            },
+            error:function(res){
+                error();
+            }
+        });
+
     }
 </script>
 </body>
