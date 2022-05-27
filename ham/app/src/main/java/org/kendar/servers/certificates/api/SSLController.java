@@ -74,10 +74,10 @@ public class SSLController implements FilteringClass {
   }
 
   @HttpMethodFilter(
-      phase = HttpFilterType.API,
-      pathAddress = "/api/ssl",
-      method = "POST",
-      id = "1011a4b4-2ASD77d-11ec-9621-0242ac130002")
+          phase = HttpFilterType.API,
+          pathAddress = "/api/ssl",
+          method = "POST",
+          id = "1011a4b4-2ASD77d-11ec-9621-0242ac130002")
   public void addDnsServer(Request req, Response res) throws Exception {
     var cloned = configuration.getConfiguration(SSLConfig.class).copy();
 
@@ -98,7 +98,42 @@ public class SSLController implements FilteringClass {
     }
     final var newList2= newList;
     var notNew = cloned.getDomains().stream()
-                    .filter(a-> newList2.stream().noneMatch(m->m.getAddress().equalsIgnoreCase(a.getAddress())))
+            .filter(a-> newList2.stream().noneMatch(m->m.getAddress().equalsIgnoreCase(a.getAddress())))
+            .collect(Collectors.toList());
+    newList.addAll(notNew);
+    cloned.setDomains(newList);
+    configuration.setConfiguration(cloned);
+    res.setStatusCode(200);
+    eventQueue.handle(new SSLChangedEvent());
+  }
+
+  //TODO https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/sslgen",
+          method = "POST",
+          id = "1011a4b4-asdfD77d-11ec-9621-0242ac130002")
+  public void generateSSL(Request req, Response res) throws Exception {
+    var cloned = configuration.getConfiguration(SSLConfig.class).copy();
+
+    List<SSLDomain> newList = new ArrayList<>();
+    if(req.getRequestText().startsWith("[")){
+      newList = (List<SSLDomain>)mapper.readValue(req.getRequestText(), List.class).stream()
+              .map(a->{
+                var newDomain = new SSLDomain();
+                newDomain.setId(UUID.randomUUID().toString());
+                newDomain.setAddress((String)a);
+                return newDomain;
+              })
+              .distinct()
+              .collect(Collectors.toList());
+
+    }else {
+      newList.add( mapper.readValue(req.getRequestText(), SSLDomain.class));
+    }
+    final var newList2= newList;
+    var notNew = cloned.getDomains().stream()
+            .filter(a-> newList2.stream().noneMatch(m->m.getAddress().equalsIgnoreCase(a.getAddress())))
             .collect(Collectors.toList());
     newList.addAll(notNew);
     cloned.setDomains(newList);

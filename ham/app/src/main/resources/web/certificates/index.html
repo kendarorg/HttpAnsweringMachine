@@ -37,6 +37,27 @@
                 </tr>
             </table>
         </div>
+
+        <div class="col-md-8">
+            <h3>
+                Generate certificates
+            </h3>
+            <button type="button" id="prev" name="prev"  class="btn btn-default" onClick="generateTLSSSL()">Generate TLSSSL</button>
+            <div class="form-group">
+                <label htmlFor="validity">Validity in days</label>
+                <input class="form-control" readOnly type="text" name="validity" id="validity"/>
+            </div>
+            <table class="table table-striped" id="csr">
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th colspan="2">
+                        <button id="addCsr" name="addCsr" type="button"
+                                class="btn btn-default" onClick="addCsr();">Add new CSR</button>
+                    </th>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 <!-- Modal -->
