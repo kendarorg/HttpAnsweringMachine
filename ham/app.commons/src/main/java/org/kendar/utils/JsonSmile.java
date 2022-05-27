@@ -10,9 +10,11 @@ import java.io.IOException;
 public class JsonSmile {
     public static String JSON_SMILE_MIME = "application/x-jackson-smile";
     private static ObjectMapper smileMapper = new ObjectMapper(new SmileFactory());
+    private static ObjectMapper mapper = new ObjectMapper();
 
     public static byte[] jsonToSmile(String jsonValue) throws JsonProcessingException {
-            return smileMapper.writeValueAsBytes(jsonValue);
+            JsonNode actualObj = mapper.readTree(jsonValue);
+            return smileMapper.writeValueAsBytes(actualObj);
     }
 
     public static JsonNode smileToJSON(byte[] smileBytes) throws IOException {
