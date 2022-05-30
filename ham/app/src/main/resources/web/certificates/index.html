@@ -42,21 +42,16 @@
             <h3>
                 Generate certificates
             </h3>
-            <button type="button" id="prev" name="prev"  class="btn btn-default" onClick="generateTLSSSL()">Generate TLSSSL</button>
+            <button type="button" id="genTLSSSL" name="genTLSSSL"  class="btn btn-default" onClick="generateTLSSSL()">Generate TLSSSL</button>
+            
             <div class="form-group">
-                <label htmlFor="validity">Validity in days</label>
-                <input class="form-control" readOnly type="text" name="validity" id="validity"/>
+                <label htmlFor="cn">CN</label>
+                <input class="form-control" type="text" name="cn" id="cn" value="CN=main"/>
             </div>
-            <table class="table table-striped" id="csr">
-                <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th colspan="2">
-                        <button id="addCsr" name="addCsr" type="button"
-                                class="btn btn-default" onClick="addCsr();">Add new CSR</button>
-                    </th>
-                </tr>
-            </table>
+            <div class="form-group">
+                <label for="extraDomains">Domains</label>
+                <textarea class="form-control" rows="6" cols="50" name="extraDomains" id="extraDomains">www.main.com</textarea>
+            </div>
         </div>
     </div>
 </div>
@@ -78,7 +73,49 @@
 <script src="/app/app.js"></script>
 <script>
 
+    var generateTLSSSL = function(){
+        var data = {
+            validity: $("#validity").val(),
+            cn: $("#cn").val(),
+            extraDomains: $.trim($("#extraDomains").val()).split(/\r?\n/)
+        };
+        $.ajax({
+            url: "/api/sslgen",
+            type: "POST",
+            xhrFields: {
+                responseType: 'blob' // to avoid binary data being mangled on charset conversion
+            },
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(blob, textStatus, xhr){
+                // check for a filename
+                var filename = "local.cer";
 
+
+                if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                    // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+                    window.navigator.msSaveBlob(blob, filename);
+                } else {
+                    var URL = window.URL || window.webkitURL;
+                    var downloadUrl = URL.createObjectURL(blob);
+
+                        // use HTML5 a[download] attribute to specify filename
+                    var a = document.createElement("a");
+                    // safari doesn't support this yet
+                    if (typeof a.download === 'undefined') {
+                        window.location.href = downloadUrl;
+                    } else {
+                        a.href = downloadUrl;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                    }
+
+                    setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
+                }
+            }
+        });
+    }
 
     var certificatesTable = new SimpleGrid("Certificates","certificatesTable","id",["id","_download"],
         function(table){
