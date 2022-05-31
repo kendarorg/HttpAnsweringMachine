@@ -62,4 +62,7 @@ docker build -t ham.apache .
 cd ../apache-php8
 docker build -t ham.apache.php8 .
 
+cd ../mysql
+docker build -t ham.mysql .
+
 cd ..
