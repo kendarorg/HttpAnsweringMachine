@@ -67,9 +67,11 @@ mkdir -p "${rootAppDir}/${appDir}"
 mkdir -p "${rootServicesDir}/${appDir}"
 echo '#!/bin/bash' > $rootServicesDir/$appDir/run
 echo "exec 2>&1" >> $rootServicesDir/$appDir/run
-echo "exec ${runner}" >> $rootServicesDir/$appDir/run
 if [[ "$isConfig" == "true" ]]; then     ## GOOD
+  echo "${runner}" >> $rootServicesDir/$appDir/run
   echo "/etc/DoSleep.sh" >> $rootServicesDir/$appDir/run
+else
+  echo "exec ${runner}" >> $rootServicesDir/$appDir/run
 fi
 
 chmod +x "${rootServicesDir}/${appDir}/run"
