@@ -19,7 +19,6 @@ RUN sed -i -e "/^skip-networking/d" /etc/my.cnf.d/mariadb-server.cnf    \
 RUN mkdir -p /etc/app/app/ddl
 #COPY ./config/app.sh /etc/app/app/
 COPY ./config/mysqlsetup.sh /etc/app/app/
-COPY ./config/ddl/*.* /etc/app/app/ddl
 RUN chmod +x /etc/app/app/*.sh \
     && /etc/startservice.sh --config --app=mysqlsetup --run=/etc/app/app/mysqlsetup.sh
 

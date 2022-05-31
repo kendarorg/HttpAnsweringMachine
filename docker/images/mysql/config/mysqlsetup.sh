@@ -1,8 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 echo Default User $MYSQL_USER with $MYSQL_PASSWORD on $MYSQL_DBS with scripts on $MYSQL_DATA
 
-export DATABASES=$(echo $MYSQL_DBS | tr ";" "\n")
+IFS=';'
+read -r -a DATABASES <<< $MYSQL_DBS
+#DATABASES=($(echo $MYSQL_DBS | tr ";" "\n"))
 export CHECK_DB=${DATABASES[0]}
 
 # Wait for mysql to start
@@ -33,7 +35,7 @@ else
     /usr/bin/mysql -u root --password="$MYSQL_ROOT_PASSWORD" -e "GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'localhost' WITH GRANT OPTION;"
     /usr/bin/mysql -u root --password="$MYSQL_ROOT_PASSWORD" -e "FLUSH PRIVILEGES;"
     echo Create database
-    for DB_NAME in $DATABASES
+    for DB_NAME in "${DATABASES[@]}"
     do
         echo "Creating > [$DB_NAME]"
         /usr/bin/mysql -u root --password="$MYSQL_ROOT_PASSWORD" -e "CREATE DATABASE $DB_NAME"
