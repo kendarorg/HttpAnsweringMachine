@@ -4,5 +4,5 @@ function pause(){
  echo ""
 }
 
-docker build -t ham.quotes.master -f master.Dockerfile ../
-docker build -t ham.quotes.core -f core.Dockerfile ..\
+docker build --rm -t ham.quotes.master -f master.Dockerfile ../
+docker build --rm -t ham.quotes.core -f core.Dockerfile ..\
