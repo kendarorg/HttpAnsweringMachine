@@ -18,6 +18,14 @@ The basic docker image. With java 11 and all the certificates registered
 
 Notice that the JVM is NOT set on PATH or JAVA_HOME so that you can add anything you like
 
+### Parameters
+
+ROOT_PWD: The root password, default to root
+
+### Environment variables
+
+JAVA11_HOME: The home of Java11
+
 ### Runit
 
 Contains runit as service initializer. To add services to runit into the Dockerfiles
@@ -51,6 +59,10 @@ This is used to force the dns of the docker machine to the localhost AND forward
 
 You can add to it all that you want included new services/configurations or SDKs (java, net, wetheaver)
 
+### Parameters
+
+DNS_HIJACK_SERVER: The server where is running the HAM server
+
 ## Master (ham.master)
 
 The base image for the ham server, debuggable on port 5025
@@ -67,3 +79,47 @@ The configuration file is located in docker/images/mainuser.local.ovpn configure
 the exposed 3000 port
 
 Does not need passwords and gives you full access to the internal network and dnses
+
+## Apache (ham.apache)
+
+Apache 2 server. Can copy the website data inside the container "/htdocs" directory
+
+### Parameters
+
+LOG_LEVEL: default to info
+
+
+## Apache+php8 (ham.apache.php8)
+
+Apache 2 server with php8 support. Can copy the website data inside the container "/htdocs" directory
+
+### Parameters
+
+LOG_LEVEL: default to info
+PHP_MEMORY_LIMIT: default to 256M
+
+## MySQL (ham.mysql)
+
+mysql server+client
+
+At startup creates the databases listed in MYSQL_DBS then iterate on 
+the directory MYSQL_DATA looking for directories named like the database
+and execute the founded scripts in alphabetical order.
+
+A sample structure can be the following
+
+  /etc
+    /mysqldata
+      /firstdb
+        /00-setup.ddl
+        /01-insert.sql
+      /seconddb
+        ...
+
+
+### Parameters
+
+MYSQL_USER: default to main
+MYSQL_PASSWORD: default to main.
+MYSQL_DBS: default to test. Can be a ";" separated list of db names
+MYSQL_DATA: default to /etc/mysqldata
