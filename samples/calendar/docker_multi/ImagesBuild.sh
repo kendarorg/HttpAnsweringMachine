@@ -4,7 +4,7 @@ function pause(){
  echo ""
 }
 
-docker build -t ham.sampleapp.multi -f master.Dockerfile ../
-docker build -t ham.sampleapp.fe -f fe.Dockerfile ../
-docker build -t ham.sampleapp.be -f be.Dockerfile ../
-docker build -t ham.sampleapp.gateway -f gateway.Dockerfile ../
+docker build --rm -t ham.sampleapp.multi -f master.Dockerfile ../
+docker build --rm -t ham.sampleapp.fe -f fe.Dockerfile ../
+docker build --rm -t ham.sampleapp.be -f be.Dockerfile ../
+docker build --rm -t ham.sampleapp.gateway -f gateway.Dockerfile ../

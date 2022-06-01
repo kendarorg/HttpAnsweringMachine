@@ -17,6 +17,7 @@ call :pushdata "ham.apache" "%VERSION%"
 call :pushdata "ham.apache.php8" "%VERSION%"
 call :pushdata "ham.master" "%VERSION%"
 call :pushdata "ham.openvpn" "%VERSION%"
+call :pushdata "ham.mysql" "%VERSION%"
 
 call :pushdata "ham.sampleapp.be" "%SAMPLE_VERSION%"
 call :pushdata "ham.sampleapp.fe" "%SAMPLE_VERSION%"

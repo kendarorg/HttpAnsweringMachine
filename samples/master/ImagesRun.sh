@@ -14,7 +14,7 @@ while true; do
 done
 
 if [ "$builddocker" == "y" ]; then
-	docker build -t "app.$YOUR_APP_NAME" .
+	docker build --rm -t "app.$YOUR_APP_NAME" .
 fi
 
 

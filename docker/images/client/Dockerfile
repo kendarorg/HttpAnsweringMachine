@@ -1,4 +1,4 @@
-FROM ham.base:latest
+FROM ham.base
 
 # Setup localdns
 RUN mkdir -p /etc/app/simpledns/
