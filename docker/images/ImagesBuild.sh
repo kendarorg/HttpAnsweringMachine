@@ -11,18 +11,18 @@ DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 
 cd base
 echo Build Base
-docker build -t ham.base .
+docker build --rm -t ham.base .
 
 # cd ../proxy
 # echo Build Proxy
-# docker build -t ham.proxy .
+# docker build --rm -t ham.proxy .
 
 #cd ../externalvpn/forticlient
 #cp -f ../../base/data/startservice.sh data/
 #cp -f ../../base/data/sshd_config data/
 #cp -f ../../base/data/ca.crt data/
 #echo Build Vpn/forticlient
-#docker build -t ham.forticlient .
+#docker build --rm -t ham.forticlient .
 #cd ../
 
 #cd ../externalvpn/openconnect
@@ -30,11 +30,11 @@ docker build -t ham.base .
 #cp -f ../../base/data/sshd_config data/
 #cp -f ../../base/data/ca.crt data/
 #echo Build Vpn/Openconnect
-#docker build -t ham.openconnect .
+#docker build --rm -t ham.openconnect .
 #cd ../
 
 cd ../openvpn
-docker build -t ham.openvpn .
+docker build --rm -t ham.openvpn .
 
 #exit 0
 
@@ -45,24 +45,24 @@ mkdir -p data/app/libs
 rm -rf data/app/libs/*.*
 cp -f ../../../ham/app/target/*.jar data/app/
 cp -f ../../../ham/libs/*.jar data/app/libs/
-docker build -t ham.master .
+docker build --rm -t ham.master .
 
 cd ../client
 mkdir -p data/app
 rm -rf data/app/*.*
 cp -f  ../../../ham/simpledns/target/*.jar data/
-docker build -t ham.client .
+docker build --rm -t ham.client .
 
 cd ../singlemaster
-docker build -t ham.singlemaster .
+docker build --rm -t ham.singlemaster .
 
 cd ../apache
-docker build -t ham.apache .
+docker build --rm -t ham.apache .
 
 cd ../apache-php8
-docker build -t ham.apache.php8 .
+docker build --rm -t ham.apache.php8 .
 
 cd ../mysql
-docker build -t ham.mysql .
+docker build --rm -t ham.mysql .
 
 cd ..

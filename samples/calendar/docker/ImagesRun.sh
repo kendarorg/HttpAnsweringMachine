@@ -5,6 +5,6 @@ function pause(){
  echo ""
 }
 
-docker build -t ham.sampleapp.single -f Dockerfile ../
+docker build --rm -t ham.sampleapp.single -f Dockerfile ../
 docker-compose up
 pause
