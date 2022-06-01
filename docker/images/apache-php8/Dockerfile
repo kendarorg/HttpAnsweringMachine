@@ -1,4 +1,4 @@
-FROM ham.apache:latest
+FROM ham.apache
 
 # Setup apache and php
 RUN apk add --no-cache \

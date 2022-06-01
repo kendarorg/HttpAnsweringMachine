@@ -1,4 +1,4 @@
-FROM kendarorg/ham.client:latest
+FROM ham.client
 
 ENV TIMEZONE=Europe/Paris
 ENV MYSQL_ROOT_PASSWORD=root

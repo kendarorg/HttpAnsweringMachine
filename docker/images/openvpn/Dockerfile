@@ -1,6 +1,4 @@
-FROM ham.base:latest
-RUN apk update
-RUN apk upgrade
+FROM ham.base
 
 # Testing: pamtester
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && \

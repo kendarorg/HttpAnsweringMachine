@@ -1,4 +1,4 @@
-FROM ham.master:latest
+FROM ham.master
 
 COPY data/*.* /etc/app/dns/
 RUN chmod +x /etc/app/dns/*.sh
