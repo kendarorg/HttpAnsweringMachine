@@ -178,15 +178,20 @@ public class JsonConfigurationImpl implements JsonConfiguration {
   }
 
   public void saveConfiguration(String fileName) throws Exception {
+   var formattedResult = getConfigurationAsString();
+    Files.writeString(Path.of(fileName), formattedResult);
+  }
+
+  @Override
+  public String getConfigurationAsString() throws Exception {
     var strings = new ArrayList<String>();
 
     for (var entry : configurations.entrySet()) {
       strings.add(mapper.writeValueAsString(entry.getValue()));
     }
-    var mangledResult = "{" + String.join(",", strings) + "}";
+    var mangledResult = "[" + String.join(",", strings) + "]";
     var parsedResult = mapper.readTree(mangledResult);
-    var formattedResult = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsedResult);
-    Files.writeString(Path.of(fileName), formattedResult);
+    return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsedResult);
   }
 
   @Override

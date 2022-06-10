@@ -33,6 +33,6 @@ public @interface HttpMethodFilter {
     String pathPattern() default "";
     String method() default "";
     String description() default "";
-    String id();
+    String id() default "";;
     HamMatcher[] matcher() default {};
 }

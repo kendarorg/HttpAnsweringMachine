@@ -123,11 +123,16 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     }
 
     public void loadConfiguration(String fileName) throws Exception {
-
+        throw new RuntimeException("NOT IMPLEMENTED");
     }
 
     public void saveConfiguration(String fileName) throws Exception {
+        throw new RuntimeException("NOT IMPLEMENTED");
+    }
 
+    @Override
+    public String getConfigurationAsString() throws Exception {
+        throw new RuntimeException("NOT IMPLEMENTED");
     }
 
     @Override
