@@ -1,5 +1,9 @@
 The application contains a full DNS Server. 
 
+When you change the DNS settings in some situation you need to restart the application using it:
+* Browser: every time the browser goes to a page caches the DNS entry. Going onto a page and then changing the DNS makes mandatory restarting the browser
+* Application: as with browser every major rest client implementation does caches DNS requests and therfore the container application, if called one of the changed names before we changed the DNS name, must be restarted  
+
 ## On external properties
 
 It can be enabled inside the external.json with active

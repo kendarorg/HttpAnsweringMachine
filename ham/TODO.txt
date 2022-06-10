@@ -1,8 +1,0 @@
-* Global
-    * Save settings
-    * Download settings
-    * Upload settings
-* Http proxy
-    * //TODO HERE SHOULD ADD THE DNS LOOKUP
-    * Logs
-    * Code cleanup
