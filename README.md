@@ -75,7 +75,7 @@ connecting to it the [Special DNS Server](docs/dnsserver.md)
 This project was born as a way to intercept http/s calls through a PHP application with 
 apache, dnsmasq and openvpn on docker. To avoid changing all application configurations to
 debug against real environments. Then i added an oidc server, and looking at other products
-like Traffic Parrot the recording replaying was inserted as feature. To speed up stuffs it 
+like Traffic Parrot or Hoverfly.io, the recording replaying was inserted as feature. To speed up stuffs it 
 was then ported to Spring Boot and was added a true UI.
 
 ## Conventions
