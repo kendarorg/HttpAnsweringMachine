@@ -1,0 +1,19 @@
+{
+  "id": 22,
+  "array": [
+    "a",
+    "b"
+  ],
+  "stuffs": [
+    {
+      "id": 1,
+      "text": "what",
+      "extra": "extra"
+    },
+    {
+      "id": 1,
+      "description": "what",
+      "extra": "extra"
+    }
+  ]
+}

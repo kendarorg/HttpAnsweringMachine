@@ -1,0 +1,31 @@
+{
+  "id": "dns",
+  "system": true,
+  "active": true,
+  "port": 53,
+  "logQueries": false,
+  "forceLocalAddress" : "127.0.0.1",
+  "extraServers": [
+    {
+      "id": "1",
+      "address": "8.8.8.8",
+      "enabled": true
+    },
+    {
+      "id": "5",
+      "address": "8.8.4.4",
+      "enabled": true
+    }
+  ],
+  "blocked": [
+    "wpad.*",
+    "*.trafficmanager.net"
+  ],
+  "resolved": [
+    {
+      "id": "0",
+      "dns": "www.local.test",
+      "ip": "127.0.0.1"
+    }
+  ]
+}

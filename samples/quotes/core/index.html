@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Finance Application</title>
+    <link href="bootstrap-3.3.6-dist/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/navbar.css" rel="stylesheet">
+    <link href="assets/js/vendor/scale.css" rel="stylesheet"></link>
+</head>
+<style>
+    span.warning {
+        color: red;
+        font-weight: bold;
+        display: none;
+    }
+</style>
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Finance application</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="jumbotron">
+        <h1>Apple stock</h1>
+
+        <p>Apple stock quote last price is <span id="stock-quote-last-price">(please wait...)</span>
+            <span id="quote-warning" class="warning">!!!</span>
+        </p>
+        <p>
+            Updated on <span id="stock-quote-last-update">(please wait...)</span>
+        </p>
+
+    </div>
+    <div id="chart"></div>
+</div>
+
+<script>window.jQuery ||
+document.write('<script src="assets/js/vendor/jquery-3.2.1.min.js"><\/script><script src="assets/js/vendor/scale.js"><\/script>')</script>
+<script src="bootstrap-3.3.6-dist/js/bootstrap.js"></script>
+<script src="assets/js/ie10-viewport-bug-workaround.js"></script>
+<script>
+    var items = [];
+    var stock="AAPL";
+    $().ready(new function () {
+
+        (function getStocks(){
+            // Do something here
+            $.ajax({
+                url: "/api/stock/?id="+stock,
+                success: function (result) {
+                    var data = JSON.parse(result);
+                    $("#stock-quote-last-price").html(data.price);
+                    var warning = data.price < 10;
+                    $("#quote-warning").css("display", warning ? "inline" : "none");
+                    $("#stock-quote-last-price").css("color", warning ? "red" : "green");
+                    $("#stock-quote-last-update").html(new Date().toUTCString());
+                    /*items.push({
+                        value: parseInt(result),
+                        title: stock
+                    });*/
+                    /*$("#chart").linechart({
+                        data: items,
+                        width: 1,
+                        height: 50,
+                        boxSize: 1,
+                        line: true,
+                        theme: "purple"
+                    });*/
+                    setTimeout(getStocks, 5000);
+                }
+            });
+
+        })()
+
+
+
+    })
+</script>
+</body>
+</html>

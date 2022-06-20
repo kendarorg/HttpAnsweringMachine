@@ -2,9 +2,17 @@
 
 Simply copy the main jar where you want with the "libs" folder at the same level. It works with Java 11!!
 
+Just a note, you can include jsons with the followint syntax, using single or double quotes
+The quotes are used to avoid messing with json formatting
+
+The content of the target file will replace AS-IS the include statement
+
+	"#include:/absolute/path/file.json"
+	"#include:relative/to/external/json/path/file.json"
+
 ### Http and Https configuration
 
-Prepare a basic configuration in an "external.properties" file in the same dir of the Jar
+Prepare a basic configuration in an "external.json" file in the same dir of the Jar
 
 The name for which the server will respond
 
@@ -43,7 +51,7 @@ Under Windows run notepad as administrator and add the following at the end of
 
 #### Local DNS Server
 
-First you need to enable the local dns on external.properties file. Remind that this approach probably 
+First you need to enable the local dns on external.json file. Remind that this approach probably 
 wont work if you are running a VPN client! It does not work (for me) with OpenVPN client and 
 GlobalProtect. 
 
@@ -58,7 +66,7 @@ Then run the following command
     java "-Dloader.path=/start/services/answering/libs" \
         -Djdk.tls.acknowledgeCloseNotify=true \
         -Dloader.main=org.kendar.Main  \
-        -jar app-1.0-SNAPSHOT.jar \
+        -jar app-2.1.3.jar \
         org.springframework.boot.loader.PropertiesLauncher
 
 The loader.main is a specific Spring Boot variables to force the loading of
@@ -78,24 +86,33 @@ You should see then an "OK" text
 
 You can then install the root certificate on the machine, first list the certificate you need
 going on [http://www.local.test/api/certificates](http://www.local.test/api/certificates) that will
-return a list of the available formats:
+return a list of the available formats. The encrypted key pwd is "test":
 
         [
             "ca.der",
-            "ca.p12",
-            "ca.cer",
-            "ca.key",
-            "ca.srl",
-            "ca.pem",
-            "ca.crt"
+            "ca.encrypted.key",
+            "ca.key"
         ]
 
 You can then download your preferred one and install on the OS and on the Browser downloading them from
-[http://www.local.test/api/certificates/name](http://www.local.test/api/certificates/name) for example,
-then yout can download the certificat file and install it as root CA.
+[http://www.local.test/api/certificates/NAME](http://www.local.test/api/certificates/NAME) for example,
+then yout can download the certificae file and install it as trusted root CA.
 
-For example on Windows you can download the crt [http://www.local.test/api/certificates/ca.crt](http://www.local.test/api/certificates/ca.crt).
-Then you can unzip the file and install it as root CA. You can add it to the browsers directly.
+#### Windows
+
+For example on Windows you can download the der [http://www.local.test/api/certificates/ca.der](http://www.local.test/api/certificates/ca.der).
+Then you can unzip the file and install it as trusted root CA.
+
+#### Java
+
+On java you can download the der  [http://www.local.test/api/certificates/ca.der](http://www.local.test/api/certificates/ca.der).
+And import it into the main keystore
+
+    keytool -import -trustcacerts -alias answeringMachineCa -file ca.der -cacerts -storepass changeit
+
+#### Browser
+
+For the browser you can follow the various browsers instruction and install as trusted root CA.
 
 Now you can browse to [https://www.local.test/api/health](https://www.local.test/api/health) (mind the
-HTTPS! ) and you will not receive any security warning
+HTTPS! ) and you will not receive any security warning.

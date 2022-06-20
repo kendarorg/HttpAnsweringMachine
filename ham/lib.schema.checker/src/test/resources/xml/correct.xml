@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<a>
+    <c value='bah'/>
+    Some data
+    <b id="5">
+        <k></k>
+        <e>
+            Something
+        </e>
+    </b>
+</a>

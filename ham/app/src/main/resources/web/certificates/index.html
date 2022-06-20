@@ -1,0 +1,197 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <script src="/libs/lodash.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+    <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+        </div>
+        <div class="col-md-8">
+            <h3>Certificates</h3>
+            <table class="table table-striped" id="certificatesTable">
+                <tr>
+                    <th>Id</th>
+                    <th>Download</th>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-8">
+            <h3>Websites</h3>
+            <table class="table table-striped" id="websites">
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th colspan="2">
+                        <button id="addSite" name="addSite" type="button"
+                                class="btn btn-default" onClick="addSite();">Add new site</button>
+                    </th>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-md-8">
+            <h3>
+                Generate certificates
+            </h3>
+            <button type="button" id="genTLSSSL" name="genTLSSSL"  class="btn btn-default" onClick="generateTLSSSL()">Generate TLSSSL</button>
+            
+            <div class="form-group">
+                <label htmlFor="cn">CN</label>
+                <input class="form-control" type="text" name="cn" id="cn" value="CN=main"/>
+            </div>
+            <div class="form-group">
+                <label for="extraDomains">Domains</label>
+                <textarea class="form-control" rows="6" cols="50" name="extraDomains" id="extraDomains">www.main.com</textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Update User</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+
+    var generateTLSSSL = function(){
+        var data = {
+            validity: $("#validity").val(),
+            cn: $("#cn").val(),
+            extraDomains: $.trim($("#extraDomains").val()).split(/\r?\n/)
+        };
+        $.ajax({
+            url: "/api/sslgen",
+            type: "POST",
+            xhrFields: {
+                responseType: 'blob' // to avoid binary data being mangled on charset conversion
+            },
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(blob, textStatus, xhr){
+                // check for a filename
+                var filename = "local.cer";
+
+
+                if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                    // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+                    window.navigator.msSaveBlob(blob, filename);
+                } else {
+                    var URL = window.URL || window.webkitURL;
+                    var downloadUrl = URL.createObjectURL(blob);
+
+                        // use HTML5 a[download] attribute to specify filename
+                    var a = document.createElement("a");
+                    // safari doesn't support this yet
+                    if (typeof a.download === 'undefined') {
+                        window.location.href = downloadUrl;
+                    } else {
+                        a.href = downloadUrl;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                    }
+
+                    setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
+                }
+            }
+        });
+    }
+
+    var certificatesTable = new SimpleGrid("Certificates","certificatesTable","id",["id","_download"],
+        function(table){
+            $.ajax({
+                url: "/api/certificates",
+                type: 'GET',
+                success: function(realRes) {
+                    var res=[];
+                    for(var v=0;v<realRes.length;v++) {
+                        res.push([])
+                        res[v]["_download"]="<a href='/api/certificates/"+realRes[v]+"'>Download</a>";
+                        res[v]["id"]=realRes[v];
+                    }
+                    $.each(res, function(i, script) {
+                        table.appendToTable(script,false);
+                    });
+                }
+            });
+        },
+        null,
+        null,
+        null).load();
+
+
+    var websites = new SimpleGrid("WebSites","websites","key",["key","value"],
+        function(table){
+            $.ajax({
+                url: "/api/ssl",
+                type: 'GET',
+                success: function(realRes) {
+                    $.each(realRes, function(i, script) {
+                        var line = {key:script["id"],value:script["address"]};
+                        table.appendToTable(line);
+                    });
+                }
+            });
+        },
+        function (table,id) {
+            editKvp(".modal",table,id,"key","value");
+        },
+        function (table,id) {
+            deleteKvp(".modal",table,id,"key","value",function(id,success,error){
+                $.ajax({
+                    url: "/api/ssl/"+id,
+                    type: 'DELETE',
+                    success: function(realRes) {
+                        success();
+                    }
+                });
+
+            });
+        },
+        function (table,id,saveOrUpdate) {
+            updateKvp(".modal",table,id,"key","value",function(k,v,saveOrUpdate){
+                var data = {
+                    id:k,
+                    address:v
+                };
+                $.ajax({
+                    url: "/api/ssl",
+                    data:JSON.stringify(data),
+                    contentType: "application/json",
+                    type: 'POST',
+                    success: function(realRes) {
+                        success();
+                        location.reload();
+                    }
+                });
+            });
+        }).load();
+
+
+    var addSite = function(){
+        addKvp('.modal',websites,'key','value',uuidv4());
+    }
+
+</script>
+</body>
+</html>

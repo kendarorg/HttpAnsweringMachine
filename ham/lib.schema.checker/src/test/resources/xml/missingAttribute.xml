@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<a>
+    <b>
+        <e>
+            This is elsewhere
+        </e>
+        <k></k>
+    </b>
+    <b id="2"/>
+    <c value='test'/>
+    <![CDATA[
+        this is cdata
+    ]]>
+</a>

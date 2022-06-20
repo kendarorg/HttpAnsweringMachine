@@ -1,11 +1,24 @@
 The application contains a full DNS Server. 
 
+When you change the DNS settings in some situation you need to restart the application using it:
+* Browser: every time the browser goes to a page caches the DNS entry. Going onto a page and then changing the DNS makes mandatory restarting the browser
+* Application: as with browser every major rest client implementation does caches DNS requests and therfore the container application, if called one of the changed names before we changed the DNS name, must be restarted  
+
 ## On external properties
 
 It can be enabled inside the external.json with active
 
     [{  "id":"dns",
         "active": true,
+
+### Special definition for "localhost/127.0.0.1" resolution
+
+When running the DNS server search for the lan address of the machine on
+which it runs. When you have multiple interfaces (like while on VPN) you
+can set it to a fixed ip. When you write 127.0.0.1 on the dns resolved names
+it will be translated to the following
+
+    "forceLocalAddress" : "192.168.10.5",
 
 ### Extra servers
 
@@ -96,6 +109,15 @@ Telling that the address is 127.0.0.1 (loopback interface) means that every DNS 
 those names will contain the address exposed by the local machine
 
 Instead for the www.facebook.com DNS entry will be returned the exact ip set
+
+A further possibility is to configure a DNS entry with a name. This is useful when should
+simply use the DNS as is without the need to intercept data: an example is an sql server:
+locally i want to redirect to the address of the container instance
+
+          {
+            "id"  : "a",
+            "ip"  : "running.docker.container.with.mysql"
+            "dns" : "mysql.db.server.com"},
 
 ### Logging
 
