@@ -1,0 +1,60 @@
+version: "2"
+networks:
+  quotessample:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.6.0/24
+services:
+  ham.quotes.openvpn:
+    container_name: ham.quotes.openvpn
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    ports:
+      - "3000:1194/udp"
+    networks:
+      - quotessample
+    environment:
+      - DNS_HIJACK_SERVER=ham.quotes.master
+      - ROOT_PWD=root
+    image: kendarorg/ham.openvpn:latest
+    depends_on:
+      - ham.quotes.master
+  ham.quotes.master:
+    container_name: ham.quotes.master
+    privileged: true
+    environment:
+      - ROOT_PWD=root
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    image: kendarorg/ham.quotes.master:latest
+    networks:
+      - quotessample
+    ports:
+      - "5025:5025"
+      - "1080:1080"
+  ham.quotes.core:
+    container_name: ham.quotes.core
+    privileged: true
+    environment:
+      - HTTP_SERVER_NAME=ham.quotes.core
+      - HTTPS_SERVER_NAME=ham.quotes.core
+      - DNS_HIJACK_SERVER=ham.quotes.master
+      - ROOT_PWD=root
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    image: kendarorg/ham.quotes.core:latest
+    networks:
+      - quotessample
+    depends_on:
+      - ham.quotes.master

@@ -1,0 +1,181 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Employees</button>
+        </div>
+        <div class="col-md-8">
+            <h3>APPOINTMENTS</h3>
+            <table class="table table-striped" id="appointmentsTable">
+                <tr>
+                    <th>Id</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th colspan="2">
+                        <button class="btn btn-danger form-control"
+                                onClick="addAppointment();">Add</button>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Proxy</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+    var employeeId = getUrlParameter("employeeId");
+    var appointmentModal = `
+    <label for="status">status</label>
+    <input class="form-control" readonly type="text" name="status"  id="status" />
+    <label for="employeeId">employeeId</label>
+    <input class="form-control" readonly type="text" name="employeeId"  id="employeeId" />
+    <label for="date">date</label>
+    <input class="form-control" type="text" name="date"  id="date" />
+    <label for="description">description</label>
+    <input class="form-control" type="text" name="description"  id="description" />
+    `;
+    var addAppointment = function () {
+        var modal = ".modal";
+        var randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
+        var target = {
+            id: 0
+        };
+        var id = target.id;
+        buildGenericModal(modal, scriptsTable, target, "id", appointmentModal, randomId, false);
+        $(modal).find("#" + randomId).click(function () {
+            scriptsTable.saveFunction(scriptsTable, id, true);
+        });
+        $(modal).find("#status").val("CREATED");
+        $(modal).find("#date").val(new Date().toISOString());
+        $(modal).find("#employeeId").val(employeeId);
+    }
+    var editAppointment = function (table, id) {
+        var modal = ".modal";
+        var randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
+        var localTable = table;
+        localTable.data.forEach(function (value, i) {
+            if (value["id"] == id) {
+                buildGenericModal(modal, table, value, "id", appointmentModal, randomId, true);
+                $(modal).find("#" + randomId).click(function () {
+                    localTable.saveFunction(localTable, id, false);
+                });
+                $(modal).find("#status").val(value["status"]);
+                $(modal).find("#date").val(value["date"]);
+                $(modal).find("#description").val(value["description"]);
+                $(modal).find("#employeeId").val(employeeId);
+            }
+        });
+    }
+
+    var changeState = function (id, employeeId) {
+        $.ajax({
+            url: apiHost + "/api/v1/appointments/" + employeeId + "/" + id + "/state",
+            type: 'PUT',
+            success: function (res) {
+                location.reload();
+            },
+            error: function (res) {
+                error();
+            }
+        });
+    }
+    var scriptsTable = new SimpleGrid("Appointments", "appointmentsTable", "id", ["id", "status", "_changestate", "date", "description"],
+        function (table) {
+            $.ajax({
+                url: apiHost + "/api/v1/appointments/" + employeeId,
+                type: 'GET',
+                success: function (res) {
+                    for (var v = 0; v < res.length; v++) {
+                        if (res[v]["status"] == "CONFIRMED") {
+                            res[v]["_changestate"] = "";
+                        } else {
+                            res[v]["_changestate"] = "<button class=\"btn btn-success form-control\" id=\"appointments-" +
+                                res[v]['id'] +
+                                "-edit\" onclick='changeState(\"" + res[v]['id'] + "\",\"" + employeeId + "\")'>Go</button>"
+                        }
+                    }
+                    $.each(res, function (i, script) {
+                        table.appendToTable(script);
+                    });
+                }
+            });
+        },
+        function (table, id) {
+            editAppointment(table, id)
+        },
+        function (table, id) {
+            table.deleteFromTable(id, function (id, success, error) {
+                $.ajax({
+                    url: apiHost + "/api/v1/appointments/" + employeeId + "/" + id,
+                    type: 'DELETE',
+                    success: function (res) {
+                        success();
+                        location.reload();
+                    },
+                    error: function (res) {
+                        error();
+                    }
+                });
+            });
+        },
+        function (table, id, saveOrUpdate) {
+            var modal = ".modal";
+            var data = {
+                id: id,
+                employeeId: employeeId,
+                status: $(modal).find("#status").val(),
+                date: $(modal).find("#date").val(),
+                description: $(modal).find("#description").val()
+            };
+
+            $.ajax({
+                url: apiHost + "/api/v1/appointments/" + employeeId + (saveOrUpdate ? "" : "/" + id),
+                type: saveOrUpdate ? 'POST' : 'PUT',
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function (res) {
+                    success();
+                    location.reload();
+                },
+                error: function (res) {
+                    error();
+                }
+            });
+        })
+    $.ajax({
+        url: "/api/settings",
+        type: 'GET',
+        success: function(settings) {
+
+            apiHost = settings["appointment"];
+            useresHost = settings["employee"];
+
+            scriptsTable.load();
+        }});
+</script>
+</body>
+</html>

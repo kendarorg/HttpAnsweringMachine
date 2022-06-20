@@ -14,7 +14,7 @@ take the data and where you could find the real dependencies.
     even included the "asm-5.0.4.jar" that was not identified as a direct dependency. Do
     some run to check what is needed
 
-The jar and the dependencies should be placed into the [libs directory](../local/basic.md)
+The jar and the dependencies should be placed into the [libs directory](../basic.md)
 
 * [Filters](java/jfilters.md)
 * [Static pages](java/jstatic.md)

@@ -1,0 +1,42 @@
+version: "2"
+networks:
+  sampleappnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/24
+services:
+  ham.sampleapp.single.openvpn:
+    container_name: ham.sampleapp.single.openvpn
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    ports:
+      - "3000:1194/udp"
+    networks:
+      - sampleappnet
+    environment:
+      - DNS_HIJACK_SERVER=ham.sampleapp.single.master
+      - ROOT_PWD=root
+    image: ham.openvpn
+    depends_on:
+      - ham.sampleapp.single.master
+  ham.sampleapp.single.master:
+    container_name: ham.sampleapp.single.master
+    privileged: true
+    environment:
+      - ROOT_PWD=root
+    cap_add:
+      - NET_ADMIN
+      - DAC_READ_SEARCH
+    dns:
+      - 127.0.0.1
+    image: ham.sampleapp.single
+    networks:
+      - sampleappnet
+    ports:
+      - "1080:1080"
+      - "5025:5025"

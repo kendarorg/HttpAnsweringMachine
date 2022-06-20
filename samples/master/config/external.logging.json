@@ -1,0 +1,12 @@
+{
+	"logPath": null,
+	"logRoundtripsPath": "calllogs",
+	"logLevel": "INFO",
+	"loggers": {
+		"org.kendar.servers.http.Request": "OFF",
+		"org.kendar.servers.http.Response": "OFF",
+		"org.kendar.servers.http.StaticRequest": "OFF",
+		"org.kendar.servers.http.DynamicRequest": "OFF",
+		"org.kendar.dns.DnsQueries": "OFF"
+	}
+}

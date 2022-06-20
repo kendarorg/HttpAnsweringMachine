@@ -1,0 +1,20 @@
+{
+  "id": "Nasdaq",
+  "method": "GET",
+  "hostAddress": "api.nasdaq.com.blocked",
+  "hostRegexp": "",
+  "pathAddress": "",
+  "pathRegexp": "/api/quote/([A-Za-z0-9]+)/info",
+  "phase": "PRE_CALL",
+  "priority": "0",
+  "blocking": false,
+  "source": [
+    "request.getHeaders().clear();",
+    "request.addHeader(\"User-Agent\",\"Java-http-client/\");",
+    "request.addHeader(\"Accept-Encoding\",\"gzip, deflate\");",
+    "request.addHeader(\"Accept-Language\",\"en-US,en;q=0.9\");",
+    "",
+    "return true;"
+  ],
+  "requires": []
+}

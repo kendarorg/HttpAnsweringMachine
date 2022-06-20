@@ -23,10 +23,21 @@
 hs_err_pid*
 
 # Local stuffs
-/derbydata
-/jsplugins
-/libs
-/recording
-/replayerdata
+/ham/derbydata
+/ham/jsplugins
+/ham/libs
+/ham/recording
+/ham/replayerdata
+/ham/calllogs
+/ham/pacts
+/ham/app-*.jar
+
 
 target
+!/externals/json-schema-inferrer-0.1.4.jar
+
+.DS_Store
+sonarlint
+.java-version
+.idea
+

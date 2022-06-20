@@ -1,0 +1,141 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <script src="/libs/lodash.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+    <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Dns Utils</button>
+
+        </div>
+        <div class="col-md-8">
+            <h3>DNS Resolved</h3>
+
+            <button id="selectall" name="selectall" type="button"  class="btn btn-default" onClick="selectall();">
+                <i class="bi bi-check-all"></i>Select All</button>
+            <button id="deselectall" name="deselectall" type="button"  class="btn btn-default" onClick="unselectall();">
+                <i class="bi bi-square"></i>Unselect All</button>
+
+            <button id="selectedasssl" name="selectedasssl" type="button"  class="btn btn-default" onClick="selectedasssl();">
+                <i class="bi bi-lock"></i>HTTPS for selected</button>
+            <button id="selectedasdns" name="selectedasdns" type="button"  class="btn btn-default" onClick="selectedasdns();">
+                <i class="bi bi-signpost"></i>DNS for selected</button>
+            <br>
+
+            <table class="table table-striped" id="dnsTable">
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Resolved</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+    var selectedasssl = function(){
+        var data = [];
+        dnsTable.data.forEach(function (row, i) {
+            let ip = row['ip'].replaceAll("\.","_");
+            if($('#dnsTable #selected_'+ip).is(":checked")){
+                data.push(row['name']);
+            }
+        });
+        //Ajax call
+        $.ajax({
+            url: "/api/ssl",
+            type: "POST",
+            data:JSON.stringify(data),
+            contentType: "application/json",
+            success: function (res) {
+                success();
+            },
+            error:function(res){
+                error();
+            }
+        });
+    }
+
+    var selectedasdns = function(){
+        var data = [];
+        dnsTable.data.forEach(function (row, i) {
+            let ip = row['ip'].replaceAll("\.","_");
+            if($('#dnsTable #selected_'+ip).is(":checked")){
+                data.push(row['name']);
+            }
+        });
+        //Ajax call
+        //Ajax call
+        $.ajax({
+            url: "/api/dns/mappings",
+            type: "POST",
+            data:JSON.stringify(data),
+            contentType: "application/json",
+            success: function (res) {
+                success();
+            },
+            error:function(res){
+                error();
+            }
+        });
+    }
+
+    var selectall = function(){
+        dnsTable.data.forEach(function (row, i) {
+            let ip = row['ip'].replaceAll("\.","_");
+            setChecked($('#dnsTable #selected_'+ip),true);
+        });
+    }
+    var unselectall = function(){
+        dnsTable.data.forEach(function (row, i) {
+            let ip = row['ip'].replaceAll("\.","_");
+            setChecked($('#dnsTable #selected_'+ip),false);
+        });
+    }
+
+    var dnsTable = new SimpleGrid("Dns","dnsTable","ip",["_selected","name","ip"],
+        function(table){
+            $.ajax({
+                url: "/api/dns/list",
+                type: 'GET',
+                success: function(res) {
+
+                    $.each(res, function(i, script) {
+                        let ip = script['ip'].replaceAll("\.","_");
+                        script['_selected']=`<div class="form-check">
+<label class="form-check-label">
+                <input class="form-check-input"  type="checkbox" value="false" id="selected_` + ip + `" name="selected_`+ip+`">
+</label>
+            </div>`
+                        table.appendToTable(script,false);
+
+                        $(document).on('change', '#dnsTable #selected_'+ip, function() {
+                            var checkbox = $(this); // Selected or current checkbox
+                            setChecked($('#allCalls #selected_'+ip,checkbox.is(':checked')));
+                        });
+                    });
+                }
+            });
+        },
+        null,
+        null,
+       null,[{id:"ip",type:"string"},
+            {id:"name",type:"string"}]).load();
+
+
+
+
+
+
+</script>
+</body>
+</html>
