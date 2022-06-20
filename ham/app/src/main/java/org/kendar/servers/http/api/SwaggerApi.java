@@ -9,13 +9,16 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.*;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.kendar.http.FilterConfig;
+import org.kendar.http.HttpFilterType;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.http.Response;
 
 
 import java.io.IOException;
@@ -38,10 +41,17 @@ public class SwaggerApi {
   public void loadSwagger(){
     var config = filtersConfiguration.get();
     var result = new ArrayList<String>();
-    var swloader = new SwaggerLoader();
 
-    for (var kvp : config.filtersByClass.entrySet()) {
-      var instance = kvp.getValue().get(0);
+    final Map<String, Schema> schemas = ModelConverters.getInstance().read(Response.class);
+    OpenAPI swagger = new OpenAPI()
+            .addServersItem(new Server().url("http://www.local.test"));
+    swagger.setInfo(new Info()
+            .title("Local API")
+            .version("1.0.0"));
+
+    for (var filter : config.filters.get(HttpFilterType.API)) {
+
+      //var instance = kvp.getValue().get(0);
       //swloader.(instance.getClass());
     }
     //var openapi = swloader.getOpenAPI();
