@@ -1,5 +1,10 @@
 #!/bin/bash
 
+MYSQL_USER="${MYSQL_USER:-main}"
+MYSQL_PASSWORD="${MYSQL_PASSWORD:-main}"
+MYSQL_DBS="${MYSQL_DBS:-test}"
+MYSQL_DATA="${MYSQL_DATA:-/etc/mysqldata}"
+
 echo Default User $MYSQL_USER with $MYSQL_PASSWORD on $MYSQL_DBS with scripts on $MYSQL_DATA
 
 IFS=';'
