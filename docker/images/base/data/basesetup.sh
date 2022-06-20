@@ -9,6 +9,8 @@ mkdir -p /etc/service
 mkdir -p /etc/app
 chmod +x /etc/startservice.sh
 
+ROOT_PWD="${ROOT_PWD:-root}"
+
 # Generate ssh keys
 ssh-keygen -A
 mkdir -p /root/.ssh
