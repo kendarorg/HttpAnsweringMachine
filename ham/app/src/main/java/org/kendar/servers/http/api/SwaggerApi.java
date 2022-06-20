@@ -16,7 +16,9 @@ import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.kendar.http.FilterConfig;
+import org.kendar.http.FilterDescriptor;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Response;
 
@@ -49,8 +51,12 @@ public class SwaggerApi {
             .title("Local API")
             .version("1.0.0"));
 
-    for (var filter : config.filters.get(HttpFilterType.API)) {
+    for (var kvp : config.filters.entrySet()) {
+      if(kvp.getKey() != HttpFilterType.API ) continue;
+      for(var filter : kvp.getValue()) {
+        HamDoc doc = filter.getHamDoc();
 
+      }
       //var instance = kvp.getValue().get(0);
       //swloader.(instance.getClass());
     }
