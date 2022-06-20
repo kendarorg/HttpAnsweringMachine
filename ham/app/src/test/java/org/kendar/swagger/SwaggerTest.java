@@ -4,12 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.util.Json;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
-import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.*;
 import io.swagger.v3.oas.models.examples.Example;
+import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.links.Link;
 import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.parameters.PathParameter;
@@ -21,7 +20,9 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.junit.jupiter.api.Test;
 import org.kendar.servers.http.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,20 +53,20 @@ public class SwaggerTest {
         ApiResponse expectedResponse = new ApiResponse()
                 .description("respo200");
 
-        var xxx = new Response();
+        /*var xxx = new Response();
         xxx.setStatusCode(200);
         xxx.setResponseText("BAH");
-        xxx.addHeader("test","test");
+        xxx.addHeader("test","test");*/
         Content content = new Content()
                 .addMediaType("application/json",
                         new MediaType()
                                 .schema(new Schema()
                                         .$ref(Response.class.getSimpleName()))
 
-                               .addExamples("0001",
+                               /*.addExamples("0001",
                                         new Example().value(
                                                 Json.mapper().writeValueAsString(xxx)
-                                        )));
+                                        ))*/);
 
         RequestBody requestBody = new RequestBody().content(content);
 
@@ -102,5 +103,102 @@ public class SwaggerTest {
         OpenAPI rebuilt = Json.mapper().readValue(swaggerJson, OpenAPI.class);
         String result = Json.mapper().writeValueAsString(rebuilt);
         System.out.println(result);
+    }
+
+    @Test
+    public void convertSpec() throws IOException, JsonProcessingException {
+        final Schema personModel = ModelConverters.getInstance().read(Response.class).get("Response");
+        //final Schema errorModel = ModelConverters.getInstance().read(Error.class).get("Error");
+        final Info info = new Info()
+                .version("1.0.0")
+                .title("Swagger Petstore");
+
+        final Contact contact = new Contact()
+                .name("Swagger API Team")
+                .email("foo@bar.baz")
+                .url("http://swagger.io");
+
+        info.setContact(contact);
+
+        final Map<String, Object> map = new HashMap<String, Object>();
+        map.put("name", "value");
+        info.addExtension("x-test2", map);
+        info.addExtension("x-test", "value");
+
+        final OpenAPI swagger = new OpenAPI()
+                .info(info)
+                .addServersItem(new Server()
+                        .url("http://petstore.swagger.io"))
+
+//                .securityDefinition("api-key", new ApiKeyAuthDefinition("key", In.HEADER))
+//                .consumes("application/json")
+//                .produces("application/json")
+                .schema("Response", personModel);
+
+        final Operation get = new Operation()
+//                .produces("application/json")
+                .summary("finds pets in the system")
+                .description("a longer description")
+                .addTagsItem("Pet Operations")
+                .operationId("get pet by id")
+                .deprecated(true);
+
+        get.addParametersItem(new Parameter()
+                .in("query")
+                .name("tags")
+                .description("tags to filter by")
+                .required(false)
+                .schema(new StringSchema())
+        );
+
+        get.addParametersItem(new Parameter()
+                .in("path")
+                .name("petId")
+                .description("pet to fetch")
+                .schema(new IntegerSchema().format("int64"))
+        );
+
+        final ApiResponse response = new ApiResponse()
+                .description("pets returned")
+                .content(new Content()
+                        .addMediaType("application/json", new MediaType()
+                                .schema(new Schema().$ref("Response"))
+                                .example("fun")));
+
+        final ApiResponse errorResponse = new ApiResponse()
+                .description("error response")
+                .link("myLink", new Link()
+                        .description("a link")
+                        .operationId("theLinkedOperationId")
+                        .parameters("userId", "gah")
+                )
+                .content(new Content()
+                        .addMediaType("application/json", new MediaType()
+                                .schema(new Schema().$ref("Response"))));
+
+        get.responses(new ApiResponses()
+                .addApiResponse("200", response)
+                .addApiResponse("default", errorResponse));
+
+        final Operation post = new Operation()
+                .summary("adds a new pet")
+                .description("you can add a new pet this way")
+                .addTagsItem("Pet Operations")
+                .operationId("add pet")
+                .responses(new ApiResponses()
+                        .addApiResponse("default", errorResponse))
+                .requestBody(new RequestBody()
+                        .description("the pet to add")
+                        .content(new Content().addMediaType("*/*", new MediaType()
+                                .schema(new Schema().$ref("Response")))));
+
+        swagger.paths(new Paths().addPathItem("/pets", new PathItem()
+                .get(get).post(post)));
+        final String swaggerJson = Json.mapper().writeValueAsString(swagger);
+        //Json.prettyPrint(swagger);
+        final OpenAPI rebuilt = Json.mapper().readValue(swaggerJson, OpenAPI.class);
+        String result = Json.mapper().writeValueAsString(rebuilt);
+        System.out.println(result);
+        //SerializationMatchers.assertEqualsToJson(rebuilt, swaggerJson);
     }
 }
