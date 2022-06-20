@@ -45,6 +45,7 @@ public class SwaggerTest {
         );
 
 
+
         //PathItem expectedPath = new PathItem().$ref("http://my.company.com/paths/health.json");
         //swagger.path("/health", expectedPath);
 
@@ -58,6 +59,8 @@ public class SwaggerTest {
         Content content = new Content()
                 .addMediaType("application/json",
                         new MediaType()
+                                .schema(new Schema()
+                                        .$ref(Response.class.getSimpleName()))
 
                                .addExamples("0001",
                                         new Example().value(
