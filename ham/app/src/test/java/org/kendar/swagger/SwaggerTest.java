@@ -29,6 +29,7 @@ import java.util.Map;
 /**
  * https://editor.swagger.io/
  * https://swagger.io/docs/specification/2-0/basic-structure/
+ * https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations
  */
 public class SwaggerTest {
     @Test
