@@ -1,11 +1,13 @@
 package org.kendar.servers.http.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.primitives.Primitives;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.util.Json;
 import io.swagger.v3.jaxrs2.integration.SwaggerLoader;
 import io.swagger.v3.oas.integration.api.OpenApiReader;
 import io.swagger.v3.oas.models.*;
+import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Content;
@@ -31,8 +33,6 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
 
-
-import java.io.IOException;
 import java.util.*;
 
 @Component
@@ -51,9 +51,10 @@ public class SwaggerApi  implements FilteringClass {
   @HttpMethodFilter(phase = HttpFilterType.API,
           pathAddress = "/api/swagger/map.json",
           method = "GET",id="GET /api/swagger/map.json")
-  @HamDoc(
-          responses = {@HamResponse(body = OpenAPI.class)},
-          requests = {@HamRequest()})
+//  @HamDoc(
+//          description = "Retrieve the OpenAPI data",
+//          responses = {@HamResponse(body = OpenAPI.class)},
+//          requests = {@HamRequest()})
   public void loadSwagger(Request reqp, Response resp) throws JsonProcessingException {
     var config = filtersConfiguration.get();
 
@@ -108,12 +109,26 @@ public class SwaggerApi  implements FilteringClass {
         // Setup the models for the response
         if(doc.responses()!=null) {
           for (var res : doc.responses()) {
-            var hasBOdy =extractSchemasForMethod(schemas, res.body());
-            ApiResponse expectedResponse = new ApiResponse()
-                    .description(res.description());
-            if(hasBOdy){
+            var hasBody =extractSchemasForMethod(schemas, res.body());
+            ApiResponse expectedResponse = new ApiResponse();
+            //if(res.description()!=null && !res.description().isEmpty()) {
+              expectedResponse.description(res.description());
+            //}
+            if(hasBody){
 
-              expectedResponse.$ref("#/components/schemas/"+res.body().getSimpleName());
+
+              var schema = getSchemaHam(res.body());
+              var mediaType  = new MediaType().schema(schema);
+              if(res.examples()!=null){
+                for(var ex :res.examples()){
+                  mediaType.addExamples(ex.description(),new Example().value(ex.example()));
+                }
+              }
+              var content = new Content()
+                      .addMediaType(res.content(),
+                              mediaType);
+              //}
+              expectedResponse.setContent(content);
             }
             apiResponses.addApiResponse(res.code() + "", expectedResponse);
           }
@@ -126,9 +141,16 @@ public class SwaggerApi  implements FilteringClass {
 
             var operation = new Operation();
             if (hasBody) {
+              var schema = getSchemaHam(res.body());
+              var mediaType  = new MediaType().schema(schema);
+              if(res.examples()!=null){
+                for(var ex :res.examples()){
+                  mediaType.addExamples(ex.description(),new Example().value(ex.example()));
+                }
+              }
               var content = new Content()
                       .addMediaType(res.accept(),
-                              new MediaType().schema(new Schema().$ref(res.body().getSimpleName())));
+                              mediaType);
 
               RequestBody requestBody = new RequestBody().content(content);
               operation.requestBody(requestBody);
@@ -177,6 +199,10 @@ public class SwaggerApi  implements FilteringClass {
 
   private boolean extractSchemasForMethod(Map<String, Schema> schemas, Class<?> bodyRequest) {
     if(bodyRequest == Object.class) return false;
+    if(Primitives.isWrapperType(bodyRequest))return true;
+    if(bodyRequest.isPrimitive())return true;
+    if(bodyRequest.isArray())return true;
+    if(Collection.class.isAssignableFrom(bodyRequest)) return true;
     var request =  ModelConverters.getInstance().readAll(bodyRequest);
     for(var req :request.entrySet()){
       schemas.put(req.getKey(),req.getValue());
@@ -184,124 +210,35 @@ public class SwaggerApi  implements FilteringClass {
     return true;
   }
 
+  private Schema getSchemaHam(Class<?> bodyRequest) {
 
-//
-//  public void convertSpec() throws IOException {
-//    final Model personModel = ModelConverters.getInstance().read(Person.class).get("Person");
-//    final Model errorModel = ModelConverters.getInstance().read(Error.class).get("Error");
-//    final Info info = new Info()
-//            .version("1.0.0")
-//            .title("Swagger Petstore");
-//
-//    final Contact contact = new Contact()
-//            .name("Swagger API Team")
-//            .email("foo@bar.baz")
-//            .url("http://swagger.io");
-//
-//    info.setContact(contact);
-//
-//    final Map<String, Object> map = new HashMap<String, Object>();
-//    map.put("name", "value");
-//    info.setVendorExtension("x-test2", map);
-//    info.setVendorExtension("x-test", "value");
-//
-//    final Swagger swagger = new Swagger()
-//            .info(info)
-//            .host("petstore.swagger.io")
-//            .securityDefinition("api-key", new ApiKeyAuthDefinition("key", SecurityScheme.In.HEADER))
-//            .scheme(Scheme.HTTP)
-//            .consumes("application/json")
-//            .produces("application/json")
-//            .model("Person", personModel)
-//            .model("Error", errorModel);
-//
-//    final Operation get = new Operation()
-//            .produces("application/json")
-//            .summary("finds pets in the system")
-//            .description("a longer description")
-//            .tag("Pet Operations")
-//            .operationId("get pet by id")
-//            .deprecated(true);
-//
-//    get.parameter(new QueryParameter()
-//            .name("tags")
-//            .description("tags to filter by")
-//            .required(false)
-//            .property(new StringProperty())
-//    );
-//
-//    get.parameter(new PathParameter()
-//            .name("petId")
-//            .description("pet to fetch")
-//            .property(new LongProperty())
-//    );
-//
-//    final Response response = new Response()
-//            .description("pets returned")
-//            .schema(new RefProperty().asDefault("Person"))
-//            .example("application/json", "fun!");
-//
-//    final Response errorResponse = new Response()
-//            .description("error response")
-//            .schema(new RefProperty().asDefault("Error"));
-//
-//    final Response fileType = new Response()
-//            .description("pets returned")
-//            .schema(new FileProperty())
-//            .example("application/json", "fun!");
-//
-//    get.response(200, response)
-//            .defaultResponse(errorResponse);
-//
-//    get.response(400, fileType)
-//            .defaultResponse(errorResponse);
-//
-//    final Operation post = new Operation()
-//            .summary("adds a new pet")
-//            .description("you can add a new pet this way")
-//            .tag("Pet Operations")
-//            .operationId("add pet")
-//            .defaultResponse(errorResponse)
-//            .parameter(new BodyParameter()
-//                    .description("the pet to add")
-//                    .schema(new RefModel().asDefault("Person")));
-//
-//    swagger.path("/pets", new Path().get(get).post(post));
-//    final String swaggerJson = Json.mapper().writeValueAsString(swagger);
-//    final Swagger rebuilt = Json.mapper().readValue(swaggerJson, Swagger.class);
-//    System.out.println(Json.pretty(rebuilt));
-//    SerializationMatchers.assertEqualsToJson(rebuilt, swaggerJson);
-//  }
+    if(Primitives.isWrapperType(bodyRequest)){
+      return new Schema().type(Primitives.unwrap(bodyRequest).getSimpleName());
+    }
+    if(bodyRequest.isPrimitive()){
+      return new Schema().type(bodyRequest.getSimpleName());
+    }
+    if(bodyRequest == String.class){
+      //FIXME
+      return new Schema().type(bodyRequest.getSimpleName());
+    }
+    if(bodyRequest.isArray()){
+      return new Schema()
+              .type("array")
+              .items(getSchemaHam(bodyRequest.getComponentType()));
+    }
+    if(List.class.isAssignableFrom(bodyRequest)){
+      return new Schema()
+              .type("array")
+              .items(getSchemaHam(bodyRequest.getComponentType()));
+    }
+    if(Collection.class.isAssignableFrom(bodyRequest)){
+      return new Schema()
+              .type("array")
+              .items(getSchemaHam(bodyRequest.getComponentType()));
+    }
 
-  public void doStuff(){
-    OpenAPI swagger = new OpenAPI()
-            .addServersItem(new Server().url("http://petstore.swagger.io"));
-    //PathItem expectedPath = new PathItem().$ref("http://my.company.com/paths/health.json");
-    //swagger.path("/health", expectedPath);
-
-    ApiResponse expectedResponse = new ApiResponse().$ref("http://my.company.com/paths/{pp}");
-    Content content = new Content()
-            .addMediaType("application/json", new MediaType()
-                    .schema(new ObjectSchema()
-                            .example(new Object())));//TODO Here goes object SCHEAM
-
-    RequestBody requestBody = new RequestBody().content(content);
-
-    List<Parameter> parameters = new ArrayList<>();
-    parameters.add(new QueryParameter()
-            .name("qp").example("QUERYEXAMPLE"));
-    parameters.add(new PathParameter()
-            .name("pp").example("PATHEXAMPLE"));
-    PathItem expectedPath = new PathItem()
-            .get(
-                    new Operation()
-                            .responses(new ApiResponses()
-                                    .addApiResponse("200", expectedResponse))
-                            .requestBody(requestBody)
-                            .parameters(parameters)
-            );
-
-    swagger.path("/health", expectedPath);
+    return  new Schema().$ref(bodyRequest.getSimpleName());
   }
 
   @Override
