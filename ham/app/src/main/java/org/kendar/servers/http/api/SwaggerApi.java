@@ -131,14 +131,14 @@ public class SwaggerApi  implements FilteringClass {
                   mediaType.addExamples(ex.description(),new Example().value(ex.example()));
                 }
               }
-              if(responses.containsKey(res.code())){
+              if(!responses.containsKey(res.code())){
                 responses.put(res.code(),new ArrayList<>());
               }
               var mmt = new mt();
               mmt.description = res.description();
               mmt.content = res.content();
               mmt.mediaType = mediaType;
-              responses.get(res.content()).add(mmt);
+              responses.get(res.code()).add(mmt);
              /* var content = new Content()
                       .addMediaType(res.content(),
                               mediaType);
@@ -147,14 +147,15 @@ public class SwaggerApi  implements FilteringClass {
             }
           }
           for(var singres:responses.entrySet()){
-            var toAddResponse = new ApiResponses();
+            var toAddResponse = new ApiResponse();
             var content = new Content();
             for(var singresitem:singres.getValue()){
               content.addMediaType(singresitem.content,singresitem.mediaType);
 
             }
-            toAddResponse.
-            apiResponses.addApiResponse(singres.getKey()+"",content);
+            toAddResponse.setContent(content);
+            toAddResponse.setDescription(singres.getKey()+"");
+            apiResponses.addApiResponse(singres.getKey()+"",toAddResponse);
           }
         }
 
@@ -235,7 +236,11 @@ public class SwaggerApi  implements FilteringClass {
   }
 
   private Schema getSchemaHam(Class<?> bodyRequest) {
+    if(bodyRequest == byte[].class){
+      //FIXME
+      return new Schema().type("string").format("byte");
 
+    }
     if(Primitives.isWrapperType(bodyRequest)){
       return new Schema().type(Primitives.unwrap(bodyRequest).getSimpleName().toLowerCase(Locale.ROOT));
     }
