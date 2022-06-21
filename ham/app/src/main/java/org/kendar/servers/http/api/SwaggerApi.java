@@ -48,6 +48,12 @@ public class SwaggerApi  implements FilteringClass {
     this.jsonConfiguration = jsonConfiguration;
   }
 
+  class mt{
+    public String content;
+    public MediaType mediaType;
+    public String description;
+  }
+
   @HttpMethodFilter(phase = HttpFilterType.API,
           pathAddress = "/api/swagger/map.json",
           method = "GET",id="GET /api/swagger/map.json")
@@ -71,7 +77,6 @@ public class SwaggerApi  implements FilteringClass {
         if(doc==null)continue;
 
         var expectedPath = new PathItem();
-        var apiResponses = new ApiResponses();
 
         List<Parameter> parameters = new ArrayList<>();
 
@@ -106,13 +111,15 @@ public class SwaggerApi  implements FilteringClass {
           }
         }
 
+        var apiResponses = new ApiResponses();
         // Setup the models for the response
         if(doc.responses()!=null) {
+          var responses = new HashMap<Integer,List<mt>>();
           for (var res : doc.responses()) {
             var hasBody =extractSchemasForMethod(schemas, res.body());
-            ApiResponse expectedResponse = new ApiResponse();
+            var expectedResponse = new mt();
             //if(res.description()!=null && !res.description().isEmpty()) {
-              expectedResponse.description(res.description());
+              expectedResponse.description = res.description();
             //}
             if(hasBody){
 
@@ -124,13 +131,30 @@ public class SwaggerApi  implements FilteringClass {
                   mediaType.addExamples(ex.description(),new Example().value(ex.example()));
                 }
               }
-              var content = new Content()
+              if(responses.containsKey(res.code())){
+                responses.put(res.code(),new ArrayList<>());
+              }
+              var mmt = new mt();
+              mmt.description = res.description();
+              mmt.content = res.content();
+              mmt.mediaType = mediaType;
+              responses.get(res.content()).add(mmt);
+             /* var content = new Content()
                       .addMediaType(res.content(),
                               mediaType);
               //}
-              expectedResponse.setContent(content);
+              expectedResponse.setContent(content);*/
             }
-            apiResponses.addApiResponse(res.code() + "", expectedResponse);
+          }
+          for(var singres:responses.entrySet()){
+            var toAddResponse = new ApiResponses();
+            var content = new Content();
+            for(var singresitem:singres.getValue()){
+              content.addMediaType(singresitem.content,singresitem.mediaType);
+
+            }
+            toAddResponse.
+            apiResponses.addApiResponse(singres.getKey()+"",content);
           }
         }
 
@@ -213,14 +237,14 @@ public class SwaggerApi  implements FilteringClass {
   private Schema getSchemaHam(Class<?> bodyRequest) {
 
     if(Primitives.isWrapperType(bodyRequest)){
-      return new Schema().type(Primitives.unwrap(bodyRequest).getSimpleName());
+      return new Schema().type(Primitives.unwrap(bodyRequest).getSimpleName().toLowerCase(Locale.ROOT));
     }
     if(bodyRequest.isPrimitive()){
-      return new Schema().type(bodyRequest.getSimpleName());
+      return new Schema().type(bodyRequest.getSimpleName().toLowerCase(Locale.ROOT));
     }
     if(bodyRequest == String.class){
       //FIXME
-      return new Schema().type(bodyRequest.getSimpleName());
+      return new Schema().type(bodyRequest.getSimpleName().toLowerCase(Locale.ROOT));
     }
     if(bodyRequest.isArray()){
       return new Schema()
