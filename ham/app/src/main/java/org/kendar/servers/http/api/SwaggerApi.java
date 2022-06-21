@@ -113,7 +113,12 @@ public class SwaggerApi  implements FilteringClass {
 
         var apiResponses = new ApiResponses();
         // Setup the models for the response
-        if(doc.responses()!=null) {
+        if(doc.responses()==null || doc.responses().length==0) {
+          var toAddResponse = new ApiResponse();
+          toAddResponse.setDescription("200");
+          apiResponses.addApiResponse("200",toAddResponse);
+        }
+        else{
           var responses = new HashMap<Integer,List<mt>>();
           for (var res : doc.responses()) {
             var hasBody =extractSchemasForMethod(schemas, res.body());
@@ -226,7 +231,9 @@ public class SwaggerApi  implements FilteringClass {
     if(bodyRequest == Object.class) return false;
     if(Primitives.isWrapperType(bodyRequest))return true;
     if(bodyRequest.isPrimitive())return true;
-    if(bodyRequest.isArray())return true;
+    if(bodyRequest.isArray()){
+      return extractSchemasForMethod(schemas,bodyRequest.getComponentType());
+    }
     if(Collection.class.isAssignableFrom(bodyRequest)) return true;
     var request =  ModelConverters.getInstance().readAll(bodyRequest);
     for(var req :request.entrySet()){
