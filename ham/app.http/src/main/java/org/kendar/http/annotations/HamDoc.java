@@ -8,10 +8,11 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Inherited
 public  @interface HamDoc {
+    String description() default "";
     String produce() default "";
     QueryString[] query() default {};
     PathParameter[] path() default {};
     Header[] header() default {};
-    HamRequest request();
+    HamRequest[] requests();
     HamResponse[] responses() default {};
 }
