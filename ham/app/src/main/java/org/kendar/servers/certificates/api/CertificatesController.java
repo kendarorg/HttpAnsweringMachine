@@ -1,11 +1,15 @@
 package org.kendar.servers.certificates.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.models.OpenAPI;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamRequest;
+import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.FileResourcesUtils;
@@ -17,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -44,6 +49,10 @@ public class CertificatesController implements FilteringClass {
       pathAddress = "/api/certificates",
       method = "GET",
       id = "1012a4b4-277d-11ec-9621-0242ac130002")
+  @HamDoc(
+          description = "Retrieve the list of certificates",
+          responses = {@HamResponse(body = String[].class)},
+          requests = {@HamRequest()})
   public void listAllCertificates(Request req, Response res)
       throws IOException {
     var resources = fileResourcesUtils.loadResources(this, "certificates");
