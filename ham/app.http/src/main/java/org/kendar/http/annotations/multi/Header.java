@@ -5,6 +5,7 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Header {
+    String description() default "";
     String key();
     String value();
 }
