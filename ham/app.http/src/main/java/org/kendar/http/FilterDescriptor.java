@@ -416,11 +416,17 @@ public class FilterDescriptor {
     public HamDoc getHamDoc() {
 
       var loc = this;
+      if(this.doc==null) return null;
       return new HamDoc(){
 
         @Override
         public Class<? extends Annotation> annotationType() {
           return null;
+        }
+
+        @Override
+        public String description() {
+          return loc.doc.description();
         }
 
         @Override
@@ -444,8 +450,8 @@ public class FilterDescriptor {
         }
 
         @Override
-        public HamRequest request() {
-          return loc.doc.request();
+        public HamRequest[] requests() {
+          return loc.doc.requests();
         }
 
         @Override

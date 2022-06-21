@@ -8,4 +8,5 @@ public @interface HamResponse {
     String content() default "application/json";
     int code() default 200;
     Class<?> body() default Object.class;
+    String description() default "";
 }

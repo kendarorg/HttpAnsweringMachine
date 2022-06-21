@@ -51,8 +51,7 @@ public class SwaggerTest {
         //PathItem expectedPath = new PathItem().$ref("http://my.company.com/paths/health.json");
         //swagger.path("/health", expectedPath);
 
-        ApiResponse expectedResponse = new ApiResponse()
-                .description("respo200");
+
 
         /*var xxx = new Response();
         xxx.setStatusCode(200);
@@ -87,6 +86,9 @@ public class SwaggerTest {
                 .schema(new Schema()
                         .type("string"))
                 .example("QUERYEXAMPLE"));
+
+        ApiResponse expectedResponse = new ApiResponse()
+                .description("respo200");
         PathItem expectedPath = new PathItem()
                 .post(  //Operation type
                         new Operation()

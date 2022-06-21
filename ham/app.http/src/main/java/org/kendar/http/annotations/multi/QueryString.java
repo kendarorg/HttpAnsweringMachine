@@ -7,5 +7,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QueryString {
     String key();
-    String value();
+    String type() default "string";
+    String example() default "string";
 }
