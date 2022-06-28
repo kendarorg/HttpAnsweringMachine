@@ -70,13 +70,17 @@ public class SwaggerApi  implements FilteringClass {
             .title("Local API")
             .version("1.0.0"));
     Map<String, Schema> schemas = new HashMap<>();
+    Map<String, PathItem> expectedPaths = new HashMap<>();
     for (var kvp : config.filters.entrySet()) {
       if(kvp.getKey() != HttpFilterType.API ) continue;
       for(var filter : kvp.getValue()) {
         HamDoc doc = filter.getHamDoc();
         if(doc==null)continue;
 
-        var expectedPath = new PathItem();
+        if(!expectedPaths.containsKey(filter.getMethodFilter().pathAddress())){
+          expectedPaths.put(filter.getMethodFilter().pathAddress(),new PathItem());
+        }
+        var expectedPath = expectedPaths.get(filter.getMethodFilter().pathAddress());
 
         List<Parameter> parameters = new ArrayList<>();
 

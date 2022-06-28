@@ -150,6 +150,7 @@ public class SSLController implements FilteringClass {
           pathAddress = "/api/sslgen",
           method = "POST",
           id = "1011a4b4-asdfD77d-11ec-9621-0242ac130002")
+  @HamDoc(todo = true)
   public void generateSSL(Request req, Response res) throws Exception {
 
     var request = mapper.readValue(req.getRequestText(), TLSSSLGenerator.class);
