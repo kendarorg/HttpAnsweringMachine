@@ -59,7 +59,13 @@ public class SwaggerApi  implements FilteringClass {
   @HttpMethodFilter(phase = HttpFilterType.API,
           pathAddress = "/api/swagger/map.json",
           method = "GET",id="GET /api/swagger/map.json")
-  @HamDoc(todo = true,tags = {"base/utils"})
+  @HamDoc(
+          description = "Retrieve the swagger api",
+          responses = @HamResponse(
+                  body = String.class,
+                  description = "The json for the swagger api"
+          ),
+          tags = {"base/utils"})
   public void loadSwagger(Request reqp, Response resp) throws JsonProcessingException {
     var config = filtersConfiguration.get();
 
@@ -73,47 +79,30 @@ public class SwaggerApi  implements FilteringClass {
     for (var kvp : config.filters.entrySet()) {
       if(kvp.getKey() != HttpFilterType.API ) continue;
       for(var filter : kvp.getValue()) {
-        HamDoc doc = filter.getHamDoc();
-        if(doc==null)continue;
-
-        if(!expectedPaths.containsKey(filter.getMethodFilter().pathAddress())){
-          expectedPaths.put(filter.getMethodFilter().pathAddress(),new PathItem());
-        }
-        var expectedPath = expectedPaths.get(filter.getMethodFilter().pathAddress());
-
-        if(doc.todo()){
-          var meth = filter.getMethod();
-          var operation = new Operation();
-          operation.description("TODO");
-          var parameters= new ArrayList<Parameter>();
-          if(doc.path()!=null) {
-            for (var res : doc.path()) {
-              parameters.add(new PathParameter()
-                      .name(res.key())
-                      .schema(new Schema()
-                              .type(res.type())
-                              .example(res.example())));
-            }
-          }
-          operation.parameters(parameters);
-          if(doc.tags()!=null && doc.tags().length>0) {
-            operation.tags(Arrays.asList(doc.tags()));
-          }
-          setupMethod(expectedPath, operation, meth);
-          swagger.path(filter.getMethodFilter().pathAddress(), expectedPath);
-
-
-          swagger
-                  .path("/health/{pp}", expectedPath);
-        }else {
-          setupRealApi(swagger, schemas, filter, doc, expectedPath);
-        }
-
+        handleSingleFilter(swagger, schemas, expectedPaths, filter);
       }
-      //var instance = kvp.getValue().get(0);
-      //swloader.(instance.getClass());
     }
 
+    publishResponse(resp, swagger, schemas);
+  }
+
+  private void handleSingleFilter(OpenAPI swagger, Map<String, Schema> schemas, Map<String, PathItem> expectedPaths, FilterDescriptor filter) {
+    HamDoc doc = filter.getHamDoc();
+    if(doc==null) return;
+
+    if(!expectedPaths.containsKey(filter.getMethodFilter().pathAddress())){
+      expectedPaths.put(filter.getMethodFilter().pathAddress(),new PathItem());
+    }
+    var expectedPath = expectedPaths.get(filter.getMethodFilter().pathAddress());
+
+    if(doc.todo()){
+      setupTodoApi(swagger, filter, doc, expectedPath);
+    }else {
+      setupRealApi(swagger, schemas, filter, doc, expectedPath);
+    }
+  }
+
+  private void publishResponse(Response resp, OpenAPI swagger, Map<String, Schema> schemas) {
     try {
       var components = new Components();
       schemas.entrySet().stream().forEach(es->
@@ -128,12 +117,137 @@ public class SwaggerApi  implements FilteringClass {
     }catch (Exception ex){
 
     }
-    //var openapi = swloader.getOpenAPI();
+  }
+
+  private void setupTodoApi(OpenAPI swagger, FilterDescriptor filter, HamDoc doc, PathItem expectedPath) {
+    var meth = filter.getMethod();
+    var operation = new Operation();
+    operation.description("TODO");
+    var parameters= new ArrayList<Parameter>();
+    if(doc.path()!=null) {
+      for (var res : doc.path()) {
+        parameters.add(new PathParameter()
+                .name(res.key())
+                .schema(new Schema()
+                        .type(res.type())
+                        .example(res.example())));
+      }
+    }
+    operation.parameters(parameters);
+    if(doc.tags()!=null && doc.tags().length>0) {
+      operation.tags(Arrays.asList(doc.tags()));
+    }
+    setupMethod(expectedPath, operation, meth);
+    swagger.path(filter.getMethodFilter().pathAddress(), expectedPath);
+
+
+    swagger
+            .path("/health/{pp}", expectedPath);
   }
 
   private void setupRealApi(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor filter, HamDoc doc, PathItem expectedPath) {
     List<Parameter> parameters = new ArrayList<>();
 
+    prepareQuery(doc, parameters);
+    prpearePath(doc, parameters);
+    prepareHeaders(doc, parameters);
+
+    var apiResponses = new ApiResponses();
+    // Setup the models for the response
+    if(doc.responses()==null || doc.responses().length==0) {
+      buildEmptyResponse(apiResponses);
+    }
+    else{
+      var responses = new HashMap<Integer,List<mt>>();
+      for (var res : doc.responses()) {
+        prepareResponse(schemas, responses, res);
+      }
+      for(var singres:responses.entrySet()){
+        buildResponse(apiResponses, singres);
+      }
+    }
+
+    // Setup the models for the requests
+    if(doc.requests()!=null && doc.requests().length>0) {
+      for (var res : doc.requests()) {
+        buildRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, res);
+      }
+    }else{
+      buildEmptyRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses);
+    }
+  }
+
+  private void buildResponse(ApiResponses apiResponses, Map.Entry<Integer, List<mt>> singres) {
+    var toAddResponse = new ApiResponse();
+    var content = new Content();
+    for(var singresitem: singres.getValue()){
+      content.addMediaType(singresitem.content,singresitem.mediaType);
+
+      for(var hea:singresitem.headers.values()){
+        toAddResponse.addHeaderObject(
+                hea.key(),
+                new io.swagger.v3.oas.models.headers.Header()
+                        .schema(getSchemaHam(String.class))
+                        .description(hea.description())
+                        .example(hea.value())
+        );
+      }
+    }
+    toAddResponse.setContent(content);
+    toAddResponse.setDescription(singres.getKey()+"");
+    apiResponses.addApiResponse(singres.getKey()+"",toAddResponse);
+  }
+
+  private void prepareResponse(Map<String, Schema> schemas, HashMap<Integer, List<mt>> responses, HamResponse res) {
+    var hasBody =extractSchemasForMethod(schemas, res.body());
+
+    if(hasBody){
+      var mmt = new mt();
+      if(res.headers()!=null && res.headers().length>0){
+        for(var hea : res.headers()){
+          mmt.headers.put(hea.key(),hea);
+        }
+      }
+      var schema = getSchemaHam(res.body());
+      var mediaType  = new MediaType().schema(schema);
+      if(res.examples()!=null){
+        for(var ex : res.examples()){
+          mediaType.addExamples(ex.description(),new Example().value(ex.example()));
+        }
+      }
+      if(!responses.containsKey(res.code())){
+        responses.put(res.code(),new ArrayList<>());
+      }
+      mmt.description = res.description();
+      mmt.content = res.content();
+      mmt.mediaType = mediaType;
+      responses.get(res.code()).add(mmt);
+    }
+  }
+
+  private void buildRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor filter, HamDoc doc, PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses, HamRequest res) {
+    var resBody = res.body();
+    var resExamples = res.examples();
+    var resAccept = res.accept();
+
+    setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept);
+  }
+
+  private void buildEmptyRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor filter, HamDoc doc, PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses) {
+    Class<?> resBody = Object.class;
+    org.kendar.http.annotations.multi.Example[] resExamples = null;
+    String resAccept = null;
+
+    setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept);
+  }
+
+  private void buildEmptyResponse(ApiResponses apiResponses) {
+    var toAddResponse = new ApiResponse();
+    toAddResponse.setDescription("200");
+    apiResponses.addApiResponse("200",toAddResponse);
+  }
+
+  private void prepareQuery(HamDoc doc, List<Parameter> parameters) {
     // Setup query strings
     if(doc.query()!=null) {
       for (var res : doc.query()) {
@@ -144,6 +258,9 @@ public class SwaggerApi  implements FilteringClass {
                         .example(res.example())));
       }
     }
+  }
+
+  private void prpearePath(HamDoc doc, List<Parameter> parameters) {
     // Setup path variables
     if(doc.path()!=null) {
       for (var res : doc.path()) {
@@ -154,6 +271,9 @@ public class SwaggerApi  implements FilteringClass {
                         .example(res.example())));
       }
     }
+  }
+
+  private void prepareHeaders(HamDoc doc, List<Parameter> parameters) {
     // Setup header variables
     if(doc.header()!=null) {
       for (var res : doc.header()) {
@@ -164,85 +284,6 @@ public class SwaggerApi  implements FilteringClass {
                         .example(res.value())));
       }
     }
-
-    var apiResponses = new ApiResponses();
-    // Setup the models for the response
-    if(doc.responses()==null || doc.responses().length==0) {
-      var toAddResponse = new ApiResponse();
-      toAddResponse.setDescription("200");
-      apiResponses.addApiResponse("200",toAddResponse);
-    }
-    else{
-      var responses = new HashMap<Integer,List<mt>>();
-      for (var res : doc.responses()) {
-        var hasBody =extractSchemasForMethod(schemas, res.body());
-
-        if(hasBody){
-          var mmt = new mt();
-          if(res.headers()!=null && res.headers().length>0){
-            for(var hea :res.headers()){
-              mmt.headers.put(hea.key(),hea);
-            }
-          }
-          var schema = getSchemaHam(res.body());
-          var mediaType  = new MediaType().schema(schema);
-          if(res.examples()!=null){
-            for(var ex :res.examples()){
-              mediaType.addExamples(ex.description(),new Example().value(ex.example()));
-            }
-          }
-          if(!responses.containsKey(res.code())){
-            responses.put(res.code(),new ArrayList<>());
-          }
-          mmt.description = res.description();
-          mmt.content = res.content();
-          mmt.mediaType = mediaType;
-          responses.get(res.code()).add(mmt);
-         /* var content = new Content()
-                  .addMediaType(res.content(),
-                          mediaType);
-          //}
-          expectedResponse.setContent(content);*/
-        }
-      }
-      for(var singres:responses.entrySet()){
-        var toAddResponse = new ApiResponse();
-        var content = new Content();
-        for(var singresitem:singres.getValue()){
-          content.addMediaType(singresitem.content,singresitem.mediaType);
-
-          for(var hea:singresitem.headers.values()){
-            toAddResponse.addHeaderObject(
-                    hea.key(),
-                    new io.swagger.v3.oas.models.headers.Header()
-                            .schema(getSchemaHam(String.class))
-                            .description(hea.description())
-                            .example(hea.value())
-            );
-          }
-        }
-        toAddResponse.setContent(content);
-        toAddResponse.setDescription(singres.getKey()+"");
-        apiResponses.addApiResponse(singres.getKey()+"",toAddResponse);
-      }
-    }
-
-    // Setup the models for the requests
-    if(doc.requests()!=null && doc.requests().length>0) {
-      for (var res : doc.requests()) {
-        var resBody = res.body();
-        var resExamples = res.examples();
-        var resAccept = res.accept();
-
-        setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept);
-      }
-    }else{
-      Class<?> resBody = Object.class;
-      org.kendar.http.annotations.multi.Example[] resExamples = null;
-      String resAccept = null;
-
-      setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept);
-    }
   }
 
   private void setupRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor filter, HamDoc doc, PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses, Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples, String resAccept) {
@@ -250,19 +291,7 @@ public class SwaggerApi  implements FilteringClass {
 
     var operation = new Operation();
     if (hasBody) {
-      var schema = getSchemaHam(resBody);
-      var mediaType  = new MediaType().schema(schema);
-      if(resExamples !=null){
-        for(var ex : resExamples){
-          mediaType.addExamples(ex.description(),new Example().value(ex.example()));
-        }
-      }
-      var content = new Content()
-              .addMediaType(resAccept,
-                      mediaType);
-
-      RequestBody requestBody = new RequestBody().content(content);
-      operation.requestBody(requestBody);
+      setupRequestBody(resBody, resExamples, resAccept, operation);
     }
     operation.description(doc.description());
     operation.responses(apiResponses);
@@ -274,6 +303,22 @@ public class SwaggerApi  implements FilteringClass {
     setupMethod(expectedPath, operation, meth);
 
     swagger.path(filter.getMethodFilter().pathAddress(), expectedPath);
+  }
+
+  private void setupRequestBody(Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples, String resAccept, Operation operation) {
+    var schema = getSchemaHam(resBody);
+    var mediaType  = new MediaType().schema(schema);
+    if(resExamples !=null){
+      for(var ex : resExamples){
+        mediaType.addExamples(ex.description(),new Example().value(ex.example()));
+      }
+    }
+    var content = new Content()
+            .addMediaType(resAccept,
+                    mediaType);
+
+    RequestBody requestBody = new RequestBody().content(content);
+    operation.requestBody(requestBody);
   }
 
   private void setupMethod(PathItem expectedPath, Operation operation, String meth) {
