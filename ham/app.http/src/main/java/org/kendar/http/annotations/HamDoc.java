@@ -8,6 +8,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Inherited
 public  @interface HamDoc {
+    boolean todo() default false;
     String description() default "";
     String produce() default "";
     QueryString[] query() default {};

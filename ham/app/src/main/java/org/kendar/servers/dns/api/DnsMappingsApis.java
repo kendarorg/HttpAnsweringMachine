@@ -6,9 +6,15 @@ import org.kendar.dns.configurations.DnsConfig;
 import org.kendar.dns.configurations.PatternItem;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.Example;
+import org.kendar.http.annotations.multi.HamRequest;
+import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.config.SSLDomain;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -41,6 +47,11 @@ public class DnsMappingsApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/mappings",
             method = "GET",id="1000a4b4-277d-11ef-9621-0242ac130002")
+    @HamDoc(
+            description = "Retrieve all dns mappings",
+            responses = @HamResponse(
+                    body = PatternItem[].class
+            ))
     public void getDnsMappings(Request req, Response res) throws JsonProcessingException {
         var records = configuration.getConfiguration(DnsConfig.class).getResolved();
         res.addHeader("Content-type", "application/json");
@@ -50,6 +61,16 @@ public class DnsMappingsApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/hosts",
             method = "GET",id="1000a4b4asd-277d-11ef-9621-0242ac130002")
+
+    @HamDoc(
+            description = "Generate hosts file",
+            responses = @HamResponse(
+                    body = String.class,
+                    content = "text/plain",
+                    examples = @Example(
+                            example = "127.0.0.1 localhost\n127.0.0.1 www.local.test"
+                    )
+            ))
     public void getHostsFile(Request req, Response res)  {
         var records = configuration.getConfiguration(DnsConfig.class).getResolved();
         StringBuilder result = new StringBuilder();
@@ -67,6 +88,15 @@ public class DnsMappingsApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
       pathAddress = "/api/dns/mappings/{id}",
       method = "PUT",id="1000a4f4-277d-11ef-9621-0242ac130002")
+    @HamDoc(
+            description = "Modify custom dns mapping",
+            path = @PathParameter(key = "id"),
+            requests = @HamRequest(
+                    body = PatternItem[].class
+            ),
+            responses = @HamResponse(
+                    body = PatternItem[].class
+            ))
     public void saveDnsMappings(Request req, Response res) throws JsonProcessingException {
         var id = req.getPathParameter("id");
         var newObject = mapper.readValue(req.getRequestText(), PatternItem.class);
@@ -90,6 +120,16 @@ public class DnsMappingsApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
       pathAddress = "/api/dns/mappings",
       method = "POST",id="3000a4f4-277k-11ef-9621-0242ac130002")
+    @HamDoc(
+            description = "Modify custom dns mapping",
+            requests = {@HamRequest(
+                    body = PatternItem[].class
+            ),@HamRequest(
+                    body = PatternItem.class
+            )},
+            responses = @HamResponse(
+                    body = PatternItem[].class
+            ))
     public void addDnsMappings(Request req, Response res) throws Exception {
         var cloned = configuration.getConfiguration(DnsConfig.class).copy();
 
@@ -127,6 +167,9 @@ public class DnsMappingsApis implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
       pathAddress = "/api/dns/mappings/{id}",
       method = "DELETE",id="10k0a4f4-277d-11ef-9621-0242ac130002")
+    @HamDoc(
+            description = "Modify custom dns mapping",
+            path = @PathParameter(key = "id"))
     public void deleteDnsMappings(Request req, Response res) throws JsonProcessingException {
         var id = req.getPathParameter("id");
         var dnsConfig = configuration.getConfiguration(DnsConfig.class).copy();
