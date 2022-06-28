@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.servers.http.PluginsInitializer;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -34,6 +36,12 @@ public class PluginsApi implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins",
             method = "GET",id="1zty7a4b4-277d-11ec-9621-0242ac130002")
+    @HamDoc(
+            description = "List all installed plugins",
+            responses = @HamResponse(
+                    body = PluginDescriptor[].class
+            ),tags = {"base/utils"}
+    )
     public void getStatus(Request req, Response res) throws JsonProcessingException {
         var result = new ArrayList<PluginDescriptor>();
         for(var item : pluginsInitializer.getPluginAddresses().entrySet()){

@@ -7,8 +7,13 @@ import org.kendar.events.EventQueue;
 import org.kendar.events.events.SSLChangedEvent;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamRequest;
+import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.PathParameter;
+import org.kendar.http.annotations.multi.QueryString;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.certificates.CertificatesManager;
 import org.kendar.servers.certificates.GeneratedCert;
@@ -59,6 +64,14 @@ public class SSLController implements FilteringClass {
       pathAddress = "/api/ssl",
       method = "GET",
       id = "1008a4b4-277d-11ec-9621-0242ac130002")
+  @HamDoc(
+          tags = {"base/ssl"},
+          description = "Retrieve the list of ssl registrations",
+          responses = {@HamResponse(
+                  code = 200,
+                  description = "SSL Domains",
+                  body = SSLDomain[].class,
+                  content = "application/json")})
   public void getExtraServers(Request req, Response res) throws JsonProcessingException {
     var domains = configuration.getConfiguration(SSLConfig.class).getDomains();
     res.addHeader("Content-type", "application/json");
@@ -70,6 +83,10 @@ public class SSLController implements FilteringClass {
       pathAddress = "/api/ssl/{id}",
       method = "DELETE",
       id = "1009a4b4-277d-11ec-9621-0242ac130002")
+  @HamDoc(
+          tags = {"base/ssl"},
+          description = "Delete ssl item",
+          path = @PathParameter(key="id"))
   public void removeDnsServer(Request req, Response res) {
     var cloned = configuration.getConfiguration(SSLConfig.class).copy();
 
@@ -93,6 +110,14 @@ public class SSLController implements FilteringClass {
           pathAddress = "/api/ssl",
           method = "POST",
           id = "1011a4b4-2ASD77d-11ec-9621-0242ac130002")
+  @HamDoc(
+          tags = {"base/ssl"},
+          description = "Add one/many certificate/s",
+          requests = {@HamRequest(
+                  body = SSLDomain[].class
+          ),@HamRequest(
+                  body = SSLDomain.class
+          )})
   public void addDnsServer(Request req, Response res) throws Exception {
     var cloned = configuration.getConfiguration(SSLConfig.class).copy();
 
@@ -128,6 +153,8 @@ public class SSLController implements FilteringClass {
           pathAddress = "/api/sslgen",
           method = "POST",
           id = "1011a4b4-asdfD77d-11ec-9621-0242ac130002")
+  @HamDoc(
+          tags = {"base/ssl"},todo = true)
   public void generateSSL(Request req, Response res) throws Exception {
 
     var request = mapper.readValue(req.getRequestText(), TLSSSLGenerator.class);

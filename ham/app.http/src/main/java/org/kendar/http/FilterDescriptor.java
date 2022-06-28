@@ -2,6 +2,7 @@ package org.kendar.http;
 
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.kendar.http.annotations.*;
+import org.kendar.http.annotations.multi.*;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -11,11 +12,9 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.IncompleteAnnotationException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class FilterDescriptor {
 
@@ -38,6 +37,8 @@ public class FilterDescriptor {
   private HttpFilterType phase;
   private HttpTypeFilter typeFilter;
   private HttpMethodFilter methodFilter;
+
+  private HamDoc doc;
   private Method callback;
   private List<String> pathMatchers = new ArrayList<>();
   private String id;
@@ -49,7 +50,9 @@ public class FilterDescriptor {
       Method callback,
       FilteringClass filterClass,
       Environment environment,
-      JsonConfiguration jsonConfiguration) {
+      JsonConfiguration jsonConfiguration,
+      HamDoc hamDoc) {
+    this.doc = hamDoc;
     this.loader = loader;
     this.id = methodFilter.id();
     this.description = methodFilter.description();
@@ -409,4 +412,62 @@ public class FilterDescriptor {
   public CustomFiltersLoader getLoader() {
     return loader;
   }
+
+    public HamDoc getHamDoc() {
+
+      var loc = this;
+      if(this.doc==null) return null;
+      return new HamDoc(){
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+          return null;
+        }
+
+        @Override
+        public String[] tags() {
+          return loc.doc.tags();
+        }
+
+        @Override
+        public boolean todo() {
+          return false;
+        }
+
+        @Override
+        public String description() {
+          return loc.doc.description();
+        }
+
+        @Override
+        public String produce() {
+          return loc.doc.produce();
+        }
+
+        @Override
+        public QueryString[] query() {
+          return loc.doc.query();
+        }
+
+        @Override
+        public PathParameter[] path() {
+          return loc.doc.path();
+        }
+
+        @Override
+        public Header[] header() {
+          return loc.doc.header();
+        }
+
+        @Override
+        public HamRequest[] requests() {
+          return loc.doc.requests();
+        }
+
+        @Override
+        public HamResponse[] responses() {
+          return loc.doc.responses();
+        }
+      };
+    }
 }

@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.Request;
@@ -60,6 +62,11 @@ public class JsFilterGeneratorAPI implements FilteringClass {
             pathAddress = "/api/plugins/jsfilter/generator/{recording}/{line}/{type}",
             method = "GET",
             id = "1000a4b4-297id-11ec-9621-02galac130002")
+    @HamDoc(todo = true,tags = {"plugin/js"},
+            path = {@PathParameter(key = "recording"),
+                    @PathParameter(key = "line"),
+                    @PathParameter(key = "type")}
+    )
     public void getJsFiltersList(Request req, Response res) throws IOException, InterruptedException {
         var type = req.getPathParameter("type").toLowerCase(Locale.ROOT);
         var recording = req.getPathParameter("recording");
@@ -123,6 +130,7 @@ public class JsFilterGeneratorAPI implements FilteringClass {
             pathAddress = "/api/plugins/jsfilter/generator",
             method = "GET",
             id = "1000a777297id-11ecfluk1-0242ac130002")
+    @HamDoc(todo = true,tags = {"plugin/js"})
     public void getGenerators(Request req, Response res) throws JsonProcessingException {
         var result = new ArrayList<GeneratorModel>();
         for (var generator :
