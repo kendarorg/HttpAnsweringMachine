@@ -2,12 +2,15 @@ package org.kendar.servers.proxy.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.dns.configurations.ExtraDnsServer;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamRequest;
+import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
@@ -41,7 +44,12 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes",
       method = "GET",
       id = "1015a4b4-277d-11ec-9621-0242ac130002")
-  @HamDoc(todo = true,tags = {"base/proxy"})
+  @HamDoc(
+          tags = {"base/proxy"},
+          description = "Retrieve all configured proxies",
+          responses = @HamResponse(
+                  body = RemoteServerStatus[].class
+          ))
   public void getProxies(Request req, Response res) throws JsonProcessingException {
     var proxyes = configuration.getConfiguration(SimpleProxyConfig.class).getProxies();
     res.addHeader("Content-type", "application/json");
@@ -53,9 +61,13 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes/{id}",
       method = "GET",
       id = "1016a4b4-277d-11ec-9621-0242ac130002")
-  @HamDoc(todo = true,tags = {"base/proxy"},
-          path = @PathParameter(key = "id")
-  )
+  @HamDoc(
+          tags = {"base/proxy"},
+          path = @PathParameter(key = "id"),
+          description = "Retrieve specific proxy data",
+          responses = @HamResponse(
+                  body = RemoteServerStatus.class
+          ))
   public void getProxy(Request req, Response res) throws JsonProcessingException {
     var clone = configuration.getConfiguration(SimpleProxyConfig.class);
     var proxyes = clone.getProxies();
@@ -75,8 +87,10 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes/{id}",
       method = "DELETE",
       id = "1017a4b4-277d-11ec-9621-0242ac130002")
-  @HamDoc(todo = true,tags = {"base/proxy"},
-          path = @PathParameter(key = "id")
+  @HamDoc(
+          tags = {"base/proxy"},
+          path = @PathParameter(key = "id"),
+          description = "Delete specific proxy"
   )
   public void removeProxy(Request req, Response res) {
     var clone = configuration.getConfiguration(SimpleProxyConfig.class).copy();
@@ -100,9 +114,13 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes/{id}",
       method = "PUT",
       id = "1018a4b4-277d-11ec-9621-0242ac130002")
-  @HamDoc(todo = true,tags = {"base/proxy"},
-          path = @PathParameter(key = "id")
-  )
+  @HamDoc(
+          tags = {"base/proxy"},
+          description = "Modify proxy",
+          path = @PathParameter(key="id"),
+          requests = @HamRequest(
+                  body = SimpleProxyConfig.class
+          ))
   public void updateProxy(Request req, Response res) throws JsonProcessingException {
     var cloneConf = configuration.getConfiguration(SimpleProxyConfig.class).copy();
     var proxyes = cloneConf.getProxies();
@@ -132,7 +150,12 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes",
       method = "POST",
       id = "1020a4b4-277d-11ec-9621-0242ac130002")
-  @HamDoc(todo = true,tags = {"base/proxy"})
+  @HamDoc(
+          tags = {"base/proxy"},
+          description = "Add proxy",
+          requests = @HamRequest(
+                  body = SimpleProxyConfig.class
+          ))
   public void addProxy(Request req, Response res) throws JsonProcessingException {
     var cloneConf = configuration.getConfiguration(SimpleProxyConfig.class).copy();
     var proxyes = cloneConf.getProxies();

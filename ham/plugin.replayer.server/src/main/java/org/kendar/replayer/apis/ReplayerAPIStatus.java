@@ -5,6 +5,8 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.Example;
+import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerStatus;
 import org.kendar.servers.http.Request;
@@ -30,7 +32,14 @@ public class ReplayerAPIStatus implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/status",
             method = "GET",id="300999f-11ec-9621-0242ac1afe002")
-    @HamDoc(todo = true,tags = {"plugin/replayer"})
+    @HamDoc(description = "Retrieve the current running script",
+            responses = @HamResponse(
+                    body=String.class,
+                    examples = @Example(
+                            example = "{\"status\":\"RECORDING\",\"running\":\"TestScript\"}"
+                    )
+            ),
+            tags = {"plugin/replayer"})
     public void recording(Request req, Response res) throws IOException {
         String realStatus;
         String currentScript;
