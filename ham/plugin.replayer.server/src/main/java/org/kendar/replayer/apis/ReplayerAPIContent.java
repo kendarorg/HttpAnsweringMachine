@@ -6,8 +6,10 @@ import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
@@ -60,6 +62,9 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "GET",
       id = "3004daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(todo = true,
+          path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse")}
+  )
   public void retrieveContent(Request req, Response res) throws IOException {
     var id = getPathParameter(req, "id");
     var line = Integer.parseInt(getPathParameter(req, "line"));
@@ -175,6 +180,9 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "DELETE",
       id = "3005daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(todo = true,
+          path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse")}
+  )
   public void deleteConent(Request req, Response res) throws IOException {
     var id = getPathParameter(req, "id");
     var line = Integer.parseInt(getPathParameter(req, "line"));
@@ -208,6 +216,9 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "POST",
       id = "3006daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(todo = true,
+          path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse")}
+  )
   public void modifyConent(Request req, Response res)
       throws IOException, NoSuchAlgorithmException {
     var id = getPathParameter(req, "id");

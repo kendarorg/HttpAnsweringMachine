@@ -5,8 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.PluginsInitializer;
@@ -50,6 +52,8 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/logger",
       method = "GET",
       id = "1000aab4-277d-a1ef-5621-0242ac130002")
+
+  @HamDoc(todo = true)
   public void getLoggers(Request req, Response res) throws JsonProcessingException {
     var config = configuration.getConfiguration(GlobalConfig.class);
     res.addHeader("Content-type", "application/json");
@@ -74,6 +78,7 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/special",
       method = "GET",
       id = "1000aab4-277d-a1tf-5621-0242ac130002")
+  @HamDoc(todo = true)
   public void getSpecialLoggers(Request req, Response res) throws JsonProcessingException {
     var specialLoggers = pluginsInitializer.getSpecialLoggers();
     res.addHeader("Content-type", "application/json");
@@ -85,6 +90,9 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/logger/{id}",
       method = "GET",
       id = "1000a4b-277d-a1ef-5621-0242ac130002")
+  @HamDoc(todo = true,
+          path = @PathParameter(key = "id")
+  )
   public void getLogger(Request req, Response res) throws JsonProcessingException {
     var config = configuration.getConfiguration(GlobalConfig.class);
     var id = req.getPathParameter("id");
@@ -98,6 +106,9 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/logger/{id}",
       method = "DELETE",
       id = "10d0a4b4-277d-a1ef-5621-0242ac130002")
+  @HamDoc(todo = true,
+          path = @PathParameter(key = "id")
+  )
   public void deleteLogger(Request req, Response res) {
     var config = configuration.getConfiguration(GlobalConfig.class);
     var id = req.getPathParameter("id");
@@ -111,6 +122,9 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/logger/{id}",
       method = "POST",
       id = "10c0a4b4-277d-a1ef-5621-0242ac130002")
+  @HamDoc(todo = true,
+          path = @PathParameter(key = "id")
+  )
   public void setLogger(Request req, Response res) throws JsonProcessingException {
     var config = configuration.getConfiguration(GlobalConfig.class);
     var id = req.getPathParameter("id");
