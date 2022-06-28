@@ -53,8 +53,8 @@ public class CertificatesController implements FilteringClass {
       id = "1012a4b4-277d-11ec-9621-0242ac130002")
   @HamDoc(
           description = "Retrieve the list of certificates",
-          responses = {@HamResponse(body = String[].class)},
-          requests = {@HamRequest()})
+          responses = @HamResponse(body = String[].class),
+          requests = @HamRequest)
   public void listAllCertificates(Request req, Response res)
       throws IOException {
     var resources = fileResourcesUtils.loadResources(this, "certificates");
@@ -110,9 +110,8 @@ public class CertificatesController implements FilteringClass {
                           body = byte[].class,
                           description = "Zip with certificate",
                           content = "application/zip")},
-          path = {@PathParameter(key="file")},
-          query = {@QueryString(key="clear", description = "If set returns a plain text certificate")},
-          requests = {@HamRequest()})
+          path = @PathParameter(key="file"),
+          query = @QueryString(key="clear", description = "If set returns a plain text certificate"))
   public void getSingleCertificate(Request req, Response res)
       throws IOException {
     var resources = fileResourcesUtils.loadResources(this, "certificates");

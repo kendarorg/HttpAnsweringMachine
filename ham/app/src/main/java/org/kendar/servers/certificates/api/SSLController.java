@@ -70,8 +70,7 @@ public class SSLController implements FilteringClass {
                   code = 200,
                   description = "SSL Domains",
                   body = SSLDomain[].class,
-                  content = "application/json")},
-          requests = {@HamRequest()})
+                  content = "application/json")})
   public void getExtraServers(Request req, Response res) throws JsonProcessingException {
     var domains = configuration.getConfiguration(SSLConfig.class).getDomains();
     res.addHeader("Content-type", "application/json");
@@ -85,8 +84,7 @@ public class SSLController implements FilteringClass {
       id = "1009a4b4-277d-11ec-9621-0242ac130002")
   @HamDoc(
           description = "Delete ssl item",
-          path = {@PathParameter(key="id")},
-          requests = {@HamRequest()})
+          path = @PathParameter(key="id"))
   public void removeDnsServer(Request req, Response res) {
     var cloned = configuration.getConfiguration(SSLConfig.class).copy();
 
