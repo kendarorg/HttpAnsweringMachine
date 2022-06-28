@@ -11,6 +11,7 @@ public @interface HamResponse {
     Class<?> body() default Object.class;
     String bodyType() default "";
     boolean array() default false;
+    Header[] headers() default {};
 
     String description() default "";
 }
