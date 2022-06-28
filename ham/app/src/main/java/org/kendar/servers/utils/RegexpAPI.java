@@ -7,6 +7,8 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamRequest;
+import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -36,7 +38,15 @@ public class RegexpAPI implements FilteringClass {
             pathAddress = "/api/utils/regexp",
             method = "POST",
             id = "1000a4b4-29tad-11ec-9621-0242ac130002")
-    @HamDoc(todo = true,tags = {"base/utils"})
+    @HamDoc(
+            tags = {"base/utils"},
+            description = "Test Java regexps",
+            requests = @HamRequest(
+                    body = RegexpData.class
+            ),
+            responses = @HamResponse(
+                    body = RegexpResult.class
+            ))
     public void testRegexp(Request req, Response res) throws JsonProcessingException {
         var result = new RegexpResult();
         var data = mapper.readValue(req.getRequestText(), RegexpData.class);
