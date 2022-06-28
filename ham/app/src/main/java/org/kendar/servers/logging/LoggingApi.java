@@ -8,10 +8,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
-import org.kendar.http.annotations.multi.HamRequest;
-import org.kendar.http.annotations.multi.HamResponse;
-import org.kendar.http.annotations.multi.PathParameter;
-import org.kendar.http.annotations.multi.QueryString;
+import org.kendar.http.annotations.multi.*;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.PluginsInitializer;
@@ -107,7 +104,8 @@ public class LoggingApi implements FilteringClass {
       id = "1000a4b-277d-a1ef-5621-0242ac130002")
   @HamDoc(description = "Retrieve the level of the specific logger",
           responses = @HamResponse(
-                  body = Level.class
+                  body = String.class,
+                  examples = @Example(example = "DEBUG")
           ),
           tags = {"base/logs"},
           path = @PathParameter(key = "id")
@@ -126,9 +124,6 @@ public class LoggingApi implements FilteringClass {
       method = "DELETE",
       id = "10d0a4b4-277d-a1ef-5621-0242ac130002")
   @HamDoc(description = "Set to OFF the specified logger",
-          responses = @HamResponse(
-                  body = Level.class
-          ),
           tags = {"base/logs"},
           path = @PathParameter(key = "id")
   )
@@ -147,7 +142,8 @@ public class LoggingApi implements FilteringClass {
       id = "10c0a4b4-277d-a1ef-5621-0242ac130002")
   @HamDoc(description = "Set the level of the logger",
           responses = @HamResponse(
-                  body = Level.class
+                  body = String.class,
+                  examples = @Example(example = "DEBUG")
           ),
           query = @QueryString(
                   key="level",
