@@ -84,116 +84,29 @@ public class SwaggerApi  implements FilteringClass {
         }
         var expectedPath = expectedPaths.get(filter.getMethodFilter().pathAddress());
 
-        List<Parameter> parameters = new ArrayList<>();
-
-        // Setup query strings
-        if(doc.query()!=null) {
-          for (var res : doc.query()) {
-            parameters.add(new QueryParameter()
-                    .name(res.key())
-                    .schema(new Schema()
-                            .type(res.type())
-                            .example(res.example())));
-          }
-        }
-        // Setup path variables
-        if(doc.path()!=null) {
-          for (var res : doc.path()) {
-            parameters.add(new PathParameter()
-                    .name(res.key())
-                    .schema(new Schema()
-                            .type(res.type())
-                            .example(res.example())));
-          }
-        }
-        // Setup header variables
-        if(doc.header()!=null) {
-          for (var res : doc.header()) {
-            parameters.add(new HeaderParameter()
-                    .name(res.key())
-                    .schema(new Schema()
-                            .type("string")
-                            .example(res.value())));
-          }
-        }
-
-        var apiResponses = new ApiResponses();
-        // Setup the models for the response
-        if(doc.responses()==null || doc.responses().length==0) {
-          var toAddResponse = new ApiResponse();
-          toAddResponse.setDescription("200");
-          apiResponses.addApiResponse("200",toAddResponse);
-        }
-        else{
-          var responses = new HashMap<Integer,List<mt>>();
-          for (var res : doc.responses()) {
-            var hasBody =extractSchemasForMethod(schemas, res.body());
-
-            if(hasBody){
-              var mmt = new mt();
-              if(res.headers()!=null && res.headers().length>0){
-                for(var hea :res.headers()){
-                  mmt.headers.put(hea.key(),hea);
-                }
-              }
-              var schema = getSchemaHam(res.body());
-              var mediaType  = new MediaType().schema(schema);
-              if(res.examples()!=null){
-                for(var ex :res.examples()){
-                  mediaType.addExamples(ex.description(),new Example().value(ex.example()));
-                }
-              }
-              if(!responses.containsKey(res.code())){
-                responses.put(res.code(),new ArrayList<>());
-              }
-              mmt.description = res.description();
-              mmt.content = res.content();
-              mmt.mediaType = mediaType;
-              responses.get(res.code()).add(mmt);
-             /* var content = new Content()
-                      .addMediaType(res.content(),
-                              mediaType);
-              //}
-              expectedResponse.setContent(content);*/
+        if(doc.todo()){
+          var meth = filter.getMethod();
+          var operation = new Operation();
+          operation.description("TODO");
+          var parameters= new ArrayList<Parameter>();
+          if(doc.path()!=null) {
+            for (var res : doc.path()) {
+              parameters.add(new PathParameter()
+                      .name(res.key())
+                      .schema(new Schema()
+                              .type(res.type())
+                              .example(res.example())));
             }
           }
-          for(var singres:responses.entrySet()){
-            var toAddResponse = new ApiResponse();
-            var content = new Content();
-            for(var singresitem:singres.getValue()){
-              content.addMediaType(singresitem.content,singresitem.mediaType);
+          operation.parameters(parameters);
+          setupMethod(expectedPath, operation, meth);
+          swagger.path(filter.getMethodFilter().pathAddress(), expectedPath);
 
-              for(var hea:singresitem.headers.values()){
-                toAddResponse.addHeaderObject(
-                        hea.key(),
-                        new io.swagger.v3.oas.models.headers.Header()
-                                .schema(getSchemaHam(String.class))
-                                .description(hea.description())
-                                .example(hea.value())
-                );
-              }
-            }
-            toAddResponse.setContent(content);
-            toAddResponse.setDescription(singres.getKey()+"");
-            apiResponses.addApiResponse(singres.getKey()+"",toAddResponse);
-          }
-        }
 
-        // Setup the models for the requests
-        if(doc.requests()!=null && doc.requests().length>0) {
-          for (var res : doc.requests()) {
-            var resBody = res.body();
-            var resExamples = res.examples();
-            var resAccept = res.accept();
-
-            setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept);
-          }
-        }else{
-          Class<?> resBody = Object.class;
-          org.kendar.http.annotations.multi.Example[] resExamples = null;
-          String resAccept = null;
-
-          setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept);
+          swagger
+                  .path("/health/{pp}", expectedPath);
+        }else {
+          setupRealApi(swagger, schemas, filter, doc, expectedPath);
         }
 
       }
@@ -216,6 +129,120 @@ public class SwaggerApi  implements FilteringClass {
 
     }
     //var openapi = swloader.getOpenAPI();
+  }
+
+  private void setupRealApi(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor filter, HamDoc doc, PathItem expectedPath) {
+    List<Parameter> parameters = new ArrayList<>();
+
+    // Setup query strings
+    if(doc.query()!=null) {
+      for (var res : doc.query()) {
+        parameters.add(new QueryParameter()
+                .name(res.key())
+                .schema(new Schema()
+                        .type(res.type())
+                        .example(res.example())));
+      }
+    }
+    // Setup path variables
+    if(doc.path()!=null) {
+      for (var res : doc.path()) {
+        parameters.add(new PathParameter()
+                .name(res.key())
+                .schema(new Schema()
+                        .type(res.type())
+                        .example(res.example())));
+      }
+    }
+    // Setup header variables
+    if(doc.header()!=null) {
+      for (var res : doc.header()) {
+        parameters.add(new HeaderParameter()
+                .name(res.key())
+                .schema(new Schema()
+                        .type("string")
+                        .example(res.value())));
+      }
+    }
+
+    var apiResponses = new ApiResponses();
+    // Setup the models for the response
+    if(doc.responses()==null || doc.responses().length==0) {
+      var toAddResponse = new ApiResponse();
+      toAddResponse.setDescription("200");
+      apiResponses.addApiResponse("200",toAddResponse);
+    }
+    else{
+      var responses = new HashMap<Integer,List<mt>>();
+      for (var res : doc.responses()) {
+        var hasBody =extractSchemasForMethod(schemas, res.body());
+
+        if(hasBody){
+          var mmt = new mt();
+          if(res.headers()!=null && res.headers().length>0){
+            for(var hea :res.headers()){
+              mmt.headers.put(hea.key(),hea);
+            }
+          }
+          var schema = getSchemaHam(res.body());
+          var mediaType  = new MediaType().schema(schema);
+          if(res.examples()!=null){
+            for(var ex :res.examples()){
+              mediaType.addExamples(ex.description(),new Example().value(ex.example()));
+            }
+          }
+          if(!responses.containsKey(res.code())){
+            responses.put(res.code(),new ArrayList<>());
+          }
+          mmt.description = res.description();
+          mmt.content = res.content();
+          mmt.mediaType = mediaType;
+          responses.get(res.code()).add(mmt);
+         /* var content = new Content()
+                  .addMediaType(res.content(),
+                          mediaType);
+          //}
+          expectedResponse.setContent(content);*/
+        }
+      }
+      for(var singres:responses.entrySet()){
+        var toAddResponse = new ApiResponse();
+        var content = new Content();
+        for(var singresitem:singres.getValue()){
+          content.addMediaType(singresitem.content,singresitem.mediaType);
+
+          for(var hea:singresitem.headers.values()){
+            toAddResponse.addHeaderObject(
+                    hea.key(),
+                    new io.swagger.v3.oas.models.headers.Header()
+                            .schema(getSchemaHam(String.class))
+                            .description(hea.description())
+                            .example(hea.value())
+            );
+          }
+        }
+        toAddResponse.setContent(content);
+        toAddResponse.setDescription(singres.getKey()+"");
+        apiResponses.addApiResponse(singres.getKey()+"",toAddResponse);
+      }
+    }
+
+    // Setup the models for the requests
+    if(doc.requests()!=null && doc.requests().length>0) {
+      for (var res : doc.requests()) {
+        var resBody = res.body();
+        var resExamples = res.examples();
+        var resAccept = res.accept();
+
+        setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept);
+      }
+    }else{
+      Class<?> resBody = Object.class;
+      org.kendar.http.annotations.multi.Example[] resExamples = null;
+      String resAccept = null;
+
+      setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept);
+    }
   }
 
   private void setupRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor filter, HamDoc doc, PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses, Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples, String resAccept) {
@@ -241,6 +268,12 @@ public class SwaggerApi  implements FilteringClass {
     operation.responses(apiResponses);
     operation.parameters(parameters);
     var meth = filter.getMethod();
+    setupMethod(expectedPath, operation, meth);
+
+    swagger.path(filter.getMethodFilter().pathAddress(), expectedPath);
+  }
+
+  private void setupMethod(PathItem expectedPath, Operation operation, String meth) {
     if (meth.equalsIgnoreCase("GET")) {
       expectedPath.get(operation);
     } else if (meth.equalsIgnoreCase("POST")) {
@@ -252,8 +285,6 @@ public class SwaggerApi  implements FilteringClass {
     } else if (meth.equalsIgnoreCase("DELETE")) {
       expectedPath.delete(operation);
     }
-
-    swagger.path(filter.getMethodFilter().pathAddress(), expectedPath);
   }
 
   private boolean extractSchemasForMethod(Map<String, Schema> schemas, Class<?> bodyRequest) {
