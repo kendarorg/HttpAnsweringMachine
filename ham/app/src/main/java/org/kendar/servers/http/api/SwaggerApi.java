@@ -40,6 +40,7 @@ import java.util.*;
 @HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class SwaggerApi  implements FilteringClass {
+  private final String localAddress;
   private FilterConfig filtersConfiguration;
   private JsonConfiguration jsonConfiguration;
 
@@ -47,6 +48,7 @@ public class SwaggerApi  implements FilteringClass {
 
     this.filtersConfiguration = filtersConfiguration;
     this.jsonConfiguration = jsonConfiguration;
+    this.localAddress = jsonConfiguration.getValue("global.localAddress");
   }
 
   class mt{
@@ -70,7 +72,7 @@ public class SwaggerApi  implements FilteringClass {
     var config = filtersConfiguration.get();
 
     OpenAPI swagger = new OpenAPI()
-            .addServersItem(new Server().url("http://www.local.test"));
+            .addServersItem(new Server().url("http://"+localAddress));
     swagger.setInfo(new Info()
             .title("Local API")
             .version("1.0.0"));
