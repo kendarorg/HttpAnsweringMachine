@@ -165,44 +165,20 @@ public class SwaggerApi  implements FilteringClass {
         }
 
         // Setup the models for the requests
-        if(doc.requests()!=null) {
+        if(doc.requests()!=null && doc.requests().length>0) {
           for (var res : doc.requests()) {
-            var hasBody = extractSchemasForMethod(schemas, res.body());
+            var resBody = res.body();
+            var resExamples = res.examples();
+            var resAccept = res.accept();
 
-            var operation = new Operation();
-            if (hasBody) {
-              var schema = getSchemaHam(res.body());
-              var mediaType  = new MediaType().schema(schema);
-              if(res.examples()!=null){
-                for(var ex :res.examples()){
-                  mediaType.addExamples(ex.description(),new Example().value(ex.example()));
-                }
-              }
-              var content = new Content()
-                      .addMediaType(res.accept(),
-                              mediaType);
-
-              RequestBody requestBody = new RequestBody().content(content);
-              operation.requestBody(requestBody);
-            }
-            operation.description(doc.description());
-            operation.responses(apiResponses);
-            operation.parameters(parameters);
-            var meth = filter.getMethod();
-            if (meth.equalsIgnoreCase("GET")) {
-              expectedPath.get(operation);
-            } else if (meth.equalsIgnoreCase("POST")) {
-              expectedPath.post(operation);
-            } else if (meth.equalsIgnoreCase("PUT")) {
-              expectedPath.put(operation);
-            } else if (meth.equalsIgnoreCase("OPTIONS")) {
-              expectedPath.options(operation);
-            } else if (meth.equalsIgnoreCase("DELETE")) {
-              expectedPath.delete(operation);
-            }
-
-            swagger.path(filter.getMethodFilter().pathAddress(), expectedPath);
+            setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept);
           }
+        }else{
+          Class<?> resBody = Object.class;
+          org.kendar.http.annotations.multi.Example[] resExamples = null;
+          String resAccept = null;
+
+          setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept);
         }
 
       }
@@ -225,6 +201,44 @@ public class SwaggerApi  implements FilteringClass {
 
     }
     //var openapi = swloader.getOpenAPI();
+  }
+
+  private void setupRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor filter, HamDoc doc, PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses, Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples, String resAccept) {
+    var hasBody = extractSchemasForMethod(schemas, resBody);
+
+    var operation = new Operation();
+    if (hasBody) {
+      var schema = getSchemaHam(resBody);
+      var mediaType  = new MediaType().schema(schema);
+      if(resExamples !=null){
+        for(var ex : resExamples){
+          mediaType.addExamples(ex.description(),new Example().value(ex.example()));
+        }
+      }
+      var content = new Content()
+              .addMediaType(resAccept,
+                      mediaType);
+
+      RequestBody requestBody = new RequestBody().content(content);
+      operation.requestBody(requestBody);
+    }
+    operation.description(doc.description());
+    operation.responses(apiResponses);
+    operation.parameters(parameters);
+    var meth = filter.getMethod();
+    if (meth.equalsIgnoreCase("GET")) {
+      expectedPath.get(operation);
+    } else if (meth.equalsIgnoreCase("POST")) {
+      expectedPath.post(operation);
+    } else if (meth.equalsIgnoreCase("PUT")) {
+      expectedPath.put(operation);
+    } else if (meth.equalsIgnoreCase("OPTIONS")) {
+      expectedPath.options(operation);
+    } else if (meth.equalsIgnoreCase("DELETE")) {
+      expectedPath.delete(operation);
+    }
+
+    swagger.path(filter.getMethodFilter().pathAddress(), expectedPath);
   }
 
   private boolean extractSchemasForMethod(Map<String, Schema> schemas, Class<?> bodyRequest) {

@@ -13,6 +13,6 @@ public  @interface HamDoc {
     QueryString[] query() default {};
     PathParameter[] path() default {};
     Header[] header() default {};
-    HamRequest[] requests();
+    HamRequest[] requests() default {};
     HamResponse[] responses() default {};
 }
