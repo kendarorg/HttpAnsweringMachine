@@ -75,7 +75,7 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording",
       method = "GET",
       id = "4000daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"plugin/replayer"})
   public void listAllLocalRecordings(Request req, Response res) throws JsonProcessingException {
     var realPath = fileResourcesUtils.buildPath(replayerData);
     var f = new File(realPath);
@@ -105,7 +105,7 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}",
       method = "GET",
       id = "4001daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"plugin/replayer"},
           path = @PathParameter(key = "id")
   )
   public void listAllRecordingSteps(Request req, Response res) throws IOException {
@@ -128,7 +128,7 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}",
       method = "DELETE",
       id = "4002daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"plugin/replayer"},
           path = @PathParameter(key = "id")
   )
   public void deleteRecordin(Request req, Response res) throws IOException {
@@ -145,7 +145,7 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}",
       method = "PUT",
       id = "4003daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"plugin/replayer"},
           path = @PathParameter(key = "id")
   )
   public void updateRecord(Request req, Response res) throws IOException {
@@ -186,7 +186,7 @@ public class ReplayerAPICrud implements FilteringClass {
           pathAddress = "/api/plugins/replayer/recording/{id}/full",
           method = "GET",
           id = "4003daa6-277f-11ec-9621-full")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"plugin/replayer"},
           path = @PathParameter(key = "id")
   )
   public void getFull(Request req, Response res) throws IOException {
@@ -208,7 +208,7 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording",
       method = "POST",
       id = "4004daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"plugin/replayer"})
   public void uploadRecording(Request req, Response res) throws Exception {
     JsonFileData jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
     String fileFullPath = jsonFileData.getName();
@@ -237,7 +237,7 @@ public class ReplayerAPICrud implements FilteringClass {
           pathAddress = "/api/plugins/replayer/recording/{id}/deletelines",
           method = "POST",
           id = "4004dXX6-277f-11sfec-9621-0242ac1afe002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"plugin/replayer"},
           path = @PathParameter(key = "id")
   )
   public void deleteLines(Request req, Response res) throws Exception {
@@ -281,7 +281,7 @@ public class ReplayerAPICrud implements FilteringClass {
           pathAddress = "/api/plugins/replayer/recording/{id}/clone/{newid}",
           method = "POST",
           id = "4004dXX6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id"),@PathParameter(key = "newid")}
   )
   public void clone(Request req, Response res) throws Exception {

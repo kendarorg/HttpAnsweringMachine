@@ -65,6 +65,7 @@ public class SSLController implements FilteringClass {
       method = "GET",
       id = "1008a4b4-277d-11ec-9621-0242ac130002")
   @HamDoc(
+          tags = {"base/ssl"},
           description = "Retrieve the list of ssl registrations",
           responses = {@HamResponse(
                   code = 200,
@@ -83,6 +84,7 @@ public class SSLController implements FilteringClass {
       method = "DELETE",
       id = "1009a4b4-277d-11ec-9621-0242ac130002")
   @HamDoc(
+          tags = {"base/ssl"},
           description = "Delete ssl item",
           path = @PathParameter(key="id"))
   public void removeDnsServer(Request req, Response res) {
@@ -109,6 +111,7 @@ public class SSLController implements FilteringClass {
           method = "POST",
           id = "1011a4b4-2ASD77d-11ec-9621-0242ac130002")
   @HamDoc(
+          tags = {"base/ssl"},
           description = "Add one/many certificate/s",
           requests = {@HamRequest(
                   body = SSLDomain[].class
@@ -150,7 +153,8 @@ public class SSLController implements FilteringClass {
           pathAddress = "/api/sslgen",
           method = "POST",
           id = "1011a4b4-asdfD77d-11ec-9621-0242ac130002")
-  @HamDoc(todo = true)
+  @HamDoc(
+          tags = {"base/ssl"},todo = true)
   public void generateSSL(Request req, Response res) throws Exception {
 
     var request = mapper.readValue(req.getRequestText(), TLSSSLGenerator.class);

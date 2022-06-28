@@ -52,6 +52,7 @@ public class CertificatesController implements FilteringClass {
       method = "GET",
       id = "1012a4b4-277d-11ec-9621-0242ac130002")
   @HamDoc(
+          tags = {"base/certificates"},
           description = "Retrieve the list of certificates",
           responses = @HamResponse(body = String[].class),
           requests = @HamRequest)
@@ -99,6 +100,7 @@ public class CertificatesController implements FilteringClass {
       method = "GET",
       id = "1014a4b4-277d-11ec-9621-0242ac130002")
   @HamDoc(
+          tags = {"base/certificates"},
           description = "Retrieve the certificate",
           responses = {@HamResponse(
                   code = 200,

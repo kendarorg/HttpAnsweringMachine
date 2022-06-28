@@ -59,7 +59,7 @@ public class SwaggerApi  implements FilteringClass {
   @HttpMethodFilter(phase = HttpFilterType.API,
           pathAddress = "/api/swagger/map.json",
           method = "GET",id="GET /api/swagger/map.json")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"base/utils"})
   public void loadSwagger(Request reqp, Response resp) throws JsonProcessingException {
     var config = filtersConfiguration.get();
 
@@ -96,6 +96,9 @@ public class SwaggerApi  implements FilteringClass {
             }
           }
           operation.parameters(parameters);
+          if(doc.tags()!=null && doc.tags().length>0) {
+            operation.tags(Arrays.asList(doc.tags()));
+          }
           setupMethod(expectedPath, operation, meth);
           swagger.path(filter.getMethodFilter().pathAddress(), expectedPath);
 
@@ -265,6 +268,9 @@ public class SwaggerApi  implements FilteringClass {
     operation.responses(apiResponses);
     operation.parameters(parameters);
     var meth = filter.getMethod();
+    if(doc.tags()!=null && doc.tags().length>0) {
+      operation.tags(Arrays.asList(doc.tags()));
+    }
     setupMethod(expectedPath, operation, meth);
 
     swagger.path(filter.getMethodFilter().pathAddress(), expectedPath);

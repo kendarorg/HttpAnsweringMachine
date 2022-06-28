@@ -49,6 +49,7 @@ public class DnsServersApis implements FilteringClass {
       method = "GET",
       id = "1002a4b4-277d-11ec-9621-0242ac130002")
   @HamDoc(
+          tags = {"base/dns"},
           description = "Retrieve all dns servers",
           responses = @HamResponse(
                   body = ExtraDnsServer[].class
@@ -65,6 +66,7 @@ public class DnsServersApis implements FilteringClass {
       method = "GET",
       id = "1003a4b4-277d-11ec-9621-0242ac130002")
   @HamDoc(
+          tags = {"base/dns"},
           description = "Get Single dns server",
           path = @PathParameter(key = "id"),
           responses = @HamResponse(
@@ -94,6 +96,7 @@ public class DnsServersApis implements FilteringClass {
       method = "DELETE",
       id = "1004a4b4-277d-11ec-9621-0242ac130002")
   @HamDoc(
+          tags = {"base/dns"},
           description = "Delete Single dns server",
           path = @PathParameter(key = "id"))
   public void removeDnsServer(Request req, Response res) {
@@ -122,6 +125,7 @@ public class DnsServersApis implements FilteringClass {
       method = "PUT",
       id = "1005a4b4-277d-11ec-9621-0242ac130002")
   @HamDoc(
+          tags = {"base/dns"},
           description = "Modify custom dns server",
           path = @PathParameter(key = "id"),
           requests = @HamRequest(
@@ -179,6 +183,7 @@ public class DnsServersApis implements FilteringClass {
       method = "POST",
       id = "1007a4b5-277d-11ec-9621-0242ac130002")
   @HamDoc(
+          tags = {"base/dns"},
           description = "Add custom dns server",
           requests = @HamRequest(
                   body = ExtraDnsServer.class

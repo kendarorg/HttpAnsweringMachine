@@ -49,7 +49,7 @@ public class ResultsAPI  implements FilteringClass {
             pathAddress = "/api/plugins/replayer/results",
             method = "GET",
             id = "3004daaallress-11ec-9621-0242ac1afe002")
-    @HamDoc(todo = true)
+    @HamDoc(todo = true,tags = {"plugin/replayer"})
     public void getResults(Request request, Response response) throws IOException {
         var rootPath = getRootPath();
         var result = new ArrayList<RecordingItem>();
@@ -63,7 +63,7 @@ public class ResultsAPI  implements FilteringClass {
             pathAddress = "/api/plugins/replayer/results/{id}",
             method = "GET",
             id = "300singss-11ec-9621-0242ac1afe002")
-    @HamDoc(todo = true,
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
             path = @PathParameter(key = "id")
     )
     public void getResult(Request request, Response response) throws IOException {
@@ -92,7 +92,7 @@ public class ResultsAPI  implements FilteringClass {
             pathAddress = "/api/plugins/replayer/results/{id}",
             method = "DELETE",
             id = "3004dderess-11ec-9621-0242ac1afe002")
-    @HamDoc(todo = true,
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
             path = @PathParameter(key = "id")
     )
     public void deleteresult(Request request, Response response) throws IOException {

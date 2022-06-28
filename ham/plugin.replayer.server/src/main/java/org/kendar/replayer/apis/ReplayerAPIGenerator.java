@@ -61,7 +61,7 @@ public class ReplayerAPIGenerator implements FilteringClass {
             pathAddress = "/api/plugins/replayer/generator/{id}",
             method = "GET",
             id = "4001daa6-277f-11ec-9yy1-0242ac1afe002")
-    @HamDoc(todo = true,
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
             path = @PathParameter(key = "id")
     )
     public void listAllRecordingSteps(Request req, Response res) throws IOException {

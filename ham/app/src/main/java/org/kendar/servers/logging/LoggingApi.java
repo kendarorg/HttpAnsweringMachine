@@ -53,7 +53,7 @@ public class LoggingApi implements FilteringClass {
       method = "GET",
       id = "1000aab4-277d-a1ef-5621-0242ac130002")
 
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"base/logs"})
   public void getLoggers(Request req, Response res) throws JsonProcessingException {
     var config = configuration.getConfiguration(GlobalConfig.class);
     res.addHeader("Content-type", "application/json");
@@ -78,7 +78,7 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/special",
       method = "GET",
       id = "1000aab4-277d-a1tf-5621-0242ac130002")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"base/logs"})
   public void getSpecialLoggers(Request req, Response res) throws JsonProcessingException {
     var specialLoggers = pluginsInitializer.getSpecialLoggers();
     res.addHeader("Content-type", "application/json");
@@ -90,7 +90,7 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/logger/{id}",
       method = "GET",
       id = "1000a4b-277d-a1ef-5621-0242ac130002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/logs"},
           path = @PathParameter(key = "id")
   )
   public void getLogger(Request req, Response res) throws JsonProcessingException {
@@ -106,7 +106,7 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/logger/{id}",
       method = "DELETE",
       id = "10d0a4b4-277d-a1ef-5621-0242ac130002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/logs"},
           path = @PathParameter(key = "id")
   )
   public void deleteLogger(Request req, Response res) {
@@ -122,7 +122,7 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/logger/{id}",
       method = "POST",
       id = "10c0a4b4-277d-a1ef-5621-0242ac130002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/logs"},
           path = @PathParameter(key = "id")
   )
   public void setLogger(Request req, Response res) throws JsonProcessingException {

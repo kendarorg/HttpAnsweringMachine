@@ -36,7 +36,7 @@ public class RegexpAPI implements FilteringClass {
             pathAddress = "/api/utils/regexp",
             method = "POST",
             id = "1000a4b4-29tad-11ec-9621-0242ac130002")
-    @HamDoc(todo = true)
+    @HamDoc(todo = true,tags = {"base/utils"})
     public void testRegexp(Request req, Response res) throws JsonProcessingException {
         var result = new RegexpResult();
         var data = mapper.readValue(req.getRequestText(), RegexpData.class);

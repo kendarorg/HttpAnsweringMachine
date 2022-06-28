@@ -48,6 +48,7 @@ public class DnsMappingsApis implements FilteringClass {
             pathAddress = "/api/dns/mappings",
             method = "GET",id="1000a4b4-277d-11ef-9621-0242ac130002")
     @HamDoc(
+            tags = {"base/dns"},
             description = "Retrieve all dns mappings",
             responses = @HamResponse(
                     body = PatternItem[].class
@@ -63,6 +64,7 @@ public class DnsMappingsApis implements FilteringClass {
             method = "GET",id="1000a4b4asd-277d-11ef-9621-0242ac130002")
 
     @HamDoc(
+            tags = {"base/dns"},
             description = "Generate hosts file",
             responses = @HamResponse(
                     body = String.class,
@@ -89,6 +91,7 @@ public class DnsMappingsApis implements FilteringClass {
       pathAddress = "/api/dns/mappings/{id}",
       method = "PUT",id="1000a4f4-277d-11ef-9621-0242ac130002")
     @HamDoc(
+            tags = {"base/dns"},
             description = "Modify custom dns mapping",
             path = @PathParameter(key = "id"),
             requests = @HamRequest(
@@ -121,6 +124,7 @@ public class DnsMappingsApis implements FilteringClass {
       pathAddress = "/api/dns/mappings",
       method = "POST",id="3000a4f4-277k-11ef-9621-0242ac130002")
     @HamDoc(
+            tags = {"base/dns"},
             description = "Modify custom dns mapping",
             requests = {@HamRequest(
                     body = PatternItem[].class
@@ -168,6 +172,7 @@ public class DnsMappingsApis implements FilteringClass {
       pathAddress = "/api/dns/mappings/{id}",
       method = "DELETE",id="10k0a4f4-277d-11ef-9621-0242ac130002")
     @HamDoc(
+            tags = {"base/dns"},
             description = "Modify custom dns mapping",
             path = @PathParameter(key = "id"))
     public void deleteDnsMappings(Request req, Response res) throws JsonProcessingException {

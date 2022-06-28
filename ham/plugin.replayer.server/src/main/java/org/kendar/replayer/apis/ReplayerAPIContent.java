@@ -62,7 +62,7 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "GET",
       id = "3004daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse")}
   )
   public void retrieveContent(Request req, Response res) throws IOException {
@@ -180,7 +180,7 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "DELETE",
       id = "3005daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse")}
   )
   public void deleteConent(Request req, Response res) throws IOException {
@@ -216,7 +216,7 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "POST",
       id = "3006daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse")}
   )
   public void modifyConent(Request req, Response res)

@@ -37,6 +37,7 @@ public class DnsLookupApi implements FilteringClass {
             method = "GET",
             id = "1005a4b91277d-11ec-9621-0242ac130002")
     @HamDoc(
+            tags = {"base/utils/lookup"},
             description = "Lookup DNSs via http",
             path = @PathParameter(
                     key = "id",
@@ -65,6 +66,7 @@ public class DnsLookupApi implements FilteringClass {
             method = "GET",
             id = "1005a4b91277d-11ec-9621-0fdns130002")
     @HamDoc(
+            tags = {"base/utils/lookup"},
             description = "List all resolved dnss",
             responses = @HamResponse(
                     body = DnsItem[].class
@@ -87,7 +89,8 @@ public class DnsLookupApi implements FilteringClass {
             pathAddress = "/api/dns/list",
             method = "DELETE",
             id = "1005a4b919877d-11ec-9621-0fdns130002")
-    @HamDoc(description = "Force the dns resolved reloading")
+    @HamDoc(
+            tags = {"base/utils/lookup"},description = "Force the dns resolved reloading")
     public void clear(Request req, Response res) throws Exception {
         dnsMultiResolver.clearCache();
     }

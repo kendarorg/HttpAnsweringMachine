@@ -61,7 +61,7 @@ public class SingleScriptAPI implements FilteringClass {
             pathAddress = "/api/plugins/replayer/v2/recording/{id}",
             method = "GET",
             id = "4001daa6-fff-11ec-9tar1-0242ac1afe002")
-    @HamDoc(todo = true,
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
             path = @PathParameter(key = "id")
     )
     public void listAllRecordingSteps(Request req, Response res) throws IOException {

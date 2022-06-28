@@ -128,7 +128,7 @@ public class OidcController implements FilteringClass {
       pathAddress = AUTHORIZATION_ENDPOINT,
       method = "GET",
       id = "2004daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"plugin/oidc"})
   public void authorize(Request req, Response res)
       throws JOSEException, NoSuchAlgorithmException {
     var client_id = req.getRequestParameter("client_id");
@@ -225,7 +225,7 @@ public class OidcController implements FilteringClass {
       pathAddress = METADATA_ENDPOINT,
       method = "GET",
       id = "1facdaa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"plugin/oidc"})
   public void metadata(/*UriComponentsBuilder uriBuilder,*/ Request req, Response res) {
     log.info("called " + METADATA_ENDPOINT + " from {}", req.getRemoteHost());
     String urlPrefix = "https://" + serverAddress + "/api/plugins/oidc";
@@ -261,7 +261,7 @@ public class OidcController implements FilteringClass {
       pathAddress = JWKS_ENDPOINT,
       method = "GET",
       id = "2000daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"plugin/oidc"})
   public void jwks(Request req, Response res) {
     log.info("called " + JWKS_ENDPOINT + " from {}", req.getRemoteHost());
     res.setResponseText(publicJWKSet.toString());
@@ -273,7 +273,7 @@ public class OidcController implements FilteringClass {
       pathAddress = USERINFO_ENDPOINT,
       method = "GET",
       id = "2001daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"plugin/oidc"})
   public void userinfo(Request req, Response res) {
     var auth = req.getRequestParameter("Authorization");
     var access_token = req.getRequestParameter("access_token");
@@ -316,7 +316,7 @@ public class OidcController implements FilteringClass {
       pathAddress = INTROSPECTION_ENDPOINT,
       method = "POST",
       id = "2002daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"plugin/oidc"})
   public void introspection(Request req, Response res) {
     var auth = req.getRequestParameter("Authorization");
     var token = req.getRequestParameter("token");
@@ -350,7 +350,7 @@ public class OidcController implements FilteringClass {
       pathAddress = TOKEN_ENDPOINT,
       method = "POST",
       id = "2003daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"plugin/oidc"})
   public void token(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
     var grant_type = req.getRequestParameter("grant_type");
     var code = req.getRequestParameter("code");

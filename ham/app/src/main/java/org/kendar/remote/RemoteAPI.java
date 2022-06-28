@@ -38,6 +38,7 @@ public class RemoteAPI implements FilteringClass {
             method = "POST",
             id = "1002a4b4-ffff-11ec-9621-0242ac130002")
     @HamDoc(
+            tags = {"base/utils"},
             description = "Execute remote request",
             requests = @HamRequest(
                     body = Request.class

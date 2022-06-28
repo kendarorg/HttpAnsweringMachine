@@ -41,7 +41,7 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes",
       method = "GET",
       id = "1015a4b4-277d-11ec-9621-0242ac130002")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"base/proxy"})
   public void getProxies(Request req, Response res) throws JsonProcessingException {
     var proxyes = configuration.getConfiguration(SimpleProxyConfig.class).getProxies();
     res.addHeader("Content-type", "application/json");
@@ -53,7 +53,7 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes/{id}",
       method = "GET",
       id = "1016a4b4-277d-11ec-9621-0242ac130002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/proxy"},
           path = @PathParameter(key = "id")
   )
   public void getProxy(Request req, Response res) throws JsonProcessingException {
@@ -75,7 +75,7 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes/{id}",
       method = "DELETE",
       id = "1017a4b4-277d-11ec-9621-0242ac130002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/proxy"},
           path = @PathParameter(key = "id")
   )
   public void removeProxy(Request req, Response res) {
@@ -100,7 +100,7 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes/{id}",
       method = "PUT",
       id = "1018a4b4-277d-11ec-9621-0242ac130002")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/proxy"},
           path = @PathParameter(key = "id")
   )
   public void updateProxy(Request req, Response res) throws JsonProcessingException {
@@ -132,7 +132,7 @@ public class ProxyHandlerApis implements FilteringClass {
       pathAddress = "/api/proxyes",
       method = "POST",
       id = "1020a4b4-277d-11ec-9621-0242ac130002")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"base/proxy"})
   public void addProxy(Request req, Response res) throws JsonProcessingException {
     var cloneConf = configuration.getConfiguration(SimpleProxyConfig.class).copy();
     var proxyes = cloneConf.getProxies();
