@@ -425,6 +425,11 @@ public class FilterDescriptor {
         }
 
         @Override
+        public boolean todo() {
+          return false;
+        }
+
+        @Override
         public String description() {
           return loc.doc.description();
         }

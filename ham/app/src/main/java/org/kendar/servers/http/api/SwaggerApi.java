@@ -28,6 +28,7 @@ import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.HamRequest;
 import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.Header;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -52,6 +53,7 @@ public class SwaggerApi  implements FilteringClass {
     public String content;
     public MediaType mediaType;
     public String description;
+    public Map<String, Header> headers = new HashMap<>();
   }
 
   @HttpMethodFilter(phase = HttpFilterType.API,
@@ -126,13 +128,14 @@ public class SwaggerApi  implements FilteringClass {
           var responses = new HashMap<Integer,List<mt>>();
           for (var res : doc.responses()) {
             var hasBody =extractSchemasForMethod(schemas, res.body());
-            var expectedResponse = new mt();
-            //if(res.description()!=null && !res.description().isEmpty()) {
-              expectedResponse.description = res.description();
-            //}
+
             if(hasBody){
-
-
+              var mmt = new mt();
+              if(res.headers()!=null && res.headers().length>0){
+                for(var hea :res.headers()){
+                  mmt.headers.put(hea.key(),hea);
+                }
+              }
               var schema = getSchemaHam(res.body());
               var mediaType  = new MediaType().schema(schema);
               if(res.examples()!=null){
@@ -143,7 +146,6 @@ public class SwaggerApi  implements FilteringClass {
               if(!responses.containsKey(res.code())){
                 responses.put(res.code(),new ArrayList<>());
               }
-              var mmt = new mt();
               mmt.description = res.description();
               mmt.content = res.content();
               mmt.mediaType = mediaType;
@@ -161,6 +163,15 @@ public class SwaggerApi  implements FilteringClass {
             for(var singresitem:singres.getValue()){
               content.addMediaType(singresitem.content,singresitem.mediaType);
 
+              for(var hea:singresitem.headers.values()){
+                toAddResponse.addHeaderObject(
+                        hea.key(),
+                        new io.swagger.v3.oas.models.headers.Header()
+                                .schema(getSchemaHam(String.class))
+                                .description(hea.description())
+                                .example(hea.value())
+                );
+              }
             }
             toAddResponse.setContent(content);
             toAddResponse.setDescription(singres.getKey()+"");

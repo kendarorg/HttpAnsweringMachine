@@ -7,5 +7,6 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Header {
     String description() default "";
     String key();
-    String value();
+    String value() default "";
+    Class<?> type() default String.class;
 }

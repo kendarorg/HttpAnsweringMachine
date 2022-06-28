@@ -2,10 +2,15 @@ package org.kendar.servers.logging;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.dns.configurations.ExtraDnsServer;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.Header;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.Request;
@@ -56,6 +61,11 @@ public class FileLogsApi implements FilteringClass {
             pathAddress = "/api/log/files",
             method = "GET",
             id = "1000aab4-2987-a1ef-5621-0242ac130002")
+    @HamDoc(
+            description = "List all log files",
+            responses = @HamResponse(
+                    body = FileLogListItem[].class
+            ))
     public void getLogFiles(Request req, Response res) throws JsonProcessingException {
         ArrayList<FileLogListItem> result = getFileLogListItems();
         res.addHeader("Content-type", "application/json");
@@ -92,6 +102,17 @@ public class FileLogsApi implements FilteringClass {
             pathAddress = "/api/log/files/{id}",
             method = "GET",
             id = "1000aab489a6s7-a1ef-5621-0242ac130002")
+    @HamDoc(
+            description = "Retrieve single log file",
+            path = @PathParameter(key="id"),
+            responses = @HamResponse(
+                    body = String.class,
+                    description = "Content of the log file",
+                    headers = {
+                            @Header(key = "X-NEXT", description = "Next file id if present"),
+                            @Header(key = "X-PREV", description = "Previous file id if present")
+                    }
+            ))
     public void getLogFile(Request req, Response res) throws IOException {
         String id = req.getPathParameter("id");
         var data = Files.readString(Path.of(roundtripsPath.toString(),id));
