@@ -12,8 +12,12 @@ import com.saasquatch.jsonschemainferrer.RequiredPolicies;
 import com.saasquatch.jsonschemainferrer.SpecVersion;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamRequest;
+import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.utils.models.ValidatorData;
@@ -70,6 +74,15 @@ public class ValidatorAPI implements FilteringClass {
             pathAddress = "/api/utils/schemavalidator/json",
             method = "POST",
             id = "1000a4b4-29tad-1jsc-9621-0242ac130002")
+    @HamDoc(
+            description = "Validate JSON against schema or example",
+            requests = @HamRequest(
+                    body = ValidatorData.class
+            ),
+            responses = @HamResponse(
+                    body = ValidatorResult.class
+            ),
+            tags = {"base/utils"})
     public void validate(Request req, Response res) throws IOException {
         Set<ValidationMessage> errors;
         var result = new ValidatorResult();
@@ -103,6 +116,15 @@ public class ValidatorAPI implements FilteringClass {
             pathAddress = "/api/utils/schemavalidator/xml",
             method = "POST",
             id = "1000a4b4-29tad-1jsc-9621-0ww2ac130002")
+    @HamDoc(
+            description = "Validate XML against schema or example",
+            requests = @HamRequest(
+                    body = ValidatorData.class
+            ),
+            responses = @HamResponse(
+                    body = ValidatorResult.class
+            ),
+            tags = {"base/utils"})
     public void validateXml(Request req, Response res) throws IOException, SAXException, ParserConfigurationException {
         var data = mapper.readValue(req.getRequestText(), ValidatorData.class);
 

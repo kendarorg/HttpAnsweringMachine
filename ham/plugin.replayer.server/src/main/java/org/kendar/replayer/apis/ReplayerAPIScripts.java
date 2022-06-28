@@ -3,8 +3,10 @@ package org.kendar.replayer.apis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.Scripts;
 import org.kendar.replayer.storage.CallIndex;
@@ -57,6 +59,9 @@ public class ReplayerAPIScripts implements FilteringClass {
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
             method = "GET",
             id = "5000daa6-277f-11ec-9621-0242ac1afe002script")
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
+    )
     public void retrieveScript(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var line = req.getPathParameter("line");
@@ -114,6 +119,9 @@ public class ReplayerAPIScripts implements FilteringClass {
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
             method = "DELETE",
             id = "5000dafa-277f-11ec-9621-0242ac1afe002script")
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
+    )
     public void deleteScript(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var line = req.getPathParameter("line");
@@ -134,6 +142,9 @@ public class ReplayerAPIScripts implements FilteringClass {
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
             method = "PUT",
             id = "5000daa6-277f-11ec-9621-0242ac1afe002scriptput")
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
+    )
     public void putScript(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var lines = Arrays.stream(req.getPathParameter("line").split(","))

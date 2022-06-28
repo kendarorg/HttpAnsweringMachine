@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.*;
 import org.kendar.http.events.ScriptsModified;
@@ -53,6 +55,7 @@ public class JsFilterAPI implements FilteringClass {
       pathAddress = "/api/plugins/jsfilter/filters",
       method = "GET",
       id = "1000a4b4-297id-11ec-9yy1-0242ac130002")
+  @HamDoc(todo = true,tags = {"plugin/js"})
   public void getJsFiltersList(Request req, Response res) throws JsonProcessingException {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
 
@@ -87,6 +90,9 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}",
           method = "GET",
           id = "1000a4b4-297id-11ec-9777-0242ac130002")
+  @HamDoc(todo = true,tags = {"plugin/js"},
+          path = @PathParameter(key = "filtername")
+  )
   public void getJsFilter(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
@@ -110,6 +116,9 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}",
           method = "POST",
           id = "1000a4b4-297id-11rr-9777-0242ac130002")
+  @HamDoc(todo = true,tags = {"plugin/js"},
+          path = @PathParameter(key = "filtername")
+  )
   public void saveJsFilter(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
@@ -139,6 +148,9 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}",
           method = "DELETE",
           id = "1000a4b4-dleete-11rr-9777-0242ac130002")
+  @HamDoc(todo = true,tags = {"plugin/js"},
+          path = @PathParameter(key = "filtername")
+  )
   public void deleteJsFilter(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
@@ -166,6 +178,7 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/filters",
           method = "POST",
           id = "1000a4b4-uoploadid-11rr-9777-0242ac130002")
+  @HamDoc(todo = true,tags = {"plugin/js"})
   public void uploadJsFilter(Request req, Response res) throws JsonProcessingException {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     JsonFileData jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
@@ -225,6 +238,10 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}/{file}",
           method = "GET",
           id = "1000a4b4-47id-11ec-9777-0242ac130002")
+  @HamDoc(todo = true,tags = {"plugin/js"},
+          path = {@PathParameter(key = "filtername"),
+                  @PathParameter(key = "file")}
+  )
   public void getJsFilterFile(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
@@ -255,6 +272,10 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}/{file}",
           method = "POST",
           id = "10iyh4b4-47id-11ec-9777-0242ac130002")
+  @HamDoc(todo = true,tags = {"plugin/js"},
+          path = {@PathParameter(key = "filtername"),
+                  @PathParameter(key = "file")}
+  )
   public void putJsFilterFile(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");

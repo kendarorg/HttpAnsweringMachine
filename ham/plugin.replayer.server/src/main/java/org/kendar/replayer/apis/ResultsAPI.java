@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.RecordingItem;
 import org.kendar.replayer.storage.TestResults;
@@ -47,6 +49,7 @@ public class ResultsAPI  implements FilteringClass {
             pathAddress = "/api/plugins/replayer/results",
             method = "GET",
             id = "3004daaallress-11ec-9621-0242ac1afe002")
+    @HamDoc(todo = true,tags = {"plugin/replayer"})
     public void getResults(Request request, Response response) throws IOException {
         var rootPath = getRootPath();
         var result = new ArrayList<RecordingItem>();
@@ -60,6 +63,9 @@ public class ResultsAPI  implements FilteringClass {
             pathAddress = "/api/plugins/replayer/results/{id}",
             method = "GET",
             id = "300singss-11ec-9621-0242ac1afe002")
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
+            path = @PathParameter(key = "id")
+    )
     public void getResult(Request request, Response response) throws IOException {
         var id = request.getPathParameter("id");
         var rootPath = getRootPath();
@@ -86,6 +92,9 @@ public class ResultsAPI  implements FilteringClass {
             pathAddress = "/api/plugins/replayer/results/{id}",
             method = "DELETE",
             id = "3004dderess-11ec-9621-0242ac1afe002")
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
+            path = @PathParameter(key = "id")
+    )
     public void deleteresult(Request request, Response response) throws IOException {
         var id = request.getPathParameter("id");
         var rootPath = getRootPath();

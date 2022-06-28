@@ -3,8 +3,10 @@ package org.kendar.replayer.apis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.apis.models.SingleScript;
@@ -59,6 +61,9 @@ public class SingleScriptAPI implements FilteringClass {
             pathAddress = "/api/plugins/replayer/v2/recording/{id}",
             method = "GET",
             id = "4001daa6-fff-11ec-9tar1-0242ac1afe002")
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
+            path = @PathParameter(key = "id")
+    )
     public void listAllRecordingSteps(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
 
