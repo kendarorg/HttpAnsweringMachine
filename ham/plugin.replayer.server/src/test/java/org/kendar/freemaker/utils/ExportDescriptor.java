@@ -4,6 +4,9 @@ import java.util.List;
 
 public class ExportDescriptor {
     public String name;
-    public String mainPackage;
+    public List<String> packagePath;
     public List<FileDescriptor> files;
+    public String getPackage(){return null;}
+    public String getResPackage(){return null;}
+
 }
