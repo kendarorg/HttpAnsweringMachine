@@ -425,6 +425,11 @@ public class FilterDescriptor {
         }
 
         @Override
+        public String[] tags() {
+          return loc.doc.tags();
+        }
+
+        @Override
         public boolean todo() {
           return false;
         }

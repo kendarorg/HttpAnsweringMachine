@@ -40,7 +40,7 @@ public class PluginsApi implements FilteringClass {
             description = "List all installed plugins",
             responses = @HamResponse(
                     body = PluginDescriptor[].class
-            )
+            ),tags = {"base/utils"}
     )
     public void getStatus(Request req, Response res) throws JsonProcessingException {
         var result = new ArrayList<PluginDescriptor>();

@@ -62,7 +62,7 @@ public class JsFilterGeneratorAPI implements FilteringClass {
             pathAddress = "/api/plugins/jsfilter/generator/{recording}/{line}/{type}",
             method = "GET",
             id = "1000a4b4-297id-11ec-9621-02galac130002")
-    @HamDoc(todo = true,
+    @HamDoc(todo = true,tags = {"plugin/js"},
             path = {@PathParameter(key = "recording"),
                     @PathParameter(key = "line"),
                     @PathParameter(key = "type")}
@@ -130,7 +130,7 @@ public class JsFilterGeneratorAPI implements FilteringClass {
             pathAddress = "/api/plugins/jsfilter/generator",
             method = "GET",
             id = "1000a777297id-11ecfluk1-0242ac130002")
-    @HamDoc(todo = true)
+    @HamDoc(todo = true,tags = {"plugin/js"})
     public void getGenerators(Request req, Response res) throws JsonProcessingException {
         var result = new ArrayList<GeneratorModel>();
         for (var generator :

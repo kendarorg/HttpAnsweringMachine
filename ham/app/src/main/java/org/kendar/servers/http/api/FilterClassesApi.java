@@ -48,7 +48,8 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/phase",
       method = "GET",
       id = "e907a4b4-277d-11ec-9621-0242ac130002")
-  @HamDoc(todo = true)
+  @HamDoc(
+          tags = {"base/filters"},todo = true)
   public void listPhases(Request req, Response res) throws JsonProcessingException {
     var result = new ArrayList<FilterType>();
     result.add(new FilterType(0, HttpFilterType.NONE));
@@ -67,7 +68,7 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/phase/{phase}",
       method = "GET",
       id = "e907a4b4-278d-11ec-9621-0242ac130003")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/filters"},
           path = @PathParameter(key = "phase")
   )
   public void getFiltersForPhase(Request req, Response res) throws JsonProcessingException {
@@ -92,7 +93,7 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/class",
       method = "GET",
       id = "e907a4b4-278d-11ec-6621-0242ac130003")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"base/filters"})
   public void getFiltersForClass(Request req, Response res) throws JsonProcessingException {
     var config = filtersConfiguration.get();
 
@@ -107,7 +108,7 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/class/{clazz}",
       method = "GET",
       id = "e907a4b4-278k-11ec-6621-0242ac130003")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/filters"},
           path = @PathParameter(key = "clazz")
   )
   public void getIdFiltersForClass(Request req, Response res) throws JsonProcessingException {
@@ -134,7 +135,7 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/phase/{phase}/{clazz}",
       method = "GET",
       id = "e907a4b4-277d-11ec-9621-0242ac130003")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/filters"},
           path = {@PathParameter(key = "phase"),
           @PathParameter(key = "clazz")}
   )
@@ -165,7 +166,7 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/id/{id}",
       method = "GET",
       id = "e907a4b4-277d-11ec-9621-0242ac130004")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/filters"},
           path = @PathParameter(key = "id")
   )
   public void getFilterId(Request req, Response res) throws JsonProcessingException {
@@ -186,7 +187,7 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/id/{id}",
       method = "DELETE",
       id = "e907a4b4-277d-11kc-9621-0242ac130004")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/filters"},
           path = @PathParameter(key = "id")
   )
   public void disableById(Request req, Response res) {
@@ -206,7 +207,7 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/id/{id}/enable",
       method = "PUT",
       id = "e907a4b4-277d-11ec-962h-0242ac130004")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/filters"},
           path = @PathParameter(key = "id")
   )
   public void enableById(Request req, Response res) {
@@ -226,7 +227,7 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/loaders",
       method = "GET",
       id = "e967a4b4-277d-41ecr9621-0242ac130004")
-  @HamDoc(todo = true)
+  @HamDoc(todo = true,tags = {"base/filters"})
   public void getFiltersLoaders(Request req, Response res) throws JsonProcessingException {
     var result =
         context.getBeansOfType(CustomFiltersLoader.class).values().stream()
@@ -241,7 +242,7 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/loaders/{loader}",
       method = "GET",
       id = "e967a4b4-277d-41ecr9621y0242ac130004")
-  @HamDoc(todo = true,
+  @HamDoc(todo = true,tags = {"base/filters"},
           path = @PathParameter(key = "loader")
   )
   public void getFiltersLoadersFilters(Request req, Response res) throws JsonProcessingException {

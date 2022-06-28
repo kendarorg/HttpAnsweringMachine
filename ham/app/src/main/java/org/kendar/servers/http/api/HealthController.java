@@ -25,6 +25,7 @@ public class HealthController implements FilteringClass {
             pathAddress = "/api/health",
             method = "GET",id="1007a4b4-277d-11ec-9621-0242ac130002")
     @HamDoc(
+            tags = {"base/utils"},
             description = "Retrieve the application status",
             responses = @HamResponse(
                     body = String.class,

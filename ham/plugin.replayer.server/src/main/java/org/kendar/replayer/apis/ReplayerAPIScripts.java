@@ -59,7 +59,7 @@ public class ReplayerAPIScripts implements FilteringClass {
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
             method = "GET",
             id = "5000daa6-277f-11ec-9621-0242ac1afe002script")
-    @HamDoc(todo = true,
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
             path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
     )
     public void retrieveScript(Request req, Response res) throws IOException {
@@ -119,7 +119,7 @@ public class ReplayerAPIScripts implements FilteringClass {
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
             method = "DELETE",
             id = "5000dafa-277f-11ec-9621-0242ac1afe002script")
-    @HamDoc(todo = true,
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
             path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
     )
     public void deleteScript(Request req, Response res) throws IOException {
@@ -142,7 +142,7 @@ public class ReplayerAPIScripts implements FilteringClass {
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
             method = "PUT",
             id = "5000daa6-277f-11ec-9621-0242ac1afe002scriptput")
-    @HamDoc(todo = true,
+    @HamDoc(todo = true,tags = {"plugin/replayer"},
             path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
     )
     public void putScript(Request req, Response res) throws IOException {

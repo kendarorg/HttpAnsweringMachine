@@ -31,7 +31,7 @@ public class SettingsAPI  implements FilteringClass {
             pathAddress = "/api/utils/settings",
             method = "GET",
             id = "GET:/api/utils/settings")
-    @HamDoc(todo = true)
+    @HamDoc(todo = true,tags = {"base/utils"})
     public void downloadSettings(Request req, Response res) throws Exception {
         var result = configuration.getConfigurationAsString();
         res.setResponseText(result);

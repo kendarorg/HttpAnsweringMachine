@@ -30,7 +30,7 @@ public class ReplayerAPIStatus implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/status",
             method = "GET",id="300999f-11ec-9621-0242ac1afe002")
-    @HamDoc(todo = true)
+    @HamDoc(todo = true,tags = {"plugin/replayer"})
     public void recording(Request req, Response res) throws IOException {
         String realStatus;
         String currentScript;

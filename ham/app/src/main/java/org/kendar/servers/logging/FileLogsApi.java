@@ -65,7 +65,7 @@ public class FileLogsApi implements FilteringClass {
             description = "List all log files",
             responses = @HamResponse(
                     body = FileLogListItem[].class
-            ))
+            ),tags = {"base/logs"})
     public void getLogFiles(Request req, Response res) throws JsonProcessingException {
         ArrayList<FileLogListItem> result = getFileLogListItems();
         res.addHeader("Content-type", "application/json");
@@ -112,7 +112,7 @@ public class FileLogsApi implements FilteringClass {
                             @Header(key = "X-NEXT", description = "Next file id if present"),
                             @Header(key = "X-PREV", description = "Previous file id if present")
                     }
-            ))
+            ),tags = {"base/logs"})
     public void getLogFile(Request req, Response res) throws IOException {
         String id = req.getPathParameter("id");
         var data = Files.readString(Path.of(roundtripsPath.toString(),id));

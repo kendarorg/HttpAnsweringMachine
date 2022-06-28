@@ -72,7 +72,7 @@ public class ValidatorAPI implements FilteringClass {
             pathAddress = "/api/utils/schemavalidator/json",
             method = "POST",
             id = "1000a4b4-29tad-1jsc-9621-0242ac130002")
-    @HamDoc(todo = true)
+    @HamDoc(todo = true,tags = {"base/utils"})
     public void validate(Request req, Response res) throws IOException {
         Set<ValidationMessage> errors;
         var result = new ValidatorResult();
@@ -106,7 +106,7 @@ public class ValidatorAPI implements FilteringClass {
             pathAddress = "/api/utils/schemavalidator/xml",
             method = "POST",
             id = "1000a4b4-29tad-1jsc-9621-0ww2ac130002")
-    @HamDoc(todo = true)
+    @HamDoc(todo = true,tags = {"base/utils"})
     public void validateXml(Request req, Response res) throws IOException, SAXException, ParserConfigurationException {
         var data = mapper.readValue(req.getRequestText(), ValidatorData.class);
 
