@@ -59,10 +59,7 @@ public class SwaggerApi  implements FilteringClass {
   @HttpMethodFilter(phase = HttpFilterType.API,
           pathAddress = "/api/swagger/map.json",
           method = "GET",id="GET /api/swagger/map.json")
-//  @HamDoc(
-//          description = "Retrieve the OpenAPI data",
-//          responses = {@HamResponse(body = OpenAPI.class)},
-//          requests = {@HamRequest()})
+  @HamDoc(todo = true)
   public void loadSwagger(Request reqp, Response resp) throws JsonProcessingException {
     var config = filtersConfiguration.get();
 

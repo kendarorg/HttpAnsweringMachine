@@ -2,8 +2,10 @@ package org.kendar.replayer.apis;
 
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerStatus;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -28,6 +30,7 @@ public class ReplayerAPIStatus implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/status",
             method = "GET",id="300999f-11ec-9621-0242ac1afe002")
+    @HamDoc(todo = true)
     public void recording(Request req, Response res) throws IOException {
         String realStatus;
         String currentScript;

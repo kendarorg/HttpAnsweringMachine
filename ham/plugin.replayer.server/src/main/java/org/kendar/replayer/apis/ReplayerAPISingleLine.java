@@ -3,8 +3,10 @@ package org.kendar.replayer.apis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.storage.CallIndex;
@@ -59,6 +61,9 @@ public class ReplayerAPISingleLine implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "GET",
       id = "5000daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(todo = true,
+          path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
+  )
   public void retrieveSingleLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
@@ -98,6 +103,9 @@ public class ReplayerAPISingleLine implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "PUT",
       id = "5001daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(todo = true,
+          path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
+  )
   public void modifySingleLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
@@ -133,6 +141,9 @@ public class ReplayerAPISingleLine implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "POST",
       id = "5002daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(todo = true,
+          path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
+  )
   public void addLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
@@ -169,6 +180,9 @@ public class ReplayerAPISingleLine implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "DELETE",
       id = "5003daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(todo = true,
+          path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
+  )
   public void deleteSingleLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
@@ -189,6 +203,9 @@ public class ReplayerAPISingleLine implements FilteringClass {
           pathAddress = "/api/plugins/replayer/recording/{id}/indexline/{line}",
           method = "DELETE",
           id = "5003daa6-277f-ytec-9621-0242ac1afe002")
+  @HamDoc(todo = true,
+          path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
+  )
   public void deleteSingleIndexLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
@@ -229,6 +246,9 @@ public class ReplayerAPISingleLine implements FilteringClass {
           pathAddress = "/api/plugins/replayer/recording/{id}/lineindex/{line}",
           method = "GET",
           id = "5000daa6-277f-11ec-9621-0242ac1afe002lineindex")
+  @HamDoc(todo = true,
+          path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
+  )
   public void retrieveSingleLineIndexData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
@@ -258,6 +278,9 @@ public class ReplayerAPISingleLine implements FilteringClass {
           pathAddress = "/api/plugins/replayer/recording/{id}/lineindex/{line}",
           method = "PUT",
           id = "5001daa6-277f-11ec-9621-0242ac1afe008lineindex")
+  @HamDoc(todo = true,
+          path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
+  )
   public void modifySingleLineIndexData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));

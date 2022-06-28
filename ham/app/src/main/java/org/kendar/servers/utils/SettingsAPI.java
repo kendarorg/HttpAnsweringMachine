@@ -3,8 +3,10 @@ package org.kendar.servers.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -29,6 +31,7 @@ public class SettingsAPI  implements FilteringClass {
             pathAddress = "/api/utils/settings",
             method = "GET",
             id = "GET:/api/utils/settings")
+    @HamDoc(todo = true)
     public void downloadSettings(Request req, Response res) throws Exception {
         var result = configuration.getConfigurationAsString();
         res.setResponseText(result);
