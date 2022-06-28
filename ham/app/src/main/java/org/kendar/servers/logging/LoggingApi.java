@@ -8,12 +8,15 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
+import org.kendar.http.annotations.multi.QueryString;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.PluginsInitializer;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.http.SpecialLoggerDescriptor;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
 
@@ -78,7 +81,12 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/special",
       method = "GET",
       id = "1000aab4-277d-a1tf-5621-0242ac130002")
-  @HamDoc(todo = true,tags = {"base/logs"})
+  @HamDoc(
+          description = "List all the special logging classes",
+          responses = @HamResponse(
+                  body = SpecialLoggerDescriptor.class
+          ),
+          tags = {"base/logs"})
   public void getSpecialLoggers(Request req, Response res) throws JsonProcessingException {
     var specialLoggers = pluginsInitializer.getSpecialLoggers();
     res.addHeader("Content-type", "application/json");
@@ -90,7 +98,11 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/logger/{id}",
       method = "GET",
       id = "1000a4b-277d-a1ef-5621-0242ac130002")
-  @HamDoc(todo = true,tags = {"base/logs"},
+  @HamDoc(description = "Retrieve the level of the specific logger",
+          responses = @HamResponse(
+                  body = Level.class
+          ),
+          tags = {"base/logs"},
           path = @PathParameter(key = "id")
   )
   public void getLogger(Request req, Response res) throws JsonProcessingException {
@@ -106,7 +118,11 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/logger/{id}",
       method = "DELETE",
       id = "10d0a4b4-277d-a1ef-5621-0242ac130002")
-  @HamDoc(todo = true,tags = {"base/logs"},
+  @HamDoc(description = "Set to OFF the specified logger",
+          responses = @HamResponse(
+                  body = Level.class
+          ),
+          tags = {"base/logs"},
           path = @PathParameter(key = "id")
   )
   public void deleteLogger(Request req, Response res) {
@@ -122,7 +138,15 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/logger/{id}",
       method = "POST",
       id = "10c0a4b4-277d-a1ef-5621-0242ac130002")
-  @HamDoc(todo = true,tags = {"base/logs"},
+  @HamDoc(description = "Set the level of the logger",
+          responses = @HamResponse(
+                  body = Level.class
+          ),
+          query = @QueryString(
+                  key="level",
+                  example = "DEBUG"
+          ),
+          tags = {"base/logs"},
           path = @PathParameter(key = "id")
   )
   public void setLogger(Request req, Response res) throws JsonProcessingException {
