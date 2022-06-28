@@ -8,6 +8,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamRequest;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.http.annotations.multi.QueryString;
@@ -17,6 +18,8 @@ import org.kendar.servers.http.PluginsInitializer;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.http.SpecialLoggerDescriptor;
+import org.kendar.servers.utils.models.ValidatorData;
+import org.kendar.servers.utils.models.ValidatorResult;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
 
@@ -55,8 +58,12 @@ public class LoggingApi implements FilteringClass {
       pathAddress = "/api/log/logger",
       method = "GET",
       id = "1000aab4-277d-a1ef-5621-0242ac130002")
-
-  @HamDoc(todo = true,tags = {"base/logs"})
+  @HamDoc(
+          description = "List currently active loggers",
+          responses = @HamResponse(
+                  body = LogDTO[].class
+          ),
+          tags = {"base/utils"})
   public void getLoggers(Request req, Response res) throws JsonProcessingException {
     var config = configuration.getConfiguration(GlobalConfig.class);
     res.addHeader("Content-type", "application/json");
