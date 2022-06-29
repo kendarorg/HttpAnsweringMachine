@@ -15,15 +15,14 @@
         <module name="app.http" />
         <module name="simpledns" />
         <module name="app.dns" />
-        <module name="app.swagger" />
         <module name="js.filters" />
         <module name="app.commons" />
-        <module name="swagger.commons" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="answer.jdbc" target="11" />
       <module name="http.jdbc" target="11" />
+      <module name="HttpAnsweringMachine" target="11" />
       <module name="starter" target="11" />
     </bytecodeTargetLevel>
   </component>
