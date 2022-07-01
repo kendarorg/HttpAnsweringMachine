@@ -1,5 +1,7 @@
 FROM ham.apache
 
+RUN echo 3.0.7-SNAPSHOT
+
 # Setup apache and php
 RUN apk add --no-cache \
     php8-apache2 \

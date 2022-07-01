@@ -1,4 +1,5 @@
 FROM ham.client:latest
+RUN echo 3.0.7-SNAPSHOT
 
 
 RUN /etc/startservice.sh --app=fe --run=/etc/app/fe/run-fe.sh --capturelogs
