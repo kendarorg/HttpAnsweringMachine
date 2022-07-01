@@ -30,7 +30,7 @@ Remember the ports!!!
     export PATH="${JAVA_HOME}/bin:${PATH}"
 
     cd /etc/app/fe
-    java -jar -Dserver.port=8080 /etc/app/fe/fe-1.0-SNAPSHOT.jar
+    java -jar -Dserver.port=8080 /etc/app/fe/fe-3.0.7-SNAPSHOT.jar
 
 Then the properties file
 
