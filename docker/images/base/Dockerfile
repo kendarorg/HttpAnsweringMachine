@@ -2,6 +2,7 @@ FROM alpine:latest
 RUN apk update
 RUN apk upgrade
 
+RUN echo 3.0.7-SNAPSHOT
 
 ENV JAVA11_HOME /usr/lib/jvm/java-11-openjdk
 
