@@ -92,7 +92,7 @@ set the test address to something like www.google.com to force everything to be 
 You can then start the projects into samples/sampleapp as standard java applications or with your IDE
 e.g. 
 
-    java -jar be-1.0-SNAPSHOT.jar
+    java -jar be-3.0.7-SNAPSHOT.jar
 
 * be
 * gateway
