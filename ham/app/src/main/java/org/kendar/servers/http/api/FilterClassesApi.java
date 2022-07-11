@@ -6,6 +6,7 @@ import org.kendar.http.*;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
@@ -49,7 +50,12 @@ public class FilterClassesApi implements FilteringClass {
       method = "GET",
       id = "e907a4b4-277d-11ec-9621-0242ac130002")
   @HamDoc(
-          tags = {"base/filters"},todo = true)
+          tags = {"base/filters"},
+          description = "List all the possible phases",
+          responses = @HamResponse(
+                  body = String[].class
+          )
+  )
   public void listPhases(Request req, Response res) throws JsonProcessingException {
     var result = new ArrayList<FilterType>();
     result.add(new FilterType(0, HttpFilterType.NONE));
@@ -68,8 +74,12 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/phase/{phase}",
       method = "GET",
       id = "e907a4b4-278d-11ec-9621-0242ac130003")
-  @HamDoc(todo = true,tags = {"base/filters"},
-          path = @PathParameter(key = "phase")
+  @HamDoc(tags = {"base/filters"},
+          description = "List the filters by phase",
+          path = @PathParameter(key = "phase", description = "The phase of the filter"),
+          responses = @HamResponse(
+                  body = String[].class
+          )
   )
   public void getFiltersForPhase(Request req, Response res) throws JsonProcessingException {
     var stringPhase = req.getPathParameter("phase");
@@ -93,7 +103,12 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/class",
       method = "GET",
       id = "e907a4b4-278d-11ec-6621-0242ac130003")
-  @HamDoc(todo = true,tags = {"base/filters"})
+  @HamDoc(tags = {"base/filters"},
+          description = "List all the classes for Java filters",
+          responses = @HamResponse(
+                  body = String[].class
+          )
+  )
   public void getFiltersForClass(Request req, Response res) throws JsonProcessingException {
     var config = filtersConfiguration.get();
 
@@ -108,8 +123,12 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/class/{clazz}",
       method = "GET",
       id = "e907a4b4-278k-11ec-6621-0242ac130003")
-  @HamDoc(todo = true,tags = {"base/filters"},
-          path = @PathParameter(key = "clazz")
+  @HamDoc(tags = {"base/filters"},
+          path = @PathParameter(key = "clazz", description = "Simple class name"),
+          description = "List all the filters implemented by given class",
+          responses = @HamResponse(
+                  body = String[].class
+          )
   )
   public void getIdFiltersForClass(Request req, Response res) throws JsonProcessingException {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class);
@@ -135,9 +154,13 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/phase/{phase}/{clazz}",
       method = "GET",
       id = "e907a4b4-277d-11ec-9621-0242ac130003")
-  @HamDoc(todo = true,tags = {"base/filters"},
+  @HamDoc(tags = {"base/filters"},
           path = {@PathParameter(key = "phase"),
-          @PathParameter(key = "clazz")}
+          @PathParameter(key = "clazz")},
+          description = "List all the filters implemented by given class for phase",
+          responses = @HamResponse(
+                  body = String[].class
+          )
   )
   public void getFiltersForPhaseClass(Request req, Response res) throws JsonProcessingException {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class);
@@ -166,8 +189,12 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/id/{id}",
       method = "GET",
       id = "e907a4b4-277d-11ec-9621-0242ac130004")
-  @HamDoc(todo = true,tags = {"base/filters"},
-          path = @PathParameter(key = "id")
+  @HamDoc(tags = {"base/filters"},
+          path = @PathParameter(key = "id"),
+          description = "List all the filters by id",
+          responses = @HamResponse(
+                  body = String[].class
+          )
   )
   public void getFilterId(Request req, Response res) throws JsonProcessingException {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class);
@@ -187,8 +214,9 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/id/{id}",
       method = "DELETE",
       id = "e907a4b4-277d-11kc-9621-0242ac130004")
-  @HamDoc(todo = true,tags = {"base/filters"},
-          path = @PathParameter(key = "id")
+  @HamDoc(tags = {"base/filters"},
+          path = @PathParameter(key = "id"),
+          description = "Delete filter by id"
   )
   public void disableById(Request req, Response res) {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class).copy();
@@ -207,8 +235,9 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/id/{id}/enable",
       method = "PUT",
       id = "e907a4b4-277d-11ec-962h-0242ac130004")
-  @HamDoc(todo = true,tags = {"base/filters"},
-          path = @PathParameter(key = "id")
+  @HamDoc(tags = {"base/filters"},
+          path = @PathParameter(key = "id"),
+          description = "Enable filter"
   )
   public void enableById(Request req, Response res) {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class).copy();
@@ -227,7 +256,11 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/loaders",
       method = "GET",
       id = "e967a4b4-277d-41ecr9621-0242ac130004")
-  @HamDoc(todo = true,tags = {"base/filters"})
+  @HamDoc(tags = {"base/filters"},
+  description = "List all filter loaders",
+          responses = @HamResponse(
+                  body = String[].class
+          ))
   public void getFiltersLoaders(Request req, Response res) throws JsonProcessingException {
     var result =
         context.getBeansOfType(CustomFiltersLoader.class).values().stream()
@@ -242,8 +275,12 @@ public class FilterClassesApi implements FilteringClass {
       pathAddress = "/api/filters/loaders/{loader}",
       method = "GET",
       id = "e967a4b4-277d-41ecr9621y0242ac130004")
-  @HamDoc(todo = true,tags = {"base/filters"},
-          path = @PathParameter(key = "loader")
+  @HamDoc(tags = {"base/filters"},
+          path = @PathParameter(key = "loader"),
+          description = "List all filters by loader",
+          responses = @HamResponse(
+                  body = String[].class
+          )
   )
   public void getFiltersLoadersFilters(Request req, Response res) throws JsonProcessingException {
     var globalConfig = configuration.getConfiguration(GlobalConfig.class);
