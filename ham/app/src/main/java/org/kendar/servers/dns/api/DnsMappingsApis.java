@@ -14,7 +14,6 @@ import org.kendar.http.annotations.multi.HamRequest;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
-import org.kendar.servers.config.SSLDomain;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -30,13 +29,11 @@ import java.util.stream.Collectors;
         blocking = true)
 public class DnsMappingsApis implements FilteringClass {
     private final JsonConfiguration configuration;
-    private DnsMultiResolver dnsMultiResolver;
     final ObjectMapper mapper = new ObjectMapper();
 
     public DnsMappingsApis(JsonConfiguration configuration, DnsMultiResolver dnsMultiResolver) {
 
         this.configuration = configuration;
-        this.dnsMultiResolver = dnsMultiResolver;
     }
 
     @Override
@@ -115,7 +112,6 @@ public class DnsMappingsApis implements FilteringClass {
         configuration.setConfiguration(dnsConfig);
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(newMapped));
-        dnsMultiResolver.clearCache();
     }
 
 
@@ -165,7 +161,6 @@ public class DnsMappingsApis implements FilteringClass {
         configuration.setConfiguration(cloned);
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(cloned));
-        dnsMultiResolver.clearCache();
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
@@ -187,6 +182,5 @@ public class DnsMappingsApis implements FilteringClass {
         configuration.setConfiguration(dnsConfig);
         res.addHeader("Content-type", "application/json");
         res.setResponseText(mapper.writeValueAsString(newMapped));
-        dnsMultiResolver.clearCache();
     }
 }
