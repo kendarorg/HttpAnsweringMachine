@@ -13,7 +13,7 @@ The AnsweringMachine is built to overcome this troubles
 * [Presentation and super quick start (Power Point)](https://github.com/kendarorg/HttpAnsweringMachine/../HttpAnsweringMachine/raw/main/docs/HAM.pptx)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
 
-:boom: New! Added swagger UI and Java APIs :zap: 
+:boom: New! Added swagger UI and Java APIs Here the swagger file: [https://raw.githubusercontent.com/kendarorg/HttpAnsweringMachine/main/docs/map.json](https://raw.githubusercontent.com/kendarorg/HttpAnsweringMachine/main/docs/map.json) :zap: you can open it copying the address on [https://petstore.swagger.io/](https://petstore.swagger.io/)) 
 
 ## Features
 

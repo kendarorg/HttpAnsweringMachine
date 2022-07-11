@@ -62,7 +62,7 @@ public class JsFilterAPI implements FilteringClass {
       id = "1000a4b4-297id-11ec-9yy1-0242ac130002")
   @HamDoc(tags = {"plugin/js"},
           description = "List all js filters",
-          requests = @HamRequest(
+          responses = @HamResponse(
                   body = String[].class
           ))
   public void getJsFiltersList(Request req, Response res) throws JsonProcessingException {
