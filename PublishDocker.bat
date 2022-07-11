@@ -1,6 +1,6 @@
 @echo off
-set VERSION=3.0.5
-set SAMPLE_VERSION=1.0.4
+set VERSION=3.0.7
+set SAMPLE_VERSION=3.0.7
 
 exit
 

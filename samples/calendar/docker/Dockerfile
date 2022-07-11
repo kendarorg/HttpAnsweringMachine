@@ -1,5 +1,8 @@
 FROM ham.master:latest
 
+
+RUN echo 3.0.7-SNAPSHOT
+
 COPY ./docker/external.json /etc/app/ham/app/
 
 RUN /etc/startservice.sh --app=be --run=/etc/app/be/run-be.sh --capturelogs
