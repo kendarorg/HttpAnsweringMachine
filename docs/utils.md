@@ -1,5 +1,27 @@
 ## Utils
 
+### Simple rest Client
+
+You can send simple requests directly from inside the program
+
+#### GET/DELETE requests  
+
+<pre>
+GET https://www.google.com
+Content-Type:application-json
+</pre>
+
+#### PUT/POST/OPTION with text only body
+
+<pre>
+POST https://www.google.com
+Content-Type:application-json
+
+{
+    "data":"value"
+}
+</pre>
+
 ### JsonSchema extractor/verifier
 
 Allow to verify xml and json data based on xsd/json schema or message templates

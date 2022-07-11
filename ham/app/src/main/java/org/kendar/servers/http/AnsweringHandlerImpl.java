@@ -7,6 +7,7 @@ import org.apache.http.conn.HttpClientConnectionManager;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClassesHandler;
 import org.kendar.http.HttpFilterType;
+import org.kendar.remote.ExecuteLocalRequest;
 import org.kendar.remote.ExecuteRemoteRequest;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
@@ -75,6 +76,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
 
     eventQueue.registerCommand(e->{return remoteRequest(e);}, ExecuteRemoteRequest.class);
+    eventQueue.registerCommand(e->{return localRequest(e);}, ExecuteLocalRequest.class);
   }
 
 
@@ -138,6 +140,27 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
   private Response remoteRequest(ExecuteRemoteRequest e) {
     try {
       var connManager = connectionBuilder.getConnectionManger(true, true);
+      var config = configuration.getConfiguration(GlobalConfig.class);
+      var response = new Response();
+      var request = e.getRequest();
+      try {
+        handleInternal(request, response, config, connManager);
+
+      } catch (Exception ex) {
+        throw new RuntimeException(ex);
+      } finally {
+        filteringClassesHandler.handle(
+                config, HttpFilterType.POST_RENDER, request, response, connManager);
+      }
+      return response;
+    }catch (InvocationTargetException| IllegalAccessException ex){
+      return null;
+    }
+  }
+
+  private Response localRequest(ExecuteLocalRequest e) {
+    try {
+      var connManager = connectionBuilder.getConnectionManger(false, true);
       var config = configuration.getConfiguration(GlobalConfig.class);
       var response = new Response();
       var request = e.getRequest();
