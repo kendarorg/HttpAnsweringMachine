@@ -1,1 +1,3052 @@
-{"openapi":"3.0.1","info":{"title":"Local API","version":"1.0.0"},"servers":[{"url":"http://www.local.test"}],"paths":{"/api/remote/execute":{"post":{"tags":["base/utils"],"description":"Execute remote request","parameters":[],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Request"}}}},"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Response"}}}}}}},"/api/remote/restclient":{"post":{"tags":["base/utils"],"description":"Execute","parameters":[],"requestBody":{"content":{"application/json":{"schema":{"type":"string"},"examples":{"":{"value":"GET http://www.google.com?q=test\nAccept:application/json"}}}}},"responses":{"200":{"description":"200","content":{"text/plain":{"schema":{"type":"string"},"examples":{"":{"value":"200\nContent-type: text/plain\n\nSome Text"}}}}}}}},"/api/certificates":{"get":{"tags":["base/certificates"],"description":"Retrieve the list of certificates","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"type":"string"}}}}}}}},"/api/certificates/{file}":{"get":{"tags":["base/certificates"],"description":"Retrieve the certificate","parameters":[{"name":"clear","in":"query","schema":{"type":"string","example":"string"}},{"name":"file","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","content":{"text/plain":{"schema":{"type":"string"}},"application/zip":{"schema":{"type":"string","format":"byte"}}}}}}},"/api/ssl":{"get":{"tags":["base/ssl"],"description":"Retrieve the list of ssl registrations","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/SSLDomain"}}}}}}},"post":{"tags":["base/ssl"],"description":"Add one/many certificate/s","parameters":[],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/SSLDomain"}}}},"responses":{"200":{"description":"200"}}}},"/api/ssl/{id}":{"delete":{"tags":["base/ssl"],"description":"Delete ssl item","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/sslgen":{"post":{"tags":["base/ssl"],"description":"Generate SSL certificate for website","parameters":[],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/TLSSSLGenerator"}}}},"responses":{"200":{"description":"200","content":{"application/pkix-cert":{"schema":{"type":"string"},"examples":{"":{"value":"-----BEGIN CERTIFICATE-----\nBASDASDFASE34523452SAFSDAFSD\n-----END CERTIFICATE-----\n"}}}}}}}},"/api/dns/list":{"get":{"tags":["base/utils/lookup"],"description":"List all resolved dnss","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/DnsItem"}}}}}}},"delete":{"tags":["base/utils/lookup"],"description":"Force the dns resolved reloading","parameters":[],"responses":{"200":{"description":"200"}}}},"/api/dns/lookup/{id}":{"get":{"tags":["base/utils/lookup"],"description":"Lookup DNSs via http","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"www.kendar.org"}}],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"string"},"examples":{"":{"value":"192.168.1.1"}}}}}}}},"/api/dns/mappings":{"get":{"tags":["base/dns"],"description":"Retrieve all dns mappings","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/PatternItem"}}}}}}},"post":{"tags":["base/dns"],"description":"Modify custom dns mapping","parameters":[],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/PatternItem"}}}},"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/PatternItem"}}}}}}}},"/api/dns/hosts":{"get":{"tags":["base/dns"],"description":"Generate hosts file","parameters":[],"responses":{"200":{"description":"200","content":{"text/plain":{"schema":{"type":"string"},"examples":{"":{"value":"127.0.0.1 localhost\n127.0.0.1 www.local.test"}}}}}}}},"/api/dns/mappings/{id}":{"put":{"tags":["base/dns"],"description":"Modify custom dns mapping","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/PatternItem"}}}}},"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/PatternItem"}}}}}}},"delete":{"tags":["base/dns"],"description":"Modify custom dns mapping","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/dns/servers":{"get":{"tags":["base/dns"],"description":"Retrieve all dns servers","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/ExtraDnsServer"}}}}}}},"post":{"tags":["base/dns"],"description":"Add custom dns server","parameters":[],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ExtraDnsServer"}}}},"responses":{"200":{"description":"200"}}}},"/api/dns/servers/{id}":{"get":{"tags":["base/dns"],"description":"Get Single dns server","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ExtraDnsServer"}}}}}},"put":{"tags":["base/dns"],"description":"Modify custom dns server","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ExtraDnsServer"}}}},"responses":{"200":{"description":"200"}}},"delete":{"tags":["base/dns"],"description":"Delete Single dns server","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/filters/phase":{"get":{"tags":["base/filters"],"description":"List all the possible phases","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"type":"string"}}}}}}}},"/api/filters/id/{id}/enable":{"put":{"tags":["base/filters"],"description":"Enable filter","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/filters/phase/{phase}":{"get":{"tags":["base/filters"],"description":"List the filters by phase","parameters":[{"name":"phase","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"type":"string"}}}}}}}},"/api/filters/class":{"get":{"tags":["base/filters"],"description":"List all the classes for Java filters","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"type":"string"}}}}}}}},"/api/filters/class/{clazz}":{"get":{"tags":["base/filters"],"description":"List all the filters implemented by given class","parameters":[{"name":"clazz","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"type":"string"}}}}}}}},"/api/filters/phase/{phase}/{clazz}":{"get":{"tags":["base/filters"],"description":"List all the filters implemented by given class for phase","parameters":[{"name":"phase","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"clazz","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"type":"string"}}}}}}}},"/api/filters/id/{id}":{"get":{"tags":["base/filters"],"description":"List all the filters by id","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"type":"string"}}}}}}},"delete":{"tags":["base/filters"],"description":"Delete filter by id","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/filters/loaders":{"get":{"tags":["base/filters"],"description":"List all filter loaders","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"type":"string"}}}}}}}},"/api/filters/loaders/{loader}":{"get":{"tags":["base/filters"],"description":"List all filters by loader","parameters":[{"name":"loader","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"type":"string"}}}}}}}},"/api/health":{"get":{"tags":["base/utils"],"description":"Retrieve the application status","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"string"},"examples":{"":{"value":"OK"}}}}}}}},"/api/plugins":{"get":{"tags":["base/utils"],"description":"List all installed plugins","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/PluginDescriptor"}}}}}}}},"/api/swagger/map.json":{"get":{"tags":["base/utils"],"description":"Retrieve the swagger api","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"string"}}}}}}},"/api/log/files/{id}":{"get":{"tags":["base/logs"],"description":"Retrieve single log file","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","headers":{"X-NEXT":{"description":"Next file id if present","schema":{"type":"string"},"example":""},"X-PREV":{"description":"Previous file id if present","schema":{"type":"string"},"example":""}},"content":{"application/json":{"schema":{"type":"string"}}}}}}},"/api/log/files":{"get":{"tags":["base/logs"],"description":"List all log files","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/FileLogListItem"}}}}}}}},"/api/log/logger":{"get":{"tags":["base/utils"],"description":"List currently active loggers","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/LogDTO"}}}}}}}},"/api/log/logger/{id}":{"get":{"tags":["base/logs"],"description":"Retrieve the level of the specific logger","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"string"},"examples":{"":{"value":"DEBUG"}}}}}}},"post":{"tags":["base/logs"],"description":"Set the level of the logger","parameters":[{"name":"level","in":"query","schema":{"type":"string","example":"DEBUG"}},{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"string"},"examples":{"":{"value":"DEBUG"}}}}}}},"delete":{"tags":["base/logs"],"description":"Set to OFF the specified logger","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/log/special":{"get":{"tags":["base/logs"],"description":"List all the special logging classes","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"$ref":"#/components/schemas/SpecialLoggerDescriptor"}}}}}}},"/api/proxyes":{"get":{"tags":["base/proxy"],"description":"Retrieve all configured proxies","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/RemoteServerStatus"}}}}}}},"post":{"tags":["base/proxy"],"description":"Add proxy","parameters":[],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/SimpleProxyConfig"}}}},"responses":{"200":{"description":"200"}}}},"/api/proxyes/{id}":{"get":{"tags":["base/proxy"],"description":"Retrieve specific proxy data","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"$ref":"#/components/schemas/RemoteServerStatus"}}}}}},"put":{"tags":["base/proxy"],"description":"Modify proxy","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/SimpleProxyConfig"}}}},"responses":{"200":{"description":"200"}}},"delete":{"tags":["base/proxy"],"description":"Delete specific proxy","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/utils/regexp":{"post":{"tags":["base/utils"],"description":"Test Java regexps","parameters":[],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/RegexpData"}}}},"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"$ref":"#/components/schemas/RegexpResult"}}}}}}},"/api/utils/settings":{"get":{"tags":["base/utils"],"description":"Retrieve the current configuration","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"string"}}}}}}},"/api/utils/schemavalidator/xml":{"post":{"tags":["base/utils"],"description":"Validate XML against schema or example","parameters":[],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ValidatorData"}}}},"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ValidatorResult"}}}}}}},"/api/utils/schemavalidator/json":{"post":{"tags":["base/utils"],"description":"Validate JSON against schema or example","parameters":[],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ValidatorData"}}}},"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ValidatorResult"}}}}}}},"/api/plugins/jsfilter/filters":{"get":{"tags":["plugin/js"],"description":"List all js filters","parameters":[],"requestBody":{"content":{"application/json":{"schema":{"type":"array","items":{"type":"string"}}}}},"responses":{"200":{"description":"200"}}},"post":{"tags":["plugin/js"],"description":"Create Single filter","parameters":[],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/JsFilterConfig"}}}},"responses":{"200":{"description":"200"}}}},"/api/plugins/jsfilter/filters/{filtername}":{"get":{"tags":["plugin/js"],"description":"Get Single filter","parameters":[{"name":"filtername","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"$ref":"#/components/schemas/JsFilterDescriptor"}}}}}},"post":{"tags":["plugin/js"],"description":"Update Single filter","parameters":[{"name":"filtername","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/JsFilterConfig"}}}},"responses":{"200":{"description":"200"}}},"delete":{"tags":["plugin/js"],"description":"Delete Single filter","parameters":[{"name":"filtername","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/jsfilter/filters/{filtername}/{file}":{"get":{"tags":["plugin/js"],"description":"Retrieve the content of a filter associated file","parameters":[{"name":"filtername","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"file","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"string"}}}}}},"post":{"tags":["plugin/js"],"description":"Set the content of a filter associated file","parameters":[{"name":"filtername","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"file","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"type":"string"}}}},"responses":{"200":{"description":"200"}}}},"/api/plugins/oidc/.well-known/openid-configuration":{"get":{"tags":["plugin/oidc"],"description":"","parameters":[],"responses":{"200":{"description":"200"}}}},"/api/plugins/oidc/authorize":{"get":{"tags":["plugin/oidc"],"description":"","parameters":[],"responses":{"200":{"description":"200"}}}},"/api/plugins/oidc/jwks":{"get":{"tags":["plugin/oidc"],"description":"","parameters":[],"responses":{"200":{"description":"200"}}}},"/api/plugins/oidc/userinfo":{"get":{"tags":["plugin/oidc"],"description":"","parameters":[],"responses":{"200":{"description":"200"}}}},"/api/plugins/oidc/introspect":{"post":{"tags":["plugin/oidc"],"description":"","parameters":[],"responses":{"200":{"description":"200"}}}},"/api/plugins/oidc/token":{"post":{"tags":["plugin/oidc"],"description":"","parameters":[],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/v2/recording/{id}":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording/{id}/full":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording/{id}":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}},"put":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}},"delete":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[],"responses":{"200":{"description":"200"}}},"post":{"tags":["plugin/replayer"],"description":"","parameters":[],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording/{id}/deletelines":{"post":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording/{id}/clone/{newid}":{"post":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"newid","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording/{id}/script/{line}":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}},"put":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}},"delete":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/generator/{id}":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/results":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/results/{id}":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}},"delete":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording/{id}/lineindex/{line}":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}},"put":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording/{id}/line/{line}":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}},"put":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}},"post":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}},"delete":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording/{id}/indexline/{line}":{"delete":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"requestOrResponse","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}},"post":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"requestOrResponse","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}},"delete":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"line","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"requestOrResponse","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/status":{"get":{"tags":["plugin/replayer"],"description":"Retrieve the current running script","parameters":[],"responses":{"200":{"description":"200","content":{"application/json":{"schema":{"type":"string"},"examples":{"":{"value":"{\"status\":\"RECORDING\",\"running\":\"TestScript\"}"}}}}}}}},"/api/plugins/replayer/recording/{id}/record/{action}":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"action","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording/{id}/pact/{action}":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"action","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording/{id}/replay/{action}":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"action","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}},"/api/plugins/replayer/recording/{id}/null/{action}":{"get":{"tags":["plugin/replayer"],"description":"","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","example":"string"}},{"name":"action","in":"path","required":true,"schema":{"type":"string","example":"string"}}],"responses":{"200":{"description":"200"}}}}},"components":{"schemas":{"MultipartPart":{"type":"object","properties":{"file":{"type":"boolean"},"contentType":{"type":"string"},"fileName":{"type":"string"},"fieldName":{"type":"string"},"stringData":{"type":"string"},"byteData":{"type":"array","items":{"type":"string","format":"byte"}},"headers":{"type":"object","additionalProperties":{"type":"string"}}}},"RegexpResult":{"type":"object","properties":{"matchFound":{"type":"boolean"},"error":{"type":"string"},"failed":{"type":"boolean"},"matches":{"type":"array","items":{"type":"string"}}}},"Script":{"type":"object"},"ExtraDnsServer":{"type":"object","properties":{"id":{"type":"string"},"address":{"type":"string"},"resolved":{"type":"string"},"enabled":{"type":"boolean"},"env":{"type":"boolean"}}},"ValidatorData":{"type":"object","properties":{"source":{"type":"string"},"template":{"type":"string"},"schema":{"type":"string"}}},"ValidatorResult":{"type":"object","properties":{"error":{"type":"boolean"},"errors":{"type":"array","items":{"type":"string"}}}},"PatternItem":{"type":"object","properties":{"id":{"type":"string"},"dns":{"type":"string"},"ip":{"type":"string"}}},"LogDTO":{"type":"object","properties":{"key":{"type":"string"},"value":{"type":"string"}}},"Request":{"type":"object","properties":{"ms":{"type":"integer","format":"int64"},"binaryRequest":{"type":"boolean"},"method":{"type":"string"},"requestText":{"type":"string"},"requestBytes":{"type":"array","items":{"type":"string","format":"byte"}},"headers":{"type":"object","additionalProperties":{"type":"string"}},"protocol":{"type":"string"},"soapRequest":{"type":"boolean"},"basicPassword":{"type":"string"},"basicUsername":{"type":"string"},"multipartData":{"type":"array","items":{"$ref":"#/components/schemas/MultipartPart"}},"staticRequest":{"type":"boolean"},"host":{"type":"string"},"path":{"type":"string"},"postParameters":{"type":"object","additionalProperties":{"type":"string"}},"port":{"type":"integer","format":"int32"},"query":{"type":"object","additionalProperties":{"type":"string"}},"remoteHost":{"type":"string"},"pathParameters":{"type":"object","additionalProperties":{"type":"string"}}}},"TLSSSLGenerator":{"type":"object","properties":{"extraDomains":{"type":"array","items":{"type":"string"}},"cn":{"type":"string"}}},"DnsItem":{"type":"object","properties":{"name":{"type":"string"},"ip":{"type":"string"}}},"SimpleProxyConfig":{"type":"object","properties":{"system":{"type":"boolean"},"id":{"type":"string"},"proxies":{"type":"array","items":{"$ref":"#/components/schemas/RemoteServerStatus"}}}},"RemoteServerStatus":{"type":"object","properties":{"id":{"type":"string"},"when":{"type":"string"},"where":{"type":"string"},"test":{"type":"string"},"running":{"type":"boolean"}}},"Response":{"type":"object","properties":{"responseBytes":{"type":"array","items":{"type":"string","format":"byte"}},"responseText":{"type":"string"},"headers":{"type":"object","additionalProperties":{"type":"string"}},"statusCode":{"type":"integer","format":"int32"},"binaryResponse":{"type":"boolean"},"messages":{"type":"array","items":{"type":"string"}}}},"PluginDescriptor":{"type":"object","properties":{"address":{"type":"string"},"description":{"type":"string"}}},"SSLDomain":{"type":"object","properties":{"id":{"type":"string"},"address":{"type":"string"}}},"RegexpData":{"type":"object","properties":{"regexp":{"type":"string"},"matcherString":{"type":"string"},"caseInsensitive":{"type":"boolean"},"literal":{"type":"boolean"},"unicodeCase":{"type":"boolean"},"multiline":{"type":"boolean"}}},"SpecialLoggerDescriptor":{"type":"object","properties":{"path":{"type":"string"},"description":{"type":"string"},"level":{"type":"string"}}},"JsFilterConfig":{"type":"object","properties":{"system":{"type":"boolean"},"id":{"type":"string"},"path":{"type":"string"}}},"FileLogListItem":{"type":"object","properties":{"timestamp":{"type":"integer","format":"int64"},"path":{"type":"string"},"host":{"type":"string"},"time":{"type":"string"},"id":{"type":"string"}}},"JsFilterDescriptor":{"type":"object","properties":{"method":{"type":"string"},"hostAddress":{"type":"string"},"hostRegexp":{"type":"string"},"pathAddress":{"type":"string"},"pathRegexp":{"type":"string"},"phase":{"type":"string"},"root":{"type":"string"},"requires":{"type":"array","items":{"type":"string"}},"priority":{"type":"integer","format":"int32"},"blocking":{"type":"boolean"},"source":{"type":"array","items":{"type":"string"}},"id":{"type":"string"},"script":{"$ref":"#/components/schemas/Script"}}}}}}
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Local API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://www.local.test"
+    }
+  ],
+  "paths": {
+    "/api/remote/execute": {
+      "post": {
+        "tags": [
+          "base/utils"
+        ],
+        "description": "Execute remote request",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/remote/restclient": {
+      "post": {
+        "tags": [
+          "base/utils"
+        ],
+        "description": "Execute",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              },
+              "examples": {
+                "": {
+                  "value": "GET http://www.google.com?q=test\nAccept:application/json"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "200\nContent-type: text/plain\n\nSome Text"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/certificates": {
+      "get": {
+        "tags": [
+          "base/certificates"
+        ],
+        "description": "Retrieve the list of certificates",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/certificates/{file}": {
+      "get": {
+        "tags": [
+          "base/certificates"
+        ],
+        "description": "Retrieve the certificate",
+        "parameters": [
+          {
+            "name": "clear",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "file",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ssl": {
+      "get": {
+        "tags": [
+          "base/ssl"
+        ],
+        "description": "Retrieve the list of ssl registrations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SSLDomain"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "base/ssl"
+        ],
+        "description": "Add one/many certificate/s",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SSLDomain"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/ssl/{id}": {
+      "delete": {
+        "tags": [
+          "base/ssl"
+        ],
+        "description": "Delete ssl item",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/sslgen": {
+      "post": {
+        "tags": [
+          "base/ssl"
+        ],
+        "description": "Generate SSL certificate for website",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TLSSSLGenerator"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/pkix-cert": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "-----BEGIN CERTIFICATE-----\nBASDASDFASE34523452SAFSDAFSD\n-----END CERTIFICATE-----\n"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dns/list": {
+      "get": {
+        "tags": [
+          "base/utils/lookup"
+        ],
+        "description": "List all resolved dnss",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DnsItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "base/utils/lookup"
+        ],
+        "description": "Force the dns resolved reloading",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/dns/lookup/{id}": {
+      "get": {
+        "tags": [
+          "base/utils/lookup"
+        ],
+        "description": "Lookup DNSs via http",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "www.kendar.org"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "192.168.1.1"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dns/mappings": {
+      "get": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Retrieve all dns mappings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PatternItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Modify custom dns mapping",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatternItem"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PatternItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dns/hosts": {
+      "get": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Generate hosts file",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "127.0.0.1 localhost\n127.0.0.1 www.local.test"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dns/mappings/{id}": {
+      "put": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Modify custom dns mapping",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PatternItem"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PatternItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Modify custom dns mapping",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/dns/servers": {
+      "get": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Retrieve all dns servers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExtraDnsServer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Add custom dns server",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtraDnsServer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/dns/servers/{id}": {
+      "get": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Get Single dns server",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtraDnsServer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Modify custom dns server",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtraDnsServer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Delete Single dns server",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/filters/phase": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List all the possible phases",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/filters/id/{id}/enable": {
+      "put": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "Enable filter",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/filters/phase/{phase}": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List the filters by phase",
+        "parameters": [
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/filters/class": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List all the classes for Java filters",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/filters/class/{clazz}": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List all the filters implemented by given class",
+        "parameters": [
+          {
+            "name": "clazz",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/filters/phase/{phase}/{clazz}": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List all the filters implemented by given class for phase",
+        "parameters": [
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "clazz",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/filters/id/{id}": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List all the filters by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "Delete filter by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/filters/loaders": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List all filter loaders",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/filters/loaders/{loader}": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List all filters by loader",
+        "parameters": [
+          {
+            "name": "loader",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": [
+          "base/utils"
+        ],
+        "description": "Retrieve the application status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/plugins": {
+      "get": {
+        "tags": [
+          "base/utils"
+        ],
+        "description": "List all installed plugins",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDescriptor"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/swagger/map.json": {
+      "get": {
+        "tags": [
+          "base/utils"
+        ],
+        "description": "Retrieve the swagger api",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/log/files/{id}": {
+      "get": {
+        "tags": [
+          "base/logs"
+        ],
+        "description": "Retrieve single log file",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "headers": {
+              "X-NEXT": {
+                "description": "Next file id if present",
+                "schema": {
+                  "type": "string"
+                },
+                "example": ""
+              },
+              "X-PREV": {
+                "description": "Previous file id if present",
+                "schema": {
+                  "type": "string"
+                },
+                "example": ""
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/log/files": {
+      "get": {
+        "tags": [
+          "base/logs"
+        ],
+        "description": "List all log files",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FileLogListItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/log/logger": {
+      "get": {
+        "tags": [
+          "base/utils"
+        ],
+        "description": "List currently active loggers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LogDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/log/logger/{id}": {
+      "get": {
+        "tags": [
+          "base/logs"
+        ],
+        "description": "Retrieve the level of the specific logger",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "DEBUG"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "base/logs"
+        ],
+        "description": "Set the level of the logger",
+        "parameters": [
+          {
+            "name": "level",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "DEBUG"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "DEBUG"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "base/logs"
+        ],
+        "description": "Set to OFF the specified logger",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/log/special": {
+      "get": {
+        "tags": [
+          "base/logs"
+        ],
+        "description": "List all the special logging classes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpecialLoggerDescriptor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/proxyes": {
+      "get": {
+        "tags": [
+          "base/proxy"
+        ],
+        "description": "Retrieve all configured proxies",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RemoteServerStatus"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "base/proxy"
+        ],
+        "description": "Add proxy",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimpleProxyConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/proxyes/{id}": {
+      "get": {
+        "tags": [
+          "base/proxy"
+        ],
+        "description": "Retrieve specific proxy data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RemoteServerStatus"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "base/proxy"
+        ],
+        "description": "Modify proxy",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimpleProxyConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "base/proxy"
+        ],
+        "description": "Delete specific proxy",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/utils/regexp": {
+      "post": {
+        "tags": [
+          "base/utils"
+        ],
+        "description": "Test Java regexps",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegexpData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegexpResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/utils/settings": {
+      "get": {
+        "tags": [
+          "base/utils"
+        ],
+        "description": "Retrieve the current configuration",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/utils/schemavalidator/xml": {
+      "post": {
+        "tags": [
+          "base/utils"
+        ],
+        "description": "Validate XML against schema or example",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidatorData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidatorResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/utils/schemavalidator/json": {
+      "post": {
+        "tags": [
+          "base/utils"
+        ],
+        "description": "Validate JSON against schema or example",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidatorData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidatorResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/plugins/jsfilter/filters": {
+      "get": {
+        "tags": [
+          "plugin/js"
+        ],
+        "description": "List all js filters",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "plugin/js"
+        ],
+        "description": "Create Single filter",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsFilterConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/jsfilter/filters/{filtername}": {
+      "get": {
+        "tags": [
+          "plugin/js"
+        ],
+        "description": "Get Single filter",
+        "parameters": [
+          {
+            "name": "filtername",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsFilterDescriptor"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "plugin/js"
+        ],
+        "description": "Update Single filter",
+        "parameters": [
+          {
+            "name": "filtername",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsFilterConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "plugin/js"
+        ],
+        "description": "Delete Single filter",
+        "parameters": [
+          {
+            "name": "filtername",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/jsfilter/filters/{filtername}/{file}": {
+      "get": {
+        "tags": [
+          "plugin/js"
+        ],
+        "description": "Retrieve the content of a filter associated file",
+        "parameters": [
+          {
+            "name": "filtername",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "file",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "plugin/js"
+        ],
+        "description": "Set the content of a filter associated file",
+        "parameters": [
+          {
+            "name": "filtername",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "file",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/oidc/.well-known/openid-configuration": {
+      "get": {
+        "tags": [
+          "plugin/oidc"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/oidc/authorize": {
+      "get": {
+        "tags": [
+          "plugin/oidc"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/oidc/jwks": {
+      "get": {
+        "tags": [
+          "plugin/oidc"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/oidc/userinfo": {
+      "get": {
+        "tags": [
+          "plugin/oidc"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/oidc/introspect": {
+      "post": {
+        "tags": [
+          "plugin/oidc"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/oidc/token": {
+      "post": {
+        "tags": [
+          "plugin/oidc"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/v2/recording/{id}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/full": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/deletelines": {
+      "post": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/clone/{newid}": {
+      "post": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "newid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/script/{line}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/generator/{id}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/results": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/results/{id}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/lineindex/{line}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/line/{line}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/indexline/{line}": {
+      "delete": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "requestOrResponse",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "requestOrResponse",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "requestOrResponse",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/status": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Retrieve the current running script",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "{\"status\":\"RECORDING\",\"running\":\"TestScript\"}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/record/{action}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/pact/{action}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/replay/{action}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/null/{action}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MultipartPart": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "boolean"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "fieldName": {
+            "type": "string"
+          },
+          "stringData": {
+            "type": "string"
+          },
+          "byteData": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "RegexpResult": {
+        "type": "object",
+        "properties": {
+          "matchFound": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": "string"
+          },
+          "failed": {
+            "type": "boolean"
+          },
+          "matches": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Script": {
+        "type": "object"
+      },
+      "ExtraDnsServer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "resolved": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "env": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ValidatorData": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "template": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidatorResult": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PatternItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dns": {
+            "type": "string"
+          },
+          "ip": {
+            "type": "string"
+          }
+        }
+      },
+      "LogDTO": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "Request": {
+        "type": "object",
+        "properties": {
+          "ms": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "binaryRequest": {
+            "type": "boolean"
+          },
+          "method": {
+            "type": "string"
+          },
+          "requestText": {
+            "type": "string"
+          },
+          "requestBytes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "protocol": {
+            "type": "string"
+          },
+          "soapRequest": {
+            "type": "boolean"
+          },
+          "basicPassword": {
+            "type": "string"
+          },
+          "basicUsername": {
+            "type": "string"
+          },
+          "multipartData": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MultipartPart"
+            }
+          },
+          "staticRequest": {
+            "type": "boolean"
+          },
+          "host": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "postParameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "port": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "query": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "remoteHost": {
+            "type": "string"
+          },
+          "pathParameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "TLSSSLGenerator": {
+        "type": "object",
+        "properties": {
+          "extraDomains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cn": {
+            "type": "string"
+          }
+        }
+      },
+      "DnsItem": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "ip": {
+            "type": "string"
+          }
+        }
+      },
+      "SimpleProxyConfig": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "proxies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RemoteServerStatus"
+            }
+          }
+        }
+      },
+      "RemoteServerStatus": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "when": {
+            "type": "string"
+          },
+          "where": {
+            "type": "string"
+          },
+          "test": {
+            "type": "string"
+          },
+          "running": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Response": {
+        "type": "object",
+        "properties": {
+          "responseBytes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "responseText": {
+            "type": "string"
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "binaryResponse": {
+            "type": "boolean"
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PluginDescriptor": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "SSLDomain": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          }
+        }
+      },
+      "RegexpData": {
+        "type": "object",
+        "properties": {
+          "regexp": {
+            "type": "string"
+          },
+          "matcherString": {
+            "type": "string"
+          },
+          "caseInsensitive": {
+            "type": "boolean"
+          },
+          "literal": {
+            "type": "boolean"
+          },
+          "unicodeCase": {
+            "type": "boolean"
+          },
+          "multiline": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SpecialLoggerDescriptor": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string"
+          }
+        }
+      },
+      "JsFilterConfig": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      },
+      "FileLogListItem": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "path": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "JsFilterDescriptor": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string"
+          },
+          "hostAddress": {
+            "type": "string"
+          },
+          "hostRegexp": {
+            "type": "string"
+          },
+          "pathAddress": {
+            "type": "string"
+          },
+          "pathRegexp": {
+            "type": "string"
+          },
+          "phase": {
+            "type": "string"
+          },
+          "root": {
+            "type": "string"
+          },
+          "requires": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "blocking": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "script": {
+            "$ref": "#/components/schemas/Script"
+          }
+        }
+      }
+    }
+  }
+}
