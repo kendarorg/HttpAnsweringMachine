@@ -39,16 +39,20 @@ public class RestClientApi implements FilteringClass {
             method = "POST",id="9ut7a4b4-277d-11ec-9621-0242ac130002")
     @HamDoc(
             description = "Execute",
+
             requests = @HamRequest(
                     body = String.class,
+                accept = "text/plain",
                 examples = {
                     @Example(
+description = "POST",
                           example = "POST http://www.google.com?q=test\n"+
                             "Content-Type:application/json\n"+
                             "\n"+
                             "{'key':'value'}"
                     ),
                     @Example(
+                            description = "GET",
                             example = "GET http://www.google.com?q=test\n"+
                                     "Accept:application/json"
                     )}
