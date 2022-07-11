@@ -130,7 +130,7 @@ public class JsFilterAPI implements FilteringClass {
           id = "1000a4b4-297id-11rr-9777-0242ac130002")
 
   @HamDoc(tags = {"plugin/js"},
-          description = "Post Single filter",
+          description = "Update Single filter",
           path = @PathParameter(key = "filtername"),
           requests = @HamRequest(
               body =  JsFilterConfig.class
@@ -194,7 +194,11 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/filters",
           method = "POST",
           id = "1000a4b4-uoploadid-11rr-9777-0242ac130002")
-  @HamDoc(todo = true,tags = {"plugin/js"})
+  @HamDoc(tags = {"plugin/js"},
+          description = "Create Single filter",
+          requests = @HamRequest(
+                  body =  JsFilterConfig.class
+          ))
   public void uploadJsFilter(Request req, Response res) throws JsonProcessingException {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     JsonFileData jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
@@ -254,9 +258,13 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}/{file}",
           method = "GET",
           id = "1000a4b4-47id-11ec-9777-0242ac130002")
-  @HamDoc(todo = true,tags = {"plugin/js"},
+  @HamDoc(tags = {"plugin/js"},
+          description = "Retrieve the content of a filter associated file",
           path = {@PathParameter(key = "filtername"),
-                  @PathParameter(key = "file")}
+                  @PathParameter(key = "file")},
+          responses = @HamResponse(
+                  body = String.class
+          )
   )
   public void getJsFilterFile(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
@@ -288,9 +296,14 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}/{file}",
           method = "POST",
           id = "10iyh4b4-47id-11ec-9777-0242ac130002")
-  @HamDoc(todo = true,tags = {"plugin/js"},
+
+  @HamDoc(tags = {"plugin/js"},
+          description = "Set the content of a filter associated file",
           path = {@PathParameter(key = "filtername"),
-                  @PathParameter(key = "file")}
+                  @PathParameter(key = "file")},
+          requests = @HamRequest(
+                  body = String.class
+          )
   )
   public void putJsFilterFile(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
