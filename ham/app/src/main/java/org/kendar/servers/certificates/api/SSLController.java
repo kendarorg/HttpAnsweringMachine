@@ -10,10 +10,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
-import org.kendar.http.annotations.multi.HamRequest;
-import org.kendar.http.annotations.multi.HamResponse;
-import org.kendar.http.annotations.multi.PathParameter;
-import org.kendar.http.annotations.multi.QueryString;
+import org.kendar.http.annotations.multi.*;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.certificates.CertificatesManager;
 import org.kendar.servers.certificates.GeneratedCert;
@@ -154,7 +151,21 @@ public class SSLController implements FilteringClass {
           method = "POST",
           id = "1011a4b4-asdfD77d-11ec-9621-0242ac130002")
   @HamDoc(
-          tags = {"base/ssl"},todo = true)
+          tags = {"base/ssl"},
+          description = "Generate SSL certificate for website",
+          requests = @HamRequest(
+                  body = TLSSSLGenerator.class
+          ),
+          responses = @HamResponse(
+                  body = String.class,
+                  content = "application/pkix-cert",
+                  examples = @Example(
+                          example = "-----BEGIN CERTIFICATE-----\n"+
+                                  "BASDASDFASE34523452SAFSDAFSD\n"+
+                                  "-----END CERTIFICATE-----\n"
+                  )
+          )
+  )
   public void generateSSL(Request req, Response res) throws Exception {
 
     var request = mapper.readValue(req.getRequestText(), TLSSSLGenerator.class);
