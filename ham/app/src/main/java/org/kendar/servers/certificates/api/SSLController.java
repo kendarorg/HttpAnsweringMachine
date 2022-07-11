@@ -160,6 +160,7 @@ public class SSLController implements FilteringClass {
                   body = String.class,
                   content = "application/pkix-cert",
                   examples = @Example(
+                          description = "Example certificate",
                           example = "-----BEGIN CERTIFICATE-----\n"+
                                   "BASDASDFASE34523452SAFSDAFSD\n"+
                                   "-----END CERTIFICATE-----\n"

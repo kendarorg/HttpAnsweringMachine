@@ -28,7 +28,7 @@ public class RestClientApi implements FilteringClass {
         return this.getClass().getName();
     }
 
-    public RestClientApi(EventQueue eventQueue){
+    public RestClientApi(EventQueue eventQueue) {
 
         this.eventQueue = eventQueue;
     }
@@ -36,60 +36,62 @@ public class RestClientApi implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/remote/restclient",
-            method = "POST",id="9ut7a4b4-277d-11ec-9621-0242ac130002")
+            method = "POST", id = "9ut7a4b4-277d-11ec-9621-0242ac130002")
     @HamDoc(
             description = "Execute",
 
             requests = @HamRequest(
                     body = String.class,
-                accept = "text/plain",
-                examples = {
-                    @Example(
-description = "POST",
-                          example = "POST http://www.google.com?q=test\n"+
-                            "Content-Type:application/json\n"+
-                            "\n"+
-                            "{'key':'value'}"
-                    ),
-                    @Example(
-                            description = "GET",
-                            example = "GET http://www.google.com?q=test\n"+
-                                    "Accept:application/json"
-                    )}
+                    accept = "text/plain",
+                    examples = {
+                            @Example(
+                                    description = "POST",
+                                    example = "POST http://www.google.com?q=test\n" +
+                                            "Content-Type:application/json\n" +
+                                            "\n" +
+                                            "{'key':'value'}"
+                            ),
+                            @Example(
+                                    description = "GET",
+                                    example = "GET http://www.google.com?q=test\n" +
+                                            "Accept:application/json"
+                            )}
             ),
             responses = @HamResponse(
                     body = String.class,
                     content = "text/plain",
                     examples = {@Example(
-                            example = "200\n"+
-                                    "Content-type: application/octect-stream\n"+
-                                    "\n"+
+                            description = "Binary responese (data is Base64 encoded)",
+                            example = "200\n" +
+                                    "Content-type: application/octect-stream\n" +
+                                    "\n" +
                                     "B64ASERTSDGSDY45645sgd45s34stfdgsd"
-                    ),@Example(
-                            example = "200\n"+
-                                    "Content-type: text/plain\n"+
-                                    "\n"+
+                    ), @Example(
+                            description = "Simple text",
+                            example = "200\n" +
+                                    "Content-type: text/plain\n" +
+                                    "\n" +
                                     "Some Text"
                     )
                     }
 
-            ),tags = {"base/utils"}
+            ), tags = {"base/utils"}
     )
     public void restClientRequest(Request request, Response response) throws Exception {
         var parser = new RestClientParser();
         Request call = parser.parse(request.getRequestText());
         var event = new ExecuteLocalRequest();
         event.setRequest(call);
-        var result = eventQueue.execute(event,Response.class);
+        var result = eventQueue.execute(event, Response.class);
         var stringResult = new StringBuffer();
-        stringResult.append(result.getStatusCode()+"\n");
-        for(var head:result.getHeaders().entrySet()){
-            stringResult.append(head.getKey()+":"+head.getValue()+"\n");
+        stringResult.append(result.getStatusCode() + "\n");
+        for (var head : result.getHeaders().entrySet()) {
+            stringResult.append(head.getKey() + ":" + head.getValue() + "\n");
         }
         stringResult.append("\n");
-        if(result.isBinaryResponse()){
+        if (result.isBinaryResponse()) {
             stringResult.append(Base64.encodeBase64String(result.getResponseBytes()));
-        }else{
+        } else {
             stringResult.append(result.getResponseText());
         }
         response.setResponseText(stringResult.toString());

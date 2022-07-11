@@ -29,9 +29,7 @@ public class HealthController implements FilteringClass {
             description = "Retrieve the application status",
             responses = @HamResponse(
                     body = String.class,
-                     examples = {
-                             @Example(example = "OK")
-                     }
+                     examples = @Example(example = "OK")
             ))
     public void getStatus(Request req, Response res) {
         res.addHeader("Content-type", "text/plain");
