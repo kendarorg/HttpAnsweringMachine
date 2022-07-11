@@ -6,6 +6,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.ListAllRecordList;
@@ -61,8 +62,11 @@ public class SingleScriptAPI implements FilteringClass {
             pathAddress = "/api/plugins/replayer/v2/recording/{id}",
             method = "GET",
             id = "4001daa6-fff-11ec-9tar1-0242ac1afe002")
-    @HamDoc(todo = true,tags = {"plugin/replayer"},
-            path = @PathParameter(key = "id")
+    @HamDoc(description = "Retrieve all the content of a script",tags = {"plugin/replayer"},
+            path = @PathParameter(key = "id"),
+            responses = @HamResponse(
+                    body = SingleScript.class
+            )
     )
     public void listAllRecordingSteps(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");

@@ -7,6 +7,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.generator.SingleRequestGenerator;
@@ -61,8 +62,12 @@ public class ReplayerAPIGenerator implements FilteringClass {
             pathAddress = "/api/plugins/replayer/generator/{id}",
             method = "GET",
             id = "4001daa6-277f-11ec-9yy1-0242ac1afe002")
-    @HamDoc(todo = true,tags = {"plugin/replayer"},
-            path = @PathParameter(key = "id")
+    @HamDoc(description = "Generate request response source files with pom (NOT COMPLETE)",tags = {"plugin/replayer"},
+            path = @PathParameter(key = "id"),
+            responses = @HamResponse(
+                    content = "application/zip",
+                    body = byte[].class
+            )
     )
     public void listAllRecordingSteps(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");

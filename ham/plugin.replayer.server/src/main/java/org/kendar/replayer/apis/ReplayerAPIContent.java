@@ -9,6 +9,8 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamRequest;
+import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.storage.DataReorganizer;
@@ -62,8 +64,20 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "GET",
       id = "3004daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,tags = {"plugin/replayer"},
-          path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse")}
+  @HamDoc(description = "Retrieve the content of a request/response line",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse",
+          example = "request"
+          )},
+          responses = {
+                  @HamResponse(
+                          description = "Text content",
+                          body = String.class
+                  ),
+                  @HamResponse(
+                          description = "Binary content",
+                          body = byte[].class
+                  )
+          }
   )
   public void retrieveContent(Request req, Response res) throws IOException {
     var id = getPathParameter(req, "id");
@@ -180,8 +194,10 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "DELETE",
       id = "3005daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,tags = {"plugin/replayer"},
-          path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse")}
+  @HamDoc(description = "Remove the content of a line",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse",
+                  example = "request"
+          )}
   )
   public void deleteConent(Request req, Response res) throws IOException {
     var id = getPathParameter(req, "id");
@@ -216,8 +232,13 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "POST",
       id = "3006daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,tags = {"plugin/replayer"},
-          path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse")}
+  @HamDoc(description = "Sets the content of a line",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse",
+                  example = "request"
+          )},
+          requests = @HamRequest(
+                  body = JsonFileData.class
+          )
   )
   public void modifyConent(Request req, Response res)
       throws IOException, NoSuchAlgorithmException {
