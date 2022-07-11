@@ -13,7 +13,7 @@
   {
     "id": "global",
     "system": true,
-    "localAddress": "www.local.test",
+    "localAddress": "localhost",
     "logging": {
       "logPath": null,
       "logRoundtripsPath": "calllogs",
