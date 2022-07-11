@@ -1,5 +1,8 @@
 FROM ham.base
 
+
+RUN echo 3.0.7-SNAPSHOT
+
 # Testing: pamtester
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && \
     apk add --update openvpn iptables bash easy-rsa openvpn-auth-pam google-authenticator pamtester libqrencode && \
