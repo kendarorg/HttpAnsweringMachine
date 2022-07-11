@@ -8,10 +8,15 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamRequest;
+import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
-import org.kendar.servers.JsonConfiguration;
-import org.kendar.servers.http.*;
 import org.kendar.http.events.ScriptsModified;
+import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.http.JsFilterConfig;
+import org.kendar.servers.http.JsFilterDescriptor;
+import org.kendar.servers.http.Request;
+import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
@@ -55,7 +60,11 @@ public class JsFilterAPI implements FilteringClass {
       pathAddress = "/api/plugins/jsfilter/filters",
       method = "GET",
       id = "1000a4b4-297id-11ec-9yy1-0242ac130002")
-  @HamDoc(todo = true,tags = {"plugin/js"})
+  @HamDoc(tags = {"plugin/js"},
+          description = "List all js filters",
+          requests = @HamRequest(
+                  body = String[].class
+          ))
   public void getJsFiltersList(Request req, Response res) throws JsonProcessingException {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
 
@@ -90,9 +99,12 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}",
           method = "GET",
           id = "1000a4b4-297id-11ec-9777-0242ac130002")
-  @HamDoc(todo = true,tags = {"plugin/js"},
-          path = @PathParameter(key = "filtername")
-  )
+  @HamDoc(tags = {"plugin/js"},
+          description = "Get Single filter",
+          path = @PathParameter(key = "filtername"),
+          responses = @HamResponse(
+                  body = JsFilterDescriptor.class
+          ))
   public void getJsFilter(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
@@ -116,9 +128,13 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}",
           method = "POST",
           id = "1000a4b4-297id-11rr-9777-0242ac130002")
-  @HamDoc(todo = true,tags = {"plugin/js"},
-          path = @PathParameter(key = "filtername")
-  )
+
+  @HamDoc(tags = {"plugin/js"},
+          description = "Post Single filter",
+          path = @PathParameter(key = "filtername"),
+          requests = @HamRequest(
+              body =  JsFilterConfig.class
+          ))
   public void saveJsFilter(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
@@ -148,9 +164,9 @@ public class JsFilterAPI implements FilteringClass {
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}",
           method = "DELETE",
           id = "1000a4b4-dleete-11rr-9777-0242ac130002")
-  @HamDoc(todo = true,tags = {"plugin/js"},
-          path = @PathParameter(key = "filtername")
-  )
+  @HamDoc(tags = {"plugin/js"},
+          description = "Delete Single filter",
+          path = @PathParameter(key = "filtername"))
   public void deleteJsFilter(Request req, Response res) {
     var jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     var jsFilterDescriptor = req.getPathParameter("filtername");
