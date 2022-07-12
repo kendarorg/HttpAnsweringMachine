@@ -330,6 +330,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     response.addHeader("Access-Control-Allow-Methods", "*");
     response.addHeader("Access-Control-Allow-Headers", "*");
     response.addHeader("Access-Control-Max-Age", "86400");
+    response.addHeader("Access-Control-Expose-Headers", "*");
     for (var header : response.getHeaders().entrySet()) {
       httpExchange.getResponseHeaders().add(header.getKey(), header.getValue());
     }

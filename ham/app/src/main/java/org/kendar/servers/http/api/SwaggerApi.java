@@ -17,6 +17,7 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.*;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.kendar.http.FilterConfig;
@@ -281,6 +282,7 @@ public class SwaggerApi  implements FilteringClass {
       for (var res : doc.header()) {
         parameters.add(new HeaderParameter()
                 .name(res.key())
+                        .description(res.key())
                 .schema(new Schema()
                         .type("string")
                         .example(res.value())));
