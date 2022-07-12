@@ -54,4 +54,24 @@ public class RemoteAPI implements FilteringClass {
         res.setResponseText(mapper.writeValueAsString(result));
         res.setStatusCode(200);
     }
+
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/remote/mirror",
+            method = "*",
+            id = "1002a4b4-ffff-11ec-99866359242ac130002")
+    @HamDoc(
+            tags = {"base/utils"},
+            description = "Returns the data sent by the caller",
+            requests = @HamRequest(
+                    body = Request.class
+            ),
+            responses = @HamResponse(
+                    body = Response.class
+            ))
+    public void mirrorRequest(Request req, Response res) throws Exception {
+        res.setResponseText(mapper.writeValueAsString(req));
+        res.setStatusCode(200);
+    }
 }

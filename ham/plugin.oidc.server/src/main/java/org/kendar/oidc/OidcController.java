@@ -18,7 +18,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
-import org.kendar.http.annotations.multi.PathParameter;
+import org.kendar.http.annotations.multi.*;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.Request;
@@ -128,7 +128,28 @@ public class OidcController implements FilteringClass {
       pathAddress = AUTHORIZATION_ENDPOINT,
       method = "GET",
       id = "2004daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,tags = {"plugin/oidc"})
+  @HamDoc(
+          description = "In OpenID Connect the authorization endpoint handles " +
+          "authentication and authorization of a user.",
+          tags = {"plugin/oidc"},
+          query = {
+                  @QueryString(key = "scope",description = "openid scope value",example = "openid"),
+                  @QueryString(key = "response_type",example="code", description = "determines the authorization processing flow to be used. When using the Authorization Code Flow, this value is code. When using the Implicit Flow, this value is id_token token or id_token. No access token is returned when the value is id_token"),
+                  @QueryString(key = "client_id",example="random test_client_id",description = "Client identifier that is valid at the OpenID Connect Provider."),
+                  @QueryString(key = "redirect_uri",example="http://localhost/api/remote/mirror",description = "Redirection URI to which the response will be sent. This value must exactly match one of the redirection URI values for the registered client at the OP."),
+                  @QueryString(key = "state",example="random_state_string",description = "Opaque value used to maintain state between the request and the callback."),
+                  @QueryString(key = "nonce",example = "12345",description = "String value used to associate a client session with an ID token and to mitigate replay attacks."),
+                  @QueryString(key = "code_challenge",example = "random_challenge",description = "code_challenge"),
+                  @QueryString(key = "code_challenge_method",example = "plain",description = "code_challenge_method be it plain or sha256")
+          },
+          responses = @HamResponse(
+
+                  body = String.class,
+                  examples = @Example(
+                          example = ExampleBodies.AUTHORIZATION_ENDPOINT
+                  )
+          )
+  )
   public void authorize(Request req, Response res)
       throws JOSEException, NoSuchAlgorithmException {
     var client_id = req.getRequestParameter("client_id");
@@ -139,7 +160,6 @@ public class OidcController implements FilteringClass {
     var nonce = req.getRequestParameter("nonce");
     var code_challenge = req.getRequestParameter("code_challenge");
     var code_challenge_method = req.getRequestParameter("code_challenge_method");
-    var response_mode = req.getRequestParameter("response_mode");
     var auth = req.getRequestParameter("Authorization");
 
     log.info(
@@ -225,7 +245,14 @@ public class OidcController implements FilteringClass {
       pathAddress = METADATA_ENDPOINT,
       method = "GET",
       id = "1facdaa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,tags = {"plugin/oidc"})
+  @HamDoc(description = "Metadata endpoint",
+          tags = {"plugin/oidc"},
+          responses = @HamResponse(
+                  body = String.class,
+                  examples = @Example(
+                    example = ExampleBodies.METADATA_ENDPOINT
+                  )
+          ))
   public void metadata(/*UriComponentsBuilder uriBuilder,*/ Request req, Response res) {
     log.info("called " + METADATA_ENDPOINT + " from {}", req.getRemoteHost());
     String urlPrefix = "https://" + serverAddress + "/api/plugins/oidc";
@@ -261,10 +288,18 @@ public class OidcController implements FilteringClass {
       pathAddress = JWKS_ENDPOINT,
       method = "GET",
       id = "2000daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,tags = {"plugin/oidc"})
+  @HamDoc(description = "Jwks endpoint",
+          tags = {"plugin/oidc"},
+          responses = @HamResponse(
+                  body = String.class,
+                  examples = @Example(
+                          example = ExampleBodies.JWKS_ENDPOINT
+                  )
+          ))
   public void jwks(Request req, Response res) {
     log.info("called " + JWKS_ENDPOINT + " from {}", req.getRemoteHost());
     res.setResponseText(publicJWKSet.toString());
+    res.addHeader("Content-type","application/json");
   }
 
   /** Provides claims about a user. Requires a valid access token. */
@@ -273,7 +308,19 @@ public class OidcController implements FilteringClass {
       pathAddress = USERINFO_ENDPOINT,
       method = "GET",
       id = "2001daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,tags = {"plugin/oidc"})
+  @HamDoc(description = "Get user info",
+          tags = {"plugin/oidc"},
+          header = {
+            @Header(key="Authorization",value = "Bearer 123456"), @Header(key="access_token")
+          },
+          responses = @HamResponse(
+                  body = String.class,
+                  examples = {@Example(
+                          example = ExampleBodies.USERINFO_ENDPOINT
+                  ),@Example(
+                          example = ExampleBodies.USERINFO_ENDPOINT2
+                  )}
+          ))
   public void userinfo(Request req, Response res) {
     var auth = req.getRequestParameter("Authorization");
     var access_token = req.getRequestParameter("access_token");
