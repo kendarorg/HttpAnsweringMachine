@@ -328,8 +328,10 @@ public class OidcController implements FilteringClass {
           responses = @HamResponse(
                   body = String.class,
                   examples = {@Example(
+                          description = "Filled",
                           example = ExampleBodies.USERINFO_ENDPOINT
                   ),@Example(
+                          description = "oidc.server",
                           example = ExampleBodies.USERINFO_ENDPOINT2
                   )}
           ))
