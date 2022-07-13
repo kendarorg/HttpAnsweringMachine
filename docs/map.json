@@ -10,6 +10,9 @@
     }
   ],
   "paths": {
+    "/api/remote/mirror": {
+
+    },
     "/api/remote/execute": {
       "post": {
         "tags": [
@@ -161,6 +164,67 @@
         }
       }
     },
+    "/api/sslgen": {
+      "post": {
+        "tags": [
+          "base/ssl"
+        ],
+        "description": "Generate SSL certificate for website",
+        "parameters": [
+
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TLSSSLGenerator"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/pkix-cert": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "Example certificate": {
+                    "value": "-----BEGIN CERTIFICATE-----\nBASDASDFASE34523452SAFSDAFSD\n-----END CERTIFICATE-----\n"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ssl/{id}": {
+      "delete": {
+        "tags": [
+          "base/ssl"
+        ],
+        "description": "Delete ssl item",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
     "/api/ssl": {
       "get": {
         "tags": [
@@ -206,67 +270,6 @@
         "responses": {
           "200": {
             "description": "200"
-          }
-        }
-      }
-    },
-    "/api/ssl/{id}": {
-      "delete": {
-        "tags": [
-          "base/ssl"
-        ],
-        "description": "Delete ssl item",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      }
-    },
-    "/api/sslgen": {
-      "post": {
-        "tags": [
-          "base/ssl"
-        ],
-        "description": "Generate SSL certificate for website",
-        "parameters": [
-
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TLSSSLGenerator"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/pkix-cert": {
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Example certificate": {
-                    "value": "-----BEGIN CERTIFICATE-----\nBASDASDFASE34523452SAFSDAFSD\n-----END CERTIFICATE-----\n"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -502,55 +505,6 @@
         }
       }
     },
-    "/api/dns/servers": {
-      "get": {
-        "tags": [
-          "base/dns"
-        ],
-        "description": "Retrieve all dns servers",
-        "parameters": [
-
-        ],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ExtraDnsServer"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "base/dns"
-        ],
-        "description": "Add custom dns server",
-        "parameters": [
-
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExtraDnsServer"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      }
-    },
     "/api/dns/servers/{id}": {
       "get": {
         "tags": [
@@ -628,6 +582,55 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/dns/servers": {
+      "get": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Retrieve all dns servers",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExtraDnsServer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Add custom dns server",
+        "parameters": [
+
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtraDnsServer"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "200"
@@ -1088,6 +1091,32 @@
         }
       }
     },
+    "/api/log/logger": {
+      "get": {
+        "tags": [
+          "base/utils"
+        ],
+        "description": "List currently active loggers",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LogDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/log/logger/{id}": {
       "get": {
         "tags": [
@@ -1184,32 +1213,6 @@
         "responses": {
           "200": {
             "description": "200"
-          }
-        }
-      }
-    },
-    "/api/log/logger": {
-      "get": {
-        "tags": [
-          "base/utils"
-        ],
-        "description": "List currently active loggers",
-        "parameters": [
-
-        ],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/LogDTO"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -1702,18 +1705,132 @@
         }
       }
     },
-    "/api/plugins/oidc/authorize": {
+    "/api/plugins/oidc/.well-known/openid-configuration": {
       "get": {
         "tags": [
           "plugin/oidc"
         ],
-        "description": "",
+        "description": "Metadata endpoint",
         "parameters": [
 
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "{\n  \"issuer\": \"https://localhost/api/plugins/oidc/\",\n  \"authorization_endpoint\": \"https://localhost/api/plugins/oidc/api/plugins/oidc/authorize\",\n  \"token_endpoint\": \"https://localhost/api/plugins/oidc/api/plugins/oidc/token\",\n  \"userinfo_endpoint\": \"https://localhost/api/plugins/oidc/api/plugins/oidc/userinfo\",\n  \"jwks_uri\": \"https://localhost/api/plugins/oidc/api/plugins/oidc/jwks\",\n  \"introspection_endpoint\": \"https://localhost/api/plugins/oidc/api/plugins/oidc/introspect\",\n  \"scopes_supported\": [\n    \"openid\",\n    \"profile\",\n    \"email\"\n  ],\n  \"response_types_supported\": [\n    \"id_token token\",\n    \"code\"\n  ],\n  \"grant_types_supported\": [\n    \"authorization_code\",\n    \"implicit\"\n  ],\n  \"subject_types_supported\": [\n    \"public\"\n  ],\n  \"id_token_signing_alg_values_supported\": [\n    \"RS256\",\n    \"none\"\n  ],\n  \"claims_supported\": [\n    \"sub\",\n    \"iss\",\n    \"name\",\n    \"family_name\",\n    \"given_name\",\n    \"preferred_username\",\n    \"email\"\n  ],\n  \"code_challenge_methods_supported\": [\n    \"plain\",\n    \"S256\"\n  ]\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/plugins/oidc/authorize": {
+      "get": {
+        "tags": [
+          "plugin/oidc"
+        ],
+        "description": "In OpenID Connect the authorization endpoint handles authentication and authorization of a user.",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "profile"
+            }
+          },
+          {
+            "name": "response_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "code"
+            }
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "random test_client_id"
+            }
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "http://localhost/api/remote/mirror"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "random_state_string"
+            }
+          },
+          {
+            "name": "nonce",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "12345"
+            }
+          },
+          {
+            "name": "code_challenge",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "random_challenge"
+            }
+          },
+          {
+            "name": "code_challenge_method",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "plain"
+            }
+          },
+          {
+            "name": "redirect",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "any string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "response type: code": {
+                    "value": "Location: http://localhost/api/remote/mirror?code=j8unx0s-JbEPU_EPUldLKA&state=random_state_string"
+                  },
+                  "response type: token": {
+                    "value": "http://localhost/api/remote/mirror#access_token=eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQ.eyJhdWQiOiJyYW5kb20gdGVzdF9jbGllbnRfaWQiLCJzY29wZSI6Im9wZW5pZCIsImlzcyI6Imh0dHBzOlwvXC9sb2NhbGhvc3RcL2FwaVwvcGx1Z2luc1wvb2lkY1wvIiwiZXhwIjoxNjU3NzkxMjk3LCJpYXQiOjE2NTc3MDQ4OTcsImp0aSI6Ijc3MDEzNjFlLTNhMDMtNGY5Mi1iYjAwLTdiYzcwMmVhMmE5NCJ9.jhKdxI3GBFANz1rIlamSxrYq3n2Bg8-XS6q4aOThMnU0-EsmndbK0imc5D8LOk21spZNxYg5yLoEPt9J-jGw2j2oudKs8fJ_6-GRy20NiqDc-FAi81VIoKAVmWkM0vy46NngkV39JagH0QpVhKD33Qu6iwlnC6pEBElhYXIUB3bASbXuIhu5GKrzzSfkATDg6nD5JUqsSbgvaxBhNs7A3pMz_Ztd_5FjdV0RNu1WW0wDi7Eq3btDNaRLfEIDWVe4YJrIQ7TM4lHPkJEdHuMv9c8CfrrmLfZ8oGd9eGGfnzGmZacKevv3xUenMMDbH91MHNPagYHGP8UdbQhCFhLn0g&token_type=Bearer&state=random_state_string&expires_in=86400&id_token=eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQ.eyJhdF9oYXNoIjoiSkpVZ0o1YnA1N2lKRFM5Q25fWVhkUSIsInN1YiI6ImYxMzlhN2U1LWEzNGQtNGZlOS1hZjZiLTUwZTFjZDU2NmNkMyIsImF1ZCI6InJhbmRvbSB0ZXN0X2NsaWVudF9pZCIsImlzcyI6Imh0dHBzOlwvXC9sb2NhbGhvc3RcL2FwaVwvcGx1Z2luc1wvb2lkY1wvIiwiZXhwIjoxNjU3NzkxMjk4LCJpYXQiOjE2NTc3MDQ4OTgsIm5vbmNlIjoiMTIzNDUiLCJqdGkiOiJjMTYxZTJhZS03NjU2LTQzNjYtOWU1My0xMmY1YmZhZWQ5NWYifQ.ARNM5FMDUZzSOrP-2cfjndbhR4UtMBVGjK5hYqgHmYOV0lN9VJ7ImFFyxZ7xX9IokyaW7fAtgXnpnF4lhI9voiVtEs_SG38Aj4HTB8IwDDCpM4pN3lBmYjFGoZgQftIS8mOCPffb0QwMisTEacjy-oI9MOo3cxTSnqU__tUVaFcMDArOyV1XwO2WiA-j0lcn3nNUHR2w2l2coBkz9sB1pKAOSE0xHQCTSzUANtZGWW8vwCtzNUQmSFdf6nz0dJ-XgTgAZ-_ajcDj6tBNT0Dz8rS9B-QX0TiODJ2nFHQOvL6LYh0Bmog76VijOd7xtkGrUGrRROWICS_wV0HmwPQ8UQ"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1723,13 +1840,25 @@
         "tags": [
           "plugin/oidc"
         ],
-        "description": "",
+        "description": "Jwks endpoint",
         "parameters": [
 
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "{\"keys\":[{\"kty\":\"RSA\",\"e\":\"AQAB\",\"kid\":\"rsa1\",\"alg\":\"RS256\",\"n\":\"nVGg2Pw8MK1H6_on7PV8_zphnXVpa6bRcKfF8H61NEqK1rW9JUblyLuv7QNXD7ujC6v6laRVgNPFLZyFjGbU_PyCc3oIKgT9gbllGXMjBhZo70OEQ5uutrK1dTB6kSsX4GRTjxNG6ilb26NEUJZifun5QbjK8Lj0cc4VgfGvUkSLlggv7V45CIYvVQprB5Kbd1gM__xP7MHxaYY4LZNOq0OrxX7f6O7a-LjjHQw4dENCgzyPr4z7mlCIc4rBOKiva9QwKVC-VXlhB0KlYGaBhwt_KZLaGmzSwdZKKhHcEk9kxV9KNcl8gdZegOiq1jtikX_sTLL894tqLdaQXcuXMQ\"}]}"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1739,31 +1868,47 @@
         "tags": [
           "plugin/oidc"
         ],
-        "description": "",
+        "description": "Get user info",
         "parameters": [
-
+          {
+            "name": "access_token",
+            "in": "header",
+            "description": "access_token",
+            "schema": {
+              "type": "string",
+              "example": "token from authorize-token"
+            }
+          }
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEifQ.eyJzdWIiOiJhbGljZSIsImVtYWlsIjoiYWxpY2VAd29u\nZGVybGFuZC5uZXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6IkFsaWNlIEFkYW1zIiwiYXV\nkIjoiMDAwMTIzIiwiaXNzIjoiaHR0cDpcL1wvbG9jYWxob3N0OjgwODBcL2MyaWQiLCJmYW1pbHlfbm\nFtZSI6IkFkYW1zIiwiaWF0IjoxNDEzOTg1NDAyLCJncm91cHMiOlsiYWRtaW4iLCJhdWRpdCJdfQ.FJ\nv9UnxvQxYvlc2F_v657SIyZkjQ382Bc108O--UFh3cvkjxiO5P2sJyvcqfuGrlzgvU7gCKzTIqqrV74\nEcHwGb_xyBUPOKuIJGaDKirBdnPbIXMDGpSqmBQes4tc6L8pkhZfRENIlmkP-KphI3wPd4jtko2HXAd\nDFVjzK-FPic"
+                  }
+                }
+              }
+            }
           }
-        }
-      }
-    },
-    "/api/plugins/oidc/.well-known/openid-configuration": {
-      "get": {
-        "tags": [
-          "plugin/oidc"
-        ],
-        "description": "",
-        "parameters": [
+        },
+        "security": [
+          {
+            "OidcBearer": [
 
-        ],
-        "responses": {
-          "200": {
-            "description": "200"
+            ]
+          },
+          {
+            "OidcBasic": [
+
+            ]
           }
-        }
+        ]
       }
     },
     "/api/plugins/oidc/introspect": {
@@ -1771,13 +1916,33 @@
         "tags": [
           "plugin/oidc"
         ],
-        "description": "",
+        "description": "Infos about an access token",
         "parameters": [
-
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token",
+            "schema": {
+              "type": "string",
+              "example": "token from authorize-token"
+            }
+          }
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "{\n  \"active\": true,\n  \"scope\": \"profile\",\n  \"client_id\": \"random test_client_id\",\n  \"username\": null,\n  \"token_type\": \"Bearer\",\n  \"exp\": 1657800457213,\n  \"sub\": null,\n  \"iss\": \"https://localhost/api/plugins/oidc/\"\n}"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1787,13 +1952,64 @@
         "tags": [
           "plugin/oidc"
         ],
-        "description": "",
+        "description": "Retrieve the token for userinfo",
         "parameters": [
-
+          {
+            "name": "grant_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "authorization_code"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "code from authorize"
+            }
+          },
+          {
+            "name": "code_verifier",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "random_challenge"
+            }
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "http://localhost/api/remote/mirror"
+            }
+          },
+          {
+            "name": "code_challenge_method",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "plain"
+            }
+          }
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "{\n  \"access_token\": \"eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQ.eyJhdWQiOiJyYW5kb20gdGVzdF9jbGllbnRfaWQiLCJzY29wZSI6InByb2ZpbGUiLCJpc3MiOiJodHRwczpcL1wvbG9jYWxob3N0XC9hcGlcL3BsdWdpbnNcL29pZGNcLyIsImV4cCI6MTY1NzgwMDQ1NywiaWF0IjoxNjU3NzE0MDU3LCJqdGkiOiJmYTE1NGE2Ny1mY2RkLTQ2Y2MtYWZhMi1kZmQ5YWI2NmRjNDIifQ.JFLU83xbE0AmU06Ba6bwgwIY2EdwCNicx82hX2RHr4CgSLKbKnpy_l8Kqy0684AEPGgwmK_SWmGhN1OLRBS-lwO-uzffzm42gjR_36F-2qH5ELHRnqzLPxSidQGp-gDjLgpAhJVOrXA41tU5tjlukc-7UI5XJ48tcjWUM5C9CBVZ-ejoyRqpjQ5TAcuWGg5EWJJKpZHkOHaMbLED8i_KPCKjuD_IZFkhbsyCIpyRnrF6PYezq_ujHSIRLmJKbvjPzaHhv6eeH1SQev63HhEp08PtuprN53pPK2JtKAcx4TorEcYbzgr5phKYMxE5lmchPaEUQmB8_KhOxounrwZuiw\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": \"86400\",\n  \"scope\": \"profile\",\n  \"id_token\": \"eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQ.eyJhdF9oYXNoIjoiMW9vWVIydFZzcHk0bk5WQlo2ajNpUSIsInN1YiI6IjM1YWU1OGNkLTExYjAtNDAzNC1hNDI1LTk2ZDdiYTI1M2YzOSIsImF1ZCI6InJhbmRvbSB0ZXN0X2NsaWVudF9pZCIsImlzcyI6Imh0dHBzOlwvXC9sb2NhbGhvc3RcL2FwaVwvcGx1Z2luc1wvb2lkY1wvIiwiZXhwIjoxNjU3ODAwNDYwLCJpYXQiOjE2NTc3MTQwNjAsIm5vbmNlIjoiMTIzNDUiLCJqdGkiOiI5NTljMGI1ZC05NzM4LTQzYzUtYjMzMi00NDZjY2IwOGEzNGUifQ.QF59ETnBxDIdQ4VJSnuKqQ8zB3fbFo133Nj3dNquIYIl_9D_KK7QwNwOME-TVWmBUZHPhJfNZD0V8ws048ULsb-oQrMGP6cKjpGcavOwH4Zau2GUhvKZQcoJYLggp-KFletcckngUkYWc1czzOxWksakDerURe1m23DTirRlD-mS_IYZHGP5Se1vWOLjzTIsw5JKLm_SpamvXLFV06IbNuKuWWLpQrczrtbghtURzrxjhsTsfb6duRyeZsqx1lh2c3u7TYXZjWlBFoQD4TAFbnK3v1TufR2w184kdu4k-kT7-_D5WgKbngwBBNLKFYZcP4zfPzPz-MnzVOMRkwvvRw\"\n}"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1803,7 +2019,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Retrieve all the content of a script",
         "parameters": [
           {
             "name": "id",
@@ -1817,7 +2033,14 @@
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleScript"
+                }
+              }
+            }
           }
         }
       }
@@ -1827,7 +2050,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Alternative retrieval of recording",
         "parameters": [
           {
             "name": "id",
@@ -1841,7 +2064,14 @@
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }
@@ -1851,7 +2081,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Retrieve the content of a single recording",
         "parameters": [
           {
             "name": "id",
@@ -1865,7 +2095,14 @@
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAllRecordList"
+                }
+              }
+            }
           }
         }
       },
@@ -1873,7 +2110,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Modify an exesting recording",
         "parameters": [
           {
             "name": "id",
@@ -1885,6 +2122,15 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplayerResult"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "200"
@@ -1895,7 +2141,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Delete a recording",
         "parameters": [
           {
             "name": "id",
@@ -1919,13 +2165,23 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Retrieves the list of recordings",
         "parameters": [
 
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1933,10 +2189,19 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Create/update recording",
         "parameters": [
 
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonFileData"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "200"
@@ -1949,7 +2214,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Delete multiple lines of script",
         "parameters": [
           {
             "name": "id",
@@ -1961,6 +2226,23 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "examples": {
+                "": {
+                  "value": "[1,2,3]"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "200"
@@ -1973,7 +2255,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Clone the selected lines in a new request",
         "parameters": [
           {
             "name": "id",
@@ -1994,6 +2276,23 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "examples": {
+                "": {
+                  "value": "[1,2,3]"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "200"
@@ -2006,7 +2305,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "retrieves the scripts associate with a recording line",
         "parameters": [
           {
             "name": "id",
@@ -2029,7 +2328,14 @@
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -2037,7 +2343,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "modify/insert the scripts associate with a recording line",
         "parameters": [
           {
             "name": "id",
@@ -2060,7 +2366,14 @@
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -2068,7 +2381,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "delete the scripts associate with a recording line",
         "parameters": [
           {
             "name": "id",
@@ -2101,7 +2414,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Generate request response source files with pom (NOT COMPLETE)",
         "parameters": [
           {
             "name": "id",
@@ -2115,7 +2428,15 @@
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
           }
         }
       }
@@ -2125,13 +2446,23 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Retrieves all the replayer results",
         "parameters": [
 
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecordingItem"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -2141,7 +2472,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Retrieves a single result",
         "parameters": [
           {
             "name": "id",
@@ -2155,7 +2486,17 @@
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecordingItem"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -2163,7 +2504,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Deletes a single result",
         "parameters": [
           {
             "name": "id",
@@ -2187,7 +2528,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Retrieves the indexline (aka the pointer to replayer row)",
         "parameters": [
           {
             "name": "id",
@@ -2210,7 +2551,14 @@
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallIndex"
+                }
+              }
+            }
           }
         }
       },
@@ -2218,7 +2566,167 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Addes the indexline (aka the pointer to replayer row)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CallIndex"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/line/{line}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Returns a single line data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplayerRow"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Modify a rreplayer row",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplayerRow"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Add a replayer row",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplayerRow"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Remove a replayer row",
         "parameters": [
           {
             "name": "id",
@@ -2251,133 +2759,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          },
-          {
-            "name": "line",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      }
-    },
-    "/api/plugins/replayer/recording/{id}/line/{line}": {
-      "get": {
-        "tags": [
-          "plugin/replayer"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          },
-          {
-            "name": "line",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "plugin/replayer"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          },
-          {
-            "name": "line",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "plugin/replayer"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          },
-          {
-            "name": "line",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "plugin/replayer"
-        ],
-        "description": "",
+        "description": "Remove the indexline (aka the pointer to replayer row)",
         "parameters": [
           {
             "name": "id",
@@ -2410,7 +2792,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Retrieve the content of a request/response line",
         "parameters": [
           {
             "name": "id",
@@ -2436,13 +2818,21 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "string"
+              "example": "request"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "200"
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
           }
         }
       },
@@ -2450,7 +2840,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Sets the content of a line",
         "parameters": [
           {
             "name": "id",
@@ -2476,10 +2866,19 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "string"
+              "example": "request"
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonFileData"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "200"
@@ -2490,7 +2889,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Remove the content of a line",
         "parameters": [
           {
             "name": "id",
@@ -2516,7 +2915,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "string"
+              "example": "request"
             }
           }
         ],
@@ -2560,7 +2959,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Start/stop/pauses recording",
         "parameters": [
           {
             "name": "id",
@@ -2593,7 +2992,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Start/stop/pauses replaying",
         "parameters": [
           {
             "name": "id",
@@ -2626,7 +3025,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Start/stop/pauses pact test",
         "parameters": [
           {
             "name": "id",
@@ -2659,7 +3058,7 @@
         "tags": [
           "plugin/replayer"
         ],
-        "description": "",
+        "description": "Start/stop/pauses null test",
         "parameters": [
           {
             "name": "id",
@@ -2690,6 +3089,202 @@
   },
   "components": {
     "schemas": {
+      "RegexpResult": {
+        "type": "object",
+        "properties": {
+          "matchFound": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": "string"
+          },
+          "failed": {
+            "type": "boolean"
+          },
+          "matches": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ValidatorResult": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PatternItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dns": {
+            "type": "string"
+          },
+          "ip": {
+            "type": "string"
+          }
+        }
+      },
+      "TLSSSLGenerator": {
+        "type": "object",
+        "properties": {
+          "extraDomains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cn": {
+            "type": "string"
+          }
+        }
+      },
+      "SimpleProxyConfig": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "proxies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RemoteServerStatus"
+            }
+          }
+        }
+      },
+      "RemoteServerStatus": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "when": {
+            "type": "string"
+          },
+          "where": {
+            "type": "string"
+          },
+          "test": {
+            "type": "string"
+          },
+          "running": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SingleScript": {
+        "type": "object",
+        "properties": {
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SingleScriptLine"
+            }
+          },
+          "filter": {
+            "$ref": "#/components/schemas/SingleScriptFilter"
+          },
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "FileLogListItem": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "path": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "ReplayerResult": {
+        "type": "object",
+        "properties": {
+          "staticRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReplayerRow"
+            }
+          },
+          "dynamicRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReplayerRow"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "indexes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CallIndex"
+            }
+          },
+          "variables": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "preScript": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "postScript": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "initScript": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "filter": {
+            "$ref": "#/components/schemas/RedirectFilter"
+          }
+        }
+      },
       "MultipartPart": {
         "type": "object",
         "properties": {
@@ -2718,26 +3313,6 @@
           "headers": {
             "type": "object",
             "additionalProperties": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "RegexpResult": {
-        "type": "object",
-        "properties": {
-          "matchFound": {
-            "type": "boolean"
-          },
-          "error": {
-            "type": "string"
-          },
-          "failed": {
-            "type": "boolean"
-          },
-          "matches": {
-            "type": "array",
-            "items": {
               "type": "string"
             }
           }
@@ -2780,30 +3355,44 @@
           }
         }
       },
-      "ValidatorResult": {
+      "ReplayerRow": {
         "type": "object",
         "properties": {
-          "error": {
-            "type": "boolean"
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
           },
-          "errors": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "request": {
+            "$ref": "#/components/schemas/Request"
+          },
+          "response": {
+            "$ref": "#/components/schemas/Response"
+          },
+          "requestHash": {
+            "type": "string"
+          },
+          "responseHash": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stimulatedTest": {
+            "type": "boolean"
           }
         }
       },
-      "PatternItem": {
+      "RedirectFilter": {
         "type": "object",
         "properties": {
-          "id": {
+          "src": {
             "type": "string"
           },
-          "dns": {
+          "dst": {
             "type": "string"
           },
-          "ip": {
+          "test": {
             "type": "string"
           }
         }
@@ -2902,20 +3491,6 @@
           }
         }
       },
-      "TLSSSLGenerator": {
-        "type": "object",
-        "properties": {
-          "extraDomains": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "cn": {
-            "type": "string"
-          }
-        }
-      },
       "DnsItem": {
         "type": "object",
         "properties": {
@@ -2927,40 +3502,80 @@
           }
         }
       },
-      "SimpleProxyConfig": {
+      "SingleScriptFilter": {
         "type": "object",
         "properties": {
-          "system": {
-            "type": "boolean"
-          },
-          "id": {
+          "dst": {
             "type": "string"
           },
-          "proxies": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RemoteServerStatus"
-            }
-          }
-        }
-      },
-      "RemoteServerStatus": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "when": {
-            "type": "string"
-          },
-          "where": {
+          "src": {
             "type": "string"
           },
           "test": {
             "type": "string"
+          }
+        }
+      },
+      "CallIndex": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
           },
-          "running": {
+          "reference": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "pactTest": {
             "type": "boolean"
+          },
+          "stimulatorTest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ListAllRecordList": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReplayerRow"
+            }
+          },
+          "indexes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CallIndex"
+            }
+          },
+          "variables": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "preScript": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "postScript": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
           }
         }
       },
@@ -3071,24 +3686,73 @@
           }
         }
       },
-      "FileLogListItem": {
+      "RecordingItem": {
         "type": "object",
         "properties": {
-          "timestamp": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "path": {
+          "date": {
             "type": "string"
           },
-          "host": {
+          "testType": {
             "type": "string"
           },
-          "time": {
+          "name": {
             "type": "string"
           },
+          "fileId": {
+            "type": "string"
+          },
+          "successful": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SingleScriptLine": {
+        "type": "object",
+        "properties": {
           "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pactTest": {
+            "type": "boolean"
+          },
+          "stimulatorTest": {
+            "type": "boolean"
+          },
+          "queryCalc": {
             "type": "string"
+          },
+          "script": {
+            "type": "boolean"
+          },
+          "preScript": {
+            "type": "boolean"
+          },
+          "responseHashCalc": {
+            "type": "boolean"
+          },
+          "requestHashCalc": {
+            "type": "boolean"
+          },
+          "requestMethod": {
+            "type": "string"
+          },
+          "requestHost": {
+            "type": "string"
+          },
+          "requestPath": {
+            "type": "string"
+          },
+          "responseStatusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stimulatedTest": {
+            "type": "boolean"
+          },
+          "reference": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -3142,6 +3806,31 @@
             "$ref": "#/components/schemas/Script"
           }
         }
+      },
+      "JsonFileData": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "data": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "OidcBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Value: Bearer {jwt}"
+      },
+      "OidcBasic": {
+        "type": "http",
+        "scheme": "basic"
       }
     }
   }
