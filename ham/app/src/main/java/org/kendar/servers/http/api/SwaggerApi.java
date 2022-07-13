@@ -4,21 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.primitives.Primitives;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.util.Json;
-import io.swagger.v3.jaxrs2.integration.SwaggerLoader;
-import io.swagger.v3.oas.integration.api.OpenApiReader;
 import io.swagger.v3.oas.models.*;
 import io.swagger.v3.oas.models.examples.Example;
-import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
-import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.*;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.kendar.http.FilterConfig;
 import org.kendar.http.FilterDescriptor;
@@ -27,8 +22,10 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.SwaggerEnricher;
 import org.kendar.http.annotations.multi.HamRequest;
 import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.HamSecurity;
 import org.kendar.http.annotations.multi.Header;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
@@ -36,20 +33,24 @@ import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class SwaggerApi  implements FilteringClass {
   private final String localAddress;
+  private final List<SwaggerEnricher> enrichers;
   private FilterConfig filtersConfiguration;
   private JsonConfiguration jsonConfiguration;
 
-  public SwaggerApi(FilterConfig filtersConfiguration, JsonConfiguration jsonConfiguration){
+  public SwaggerApi(FilterConfig filtersConfiguration, JsonConfiguration jsonConfiguration,
+                    List<SwaggerEnricher> enrichers){
 
     this.filtersConfiguration = filtersConfiguration;
     this.jsonConfiguration = jsonConfiguration;
     this.localAddress = jsonConfiguration.getValue("global.localAddress");
+    this.enrichers = enrichers;
   }
 
   class mt{
@@ -86,6 +87,9 @@ public class SwaggerApi  implements FilteringClass {
       }
     }
 
+    for(var enricher:enrichers){
+      enricher.enrich(swagger);
+    }
     publishResponse(resp, swagger, schemas);
   }
 
@@ -107,9 +111,13 @@ public class SwaggerApi  implements FilteringClass {
 
   private void publishResponse(Response resp, OpenAPI swagger, Map<String, Schema> schemas) {
     try {
-      var components = new Components();
+      var components = swagger.getComponents();
+      if(components==null) {
+        components = new Components();
+      }
+      var scc = components;
       schemas.entrySet().stream().forEach(es->
-              components.addSchemas(es.getKey(),es.getValue())
+              scc.addSchemas(es.getKey(),es.getValue())
       );
       swagger.components(components);
       String swaggerJson = Json.mapper().writeValueAsString(swagger);
@@ -136,6 +144,7 @@ public class SwaggerApi  implements FilteringClass {
                         .example(res.example())));
       }
     }
+    //TODO Security
     operation.parameters(parameters);
     if(doc.tags()!=null && doc.tags().length>0) {
       operation.tags(Arrays.asList(doc.tags()));
@@ -303,6 +312,13 @@ public class SwaggerApi  implements FilteringClass {
     var meth = filter.getMethod();
     if(doc.tags()!=null && doc.tags().length>0) {
       operation.tags(Arrays.asList(doc.tags()));
+    }
+    if(doc.security()!=null && doc.security().length>0){
+      for(var sec:doc.security()){
+        SecurityRequirement securityRequirement = new SecurityRequirement();
+        securityRequirement.put(sec.name(), Arrays.stream(sec.scopes()).collect(Collectors.toList()));
+        operation.addSecurityItem(securityRequirement);
+      }
     }
     setupMethod(expectedPath, operation, meth);
 

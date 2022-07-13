@@ -8,10 +8,7 @@ import org.apache.commons.fileupload.portlet.PortletFileUpload;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.joining;
@@ -79,7 +76,7 @@ public class RequestUtils {
   }
 
   public static Map<String, String> headersToMap(Headers requestHeaders) {
-    var result = new HashMap<String, String>();
+    var result = new HashMap<String,String>();
     for (var entry : requestHeaders.entrySet()) {
       if (entry.getValue() == null || entry.getValue().size() == 0) {
         result.put(entry.getKey(), "");

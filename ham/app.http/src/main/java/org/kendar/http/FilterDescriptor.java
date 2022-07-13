@@ -468,6 +468,11 @@ public class FilterDescriptor {
         public HamResponse[] responses() {
           return loc.doc.responses();
         }
+
+        @Override
+        public HamSecurity[] security() {
+          return loc.doc.security();
+        }
       };
     }
 }

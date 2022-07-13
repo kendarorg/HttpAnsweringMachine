@@ -17,4 +17,5 @@ public  @interface HamDoc {
     Header[] header() default {};
     HamRequest[] requests() default {};
     HamResponse[] responses() default {};
+    HamSecurity[] security() default {};
 }
