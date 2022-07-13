@@ -14,11 +14,31 @@ It exposes the follwing APIs
     * /jwks: providing JSON Web Key Set for validating cryptographic signature of id_token
     * /introspect: that provides access token introspection
 
-<!--
-        //KENDAR REMOVED AUTH NEED
-        /*if (auth == null) {
-            log.info("user and password not provided");
-            return response401();
-        } else */{
-            //String[] creds = new String(Base64.getDecoder().decode(auth.split(" ")[1])).split(":", 2);
--->
+## Examples
+
+Authenticate with login and password (any!) top right on the swagger interface
+
+### With token
+
+Call /authorize setting the response_type to "token". To show the response data without redirect
+you should fill with any value the redirect parameter.
+
+On the response you could copy the token parameter on the Location
+
+Call /introspect to retrieve the data about the token. Use the token parameter from the /authorize call
+
+Call /userinfo to retrieve the data about the user. Use the token parameter from the /authorize call
+
+### With code
+
+Call /authorize setting the response_type to "code". To show the response data without redirect
+you should fill with any value the redirect parameter.
+
+On the response you could copy the token parameter on the Location
+
+Call /token to retrieve the token. It will be in the access_token field
+
+
+Call /introspect to retrieve the data about the token. Use the token parameter from the /token call
+
+Call /userinfo to retrieve the data about the user. Use the token parameter from the /token call
