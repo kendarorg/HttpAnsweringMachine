@@ -145,9 +145,13 @@ public class OidcController implements FilteringClass {
           responses = @HamResponse(
 
                   body = String.class,
-                  examples = @Example(
-                          example = ExampleBodies.AUTHORIZATION_ENDPOINT
-                  )
+                  examples = {@Example(
+                          description = "response type: code",
+                          example = ExampleBodies.AUTHORIZATION_ENDPOINT_CODE
+                  ),@Example(
+                          description = "response type: token",
+                          example = ExampleBodies.AUTHORIZATION_ENDPOINT_TOKEN
+                  )}
           )
   )
   public void authorize(Request req, Response res)
@@ -401,7 +405,7 @@ public class OidcController implements FilteringClass {
       pathAddress = TOKEN_ENDPOINT,
       method = "POST",
       id = "2003daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,tags = {"plugin/oidc"})
+  @HamDoc(description = "Retrieve the token for userinfo",tags = {"plugin/oidc"})
   public void token(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
     var grant_type = req.getRequestParameter("grant_type");
     var code = req.getRequestParameter("code");
