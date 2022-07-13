@@ -323,7 +323,7 @@ public class OidcController implements FilteringClass {
                   @HamSecurity(name = "OidcBasic")
           },
           header = {
-             @Header(key="access_token")
+             @Header(key="access_token",value = "token from authorize-token")
           },
           responses = @HamResponse(
                   body = String.class,
@@ -376,7 +376,13 @@ public class OidcController implements FilteringClass {
       method = "POST",
       id = "2002daa6-277f-11ec-9621-0242ac1afe002")
   @HamDoc(description = "Infos about an access token",tags = {"plugin/oidc"},
-    header = @Header(key = "token"))
+    header = @Header(key = "token",value = "token from authorize-token"),
+    responses = @HamResponse(
+            body = String.class,
+            examples = @Example(
+                    example = ExampleBodies.INTROSPECTION_ENDPOINT
+            )
+    ))
   public void introspection(Request req, Response res) {
     var auth = req.getRequestParameter("Authorization");
     var token = req.getRequestParameter("token");
@@ -412,11 +418,15 @@ public class OidcController implements FilteringClass {
       id = "2003daa6-277f-11ec-9621-0242ac1afe002")
   @HamDoc(description = "Retrieve the token for userinfo",tags = {"plugin/oidc"},
     query = {@QueryString(key = "grant_type",example = "authorization_code"),
-            @QueryString(key = "code",example = "code_challenge"),
-            @QueryString(key = "code_verifier",example = "random_code_verifer"),
+            @QueryString(key = "code",example = "code from authorize"),
+            @QueryString(key = "code_verifier",example = "random_challenge"),
             @QueryString(key = "redirect_uri",example="http://localhost/api/remote/mirror",description = "Redirection URI to which the response will be sent. This value must exactly match one of the redirection URI values for the registered client at the OP."),
             @QueryString(key = "code_challenge_method",example = "plain",description = "code_challenge_method be it plain or S256"),
-            })
+            },
+    responses = @HamResponse(body = String.class,examples =
+    @Example(
+            example = ExampleBodies.TOKEN_ENDPOINT
+    )))
   public void token(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
     var grant_type = req.getRequestParameter("grant_type");
     var code = req.getRequestParameter("code");

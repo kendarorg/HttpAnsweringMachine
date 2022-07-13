@@ -14,4 +14,10 @@ Authorize
 response_type: code
 redirect: any string
 
-	Retrieve the token
+	Retrieve the code
+Token
+retrieve the access_token
+Introspect
+token: taken from Token
+UserInfo
+token: taken from Token

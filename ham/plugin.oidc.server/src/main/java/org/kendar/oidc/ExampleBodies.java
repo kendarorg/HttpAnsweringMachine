@@ -60,4 +60,21 @@ public class ExampleBodies {
             "EcHwGb_xyBUPOKuIJGaDKirBdnPbIXMDGpSqmBQes4tc6L8pkhZfRENIlmkP-KphI3wPd4jtko2HXAd\n" +
             "DFVjzK-FPic";
     public static final String AUTHORIZATION_ENDPOINT_TOKEN = "http://localhost/api/remote/mirror#access_token=eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQ.eyJhdWQiOiJyYW5kb20gdGVzdF9jbGllbnRfaWQiLCJzY29wZSI6Im9wZW5pZCIsImlzcyI6Imh0dHBzOlwvXC9sb2NhbGhvc3RcL2FwaVwvcGx1Z2luc1wvb2lkY1wvIiwiZXhwIjoxNjU3NzkxMjk3LCJpYXQiOjE2NTc3MDQ4OTcsImp0aSI6Ijc3MDEzNjFlLTNhMDMtNGY5Mi1iYjAwLTdiYzcwMmVhMmE5NCJ9.jhKdxI3GBFANz1rIlamSxrYq3n2Bg8-XS6q4aOThMnU0-EsmndbK0imc5D8LOk21spZNxYg5yLoEPt9J-jGw2j2oudKs8fJ_6-GRy20NiqDc-FAi81VIoKAVmWkM0vy46NngkV39JagH0QpVhKD33Qu6iwlnC6pEBElhYXIUB3bASbXuIhu5GKrzzSfkATDg6nD5JUqsSbgvaxBhNs7A3pMz_Ztd_5FjdV0RNu1WW0wDi7Eq3btDNaRLfEIDWVe4YJrIQ7TM4lHPkJEdHuMv9c8CfrrmLfZ8oGd9eGGfnzGmZacKevv3xUenMMDbH91MHNPagYHGP8UdbQhCFhLn0g&token_type=Bearer&state=random_state_string&expires_in=86400&id_token=eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQ.eyJhdF9oYXNoIjoiSkpVZ0o1YnA1N2lKRFM5Q25fWVhkUSIsInN1YiI6ImYxMzlhN2U1LWEzNGQtNGZlOS1hZjZiLTUwZTFjZDU2NmNkMyIsImF1ZCI6InJhbmRvbSB0ZXN0X2NsaWVudF9pZCIsImlzcyI6Imh0dHBzOlwvXC9sb2NhbGhvc3RcL2FwaVwvcGx1Z2luc1wvb2lkY1wvIiwiZXhwIjoxNjU3NzkxMjk4LCJpYXQiOjE2NTc3MDQ4OTgsIm5vbmNlIjoiMTIzNDUiLCJqdGkiOiJjMTYxZTJhZS03NjU2LTQzNjYtOWU1My0xMmY1YmZhZWQ5NWYifQ.ARNM5FMDUZzSOrP-2cfjndbhR4UtMBVGjK5hYqgHmYOV0lN9VJ7ImFFyxZ7xX9IokyaW7fAtgXnpnF4lhI9voiVtEs_SG38Aj4HTB8IwDDCpM4pN3lBmYjFGoZgQftIS8mOCPffb0QwMisTEacjy-oI9MOo3cxTSnqU__tUVaFcMDArOyV1XwO2WiA-j0lcn3nNUHR2w2l2coBkz9sB1pKAOSE0xHQCTSzUANtZGWW8vwCtzNUQmSFdf6nz0dJ-XgTgAZ-_ajcDj6tBNT0Dz8rS9B-QX0TiODJ2nFHQOvL6LYh0Bmog76VijOd7xtkGrUGrRROWICS_wV0HmwPQ8UQ";
+    public static final String TOKEN_ENDPOINT = "{\n" +
+            "  \"access_token\": \"eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQ.eyJhdWQiOiJyYW5kb20gdGVzdF9jbGllbnRfaWQiLCJzY29wZSI6InByb2ZpbGUiLCJpc3MiOiJodHRwczpcL1wvbG9jYWxob3N0XC9hcGlcL3BsdWdpbnNcL29pZGNcLyIsImV4cCI6MTY1NzgwMDQ1NywiaWF0IjoxNjU3NzE0MDU3LCJqdGkiOiJmYTE1NGE2Ny1mY2RkLTQ2Y2MtYWZhMi1kZmQ5YWI2NmRjNDIifQ.JFLU83xbE0AmU06Ba6bwgwIY2EdwCNicx82hX2RHr4CgSLKbKnpy_l8Kqy0684AEPGgwmK_SWmGhN1OLRBS-lwO-uzffzm42gjR_36F-2qH5ELHRnqzLPxSidQGp-gDjLgpAhJVOrXA41tU5tjlukc-7UI5XJ48tcjWUM5C9CBVZ-ejoyRqpjQ5TAcuWGg5EWJJKpZHkOHaMbLED8i_KPCKjuD_IZFkhbsyCIpyRnrF6PYezq_ujHSIRLmJKbvjPzaHhv6eeH1SQev63HhEp08PtuprN53pPK2JtKAcx4TorEcYbzgr5phKYMxE5lmchPaEUQmB8_KhOxounrwZuiw\",\n" +
+            "  \"token_type\": \"Bearer\",\n" +
+            "  \"expires_in\": \"86400\",\n" +
+            "  \"scope\": \"profile\",\n" +
+            "  \"id_token\": \"eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQ.eyJhdF9oYXNoIjoiMW9vWVIydFZzcHk0bk5WQlo2ajNpUSIsInN1YiI6IjM1YWU1OGNkLTExYjAtNDAzNC1hNDI1LTk2ZDdiYTI1M2YzOSIsImF1ZCI6InJhbmRvbSB0ZXN0X2NsaWVudF9pZCIsImlzcyI6Imh0dHBzOlwvXC9sb2NhbGhvc3RcL2FwaVwvcGx1Z2luc1wvb2lkY1wvIiwiZXhwIjoxNjU3ODAwNDYwLCJpYXQiOjE2NTc3MTQwNjAsIm5vbmNlIjoiMTIzNDUiLCJqdGkiOiI5NTljMGI1ZC05NzM4LTQzYzUtYjMzMi00NDZjY2IwOGEzNGUifQ.QF59ETnBxDIdQ4VJSnuKqQ8zB3fbFo133Nj3dNquIYIl_9D_KK7QwNwOME-TVWmBUZHPhJfNZD0V8ws048ULsb-oQrMGP6cKjpGcavOwH4Zau2GUhvKZQcoJYLggp-KFletcckngUkYWc1czzOxWksakDerURe1m23DTirRlD-mS_IYZHGP5Se1vWOLjzTIsw5JKLm_SpamvXLFV06IbNuKuWWLpQrczrtbghtURzrxjhsTsfb6duRyeZsqx1lh2c3u7TYXZjWlBFoQD4TAFbnK3v1TufR2w184kdu4k-kT7-_D5WgKbngwBBNLKFYZcP4zfPzPz-MnzVOMRkwvvRw\"\n" +
+            "}";
+    public static final String INTROSPECTION_ENDPOINT = "{\n" +
+            "  \"active\": true,\n" +
+            "  \"scope\": \"profile\",\n" +
+            "  \"client_id\": \"random test_client_id\",\n" +
+            "  \"username\": null,\n" +
+            "  \"token_type\": \"Bearer\",\n" +
+            "  \"exp\": 1657800457213,\n" +
+            "  \"sub\": null,\n" +
+            "  \"iss\": \"https://localhost/api/plugins/oidc/\"\n" +
+            "}";
 }
