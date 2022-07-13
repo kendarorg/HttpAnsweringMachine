@@ -43,7 +43,7 @@ public class ExampleBodies {
             "    \"S256\"\n" +
             "  ]\n" +
             "}";
-    public static final String AUTHORIZATION_ENDPOINT="";
+    public static final String AUTHORIZATION_ENDPOINT_CODE ="Location: http://localhost/api/remote/mirror?code=j8unx0s-JbEPU_EPUldLKA&state=random_state_string";
     public static final String USERINFO_ENDPOINT = "{\n" +
             "  \"sub\"         : \"83692\",\n" +
             "  \"name\"        : \"Alice Adams\",\n" +
@@ -59,4 +59,5 @@ public class ExampleBodies {
             "v9UnxvQxYvlc2F_v657SIyZkjQ382Bc108O--UFh3cvkjxiO5P2sJyvcqfuGrlzgvU7gCKzTIqqrV74\n" +
             "EcHwGb_xyBUPOKuIJGaDKirBdnPbIXMDGpSqmBQes4tc6L8pkhZfRENIlmkP-KphI3wPd4jtko2HXAd\n" +
             "DFVjzK-FPic";
+    public static final String AUTHORIZATION_ENDPOINT_TOKEN = "http://localhost/api/remote/mirror#access_token=eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQ.eyJhdWQiOiJyYW5kb20gdGVzdF9jbGllbnRfaWQiLCJzY29wZSI6Im9wZW5pZCIsImlzcyI6Imh0dHBzOlwvXC9sb2NhbGhvc3RcL2FwaVwvcGx1Z2luc1wvb2lkY1wvIiwiZXhwIjoxNjU3NzkxMjk3LCJpYXQiOjE2NTc3MDQ4OTcsImp0aSI6Ijc3MDEzNjFlLTNhMDMtNGY5Mi1iYjAwLTdiYzcwMmVhMmE5NCJ9.jhKdxI3GBFANz1rIlamSxrYq3n2Bg8-XS6q4aOThMnU0-EsmndbK0imc5D8LOk21spZNxYg5yLoEPt9J-jGw2j2oudKs8fJ_6-GRy20NiqDc-FAi81VIoKAVmWkM0vy46NngkV39JagH0QpVhKD33Qu6iwlnC6pEBElhYXIUB3bASbXuIhu5GKrzzSfkATDg6nD5JUqsSbgvaxBhNs7A3pMz_Ztd_5FjdV0RNu1WW0wDi7Eq3btDNaRLfEIDWVe4YJrIQ7TM4lHPkJEdHuMv9c8CfrrmLfZ8oGd9eGGfnzGmZacKevv3xUenMMDbH91MHNPagYHGP8UdbQhCFhLn0g&token_type=Bearer&state=random_state_string&expires_in=86400&id_token=eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQ.eyJhdF9oYXNoIjoiSkpVZ0o1YnA1N2lKRFM5Q25fWVhkUSIsInN1YiI6ImYxMzlhN2U1LWEzNGQtNGZlOS1hZjZiLTUwZTFjZDU2NmNkMyIsImF1ZCI6InJhbmRvbSB0ZXN0X2NsaWVudF9pZCIsImlzcyI6Imh0dHBzOlwvXC9sb2NhbGhvc3RcL2FwaVwvcGx1Z2luc1wvb2lkY1wvIiwiZXhwIjoxNjU3NzkxMjk4LCJpYXQiOjE2NTc3MDQ4OTgsIm5vbmNlIjoiMTIzNDUiLCJqdGkiOiJjMTYxZTJhZS03NjU2LTQzNjYtOWU1My0xMmY1YmZhZWQ5NWYifQ.ARNM5FMDUZzSOrP-2cfjndbhR4UtMBVGjK5hYqgHmYOV0lN9VJ7ImFFyxZ7xX9IokyaW7fAtgXnpnF4lhI9voiVtEs_SG38Aj4HTB8IwDDCpM4pN3lBmYjFGoZgQftIS8mOCPffb0QwMisTEacjy-oI9MOo3cxTSnqU__tUVaFcMDArOyV1XwO2WiA-j0lcn3nNUHR2w2l2coBkz9sB1pKAOSE0xHQCTSzUANtZGWW8vwCtzNUQmSFdf6nz0dJ-XgTgAZ-_ajcDj6tBNT0Dz8rS9B-QX0TiODJ2nFHQOvL6LYh0Bmog76VijOd7xtkGrUGrRROWICS_wV0HmwPQ8UQ";
 }
