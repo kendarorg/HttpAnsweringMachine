@@ -43,6 +43,7 @@ public class OidcController implements FilteringClass {
   public static final int STATUS_BAD_REQUEST = 400;
   public static final int STATUS_UNAUTHORIZED = 401;
   public static final int STATUS_FOUND = 302;
+  public static final int OK = 200;
   public static final String METADATA_ENDPOINT =
       "/api/plugins/oidc/.well-known/openid-configuration";
   public static final String AUTHORIZATION_ENDPOINT = "/api/plugins/oidc/authorize";
@@ -133,14 +134,15 @@ public class OidcController implements FilteringClass {
           "authentication and authorization of a user.",
           tags = {"plugin/oidc"},
           query = {
-                  @QueryString(key = "scope",description = "openid scope value",example = "openid"),
+                  @QueryString(key = "scope",description = "openid scope value",example = "profile"),
                   @QueryString(key = "response_type",example="code", description = "determines the authorization processing flow to be used. When using the Authorization Code Flow, this value is code. When using the Implicit Flow, this value is id_token token or id_token. No access token is returned when the value is id_token"),
                   @QueryString(key = "client_id",example="random test_client_id",description = "Client identifier that is valid at the OpenID Connect Provider."),
                   @QueryString(key = "redirect_uri",example="http://localhost/api/remote/mirror",description = "Redirection URI to which the response will be sent. This value must exactly match one of the redirection URI values for the registered client at the OP."),
                   @QueryString(key = "state",example="random_state_string",description = "Opaque value used to maintain state between the request and the callback."),
                   @QueryString(key = "nonce",example = "12345",description = "String value used to associate a client session with an ID token and to mitigate replay attacks."),
                   @QueryString(key = "code_challenge",example = "random_challenge",description = "code_challenge"),
-                  @QueryString(key = "code_challenge_method",example = "plain",description = "code_challenge_method be it plain or sha256")
+                  @QueryString(key = "code_challenge_method",example = "plain",description = "code_challenge_method be it plain or S256"),
+                  @QueryString(key ="redirect",example="any string",description="Not part of Oidc but when set it shows the result headers")
           },
           responses = @HamResponse(
 
@@ -165,7 +167,9 @@ public class OidcController implements FilteringClass {
     var code_challenge = req.getRequestParameter("code_challenge");
     var code_challenge_method = req.getRequestParameter("code_challenge_method");
     var auth = req.getRequestParameter("Authorization");
+    var followRedirect = req.getQuery("redirect")==null;
 
+    var returnCode = followRedirect?STATUS_FOUND:OK;
     log.info(
         "called "
             + AUTHORIZATION_ENDPOINT
@@ -210,7 +214,7 @@ public class OidcController implements FilteringClass {
                   + tokenExpirationSeconds
                   + "&id_token="
                   + urlencode(id_token);
-          res.setStatusCode(STATUS_FOUND);
+          res.setStatusCode(returnCode);
           res.addHeader("Location", url);
         } else if (responseType.contains("code")) {
           // authorization code flow
@@ -226,11 +230,11 @@ public class OidcController implements FilteringClass {
                   scope,
                   nonce);
           String url = redirect_uri + "?" + "code=" + code + "&state=" + urlencode(state);
-          res.setStatusCode(STATUS_FOUND);
+          res.setStatusCode(returnCode);
           res.addHeader("Location", url);
         } else {
           String url = redirect_uri + "#" + "error=unsupported_response_type";
-          res.setStatusCode(STATUS_FOUND);
+          res.setStatusCode(returnCode);
           res.addHeader("Location", url);
         }
       } else {
@@ -371,7 +375,8 @@ public class OidcController implements FilteringClass {
       pathAddress = INTROSPECTION_ENDPOINT,
       method = "POST",
       id = "2002daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(todo = true,tags = {"plugin/oidc"})
+  @HamDoc(description = "Infos about an access token",tags = {"plugin/oidc"},
+    header = @Header(key = "token"))
   public void introspection(Request req, Response res) {
     var auth = req.getRequestParameter("Authorization");
     var token = req.getRequestParameter("token");
@@ -405,7 +410,13 @@ public class OidcController implements FilteringClass {
       pathAddress = TOKEN_ENDPOINT,
       method = "POST",
       id = "2003daa6-277f-11ec-9621-0242ac1afe002")
-  @HamDoc(description = "Retrieve the token for userinfo",tags = {"plugin/oidc"})
+  @HamDoc(description = "Retrieve the token for userinfo",tags = {"plugin/oidc"},
+    query = {@QueryString(key = "grant_type",example = "authorization_code"),
+            @QueryString(key = "code",example = "code_challenge"),
+            @QueryString(key = "code_verifier",example = "random_code_verifer"),
+            @QueryString(key = "redirect_uri",example="http://localhost/api/remote/mirror",description = "Redirection URI to which the response will be sent. This value must exactly match one of the redirection URI values for the registered client at the OP."),
+            @QueryString(key = "code_challenge_method",example = "plain",description = "code_challenge_method be it plain or S256"),
+            })
   public void token(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
     var grant_type = req.getRequestParameter("grant_type");
     var code = req.getRequestParameter("code");
@@ -420,7 +431,7 @@ public class OidcController implements FilteringClass {
         code,
         redirect_uri,
         client_id);
-    if (!"authorization_code".equals(grant_type)) {
+    if (!"authorization_code".equalsIgnoreCase(grant_type)) {
       jsonError(res, "unsupported_grant_type", "grant_type is not authorization_code");
       return;
     }
@@ -429,7 +440,7 @@ public class OidcController implements FilteringClass {
       jsonError(res, "invalid_grant", "code not valid");
       return ;
     }
-    if (!redirect_uri.equals(codeInfo.redirect_uri)) {
+    if (!redirect_uri.equalsIgnoreCase(codeInfo.redirect_uri)) {
       jsonError(res, "invalid_request", "redirect_uri not valid");
       return ;
     }
@@ -439,7 +450,7 @@ public class OidcController implements FilteringClass {
         jsonError(res, "invalid_request", "code_verifier missing");
         return;
       }
-      if ("S256".equals(codeInfo.codeChallengeMethod)) {
+      if ("S256".equalsIgnoreCase(codeInfo.codeChallengeMethod)) {
         MessageDigest s256 = MessageDigest.getInstance("SHA-256");
         s256.reset();
         s256.update(code_verifier.getBytes(StandardCharsets.UTF_8));
