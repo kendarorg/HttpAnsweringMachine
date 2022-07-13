@@ -310,8 +310,12 @@ public class OidcController implements FilteringClass {
       id = "2001daa6-277f-11ec-9621-0242ac1afe002")
   @HamDoc(description = "Get user info",
           tags = {"plugin/oidc"},
+          security = {
+                  @HamSecurity(name = "OidcBearer"),
+                  @HamSecurity(name = "OidcBasic")
+          },
           header = {
-            @Header(key="Authorization",value = "Bearer 123456"), @Header(key="access_token")
+             @Header(key="access_token")
           },
           responses = @HamResponse(
                   body = String.class,

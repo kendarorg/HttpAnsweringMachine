@@ -8,6 +8,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.Example;
 import org.kendar.http.annotations.multi.HamRequest;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
@@ -247,7 +248,8 @@ public class ReplayerAPICrud implements FilteringClass {
           id = "4004dXX6-277f-11sfec-9621-0242ac1afe002")
   @HamDoc(description = "Delete multiple lines of script",tags = {"plugin/replayer"},
           path = @PathParameter(key = "id"),
-          requests = @HamRequest(body = int[].class)
+          requests = @HamRequest(body = String[].class,
+          examples = @Example(example = "[1,2,3]"))
   )
   public void deleteLines(Request req, Response res) throws Exception {
     List<Integer> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Integer[].class)).collect(Collectors.toList());
@@ -292,7 +294,8 @@ public class ReplayerAPICrud implements FilteringClass {
           id = "4004dXX6-277f-11ec-9621-0242ac1afe002")
   @HamDoc(description = "Clone the selected lines in a new request",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id"),@PathParameter(key = "newid")},
-          requests = @HamRequest(body = int[].class)
+          requests = @HamRequest(body = String[].class,
+          examples = @Example(example = "[1,2,3]"))
   )
   public void clone(Request req, Response res) throws Exception {
     List<Integer> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Integer[].class)).collect(Collectors.toList());
