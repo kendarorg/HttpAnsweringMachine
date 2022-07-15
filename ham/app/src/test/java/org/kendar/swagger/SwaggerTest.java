@@ -19,6 +19,7 @@ import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.servers.Server;
 import org.junit.jupiter.api.Test;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsMime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class SwaggerTest {
         xxx.setResponseText("BAH");
         xxx.addHeader("test","test");*/
         Content content = new Content()
-                .addMediaType("application/json",
+                .addMediaType(ConstantsMime.JSON,
                         new MediaType()
                                 .schema(new Schema()
                                         .$ref(Response.class.getSimpleName()))
@@ -134,12 +135,12 @@ public class SwaggerTest {
                         .url("http://petstore.swagger.io"))
 
 //                .securityDefinition("api-key", new ApiKeyAuthDefinition("key", In.HEADER))
-//                .consumes("application/json")
-//                .produces("application/json")
+//                .consumes(ConstantsMime.JSON)
+//                .produces(ConstantsMime.JSON)
                 .schema("Response", personModel);
 
         final Operation get = new Operation()
-//                .produces("application/json")
+//                .produces(ConstantsMime.JSON)
                 .summary("finds pets in the system")
                 .description("a longer description")
                 .addTagsItem("Pet Operations")
@@ -164,7 +165,7 @@ public class SwaggerTest {
         final ApiResponse response = new ApiResponse()
                 .description("pets returned")
                 .content(new Content()
-                        .addMediaType("application/json", new MediaType()
+                        .addMediaType(ConstantsMime.JSON, new MediaType()
                                 .schema(new Schema().$ref("Response"))
                                 .example("fun")));
 
@@ -176,7 +177,7 @@ public class SwaggerTest {
                         .parameters("userId", "gah")
                 )
                 .content(new Content()
-                        .addMediaType("application/json", new MediaType()
+                        .addMediaType(ConstantsMime.JSON, new MediaType()
                                 .schema(new Schema().$ref("Response"))));
 
         get.responses(new ApiResponses()

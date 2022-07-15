@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.kendar.servers.http.Request;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +54,7 @@ public class HamRequestBuilder {
             throw new RuntimeException(e);
         }
         this.withText(text);
-        this.withContentType("application/json");
+        this.withContentType(ConstantsMime.JSON);
         return this;
     }
 
@@ -140,7 +142,7 @@ public class HamRequestBuilder {
 
 
     public HamRequestBuilder withContentType(String value){
-        return withHeader("content-type",value);
+        return withHeader(ConstantsHeader.CONTENT_TYPE,value);
     }
 
 

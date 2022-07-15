@@ -23,6 +23,8 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -76,7 +78,7 @@ public class OidcController implements FilteringClass {
 
   private static void response401(Response res) {
     // Map<String,String> responseHeaders = new HashMap<>();
-    res.addHeader("Content-Type", "text/html");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.HTML);
     res.addHeader("WWW-Authenticate", "Basic realm=\"Fake OIDC server\"");
     res.setResponseText("<html><body><h1>401 Unauthorized</h1>Fake OIDC server</body></html>");
     res.setStatusCode(STATUS_UNAUTHORIZED);
@@ -92,7 +94,7 @@ public class OidcController implements FilteringClass {
     try {
       var strData = mapper.writeValueAsString(data);
       if (strData.length() > 0) {
-        res.addHeader("Content-Type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(strData);
       }
     } catch (JsonProcessingException e) {
@@ -307,7 +309,7 @@ public class OidcController implements FilteringClass {
   public void jwks(Request req, Response res) {
     log.info("called " + JWKS_ENDPOINT + " from {}", req.getRemoteHost());
     res.setResponseText(publicJWKSet.toString());
-    res.addHeader("Content-type","application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.JSON);
   }
 
   /** Provides claims about a user. Requires a valid access token. */

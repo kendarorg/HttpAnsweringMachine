@@ -1,6 +1,5 @@
 package org.kendar.servers;
 
-import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
@@ -31,7 +30,6 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
@@ -40,12 +38,12 @@ import java.util.stream.Collectors;
  */
 @Component
 public class AnsweringHttpsServer implements AnsweringServer {
+  public static final String PASSPHRASE = "passphrase";
+  public static final String PRIVATE_CERT = "privateCert";
   private final JsonConfiguration configuration;
   private final Logger logger;
   private final AnsweringHandler handler;
   private final CertificatesManager certificatesManager;
-  //private final AtomicLong sslTimestamp = new AtomicLong(0);
-  //private final AtomicReference<SSLContext> sslSharedContext = new AtomicReference<>();
   private boolean running = false;
   private HashMap<String, HttpsServer> httpsServers = new HashMap<>();
 
@@ -67,7 +65,9 @@ public class AnsweringHttpsServer implements AnsweringServer {
     restart =true;
   }
 
-  public void isSystem() {}
+  public void isSystem() {
+    //Marker for system classes
+  }
 
   @Override
   public void run() {
@@ -87,7 +87,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
         var httpsServer = setupHttpsServer(config, address,port);
 
         httpsServer.start();
-        logger.info("Https server LOADED, port: " + port);
+        logger.info("Https server LOADED, port: {}",port);
       }
       var localConfig = configuration.getConfiguration(HttpsWebServerConfig.class);
       while (running && localConfig.isActive()) {
@@ -131,6 +131,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
     var context = sslContextInt;
     httpsServers.get(port).setHttpsConfigurator(
             new HttpsConfigurator(sslContextInt) {
+              @Override
               public void configure(HttpsParameters params) {
                 try {
                   // initialise the SSL context
@@ -168,17 +169,15 @@ public class AnsweringHttpsServer implements AnsweringServer {
     KeyStore keyStore = setupKeystore(domain);
     // HERE IS THE CHAIN
     X509Certificate[] chain = new X509Certificate[1];
-    //chain[0] = root.certificate;
     chain[0] = domain.certificate;
-    //chain[1] = root.certificate;
-    keyStore.setKeyEntry("privateCert", domain.privateKey, "passphrase".toCharArray(), chain);
+    keyStore.setKeyEntry(PRIVATE_CERT, domain.privateKey, PASSPHRASE.toCharArray(), chain);
 
     TrustManagerFactory tmf =
             TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
     tmf.init(keyStoreTs);
 
     KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-    kmf.init(keyStore, "passphrase".toCharArray());
+    kmf.init(keyStore, PASSPHRASE.toCharArray());
 
     // create SSLContext to establish the secure connection
     SSLContext ctx = SSLContext.getInstance("TLS");
@@ -195,10 +194,10 @@ public class AnsweringHttpsServer implements AnsweringServer {
     ksTemp.setCertificateEntry("Alias", domain.certificate);
     ByteArrayOutputStream bOut = new ByteArrayOutputStream();
     // save the temp keystore
-    ksTemp.store(bOut, "passphrase".toCharArray());
+    ksTemp.store(bOut, PASSPHRASE.toCharArray());
     // Now create the keystore to be used by jsse
     KeyStore keyStore = KeyStore.getInstance("jks");
-    keyStore.load(new ByteArrayInputStream(bOut.toByteArray()), "passphrase".toCharArray());
+    keyStore.load(new ByteArrayInputStream(bOut.toByteArray()), PASSPHRASE.toCharArray());
     return keyStore;
   }
 

@@ -14,6 +14,8 @@ import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.http.annotations.multi.QueryString;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -73,7 +75,7 @@ public class CertificatesController implements FilteringClass {
         logger.trace(ex.getMessage());
       }
     }
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
   /*
@@ -134,14 +136,14 @@ public class CertificatesController implements FilteringClass {
           zos.write(result);
           zos.closeEntry();
           zos.close();
-          res.addHeader("Content-type", "application/zip");
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.ZIP);
           res.addHeader("Content-disposition", "inline;filename=" + path + ".zip");
           res.setResponseBytes(baos.toByteArray());
           res.setBinaryResponse(true);
         }else{
           res.setResponseBytes(result);
           res.setBinaryResponse(true);
-          res.addHeader("Content-type", "application/octect-stream");
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.STREAM);
         }
 
         res.setBinaryResponse(true);

@@ -11,6 +11,8 @@ import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerStatus;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -52,7 +54,7 @@ public class ReplayerAPIStatus implements FilteringClass {
         }
         var status = "{\"status\":\""+realStatus+"\",\"running\":\""+currentScript+"\"}";
         res.setResponseText(status);
-        res.addHeader("content-type","application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setStatusCode(200);
     }
 }

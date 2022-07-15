@@ -12,9 +12,7 @@ import org.kendar.remote.ExecuteRemoteRequest;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.proxy.SimpleProxyHandler;
-import org.kendar.utils.ConnectionBuilder;
-import org.kendar.utils.JsonSmile;
-import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.*;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -276,8 +274,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
   private void handleException(HttpExchange httpExchange, Response response, Exception ex) {
     try {
       logger.error("ERROR HANDLING HTTP REQUEST ", ex);
-      if (response.getHeader("content-type") == null) {
-        response.addHeader("Content-Type", "text/html");
+      if (response.getHeader(ConstantsHeader.CONTENT_TYPE) == null) {
+        response.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.HTML);
       }
       response.addHeader("X-Exception-Type", ex.getClass().getName());
       response.addHeader("X-Exception-Message", ex.getMessage());
@@ -309,7 +307,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         data = response.getResponseBytes();
       } else if (response.getResponseText().length() > 0) {
 
-        if(JsonSmile.JSON_SMILE_MIME.equalsIgnoreCase(response.getHeader("content-type"))){
+        if(ConstantsMime.JSON_SMILE.equalsIgnoreCase(response.getHeader(ConstantsHeader.CONTENT_TYPE))){
           data = JsonSmile.jsonToSmile(response.getResponseText());
         }else {
           data = (response.getResponseText().getBytes(StandardCharsets.UTF_8));

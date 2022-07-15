@@ -18,6 +18,8 @@ import org.kendar.servers.http.JsFilterDescriptor;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -90,7 +92,7 @@ public class JsFilterAPI implements FilteringClass {
     } catch (Exception e) {
       logger.error("Error reading js filter " + currentPath, e);
     }
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
 
@@ -116,7 +118,7 @@ public class JsFilterAPI implements FilteringClass {
       var realPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor+".json");
       var result = loadSinglePlugin(realPath,jsFilterPath);
 
-      res.addHeader("Content-type", "application/json");
+      res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
       res.setResponseText(mapper.writeValueAsString(result));
     } catch (Exception e) {
       logger.error("Error reading js filter " + jsFilterDescriptor, e);
@@ -271,7 +273,7 @@ public class JsFilterAPI implements FilteringClass {
     var jsFilterDescriptor = req.getPathParameter("filtername");
     var fileId = req.getPathParameter("file");
     if(fileId==null || fileId.isEmpty()){
-      res.addHeader("Content-type", "text/plain");
+      res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.TEXT);
       res.setResponseText("");
       return;
     }
@@ -284,7 +286,7 @@ public class JsFilterAPI implements FilteringClass {
       var subPath = fileResourcesUtils.buildPath(jsFilterPath,jsFilterDescriptor,fileId);
       //var result = loadSinglePlugin(realPath,jsFilterPath);
       var result = Files.readString(Path.of(subPath));
-      res.addHeader("Content-type", "text/plain");
+      res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.TEXT);
       res.setResponseText(result);
     } catch (Exception e) {
       logger.error("Error reading js filter " + jsFilterDescriptor, e);

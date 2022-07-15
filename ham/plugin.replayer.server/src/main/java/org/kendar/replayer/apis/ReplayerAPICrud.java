@@ -26,6 +26,8 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -100,7 +102,7 @@ public class ReplayerAPICrud implements FilteringClass {
         }
       }
     }
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(listOfItems));
   }
 
@@ -124,7 +126,7 @@ public class ReplayerAPICrud implements FilteringClass {
     var datasetContent = dataset.load();
     ListAllRecordList result = new ListAllRecordList(datasetContent, id,true);
     result.getLines().sort(Comparator.comparingInt(ReplayerRow::getId));
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
 
@@ -203,7 +205,7 @@ public class ReplayerAPICrud implements FilteringClass {
     if (Files.exists(rootPath)) {
       var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
       res.setResponseText(fileContent);
-      res.addHeader("Content-type","application/json");
+      res.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.JSON);
       res.addHeader("Content-Disposition", "attachment;"+id+".json");
       res.setStatusCode(200);
     }else {

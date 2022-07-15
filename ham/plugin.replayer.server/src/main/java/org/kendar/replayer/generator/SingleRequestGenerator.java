@@ -7,6 +7,7 @@ import org.kendar.replayer.storage.ReplayerResult;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.RequestUtils;
+import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.FileResourcesUtils;
 import org.springframework.stereotype.Component;
 
@@ -189,7 +190,7 @@ public class SingleRequestGenerator {
                                 v.add("request.addHeader(\"" + h.getKey() + "\",\"" + h.getValue().replaceAll("\"","\\\\\"") + "\");")).collect(Collectors.toList()));
         var resourceFileResponse = pack.replaceAll("\\.","/")+"/"+recordingId+"/row_"+row.getId()+"_res";
         if(isRequestWithBody(request)){
-            var contentType = getCleanContentType( request.getHeader("content-type"));
+            var contentType = getCleanContentType( request.getHeader(ConstantsHeader.CONTENT_TYPE));
             var resourceFile = pack.replaceAll("\\.","/")+"/"+recordingId+"/row_"+row.getId()+"_req";
             if(request.isBinaryRequest()){
                 a

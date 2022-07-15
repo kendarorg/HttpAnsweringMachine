@@ -17,6 +17,8 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ public class DnsMappingsApis implements FilteringClass {
             ))
     public void getDnsMappings(Request req, Response res) throws JsonProcessingException {
         var records = configuration.getConfiguration(DnsConfig.class).getResolved();
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(records));
     }
 
@@ -78,7 +80,7 @@ public class DnsMappingsApis implements FilteringClass {
                 result.append(record.getIp()).append(" ").append(record.getDns()).append("\r\n");
             }
         }
-        res.addHeader("Content-type", "text/plain");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.TEXT);
         res.addHeader("Content-disposition", "inline;filename=hosts");
 
         res.setResponseText(result.toString());
@@ -110,7 +112,7 @@ public class DnsMappingsApis implements FilteringClass {
         newMapped.add(newObject);
         dnsConfig.setResolved(newMapped);
         configuration.setConfiguration(dnsConfig);
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(newMapped));
     }
 
@@ -159,7 +161,7 @@ public class DnsMappingsApis implements FilteringClass {
 
         cloned.setResolved(newList);
         configuration.setConfiguration(cloned);
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(cloned));
     }
 
@@ -180,7 +182,7 @@ public class DnsMappingsApis implements FilteringClass {
         }
         dnsConfig.setResolved(newMapped);
         configuration.setConfiguration(dnsConfig);
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(newMapped));
     }
 }

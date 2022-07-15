@@ -35,7 +35,9 @@ public class AnsweringDerbyServer implements AnsweringServer {
     this.configuration = configuration;
   }
 
-  public void isSystem() {}
+  public void isSystem() {
+    //To define system processes
+  }
 
   @Override
   public void run() {
@@ -49,6 +51,23 @@ public class AnsweringDerbyServer implements AnsweringServer {
       Class.forName(config.getDerbyDriver());
       var realDbPath = fileResourcesUtils.buildPath(config.getPath());
       System.setProperty("derby.system.home", realDbPath);
+      nsc = startNetworkServerControl(config);
+      waitForDerbyStart(nsc);
+      initializeApplications();
+
+      logger.info("Derby server LOADED, port: {}",config.getPort());
+      while (config.isActive()) {
+        config = getDerbyConfigWhenActive(config, nsc);
+      }
+    } catch (ClassNotFoundException e) {
+      logger.error("Error starting derby",e);
+    }
+    running = false;
+  }
+
+  private NetworkServerControl startNetworkServerControl(DerbyServerConfig config) {
+    NetworkServerControl nsc;
+    try {
       nsc =
           new NetworkServerControl(
               InetAddress.getByName("0.0.0.0"),
@@ -56,23 +75,21 @@ public class AnsweringDerbyServer implements AnsweringServer {
               config.getUser(),
               config.getPassword());
       nsc.start(null);
-      waitForDerbyStart(nsc);
-      initializeApplications();
-
-      logger.info("Derby server LOADED, port: " + config.getPort());
-      while (config.isActive()) {
-        try {
-          Sleeper.sleep(1000);
-          nsc.ping();
-          config = configuration.getConfiguration(DerbyServerConfig.class);
-        } catch (Exception e) {
-          System.out.println(e.getMessage());
-        }
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    }catch (Exception ex){
+      throw new IllegalStateException("Unable to start derby");
     }
-    running = false;
+    return nsc;
+  }
+
+  private DerbyServerConfig getDerbyConfigWhenActive(DerbyServerConfig config, NetworkServerControl nsc) {
+    try {
+      Sleeper.sleep(1000);
+      nsc.ping();
+      config = configuration.getConfiguration(DerbyServerConfig.class);
+    } catch (Exception e) {
+      logger.warn("Error loading config",e);
+    }
+    return config;
   }
 
   private void initializeApplications() {
@@ -80,7 +97,7 @@ public class AnsweringDerbyServer implements AnsweringServer {
       ResultSet rs = null;
       Connection conn = null;
       try {
-        // conn = DriverManager.getConnection(derbyBaseUrl+"/"+application.dbName()+";create=true");
+        // Connection string: derbyBaseUrl/application.dbName();create=true
         conn = DriverManager.getConnection(application.connectionString());
         var dmd = conn.getMetaData();
         rs = dmd.getTables(null, "APP", application.canaryTable(), null);
@@ -103,13 +120,13 @@ public class AnsweringDerbyServer implements AnsweringServer {
     }
   }
 
-  private void waitForDerbyStart(NetworkServerControl nsc) throws InterruptedException {
+  private void waitForDerbyStart(NetworkServerControl nsc)  {
     for (int i = 0; i < 10; ++i) {
       try {
         nsc.ping();
         break;
       } catch (Exception e) {
-        System.out.println(e.getMessage());
+        logger.warn(e.getMessage());
       }
       Sleeper.sleep(10);
     }

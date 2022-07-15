@@ -12,6 +12,8 @@ import org.kendar.servers.http.PluginsInitializer;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.http.api.model.PluginDescriptor;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public class PluginsApi implements FilteringClass {
             result.add(new PluginDescriptor(item.getKey(),item.getValue()));
         }
 
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(result));
     }
 }

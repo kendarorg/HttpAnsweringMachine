@@ -10,6 +10,8 @@ import org.kendar.http.annotations.multi.HamRequest;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,7 +34,7 @@ public class HealthController implements FilteringClass {
                      examples = @Example(example = "OK")
             ))
     public void getStatus(Request req, Response res) {
-        res.addHeader("Content-type", "text/plain");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.TEXT);
         res.setResponseText("OK");
     }
 }

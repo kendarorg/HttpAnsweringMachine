@@ -19,7 +19,7 @@ public class AnsweringHttpServer implements AnsweringServer {
   private final AnsweringHandler handler;
   private final JsonConfiguration configuration;
   private boolean running = false;
-  private HashMap<String,HttpServer> httpServers = new HashMap<>();
+  private final HashMap<String,HttpServer> httpServers = new HashMap<>();
 
   public AnsweringHttpServer(
       LoggerBuilder loggerBuilder, AnsweringHandler handler, JsonConfiguration configuration) {
@@ -28,7 +28,9 @@ public class AnsweringHttpServer implements AnsweringServer {
     this.configuration = configuration;
   }
 
-  public void isSystem() {}
+  public void isSystem() {
+    //To check if is a system class
+  }
 
   @Override
   public void run() {
@@ -56,7 +58,7 @@ public class AnsweringHttpServer implements AnsweringServer {
 
         httpServer.start();
         httpServers.put(port,httpServer);
-        logger.info("Http server LOADED, port: " + port);
+        logger.info("Http server LOADED, port: {}",port);
       }
 
       var localConfig = configuration.getConfiguration(HttpWebServerConfig.class);

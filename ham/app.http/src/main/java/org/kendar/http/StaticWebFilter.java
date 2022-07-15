@@ -6,6 +6,7 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.MimeChecker;
 
@@ -130,7 +131,7 @@ public abstract class StaticWebFilter implements FilteringClass {
       } else {
         renderResourceFile(response, stringPath);
       }
-      response.addHeader("Content-Type", mimeType);
+      response.addHeader(ConstantsHeader.CONTENT_TYPE, mimeType);
       response.setStatusCode(200);
 
     } catch (Exception e) {

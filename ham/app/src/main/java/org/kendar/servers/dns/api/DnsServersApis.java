@@ -17,6 +17,8 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -56,7 +58,7 @@ public class DnsServersApis implements FilteringClass {
           ))
   public void getExtraServers(Request req, Response res) throws JsonProcessingException {
     var dnsServeres = configuration.getConfiguration(DnsConfig.class).getExtraServers();
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(dnsServeres));
   }
 
@@ -78,7 +80,7 @@ public class DnsServersApis implements FilteringClass {
     for (var item : dnsServers) {
       if (item.getId().equalsIgnoreCase(name)) {
 
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(item));
         return ;
       }

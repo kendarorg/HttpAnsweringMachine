@@ -30,6 +30,8 @@ import org.kendar.http.annotations.multi.Header;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -123,7 +125,7 @@ public class SwaggerApi  implements FilteringClass {
       String swaggerJson = Json.mapper().writeValueAsString(swagger);
       OpenAPI rebuilt = Json.mapper().readValue(swaggerJson, OpenAPI.class);
       resp.setResponseText( Json.mapper().writeValueAsString(rebuilt));
-      resp.addHeader("content-type","application/json");
+      resp.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
 
     }catch (Exception ex){
 
