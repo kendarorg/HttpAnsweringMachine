@@ -3,6 +3,7 @@ package org.kendar.servers.http.api;
 import org.junit.jupiter.api.Test;
 import org.kendar.remote.RestClientParser;
 import org.kendar.servers.http.Request;
+import org.kendar.utils.ConstantsHeader;
 
 import java.net.URISyntaxException;
 
@@ -23,7 +24,7 @@ public class RestClientParserTest {
         assertNotNull(result);
         assertEquals(2,result.getQuery().size());
         assertEquals(1,result.getHeaders().size());
-        var header = result.getHeader("content-type");
+        var header = result.getHeader(ConstantsHeader.CONTENT_TYPE);
         assertEquals("text/plain",header);
     }
 }

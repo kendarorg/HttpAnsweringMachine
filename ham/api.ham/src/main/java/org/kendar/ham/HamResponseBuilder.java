@@ -1,6 +1,7 @@
 package org.kendar.ham;
 
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +22,7 @@ public class HamResponseBuilder {
     }
 
     public HamResponseBuilder withContentType(String value){
-        return withHeader("content-type",value);
+        return withHeader(ConstantsHeader.CONTENT_TYPE,value);
     }
 
 

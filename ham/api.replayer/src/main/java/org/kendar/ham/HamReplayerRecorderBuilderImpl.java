@@ -1,5 +1,6 @@
 package org.kendar.ham;
 
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.Sleeper;
 
 class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerRecorderStop,HamReplayerWait {
@@ -19,7 +20,7 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
     public void createRecording(String id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withPath("/api/plugins/replayer/recording")
-                .withHamFile(id+".json","{}","application/json");
+                .withHamFile(id+".json","{}", ConstantsMime.JSON);
         hamBuilder.call(request.build());
     }
 
@@ -28,7 +29,7 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
         var request = hamBuilder.newRequest()
                 .withPost()
                 .withPath("/api/plugins/replayer/recording")
-                .withHamFile(id+".json",jsonContent,"application/json");
+                .withHamFile(id+".json",jsonContent,ConstantsMime.JSON);
         hamBuilder.call(request.build());
     }
 

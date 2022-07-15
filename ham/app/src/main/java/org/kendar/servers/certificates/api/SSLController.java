@@ -19,6 +19,8 @@ import org.kendar.servers.config.SSLConfig;
 import org.kendar.servers.config.SSLDomain;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
@@ -68,10 +70,10 @@ public class SSLController implements FilteringClass {
                   code = 200,
                   description = "SSL Domains",
                   body = SSLDomain[].class,
-                  content = "application/json")})
+                  content = ConstantsMime.JSON)})
   public void getExtraServers(Request req, Response res) throws JsonProcessingException {
     var domains = configuration.getConfiguration(SSLConfig.class).getDomains();
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(domains));
   }
 
@@ -181,7 +183,7 @@ public class SSLController implements FilteringClass {
     result+=new String(Base64.encodeBase64(encodedBytes, true));
     result+="-----END CERTIFICATE-----\n";
     res.setResponseText(result);
-    res.addHeader("content-type","application/pkix-cert");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.PKIX_CERT);
     res.setStatusCode(200);
   }
 }

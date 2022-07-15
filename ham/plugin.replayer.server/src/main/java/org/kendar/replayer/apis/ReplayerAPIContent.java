@@ -21,9 +21,7 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
-import org.kendar.utils.FileResourcesUtils;
-import org.kendar.utils.JsonSmile;
-import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.*;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -114,11 +112,11 @@ public class ReplayerAPIContent implements FilteringClass {
     if (singleLine.getId() == line) {
       var allTypes= MimeTypes.getDefaultMimeTypes();
       if ("request".equalsIgnoreCase(requestOrResponse)) {
-        var contentType =singleLine.getRequest().getHeader("Content-Type");
-        if(JsonSmile.JSON_SMILE_MIME.equalsIgnoreCase(contentType)){
-          res.addHeader("Content-Type", "application/json");
+        var contentType =singleLine.getRequest().getHeader(ConstantsHeader.CONTENT_TYPE);
+        if(ConstantsMime.JSON_SMILE.equalsIgnoreCase(contentType)){
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         }else {
-          res.addHeader("Content-Type", contentType);
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, contentType);
         }
         res.setBinaryResponse(singleLine.getRequest().isBinaryRequest());
         if (singleLine.getRequest().isBinaryRequest()) {
@@ -130,11 +128,11 @@ public class ReplayerAPIContent implements FilteringClass {
         setResultContentType(res, line, allTypes, contentType);
 
       } else if ("response".equalsIgnoreCase(requestOrResponse)) {
-        var contentType = singleLine.getResponse().getHeader("Content-Type");
-        if(JsonSmile.JSON_SMILE_MIME.equalsIgnoreCase(contentType)){
-          res.addHeader("Content-Type", "application/json");
+        var contentType = singleLine.getResponse().getHeader(ConstantsHeader.CONTENT_TYPE);
+        if(ConstantsMime.JSON_SMILE.equalsIgnoreCase(contentType)){
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         }else {
-          res.addHeader("Content-Type", contentType);
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, contentType);
         }
         res.setBinaryResponse(singleLine.getResponse().isBinaryResponse());
         if (singleLine.getResponse().isBinaryResponse()) {
@@ -144,11 +142,11 @@ public class ReplayerAPIContent implements FilteringClass {
         }
         setResultContentType(res, line, allTypes, contentType);
       }
-      if(res.getHeader("Content-Type") == null) {
+      if(res.getHeader(ConstantsHeader.CONTENT_TYPE) == null) {
         if (res.isBinaryResponse()) {
-          res.addHeader("Content-Type", "application/octet-stream");
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.STREAM);
         } else {
-          res.addHeader("Content-Type", "text/plain");
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.TEXT);
         }
       }else{
         if (res.isBinaryResponse()) {

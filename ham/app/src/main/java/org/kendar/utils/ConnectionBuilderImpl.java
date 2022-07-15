@@ -11,7 +11,6 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -27,8 +26,6 @@ import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -40,14 +37,14 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
             (exception, executionCount, context) -> executionCount != 3;
     private final DnsMultiResolver multiResolver;
     protected final ConcurrentHashMap<String, ResolvedDomain> domains = new ConcurrentHashMap<>();
+    private final Logger logger;
     private SystemDefaultDnsResolver remoteDnsResolver;
     private SystemDefaultDnsResolver fullDnsResolver;
-    private final ConcurrentHashMap<String,HttpClientConnectionManager> connectionManagers = new ConcurrentHashMap<>();
 
     public ConnectionBuilderImpl(DnsMultiResolver multiResolver,
                                  LoggerBuilder loggerBuilder){
         this.multiResolver = multiResolver;
-        Logger logger = loggerBuilder.build(ConnectionBuilder.class);
+        logger = loggerBuilder.build(ConnectionBuilder.class);
     }
 
     private SystemDefaultDnsResolver buildFullResolver() {
@@ -55,7 +52,7 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
             @Override
             public InetAddress[] resolve(final String host) throws UnknownHostException {
                 var result = multiResolver.resolve(host);
-                if(result.size()>=1) {
+                if(!result.isEmpty()) {
                     return new InetAddress[]{InetAddress.getByName(result.get(0))};
                 }
                 return new InetAddress[]{};
@@ -108,13 +105,7 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
                     .register("http", PlainConnectionSocketFactory.getSocketFactory())
                     .register("https", sslsf).build();
 
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-            return null;
-        } catch (KeyManagementException e) {
+        } catch (NoSuchAlgorithmException|KeyStoreException|KeyManagementException e) {
             e.printStackTrace();
             return null;
         }

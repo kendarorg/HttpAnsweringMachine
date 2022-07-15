@@ -20,7 +20,7 @@ public class MimeChecker {
     if (mimeLow.contains("soap")) return false;
     if (mimeLow.contains("javascript")) return false;
     if (mimeLow.contains("json")) return false;
-    if (mimeLow.contains(JsonSmile.JSON_SMILE_MIME)) return false;
+    if (mimeLow.contains(ConstantsMime.JSON_SMILE)) return false;
     if (mimeLow.contains("application/x-www-form-urlencoded")) return false;
     return true;
   }

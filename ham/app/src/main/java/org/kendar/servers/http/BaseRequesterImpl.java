@@ -20,10 +20,7 @@ import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.kendar.servers.dns.DnsMultiResolver;
-import org.kendar.utils.ConnectionBuilder;
-import org.kendar.utils.JsonSmile;
-import org.kendar.utils.LoggerBuilder;
-import org.kendar.utils.MimeChecker;
+import org.kendar.utils.*;
 import org.slf4j.Logger;
 
 import javax.net.ssl.SSLContext;
@@ -128,12 +125,12 @@ public abstract class BaseRequesterImpl implements BaseRequester{
             } else if (requestResponseBuilder.hasBody(request)) {
                 HttpEntity entity;
                 try {
-                    String contentType = request.getHeader("content-type");
+                    String contentType = request.getHeader(ConstantsHeader.CONTENT_TYPE);
                     if(contentType.indexOf(";")>0){
                         var spl = contentType.split(";");
                         contentType = spl[0];
                     }
-                    if(JsonSmile.JSON_SMILE_MIME.equalsIgnoreCase(contentType)) {
+                    if(ConstantsMime.JSON_SMILE.equalsIgnoreCase(contentType)) {
                         entity =
                                 new ByteArrayEntity(
                                         JsonSmile.jsonToSmile(request.getRequestText()), ContentType.create(contentType));
@@ -148,7 +145,7 @@ public abstract class BaseRequesterImpl implements BaseRequester{
                                         request.getRequestText(), ContentType.create(contentType));
                     }
                 }catch(Exception ex){
-                    logger.debug("Error "+request.getHeader("content-type"),ex);
+                    logger.debug("Error "+request.getHeader(ConstantsHeader.CONTENT_TYPE),ex);
                     entity =
                             new StringEntity(
                                     request.getRequestText(), ContentType.create("application/octet-stream"));

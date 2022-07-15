@@ -18,6 +18,8 @@ import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
@@ -112,7 +114,7 @@ public class ReplayerAPIScripts implements FilteringClass {
             result.setPost(datasetContent.getPostScript().get(line));
         }
 
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(result));
     }
 

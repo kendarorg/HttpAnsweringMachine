@@ -3,6 +3,9 @@ package org.kendar.utils;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Fake future implementation used basically as marker
+ */
 public class FakeFuture implements Future<Object> {
     @Override
     public boolean cancel(boolean b) {

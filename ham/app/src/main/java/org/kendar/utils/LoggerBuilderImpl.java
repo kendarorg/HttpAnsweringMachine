@@ -11,6 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class LoggerBuilderImpl implements LoggerBuilder {
 
+    private final ConcurrentHashMap<String,Logger> loggers = new ConcurrentHashMap<>();
+
     public void setLevel(String loggerName, Level level) {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
@@ -31,12 +33,6 @@ public class LoggerBuilderImpl implements LoggerBuilder {
         if(logger.isErrorEnabled()) return Level.ERROR;
         return Level.OFF;
     }
-
-    public void test(){
-
-    }
-
-    private final ConcurrentHashMap<String,Logger> loggers = new ConcurrentHashMap<>();
 
     @Override
     public Logger build(Class<?> toLogClass) {

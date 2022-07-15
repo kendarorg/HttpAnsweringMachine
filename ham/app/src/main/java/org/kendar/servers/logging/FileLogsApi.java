@@ -16,6 +16,8 @@ import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.logging.model.FileLogListItem;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.xml.model.XmlAttribute;
@@ -68,7 +70,7 @@ public class FileLogsApi implements FilteringClass {
             ),tags = {"base/logs"})
     public void getLogFiles(Request req, Response res) throws JsonProcessingException {
         ArrayList<FileLogListItem> result = getFileLogListItems();
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(result.stream().sorted(Comparator.comparing(FileLogListItem::getTimestamp)).collect(Collectors.toList())));
 
     }
@@ -138,7 +140,7 @@ public class FileLogsApi implements FilteringClass {
         if(past!=null){
             res.addHeader("X-PAST", past);
         }
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(data);
     }
 

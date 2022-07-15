@@ -1,5 +1,6 @@
 package org.kendar.replayer.storage;
 
+import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.MimeChecker;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,7 @@ public class DataReorganizer {
     var staticHashes = new HashSet<String>();
     for (var row :
             source){
-      var isRowStatic = MimeChecker.isStatic(row.getResponse().getHeader("content-type"),row.getRequest().getPath());
+      var isRowStatic = MimeChecker.isStatic(row.getResponse().getHeader(ConstantsHeader.CONTENT_TYPE),row.getRequest().getPath());
       if(isRowStatic ){
         if(!staticHashes.contains(row.getResponseHash())){
           destination.getStaticRequests().add(row);

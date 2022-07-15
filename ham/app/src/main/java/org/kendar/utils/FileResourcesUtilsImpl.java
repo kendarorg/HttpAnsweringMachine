@@ -22,6 +22,7 @@ import java.util.jar.JarFile;
 @Component
 public class FileResourcesUtilsImpl implements FileResourcesUtils {
   private final Logger logger;
+  private static final String JAR_PATH_DELIMITER = "/";
 
   public FileResourcesUtilsImpl(LoggerBuilder loggerBuilder) {
     logger = loggerBuilder.build(FileResourcesUtilsImpl.class);
@@ -67,7 +68,6 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
         BufferedReader reader = new BufferedReader(streamReader)) {
 
       String line;
-      boolean first = false;
       while ((line = reader.readLine()) != null) {
         result.add(line);
       }
@@ -92,7 +92,6 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
       throw new IllegalArgumentException("file not found! " + fileName);
     } else {
       // failed if files have whitespaces or special characters
-      // return new File(resource.getFile());
       return new File(resource.toURI());
     }
   }
@@ -173,7 +172,7 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
       jarType = "NESTED";
       loadNestedJar(path, result, classLoader, jarFile, ress);
     }
-    logger.info("Loading "+jarType+" jar with path "+jarFile);
+    logger.info("Loading {} jar with path {}",jarType,jarFile);
 
     return result;
   }
@@ -186,7 +185,7 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
     var splitted = jarFile.getPath().split("!");
     var rootFilePath = splitted[0].substring(5);
     var rootFile = new File(rootFilePath);
-    logger.debug("Loading nested jar  with path "+jarFile);
+    logger.debug("Loading nested jar  with path {}",jarFile);
     loadFromJar(path, result, classLoader, rootFile, ress,"BOOT-INF/classes");
   }
 
@@ -205,7 +204,7 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
     if (url != null) {
       try {
         final File apps = new File(url.toURI());
-        loadDirFromJar(path, result, jarFile, apps);
+        loadDirFromJar( result, jarFile, apps);
       } catch (URISyntaxException ex) {
         // never happens
       }
@@ -220,69 +219,81 @@ public class FileResourcesUtilsImpl implements FileResourcesUtils {
       ArrayList<String> ress,String extra)
       throws IOException {
     if(extra!=null){
-      path = extra+"/"+path;
+      path = extra+JAR_PATH_DELIMITER+path;
     }
-    final JarFile jar = new JarFile(jarFile);
-    final Enumeration<JarEntry> entries = jar.entries(); // gives ALL entries in jar
-    while (entries.hasMoreElements()) {
-      var nextElement = entries.nextElement();
-      final String name = nextElement.getName();
-      if (nextElement.isDirectory()) continue;
-      if (name.startsWith(path + "/")) { // filter according to the path
-        ress.add(name);
-      }
-    }
-    jar.close();
+    loadJarIndexes(path, jarFile, ress);
+    loadJarContent(result, classLoader, ress, extra);
+  }
+
+  private void loadJarContent(HashMap<String, Object> result, ClassLoader classLoader, ArrayList<String> ress, String extra) {
     for (var filePath : ress) {
       try {
         InputStream inputStream = classLoader.getResourceAsStream(filePath);
         if(inputStream==null){
           continue;
         }
-        try (inputStream) {
-          var bytes = inputStream.readAllBytes();
-          if (bytes.length > 0) {
-            //web/test.css
-            //BOOT-INF/classes/web/test.css
-            if(extra!=null){
-              filePath = filePath.substring(extra.length());
-            }
-            if (filePath.startsWith("/")) filePath = filePath.substring(1);
-            result.put(filePath, bytes);
-          }
-        }
+        readToBytes(result, extra, filePath, inputStream);
       } catch (Exception e) {
         logger.trace(e.getMessage());
       }
     }
   }
 
-  private void loadDirFromJar(
-      String path, HashMap<String, Object> result, File jarFile, File apps) {
+  private void readToBytes(HashMap<String, Object> result, String extra, String filePath, InputStream inputStream) throws IOException {
+    try (inputStream) {
+      var currentPath = filePath;
+      var bytes = inputStream.readAllBytes();
+      if (bytes.length > 0) {
+        //Examples
+        //web/test.css
+        //BOOT-INF/classes/web/test.css
+        if(extra !=null){
+          currentPath = currentPath.substring(extra.length());
+        }
+        if (currentPath.startsWith("/")) currentPath = currentPath.substring(1);
+        result.put(currentPath, bytes);
+      }
+    }
+  }
+
+  private void loadJarIndexes(String path, File jarFile, ArrayList<String> ress) throws IOException {
+    final JarFile jar = new JarFile(jarFile);
+    final Enumeration<JarEntry> entries = jar.entries(); // gives ALL entries in jar
+    while (entries.hasMoreElements()) {
+      var nextElement = entries.nextElement();
+      final String name = nextElement.getName();
+      if (nextElement.isDirectory()) continue;
+      if (name.startsWith(path + JAR_PATH_DELIMITER)) { // filter according to the path
+        ress.add(name);
+      }
+    }
+    jar.close();
+  }
+
+  private void loadDirFromJar(HashMap<String, Object> result, File jarFile, File apps) {
     if(apps ==null ) return;
     var listFiles = apps.listFiles();
     if(listFiles==null) return;
     for (File app : listFiles) {
       if (app.isDirectory()) {
-        loadDirFromJar(path, result, jarFile, app);
+        loadDirFromJar( result, jarFile, app);
       } else {
-        loadSingleFileFromJar(path, result, jarFile, app);
+        loadSingleFileFromJar( result, jarFile, app);
       }
     }
   }
 
-  private void loadSingleFileFromJar(
-      String path, HashMap<String, Object> result, File jarFile, File app) {
+  private void loadSingleFileFromJar(HashMap<String, Object> result, File jarFile, File app) {
     var filePath = app.getPath();
     try {
       var bytes = Files.readAllBytes(Paths.get(app.getPath()));
       if (bytes.length > 0) {
-        var internalpath = filePath.replace(jarFile.getPath(), "").replace("\\", "/");
-        if (internalpath.startsWith("/")) {
-          internalpath = internalpath.substring(1);
+        var internalPath = filePath.replace(jarFile.getPath(), "").replace("\\", "/");
+        if (internalPath.startsWith("/")) {
+          internalPath = internalPath.substring(1);
         }
 
-        result.put(internalpath, bytes);
+        result.put(internalPath, bytes);
       }
     } catch (Exception ex) {
       logger.trace(ex.getMessage());

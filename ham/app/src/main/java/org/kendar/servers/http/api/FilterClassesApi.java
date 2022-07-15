@@ -13,6 +13,8 @@ import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.http.api.model.FilterDto;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +67,7 @@ public class FilterClassesApi implements FilteringClass {
     result.add(new FilterType(4, HttpFilterType.PRE_CALL));
     result.add(new FilterType(5, HttpFilterType.POST_CALL));
     result.add(new FilterType(6, HttpFilterType.POST_RENDER));
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
 
@@ -94,7 +96,7 @@ public class FilterClassesApi implements FilteringClass {
       result.add(clazz);
     }
 
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result.toArray()));
   }
 
@@ -114,7 +116,7 @@ public class FilterClassesApi implements FilteringClass {
 
     var result = new ArrayList<>(config.filtersByClass.keySet());
 
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result.toArray()));
   }
 
@@ -145,7 +147,7 @@ public class FilterClassesApi implements FilteringClass {
       result.add(desc);
     }
 
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result.toArray()));
   }
 
@@ -180,7 +182,7 @@ public class FilterClassesApi implements FilteringClass {
       result.add(desc);
     }
 
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
 
@@ -205,7 +207,7 @@ public class FilterClassesApi implements FilteringClass {
         globalConfig.checkFilterEnabled(item.getId())
             && globalConfig.checkFilterEnabled(item.getClassId());
     var result = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter());
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
 
@@ -266,7 +268,7 @@ public class FilterClassesApi implements FilteringClass {
         context.getBeansOfType(CustomFiltersLoader.class).values().stream()
             .map(customFiltersLoader -> customFiltersLoader.getClass().getSimpleName())
             .collect(Collectors.toList());
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
 
@@ -295,7 +297,7 @@ public class FilterClassesApi implements FilteringClass {
         result.add(new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter()));
       }
     }
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
 
@@ -355,7 +357,7 @@ public class FilterClassesApi implements FilteringClass {
         globalConfig.checkFilterEnabled(item.getId())
             && globalConfig.checkFilterEnabled(item.getClassId());
     var result = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter());
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
 

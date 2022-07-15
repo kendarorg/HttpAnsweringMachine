@@ -6,9 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.brotli.dec.BrotliInputStream;
-import org.kendar.utils.JsonSmile;
-import org.kendar.utils.MimeChecker;
-import org.kendar.utils.SimpleStringUtils;
+import org.kendar.utils.*;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -20,7 +18,6 @@ import java.util.regex.Pattern;
 
 @Component
 public class RequestResponseBuilderImpl implements RequestResponseBuilder {
-  private static final String H_CONTENT_TYPE = "Content-Type";
   private static final String H_SOAP_ACTION = "SOAPAction";
   private static final String H_AUTHORIZATION = "Authorization";
   private static final String BASIC_AUTH_MARKER = "basic";
@@ -56,7 +53,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
 
   private static void setupOptionalBody(HttpExchange exchange, Request result)
       throws IOException, FileUploadException {
-    var headerContentType = result.getHeader(H_CONTENT_TYPE);
+    var headerContentType = result.getHeader(ConstantsHeader.CONTENT_TYPE);
     if (RequestUtils.isMethodWithBody(result)) {
       // Calculate body
       if (headerContentType.toLowerCase(Locale.ROOT).startsWith("multipart")) {
@@ -64,7 +61,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
         var boundary = SimpleStringUtils.splitByString("boundary=", headerContentType)[1];
         var data = IOUtils.toByteArray(exchange.getRequestBody());
         result.setMultipartData(
-            RequestUtils.buildMultipart(data, boundary, result.getHeader("Content-type")));
+            RequestUtils.buildMultipart(data, boundary, result.getHeader(ConstantsHeader.CONTENT_TYPE)));
       } else if (headerContentType
               .toLowerCase(Locale.ROOT)
               .startsWith("application/x-www-form-urlencoded")) {
@@ -72,7 +69,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
         result.setPostParameters(RequestUtils.queryToMap(requestText));
       } else if (headerContentType
               .toLowerCase(Locale.ROOT)
-              .startsWith(JsonSmile.JSON_SMILE_MIME)) {
+              .startsWith(ConstantsMime.JSON_SMILE)) {
         var requestText = JsonSmile.smileToJSON(IOUtils.toByteArray(exchange.getRequestBody())).toPrettyString();
         result.setRequestText(requestText);
       } else {
@@ -112,10 +109,10 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
     result.setPath(exchange.getRequestURI().getRawPath());
     result.setMethod(exchange.getRequestMethod().toUpperCase(Locale.ROOT));
     result.setHeaders(RequestUtils.headersToMap(exchange.getRequestHeaders()));
-    var headerContentType = result.getHeader(H_CONTENT_TYPE);
+    var headerContentType = result.getHeader(ConstantsHeader.CONTENT_TYPE);
     if (headerContentType == null) {
       headerContentType = "application/octet-stream";
-      result.addHeader(H_CONTENT_TYPE, headerContentType);
+      result.addHeader(ConstantsHeader.CONTENT_TYPE, headerContentType);
     }
     result.setSoapRequest(result.getHeader(H_SOAP_ACTION) != null);
     setupAuthHeaders(result);
@@ -131,7 +128,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
 
   @Override
   public boolean isMultipart(Request request) {
-    var headerContentType = request.getHeader(H_CONTENT_TYPE);
+    var headerContentType = request.getHeader(ConstantsHeader.CONTENT_TYPE);
     if(headerContentType==null) return false;
     return headerContentType.toLowerCase(Locale.ROOT).startsWith("multipart");
   }
@@ -187,7 +184,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
         if(brotli){
           responseText = IOUtils.toString(new BrotliInputStream(in), StandardCharsets.UTF_8);
           response.removeHeader("content-encoding");
-        }else if(responseEntity.getContentType().getValue().equalsIgnoreCase(JsonSmile.JSON_SMILE_MIME)){
+        }else if(responseEntity.getContentType().getValue().equalsIgnoreCase(ConstantsMime.JSON_SMILE)){
           responseText = JsonSmile.smileToJSON(IOUtils.toByteArray(in)).toPrettyString();
         }else {
           responseText = IOUtils.toString(in, StandardCharsets.UTF_8);

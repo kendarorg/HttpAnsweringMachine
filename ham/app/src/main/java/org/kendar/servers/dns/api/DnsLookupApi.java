@@ -13,6 +13,8 @@ import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ public class DnsLookupApi implements FilteringClass {
         }else{
             res.setResponseText("");
         }
-        res.addHeader("content-type","text/plain");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.TEXT);
     }
 
     @HttpMethodFilter(
@@ -81,7 +83,7 @@ public class DnsLookupApi implements FilteringClass {
             result.add(ni);
         }
         res.setResponseText(mapper.writeValueAsString(result));
-        res.addHeader("content-type","application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     }
 
     @HttpMethodFilter(

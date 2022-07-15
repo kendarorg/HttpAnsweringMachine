@@ -15,6 +15,8 @@ import org.kendar.replayer.storage.TestResults;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.springframework.stereotype.Component;
 
@@ -59,7 +61,7 @@ public class ResultsAPI  implements FilteringClass {
         var result = new ArrayList<RecordingItem>();
         loadFileResults(rootPath, result, "null");
         loadFileResults(rootPath, result, "pacts");
-        response.addHeader("content-type","application/json");
+        response.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         response.setResponseText(mapper.writeValueAsString(result));
     }
     @HttpMethodFilter(
@@ -85,7 +87,7 @@ public class ResultsAPI  implements FilteringClass {
             var item = founded.get();
             var fullFile = Path.of(rootPath + File.separator + item.getTestType() + File.separator+item.getFileId());
             if(Files.exists(fullFile)){
-                response.addHeader("content-type","application/json");
+                response.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.JSON);
                 response.setResponseText(Files.readString(fullFile));
                 return;
             }

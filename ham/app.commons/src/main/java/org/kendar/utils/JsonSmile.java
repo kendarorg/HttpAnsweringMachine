@@ -8,7 +8,6 @@ import com.fasterxml.jackson.dataformat.smile.SmileFactory;
 import java.io.IOException;
 
 public class JsonSmile {
-    public static String JSON_SMILE_MIME = "application/x-jackson-smile";
     private static ObjectMapper smileMapper = new ObjectMapper(new SmileFactory());
     private static ObjectMapper mapper = new ObjectMapper();
 

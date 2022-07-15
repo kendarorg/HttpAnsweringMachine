@@ -13,7 +13,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -24,9 +24,10 @@ import java.util.concurrent.Future;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 public class Main implements CommandLineRunner {
   private static final int MAX_THREADS = 10;
+  private boolean doRun = true;
   @Autowired private ApplicationContext applicationContext;
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) {
     javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
             (hostname, sslSession) -> true);
     SpringApplication app = new SpringApplication(Main.class);
@@ -34,27 +35,38 @@ public class Main implements CommandLineRunner {
     app.run(args);
   }
 
-
-  @SuppressWarnings("InfiniteLoopStatement")
   @Override
   public void run(String... args) {
     var executor = Executors.newFixedThreadPool(MAX_THREADS);
 
+    //Load the config file from json
     var configuration = loadConfigurationFile();
+    //Prepare the configured loggin levels
     setupLogging(configuration);
 
     var answeringServers = applicationContext.getBeansOfType(AnsweringServer.class);
 
-    var logger = applicationContext.getBean(LoggerBuilder.class).build(this.getClass());
+    //Create fake futures (terminated futures)
     Map<AnsweringServer, Future<?>> futures = setupFakeFutures(answeringServers);
 
-    while (true) {
-      intializeRunners(executor, futures);
+    while (doRun) {
+      //Prepare the runners that should ... well ... run
+      initializeRunners(executor, futures);
+      //Run everething
       runRunners(executor, futures);
-        Sleeper.sleep(1000);
+      Sleeper.sleep(1000);
     }
   }
 
+  public void stop(){
+    doRun = false;
+  }
+
+  /**
+   * This are created to initialize a series of processes that is not yet started
+   * @param answeringServers
+   * @return
+   */
   private Map<AnsweringServer, Future<?>> setupFakeFutures(
       Map<String, AnsweringServer> answeringServers) {
     Map<AnsweringServer, Future<?>> futures = new HashMap<>();
@@ -66,29 +78,22 @@ public class Main implements CommandLineRunner {
 
   private void runRunners(ExecutorService executor, Map<AnsweringServer, Future<?>> futures) {
     for (var future : futures.entrySet()) {
-      if (future.getValue().isDone() || future.getValue().isCancelled()) {
-        if (future.getKey().shouldRun()) {
+      if ((future.getValue().isDone() || future.getValue().isCancelled()) && future.getKey().shouldRun()) {
           Future<?> f = executor.submit(future.getKey());
           futures.put(future.getKey(), f);
-        }
       }
     }
   }
 
-  private void intializeRunners(ExecutorService executor, Map<AnsweringServer, Future<?>> futures) {
-    var logger = applicationContext.getBean(LoggerBuilder.class).build(this.getClass());
+  private void initializeRunners(ExecutorService executor, Map<AnsweringServer, Future<?>> futures) {
     for (var future : futures.entrySet()) {
       if (future.getValue().isDone() || future.getValue().isCancelled()) {
-        try {
-          if (future.getKey().getClass().getMethod("isSystem") != null) {
-            if (future.getKey().shouldRun()) {
+          var isSystem = Arrays.stream(future.getKey().getClass().getMethods()).anyMatch(a->a.getName().equalsIgnoreCase("isSystem"));
+          if (isSystem && future.getKey().shouldRun()) {
+
               Future<?> f = executor.submit(future.getKey());
               futures.put(future.getKey(), f);
-            }
           }
-        } catch (NoSuchMethodException e) {
-          logger.trace(e.getMessage());
-        }
       }
     }
   }

@@ -17,6 +17,8 @@ import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
@@ -92,7 +94,7 @@ public class ReplayerAPIGenerator implements FilteringClass {
             }
             zos.close();
             res.setBinaryResponse(true);
-            res.addHeader("Content-type", "application/zip");
+            res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.ZIP);
             res.addHeader("Content-disposition", "inline;filename=" + id + ".zip");
 
             res.setResponseBytes(baos.toByteArray());

@@ -29,7 +29,9 @@ public class AnsweringDnsServer implements AnsweringServer {
     pluginsInitializer.addSpecialLogger(DnsQueries.class.getName(), "DNS Logging (DEBUG,TRACE)");
   }
 
-  public void isSystem() {}
+  public void isSystem() {
+    //To check if is system class
+  }
 
   @Override
   public void run() {

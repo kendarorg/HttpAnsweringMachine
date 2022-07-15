@@ -19,6 +19,8 @@ import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
@@ -96,7 +98,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
         }
         res.addHeader("X-NEXT", ""+next);
         res.addHeader("X-PREV", ""+prev);
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(singleLine));
         return;
       }
@@ -278,7 +280,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
     ListAllRecordList result = new ListAllRecordList(datasetContent, id,false);
     for (var singleLine : result.getIndexes()) {
       if (singleLine.getId() == line) {
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(singleLine));
         return;
       }
