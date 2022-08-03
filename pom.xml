@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.kendar</groupId>
+    <artifactId>HttpAnsweringMachine</artifactId>
+    <version>3.0.7-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.4.0</version>
+    </parent>
+
+    <repositories>
+        <!--<repository>
+            <id>central1</id>
+            <name>Central Repository</name>
+            <url>https://repo1.maven.org/maven2/</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>-->
+        <repository>
+            <id>central2</id>
+            <name>Central Repository2</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <!-- https://repo.maven.apache.org/maven2 -->
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <spring.boot.version>2.4.0</spring.boot.version>
+        <apache.http.version>4.5.13</apache.http.version>
+        <commons.io.version>2.6</commons.io.version>
+        <jackson.version>2.12.4</jackson.version>
+        <dns.java.version>3.4.0</dns.java.version>
+        <!--<bouncycastle.version>1.64</bouncycastle.version>-->
+        <bouncycastle.version>1.68</bouncycastle.version>
+        <maven.jar.version>3.2.0</maven.jar.version>
+        <org.slf4j.version>1.7.30</org.slf4j.version>
+        <nimbusds.version>8.19</nimbusds.version>
+        <rhino.version>1.7.13</rhino.version>
+        <apache.derby.version>10.13.1.1</apache.derby.version>
+        <mybatis.orm.version>3.5.7</mybatis.orm.version>
+        <ch.qos.logback.version>1.2.3</ch.qos.logback.version>
+        <swagger.version>2.1.11</swagger.version>
+    </properties>
+
+    <modules>
+	    <module>app</module>
+        <module>app.commons</module>
+        <module>app.http</module>
+        <module>oidc.server</module>
+        <module>replayer.server</module>
+        <module>js.filters</module>
+        <module>app.http.standardfilters</module>
+        <module>simpledns</module>
+        <module>app.dns</module>
+        <module>docker.builder</module>
+        <module>app.swagger</module>
+        <module>swagger.commons</module>
+    </modules>
+</project>

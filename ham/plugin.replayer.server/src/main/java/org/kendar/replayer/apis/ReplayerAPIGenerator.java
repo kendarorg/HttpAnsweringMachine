@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.generator.SingleRequestGenerator;
 import org.kendar.replayer.storage.DataReorganizer;
@@ -14,6 +17,8 @@ import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
@@ -59,6 +64,13 @@ public class ReplayerAPIGenerator implements FilteringClass {
             pathAddress = "/api/plugins/replayer/generator/{id}",
             method = "GET",
             id = "4001daa6-277f-11ec-9yy1-0242ac1afe002")
+    @HamDoc(description = "Generate request response source files with pom (NOT COMPLETE)",tags = {"plugin/replayer"},
+            path = @PathParameter(key = "id"),
+            responses = @HamResponse(
+                    content = "application/zip",
+                    body = byte[].class
+            )
+    )
     public void listAllRecordingSteps(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var pack = req.getQuery("package");
@@ -82,7 +94,7 @@ public class ReplayerAPIGenerator implements FilteringClass {
             }
             zos.close();
             res.setBinaryResponse(true);
-            res.addHeader("Content-type", "application/zip");
+            res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.ZIP);
             res.addHeader("Content-disposition", "inline;filename=" + id + ".zip");
 
             res.setResponseBytes(baos.toByteArray());

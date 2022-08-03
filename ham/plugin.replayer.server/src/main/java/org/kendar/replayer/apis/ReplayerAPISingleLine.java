@@ -3,8 +3,12 @@ package org.kendar.replayer.apis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamRequest;
+import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.storage.CallIndex;
@@ -15,6 +19,8 @@ import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
@@ -59,6 +65,14 @@ public class ReplayerAPISingleLine implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "GET",
       id = "5000daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(
+          tags = {"plugin/replayer"},
+          description = "Returns a single line data",
+          path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")},
+          responses = @HamResponse(
+                  body = ReplayerRow.class
+          )
+  )
   public void retrieveSingleLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
@@ -84,7 +98,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
         }
         res.addHeader("X-NEXT", ""+next);
         res.addHeader("X-PREV", ""+prev);
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(singleLine));
         return;
       }
@@ -98,6 +112,12 @@ public class ReplayerAPISingleLine implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "PUT",
       id = "5001daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(description = "Modify a rreplayer row",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")},
+          requests = @HamRequest(
+                  body = ReplayerRow.class
+          )
+  )
   public void modifySingleLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
@@ -133,6 +153,12 @@ public class ReplayerAPISingleLine implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "POST",
       id = "5002daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(description = "Add a replayer row",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")},
+          requests = @HamRequest(
+                  body = ReplayerRow.class
+          )
+  )
   public void addLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
@@ -169,6 +195,9 @@ public class ReplayerAPISingleLine implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "DELETE",
       id = "5003daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(description = "Remove a replayer row",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")}
+  )
   public void deleteSingleLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
@@ -189,6 +218,9 @@ public class ReplayerAPISingleLine implements FilteringClass {
           pathAddress = "/api/plugins/replayer/recording/{id}/indexline/{line}",
           method = "DELETE",
           id = "5003daa6-277f-ytec-9621-0242ac1afe002")
+  @HamDoc(description = "Remove the indexline (aka the pointer to replayer row)",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")}
+  )
   public void deleteSingleIndexLineData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
@@ -229,6 +261,12 @@ public class ReplayerAPISingleLine implements FilteringClass {
           pathAddress = "/api/plugins/replayer/recording/{id}/lineindex/{line}",
           method = "GET",
           id = "5000daa6-277f-11ec-9621-0242ac1afe002lineindex")
+  @HamDoc(description = "Retrieves the indexline (aka the pointer to replayer row)",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")},
+          responses = @HamResponse(
+            body =  CallIndex.class
+          )
+  )
   public void retrieveSingleLineIndexData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));
@@ -242,7 +280,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
     ListAllRecordList result = new ListAllRecordList(datasetContent, id,false);
     for (var singleLine : result.getIndexes()) {
       if (singleLine.getId() == line) {
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(singleLine));
         return;
       }
@@ -258,6 +296,12 @@ public class ReplayerAPISingleLine implements FilteringClass {
           pathAddress = "/api/plugins/replayer/recording/{id}/lineindex/{line}",
           method = "PUT",
           id = "5001daa6-277f-11ec-9621-0242ac1afe008lineindex")
+  @HamDoc(description = "Addes the indexline (aka the pointer to replayer row)",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")},
+          requests = @HamRequest(
+                  body =  CallIndex.class
+          )
+  )
   public void modifySingleLineIndexData(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var line = Integer.parseInt(req.getPathParameter("line"));

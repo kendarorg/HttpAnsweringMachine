@@ -65,28 +65,30 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     }
   }
 
+  private static final Object[] EMPTY_ARRAY = new Object[]{};
+
   private <T extends BaseJsonConfig> T handleMissing(Class<T> aClass) {
-    logger.warn("Missing configuration "+ aClass.getName()+  " going default");
-    var nopars = Arrays.stream(aClass.getConstructors()).
+    logger.warn("Missing configuration {} going default", aClass.getName());
+    var noPars = Arrays.stream(aClass.getConstructors()).
             filter(c->c.getParameterCount()==0).collect(Collectors.toList());
-    if(nopars.isEmpty()){
-      logger.error(aClass.getName()+" Must have default constructor");
+    if(noPars.isEmpty()){
+      logger.error("{} Must have default constructor",aClass.getName());
       throw new RuntimeException(aClass.getName()+" Must have default constructor");
     }
     try {
-      return (T) nopars.get(0).newInstance(new Object[]{});
+      return (T) noPars.get(0).newInstance(EMPTY_ARRAY);
     } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
-      logger.error(aClass.getName()+" Must have default constructor");
+      logger.error("{} Must have default constructor",aClass.getName());
       throw new RuntimeException(ex);
     }
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   public long getConfigurationTimestamp(Class aClass) {
-    if (!mappingStringClasses.containsKey(aClass)) {
-      var attribute = (ConfigAttribute) aClass.getAnnotation(ConfigAttribute.class);
-      mappingStringClasses.put(aClass, attribute.id());
-    }
+    mappingStringClasses.computeIfAbsent(aClass,k->{
+      var attribute = (ConfigAttribute) k.getAnnotation(ConfigAttribute.class);
+      return attribute.id();
+    });
     var sanitizedId = mappingStringClasses.get(aClass);
     var item = deserializedConfigurations.get(sanitizedId);
     return item.timestamp;
@@ -145,11 +147,11 @@ public class JsonConfigurationImpl implements JsonConfiguration {
   }
 
   private String handleIncludes(String fullConfig, Path dirPath) throws IOException {
+    @SuppressWarnings("RegExpRedundantEscape")
     var regex = "(?m)[\"']#include:([\\da-zA-Z_\\-\\.\\\\/]+)[\"']";
     Pattern pattern = Pattern.compile(regex);
     Matcher matcher = pattern.matcher(fullConfig);
-    var hasMatches = true;
-    while(hasMatches){
+    while(true){
       var hashSet = new HashSet<>();
       var iterations = 0;
       while(matcher.find()){
@@ -212,7 +214,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
   }
 
   static class ParsedConfig {
-    public Object deserialized;
-    public long timestamp;
+    private Object deserialized;
+    private long timestamp;
   }
 }

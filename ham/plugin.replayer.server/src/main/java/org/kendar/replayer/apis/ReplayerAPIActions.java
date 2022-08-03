@@ -2,8 +2,10 @@ package org.kendar.replayer.apis;
 
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.ReplayerStatus;
 import org.kendar.servers.http.Request;
@@ -30,6 +32,9 @@ public class ReplayerAPIActions implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/record/{action}",
             method = "GET",id="3000daa6-277f-11ec-9621-0242ac1afe002")
+    @HamDoc(description = "Start/stop/pauses recording" ,tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
+    )
     public void recording(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var action = req.getPathParameter("action");
@@ -51,6 +56,9 @@ public class ReplayerAPIActions implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/replay/{action}",
             method = "GET",id="3001daa6-277f-11ec-9621-0242ac1afe002")
+    @HamDoc(description = "Start/stop/pauses replaying" ,tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
+    )
     public void replaying(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var action = req.getPathParameter("action");
@@ -69,6 +77,9 @@ public class ReplayerAPIActions implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/pact/{action}",
             method = "GET",id="pacta6-277f-11ec-9621-0242ac1afe002")
+    @HamDoc(description = "Start/stop/pauses pact test" ,tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
+    )
     public void pact(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var action = req.getPathParameter("action");
@@ -83,6 +94,9 @@ public class ReplayerAPIActions implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/null/{action}",
             method = "GET",id="nullaa6-277f-11ec-9621-0242ac1afe002")
+    @HamDoc(description = "Start/stop/pauses null test" ,tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
+    )
     public void nullReplay(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var action = req.getPathParameter("action");

@@ -23,7 +23,7 @@
     <parent>
         <artifactId>HttpAnsweringMachine</artifactId>
         <groupId>org.kendar</groupId>
-        <version>3.0.5-SNAPSHOT</version>
+        <version>3.0.7-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -170,7 +170,7 @@
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>lib.schema.checker</artifactId>
-            <version>3.0.5-SNAPSHOT</version>
+            <version>3.0.7-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -198,6 +198,28 @@
             <groupId>org.brotli</groupId>
             <artifactId>dec</artifactId>
             <version>${brotli.dec.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-integration</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.1-jre</version>
         </dependency>
 
     </dependencies>

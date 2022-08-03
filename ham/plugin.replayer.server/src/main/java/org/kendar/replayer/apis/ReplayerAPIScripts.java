@@ -3,8 +3,11 @@ package org.kendar.replayer.apis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.Scripts;
 import org.kendar.replayer.storage.CallIndex;
@@ -15,6 +18,8 @@ import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
@@ -57,6 +62,12 @@ public class ReplayerAPIScripts implements FilteringClass {
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
             method = "GET",
             id = "5000daa6-277f-11ec-9621-0242ac1afe002script")
+    @HamDoc(description = "retrieves the scripts associate with a recording line",tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"),@PathParameter(key = "line")},
+            responses = @HamResponse(
+                    body = String.class
+            )
+    )
     public void retrieveScript(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var line = req.getPathParameter("line");
@@ -103,7 +114,7 @@ public class ReplayerAPIScripts implements FilteringClass {
             result.setPost(datasetContent.getPostScript().get(line));
         }
 
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(result));
     }
 
@@ -114,6 +125,9 @@ public class ReplayerAPIScripts implements FilteringClass {
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
             method = "DELETE",
             id = "5000dafa-277f-11ec-9621-0242ac1afe002script")
+    @HamDoc(description = "delete the scripts associate with a recording line",tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
+    )
     public void deleteScript(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var line = req.getPathParameter("line");
@@ -134,6 +148,12 @@ public class ReplayerAPIScripts implements FilteringClass {
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
             method = "PUT",
             id = "5000daa6-277f-11ec-9621-0242ac1afe002scriptput")
+    @HamDoc(description = "modify/insert the scripts associate with a recording line",tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"),@PathParameter(key = "line")},
+            responses = @HamResponse(
+                    body = String.class
+            )
+    )
     public void putScript(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
         var lines = Arrays.stream(req.getPathParameter("line").split(","))

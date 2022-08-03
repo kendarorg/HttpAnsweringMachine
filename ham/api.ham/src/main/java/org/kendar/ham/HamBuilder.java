@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.Sleeper;
 import org.xbill.DNS.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -375,7 +377,7 @@ public class HamBuilder implements HamInternalBuilder {
                 certificatePath = Files.createTempFile(UUID.randomUUID().toString(), ".ham.der");
                 var
                 HttpPost httpPost = new HttpPost(getHamAddress() + "/api/certificates/ca.der?clear=true");
-                httpPost.addHeader("content-type", "application/json");
+                httpPost.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
                 httpPost.setEntity(new StringEntity(mapper.writeValueAsString(request)));
 
                 CloseableHttpResponse clientResponse = execute(httpPost);
@@ -405,7 +407,7 @@ public class HamBuilder implements HamInternalBuilder {
 
             HttpPost httpPost = new HttpPost(getHamAddress() + "/api/remote/execute");
 
-            httpPost.addHeader("content-type", "application/json");
+            httpPost.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
             httpPost.setEntity(new StringEntity(mapper.writeValueAsString(request)));
 
             CloseableHttpResponse clientResponse = execute(httpPost);

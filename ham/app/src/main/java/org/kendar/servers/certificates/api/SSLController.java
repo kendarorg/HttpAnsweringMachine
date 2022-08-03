@@ -7,8 +7,10 @@ import org.kendar.events.EventQueue;
 import org.kendar.events.events.SSLChangedEvent;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.*;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.certificates.CertificatesManager;
 import org.kendar.servers.certificates.GeneratedCert;
@@ -17,6 +19,8 @@ import org.kendar.servers.config.SSLConfig;
 import org.kendar.servers.config.SSLDomain;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
@@ -59,9 +63,17 @@ public class SSLController implements FilteringClass {
       pathAddress = "/api/ssl",
       method = "GET",
       id = "1008a4b4-277d-11ec-9621-0242ac130002")
+  @HamDoc(
+          tags = {"base/ssl"},
+          description = "Retrieve the list of ssl registrations",
+          responses = {@HamResponse(
+                  code = 200,
+                  description = "SSL Domains",
+                  body = SSLDomain[].class,
+                  content = ConstantsMime.JSON)})
   public void getExtraServers(Request req, Response res) throws JsonProcessingException {
     var domains = configuration.getConfiguration(SSLConfig.class).getDomains();
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(domains));
   }
 
@@ -70,6 +82,10 @@ public class SSLController implements FilteringClass {
       pathAddress = "/api/ssl/{id}",
       method = "DELETE",
       id = "1009a4b4-277d-11ec-9621-0242ac130002")
+  @HamDoc(
+          tags = {"base/ssl"},
+          description = "Delete ssl item",
+          path = @PathParameter(key="id"))
   public void removeDnsServer(Request req, Response res) {
     var cloned = configuration.getConfiguration(SSLConfig.class).copy();
 
@@ -93,6 +109,14 @@ public class SSLController implements FilteringClass {
           pathAddress = "/api/ssl",
           method = "POST",
           id = "1011a4b4-2ASD77d-11ec-9621-0242ac130002")
+  @HamDoc(
+          tags = {"base/ssl"},
+          description = "Add one/many certificate/s",
+          requests = {@HamRequest(
+                  body = SSLDomain[].class
+          ),@HamRequest(
+                  body = SSLDomain.class
+          )})
   public void addDnsServer(Request req, Response res) throws Exception {
     var cloned = configuration.getConfiguration(SSLConfig.class).copy();
 
@@ -128,6 +152,23 @@ public class SSLController implements FilteringClass {
           pathAddress = "/api/sslgen",
           method = "POST",
           id = "1011a4b4-asdfD77d-11ec-9621-0242ac130002")
+  @HamDoc(
+          tags = {"base/ssl"},
+          description = "Generate SSL certificate for website",
+          requests = @HamRequest(
+                  body = TLSSSLGenerator.class
+          ),
+          responses = @HamResponse(
+                  body = String.class,
+                  content = "application/pkix-cert",
+                  examples = @Example(
+                          description = "Example certificate",
+                          example = "-----BEGIN CERTIFICATE-----\n"+
+                                  "BASDASDFASE34523452SAFSDAFSD\n"+
+                                  "-----END CERTIFICATE-----\n"
+                  )
+          )
+  )
   public void generateSSL(Request req, Response res) throws Exception {
 
     var request = mapper.readValue(req.getRequestText(), TLSSSLGenerator.class);
@@ -142,7 +183,7 @@ public class SSLController implements FilteringClass {
     result+=new String(Base64.encodeBase64(encodedBytes, true));
     result+="-----END CERTIFICATE-----\n";
     res.setResponseText(result);
-    res.addHeader("content-type","application/pkix-cert");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.PKIX_CERT);
     res.setStatusCode(200);
   }
 }

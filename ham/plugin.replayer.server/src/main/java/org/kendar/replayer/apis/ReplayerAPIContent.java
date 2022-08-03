@@ -6,8 +6,12 @@ import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamRequest;
+import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerDataset;
@@ -17,9 +21,7 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
-import org.kendar.utils.FileResourcesUtils;
-import org.kendar.utils.JsonSmile;
-import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.*;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -60,6 +62,21 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "GET",
       id = "3004daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(description = "Retrieve the content of a request/response line",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse",
+          example = "request"
+          )},
+          responses = {
+                  @HamResponse(
+                          description = "Text content",
+                          body = String.class
+                  ),
+                  @HamResponse(
+                          description = "Binary content",
+                          body = byte[].class
+                  )
+          }
+  )
   public void retrieveContent(Request req, Response res) throws IOException {
     var id = getPathParameter(req, "id");
     var line = Integer.parseInt(getPathParameter(req, "line"));
@@ -95,11 +112,11 @@ public class ReplayerAPIContent implements FilteringClass {
     if (singleLine.getId() == line) {
       var allTypes= MimeTypes.getDefaultMimeTypes();
       if ("request".equalsIgnoreCase(requestOrResponse)) {
-        var contentType =singleLine.getRequest().getHeader("Content-Type");
-        if(JsonSmile.JSON_SMILE_MIME.equalsIgnoreCase(contentType)){
-          res.addHeader("Content-Type", "application/json");
+        var contentType =singleLine.getRequest().getHeader(ConstantsHeader.CONTENT_TYPE);
+        if(ConstantsMime.JSON_SMILE.equalsIgnoreCase(contentType)){
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         }else {
-          res.addHeader("Content-Type", contentType);
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, contentType);
         }
         res.setBinaryResponse(singleLine.getRequest().isBinaryRequest());
         if (singleLine.getRequest().isBinaryRequest()) {
@@ -111,11 +128,11 @@ public class ReplayerAPIContent implements FilteringClass {
         setResultContentType(res, line, allTypes, contentType);
 
       } else if ("response".equalsIgnoreCase(requestOrResponse)) {
-        var contentType = singleLine.getResponse().getHeader("Content-Type");
-        if(JsonSmile.JSON_SMILE_MIME.equalsIgnoreCase(contentType)){
-          res.addHeader("Content-Type", "application/json");
+        var contentType = singleLine.getResponse().getHeader(ConstantsHeader.CONTENT_TYPE);
+        if(ConstantsMime.JSON_SMILE.equalsIgnoreCase(contentType)){
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         }else {
-          res.addHeader("Content-Type", contentType);
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, contentType);
         }
         res.setBinaryResponse(singleLine.getResponse().isBinaryResponse());
         if (singleLine.getResponse().isBinaryResponse()) {
@@ -125,11 +142,11 @@ public class ReplayerAPIContent implements FilteringClass {
         }
         setResultContentType(res, line, allTypes, contentType);
       }
-      if(res.getHeader("Content-Type") == null) {
+      if(res.getHeader(ConstantsHeader.CONTENT_TYPE) == null) {
         if (res.isBinaryResponse()) {
-          res.addHeader("Content-Type", "application/octet-stream");
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.STREAM);
         } else {
-          res.addHeader("Content-Type", "text/plain");
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.TEXT);
         }
       }else{
         if (res.isBinaryResponse()) {
@@ -175,6 +192,11 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "DELETE",
       id = "3005daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(description = "Remove the content of a line",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse",
+                  example = "request"
+          )}
+  )
   public void deleteConent(Request req, Response res) throws IOException {
     var id = getPathParameter(req, "id");
     var line = Integer.parseInt(getPathParameter(req, "line"));
@@ -208,6 +230,14 @@ public class ReplayerAPIContent implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
       method = "POST",
       id = "3006daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(description = "Sets the content of a line",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse",
+                  example = "request"
+          )},
+          requests = @HamRequest(
+                  body = JsonFileData.class
+          )
+  )
   public void modifyConent(Request req, Response res)
       throws IOException, NoSuchAlgorithmException {
     var id = getPathParameter(req, "id");

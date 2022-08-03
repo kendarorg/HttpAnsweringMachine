@@ -5,8 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.Example;
+import org.kendar.http.annotations.multi.HamRequest;
+import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.ReplayerStatus;
@@ -21,6 +26,8 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -73,6 +80,8 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording",
       method = "GET",
       id = "4000daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(description = "Retrieves the list of recordings",tags = {"plugin/replayer"},
+    responses = @HamResponse(body = String[].class))
   public void listAllLocalRecordings(Request req, Response res) throws JsonProcessingException {
     var realPath = fileResourcesUtils.buildPath(replayerData);
     var f = new File(realPath);
@@ -93,7 +102,7 @@ public class ReplayerAPICrud implements FilteringClass {
         }
       }
     }
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(listOfItems));
   }
 
@@ -102,6 +111,10 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}",
       method = "GET",
       id = "4001daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(description = "Retrieve the content of a single recording",tags = {"plugin/replayer"},
+          path = @PathParameter(key = "id"),
+          responses = @HamResponse(body =ListAllRecordList.class)
+  )
   public void listAllRecordingSteps(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
 
@@ -113,7 +126,7 @@ public class ReplayerAPICrud implements FilteringClass {
     var datasetContent = dataset.load();
     ListAllRecordList result = new ListAllRecordList(datasetContent, id,true);
     result.getLines().sort(Comparator.comparingInt(ReplayerRow::getId));
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
 
@@ -122,6 +135,9 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}",
       method = "DELETE",
       id = "4002daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(description = "Delete a recording",tags = {"plugin/replayer"},
+          path = @PathParameter(key = "id")
+  )
   public void deleteRecordin(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
@@ -136,6 +152,10 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording/{id}",
       method = "PUT",
       id = "4003daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(description = "Modify an exesting recording",tags = {"plugin/replayer"},
+          path = @PathParameter(key = "id"),
+          requests = @HamRequest(body = ReplayerResult.class)
+  )
   public void updateRecord(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
@@ -174,13 +194,18 @@ public class ReplayerAPICrud implements FilteringClass {
           pathAddress = "/api/plugins/replayer/recording/{id}/full",
           method = "GET",
           id = "4003daa6-277f-11ec-9621-full")
+  @HamDoc(description = "Alternative retrieval of recording",tags = {"plugin/replayer"},
+          path = @PathParameter(key = "id"),
+          responses = @HamResponse(body = String.class)
+
+  )
   public void getFull(Request req, Response res) throws IOException {
     var id = req.getPathParameter("id");
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
     if (Files.exists(rootPath)) {
       var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
       res.setResponseText(fileContent);
-      res.addHeader("Content-type","application/json");
+      res.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.JSON);
       res.addHeader("Content-Disposition", "attachment;"+id+".json");
       res.setStatusCode(200);
     }else {
@@ -193,6 +218,8 @@ public class ReplayerAPICrud implements FilteringClass {
       pathAddress = "/api/plugins/replayer/recording",
       method = "POST",
       id = "4004daa6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(description = "Create/update recording",tags = {"plugin/replayer"},
+    requests = @HamRequest(body=JsonFileData.class))
   public void uploadRecording(Request req, Response res) throws Exception {
     JsonFileData jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
     String fileFullPath = jsonFileData.getName();
@@ -221,6 +248,11 @@ public class ReplayerAPICrud implements FilteringClass {
           pathAddress = "/api/plugins/replayer/recording/{id}/deletelines",
           method = "POST",
           id = "4004dXX6-277f-11sfec-9621-0242ac1afe002")
+  @HamDoc(description = "Delete multiple lines of script",tags = {"plugin/replayer"},
+          path = @PathParameter(key = "id"),
+          requests = @HamRequest(body = String[].class,
+          examples = @Example(example = "[1,2,3]"))
+  )
   public void deleteLines(Request req, Response res) throws Exception {
     List<Integer> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Integer[].class)).collect(Collectors.toList());
     var id = req.getPathParameter("id");
@@ -262,6 +294,11 @@ public class ReplayerAPICrud implements FilteringClass {
           pathAddress = "/api/plugins/replayer/recording/{id}/clone/{newid}",
           method = "POST",
           id = "4004dXX6-277f-11ec-9621-0242ac1afe002")
+  @HamDoc(description = "Clone the selected lines in a new request",tags = {"plugin/replayer"},
+          path = {@PathParameter(key = "id"),@PathParameter(key = "newid")},
+          requests = @HamRequest(body = String[].class,
+          examples = @Example(example = "[1,2,3]"))
+  )
   public void clone(Request req, Response res) throws Exception {
     List<Integer> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Integer[].class)).collect(Collectors.toList());
     var id = req.getPathParameter("id");

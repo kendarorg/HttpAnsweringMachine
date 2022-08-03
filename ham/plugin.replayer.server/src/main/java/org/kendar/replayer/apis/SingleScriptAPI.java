@@ -3,8 +3,11 @@ package org.kendar.replayer.apis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.apis.models.SingleScript;
@@ -18,6 +21,8 @@ import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.RequestUtils;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
@@ -59,6 +64,12 @@ public class SingleScriptAPI implements FilteringClass {
             pathAddress = "/api/plugins/replayer/v2/recording/{id}",
             method = "GET",
             id = "4001daa6-fff-11ec-9tar1-0242ac1afe002")
+    @HamDoc(description = "Retrieve all the content of a script",tags = {"plugin/replayer"},
+            path = @PathParameter(key = "id"),
+            responses = @HamResponse(
+                    body = SingleScript.class
+            )
+    )
     public void listAllRecordingSteps(Request req, Response res) throws IOException {
         var id = req.getPathParameter("id");
 
@@ -72,7 +83,7 @@ public class SingleScriptAPI implements FilteringClass {
         var result = convertDataset(datasetContent, id,true);
 
 
-        res.addHeader("Content-type", "application/json");
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(result));
     }
 

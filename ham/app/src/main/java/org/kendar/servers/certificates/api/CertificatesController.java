@@ -1,13 +1,21 @@
 package org.kendar.servers.certificates.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.models.OpenAPI;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.multi.HamRequest;
+import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.PathParameter;
+import org.kendar.http.annotations.multi.QueryString;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -17,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -44,6 +53,11 @@ public class CertificatesController implements FilteringClass {
       pathAddress = "/api/certificates",
       method = "GET",
       id = "1012a4b4-277d-11ec-9621-0242ac130002")
+  @HamDoc(
+          tags = {"base/certificates"},
+          description = "Retrieve the list of certificates",
+          responses = @HamResponse(body = String[].class),
+          requests = @HamRequest)
   public void listAllCertificates(Request req, Response res)
       throws IOException {
     var resources = fileResourcesUtils.loadResources(this, "certificates");
@@ -61,7 +75,7 @@ public class CertificatesController implements FilteringClass {
         logger.trace(ex.getMessage());
       }
     }
-    res.addHeader("Content-type", "application/json");
+    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
   /*
@@ -87,6 +101,21 @@ public class CertificatesController implements FilteringClass {
       pathAddress = "/api/certificates/{file}",
       method = "GET",
       id = "1014a4b4-277d-11ec-9621-0242ac130002")
+  @HamDoc(
+          tags = {"base/certificates"},
+          description = "Retrieve the certificate",
+          responses = {@HamResponse(
+                  code = 200,
+                  description = "Certificate",
+                  body = String.class,
+                  content = "text/plain"),
+                  @HamResponse(
+                          code = 200,
+                          body = byte[].class,
+                          description = "Zip with certificate",
+                          content = "application/zip")},
+          path = @PathParameter(key="file"),
+          query = @QueryString(key="clear", description = "If set returns a plain text certificate"))
   public void getSingleCertificate(Request req, Response res)
       throws IOException {
     var resources = fileResourcesUtils.loadResources(this, "certificates");
@@ -107,14 +136,14 @@ public class CertificatesController implements FilteringClass {
           zos.write(result);
           zos.closeEntry();
           zos.close();
-          res.addHeader("Content-type", "application/zip");
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.ZIP);
           res.addHeader("Content-disposition", "inline;filename=" + path + ".zip");
           res.setResponseBytes(baos.toByteArray());
           res.setBinaryResponse(true);
         }else{
           res.setResponseBytes(result);
           res.setBinaryResponse(true);
-          res.addHeader("Content-type", "application/octect-stream");
+          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.STREAM);
         }
 
         res.setBinaryResponse(true);

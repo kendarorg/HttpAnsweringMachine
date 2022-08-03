@@ -7,13 +7,12 @@ import org.apache.http.conn.HttpClientConnectionManager;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClassesHandler;
 import org.kendar.http.HttpFilterType;
+import org.kendar.remote.ExecuteLocalRequest;
 import org.kendar.remote.ExecuteRemoteRequest;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.proxy.SimpleProxyHandler;
-import org.kendar.utils.ConnectionBuilder;
-import org.kendar.utils.JsonSmile;
-import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.*;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -75,6 +74,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
 
     eventQueue.registerCommand(e->{return remoteRequest(e);}, ExecuteRemoteRequest.class);
+    eventQueue.registerCommand(e->{return localRequest(e);}, ExecuteLocalRequest.class);
   }
 
 
@@ -138,6 +138,27 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
   private Response remoteRequest(ExecuteRemoteRequest e) {
     try {
       var connManager = connectionBuilder.getConnectionManger(true, true);
+      var config = configuration.getConfiguration(GlobalConfig.class);
+      var response = new Response();
+      var request = e.getRequest();
+      try {
+        handleInternal(request, response, config, connManager);
+
+      } catch (Exception ex) {
+        throw new RuntimeException(ex);
+      } finally {
+        filteringClassesHandler.handle(
+                config, HttpFilterType.POST_RENDER, request, response, connManager);
+      }
+      return response;
+    }catch (InvocationTargetException| IllegalAccessException ex){
+      return null;
+    }
+  }
+
+  private Response localRequest(ExecuteLocalRequest e) {
+    try {
+      var connManager = connectionBuilder.getConnectionManger(false, true);
       var config = configuration.getConfiguration(GlobalConfig.class);
       var response = new Response();
       var request = e.getRequest();
@@ -253,8 +274,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
   private void handleException(HttpExchange httpExchange, Response response, Exception ex) {
     try {
       logger.error("ERROR HANDLING HTTP REQUEST ", ex);
-      if (response.getHeader("content-type") == null) {
-        response.addHeader("Content-Type", "text/html");
+      if (response.getHeader(ConstantsHeader.CONTENT_TYPE) == null) {
+        response.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.HTML);
       }
       response.addHeader("X-Exception-Type", ex.getClass().getName());
       response.addHeader("X-Exception-Message", ex.getMessage());
@@ -286,7 +307,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
         data = response.getResponseBytes();
       } else if (response.getResponseText().length() > 0) {
 
-        if(JsonSmile.JSON_SMILE_MIME.equalsIgnoreCase(response.getHeader("content-type"))){
+        if(ConstantsMime.JSON_SMILE.equalsIgnoreCase(response.getHeader(ConstantsHeader.CONTENT_TYPE))){
           data = JsonSmile.jsonToSmile(response.getResponseText());
         }else {
           data = (response.getResponseText().getBytes(StandardCharsets.UTF_8));
@@ -307,6 +328,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     response.addHeader("Access-Control-Allow-Methods", "*");
     response.addHeader("Access-Control-Allow-Headers", "*");
     response.addHeader("Access-Control-Max-Age", "86400");
+    response.addHeader("Access-Control-Expose-Headers", "*");
     for (var header : response.getHeaders().entrySet()) {
       httpExchange.getResponseHeaders().add(header.getKey(), header.getValue());
     }

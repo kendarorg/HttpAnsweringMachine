@@ -4,6 +4,7 @@ import org.kendar.http.CustomFiltersLoader;
 import org.kendar.http.FilterDescriptor;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.StaticWebFilter;
+import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
@@ -50,7 +51,8 @@ public class DefaultFiltersLoader implements CustomFiltersLoader {
                 var swf =(StaticWebFilter)cl;
                 pluginsInitializer.addPluginAddress(swf.getAddress(),swf.getDescription());
             }
-            result.add(new FilterDescriptor(this,typeFilter,methodFilter,m,cl,environment,jsonConfiguration));
+            var hamDoc = m.getAnnotation(HamDoc.class);
+            result.add(new FilterDescriptor(this,typeFilter,methodFilter,m,cl,environment,jsonConfiguration,hamDoc));
         }
         return result;
     }

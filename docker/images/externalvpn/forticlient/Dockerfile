@@ -30,8 +30,8 @@ RUN \
 #docker run --privileged --dns 8.8.8.8  --dns 10.136.49.21 --dns 10.110.49.21 --cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH --name myvpn myvpn
 #docker run --privileged --cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH --name myvpn myvpn
 FROM ham.base:latest
-RUN apk update
-RUN apk upgrade
+
+RUN echo openforti 3.0.7-SNAPSHOT
 
 COPY --from=builder /usr/bin/openfortivpn  /usr/bin/
 #/go/bin/glider

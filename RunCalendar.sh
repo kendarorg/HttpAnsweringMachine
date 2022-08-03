@@ -64,15 +64,15 @@ if [ "$rundocker" == "n" ]; then
 		
 	cd "$mypath"samples/calendar/gateway/target/
 	cp -f "$mypath"samples/calendar/docker/application.properties.gateway "$mypath"samples/calendar/gateway/target/application.properties
-	java -jar "$mypath"samples/calendar/gateway/target/gateway-1.0-SNAPSHOT.jar &
+	java -jar "$mypath"samples/calendar/gateway/target/gateway-3.0.7-SNAPSHOT.jar &
 		
 	cd "$mypath"samples/calendar/be/target/
 	cp -f "$mypath"samples/calendar/docker/application.properties.be "$mypath"samples/calendar/be/target/application.properties
-	java -jar "$mypath"samples/calendar/be/target/be-1.0-SNAPSHOT.jar &
+	java -jar "$mypath"samples/calendar/be/target/be-3.0.7-SNAPSHOT.jar &
 		
 	cd "$mypath"samples/calendar/fe/target/
 	cp -f "$mypath"samples/calendar/docker/application.properties.fe "$mypath"samples/calendar/fe/target/application.properties
-	java -jar "$mypath"samples/calendar/fe/target/fe-1.0-SNAPSHOT.jar &
+	java -jar "$mypath"samples/calendar/fe/target/fe-3.0.7-SNAPSHOT.jar &
 	
 	cd "$mypath"ham/app/target
 	cp -f "$mypath"samples/calendar/docker/external.json "$mypath"ham/app/target/
