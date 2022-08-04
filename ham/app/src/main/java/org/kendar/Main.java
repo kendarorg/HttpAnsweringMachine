@@ -1,5 +1,7 @@
 package org.kendar;
 
+import org.kendar.events.EventQueue;
+import org.kendar.events.RestartAllEvent;
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
@@ -35,6 +37,8 @@ public class Main implements CommandLineRunner {
     app.run(args);
   }
 
+  public boolean restartAll = false;
+
   @Override
   public void run(String... args) {
     var executor = Executors.newFixedThreadPool(MAX_THREADS);
@@ -46,10 +50,24 @@ public class Main implements CommandLineRunner {
 
     var answeringServers = applicationContext.getBeansOfType(AnsweringServer.class);
 
+    var eventQueue = applicationContext.getBean(EventQueue.class);
+    eventQueue.register(e->{
+      restartAll=true;
+    }, RestartAllEvent.class);
+
     //Create fake futures (terminated futures)
     Map<AnsweringServer, Future<?>> futures = setupFakeFutures(answeringServers);
 
     while (doRun) {
+      if(restartAll){
+        restartAll = false;
+        executor.shutdownNow();
+        executor = Executors.newFixedThreadPool(MAX_THREADS);
+        configuration = loadConfigurationFile();
+        //Prepare the configured loggin levels
+        setupLogging(configuration);
+        futures = setupFakeFutures(answeringServers);
+      }
       //Prepare the runners that should ... well ... run
       initializeRunners(executor, futures);
       //Run everething
@@ -57,6 +75,7 @@ public class Main implements CommandLineRunner {
       Sleeper.sleep(1000);
     }
   }
+
 
   public void stop(){
     doRun = false;
@@ -116,5 +135,10 @@ public class Main implements CommandLineRunner {
     for (var logConf : globalConfig.getLogging().getLoggers().entrySet()) {
       loggerBuilder.setLevel(logConf.getKey(), logConf.getValue());
     }
+  }
+
+
+  private void stopEverything() {
+
   }
 }

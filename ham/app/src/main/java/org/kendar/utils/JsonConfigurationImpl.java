@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
+import org.kendar.events.RestartAllEvent;
 import org.kendar.events.events.ConfigChangedEvent;
 import org.kendar.servers.BaseJsonConfig;
 import org.kendar.servers.JsonConfiguration;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +35,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
   private final ConcurrentHashMap<Class, String> mappingStringClasses = new ConcurrentHashMap<>();
   private final EventQueue eventQueue;
   private final Logger logger;
+  private String configurationPath;
 
   public JsonConfigurationImpl(EventQueue eventQueue, LoggerBuilder loggerBuilder) {
     logger = loggerBuilder.build(JsonConfiguration.class);
@@ -94,6 +97,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     return item.timestamp;
   }
 
+
   @SuppressWarnings("rawtypes")
   public void setConfiguration(Object data, Runnable runnable) {
     try {
@@ -133,6 +137,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
   }
 
   public void loadConfiguration(String fileName) throws Exception {
+    configurationPath = fileName;
     var filePath = Path.of(fileName);
     var fullConfig = Files.readString(filePath);
     var dirPath = filePath.toAbsolutePath().getParent();
@@ -216,5 +221,17 @@ public class JsonConfigurationImpl implements JsonConfiguration {
   static class ParsedConfig {
     private Object deserialized;
     private long timestamp;
+  }
+
+
+  @Override
+  public void setConfigurationAsString(String body) {
+    var filePath = Path.of(this.configurationPath);
+    try {
+      Files.writeString(filePath,body);
+      eventQueue.handle(new RestartAllEvent());
+    } catch (IOException e) {
+
+    }
   }
 }

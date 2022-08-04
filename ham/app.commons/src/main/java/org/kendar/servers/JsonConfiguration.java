@@ -15,4 +15,6 @@ package org.kendar.servers;
   String getValue(String varName);
 
   long getConfigurationTimestamp(Class aClass);
+
+    void setConfigurationAsString(String body);
 }
