@@ -85,6 +85,11 @@ public class JsonConfigurationImpl implements JsonConfiguration {
         return item.timestamp;
     }
 
+    @Override
+    public void setConfigurationAsString(String body) {
+
+    }
+
     @SuppressWarnings("rawtypes")
     public void setConfiguration(Object data, Runnable runnable) {
         try {

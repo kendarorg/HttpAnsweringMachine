@@ -33,6 +33,7 @@ public class SSLConfig extends BaseJsonConfig<SSLConfig> {
     @Override
     public SSLConfig copy() {
         var result = new SSLConfig();
+        result.setId(this.getId());
         result.cname = this.cname;
         result.domains = new ArrayList<>();
         List<SSLDomain> sslDomains = this.domains;

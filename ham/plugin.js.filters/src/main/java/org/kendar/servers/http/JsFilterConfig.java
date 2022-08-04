@@ -9,6 +9,7 @@ public class JsFilterConfig extends BaseJsonConfig<JsFilterConfig> {
 
   @Override public JsFilterConfig copy() {
     var result = new JsFilterConfig();
+    result.setId(this.getId());
     result.path = this.path;
     return result;
   }
