@@ -47,7 +47,7 @@ public class ${test.name} {
                         .withBody(ClassPathFileReader.readText("/it/${test.name}/response${response.id}.json"))
                 )
         )
-        <#response>
+        </#list>
     }
 
     @Test
@@ -59,16 +59,16 @@ public class ${test.name} {
             <#if request.method=="post" || request.method=="put" >
             .contentType(${request.contentType})
             .body(ClassPathFileReader.readText("/it/${test.name}/request${request.id}.json"))
-            <#if>
+            </#if>
             .${request.method}("/${request.path}")
             .andReturn()
 
         <#if response.isTextResponse >
         val expectedResponse${request.id} = ClassPathFileReader.readText("/it/${test.name}/response${request.id}.json")
         assertEquals(expectedResponse${request.id},response${request.id}.asString())
-        <#if>
+        </#if>
             //RESP_${request.id}.START_EXTRA
             //RESP_${request.id}.END_EXTRA
-        <#list>
+        </#list>
     }
 }
