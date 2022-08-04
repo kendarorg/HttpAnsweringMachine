@@ -18,7 +18,7 @@ public class NewFreeMakerTest {
         cfg.setClassForTemplateLoading(FreeMakerTest.class, "/");
         cfg.setDefaultEncoding("UTF-8");
 
-        Template template = cfg.getTemplate("test.ftl");
+        Template template = cfg.getTemplate("wiremockkotlinacceptance.ftl");
         Map<String, Object> templateData = new HashMap<>();
 
         //TODO: templateData.put("cars", cars);

@@ -1,4 +1,4 @@
-package ${test.package}
+package ${test.packageName}
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension
@@ -43,7 +43,7 @@ public class ${test.name} {
                 .willReturn(
                     aResponse()
                         .withStatus(${response.status})
-                        .withHeader("Content-Type", "${response.getHeader("Content-Type")}")
+                        .withHeader("Content-Type", "${response.contentType}")
                         .withBody(ClassPathFileReader.readText("/it/${test.name}/response${response.id}.json"))
                 )
         )
@@ -57,14 +57,14 @@ public class ${test.name} {
             .baseUri("http://localhost:$port/${host}")
             .log().all()
             <#if request.method=="post" || request.method=="put" >
-            .contentType(${request.getHeader("Content-Type")})
+            .contentType(${request.contentType})
             .body(ClassPathFileReader.readText("/it/${test.name}/request${request.id}.json"))
             <#if>
             .${request.method}("/${request.path}")
             .andReturn()
 
-        val expectedResponse${request.id} = ClassPathFileReader.readText("/it/${test.name}/response${request.id}.json")
         <#if response.isTextResponse >
+        val expectedResponse${request.id} = ClassPathFileReader.readText("/it/${test.name}/response${request.id}.json")
         assertEquals(expectedResponse${request.id},response${request.id}.asString())
         <#if>
             //RESP_${request.id}.START_EXTRA
