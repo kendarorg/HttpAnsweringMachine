@@ -35,6 +35,7 @@ public class GlobalConfig extends BaseJsonConfig<GlobalConfig> {
   @Override
   public GlobalConfig copy() {
     var result = new GlobalConfig();
+    result.setId(this.getId());
     result.localAddress = this.localAddress;
     result.logging = this.logging.copy();
     result.filters = new ConcurrentHashMap<>();

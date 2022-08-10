@@ -48,6 +48,7 @@ public abstract class WebServerConfig extends BaseJsonConfig<WebServerConfig> {
     @Override
     public WebServerConfig copy() {
         var result = newInstance();
+        result.setId(this.getId());
         result.active = this.active;
         result.port = this.port;
         result.backlog = this.backlog;
