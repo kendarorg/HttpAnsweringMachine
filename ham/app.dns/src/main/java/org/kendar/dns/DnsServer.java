@@ -55,8 +55,6 @@ public class DnsServer {
 
   private void runTcp(){
     try (ServerSocket serverSocket = new ServerSocket(dnsPort)) {
-
-
       while (running.get()) {
         Socket clientSocket = serverSocket.accept();
         executorService.submit(()->{

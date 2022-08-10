@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
-import org.kendar.events.RestartAllEvent;
 import org.kendar.events.events.ConfigChangedEvent;
 import org.kendar.servers.BaseJsonConfig;
 import org.kendar.servers.JsonConfiguration;
@@ -96,7 +95,6 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     var item = deserializedConfigurations.get(sanitizedId);
     return item.timestamp;
   }
-
 
   @SuppressWarnings("rawtypes")
   public void setConfiguration(Object data, Runnable runnable) {
@@ -229,7 +227,6 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     var filePath = Path.of(this.configurationPath);
     try {
       Files.writeString(filePath,body);
-      eventQueue.handle(new RestartAllEvent());
     } catch (IOException e) {
 
     }

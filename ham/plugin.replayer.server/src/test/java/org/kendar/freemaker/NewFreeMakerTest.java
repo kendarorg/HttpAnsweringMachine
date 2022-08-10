@@ -6,6 +6,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.Version;
 import org.junit.jupiter.api.Test;
 import org.kendar.freemaker.ham.AcceptanceModel;
+import org.kendar.freemaker.ham.ReqResponse;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -28,7 +29,33 @@ public class NewFreeMakerTest {
         model.setName("TestName");
         model.setPackageName("org.kendar.test");
         model.setProfile("acceptance");
+
+        var request01 = new ReqResponse();
+        request01.setContentType("text/plain");
+        request01.setHost("www.google.com");
+        request01.setId("1");
+        request01.setPath("search");
+        request01.setStatus(200);
+        request01.setMethod("post");
+        request01.setTextResponse(true);
+        model.getRequests().add(request01);
+
+
+
+
+        var response = new ReqResponse();
+        response.setContentType("text/plain");
+        response.setHost("www.local.test");
+        response.setId("2");
+        response.setPath("googlesearch");
+        response.setStatus(200);
+        response.setMethod("post");
+        response.setTextResponse(true);
+        model.getResponses().add(response);
+
+
         templateData.put("test", model);
+
         try (StringWriter out = new StringWriter()) {
 
             template.process(templateData, out);

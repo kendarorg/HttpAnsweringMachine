@@ -87,7 +87,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
 
     @Override
     public void setConfigurationAsString(String body) {
-
+        //FIXME
     }
 
     @SuppressWarnings("rawtypes")

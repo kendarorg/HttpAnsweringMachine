@@ -25,10 +25,10 @@ public class AnsweringDerbyServer implements AnsweringServer {
   private boolean running = false;
 
   public AnsweringDerbyServer(
-      LoggerBuilder loggerBuilder,
-      List<DerbyApplication> applicationList,
-      FileResourcesUtils fileResourcesUtils,
-      JsonConfiguration configuration) {
+          LoggerBuilder loggerBuilder,
+          List<DerbyApplication> applicationList,
+          FileResourcesUtils fileResourcesUtils,
+          JsonConfiguration configuration) {
     logger = loggerBuilder.build(AnsweringDerbyServer.class);
     this.applicationList = applicationList;
     this.fileResourcesUtils = fileResourcesUtils;
@@ -69,11 +69,11 @@ public class AnsweringDerbyServer implements AnsweringServer {
     NetworkServerControl nsc;
     try {
       nsc =
-          new NetworkServerControl(
-              InetAddress.getByName("0.0.0.0"),
-              config.getPort(),
-              config.getUser(),
-              config.getPassword());
+              new NetworkServerControl(
+                      InetAddress.getByName("0.0.0.0"),
+                      config.getPort(),
+                      config.getUser(),
+                      config.getPassword());
       nsc.start(null);
     }catch (Exception ex){
       throw new IllegalStateException("Unable to start derby");

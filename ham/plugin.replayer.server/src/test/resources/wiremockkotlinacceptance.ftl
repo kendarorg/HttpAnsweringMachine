@@ -24,6 +24,18 @@ import java.util.*
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("${test.profile}")
 public class ${test.name} {
+
+    @Throws(IOException::class, URISyntaxException::class)
+    fun readText(resourceName: String): String {
+        return String(
+            readAllBytes(
+                get(
+                    ClassPathFileReader::class.java
+                        .getResource(resourceName)!!.toURI()
+                )
+            ), StandardCharsets.UTF_8
+        )
+    }
     @LocalServerPort
     var port = 0
 
@@ -44,7 +56,7 @@ public class ${test.name} {
                     aResponse()
                         .withStatus(${response.status})
                         .withHeader("Content-Type", "${response.contentType}")
-                        .withBody(ClassPathFileReader.readText("/it/${test.name}/response${response.id}.json"))
+                        .withBody(readText("/it/${test.name}/response${response.id}.json"))
                 )
         )
         </#list>
@@ -54,17 +66,17 @@ public class ${test.name} {
     fun happy_path() {
         <#list test.requests as request>
         val response${request.id} = RestAssured.given()
-            .baseUri("http://localhost:$port/${host}")
+            .baseUri("http://localhost:$port/${request.host}")
             .log().all()
             <#if request.method=="post" || request.method=="put" >
             .contentType(${request.contentType})
-            .body(ClassPathFileReader.readText("/it/${test.name}/request${request.id}.json"))
+            .body(readText("/it/${test.name}/request${request.id}.json"))
             </#if>
             .${request.method}("/${request.path}")
             .andReturn()
 
-        <#if response.isTextResponse >
-        val expectedResponse${request.id} = ClassPathFileReader.readText("/it/${test.name}/response${request.id}.json")
+        <#if request.textResponse >
+        val expectedResponse${request.id} = readText("/it/${test.name}/response${request.id}.json")
         assertEquals(expectedResponse${request.id},response${request.id}.asString())
         </#if>
             //RESP_${request.id}.START_EXTRA
