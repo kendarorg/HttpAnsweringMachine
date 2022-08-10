@@ -629,7 +629,7 @@ public class OidcController implements FilteringClass {
     final String redirect_uri;
     final User user;
     final String iss;
-    final String scope;
+    String scope;
     final String nonce;
 
     public CodeInfo(

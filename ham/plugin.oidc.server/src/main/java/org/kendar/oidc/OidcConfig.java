@@ -9,6 +9,7 @@ public class OidcConfig extends BaseJsonConfig<OidcConfig> {
 
   @Override public OidcConfig copy() {
     var result = new OidcConfig();
+    result.setId(this.getId());
     result.tokenExpiration = this.tokenExpiration;
     return result;
   }

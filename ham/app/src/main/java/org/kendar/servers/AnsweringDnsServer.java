@@ -18,10 +18,10 @@ public class AnsweringDnsServer implements AnsweringServer {
   private boolean running = false;
 
   public AnsweringDnsServer(
-      LoggerBuilder loggerBuilder,
-      DnsServer dnsServer,
-      JsonConfiguration configuration,
-      PluginsInitializer pluginsInitializer) {
+          LoggerBuilder loggerBuilder,
+          DnsServer dnsServer,
+          JsonConfiguration configuration,
+          PluginsInitializer pluginsInitializer) {
     this.logger = loggerBuilder.build(AnsweringDnsServer.class);
     this.dnsServer = dnsServer;
     this.configuration = configuration;

@@ -64,6 +64,7 @@ public class DnsConfig extends BaseJsonConfig<DnsConfig> implements SpecialJsonC
     @Override public DnsConfig copy() {
         var result = new DnsConfig();
         result.active =this.active;
+        result.setId(this.getId());
         result.blocked = new ArrayList<>( this.blocked);
         result.port = this.port;
         result.forceLocalAddress = this.forceLocalAddress;

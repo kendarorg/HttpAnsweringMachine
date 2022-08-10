@@ -11,6 +11,7 @@ public class Socks5Config extends BaseJsonConfig<Socks5Config> {
 
   @Override public Socks5Config copy() {
     var result = new Socks5Config();
+    result.setId(this.getId());
     result.setPort(this.getPort());
     result.setActive(this.active);
     result.setHttpProxyPort(this.httpProxyPort);
