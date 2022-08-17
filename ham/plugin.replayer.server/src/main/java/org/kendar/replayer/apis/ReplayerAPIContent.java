@@ -60,8 +60,7 @@ public class ReplayerAPIContent implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
-      method = "GET",
-      id = "3004daa6-277f-11ec-9621-0242ac1afe002")
+      method = "GET")
   @HamDoc(description = "Retrieve the content of a request/response line",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse",
           example = "request"
@@ -190,8 +189,7 @@ public class ReplayerAPIContent implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
-      method = "DELETE",
-      id = "3005daa6-277f-11ec-9621-0242ac1afe002")
+      method = "DELETE")
   @HamDoc(description = "Remove the content of a line",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse",
                   example = "request"
@@ -228,8 +226,7 @@ public class ReplayerAPIContent implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}/{requestOrResponse}",
-      method = "POST",
-      id = "3006daa6-277f-11ec-9621-0242ac1afe002")
+      method = "POST")
   @HamDoc(description = "Sets the content of a line",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id"),@PathParameter(key="line"),@PathParameter(key="requestOrResponse",
                   example = "request"

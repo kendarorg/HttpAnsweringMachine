@@ -63,8 +63,7 @@ public class ValidatorAPI implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/utils/schemavalidator/json",
-            method = "POST",
-            id = "1000a4b4-29tad-1jsc-9621-0242ac130002")
+            method = "POST")
     @HamDoc(
             description = "Validate JSON against schema or example",
             requests = @HamRequest(
@@ -105,8 +104,7 @@ public class ValidatorAPI implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/utils/schemavalidator/xml",
-            method = "POST",
-            id = "1000a4b4-29tad-1jsc-9621-0ww2ac130002")
+            method = "POST")
     @HamDoc(
             description = "Validate XML against schema or example",
             requests = @HamRequest(

@@ -46,7 +46,8 @@ public abstract class StaticWebFilter implements FilteringClass {
   }
 
   @SuppressWarnings("RedundantIfStatement")
-  @HttpMethodFilter(phase = HttpFilterType.STATIC, pathAddress = "*", method = "GET", id = "null")
+  @HttpMethodFilter(phase = HttpFilterType.STATIC,
+          pathAddress = "*", method = "GET")
   public boolean handle(Request request, Response response) {
     var realPath = getPath();
     if (isResource(getPath())) {

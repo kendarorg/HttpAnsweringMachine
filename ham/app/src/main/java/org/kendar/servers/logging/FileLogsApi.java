@@ -61,8 +61,7 @@ public class FileLogsApi implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/log/files",
-            method = "GET",
-            id = "1000aab4-2987-a1ef-5621-0242ac130002")
+            method = "GET")
     @HamDoc(
             description = "List all log files",
             responses = @HamResponse(
@@ -102,8 +101,7 @@ public class FileLogsApi implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/log/files/{id}",
-            method = "GET",
-            id = "1000aab489a6s7-a1ef-5621-0242ac130002")
+            method = "GET")
     @HamDoc(
             description = "Retrieve single log file",
             path = @PathParameter(key="id"),

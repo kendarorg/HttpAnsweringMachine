@@ -268,4 +268,17 @@ public class Request {
         if(original!=null) return original;
         return this;
     }
+
+    public String findCookie(String value){
+        var cookies = this.getHeader("Cookie");
+        if(cookies==null) return null;
+        var splittedCookies = cookies.split(";");
+        for(var cookie:splittedCookies){
+            var cookieData = cookie.trim().split("=");
+            if(value.equalsIgnoreCase(cookieData[0].trim())){
+                return cookieData[1].trim();
+            }
+        }
+        return null;
+    }
 }

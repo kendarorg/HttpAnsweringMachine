@@ -54,13 +54,13 @@ public class FilterDescriptor {
       HamDoc hamDoc) {
     this.doc = hamDoc;
     this.loader = loader;
-    this.id = methodFilter.id();
+    this.id = IdBuilder.buildId(typeFilter,methodFilter,filterClass);
     this.description = methodFilter.description();
     this.callback = callback;
     this.filterClass = filterClass;
     this.jsonConfiguration = jsonConfiguration;
     try {
-      this.id = methodFilter.id();
+      this.id = IdBuilder.buildId(typeFilter,methodFilter,filterClass);
     } catch (IncompleteAnnotationException ex) {
       throw new RuntimeException("Missing id", ex);
     }

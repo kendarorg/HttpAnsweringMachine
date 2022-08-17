@@ -36,8 +36,7 @@ public class DnsLookupApi implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/dns/lookup/{id}",
-            method = "GET",
-            id = "1005a4b91277d-11ec-9621-0242ac130002")
+            method = "GET")
     @HamDoc(
             tags = {"base/utils/lookup"},
             description = "Lookup DNSs via http",
@@ -65,8 +64,7 @@ public class DnsLookupApi implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/dns/list",
-            method = "GET",
-            id = "1005a4b91277d-11ec-9621-0fdns130002")
+            method = "GET")
     @HamDoc(
             tags = {"base/utils/lookup"},
             description = "List all resolved dnss",
@@ -89,8 +87,7 @@ public class DnsLookupApi implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/dns/list",
-            method = "DELETE",
-            id = "1005a4b919877d-11ec-9621-0fdns130002")
+            method = "DELETE")
     @HamDoc(
             tags = {"base/utils/lookup"},description = "Force the dns resolved reloading")
     public void clear(Request req, Response res) throws Exception {

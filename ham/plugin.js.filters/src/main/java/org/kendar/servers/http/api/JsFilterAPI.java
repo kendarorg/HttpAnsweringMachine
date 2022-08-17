@@ -60,8 +60,7 @@ public class JsFilterAPI implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/jsfilter/filters",
-      method = "GET",
-      id = "1000a4b4-297id-11ec-9yy1-0242ac130002")
+      method = "GET")
   @HamDoc(tags = {"plugin/js"},
           description = "List all js filters",
           responses = @HamResponse(
@@ -99,8 +98,7 @@ public class JsFilterAPI implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}",
-          method = "GET",
-          id = "1000a4b4-297id-11ec-9777-0242ac130002")
+          method = "GET")
   @HamDoc(tags = {"plugin/js"},
           description = "Get Single filter",
           path = @PathParameter(key = "filtername"),
@@ -128,8 +126,7 @@ public class JsFilterAPI implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}",
-          method = "POST",
-          id = "1000a4b4-297id-11rr-9777-0242ac130002")
+          method = "POST")
 
   @HamDoc(tags = {"plugin/js"},
           description = "Update Single filter",
@@ -164,8 +161,7 @@ public class JsFilterAPI implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}",
-          method = "DELETE",
-          id = "1000a4b4-dleete-11rr-9777-0242ac130002")
+          method = "DELETE")
   @HamDoc(tags = {"plugin/js"},
           description = "Delete Single filter",
           path = @PathParameter(key = "filtername"))
@@ -194,8 +190,7 @@ public class JsFilterAPI implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/jsfilter/filters",
-          method = "POST",
-          id = "1000a4b4-uoploadid-11rr-9777-0242ac130002")
+          method = "POST")
   @HamDoc(tags = {"plugin/js"},
           description = "Create Single filter",
           requests = @HamRequest(
@@ -258,8 +253,7 @@ public class JsFilterAPI implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}/{file}",
-          method = "GET",
-          id = "1000a4b4-47id-11ec-9777-0242ac130002")
+          method = "GET")
   @HamDoc(tags = {"plugin/js"},
           description = "Retrieve the content of a filter associated file",
           path = {@PathParameter(key = "filtername"),
@@ -296,8 +290,7 @@ public class JsFilterAPI implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/jsfilter/filters/{filtername}/{file}",
-          method = "POST",
-          id = "10iyh4b4-47id-11ec-9777-0242ac130002")
+          method = "POST")
 
   @HamDoc(tags = {"plugin/js"},
           description = "Set the content of a filter associated file",

@@ -47,7 +47,7 @@ public class OidcController implements FilteringClass {
   public static final int STATUS_FOUND = 302;
   public static final int OK = 200;
   public static final String METADATA_ENDPOINT =
-      "/api/plugins/oidc/.well-known/openid-configuration";
+          "/api/plugins/oidc/.well-known/openid-configuration";
   public static final String AUTHORIZATION_ENDPOINT = "/api/plugins/oidc/authorize";
   public static final String TOKEN_ENDPOINT = "/api/plugins/oidc/token";
   public static final String USERINFO_ENDPOINT = "/api/plugins/oidc/userinfo";
@@ -127,13 +127,12 @@ public class OidcController implements FilteringClass {
 
   /** Provides authorization endpoint. And check the credentials */
   @HttpMethodFilter(
-      phase = HttpFilterType.API,
-      pathAddress = AUTHORIZATION_ENDPOINT,
-      method = "GET",
-      id = "2004daa6-277f-11ec-9621-0242ac1afe002")
+          phase = HttpFilterType.API,
+          pathAddress = AUTHORIZATION_ENDPOINT,
+          method = "GET")
   @HamDoc(
           description = "In OpenID Connect the authorization endpoint handles " +
-          "authentication and authorization of a user.",
+                  "authentication and authorization of a user.",
           tags = {"plugin/oidc"},
           query = {
                   @QueryString(key = "scope",description = "openid scope value",example = "profile"),
@@ -159,7 +158,7 @@ public class OidcController implements FilteringClass {
           )
   )
   public void authorize(Request req, Response res)
-      throws JOSEException, NoSuchAlgorithmException {
+          throws JOSEException, NoSuchAlgorithmException {
     var client_id = req.getRequestParameter("client_id");
     var redirect_uri = req.getRequestParameter("redirect_uri");
     var response_type = req.getRequestParameter("response_type");
@@ -173,14 +172,14 @@ public class OidcController implements FilteringClass {
 
     var returnCode = followRedirect?STATUS_FOUND:OK;
     log.info(
-        "called "
-            + AUTHORIZATION_ENDPOINT
-            + " from {}, scope={} response_type={} client_id={} redirect_uri={}",
-        req.getRemoteHost(),
-        scope,
-        response_type,
-        client_id,
-        redirect_uri);
+            "called "
+                    + AUTHORIZATION_ENDPOINT
+                    + " from {}, scope={} response_type={} client_id={} redirect_uri={}",
+            req.getRemoteHost(),
+            scope,
+            response_type,
+            client_id,
+            redirect_uri);
     // KENDAR REMOVED AUTH NEED
     /*if (auth == null) {
         log.info("user and password not provided");
@@ -196,41 +195,41 @@ public class OidcController implements FilteringClass {
         log.info("password for user {} is correct", login);
         Set<String> responseType = setFromSpaceSeparatedString(response_type);
         String iss =
-            "https://"
-                + serverAddress
-                + "/api/plugins/oidc/"; // uriBuilder.replacePath("/").build().encode().toUriString();
+                "https://"
+                        + serverAddress
+                        + "/api/plugins/oidc/"; // uriBuilder.replacePath("/").build().encode().toUriString();
         if (responseType.contains("token")) {
           // implicit flow
           log.info("using implicit flow");
           String access_token = createAccessToken(iss, user, client_id, scope);
           String id_token = createIdToken(iss, user, client_id, nonce, access_token);
           String url =
-              redirect_uri
-                  + "#"
-                  + "access_token="
-                  + urlencode(access_token)
-                  + "&token_type=Bearer"
-                  + "&state="
-                  + urlencode(state)
-                  + "&expires_in="
-                  + tokenExpirationSeconds
-                  + "&id_token="
-                  + urlencode(id_token);
+                  redirect_uri
+                          + "#"
+                          + "access_token="
+                          + urlencode(access_token)
+                          + "&token_type=Bearer"
+                          + "&state="
+                          + urlencode(state)
+                          + "&expires_in="
+                          + tokenExpirationSeconds
+                          + "&id_token="
+                          + urlencode(id_token);
           res.setStatusCode(returnCode);
           res.addHeader("Location", url);
         } else if (responseType.contains("code")) {
           // authorization code flow
           log.info("using authorization code flow {}", code_challenge != null ? "with PKCE" : "");
           String code =
-              createAuthorizationCode(
-                  code_challenge,
-                  code_challenge_method,
-                  client_id,
-                  redirect_uri,
-                  user,
-                  iss,
-                  scope,
-                  nonce);
+                  createAuthorizationCode(
+                          code_challenge,
+                          code_challenge_method,
+                          client_id,
+                          redirect_uri,
+                          user,
+                          iss,
+                          scope,
+                          nonce);
           String url = redirect_uri + "?" + "code=" + code + "&state=" + urlencode(state);
           res.setStatusCode(returnCode);
           res.addHeader("Location", url);
@@ -251,16 +250,15 @@ public class OidcController implements FilteringClass {
    * <a href="https://openid.net/specs/openid-connect-discovery-1_0.html">https://openid.net/specs/openid-connect-discovery-1_0.html</a>
    */
   @HttpMethodFilter(
-      phase = HttpFilterType.API,
-      pathAddress = METADATA_ENDPOINT,
-      method = "GET",
-      id = "1facdaa6-277f-11ec-9621-0242ac1afe002")
+          phase = HttpFilterType.API,
+          pathAddress = METADATA_ENDPOINT,
+          method = "GET")
   @HamDoc(description = "Metadata endpoint",
           tags = {"plugin/oidc"},
           responses = @HamResponse(
                   body = String.class,
                   examples = @Example(
-                    example = ExampleBodies.METADATA_ENDPOINT
+                          example = ExampleBodies.METADATA_ENDPOINT
                   )
           ))
   public void metadata(/*UriComponentsBuilder uriBuilder,*/ Request req, Response res) {
@@ -272,8 +270,8 @@ public class OidcController implements FilteringClass {
     m.put("issuer", urlPrefix + "/"); // REQUIRED
     m.put("authorization_endpoint", urlPrefix + AUTHORIZATION_ENDPOINT); // REQUIRED
     m.put(
-        "token_endpoint",
-        urlPrefix + TOKEN_ENDPOINT); // REQUIRED unless only the Implicit Flow is used
+            "token_endpoint",
+            urlPrefix + TOKEN_ENDPOINT); // REQUIRED unless only the Implicit Flow is used
     m.put("userinfo_endpoint", urlPrefix + USERINFO_ENDPOINT); // RECOMMENDED
     m.put("jwks_uri", urlPrefix + JWKS_ENDPOINT); // REQUIRED
     m.put("introspection_endpoint", urlPrefix + INTROSPECTION_ENDPOINT);
@@ -283,21 +281,20 @@ public class OidcController implements FilteringClass {
     m.put("subject_types_supported", Collections.singletonList("public")); // REQUIRED
     m.put("id_token_signing_alg_values_supported", Arrays.asList("RS256", "none")); // REQUIRED
     m.put(
-        "claims_supported",
-        Arrays.asList(
-            "sub", "iss", "name", "family_name", "given_name", "preferred_username", "email"));
+            "claims_supported",
+            Arrays.asList(
+                    "sub", "iss", "name", "family_name", "given_name", "preferred_username", "email"));
     m.put(
-        "code_challenge_methods_supported",
-        Arrays.asList("plain", "S256")); // PKCE support advertised
+            "code_challenge_methods_supported",
+            Arrays.asList("plain", "S256")); // PKCE support advertised
     setJsonResponse(200, m, res);
   }
 
   /** Provides JSON Web Key Set containing the public part of the key used to sign ID tokens. */
   @HttpMethodFilter(
-      phase = HttpFilterType.API,
-      pathAddress = JWKS_ENDPOINT,
-      method = "GET",
-      id = "2000daa6-277f-11ec-9621-0242ac1afe002")
+          phase = HttpFilterType.API,
+          pathAddress = JWKS_ENDPOINT,
+          method = "GET")
   @HamDoc(description = "Jwks endpoint",
           tags = {"plugin/oidc"},
           responses = @HamResponse(
@@ -314,10 +311,9 @@ public class OidcController implements FilteringClass {
 
   /** Provides claims about a user. Requires a valid access token. */
   @HttpMethodFilter(
-      phase = HttpFilterType.API,
-      pathAddress = USERINFO_ENDPOINT,
-      method = "GET",
-      id = "2001daa6-277f-11ec-9621-0242ac1afe002")
+          phase = HttpFilterType.API,
+          pathAddress = USERINFO_ENDPOINT,
+          method = "GET")
   @HamDoc(description = "Get user info",
           tags = {"plugin/oidc"},
           security = {
@@ -325,7 +321,7 @@ public class OidcController implements FilteringClass {
                   @HamSecurity(name = "OidcBasic")
           },
           header = {
-             @Header(key="access_token",value = "token from authorize-token")
+                  @Header(key="access_token",value = "token from authorize-token")
           },
           responses = @HamResponse(
                   body = String.class,
@@ -375,18 +371,17 @@ public class OidcController implements FilteringClass {
 
   /** Provides information about a supplied access token. */
   @HttpMethodFilter(
-      phase = HttpFilterType.API,
-      pathAddress = INTROSPECTION_ENDPOINT,
-      method = "POST",
-      id = "2002daa6-277f-11ec-9621-0242ac1afe002")
+          phase = HttpFilterType.API,
+          pathAddress = INTROSPECTION_ENDPOINT,
+          method = "POST")
   @HamDoc(description = "Infos about an access token",tags = {"plugin/oidc"},
-    header = @Header(key = "token",value = "token from authorize-token"),
-    responses = @HamResponse(
-            body = String.class,
-            examples = @Example(
-                    example = ExampleBodies.INTROSPECTION_ENDPOINT
-            )
-    ))
+          header = @Header(key = "token",value = "token from authorize-token"),
+          responses = @HamResponse(
+                  body = String.class,
+                  examples = @Example(
+                          example = ExampleBodies.INTROSPECTION_ENDPOINT
+                  )
+          ))
   public void introspection(Request req, Response res) {
     var auth = req.getRequestParameter("Authorization");
     var token = req.getRequestParameter("token");
@@ -398,9 +393,9 @@ public class OidcController implements FilteringClass {
       m.put("active", false);
     } else {
       log.info(
-          "found token for user {}, releasing scopes: {}",
-          accessTokenInfo.user.getSub(),
-          accessTokenInfo.scope);
+              "found token for user {}, releasing scopes: {}",
+              accessTokenInfo.user.getSub(),
+              accessTokenInfo.scope);
       // see https://tools.ietf.org/html/rfc7662#section-2.2 for all claims
       m.put("active", true);
       m.put("scope", accessTokenInfo.scope);
@@ -416,21 +411,20 @@ public class OidcController implements FilteringClass {
 
   /** Provides token endpoint. */
   @HttpMethodFilter(
-      phase = HttpFilterType.API,
-      pathAddress = TOKEN_ENDPOINT,
-      method = "POST",
-      id = "2003daa6-277f-11ec-9621-0242ac1afe002")
+          phase = HttpFilterType.API,
+          pathAddress = TOKEN_ENDPOINT,
+          method = "POST")
   @HamDoc(description = "Retrieve the token for userinfo",tags = {"plugin/oidc"},
-    query = {@QueryString(key = "grant_type",example = "authorization_code"),
-            @QueryString(key = "code",example = "code from authorize"),
-            @QueryString(key = "code_verifier",example = "random_challenge"),
-            @QueryString(key = "redirect_uri",example="http://localhost/api/remote/mirror",description = "Redirection URI to which the response will be sent. This value must exactly match one of the redirection URI values for the registered client at the OP."),
-            @QueryString(key = "code_challenge_method",example = "plain",description = "code_challenge_method be it plain or S256"),
-            },
-    responses = @HamResponse(body = String.class,examples =
-    @Example(
-            example = ExampleBodies.TOKEN_ENDPOINT
-    )))
+          query = {@QueryString(key = "grant_type",example = "authorization_code"),
+                  @QueryString(key = "code",example = "code from authorize"),
+                  @QueryString(key = "code_verifier",example = "random_challenge"),
+                  @QueryString(key = "redirect_uri",example="http://localhost/api/remote/mirror",description = "Redirection URI to which the response will be sent. This value must exactly match one of the redirection URI values for the registered client at the OP."),
+                  @QueryString(key = "code_challenge_method",example = "plain",description = "code_challenge_method be it plain or S256"),
+          },
+          responses = @HamResponse(body = String.class,examples =
+          @Example(
+                  example = ExampleBodies.TOKEN_ENDPOINT
+          )))
   public void token(Request req, Response res) throws JOSEException, NoSuchAlgorithmException {
     var grant_type = req.getRequestParameter("grant_type");
     var code = req.getRequestParameter("code");
@@ -439,12 +433,12 @@ public class OidcController implements FilteringClass {
     var auth = req.getRequestParameter("Authorization");
     var code_verifier = req.getRequestParameter("code_verifier");
     log.info(
-        "called " + TOKEN_ENDPOINT + " from {}, grant_type={} code={} redirect_uri={} client_id={}",
-        req.getRemoteHost(),
-        grant_type,
-        code,
-        redirect_uri,
-        client_id);
+            "called " + TOKEN_ENDPOINT + " from {}, grant_type={} code={} redirect_uri={} client_id={}",
+            req.getRemoteHost(),
+            grant_type,
+            code,
+            redirect_uri,
+            client_id);
     if (!"authorization_code".equalsIgnoreCase(grant_type)) {
       jsonError(res, "unsupported_grant_type", "grant_type is not authorization_code");
       return;
@@ -471,10 +465,10 @@ public class OidcController implements FilteringClass {
         String hashedVerifier = Base64URL.encode(s256.digest()).toString();
         if (!codeInfo.codeChallenge.equals(hashedVerifier)) {
           log.warn(
-              "code_verifier {} hashed using S256 to {} does not match code_challenge {}",
-              code_verifier,
-              hashedVerifier,
-              codeInfo.codeChallenge);
+                  "code_verifier {} hashed using S256 to {} does not match code_challenge {}",
+                  code_verifier,
+                  hashedVerifier,
+                  codeInfo.codeChallenge);
           jsonError(res, "invalid_request", "code_verifier not correct");
           return;
         }
@@ -482,9 +476,9 @@ public class OidcController implements FilteringClass {
       } else {
         if (!codeInfo.codeChallenge.equals(code_verifier)) {
           log.warn(
-              "code_verifier {} does not match code_challenge {}",
-              code_verifier,
-              codeInfo.codeChallenge);
+                  "code_verifier {} does not match code_challenge {}",
+                  code_verifier,
+                  codeInfo.codeChallenge);
           jsonError(res, "invalid_request", "code_verifier not correct");
           return;
         }
@@ -493,74 +487,74 @@ public class OidcController implements FilteringClass {
     // return access token
     Map<String, String> map = new LinkedHashMap<>();
     String accessToken =
-        createAccessToken(codeInfo.iss, codeInfo.user, codeInfo.client_id, codeInfo.scope);
+            createAccessToken(codeInfo.iss, codeInfo.user, codeInfo.client_id, codeInfo.scope);
     map.put("access_token", accessToken);
     map.put("token_type", "Bearer");
     map.put("expires_in", String.valueOf(tokenExpirationSeconds));
     map.put("scope", codeInfo.scope);
     map.put(
-        "id_token",
-        createIdToken(
-            codeInfo.iss, codeInfo.user, codeInfo.client_id, codeInfo.nonce, accessToken));
+            "id_token",
+            createIdToken(
+                    codeInfo.iss, codeInfo.user, codeInfo.client_id, codeInfo.nonce, accessToken));
 
     setJsonResponse(200, map, res);
   }
 
   private String createAuthorizationCode(
-      String code_challenge,
-      String code_challenge_method,
-      String client_id,
-      String redirect_uri,
-      User user,
-      String iss,
-      String scope,
-      String nonce) {
+          String code_challenge,
+          String code_challenge_method,
+          String client_id,
+          String redirect_uri,
+          User user,
+          String iss,
+          String scope,
+          String nonce) {
     byte[] bytes = new byte[16];
     random.nextBytes(bytes);
     String code = Base64URL.encode(bytes).toString();
     log.info("issuing code={}", code);
     authorizationCodes.put(
-        code,
-        new CodeInfo(
-            code_challenge,
-            code_challenge_method,
             code,
-            client_id,
-            redirect_uri,
-            user,
-            iss,
-            scope,
-            nonce));
+            new CodeInfo(
+                    code_challenge,
+                    code_challenge_method,
+                    code,
+                    client_id,
+                    redirect_uri,
+                    user,
+                    iss,
+                    scope,
+                    nonce));
     return code;
   }
 
   private String createAccessToken(String iss, User user, String client_id, String scope)
-      throws JOSEException {
+          throws JOSEException {
     // create JWT claims
     Date expiration = new Date(System.currentTimeMillis() + tokenExpirationSeconds * 1000L);
     JWTClaimsSet jwtClaimsSet =
-        new JWTClaimsSet.Builder()
-            .subject(user.getSub())
-            .issuer(iss)
-            .audience(client_id)
-            .issueTime(new Date())
-            .expirationTime(expiration)
-            .jwtID(UUID.randomUUID().toString())
-            .claim("scope", scope)
-            .build();
+            new JWTClaimsSet.Builder()
+                    .subject(user.getSub())
+                    .issuer(iss)
+                    .audience(client_id)
+                    .issueTime(new Date())
+                    .expirationTime(expiration)
+                    .jwtID(UUID.randomUUID().toString())
+                    .claim("scope", scope)
+                    .build();
     // create JWT token
     SignedJWT jwt = new SignedJWT(jwsHeader, jwtClaimsSet);
     // sign the JWT token
     jwt.sign(signer);
     String access_token = jwt.serialize();
     accessTokens.put(
-        access_token, new AccessTokenInfo(user, access_token, expiration, scope, client_id, iss));
+            access_token, new AccessTokenInfo(user, access_token, expiration, scope, client_id, iss));
     return access_token;
   }
 
   private String createIdToken(
-      String iss, User user, String client_id, String nonce, String accessToken)
-      throws NoSuchAlgorithmException, JOSEException {
+          String iss, User user, String client_id, String nonce, String accessToken)
+          throws NoSuchAlgorithmException, JOSEException {
     // compute at_hash
     MessageDigest digest = MessageDigest.getInstance("SHA-256");
     digest.reset();
@@ -570,18 +564,18 @@ public class OidcController implements FilteringClass {
     Base64URL encodedHash = Base64URL.encode(hashBytesLeftHalf);
     // create JWT claims
     JWTClaimsSet jwtClaimsSet =
-        new JWTClaimsSet.Builder()
-            .subject(user.getSub())
-            .issuer(iss)
-            .audience(client_id)
-            .issueTime(new Date())
-            .expirationTime(new Date(System.currentTimeMillis() + tokenExpirationSeconds * 1000L))
-            .jwtID(UUID.randomUUID().toString())
-            .claim("nonce", nonce)
-            // KENDAR ADDED
-            .claim("sub", UUID.randomUUID().toString())
-            .claim("at_hash", encodedHash)
-            .build();
+            new JWTClaimsSet.Builder()
+                    .subject(user.getSub())
+                    .issuer(iss)
+                    .audience(client_id)
+                    .issueTime(new Date())
+                    .expirationTime(new Date(System.currentTimeMillis() + tokenExpirationSeconds * 1000L))
+                    .jwtID(UUID.randomUUID().toString())
+                    .claim("nonce", nonce)
+                    // KENDAR ADDED
+                    .claim("sub", UUID.randomUUID().toString())
+                    .claim("at_hash", encodedHash)
+                    .build();
     // create JWT token
     SignedJWT myToken = new SignedJWT(jwsHeader, jwtClaimsSet);
     // sign the JWT token
@@ -611,7 +605,7 @@ public class OidcController implements FilteringClass {
     final String iss;
 
     public AccessTokenInfo(
-        User user, String accessToken, Date expiration, String scope, String clientId, String iss) {
+            User user, String accessToken, Date expiration, String scope, String clientId, String iss) {
       this.user = user;
       this.accessToken = accessToken;
       this.expiration = expiration;
@@ -633,15 +627,15 @@ public class OidcController implements FilteringClass {
     final String nonce;
 
     public CodeInfo(
-        String codeChallenge,
-        String codeChallengeMethod,
-        String code,
-        String client_id,
-        String redirect_uri,
-        User user,
-        String iss,
-        String scope,
-        String nonce) {
+            String codeChallenge,
+            String codeChallengeMethod,
+            String code,
+            String client_id,
+            String redirect_uri,
+            User user,
+            String iss,
+            String scope,
+            String nonce) {
       this.codeChallenge = codeChallenge;
       this.codeChallengeMethod = codeChallengeMethod;
       this.code = code;

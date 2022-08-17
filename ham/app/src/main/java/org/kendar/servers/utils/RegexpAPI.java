@@ -39,8 +39,7 @@ public class RegexpAPI implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/utils/regexp",
-            method = "POST",
-            id = "1000a4b4-29tad-11ec-9621-0242ac130002")
+            method = "POST")
     @HamDoc(
             tags = {"base/utils"},
             description = "Test Java regexps",

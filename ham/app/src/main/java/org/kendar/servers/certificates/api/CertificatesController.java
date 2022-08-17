@@ -51,8 +51,7 @@ public class CertificatesController implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/certificates",
-      method = "GET",
-      id = "1012a4b4-277d-11ec-9621-0242ac130002")
+      method = "GET")
   @HamDoc(
           tags = {"base/certificates"},
           description = "Retrieve the list of certificates",
@@ -99,8 +98,7 @@ public class CertificatesController implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/certificates/{file}",
-      method = "GET",
-      id = "1014a4b4-277d-11ec-9621-0242ac130002")
+      method = "GET")
   @HamDoc(
           tags = {"base/certificates"},
           description = "Retrieve the certificate",
