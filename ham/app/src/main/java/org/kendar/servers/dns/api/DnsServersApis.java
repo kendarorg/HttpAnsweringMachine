@@ -48,8 +48,7 @@ public class DnsServersApis implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/dns/servers",
-      method = "GET",
-      id = "1002a4b4-277d-11ec-9621-0242ac130002")
+      method = "GET")
   @HamDoc(
           tags = {"base/dns"},
           description = "Retrieve all dns servers",
@@ -65,8 +64,7 @@ public class DnsServersApis implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/dns/servers/{id}",
-      method = "GET",
-      id = "1003a4b4-277d-11ec-9621-0242ac130002")
+      method = "GET")
   @HamDoc(
           tags = {"base/dns"},
           description = "Get Single dns server",
@@ -95,8 +93,7 @@ public class DnsServersApis implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/dns/servers/{id}",
-      method = "DELETE",
-      id = "1004a4b4-277d-11ec-9621-0242ac130002")
+      method = "DELETE")
   @HamDoc(
           tags = {"base/dns"},
           description = "Delete Single dns server",
@@ -124,8 +121,7 @@ public class DnsServersApis implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/dns/servers/{id}",
-      method = "PUT",
-      id = "1005a4b4-277d-11ec-9621-0242ac130002")
+      method = "PUT")
   @HamDoc(
           tags = {"base/dns"},
           description = "Modify custom dns server",
@@ -182,8 +178,7 @@ public class DnsServersApis implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/dns/servers",
-      method = "POST",
-      id = "1007a4b5-277d-11ec-9621-0242ac130002")
+      method = "POST")
   @HamDoc(
           tags = {"base/dns"},
           description = "Add custom dns server",

@@ -61,8 +61,7 @@ public class SSLController implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/ssl",
-      method = "GET",
-      id = "1008a4b4-277d-11ec-9621-0242ac130002")
+      method = "GET")
   @HamDoc(
           tags = {"base/ssl"},
           description = "Retrieve the list of ssl registrations",
@@ -80,8 +79,7 @@ public class SSLController implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/ssl/{id}",
-      method = "DELETE",
-      id = "1009a4b4-277d-11ec-9621-0242ac130002")
+      method = "DELETE")
   @HamDoc(
           tags = {"base/ssl"},
           description = "Delete ssl item",
@@ -107,8 +105,7 @@ public class SSLController implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/ssl",
-          method = "POST",
-          id = "1011a4b4-2ASD77d-11ec-9621-0242ac130002")
+          method = "POST")
   @HamDoc(
           tags = {"base/ssl"},
           description = "Add one/many certificate/s",
@@ -150,8 +147,7 @@ public class SSLController implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/sslgen",
-          method = "POST",
-          id = "1011a4b4-asdfD77d-11ec-9621-0242ac130002")
+          method = "POST")
   @HamDoc(
           tags = {"base/ssl"},
           description = "Generate SSL certificate for website",

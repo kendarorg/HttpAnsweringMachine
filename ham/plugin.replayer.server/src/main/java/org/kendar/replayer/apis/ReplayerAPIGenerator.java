@@ -62,8 +62,7 @@ public class ReplayerAPIGenerator implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/generator/{id}",
-            method = "GET",
-            id = "4001daa6-277f-11ec-9yy1-0242ac1afe002")
+            method = "GET")
     @HamDoc(description = "Generate request response source files with pom (NOT COMPLETE)",tags = {"plugin/replayer"},
             path = @PathParameter(key = "id"),
             responses = @HamResponse(

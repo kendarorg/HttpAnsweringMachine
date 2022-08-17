@@ -78,8 +78,7 @@ public class RequestResponseFileLogging implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.POST_RENDER,
       pathAddress = "*",
-      method = "*",
-      id = "1001a4b4-277d-11ec-9621-0242ac130002")
+      method = "*")
   public boolean doLog(Request serReq, Response serRes) {
     if (serReq.isStaticRequest() && !isDebugOrMore(staticLogger)) return false;
     if (!serReq.isStaticRequest() && !isDebugOrMore(dynamicLogger)) return false;

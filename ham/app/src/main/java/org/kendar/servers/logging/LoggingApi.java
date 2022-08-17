@@ -56,8 +56,7 @@ public class LoggingApi implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/log/logger",
-            method = "GET",
-            id = "1000aab4-277d-a1ef-5621-0242ac130002")
+            method = "GET")
     @HamDoc(
             description = "List currently active loggers",
             responses = @HamResponse(
@@ -86,8 +85,7 @@ public class LoggingApi implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/log/special",
-            method = "GET",
-            id = "1000aab4-277d-a1tf-5621-0242ac130002")
+            method = "GET")
     @HamDoc(
             description = "List all the special logging classes",
             responses = @HamResponse(
@@ -103,8 +101,7 @@ public class LoggingApi implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/log/logger/{id}",
-            method = "GET",
-            id = "1000a4b-277d-a1ef-5621-0242ac130002")
+            method = "GET")
     @HamDoc(description = "Retrieve the level of the specific logger",
             responses = @HamResponse(
                     body = String.class,
@@ -124,8 +121,7 @@ public class LoggingApi implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/log/logger/{id}",
-            method = "DELETE",
-            id = "10d0a4b4-277d-a1ef-5621-0242ac130002")
+            method = "DELETE")
     @HamDoc(description = "Set to OFF the specified logger",
             tags = {"base/logs"},
             path = @PathParameter(key = "id")
@@ -141,8 +137,7 @@ public class LoggingApi implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/log/logger/{id}",
-            method = "POST",
-            id = "10c0a4b4-277d-a1ef-5621-0242ac130002")
+            method = "POST")
     @HamDoc(description = "Set the level of the logger",
             responses = @HamResponse(
                     body = String.class,

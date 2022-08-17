@@ -78,8 +78,7 @@ public class ReplayerAPICrud implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording",
-      method = "GET",
-      id = "4000daa6-277f-11ec-9621-0242ac1afe002")
+      method = "GET")
   @HamDoc(description = "Retrieves the list of recordings",tags = {"plugin/replayer"},
     responses = @HamResponse(body = String[].class))
   public void listAllLocalRecordings(Request req, Response res) throws JsonProcessingException {
@@ -109,8 +108,7 @@ public class ReplayerAPICrud implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording/{id}",
-      method = "GET",
-      id = "4001daa6-277f-11ec-9621-0242ac1afe002")
+      method = "GET")
   @HamDoc(description = "Retrieve the content of a single recording",tags = {"plugin/replayer"},
           path = @PathParameter(key = "id"),
           responses = @HamResponse(body =ListAllRecordList.class)
@@ -133,8 +131,7 @@ public class ReplayerAPICrud implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording/{id}",
-      method = "DELETE",
-      id = "4002daa6-277f-11ec-9621-0242ac1afe002")
+      method = "DELETE")
   @HamDoc(description = "Delete a recording",tags = {"plugin/replayer"},
           path = @PathParameter(key = "id")
   )
@@ -150,8 +147,7 @@ public class ReplayerAPICrud implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording/{id}",
-      method = "PUT",
-      id = "4003daa6-277f-11ec-9621-0242ac1afe002")
+      method = "PUT")
   @HamDoc(description = "Modify an exesting recording",tags = {"plugin/replayer"},
           path = @PathParameter(key = "id"),
           requests = @HamRequest(body = ReplayerResult.class)
@@ -192,8 +188,7 @@ public class ReplayerAPICrud implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/replayer/recording/{id}/full",
-          method = "GET",
-          id = "4003daa6-277f-11ec-9621-full")
+          method = "GET")
   @HamDoc(description = "Alternative retrieval of recording",tags = {"plugin/replayer"},
           path = @PathParameter(key = "id"),
           responses = @HamResponse(body = String.class)
@@ -216,8 +211,7 @@ public class ReplayerAPICrud implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording",
-      method = "POST",
-      id = "4004daa6-277f-11ec-9621-0242ac1afe002")
+      method = "POST")
   @HamDoc(description = "Create/update recording",tags = {"plugin/replayer"},
     requests = @HamRequest(body=JsonFileData.class))
   public void uploadRecording(Request req, Response res) throws Exception {
@@ -246,8 +240,7 @@ public class ReplayerAPICrud implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/replayer/recording/{id}/deletelines",
-          method = "POST",
-          id = "4004dXX6-277f-11sfec-9621-0242ac1afe002")
+          method = "POST")
   @HamDoc(description = "Delete multiple lines of script",tags = {"plugin/replayer"},
           path = @PathParameter(key = "id"),
           requests = @HamRequest(body = String[].class,
@@ -292,8 +285,7 @@ public class ReplayerAPICrud implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/replayer/recording/{id}/clone/{newid}",
-          method = "POST",
-          id = "4004dXX6-277f-11ec-9621-0242ac1afe002")
+          method = "POST")
   @HamDoc(description = "Clone the selected lines in a new request",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id"),@PathParameter(key = "newid")},
           requests = @HamRequest(body = String[].class,

@@ -35,8 +35,7 @@ public class RemoteAPI implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/remote/execute",
-            method = "POST",
-            id = "1002a4b4-ffff-11ec-9621-0242ac130002")
+            method = "POST")
     @HamDoc(
             tags = {"base/utils"},
             description = "Execute remote request",
@@ -59,8 +58,7 @@ public class RemoteAPI implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/remote/mirror",
-            method = "*",
-            id = "1002a4b4-ffff-11ec-99866359242ac130002")
+            method = "*")
     @HamDoc(
             tags = {"base/utils"},
             description = "Returns the data sent by the caller",

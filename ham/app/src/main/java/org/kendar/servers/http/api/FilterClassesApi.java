@@ -49,8 +49,7 @@ public class FilterClassesApi implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/filters/phase",
-      method = "GET",
-      id = "e907a4b4-277d-11ec-9621-0242ac130002")
+      method = "GET")
   @HamDoc(
           tags = {"base/filters"},
           description = "List all the possible phases",
@@ -74,8 +73,7 @@ public class FilterClassesApi implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/filters/phase/{phase}",
-      method = "GET",
-      id = "e907a4b4-278d-11ec-9621-0242ac130003")
+      method = "GET")
   @HamDoc(tags = {"base/filters"},
           description = "List the filters by phase",
           path = @PathParameter(key = "phase", description = "The phase of the filter"),
@@ -103,8 +101,7 @@ public class FilterClassesApi implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/filters/class",
-      method = "GET",
-      id = "e907a4b4-278d-11ec-6621-0242ac130003")
+      method = "GET")
   @HamDoc(tags = {"base/filters"},
           description = "List all the classes for Java filters",
           responses = @HamResponse(
@@ -123,8 +120,7 @@ public class FilterClassesApi implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/filters/class/{clazz}",
-      method = "GET",
-      id = "e907a4b4-278k-11ec-6621-0242ac130003")
+      method = "GET")
   @HamDoc(tags = {"base/filters"},
           path = @PathParameter(key = "clazz", description = "Simple class name"),
           description = "List all the filters implemented by given class",
@@ -143,7 +139,7 @@ public class FilterClassesApi implements FilteringClass {
       var enabled =
           globalConfig.checkFilterEnabled(item.getId())
               && globalConfig.checkFilterEnabled(item.getClassId());
-      var desc = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter());
+      var desc = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter(),clazz);
       result.add(desc);
     }
 
@@ -154,8 +150,7 @@ public class FilterClassesApi implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/filters/phase/{phase}/{clazz}",
-      method = "GET",
-      id = "e907a4b4-277d-11ec-9621-0242ac130003")
+      method = "GET")
   @HamDoc(tags = {"base/filters"},
           path = {@PathParameter(key = "phase"),
           @PathParameter(key = "clazz")},
@@ -178,7 +173,7 @@ public class FilterClassesApi implements FilteringClass {
       var enabled =
           globalConfig.checkFilterEnabled(item.getId())
               && globalConfig.checkFilterEnabled(item.getClassId());
-      var desc = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter());
+      var desc = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter(),clazz);
       result.add(desc);
     }
 
@@ -189,8 +184,7 @@ public class FilterClassesApi implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/filters/id/{id}",
-      method = "GET",
-      id = "e907a4b4-277d-11ec-9621-0242ac130004")
+      method = "GET")
   @HamDoc(tags = {"base/filters"},
           path = @PathParameter(key = "id"),
           description = "List all the filters by id",
@@ -203,10 +197,11 @@ public class FilterClassesApi implements FilteringClass {
     var id = req.getPathParameter("id");
     var config = filtersConfiguration.get();
     var item = config.filtersById.get(id);
+
     var enabled =
         globalConfig.checkFilterEnabled(item.getId())
             && globalConfig.checkFilterEnabled(item.getClassId());
-    var result = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter());
+    var result = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter(),item.getClassId());
     res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
@@ -214,8 +209,7 @@ public class FilterClassesApi implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/filters/id/{id}",
-      method = "DELETE",
-      id = "e907a4b4-277d-11kc-9621-0242ac130004")
+      method = "DELETE")
   @HamDoc(tags = {"base/filters"},
           path = @PathParameter(key = "id"),
           description = "Delete filter by id"
@@ -235,8 +229,7 @@ public class FilterClassesApi implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/filters/id/{id}/enable",
-      method = "PUT",
-      id = "e907a4b4-277d-11ec-962h-0242ac130004")
+      method = "PUT")
   @HamDoc(tags = {"base/filters"},
           path = @PathParameter(key = "id"),
           description = "Enable filter"
@@ -256,8 +249,7 @@ public class FilterClassesApi implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/filters/loaders",
-      method = "GET",
-      id = "e967a4b4-277d-41ecr9621-0242ac130004")
+      method = "GET")
   @HamDoc(tags = {"base/filters"},
   description = "List all filter loaders",
           responses = @HamResponse(
@@ -275,8 +267,7 @@ public class FilterClassesApi implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/filters/loaders/{loader}",
-      method = "GET",
-      id = "e967a4b4-277d-41ecr9621y0242ac130004")
+      method = "GET")
   @HamDoc(tags = {"base/filters"},
           path = @PathParameter(key = "loader"),
           description = "List all filters by loader",
@@ -294,7 +285,7 @@ public class FilterClassesApi implements FilteringClass {
         var enabled =
             globalConfig.checkFilterEnabled(item.getId())
                 && globalConfig.checkFilterEnabled(item.getClassId());
-        result.add(new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter()));
+        result.add(new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter(),item.getClassId()));
       }
     }
     res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
@@ -356,7 +347,7 @@ public class FilterClassesApi implements FilteringClass {
     var enabled =
         globalConfig.checkFilterEnabled(item.getId())
             && globalConfig.checkFilterEnabled(item.getClassId());
-    var result = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter());
+    var result = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter(),item.getClassId());
     res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }

@@ -62,8 +62,7 @@ public class SingleScriptAPI implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/v2/recording/{id}",
-            method = "GET",
-            id = "4001daa6-fff-11ec-9tar1-0242ac1afe002")
+            method = "GET")
     @HamDoc(description = "Retrieve all the content of a script",tags = {"plugin/replayer"},
             path = @PathParameter(key = "id"),
             responses = @HamResponse(

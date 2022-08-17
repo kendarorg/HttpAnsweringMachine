@@ -32,8 +32,7 @@ public class SettingsAPI implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/utils/settings",
-            method = "GET",
-            id = "GET:/api/utils/settings")
+            method = "GET")
     @HamDoc(description = "Retrieve the current configuration",
             responses = @HamResponse(
                     body = String.class,
@@ -51,8 +50,7 @@ public class SettingsAPI implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/utils/settings",
-            method = "POST",
-            id = "POST:/api/utils/settings")
+            method = "POST")
     @HamDoc(description = "Set the settings",
 
             requests = @HamRequest(

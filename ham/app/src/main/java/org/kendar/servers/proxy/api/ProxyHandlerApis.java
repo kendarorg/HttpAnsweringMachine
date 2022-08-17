@@ -43,8 +43,7 @@ public class ProxyHandlerApis implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/proxyes",
-            method = "GET",
-            id = "1015a4b4-277d-11ec-9621-0242ac130002")
+            method = "GET")
     @HamDoc(
             tags = {"base/proxy"},
             description = "Retrieve all configured proxies",
@@ -60,8 +59,7 @@ public class ProxyHandlerApis implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/proxyes/{id}",
-            method = "GET",
-            id = "1016a4b4-277d-11ec-9621-0242ac130002")
+            method = "GET")
     @HamDoc(
             tags = {"base/proxy"},
             path = @PathParameter(key = "id"),
@@ -86,8 +84,7 @@ public class ProxyHandlerApis implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/proxyes/{id}",
-            method = "DELETE",
-            id = "1017a4b4-277d-11ec-9621-0242ac130002")
+            method = "DELETE")
     @HamDoc(
             tags = {"base/proxy"},
             path = @PathParameter(key = "id"),
@@ -113,8 +110,7 @@ public class ProxyHandlerApis implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/proxyes/{id}",
-            method = "PUT",
-            id = "1018a4b4-277d-11ec-9621-0242ac130002")
+            method = "PUT")
     @HamDoc(
             tags = {"base/proxy"},
             description = "Modify proxy",
@@ -149,8 +145,7 @@ public class ProxyHandlerApis implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/proxyes",
-            method = "POST",
-            id = "1020a4b4-277d-11ec-9621-0242ac130002")
+            method = "POST")
     @HamDoc(
             tags = {"base/proxy"},
             description = "Add proxy",

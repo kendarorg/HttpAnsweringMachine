@@ -3,6 +3,7 @@ package org.kendar.servers.http.api.model;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
+import org.kendar.http.annotations.IdBuilder;
 
 public class FilterDto {
     private final String hostAddress;
@@ -16,9 +17,9 @@ public class FilterDto {
     private boolean enabled;
     private final String id;
 
-    public FilterDto(boolean enabled,HttpTypeFilter type, HttpMethodFilter method) {
+    public FilterDto(boolean enabled,HttpTypeFilter type, HttpMethodFilter method,String filterClass) {
         this.enabled = enabled;
-        this.id = method.id();
+        this.id = IdBuilder.buildId(type,method,filterClass);
         blocking = type.blocking()||method.blocking();
         hostAddress = type.hostAddress();
         hostPattern = type.hostPattern();
@@ -28,6 +29,7 @@ public class FilterDto {
         pathPattern = method.pathPattern();
         phase = method.phase();
     }
+
 
     public String getHostAddress() {
         return hostAddress;

@@ -60,8 +60,7 @@ public class ReplayerAPIScripts implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
-            method = "GET",
-            id = "5000daa6-277f-11ec-9621-0242ac1afe002script")
+            method = "GET")
     @HamDoc(description = "retrieves the scripts associate with a recording line",tags = {"plugin/replayer"},
             path = {@PathParameter(key = "id"),@PathParameter(key = "line")},
             responses = @HamResponse(
@@ -123,8 +122,7 @@ public class ReplayerAPIScripts implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
-            method = "DELETE",
-            id = "5000dafa-277f-11ec-9621-0242ac1afe002script")
+            method = "DELETE")
     @HamDoc(description = "delete the scripts associate with a recording line",tags = {"plugin/replayer"},
             path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
     )
@@ -146,8 +144,7 @@ public class ReplayerAPIScripts implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
-            method = "PUT",
-            id = "5000daa6-277f-11ec-9621-0242ac1afe002scriptput")
+            method = "PUT")
     @HamDoc(description = "modify/insert the scripts associate with a recording line",tags = {"plugin/replayer"},
             path = {@PathParameter(key = "id"),@PathParameter(key = "line")},
             responses = @HamResponse(

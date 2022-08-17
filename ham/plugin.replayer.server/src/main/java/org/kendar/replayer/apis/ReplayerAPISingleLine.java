@@ -63,8 +63,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
-      method = "GET",
-      id = "5000daa6-277f-11ec-9621-0242ac1afe002")
+      method = "GET")
   @HamDoc(
           tags = {"plugin/replayer"},
           description = "Returns a single line data",
@@ -110,8 +109,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
-      method = "PUT",
-      id = "5001daa6-277f-11ec-9621-0242ac1afe002")
+      method = "PUT")
   @HamDoc(description = "Modify a rreplayer row",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")},
           requests = @HamRequest(
@@ -151,8 +149,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
-      method = "POST",
-      id = "5002daa6-277f-11ec-9621-0242ac1afe002")
+      method = "POST")
   @HamDoc(description = "Add a replayer row",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")},
           requests = @HamRequest(
@@ -193,8 +190,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
   @HttpMethodFilter(
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
-      method = "DELETE",
-      id = "5003daa6-277f-11ec-9621-0242ac1afe002")
+      method = "DELETE")
   @HamDoc(description = "Remove a replayer row",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")}
   )
@@ -216,8 +212,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/replayer/recording/{id}/indexline/{line}",
-          method = "DELETE",
-          id = "5003daa6-277f-ytec-9621-0242ac1afe002")
+          method = "DELETE")
   @HamDoc(description = "Remove the indexline (aka the pointer to replayer row)",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")}
   )
@@ -259,8 +254,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/replayer/recording/{id}/lineindex/{line}",
-          method = "GET",
-          id = "5000daa6-277f-11ec-9621-0242ac1afe002lineindex")
+          method = "GET")
   @HamDoc(description = "Retrieves the indexline (aka the pointer to replayer row)",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")},
           responses = @HamResponse(
@@ -294,8 +288,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/replayer/recording/{id}/lineindex/{line}",
-          method = "PUT",
-          id = "5001daa6-277f-11ec-9621-0242ac1afe008lineindex")
+          method = "PUT")
   @HamDoc(description = "Addes the indexline (aka the pointer to replayer row)",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")},
           requests = @HamRequest(

@@ -50,8 +50,7 @@ public class ResultsAPI  implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/results",
-            method = "GET",
-            id = "3004daaallress-11ec-9621-0242ac1afe002")
+            method = "GET")
     @HamDoc(description = "Retrieves all the replayer results",tags = {"plugin/replayer"},
     responses = @HamResponse(
             body = RecordingItem[].class
@@ -67,8 +66,7 @@ public class ResultsAPI  implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/results/{id}",
-            method = "GET",
-            id = "300singss-11ec-9621-0242ac1afe002")
+            method = "GET")
     @HamDoc(description = "Retrieves a single result",tags = {"plugin/replayer"},
             path = @PathParameter(key = "id"),
             responses = @HamResponse(
@@ -99,8 +97,7 @@ public class ResultsAPI  implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/results/{id}",
-            method = "DELETE",
-            id = "3004dderess-11ec-9621-0242ac1afe002")
+            method = "DELETE")
     @HamDoc(description = "Deletes a single result",tags = {"plugin/replayer"},
             path = @PathParameter(key = "id")
     )
