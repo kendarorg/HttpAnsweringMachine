@@ -7,6 +7,7 @@ package org.kendar.http;
  *  Date:			02/04/2017
  */
 
+import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 
@@ -51,6 +52,7 @@ public class HttpsProxyImpl implements Runnable{
 
 
     private final boolean useCache;
+    private final DnsMultiResolver resolver;
     private final Logger log;
 
     // Main method for the program
@@ -95,9 +97,10 @@ public class HttpsProxyImpl implements Runnable{
      * Create the Proxy Server
      * @param port Port number to run proxy server from.
      */
-    public HttpsProxyImpl(int port, boolean useCache, LoggerBuilder builder) {
+    public HttpsProxyImpl(int port, boolean useCache, LoggerBuilder builder, DnsMultiResolver resolver) {
         this.log = builder.build(HttpsProxy.class);
         this.useCache= useCache;
+        this.resolver = resolver;
         // Load in hash map containing previously cached sites and blocked Sites
         cache = new HashMap<>();
         blockedSites = new HashMap<>();
@@ -180,7 +183,7 @@ public class HttpsProxyImpl implements Runnable{
                 Socket socket = serverSocket.accept();
 
                 // Create new Thread and pass it Runnable RequestHandler
-                Thread thread = new Thread(new RequestHandler(socket,useCache,log));
+                Thread thread = new Thread(new RequestHandler(socket,useCache,log,resolver));
 
                 // Key a reference to each thread so they can be joined later if necessary
                 servicingThreads.add(thread);
