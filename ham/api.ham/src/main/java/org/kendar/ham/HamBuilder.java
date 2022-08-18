@@ -159,6 +159,9 @@ public class HamBuilder implements HamInternalBuilder {
     public ProxyBuilder proxies() {
         return new ProxyBuilderImpl(this);
     }
+    public SettingsBuilder settings() {
+        return new SettingsBuilderImpl(this);
+    }
 
     public  <T> T pluginBuilder(Class<T> clazz) {
         var initMethod = Arrays.stream(clazz.getMethods()).filter(m->

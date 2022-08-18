@@ -43,8 +43,8 @@ import java.util.Scanner;
  * written to a file and are loaded back in when the proxy is started once more, meaning that cached and blocked
  * sites are maintained.
  *
- *   export http_proxy="http://127.0.0.1:9999"
- *   export https_proxy="http://127.0.0.1:9999"
+ *   export http_proxy="http://127.0.0.1:1081"
+ *   export https_proxy="http://127.0.0.1:1081"
  *   curl  "https://httpbin.org/anything"
  *
  */
