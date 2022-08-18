@@ -36,7 +36,7 @@ public class HttpsProxy implements AnsweringServer {
         if (!config.isActive()) return;
         running = true;
         try{
-            var proxyHttp = new HttpsProxyImpl(config.getHttpProxyPort(), false,loggerBuilder);
+            var proxyHttp = new HttpsProxyImpl(config.getHttpProxyPort(), false,loggerBuilder,multiResolver);
 
             logger.info("Http/s proxy server LOADED, port: " + config.getHttpProxyPort());
             proxyHttp.listen();

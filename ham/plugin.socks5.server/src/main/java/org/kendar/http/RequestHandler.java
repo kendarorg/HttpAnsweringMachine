@@ -1,5 +1,6 @@
 package org.kendar.http;
 
+import org.kendar.servers.dns.DnsMultiResolver;
 import org.slf4j.Logger;
 
 import java.awt.image.BufferedImage;
@@ -13,11 +14,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.net.URL;
+import java.net.*;
+import java.nio.CharBuffer;
 import java.util.Locale;
 import javax.imageio.ImageIO;
 
@@ -29,6 +27,7 @@ public class RequestHandler implements Runnable {
     Socket clientSocket;
     private final boolean useCache;
     private final Logger log;
+    private final DnsMultiResolver multiResolver;
 
     /**
      * Read data client sends to proxy
@@ -53,10 +52,11 @@ public class RequestHandler implements Runnable {
      * @param clientSocket socket connected to the client
      * @param log
      */
-    public RequestHandler(Socket clientSocket, boolean useCache, Logger log){
+    public RequestHandler(Socket clientSocket, boolean useCache, Logger log, DnsMultiResolver multiResolver){
         this.clientSocket = clientSocket;
         this.useCache = useCache;
         this.log = log;
+        this.multiResolver = multiResolver;
         try{
             this.clientSocket.setSoTimeout(2000);
             proxyToClientBr = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -87,6 +87,7 @@ public class RequestHandler implements Runnable {
 
         // Parse out URL
 
+        String originalRequest = requestString;
         log.trace("Reuest Received " + requestString);
         // Get the Request type
         String request = requestString.substring(0,requestString.indexOf(' '));
@@ -126,15 +127,21 @@ public class RequestHandler implements Runnable {
         }
 
         else{
+            log.debug("HTTP Request for : " + urlString + "\n");
+            try {
+                handleHTTPRequest(urlString,originalRequest);
+            } catch (URISyntaxException e) {
+                log.error("Error syntax uri "+urlString,e);
+            }
             // Check if we have a cached copy
-            File file;
+            /*File file;
             if(useCache && (file = HttpsProxyImpl.getCachedPage(urlString)) != null){
                 log.trace("Cached Copy found for : " + urlString + "\n");
                 sendCachedPageToClient(file);
             } else {
                 log.trace("HTTP GET for : " + urlString + "\n");
                 sendNonCachedToClient(urlString);
-            }
+            }*/
         }
     }
 
@@ -372,6 +379,7 @@ public class RequestHandler implements Runnable {
     }
 
 
+
     /**
      * Handles HTTPS requests between client and remote server
      * @param urlString desired file to be transmitted over https
@@ -379,8 +387,13 @@ public class RequestHandler implements Runnable {
     private void handleHTTPSRequest(String urlString){
         // Extract the URL and port of remote
         String url = urlString;//.substring(7);
-        if(urlString.toLowerCase(Locale.ROOT).contains("://")){
+        /*if(urlString.toLowerCase(Locale.ROOT).contains("://")){
             url = urlString.substring(7);
+        }*/
+        if(url.toLowerCase(Locale.ROOT).startsWith("https://")){
+            url = url.substring(8);
+        }if(url.toLowerCase(Locale.ROOT).startsWith("http://")){
+            url = url.substring(7);
         }
         String pieces[] = url.split(":");
         url = pieces[0];
@@ -396,7 +409,7 @@ public class RequestHandler implements Runnable {
             }*/
 
             // Get actual IP associated with this URL through DNS
-            InetAddress address = InetAddress.getByName(url);
+            InetAddress address = InetAddress.getByName(multiResolver.resolve(url).get(0));
 
             // Open a socket to the remote server
             Socket proxyToServerSocket = new Socket(address, port);
@@ -563,6 +576,127 @@ public class RequestHandler implements Runnable {
             bufferedWriter.flush();
         } catch (IOException e) {
             log.error("Error writing to client when requested a blocked site");
+        }
+    }
+
+
+    private void handleHTTPRequest(String origAddress,String originalRequest) throws URISyntaxException {
+        // Extract the URL and port of remote
+
+        var uri = new URI(origAddress);//.substring(7);
+        /*if(urlString.toLowerCase(Locale.ROOT).contains("://") && !urlString.toLowerCase(Locale.ROOT).startsWith("http:")){
+            url = urlString.substring(7);
+        }*/
+        var url = uri.getHost();
+        int port = uri.getPort();
+        if(port==-1)port=80;
+
+        try{
+            // Only first line of HTTPS request has been read at this point (CONNECT *)
+            // Read (and throw away) the rest of the initial data on the stream
+            //var lines = proxyToClientBr.lines().collect(Collectors.toList());
+            /*for(int i=0;i<4;i++){
+                var result = proxyToClientBr.readLine();
+                //System.out.println(result);
+            }*/
+
+            String line = originalRequest+"\r\n";
+            /*proxyToClientBw.write(line);
+            proxyToClientBw.flush();*/
+
+            // Get actual IP associated with this URL through DNS
+            InetAddress address = InetAddress.getByName(multiResolver.resolve(url).get(0));
+
+            // Open a socket to the remote server
+            Socket proxyToServerSocket = new Socket(address, port);
+            proxyToServerSocket.setSoTimeout(5000);
+
+            var writer =new OutputStreamWriter(proxyToServerSocket.getOutputStream());
+            writer.write(line);
+            char[] data = new char[1024];
+            while(proxyToClientBr.ready()){
+                var dataLength = proxyToClientBr.read(data);
+                if(dataLength<=0) break;
+                writer.write(data,0,dataLength);
+            }
+            writer.flush();
+
+
+
+            // Client and Remote will both start sending data to proxy at this point
+            // Proxy needs to asynchronously read data from each party and send it to the other party
+
+
+            //Create a Buffered Writer betwen proxy and remote
+            /*BufferedWriter proxyToServerBW = new BufferedWriter(new OutputStreamWriter(proxyToServerSocket.getOutputStream()));
+
+            // Create Buffered Reader from proxy and remote
+            BufferedReader proxyToServerBR = new BufferedReader(new InputStreamReader(proxyToServerSocket.getInputStream()));
+
+            proxyToServerBW.write(line);*/
+
+
+            // Create a new thread to listen to client and transmit to server
+            /*ClientToServerHttpsTransmit clientToServerHttps =
+                    new ClientToServerHttpsTransmit(clientSocket.getInputStream(), proxyToServerSocket.getOutputStream());
+
+            httpsClientToServer = new Thread(clientToServerHttps);
+            httpsClientToServer.start();*/
+
+
+            // Listen to remote server and relay to client
+            try {
+                byte[] buffer = new byte[4096];
+                int read;
+                do {
+                    read = proxyToServerSocket.getInputStream().read(buffer);
+                    if (read > 0) {
+                        clientSocket.getOutputStream().write(buffer, 0, read);
+                        if (proxyToServerSocket.getInputStream().available() < 1) {
+                            clientSocket.getOutputStream().flush();
+                        }
+                    }
+                } while (read >= 0);
+            }
+            catch (SocketTimeoutException e) {
+
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            // Close Down Resources
+            if(proxyToServerSocket != null){
+                proxyToServerSocket.close();
+            }
+
+            /*if(proxyToServerBR != null){
+                proxyToServerBR.close();
+            }
+
+            if(proxyToServerBW != null){
+                proxyToServerBW.close();
+            }*/
+
+            if(proxyToClientBw != null){
+                proxyToClientBw.close();
+            }
+
+
+        } catch (SocketTimeoutException e) {
+            String line = "HTTP/1.0 504 Timeout Occured after 10s\n" +
+                    "User-Agent: ProxyServer/1.0\n" +
+                    "\r\n";
+            try{
+                proxyToClientBw.write(line);
+                proxyToClientBw.flush();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+        catch (Exception e){
+            log.error("Error on HTTP : " + origAddress ,e);
         }
     }
 }
