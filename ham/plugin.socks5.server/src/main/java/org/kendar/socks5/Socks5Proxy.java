@@ -1,11 +1,10 @@
-package org.kendar.http;
+package org.kendar.socks5;
 
 import ch.qos.logback.classic.Level;
+import org.kendar.http.HttpsProxyImpl;
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
-import org.kendar.socks5.DnsSocks5Handler;
-import org.kendar.socks5.Socks5Config;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
@@ -15,19 +14,19 @@ import sockslib.server.SocksProxyServer;
 import sockslib.server.SocksServerBuilder;
 
 @Component
-public class HttpsProxy implements AnsweringServer {
+public class Socks5Proxy implements AnsweringServer {
     private final Logger logger;
-    private final LoggerBuilder loggerBuilder;
     private JsonConfiguration configuration;
     private DnsMultiResolver multiResolver;
     private boolean running = false;
 
-    public HttpsProxy(DnsMultiResolver multiResolver, LoggerBuilder loggerBuilder, JsonConfiguration configuration){
+    public Socks5Proxy(DnsMultiResolver multiResolver, LoggerBuilder loggerBuilder, JsonConfiguration configuration){
 
         this.multiResolver = multiResolver;
-        this.logger = loggerBuilder.build(HttpsProxy.class);
-        this.loggerBuilder = loggerBuilder;
+        this.logger = loggerBuilder.build(Socks5Proxy.class);
         this.configuration = configuration;
+        loggerBuilder.setLevel("sockslib.server.io.SocketPipe", Level.ERROR);
+        loggerBuilder.setLevel("sockslib.server.BasicSocksProxyServer", Level.ERROR);
     }
     @Override
     public void run() {
@@ -36,14 +35,20 @@ public class HttpsProxy implements AnsweringServer {
         if (!config.isActive()) return;
         running = true;
         try{
-            var proxyHttp = new HttpsProxyImpl(config.getHttpProxyPort(), false,loggerBuilder);
-
-            logger.info("Http/s proxy server LOADED, port: " + config.getHttpProxyPort());
-            proxyHttp.listen();
-
+            DnsSocks5Handler.multiResolver = multiResolver;
+            SocksProxyServer proxyServer = SocksServerBuilder.newBuilder(DnsSocks5Handler.class).
+                    setSocksMethods(new NoAuthenticationRequiredMethod()).setBindPort(config.getPort()).build();
+            proxyServer.start();
+            logger.info("Socks5 server LOADED, port: " + config.getPort());
+            var localConfig = configuration.getConfiguration(Socks5Config.class);
+            while (running && localConfig.isActive()) {
+                Sleeper.sleep(1000);
+                localConfig = configuration.getConfiguration(Socks5Config.class);
+            }
+            proxyServer.shutdown();
         } catch (Exception ex) {
             logger.error(
-                    "Failed to create Http/s server on port " + config.getHttpProxyPort() + " of localhost", ex);
+                    "Failed to create Socks5 server on port " + config.getPort() + " of localhost", ex);
         } finally {
             running = false;
         }

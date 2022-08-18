@@ -1,5 +1,7 @@
 package org.kendar.http;
 
+import org.slf4j.Logger;
+
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,7 +19,6 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Locale;
-import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 
 public class RequestHandler implements Runnable {
@@ -27,6 +28,7 @@ public class RequestHandler implements Runnable {
      */
     Socket clientSocket;
     private final boolean useCache;
+    private final Logger log;
 
     /**
      * Read data client sends to proxy
@@ -49,10 +51,12 @@ public class RequestHandler implements Runnable {
     /**
      * Creates a ReuqestHandler object capable of servicing HTTP(S) GET requests
      * @param clientSocket socket connected to the client
+     * @param log
      */
-    public RequestHandler(Socket clientSocket,boolean useCache){
+    public RequestHandler(Socket clientSocket, boolean useCache, Logger log){
         this.clientSocket = clientSocket;
         this.useCache = useCache;
+        this.log = log;
         try{
             this.clientSocket.setSoTimeout(2000);
             proxyToClientBr = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -77,14 +81,13 @@ public class RequestHandler implements Runnable {
         try{
             requestString = proxyToClientBr.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Error reading request from client");
+            log.error("Error reading request from client",e);
             return;
         }
 
         // Parse out URL
 
-        System.out.println("Reuest Received " + requestString);
+        log.trace("Reuest Received " + requestString);
         // Get the Request type
         String request = requestString.substring(0,requestString.indexOf(' '));
 
@@ -109,8 +112,8 @@ public class RequestHandler implements Runnable {
 
 
         // Check if site is blocked
-        if(HttpsProxy.isBlocked(urlString)){
-            System.out.println("Blocked site requested : " + urlString);
+        if(HttpsProxyImpl.isBlocked(urlString)){
+            log.debug("Blocked site requested : " + urlString);
             blockedSiteRequested();
             return;
         }
@@ -118,18 +121,18 @@ public class RequestHandler implements Runnable {
 
         // Check request type
         if(request.equals("CONNECT")){
-            System.out.println("HTTPS Request for : " + urlString + "\n");
+            log.debug("HTTPS Request for : " + urlString + "\n");
             handleHTTPSRequest(urlString);
         }
 
         else{
             // Check if we have a cached copy
             File file;
-            if(useCache && (file = HttpsProxy.getCachedPage(urlString)) != null){
-                System.out.println("Cached Copy found for : " + urlString + "\n");
+            if(useCache && (file = HttpsProxyImpl.getCachedPage(urlString)) != null){
+                log.trace("Cached Copy found for : " + urlString + "\n");
                 sendCachedPageToClient(file);
             } else {
-                System.out.println("HTTP GET for : " + urlString + "\n");
+                log.trace("HTTP GET for : " + urlString + "\n");
                 sendNonCachedToClient(urlString);
             }
         }
@@ -154,7 +157,7 @@ public class RequestHandler implements Runnable {
                 BufferedImage image = ImageIO.read(cachedFile);
 
                 if(image == null ){
-                    System.out.println("Image " + cachedFile.getName() + " was null");
+                    log.trace("Image " + cachedFile.getName() + " was null");
                     response = "HTTP/1.0 404 NOT FOUND \n" +
                             "Proxy-agent: ProxyServer/1.0\n" +
                             "\r\n";
@@ -199,8 +202,7 @@ public class RequestHandler implements Runnable {
             }
 
         } catch (IOException e) {
-            System.out.println("Error Sending Cached file to client");
-            e.printStackTrace();
+            log.error("Error Sending Cached file to client",e);
         }
     }
 
@@ -260,11 +262,10 @@ public class RequestHandler implements Runnable {
                     // Create Buffered output stream to write to cached copy of file
                     fileToCacheBW = new BufferedWriter(new FileWriter(fileToCache));
                 } catch (IOException e) {
-                    System.out.println("Couldn't cache: " + fileName);
+                    log.debug("Couldn't cache: " + fileName,e);
                     caching = false;
-                    e.printStackTrace();
                 } catch (NullPointerException e) {
-                    System.out.println("NPE opening file");
+                    log.error("NPE opening file",e);
                 }
             }
 
@@ -293,7 +294,7 @@ public class RequestHandler implements Runnable {
 
                     // No image received from remote server
                 } else {
-                    System.out.println("Sending 404 to client as image wasn't received from server"
+                    log.debug("Sending 404 to client as image wasn't received from server"
                             + fileName);
                     String error = "HTTP/1.0 404 NOT FOUND\n" +
                             "Proxy-agent: ProxyServer/1.0\n" +
@@ -352,7 +353,7 @@ public class RequestHandler implements Runnable {
             if(caching && useCache){
                 // Ensure data written and add to our cached hash maps
                 fileToCacheBW.flush();
-                HttpsProxy.addCachedPage(urlString, fileToCache);
+                HttpsProxyImpl.addCachedPage(urlString, fileToCache);
             }
 
             // Close down resources
@@ -391,7 +392,7 @@ public class RequestHandler implements Runnable {
             //var lines = proxyToClientBr.lines().collect(Collectors.toList());
             /*for(int i=0;i<4;i++){
                 var result = proxyToClientBr.readLine();
-                System.out.println(result);
+                //System.out.println(result);
             }*/
 
             // Get actual IP associated with this URL through DNS
@@ -482,8 +483,7 @@ public class RequestHandler implements Runnable {
             }
         }
         catch (Exception e){
-            System.out.println("Error on HTTPS : " + urlString );
-            e.printStackTrace();
+            log.error("Error on HTTPS : " + urlString ,e);
         }
     }
 
@@ -528,11 +528,10 @@ public class RequestHandler implements Runnable {
                 } while (read >= 0);
             }
             catch (SocketTimeoutException ste) {
-                // TODO: handle exception
+                log.error("Socket timeout",ste);
             }
             catch (IOException e) {
-                System.out.println("Proxy to client HTTPS read timed out");
-                e.printStackTrace();
+                log.error("Proxy to client HTTPS read timed out",e);
             }
         }
     }
@@ -551,8 +550,7 @@ public class RequestHandler implements Runnable {
             bufferedWriter.write(line);
             bufferedWriter.flush();
         } catch (IOException e) {
-            System.out.println("Error writing to client when requested a blocked site");
-            e.printStackTrace();
+            log.error("Error writing to client when requested a blocked site",e);
         }
     }
 
@@ -561,14 +559,10 @@ public class RequestHandler implements Runnable {
     private void invalidSiteRequested(String substring) {
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-            String line = "HTTP/1.0 500 Error \n" +
-                    "User-Agent: ProxyServer/1.0\n" +
-                    "\r\n";
             bufferedWriter.write(substring);
             bufferedWriter.flush();
         } catch (IOException e) {
-            System.out.println("Error writing to client when requested a blocked site");
-            e.printStackTrace();
+            log.error("Error writing to client when requested a blocked site");
         }
     }
 }
