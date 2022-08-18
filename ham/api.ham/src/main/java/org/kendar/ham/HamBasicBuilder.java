@@ -64,6 +64,12 @@ public interface HamBasicBuilder  {
      */
     ProxyBuilder proxies();
 
+    /**
+     * Start the settings calls builder
+     * @return
+     */
+    SettingsBuilder settings();
+
 
 
     /**
