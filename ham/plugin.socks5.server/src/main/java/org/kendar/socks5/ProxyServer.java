@@ -1,6 +1,7 @@
 package org.kendar.socks5;
 
 import ch.qos.logback.classic.Level;
+import org.kendar.http.HttpsProxy;
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
@@ -33,6 +34,11 @@ public class ProxyServer implements AnsweringServer {
         if (!config.isActive()) return;
         running = true;
         try{
+            var th = new Thread(()->{
+                var proxyHttp = new HttpsProxy(9999,false);
+                proxyHttp.listen();
+            });
+            th.start();
             DnsSocks5Handler.multiResolver = multiResolver;
             SocksProxyServer proxyServer = SocksServerBuilder.newBuilder(DnsSocks5Handler.class).
                     setSocksMethods(new NoAuthenticationRequiredMethod()).setBindPort(1080).build();
