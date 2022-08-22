@@ -2,6 +2,10 @@ package org.kendar.http;
 
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.kendar.http.annotations.*;
+import org.kendar.http.annotations.concrete.HamDocConcrete;
+import org.kendar.http.annotations.concrete.HamMatcherConcrete;
+import org.kendar.http.annotations.concrete.HttpMethodFilterConcrete;
+import org.kendar.http.annotations.concrete.HttpTypeFilterConcrete;
 import org.kendar.http.annotations.multi.*;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
@@ -14,7 +18,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class FilterDescriptor {
 
@@ -84,7 +87,7 @@ public class FilterDescriptor {
       setupPathSimpleMatchers();
     }
     this.extraMatches = methodFilter.matcher();
-            this.typeFilter = buildTypeFilter();
+    this.typeFilter = buildTypeFilter();
     this.methodFilter = buildMethodFilter();
   }
 
@@ -150,126 +153,15 @@ public class FilterDescriptor {
 
   private HttpMethodFilter buildMethodFilter() {
     var loc = this;
-    return new HttpMethodFilter() {
-
-      @Override
-      public Class<? extends Annotation> annotationType() {
-        return null;
-      }
-
-      @Override
-      public HttpFilterType phase() {
-        return loc.phase;
-      }
-
-      @Override
-      public boolean blocking() {
-        return loc.methodBlocking;
-      }
-
-      @Override
-      public String pathAddress() {
-        return loc.pathAddress;
-      }
-
-      @Override
-      public String pathPattern() {
-        if (loc.pathPattern == null) return null;
-        return loc.pathPattern.toString();
-      }
-
-      @Override
-      public String method() {
-        return loc.method;
-      }
-
-      @Override
-      public String description() {
-        return loc.description;
-      }
-
-      @Override
-      public String id() {
-        return loc.getId();
-      }
-
-      @Override
-      public HamMatcher[] matcher() {
-        var result = new ArrayList<HamMatcher>();
-        if(loc.extraMatches!=null && loc.extraMatches.length>0){
-          for (var matcher :
-                  extraMatches) {
-            result.add(new HamMatcher() {
-              @Override
-              public Class<? extends Annotation> annotationType() {
-                return null;
-              }
-
-              @Override
-              public String value() {
-                return matcher.value();
-              }
-
-              @Override
-              public MatcherFunction function() {
-                return matcher.function();
-              }
-
-              @Override
-              public MatcherType type() {
-                return matcher.type();
-              }
-
-              @Override
-              public String id() {
-                if(matcher.id().length()>0){
-                  return matcher.id();
-                }
-                return null;
-              }
-            });
-          }
-        }
-        return result.toArray(new HamMatcher[0]);
-      }
-    };
+    return new HttpMethodFilterConcrete(phase, methodBlocking,
+    pathAddress, pathPattern,
+            method, description,
+            id, extraMatches);
   }
 
   private HttpTypeFilter buildTypeFilter() {
     var loc = this;
-    return new HttpTypeFilter() {
-
-      @Override
-      public Class<? extends Annotation> annotationType() {
-        return null;
-      }
-
-      @Override
-      public String hostAddress() {
-        return loc.hostAddress;
-      }
-
-      @Override
-      public String hostPattern() {
-        if (loc.hostPattern == null) return null;
-        return loc.hostPattern.toString();
-      }
-
-      @Override
-      public String name() {
-        return "";
-      }
-
-      @Override
-      public int priority() {
-        return loc.priority;
-      }
-
-      @Override
-      public boolean blocking() {
-        return loc.typeBlocking;
-      }
-    };
+    return new HttpTypeFilterConcrete(hostAddress,typeBlocking,priority,hostPattern);
   }
 
   private void setupPathSimpleMatchers() {
@@ -417,62 +309,6 @@ public class FilterDescriptor {
 
       var loc = this;
       if(this.doc==null) return null;
-      return new HamDoc(){
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-          return null;
-        }
-
-        @Override
-        public String[] tags() {
-          return loc.doc.tags();
-        }
-
-        @Override
-        public boolean todo() {
-          return false;
-        }
-
-        @Override
-        public String description() {
-          return loc.doc.description();
-        }
-
-        @Override
-        public String produce() {
-          return loc.doc.produce();
-        }
-
-        @Override
-        public QueryString[] query() {
-          return loc.doc.query();
-        }
-
-        @Override
-        public PathParameter[] path() {
-          return loc.doc.path();
-        }
-
-        @Override
-        public Header[] header() {
-          return loc.doc.header();
-        }
-
-        @Override
-        public HamRequest[] requests() {
-          return loc.doc.requests();
-        }
-
-        @Override
-        public HamResponse[] responses() {
-          return loc.doc.responses();
-        }
-
-        @Override
-        public HamSecurity[] security() {
-          return loc.doc.security();
-        }
-      };
+      return new HamDocConcrete(doc);
     }
 }
