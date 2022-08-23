@@ -37,7 +37,7 @@ public class ReplayFilter implements FilteringClass {
       pathAddress = "*",
       method = "*")
   public boolean replay(Request req, Response res) {
-    if (req.getHost().equalsIgnoreCase(localAddress)) return false;
+    if (req.getHost().equalsIgnoreCase(localAddress)&& !req.getPath().startsWith("/int/")) return false;
     if (replayerStatus.getStatus() != ReplayerState.REPLAYING && replayerStatus.getStatus() != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) return false;
     logger.info("Replaying "+
             req.getProtocol()+"://"+
