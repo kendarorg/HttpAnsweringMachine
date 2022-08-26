@@ -64,15 +64,15 @@ if [ "$rundocker" == "n" ]; then
 		
 	cd "$mypath"samples/sampleapp/gateway/target/
 	cp -f "$mypath"samples/sampleapp/docker/application.properties.gateway "$mypath"samples/sampleapp/gateway/target/application.properties
-	java -jar "$mypath"samples/sampleapp/gateway/target/gateway-3.0.7-SNAPSHOT.jar &
+	java -jar "$mypath"samples/sampleapp/gateway/target/gateway-3.0.8-SNAPSHOT.jar &
 		
 	cd "$mypath"samples/sampleapp/be/target/
 	cp -f "$mypath"samples/sampleapp/docker/application.properties.be "$mypath"samples/sampleapp/be/target/application.properties
-	java -jar "$mypath"samples/sampleapp/be/target/be-3.0.7-SNAPSHOT.jar &
+	java -jar "$mypath"samples/sampleapp/be/target/be-3.0.8-SNAPSHOT.jar &
 		
 	cd "$mypath"samples/sampleapp/fe/target/
 	cp -f "$mypath"samples/sampleapp/docker/application.properties.fe "$mypath"samples/sampleapp/fe/target/application.properties
-	java -jar "$mypath"samples/sampleapp/fe/target/fe-3.0.7-SNAPSHOT.jar &
+	java -jar "$mypath"samples/sampleapp/fe/target/fe-3.0.8-SNAPSHOT.jar &
 	
 	cd "$mypath"ham/app/target
 	cp -f "$mypath"samples/sampleapp/docker/external.json "$mypath"ham/app/target/

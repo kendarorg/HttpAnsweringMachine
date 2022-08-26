@@ -39,20 +39,20 @@ pause
 
 cd %mypath%samples\calendar\gateway\target
 copy /Y %mypath%samples\calendar\docker\application.properties.gateway %mypath%samples\calendar\gateway\target\application.properties
-start java -jar %mypath%samples\calendar\gateway\target\gateway-3.0.7-SNAPSHOT.jar
+start java -jar %mypath%samples\calendar\gateway\target\gateway-3.0.8-SNAPSHOT.jar
 
 timeout /t 10 /nobreak
 
 
 cd %mypath%samples\calendar\be\target
 copy /Y %mypath%samples\calendar\docker\application.properties.be %mypath%samples\calendar\be\target\application.properties
-start java -jar %mypath%samples\calendar\be\target\be-3.0.7-SNAPSHOT.jar
+start java -jar %mypath%samples\calendar\be\target\be-3.0.8-SNAPSHOT.jar
 
 timeout /t 10 /nobreak
 
 cd %mypath%samples\calendar\fe\target
 copy /Y %mypath%samples\calendar\docker\application.properties.fe %mypath%samples\calendar\fe\target\application.properties
-start java -jar %mypath%samples\calendar\fe\target\fe-3.0.7-SNAPSHOT.jar
+start java -jar %mypath%samples\calendar\fe\target\fe-3.0.8-SNAPSHOT.jar
 
 timeout /t 10 /nobreak
 

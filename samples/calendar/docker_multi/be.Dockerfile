@@ -1,5 +1,5 @@
 FROM ham.client:latest
-RUN echo 3.0.7-SNAPSHOT
+RUN echo 3.0.8-SNAPSHOT
 
 RUN /etc/startservice.sh --app=be --run=/etc/app/be/run-be.sh
 COPY ./docker_multi/run-be.sh /etc/app/be/

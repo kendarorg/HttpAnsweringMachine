@@ -1,6 +1,6 @@
 FROM ham.client
 
-RUN echo 3.0.7-SNAPSHOT
+RUN echo 3.0.8-SNAPSHOT
 
 ENV TIMEZONE=Europe/Paris
 ENV MYSQL_ROOT_PASSWORD=root
