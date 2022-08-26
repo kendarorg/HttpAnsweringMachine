@@ -40,20 +40,20 @@ pause
 
 cd %mypath%samples\sampleapp\gateway\target
 copy /Y %mypath%samples\sampleapp\docker\application.properties.gateway %mypath%samples\sampleapp\gateway\target\application.properties
-start java -jar %mypath%samples\sampleapp\gateway\target\gateway-3.0.7-SNAPSHOT.jar
+start java -jar %mypath%samples\sampleapp\gateway\target\gateway-3.0.8-SNAPSHOT.jar
 
 timeout /t 10 /nobreak
 
 
 cd %mypath%samples\sampleapp\be\target
 copy /Y %mypath%samples\sampleapp\docker\application.properties.be %mypath%samples\sampleapp\be\target\application.properties
-start java -jar %mypath%samples\sampleapp\be\target\be-3.0.7-SNAPSHOT.jar
+start java -jar %mypath%samples\sampleapp\be\target\be-3.0.8-SNAPSHOT.jar
 
 timeout /t 10 /nobreak
 
 cd %mypath%samples\sampleapp\fe\target
 copy /Y %mypath%samples\sampleapp\docker\application.properties.fe %mypath%samples\sampleapp\fe\target\application.properties
-start java -jar %mypath%samples\sampleapp\fe\target\fe-3.0.7-SNAPSHOT.jar
+start java -jar %mypath%samples\sampleapp\fe\target\fe-3.0.8-SNAPSHOT.jar
 
 timeout /t 10 /nobreak
 

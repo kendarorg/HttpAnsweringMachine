@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION=3.0.7
+VERSION=3.0.8
 
 mypath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/
 cd $mypath

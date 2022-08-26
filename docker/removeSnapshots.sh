@@ -2,7 +2,7 @@
 
 # curl -L -o /usr/bin/jq.exe https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe
 # ./removeSnapshots.sh login pwd snapshot
-# ./removeSnapshots.sh login pwd v3.0.7-SNAPSHOT
+# ./removeSnapshots.sh login pwd v3.0.8-SNAPSHOT
 
 
 

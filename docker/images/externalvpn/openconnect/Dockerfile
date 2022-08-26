@@ -4,7 +4,7 @@ FROM ubuntu:latest
 RUN apt-get update
 RUN apt-get upgrade -y
 
-RUN echo 3.0.7-SNAPSHOT
+RUN echo 3.0.8-SNAPSHOT
 
 # Block timezone request prompt
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Rome"

@@ -1,6 +1,6 @@
 FROM ham.apache
 
-RUN echo ham.apache 3.0.7-SNAPSHOT
+RUN echo ham.apache 3.0.8-SNAPSHOT
 
 # Setup apache and php
 RUN apk add --no-cache \
