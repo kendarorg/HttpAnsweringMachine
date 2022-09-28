@@ -30,11 +30,11 @@ EOF
 }
 
 docker_remove_tag () {
-  IMAGE_NAME=$1
-  TAG=$2
-  curl "https://hub.docker.com/v2/repositories/${DOCKER_ORG}/${IMAGE_NAME}/tags/${TAG}/" \
-    -X DELETE \
-    -H "Authorization: JWT ${DOCKER_TOKEN}"
+  # IMAGE_NAME=$1
+  # TAG=$2
+  # curl "https://hub.docker.com/v2/repositories/${DOCKER_ORG}/${IMAGE_NAME}/tags/${TAG}/" \
+  #   -X DELETE \
+  #   -H "Authorization: JWT ${DOCKER_TOKEN}"
 }
 
 docker_push(){

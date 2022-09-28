@@ -33,11 +33,11 @@ goto :eof
 goto :eof
 
 :docker_remove_tag
-  set DOCKER_IMAGE_NAME=%~1
-  set DOCKER_TAG=%~2
-  call %LIB_SCRIPT_DIR%curl "https://hub.docker.com/v2/repositories/%DOCKER_ORG%/%DOCKER_IMAGE_NAME%/tags/%DOCKER_TAG%/" ^
-      -X DELETE ^
-      -H "Authorization: JWT %DOCKER_TOKEN%"
+  REM set DOCKER_IMAGE_NAME=%~1
+  REM set DOCKER_TAG=%~2
+  REM call %LIB_SCRIPT_DIR%curl "https://hub.docker.com/v2/repositories/%DOCKER_ORG%/%DOCKER_IMAGE_NAME%/tags/%DOCKER_TAG%/" ^
+  REM     -X DELETE ^
+  REM     -H "Authorization: JWT %DOCKER_TOKEN%"
 goto :eof
 
 
