@@ -10,7 +10,8 @@ docker_login(){
   DOCKER_PASSWORD=$2
   DOCKER_ORG=$3
   docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-  DOCKER_TOKEN=`curl -s -H "Content-Type: application/json" -X POST -d "$(_docker_login_data)" "https://hub.docker.com/v2/users/login/" | jq -r .token`
+  DOCKER_TOKEN=`curl -s -H "Content-Type: application/json" \
+    -X POST -d "$(_docker_login_data)" "https://hub.docker.com/v2/users/login/" | jq -r .token`
   DOCKER_PASSWORD=none
 }
 
@@ -29,11 +30,11 @@ EOF
 }
 
 docker_remove_tag () {
-  IMAGE_NAME=$2
-  TAG=$3
+  IMAGE_NAME=$1
+  TAG=$2
   curl "https://hub.docker.com/v2/repositories/${DOCKER_ORG}/${IMAGE_NAME}/tags/${TAG}/" \
-  -X DELETE \
-  -H "Authorization: JWT ${DOCKER_TOKEN}"
+    -X DELETE \
+    -H "Authorization: JWT ${DOCKER_TOKEN}"
 }
 
 docker_push(){
