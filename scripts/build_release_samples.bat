@@ -19,45 +19,44 @@ call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR
 REM Setup the target directory
 echo Setup target dir
 set HAM_RELEASE_TARGET=%ROOT_DIR%\release\%HAM_VERSION%
-rm -rf %HAM_RELEASE_TARGET% || true
+call %UTILS_LIB% rm_rf %HAM_RELEASE_TARGET%   2>&1 1>NUL
 
 set QUOTES_DIR=%ROOT_DIR%\samples\quotes
-mkdir -p %HAM_RELEASE_TARGET%\quotes
-cp -R $QUOTES_DIR\core %HAM_RELEASE_TARGET%\quotes\
+call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\quotes
+call %UTILS_LIB% cp_r %QUOTES_DIR%\core %HAM_RELEASE_TARGET%\quotes\
+
 
 set CALENDAR_DIR=%ROOT_DIR%\samples\calendar
+call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar
 cd %CALENDAR_DIR%
-mvn clean install
+call mvn clean install
 
 echo Setup gateway
-mkdir -p %HAM_RELEASE_TARGET%\calendar\gateway
+call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\gateway
 cd %CALENDAR_DIR%\gateway\target\
-ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
-export JAR_NAME=$(head -1 tmp_txt)
-cp -f %CALENDAR_DIR%\docker\application.properties.gateway %HAM_RELEASE_TARGET%\calendar\gateway\application.properties
-cp -f %CALENDAR_DIR%\gateway\target\gateway-*.jar %HAM_RELEASE_TARGET%\calendar\gateway\
+call %UTILS_LIB% get_jar_name JAR_NAME
+copy /y %CALENDAR_DIR%\docker\application.properties.gateway %HAM_RELEASE_TARGET%\calendar\gateway\application.properties 1>NUL
+copy /y %CALENDAR_DIR%\gateway\target\gateway-*.jar %HAM_RELEASE_TARGET%\calendar\gateway\ 1>NUL
 echo echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\gateway\run.bat
 
 echo Setup fe
-mkdir -p %HAM_RELEASE_TARGET%\calendar\fe
+call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\fe
 cd %CALENDAR_DIR%\fe\target\
-ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
-export JAR_NAME=$(head -1 tmp_txt)
-cp -f %CALENDAR_DIR%\docker\application.properties.fe %HAM_RELEASE_TARGET%\calendar\fe\application.properties
-cp -f %CALENDAR_DIR%\fe\target\fe-*.jar %HAM_RELEASE_TARGET%\calendar\fe\
+call %UTILS_LIB% get_jar_name JAR_NAME
+copy /y %CALENDAR_DIR%\docker\application.properties.fe %HAM_RELEASE_TARGET%\calendar\fe\application.properties 1>NUL
+copy /y %CALENDAR_DIR%\fe\target\fe-*.jar %HAM_RELEASE_TARGET%\calendar\fe\ 1>NUL
 echo echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\fe\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\fe\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\fe\run.bat
 
 echo Setup be
-mkdir -p %HAM_RELEASE_TARGET%\calendar\be
+call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\be
 cd %CALENDAR_DIR%\be\target\
-ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
-export JAR_NAME=$(head -1 tmp_txt)
-cp -f %CALENDAR_DIR%\docker\application.properties.be %HAM_RELEASE_TARGET%\calendar\be\application.properties
-cp -f %CALENDAR_DIR%\be\target\be-*.jar %HAM_RELEASE_TARGET%\calendar\be\
+call %UTILS_LIB% get_jar_name JAR_NAME
+copy /y %CALENDAR_DIR%\docker\application.properties.be %HAM_RELEASE_TARGET%\calendar\be\application.properties  1>NUL
+copy /y %CALENDAR_DIR%\be\target\be-*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
 echo echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.bat
@@ -65,11 +64,11 @@ echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.bat
 REM Prepare the compressed file
 echo Compress release file
 cd %ROOT_DIR%\release\%HAM_VERSION%
-tar -zcvf %ROOT_DIR%\release\ham-samples-%HAM_VERSION%.tar.gz . > %ROOT_DIR%\release\ham-samples-%HAM_VERSION%.log 2>1
+tar -zcvf %ROOT_DIR%\release\ham-samples-%HAM_VERSION%.tar.gz . >> %ROOT_DIR%\release\ham-%HAM_VERSION%.log  2>&1
 
 REM Cleanup
 echo Cleanup
-rm -rf %HAM_RELEASE_TARGET% || true
+call %UTILS_LIB% rm_rf %HAM_RELEASE_TARGET%   2>&1 1>NUL
 
 REM Restore previous dir
 cd %START_LOCATION%

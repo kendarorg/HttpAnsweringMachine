@@ -65,7 +65,7 @@ echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/be/run.bat
 # Prepare the compressed file
 echo Compress release file
 cd $ROOT_DIR/release/$HAM_VERSION
-tar -zcvf "$ROOT_DIR"/release/ham-samples-"$HAM_VERSION".tar.gz . > "$ROOT_DIR"/release/ham-samples-"$HAM_VERSION".log 2>1
+tar -zcvf "$ROOT_DIR"/release/ham-samples-"$HAM_VERSION".tar.gz . >> "$ROOT_DIR"/release/ham-samples-"$HAM_VERSION".log 2>1
 
 # Cleanup
 echo Cleanup
