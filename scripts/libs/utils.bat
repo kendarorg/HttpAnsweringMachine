@@ -28,6 +28,17 @@ goto :eof
     endlocal
 goto :eof
 
+:get_jar_name
+    set UTILS_SCRIPT_DIR=%cd%
+    dir /b %UTILS_SCRIPT_DIR%\*.jar > .temp.txt
+    set /p UTILS_JAR_NAME=<.temp.txt
+    set "%~1=%UTILS_JAR_NAME%"
+    del /s /f /q .temp.txt 2>&1 1>NUL
+goto :eof
+
+:cp_r
+    xcopy /e /k /h /i %~1 %~2 2>&1 1>NUL
+goto :eof
 
 :exit
 exit /b
