@@ -1,21 +1,14 @@
 @echo off
+
 set LIB_SCRIPT_DIR=%~dp0\win64\
 
 call:%~1 %~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9 %~10
 goto exit
 
-
-
-
-
 set DOCKER_USERNAME=none
 set DOCKER_LOGIN=none
 set DOCKER_TOKEN=none
 set DOCKER_ORG=none
-
-
-
-goto :eof
 
 :docker_login
   set DOCKER_USERNAME=%~1
@@ -28,7 +21,7 @@ goto :eof
     -X POST -d "{\"username\":\"%DOCKER_USERNAME%\",\"password\":\"%DOCKER_PASSWORD%\"}" "https://hub.docker.com/v2/users/login/" ^
     -o .tmp.txt
   call %LIB_SCRIPT_DIR%jq-win64 -r .token .tmp.txt > .tmp2.txt
-  set /p DOCKER_TOKEN= < .tmp2.txt
+  set /p DOCKER_TOKEN=<.tmp2.txt
   del /S /Q .tmp.txt 2>&1 1>NUL
   del /S /Q .tmp2.txt 2>&1 1>NUL
   set DOCKER_PASSWORD=none
@@ -62,7 +55,7 @@ goto :eof
     call docker push %DOCKER_ORG%/%IMAGE_NAME%:snapshot
     echo Tagging image %IMAGE_NAME%
     call docker tag %IMAGE_NAME% %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
-    call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%-SNAPSHOT %DOCKER_ORG%/%IMAGE_NAME%:snapshot
+    call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:snapshot
   ) else (
     echo Pushing image tag %IMAGE_NAME%
     call docker push %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%

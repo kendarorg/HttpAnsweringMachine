@@ -50,7 +50,7 @@ docker_push(){
     docker push $DOCKER_ORG/%IMAGE_NAME%:snapshot
     echo Tagging image $IMAGE_NAME
     docker tag %IMAGE_NAME% $DOCKER_ORG/%IMAGE_NAME%:v%VERSION_NUMBER%
-    docker tag $DOCKER_ORG/%IMAGE_NAME%:v%VERSION_NUMBER%-SNAPSHOT $DOCKER_ORG/%IMAGE_NAME%:snapshot
+    docker tag $DOCKER_ORG/%IMAGE_NAME%:v%VERSION_NUMBER% $DOCKER_ORG/%IMAGE_NAME%:snapshot
   else
     echo Pushing image tag $IMAGE_NAME
     docker push $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER
