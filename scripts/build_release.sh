@@ -53,7 +53,7 @@ chmod +x "$HAM_RELEASE_TARGET"/simpledns/*.sh
 # Prepare the compressed file
 echo Compress release file
 cd $ROOT_DIR/release/$HAM_VERSION
-tar -zcvf "$ROOT_DIR"/release/ham-"$HAM_VERSION".tar.gz . > "$ROOT_DIR"/release/ham-"$HAM_VERSION".log 2>1
+tar -zcvf "$ROOT_DIR"/release/ham-"$HAM_VERSION".tar.gz . >> "$ROOT_DIR"/release/ham-"$HAM_VERSION".log 2>1
 
 # Cleanup
 echo Cleanup
