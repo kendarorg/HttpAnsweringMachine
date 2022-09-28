@@ -1,13 +1,15 @@
 @ECHO OFF
-SET mypath=%~dp0
-cd %mypath%
 
-copy /Y %mypath%samples\sampleapp\standalone.external.json %mypath%ham\app\target\external.json
-start java "-Dloader.path=%mypath%ham\app\target\libs"  -Dloader.main=org.kendar.Main  ^
-  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
-	-jar %APPJAR% org.springframework.boot.loader.PropertiesLauncher
+REM Initialize
+set SCRIPT_DIR=%~dp0
+cd %SCRIPT_DIR%
 
-cd %mypath%
-:end
+REM Retrieve the jar name
+dir /b %SCRIPT_DIR%\*.jar > .temp.txt
+set /p JAR_NAME=<.temp.txt
+del /s /f /q .temp.txt 2>&1 1>NUL
 
-pause
+# Start the application
+java "-Dloader.path=%SCRIPT_DIR%/libs"  -Dloader.main=org.kendar.Main  ^
+	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
+		  -jar %JAR_NAME% org.springframework.boot.loader.PropertiesLauncher
