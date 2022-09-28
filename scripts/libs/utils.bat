@@ -17,8 +17,11 @@ goto :eof
 
 :rm_rf
     set UTILS_TODEL_DIR=%~1
-    del /s /f /q "%UTILS_TODEL_DIR%\*.*"
-    for /f %%f in ('dir /ad /b %UTILS_TODEL_DIR%\') do rd /s /q %UTILS_TODEL_DIR%\%%f
+    IF exist %UTILS_TODEL_DIR% (
+        del /s /f /q "%UTILS_TODEL_DIR%\*.*"
+        for /f %%f in ('dir /ad /b %UTILS_TODEL_DIR%\') do rd /s /q %UTILS_TODEL_DIR%\%%f
+        rmdir /S /Q %UTILS_TODEL_DIR%
+    )
 goto :eof
 
 

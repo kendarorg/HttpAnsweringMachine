@@ -19,7 +19,8 @@ call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR
 REM Setup the target directory
 echo Setup target dir
 set HAM_RELEASE_TARGET=%ROOT_DIR%\release\%HAM_VERSION%
-call %UTILS_LIB% rm_rf %HAM_RELEASE_TARGET%   2>&1 1>NUL
+call %UTILS_LIB% rm_rf %HAM_RELEASE_TARGET%
+ REM > NUL  2>&1 1>NUL
 
 set QUOTES_DIR=%ROOT_DIR%\samples\quotes
 call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\quotes
@@ -68,7 +69,7 @@ tar -zcvf %ROOT_DIR%\release\ham-samples-%HAM_VERSION%.tar.gz . >> %ROOT_DIR%\re
 
 REM Cleanup
 echo Cleanup
-call %UTILS_LIB% rm_rf %HAM_RELEASE_TARGET%   2>&1 1>NUL
+call %UTILS_LIB% rm_rf %HAM_RELEASE_TARGET%  > NUL 2>&1
 
 REM Restore previous dir
 cd %START_LOCATION%
