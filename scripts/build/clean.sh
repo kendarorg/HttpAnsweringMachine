@@ -28,6 +28,7 @@ echo Building ham
 mvn clean
 rm -rf $ROOT_DIR/ham/jsplugins
 rm -rf $ROOT_DIR/ham/libs
+rm -rf $ROOT_DIR/ham/callogs
 
 # Build samples
 cd $ROOT_DIR/samples/calendar
