@@ -39,7 +39,7 @@ cd %CALENDAR_DIR%\gateway\target\
 call %UTILS_LIB% get_jar_name JAR_NAME
 copy /y %CALENDAR_DIR%\docker\application.properties.gateway %HAM_RELEASE_TARGET%\calendar\gateway\application.properties 1>NUL
 copy /y %CALENDAR_DIR%\gateway\target\gateway-*.jar %HAM_RELEASE_TARGET%\calendar\gateway\ 1>NUL
-echo echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
+echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
 echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\gateway\run.bat
 
@@ -49,7 +49,7 @@ cd %CALENDAR_DIR%\fe\target\
 call %UTILS_LIB% get_jar_name JAR_NAME
 copy /y %CALENDAR_DIR%\docker\application.properties.fe %HAM_RELEASE_TARGET%\calendar\fe\application.properties 1>NUL
 copy /y %CALENDAR_DIR%\fe\target\fe-*.jar %HAM_RELEASE_TARGET%\calendar\fe\ 1>NUL
-echo echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\fe\run.sh
+echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\fe\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\fe\run.sh
 echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\fe\run.bat
 
@@ -59,7 +59,7 @@ cd %CALENDAR_DIR%\be\target\
 call %UTILS_LIB% get_jar_name JAR_NAME
 copy /y %CALENDAR_DIR%\docker\application.properties.be %HAM_RELEASE_TARGET%\calendar\be\application.properties  1>NUL
 copy /y %CALENDAR_DIR%\be\target\be-*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
-echo echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\be\run.sh
+echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.bat
 

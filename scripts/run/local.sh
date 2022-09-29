@@ -23,8 +23,10 @@ ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 rm tmp_txt || true
 
+if [ -z ${JSON_CONFIG+x} ]; export JSON_CONFIG=$ROOT_DIR/ham/external.json;
+
 # Start the application
 java "-Dloader.path=$HAM_LIBS_DIR"  -Dloader.main=org.kendar.Main  \
 	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
-	  	"-Djsonconfig=$ROOT_DIR/ham/external.json" \
+	  	"-Djsonconfig=$JSON_CONFIG" \
 		  -jar "$HAM_DIR/$JAR_NAME" org.springframework.boot.loader.PropertiesLauncher

@@ -18,7 +18,7 @@ set /p JAR_NAME=<.temp.txt
 REM Start the application
 start java "-Dloader.path%ROOT_PATH%\ham\libs"  -Dloader.main=org.kendar.Main  ^
 	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
-	  	"-Djsonconfig=%CALENDAR_PATH%\calendar.ham.json" ^
+	  	"-Djsonconfig=%CALENDAR_PATH%\calendar.external.json" ^
 		-jar %JAR_NAME% org.springframework.boot.loader.PropertiesLauncher
 REM Wait for startup
 timeout /t 10 /nobreak
