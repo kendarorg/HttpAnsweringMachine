@@ -9,8 +9,13 @@ goto :eof
 
 
 :set_parent_dir
+    set UTILS_CURDIR=%cd%
     set UTILS_SCRIPT_DIR=%~1
-    for %%a in (%UTILS_SCRIPT_DIR:~0,1%) do set "UTILS_RETURN_DIR=%%~dpa"
+    cd %UTILS_SCRIPT_DIR%
+    cd ..
+    set UTILS_RETURN_DIR=%cd%
+    REM for %%a in (%UTILS_SCRIPT_DIR:~0,1%) do set "UTILS_RETURN_DIR=%%~dpa"
+    cd %UTILS_CURDIR%
     IF %UTILS_RETURN_DIR:~-1%==\ SET UTILS_RETURN_DIR=%UTILS_RETURN_DIR:~0,-1%
     set "%~2=%UTILS_RETURN_DIR%"
 goto :eof

@@ -1,5 +1,9 @@
 @echo off
 
-FOR %%A IN ("%~dp0.") DO SET INIT_CURRENT_DIR=%%~dpA
+set CURRENT_DIR=%cd%
+cd %~dp0
+cd ..
+set INIT_CURRENT_DIR=%cd%
+cd %CURRENT_DIR%
 IF %INIT_CURRENT_DIR:~-1%==\ SET INIT_CURRENT_DIR=%INIT_CURRENT_DIR:~0,-1%
 set SCRIPT_DIR=%INIT_CURRENT_DIR%
