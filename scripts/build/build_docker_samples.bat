@@ -17,7 +17,18 @@ pause
 
 REM Extra initializations
 call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR
-set DOCKER_ROOT=%ROOT_DIR%\docker\images
 
-echo NOT YET IMPLEMENTED
-pause
+echo Build calendar sample images
+cd %ROOT_DIR%\samples\calendar\docker\multi
+docker build --rm -t ham.sampleapp.multi -f multimaster.Dockerfile ..\..\
+docker build  --rm -t ham.sampleapp.fe -f fe.Dockerfile ..\..\
+docker build  --rm -t ham.sampleapp.be -f be.Dockerfile ..\..\
+docker build  --rm -t ham.sampleapp.gateway -f gateway.Dockerfile ..\..\
+
+cd %ROOT_DIR%\samples\calendar\docker\single
+docker build -t ham.sampleapp.single -f Dockerfile ..\..\
+
+echo Build quotes sample images
+cd %ROOT_DIR%\samples\quotes\docker\multi
+docker build  --rm -t ham.quotes.master -f multimaster.Dockerfile ..\..\
+docker build  --rm -t ham.quotes.core -f core.Dockerfile ..\..\
