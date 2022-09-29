@@ -143,7 +143,7 @@ public class SSLController implements FilteringClass {
     eventQueue.handle(new SSLChangedEvent());
   }
 
-  //TODO https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309
+  //TODO: Generate SSL Certificate https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309
   @HttpMethodFilter(
           phase = HttpFilterType.API,
           pathAddress = "/api/sslgen",

@@ -7,9 +7,12 @@ To start at once installing the demo applications just download and run with "do
 * [Calendar app](https://github.com/kendarorg/HttpAnsweringMachine/../HttpAnsweringMachine/raw/main/samples/calendar/hub_composer/docker-compose.yml). The application is at http://www.sample.test
 * [Quotes app](https://github.com/kendarorg/HttpAnsweringMachine/../HttpAnsweringMachine/raw/main/samples/quotes/hub_composer/docker-compose.yml). The application is at http://ham.quotes.master
 
-Then connect using as socks5 proxy [dockerip]:1080
+Then connect using a socks5 proxy [dockerip]:1080 or http/s proxy [dockerip]:1081 
 
-* For chrome you can launch it (as ONLY instance): [chrome location]chrome "--proxy-server=socks5://dockerip:1080"
+If you are running the docker images not on the local machine, or you are connecting 
+from a vm to another vm with docker you can use Openvpn (see down in the page)
+
+* For chrome and socks5 you can launch it (as ONLY instance): [chrome location]chrome "--proxy-server=socks5://dockerip:1080"
 
 
 ## Base (ham.base)
@@ -76,9 +79,10 @@ The "external.json" file should be set inside the /etc/app/ham/app/ directory to
 This can be used to connect directly through OpenVpn to the internal HAM network
 
 The configuration file is located in docker/images/mainuser.local.ovpn configure to access localhost via 
-the exposed 3000 port
+the exposed 3000 port. Remember to change the ip inside mainuser.local.ovpn to the one of the machine you
+are running the docker on
 
-Does not need passwords and gives you full access to the internal network and dnses
+Does not need passwords and gives you full access to the internal network and DNS registered by ham
 
 ## Apache (ham.apache)
 

@@ -1,3 +1,5 @@
+//TODO: Calendar sample single
+
 Situated into samples/calendar/docker/single folder
 
 This demonstrates the creation of a HAM server with infrastructure in a single container 

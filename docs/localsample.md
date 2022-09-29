@@ -1,113 +1,36 @@
+
 This demonstrates the creation of a HAM server with infrastructure on localhost
 to test/verify applications
 
-## 1: Hosts file and DNS
+## 1: Download the last release
 
-Prepare the hosts file containing the needed entries to run the test
+Download the two tar.gz, ham and ham-samples from [github releases](https://github.com/kendarorg/HttpAnsweringMachine/releases)
+and extract them in the same directory
 
-    # The ham server
-    127.0.0.1   www.local.test
-    # The fe
-    127.0.0.1   www.sample.test
-    # The api gateway
-    127.0.0.1   gateway.sample.test
-    # The fe
-    127.0.0.1   be.sample.test
+## 2: Starting the sample application
 
-Same goes to the dns configuration in external.json adding the voices to the "resolved" stuff
+Go on the "calendar" directory and run "runcalendar.bat/sh"
 
-The blocked domains are the one pinged obsessively by chrome/firefox/windows/edge to check
-for the existence of websites.. utterly useless for our objectives
+This will start
 
-{
-    "id": "dns",
-    "system": true,
-    "active": true,
-    "port": 53,
-    "logQueries": false,
-    "extraServers": [],
-    "blocked": [
-      "wpad.*",
-      "*.trafficmanager.net"
-    ],
-    "resolved": [
-      {
-        "id": "0",
-        "dns": "www.local.test",
-        "ip": "127.0.0.1"
-      },
-      {
-        "id": "3",
-        "dns": "www.sample.test",
-        "ip": "127.0.0.1"
-      },
-      {
-        "id": "4",
-        "dns": "gateway.sample.test",
-        "ip": "127.0.0.1"
-      },
-      {
-        "id": "5",
-        "dns": "be.sample.test",
-        "ip": "127.0.0.1"
-      }
-    ]
-  } 
+* ham (localhost:80)
+* be (localhost:8100) proxied by http://localhost/int/be.sample.test 
+* gateway (localhost:8090) proxied by http://localhost/int/gateway.sample.test
+* fe (localhost:8080)
 
-## 2: Proxying
+## 3: Record some interaction
 
-Then should setup the proxying to let HAM the responsibility to call the application
-given the DNS names
+You can now check ham application going on http://localhost
 
-Inside the external.json should set the proxy section should do like this. Notice that you can
-set the test address to something like www.google.com to force everything to be always on
+* Going on [ham proxyes](http://localhost/proxy/index.html) you can verify that all proxies are ok if they don't work just "Refresh Status"
+* Navigation on the [application](http://localhost:8080) you can try some interaction
+* Then you can create a recording on the [recording page](http://localhost/plugins/recording) 
+* Once you create the recording you can start recording!
+* Go then on the [application](http://localhost:8080) and do some interaction
+* And stop the recording!
+* Now you will se all the calls on the just created recording
 
-  {
-    "id": "proxy",
-    "system": true,
-    "proxies": [
-      {
-        "id": "2",
-        "when": "http://gateway.sample.test",
-        "where": "http://127.0.0.1:8090",
-        "test": "127.0.0.1:8090"
-      },
-      {
-        "id": "3",
-        "when": "http://be.sample.test",
-        "where": "http://127.0.0.1:8100",
-        "test": "127.0.0.1:8100"
-      },
-      {
-        "id": "4",
-        "when": "http://www.sample.test",
-        "where": "http://127.0.0.1:8080",
-        "test": "127.0.0.1:8080"
-      }
-    ]
-  },
-
-## 3: Starting the sample application
-
-You can then start the projects into samples/sampleapp as standard java applications or with your IDE
-e.g. 
-
-    java -jar be-3.0.8-SNAPSHOT.jar
-
-* be
-* gateway
-* fe
-
-## 4: Starting HAM
-
-To start HAM you should use the Spring Boot propery loader
-
-    java "-Dloader.path=FULLPATHTOHAMROOT/libs/"  -Dloader.main=org.kendar.Main  \
-        -jar app-2.1.3.jar org.springframework.boot.loader.PropertiesLauncher
-
-Following this approach the libs files will be loaded as library
-
-## 5: Testing 
+## 4: Go on with all the ways to play! 
 
 Now you can start testing everything with [PACT](plugins/replayer/pact.md) 
 or [NULL infrastructure tests](plugins/replayer/null.md)
