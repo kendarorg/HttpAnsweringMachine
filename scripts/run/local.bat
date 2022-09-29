@@ -11,7 +11,7 @@ set UTILS_LIB=%SCRIPT_DIR%\libs\utils.bat
 echo This will run the local ham
 echo Target version: %HAM_VERSION%
 
-pause
+IF "%JSON_CONFIG%"=="" pause
 
 REM Extra initializations
 call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR

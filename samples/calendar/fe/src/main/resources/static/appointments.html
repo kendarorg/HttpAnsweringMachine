@@ -166,13 +166,15 @@
                 }
             });
         })
+
     $.ajax({
-        url: "/api/settings",
+        url: "api/settings",
         type: 'GET',
         success: function(settings) {
 
-            apiHost = settings["appointment"];
-            useresHost = settings["employee"];
+            apiHost=settings["appointment"];
+            useresHost=settings["employee"];
+            feLocation=settings["feLocation"];
 
             scriptsTable.load();
         }});
