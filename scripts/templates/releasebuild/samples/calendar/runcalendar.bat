@@ -16,7 +16,7 @@ cd %ROOT_PATH%\ham
 dir /b app*.jar > .temp.txt
 set /p JAR_NAME=<.temp.txt
 REM Start the application
-start java "-Dloader.path%ROOT_PATH%\ham\libs"  -Dloader.main=org.kendar.Main  ^
+start java "-Dloader.path=%ROOT_PATH%\ham\libs"  -Dloader.main=org.kendar.Main  ^
 	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
 	  	"-Djsonconfig=%CALENDAR_PATH%\calendar.external.json" ^
 		-jar %JAR_NAME% org.springframework.boot.loader.PropertiesLauncher
@@ -28,7 +28,7 @@ Rem start be
 cd %CALENDAR_PATH%\be
 dir /b be*.jar > .temp.txt
 set /p JAR_NAME=<.temp.txt
-start java -jar %JAR_NAME%
+start java -jar %JAR_NAME% --spring.config.location=file:///%cd%\application.properties
 REM Wait for startup
 timeout /t 10 /nobreak
 cd %ROOT_PATH%
@@ -37,7 +37,7 @@ Rem start gateway
 cd %CALENDAR_PATH%\gateway
 dir /b gateway*.jar > .temp.txt
 set /p JAR_NAME=<.temp.txt
-start java -jar %JAR_NAME%
+start java -jar %JAR_NAME% --spring.config.location=file:///%cd%\application.properties
 REM Wait for startup
 timeout /t 10 /nobreak
 cd %ROOT_PATH%
@@ -46,7 +46,7 @@ Rem start fe
 cd %CALENDAR_PATH%\fe
 dir /b fe*.jar > .temp.txt
 set /p JAR_NAME=<.temp.txt
-start java -jar %JAR_NAME%
+start java -jar %JAR_NAME% --spring.config.location=file:///%cd%\application.properties
 REM Wait for startup
 timeout /t 10 /nobreak
 cd %ROOT_PATH%

@@ -51,21 +51,15 @@
     "proxies": [
       {
         "id": "2",
-        "when": "http://gateway.sample.test",
+        "when": "http://localhost/int/gateway.sample.test",
         "where": "http://127.0.0.1:8090",
         "test": "127.0.0.1:8090"
       },
       {
         "id": "3",
-        "when": "http://be.sample.test",
+        "when": "http://localhost/int/be.sample.test",
         "where": "http://127.0.0.1:8100",
         "test": "127.0.0.1:8100"
-      },
-      {
-        "id": "4",
-        "when": "http://www.sample.test",
-        "where": "http://127.0.0.1:8080",
-        "test": "127.0.0.1:8080"
       }
     ]
   },
@@ -111,7 +105,7 @@
   {
     "id": "global",
     "system": true,
-    "localAddress": "www.local.test",
+    "localAddress": "localhost",
     "logging": {
       "logPath": null,
       "logRoundtripsPath": "calllogs",

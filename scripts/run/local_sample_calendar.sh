@@ -11,6 +11,7 @@ START_LOCATION=$(pwd)
 # Extra initializations
 ROOT_DIR=$( cd -- "$( dirname -- "$SCRIPT_DIR" )" &> /dev/null && pwd )
 
+export TEMPLATES_LOCATION=$SCRIPT_DIR/templates/standalone
 export JSON_CONFIG=$SCRIPT_DIR/templates/standalone/calendar.external.json
 
 $SCRIPT_DIR/run/local.sh &
@@ -22,26 +23,26 @@ echo localhost:1081 to appreciate the example
 
 pause
 
-Rem start be
+# start be
 cd $CALENDAR_PATH/be/target
 ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 rm tmp_txt || true
-java -jar $JAR_NAME &
+java -jar $JAR_NAME  --spring.config.location=file://$TEMPLATES_LOCATION/be.application.properties &
 cd $START_LOCATION
 
-Rem start gateway
+# start gateway
 cd $CALENDAR_PATH/gateway/target
 ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 rm tmp_txt || true
-java -jar $JAR_NAME &
+java -jar $JAR_NAME --spring.config.location=file://$TEMPLATES_LOCATION/gateway.application.properties &
 cd $START_LOCATION
 
-Rem start fe
+# start fe
 cd $CALENDAR_PATH/fe/target
 ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 rm tmp_txt || true
-java -jar $JAR_NAME &
+java -jar $JAR_NAME --spring.config.location=file://$TEMPLATES_LOCATION/fe.application.properties &
 cd $START_LOCATION

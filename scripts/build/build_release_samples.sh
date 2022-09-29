@@ -30,14 +30,18 @@ cd $CALENDAR_DIR
 mvn clean install
 
 echo Setup runner
-cp -f $SCRIPT_DIR\templates\releasebuild\samples\*.* $HAM_RELEASE_TARGET%\ 1>NUL
+cp -f $SCRIPT_DIR/templates/releasebuild/samples/*.* $HAM_RELEASE_TARGET/ 1>NUL
+
+
+copy /y $SCRIPT_DIR/templates/releasebuild/samples/calendar/*.* $HAM_RELEASE_TARGET/calendar 1>NUL
+copy /y $SCRIPT_DIR/templates/standalone/calendar.external.json $HAM_RELEASE_TARGET/calendar 1>NUL
 
 echo Setup gateway
 mkdir -p $HAM_RELEASE_TARGET/calendar/gateway
 cd $CALENDAR_DIR/gateway/target/
 ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
-cp -f $CALENDAR_DIR/docker/application.properties.gateway $HAM_RELEASE_TARGET/calendar/gateway/application.properties
+cp -f $SCRIPT_DIR/templates/standalone/gateway.application.properties $HAM_RELEASE_TARGET/calendar/gateway/application.properties
 cp -f $CALENDAR_DIR/gateway/target/gateway-*.jar $HAM_RELEASE_TARGET/calendar/gateway/
 echo "#!/bin/bash" > $HAM_RELEASE_TARGET/calendar/gateway/run.sh
 echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/gateway/run.sh
@@ -48,7 +52,7 @@ mkdir -p $HAM_RELEASE_TARGET/calendar/fe
 cd $CALENDAR_DIR/fe/target/
 ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
-cp -f $CALENDAR_DIR/docker/application.properties.fe $HAM_RELEASE_TARGET/calendar/fe/application.properties
+cp -f $SCRIPT_DIR/templates/standalone/fe.application.properties $HAM_RELEASE_TARGET/calendar/fe/application.properties
 cp -f $CALENDAR_DIR/fe/target/fe-*.jar $HAM_RELEASE_TARGET/calendar/fe/
 echo "#!/bin/bash" > $HAM_RELEASE_TARGET/calendar/fe/run.sh
 echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/fe/run.sh
@@ -59,7 +63,7 @@ mkdir -p $HAM_RELEASE_TARGET/calendar/be
 cd $CALENDAR_DIR/be/target/
 ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
-cp -f $CALENDAR_DIR/docker/application.properties.be $HAM_RELEASE_TARGET/calendar/be/application.properties
+cp -f $SCRIPT_DIR/templates/standalone/be.application.properties $HAM_RELEASE_TARGET/calendar/be/application.properties
 cp -f $CALENDAR_DIR/be/target/be-*.jar $HAM_RELEASE_TARGET/calendar/be/
 echo "#!/bin/bash" > $HAM_RELEASE_TARGET/calendar/be/run.sh
 echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/be/run.sh
