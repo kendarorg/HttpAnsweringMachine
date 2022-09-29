@@ -2,7 +2,7 @@
 
 REM Initialize
 set START_LOCATION=%cd%
-set SCRIPT_DIR=%~dp0
+call %~dp0\init.bat
 
 REM Includes
 call %SCRIPT_DIR%\libs\version.bat
