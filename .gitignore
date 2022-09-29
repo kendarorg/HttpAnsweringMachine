@@ -32,6 +32,15 @@ hs_err_pid*
 /ham/pacts
 /ham/app-*.jar
 
+/derbydata
+/jsplugins
+/libs
+/recording
+/replayerdata
+/calllogs
+/pacts
+/*.jar
+
 
 target
 !/externals/json-schema-inferrer-0.1.4.jar
