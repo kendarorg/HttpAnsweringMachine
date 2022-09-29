@@ -39,4 +39,5 @@ services:
       - sampleappnet
     ports:
       - "1080:1080"
+      - "1081:1081"
       - "5025:5025"

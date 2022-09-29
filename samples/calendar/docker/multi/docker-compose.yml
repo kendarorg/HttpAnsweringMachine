@@ -40,6 +40,7 @@ services:
     ports:
       - "5025:5025"
       - "1080:1080"
+      - "1081:1081"
   ham.sampleapp.multi.gateway:
     container_name: gateway.sample.test
     privileged: true

@@ -109,6 +109,7 @@ services:
       - 127.0.0.1
     ports:
       - "1080:1080"
+      - "1081:1081"
     networks:
       - multisampleappnet
     environment:
