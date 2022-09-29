@@ -204,14 +204,12 @@ public class HamStarter {
                                 while((x = fromProcess.read()) != -1)
                                     System.out.print((char)x);
                             } catch (IOException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
                             try {
                                 while((x = fromError.read()) != -1)
                                     System.err.print((char)x);
                             } catch (IOException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
 

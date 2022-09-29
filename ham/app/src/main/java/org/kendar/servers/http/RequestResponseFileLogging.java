@@ -91,7 +91,6 @@ public class RequestResponseFileLogging implements FilteringClass {
     var st = serRes.getResponseText();
     var sb = serRes.getResponseBytes();
 
-    //TODO ERROR RESETTING req/res
     if (requestLogger.isTraceEnabled()) {
 
     }else if (requestLogger.isDebugEnabled()

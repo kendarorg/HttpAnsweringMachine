@@ -150,6 +150,7 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 * [Running on localhost](docs/localsample.md)
 * [Running in docker single instance](docs/docker/single.md)
 * [Running in docker multiple instances](docs/docker/multi.md)
+* [Running in docker with apache](docs/docker/quotes.md)
 * [Recording session](docs/plugins/replayer/recording.md)
 * [PACT test](docs/plugins/replayer/pact.md) To verify against changes on real server
 * [NULL test](ddocs/plugins/replayer/null.md) To test without any infrastructure

@@ -146,7 +146,7 @@ public class SwaggerApi  implements FilteringClass {
                         .example(res.example())));
       }
     }
-    //TODO Security
+
     operation.parameters(parameters);
     if(doc.tags()!=null && doc.tags().length>0) {
       operation.tags(Arrays.asList(doc.tags()));
@@ -374,7 +374,6 @@ public class SwaggerApi  implements FilteringClass {
 
   private Schema getSchemaHam(Class<?> bodyRequest) {
     if(bodyRequest == byte[].class){
-      //FIXME
       return new Schema().type("string").format("byte");
 
     }
@@ -385,7 +384,6 @@ public class SwaggerApi  implements FilteringClass {
       return new Schema().type(bodyRequest.getSimpleName().toLowerCase(Locale.ROOT));
     }
     if(bodyRequest == String.class){
-      //FIXME
       return new Schema().type(bodyRequest.getSimpleName().toLowerCase(Locale.ROOT));
     }
     if(bodyRequest.isArray()){
