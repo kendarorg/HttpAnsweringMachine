@@ -97,7 +97,7 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.25.3.0/24
+        - subnet: 172.25.7.0/24
 services:
   ham.sampleapp.multi.proxy:
     container_name: ham.sampleapp.multi.proxy

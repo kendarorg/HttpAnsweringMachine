@@ -3,7 +3,7 @@ FROM ham.master:latest
 
 RUN echo 3.0.8-SNAPSHOT
 
-COPY ./docker/single/calendar.single.external.json /etc/app/ham/app/
+COPY ./docker/single/calendar.single.external.json /etc/app/ham/app/external.json
 
 RUN /etc/startservice.sh --app=be --run=/etc/app/be/be.sh --capturelogs
 COPY ./docker/single/be.sh /etc/app/be/

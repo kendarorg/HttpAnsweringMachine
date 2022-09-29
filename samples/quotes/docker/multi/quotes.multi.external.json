@@ -136,6 +136,7 @@
   {
     "id": "socks5.server",
     "port": 1080,
+    "httpProxyPort": 1081,
     "active": true
   }
 ]
