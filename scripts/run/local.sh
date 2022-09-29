@@ -8,7 +8,7 @@ START_LOCATION=$(pwd)
 . $SCRIPT_DIR/libs/version.sh
 . $SCRIPT_DIR/libs/utils.sh
 
-echo This will publish jars on the kendar maven repo. Ctrl+C to exit
+echo This will run the local ham
 echo Target version: $HAM_VERSION
 
 pause

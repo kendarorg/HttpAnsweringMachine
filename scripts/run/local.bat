@@ -8,7 +8,7 @@ REM Includes
 call %SCRIPT_DIR%\libs\version.bat
 set UTILS_LIB=%SCRIPT_DIR%\libs\utils.bat
 
-echo This will run the application standalone from sources
+echo This will run the local ham
 echo Target version: %HAM_VERSION%
 
 pause
