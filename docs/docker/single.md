@@ -1,11 +1,11 @@
-Situated into samples/sampleapp/docker folder
+Situated into samples/calendar/docker/single folder
 
 This demonstrates the creation of a HAM server with infrastructure in a single container 
 plus an OpenVpn server to connect to it
 
 To build the basic images you can find the docker/images/ImagesBuild.(bat|sh)
 
-To run the sample you can use samples/sampleapp/docker/ImagesRun.(bat|sh)
+To run the sample you can use samples/calendar/docker/single/ImagesRun.(bat|sh)
 
 ## 1: Hosts file and DNS
 
