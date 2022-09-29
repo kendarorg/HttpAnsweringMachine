@@ -29,5 +29,5 @@ docker build -t ham.sampleapp.single -f Dockerfile ../../
 
 echo Build quotes sample images
 cd $ROOT_DIR/samples/quotes/docker/multi
-docker build  --rm -t ham.quotes.master -f master.Dockerfile ../../
+docker build  --rm -t ham.quotes.master -f multimaster.Dockerfile ../../
 docker build  --rm -t ham.quotes.core -f core.Dockerfile ../../
