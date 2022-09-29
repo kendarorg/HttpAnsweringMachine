@@ -2,7 +2,7 @@
 
 # Initialize
 START_LOCATION=$(pwd)
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+. $(dirname "$0")/init.sh
 
 # Includes
 . $SCRIPT_DIR/libs/version.sh

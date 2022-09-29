@@ -12,3 +12,9 @@ function read_password(){
   stty "$stty_orig"    # restore terminal setting.
   echo $passwd
 }
+
+function set_parent_dir(){
+  INIT_START_DIR=$1
+  INIT_START_DIR=$( cd -- "$( dirname -- "$INIT_START_DIR" )" &> /dev/null && pwd )
+  echo $INIT_START_DIR
+}
