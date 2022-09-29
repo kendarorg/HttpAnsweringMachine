@@ -38,7 +38,7 @@ cp -f $CALENDAR_DIR/docker/application.properties.gateway $HAM_RELEASE_TARGET/ca
 cp -f $CALENDAR_DIR/gateway/target/gateway-*.jar $HAM_RELEASE_TARGET/calendar/gateway/
 echo echo "#!/bin/bash" > $HAM_RELEASE_TARGET/calendar/gateway/run.sh
 echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/gateway/run.sh
-echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/gateway/run.bat
+echo "call java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/gateway/run.bat
 
 echo Setup fe
 mkdir -p $HAM_RELEASE_TARGET/calendar/fe
@@ -49,7 +49,7 @@ cp -f $CALENDAR_DIR/docker/application.properties.fe $HAM_RELEASE_TARGET/calenda
 cp -f $CALENDAR_DIR/fe/target/fe-*.jar $HAM_RELEASE_TARGET/calendar/fe/
 echo echo "#!/bin/bash" > $HAM_RELEASE_TARGET/calendar/fe/run.sh
 echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/fe/run.sh
-echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/fe/run.bat
+echo "call java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/fe/run.bat
 
 echo Setup be
 mkdir -p $HAM_RELEASE_TARGET/calendar/be
@@ -60,7 +60,7 @@ cp -f $CALENDAR_DIR/docker/application.properties.be $HAM_RELEASE_TARGET/calenda
 cp -f $CALENDAR_DIR/be/target/be-*.jar $HAM_RELEASE_TARGET/calendar/be/
 echo echo "#!/bin/bash" > $HAM_RELEASE_TARGET/calendar/be/run.sh
 echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/be/run.sh
-echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/be/run.bat
+echo "call java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/be/run.bat
 
 # Prepare the compressed file
 echo Compress release file
