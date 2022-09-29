@@ -40,6 +40,7 @@ services:
     ports:
       - "5025:5025"
       - "1080:1080"
+      - "1081:1081"
   ham.quotes.core:
     container_name: ham.quotes.core
     privileged: true
