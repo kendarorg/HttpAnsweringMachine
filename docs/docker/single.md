@@ -79,7 +79,7 @@ This will be a bit harder.
         driver: bridge
         ipam:
         config:
-            - subnet: 172.25.0.0/24
+            - subnet: 172.25.8.0/24
     services:
     ham.sampleapp.single.openvpn:
         container_name: ham.sampleapp.single.openvpn
