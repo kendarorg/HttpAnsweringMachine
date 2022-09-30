@@ -63,7 +63,7 @@
       },
       {
         "id": "4",
-        "when": "http://www.local.test",
+        "when": "http://www.sample.test",
         "where": "http://127.0.0.1:8080",
         "test": "127.0.0.1:8080"
       }
