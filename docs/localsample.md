@@ -1,13 +1,22 @@
 
+
+
 This demonstrates the creation of a HAM server with infrastructure on localhost
 to test/verify applications
 
-## 1: Download the last release
+## 0.Index
+* [1: Download the last release](#a0)
+* [2: Starting the sample application](#a02)
+* [3: Configure proxy](#a03)
+* [4: Record some interaction](#a04)
+* [10: Go on with all the ways to play!](#a10)
+
+## 1: Download the last release<a id="a01"></a>
 
 Download the two tar.gz, ham and ham-samples from [github releases](https://github.com/kendarorg/HttpAnsweringMachine/releases)
 and extract them in the same directory
 
-## 2: Starting the sample application
+## 2: Starting the sample application<a id="a02"></a>
 
 Go on the "calendar" directory and run "runcalendar.bat/sh"
 
@@ -18,7 +27,7 @@ This will start
 * gateway (localhost:8090) proxied by http://localhost/int/gateway.sample.test
 * fe (localhost:8080)
 
-## 3: Configure proxy
+## 3: Configure proxy<a id="a03"></a>
 
 * Chrome:
   * Install [Proxy Switch Omega](https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif)
@@ -38,7 +47,7 @@ This will start
   * Check the "Proxy DNS when using SOCKS v5" flag
   * Clean the settings when needed
 
-## 4: Record some interaction
+## 4: Record some interaction<a id="a04"></a>
 
 You can now check ham application going on http://www.local.test
 
@@ -50,7 +59,7 @@ You can now check ham application going on http://www.local.test
 * And stop the recording!
 * Now you will se all the calls on the just created recording
 
-## 5: Go on with all the ways to play! 
+## 10: Go on with all the ways to play!<a id="a10"></a>
 
 Now you can start testing everything with [PACT](plugins/replayer/pact.md) 
 or [NULL infrastructure tests](plugins/replayer/null.md)
