@@ -12,7 +12,7 @@ to test/verify applications
 * [5: Install SSL root certificate](#a05)
 * [6: Fake google!](#a06)
 * [7: Bing-ify google!](#a07)
-* [9: Go on with all the ways to play!](#a08)
+* [8: Go on with all the ways to play!](#a08)
 
 ## 1: Download the last release<a id="a01"></a>
 
