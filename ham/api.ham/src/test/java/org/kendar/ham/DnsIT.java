@@ -12,8 +12,6 @@ public class DnsIT {
     }
     private HamBasicBuilder hamBuilder = GlobalSettings.builder();
 
-    //
-
     @Test
     public void testAddingDnsFix() throws HamException {
         final String WEIRD_NAME = "casper.core-workload.qa.aws.lmn";
