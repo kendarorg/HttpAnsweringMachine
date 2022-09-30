@@ -1,6 +1,6 @@
 FROM ham.base
 
-RUN echo ham.client 3.0.8-SNAPSHOT
+RUN echo ham.client 3.1.0
 
 # Setup localdns
 RUN mkdir -p /etc/app/simpledns/
