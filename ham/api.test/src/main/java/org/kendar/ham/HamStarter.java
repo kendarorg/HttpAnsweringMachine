@@ -82,7 +82,7 @@ public class HamStarter {
         var commandLine = new ArrayList<String>();
         commandLine.add(findJava());
 
-        var externalJsonPath  =Path.of(getRootPath(caller),"ham","external.json").toString();
+        var externalJsonPath  =Path.of(getRootPath(caller),"ham","test.external.json").toString();
         commandLine.add("-Djsonconfig="+externalJsonPath);
         var libsPath  =Path.of(getRootPath(caller),"ham","libs").toString();
         commandLine.add("-Dloader.path="+libsPath);
