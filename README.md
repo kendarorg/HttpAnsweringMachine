@@ -10,19 +10,21 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
-* [Super fast start](#hyper-fast-start)
+* [Super fast start](docs/localsample.md)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
-
-:boom: New! Added swagger UI and Java APIs Here the swagger definition: [HAM Swagger](https://www.kendar.org/swagger/?model=https://raw.githubusercontent.com/kendarorg/HttpAnsweringMachine/main/docs/map.json) :zap: 
+* Maven repos (sorry for the invalid SSL... too $$$. On the www is present)
+  * [Release](https://maven.kendar.org/maven2/releases)
+  * [Snapshot](https://maven.kendar.org/maven2/snapshots)
+* [Swagger](https://www.kendar.org/swagger/?model=https://raw.githubusercontent.com/kendarorg/HttpAnsweringMachine/main/docs/map.json) :zap: 
 
 ## Features
 
 * Proxying of any kind of http/https calls
-* Internal socks5 proxy to run even dockerless
+* Internal socks5/http/https proxy to run even dockerless
 * Spy mode to log all traffic  
 * Configurable Https hijacking with auto generated SSL certificates
 * Redirection of services through other destinations  
-* Java or Javascript plugins to intercept and modify any http/s call
+* Java and Javascript plugins to intercept and modify any http/s call
 * Record and replay api flows, with automatic stateful flows detection
 * Custom oidc "authorize all" server
 * Embedded derby server for any need
@@ -31,6 +33,7 @@ The AnsweringMachine is built to overcome this troubles
 * Configurable DNS hijacking (when not using VPNs) or...generated hosts file
 * Internal events system
 * Support for brotli encoding and jackson-smile
+* Multiple server ports configurable
 
 ### Docker for development
 
@@ -47,29 +50,6 @@ The AnsweringMachine is built to overcome this troubles
 * Can use all the real configurations without changes via the Https/DNS hijacking
 * Can be used an alternative dns server on docker, supposed you add on the machines
 connecting to it the [Special DNS Server](docs/dnsserver.md)
-
-## Hyper-Fast start
-
-* Install JDK11 and maven
-* On windows when checking out remember to set  git core.autocrlf to false
-* If you want to try the docker version install
-	* Docker
-	* [OpenVPN client](https://openvpn.net/vpn-client)
-* Make all running Make.sh/bat
-	* Choose if you want to build the docker images
-* Run everything starting Run.sh/bat
-	* If you are running locally modify the hosts file adding the following
-
-		127.0.0.1  www.local.test
-		127.0.0.1  www.sample.test
-		127.0.0.1  gateway.sample.test
-		127.0.0.1  be.sample.test
-	* If on docker 
-		* Import the profile in docker/images/openvpn/mainuser.local.ovpn on OpenVPN
-		* After the startup connect through the profile just installed
-* Then navigate
-	* [http://www.local.test](http://www.local.test) For the main UI
-	* [http://www.sample.test](http://www.sample.test) For the sample application
 
 ## History 
 
@@ -127,14 +107,12 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 * [Events Queue](docs/events.md)
 * [Utils](docs/utils.md)
 
-## Rest APIs
-
 ## Plugins
 
 * [OIDC](docs/plugins/oidc.md)
 * [Replayer](docs/plugins/replayer/replayer.md)
 * [Js filters](docs/plugins/js.md)
-* [Socks5 Proxy](docs/plugins/socks5.md)
+* [Socks5/http/https Proxy](docs/plugins/socks5.md)
 * [Custom Java plugins](docs/plugins/java.md)
   * [Java filters](docs/plugins/java/jfilters.md)
   * [Java pages](docs/plugins/java/jstatic.md)
@@ -148,9 +126,9 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 ## Examples
   
 * [Sample Application](docs/sample.md)
-* [Running on localhost](docs/localsample.md)
-* [Running in docker single instance](docs/docker/single.md)
-* [Running in docker multiple instances](docs/docker/multi.md)
+  * [Running on localhost](docs/localsample.md)
+  * [Running in docker single instance](docs/docker/single.md)
+  * [Running in docker multiple instances](docs/docker/multi.md)
 * [Running in docker with apache](docs/docker/quotes.md)
 * [Recording session](docs/plugins/replayer/recording.md)
 * [PACT test](docs/plugins/replayer/pact.md) To verify against changes on real server

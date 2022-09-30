@@ -60,6 +60,12 @@
         "when": "http://localhost/int/be.sample.test",
         "where": "http://127.0.0.1:8100",
         "test": "127.0.0.1:8100"
+      },
+      {
+        "id": "4",
+        "when": "http://www.local.test",
+        "where": "http://127.0.0.1:8080",
+        "test": "127.0.0.1:8080"
       }
     ]
   },
@@ -105,7 +111,7 @@
   {
     "id": "global",
     "system": true,
-    "localAddress": "localhost",
+    "localAddress": "www.local.test",
     "logging": {
       "logPath": null,
       "logRoundtripsPath": "calllogs",
