@@ -10,7 +10,7 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
-* [Presentation and super quick start (Power Point)](https://github.com/kendarorg/HttpAnsweringMachine/../HttpAnsweringMachine/raw/main/docs/HAM.pptx)
+* [Super fast start](#hyper-fast-start)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
 
 :boom: New! Added swagger UI and Java APIs Here the swagger definition: [HAM Swagger](https://www.kendar.org/swagger/?model=https://raw.githubusercontent.com/kendarorg/HttpAnsweringMachine/main/docs/map.json) :zap: 
