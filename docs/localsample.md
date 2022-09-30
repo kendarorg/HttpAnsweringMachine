@@ -9,7 +9,10 @@ to test/verify applications
 * [2: Starting the sample application](#a02)
 * [3: Configure proxy](#a03)
 * [4: Record some interaction](#a04)
-* [10: Go on with all the ways to play!](#a10)
+* [5: Install SSL root certificate](#a05)
+* [6: Fake google!](#a06)
+* [7: Bing-ify google!](#a07)
+* [9: Go on with all the ways to play!](#a08)
 
 ## 1: Download the last release<a id="a01"></a>
 
@@ -59,7 +62,57 @@ You can now check ham application going on http://www.local.test
 * And stop the recording!
 * Now you will se all the calls on the just created recording
 
-## 10: Go on with all the ways to play!<a id="a10"></a>
+## 5: Install SSL root certificate<a id="a05"></a>
+
+* Download [the certificate](http://www.local.test/api/certificates/ca.der)
+* Open the zip file and install as "Root certificate authority"
+  * Firefox:
+    * Go on Settings and search for certificates
+    * Then "View certificates" and "Import"
+    * Check "Trust to identify websites"
+  * Chrome:
+    * Go on Settings and search for certificates
+    * Open the "Security" and "Manage certificates" then "Import"
+    * "Place all certificates in the following store" then "Browse"
+    * Select the "Trusted Root Certification Authorities"
+
+## 6: Fake google!<a id="a05"></a>
+
+Go on the [certificates configuration page](http://www.local.test/certificates/index.html)
+and add a new website with value www.google.com
+
+Add a new dns mapping on the [dns configuration](http://www.local.test/dns/index.html) with
+
+* ip: 127.0.0.1
+* dns: www.google.com
+
+Restart the browser to be sure that all DNS caches are cleaned!
+
+Go on https://www.google.com
+
+When you click on the locker near the address you will see that the website 
+certificate is generated through "CN=root-cert"... OUR AUTHORITY :)
+
+## 7: Bing-ify google!<a id="a07"></a>
+
+Go on the [js-filters plugin](http://www.local.test/plugins/jsfilter/index.html) and 
+create a "Google" filter.
+
+* Phase: POST_CALL (change the content received)
+* Host Address: www.google.com
+* Path Address: empty the field
+* Script. Notice the "" added to the response text, this is just to force a cast from Java String to Javscript string
+<pre>
+var regex=/\/images\/branding\/[_a-zA-Z0-9]+\/[_a-zA-Z0-9]+\/[_a-zA-Z0-9]+\.png/gm;
+var responseText = response.getResponseText()+"";
+var changedText = responseText.replace(regex,'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Bing_logo_%282016%29.svg/320px-Bing_logo_%282016%29.svg.png');
+response.setResponseText(changedText);
+return false;
+</pre>
+
+Navigte to https://www.google.com with BING! logo :D
+
+## 8: Go on with all the ways to play!<a id="a08"></a>
 
 Now you can start testing everything with [PACT](plugins/replayer/pact.md) 
 or [NULL infrastructure tests](plugins/replayer/null.md)
