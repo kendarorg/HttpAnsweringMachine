@@ -12,7 +12,7 @@ To run the sample you can use samples/calendar/docker/multi/ImagesRun.(bat|sh)
 
 ## 1: Hosts file and DNS
 
-The setup for the external.json will be like the [localsample](../localsample.md) but without the hosts file
+The setup for the external.json will be like the [localsample](../generated/localsample.md) but without the hosts file
 
 ## 2: Proxying
 

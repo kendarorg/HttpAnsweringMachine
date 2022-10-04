@@ -10,7 +10,7 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
-* [Super fast start](docs/localsample.md)
+* [Super fast start](docs/generated/localsample.md)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
 * Maven repos (sorry for the invalid SSL... too $$$. On the www is present)
   * [Release](https://maven.kendar.org/maven2/releases)
@@ -126,7 +126,7 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 ## Examples
   
 * [Sample Application](docs/sample.md)
-  * [Running on localhost](docs/localsample.md)
+  * [Running on localhost](docs/generated/localsample.md)
   * [Running in docker single instance](docs/docker/single.md)
   * [Running in docker multiple instances](docs/docker/multi.md)
 * [Running in docker with apache](docs/docker/quotes.md)
