@@ -6,7 +6,10 @@ In this demo you will
 * Start the sample application
 * Connect to it through proxy
 * Record the interactions of the sample application
-* Intercept Google calls and replace the logo!
+* Setup a null-infrastructure test with automatic consistency verification. Testing automatically with
+  * Simulated Front-end with Back-end 
+  * Simulated Back-end to Back-end interaction
+* Run stateful reproducible tests!
 
 ## Download the last release<a id="quickinstall_01"></a>
 
@@ -83,64 +86,51 @@ You can now check ham application going on http://www.local.test
 * Now you will se all the calls on the just created recording
 * Save the recording as "Sample.json"
 
-## Install SSL root certificate<a id="installcertificate_01"></a>
+## Automatically test and verify backend<a id="automaticcalendar_01"></a>
 
-Download [the certificate](http://www.local.test/api/certificates/ca.der)
-Open the zip file and install as "Root certificate authority"
+### Run the interaction with back-end (stateless)
 
-* Firefox:
-    * Go on Settings and search for certificates
-    * Then "View certificates" and "Import"
-    * Check "Trust to identify websites"
-* Chrome:
-    * Go on Settings and search for certificates
-    * Open the "Security" and "Manage certificates" then "Import"
-    * "Place all certificates in the following store" then "Browse"
-    * Select the "Trusted Root Certification Authorities"
+* Stop the application and restart!
+* Delete the script and re-upload Sample.json
+* Stop the "fa" application
+* Stop the "gateway" application
+* Select all the calls to http://www.sample.test with the filter and set them as "Stimulator"
+* Select all the calls to http://localhost/int/gateway.sample.test with the filter and set them as "Stimulated"
+* Add the verification of the message on the "Stimulator" page
+* Download and save the script as PactFe.json
+* Run the pact test
+* Check the results!
 
+### Fail the test!
 
-## Intercept Google!<a id="interceptgoogle_01"></a>
+* Find the response to a front-end call
+* Insert in the "response body" something fake like
 
-Go on the [certificates configuration page](http://www.local.test/certificates/index.html)
-and add a new website with value www.google.com
-
-<img src="../images/add_google_certificate.gif" width="200"/>
-
-Add a new dns mapping on the [dns configuration](http://www.local.test/dns/index.html) with
-
-* ip: 127.0.0.1
-* dns: www.google.com
-
-<img src="../images/add_google_dns.gif" width="200"/>
-
-Restart the browser to be sure that all DNS caches are cleaned!
-
-Go on https://www.google.com
-
-When you click on the locker near the address you will see that the website
-certificate is generated through "CN=root-cert"... OUR AUTHORITY :)
-
-<img src="../images/google_fake_cert.gif" width="200"/>
-
-## Bing-ify google!<a id="bingifygoogle_01"></a>
-
-Go on the [js-filters plugin](http://www.local.test/plugins/jsfilter/index.html) and
-create a "Google" filter.
-
-* Phase: POST_CALL (change the content received)
-* Host Address: www.google.com
-* Path Address: /
-* Script. Notice the "" added to the response text, this is just to force a cast from Java String to Javscript string
 <pre>
-var regex=/\/images\/branding\/[_a-zA-Z0-9]+\/[_a-zA-Z0-9]+\/[_a-zA-Z0-9]+\.png/gm;
-var responseText = response.getResponseText()+"";
-var changedText = responseText.replace(regex,'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Bing_logo_%282016%29.svg/320px-Bing_logo_%282016%29.svg.png');
-response.setResponseText(changedText);
-return false;
+{"test":"fail"}
 </pre>
 
-<img src="../images/google_bing_filter.gif" width="200"/>
+* Run the pact test
+* Check the FAILED results!
 
-Navigate to https://www.google.com with BING! logo :D
+### Run the interaction back-end to back-end (stateful)
 
-<img src="../images/google_bing.gif" width="200"/>
+* Stop the application and restart!
+* Delete the script and re-upload Sample.json
+* Stop the "fa" application
+* Stop the "gateway" application
+* Select all the calls to http://localhost/int/be.sample.test with the filter and set them as "Stimulator"
+* Select all the calls to http://localhost/int/gateway.sample.test with the filter and set them as "Stimulated"
+* Add the verification of the message on the "Stimulator" page
+* Download and save the script as PactBeStatic.json
+* Run the pact test
+* Check the results!
+* Re-run it and... see errors
+
+### Setup the statefulness
+
+* Add variables here and there
+* Download and save the script as PactBeDynamic.json
+* Run the pact test
+* Check the results!
+* Re-run it multiple times and see Successes

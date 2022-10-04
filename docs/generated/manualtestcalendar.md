@@ -6,7 +6,9 @@ In this demo you will
 * Start the sample application
 * Connect to it through proxy
 * Record the interactions of the sample application
-* Intercept Google calls and replace the logo!
+* Setup a null-infrastructure test. Testing manually with
+  * Simulated Back-end
+  * Simulated Back-end to Back-end interaction
 
 ## Download the last release<a id="quickinstall_01"></a>
 
@@ -83,64 +85,29 @@ You can now check ham application going on http://www.local.test
 * Now you will se all the calls on the just created recording
 * Save the recording as "Sample.json"
 
-## Install SSL root certificate<a id="installcertificate_01"></a>
+## Simulate the calendar back-end<a id="manualtestcalendar_01"></a>
 
-Download [the certificate](http://www.local.test/api/certificates/ca.der)
-Open the zip file and install as "Root certificate authority"
+### Test the interaction with back-end
 
-* Firefox:
-    * Go on Settings and search for certificates
-    * Then "View certificates" and "Import"
-    * Check "Trust to identify websites"
-* Chrome:
-    * Go on Settings and search for certificates
-    * Open the "Security" and "Manage certificates" then "Import"
-    * "Place all certificates in the following store" then "Browse"
-    * Select the "Trusted Root Certification Authorities"
+* Stop the application and restart!
+* Delete the script and re-upload Sample.json
+* Select all the calls to http://www.sample.test with the filter and delete them all
+* Select all the calls to http://localhost/int/gateway.sample.test with the filter and delete them all
+* Stop the "be" application
+* Stop the "gateway" application
+* Download and save the script as NullFe.json
+* Play the Script
+* Do the navigation as you did while recording
+* Everything will work as if be is up!
 
+### Test the interaction with gateway
 
-## Intercept Google!<a id="interceptgoogle_01"></a>
-
-Go on the [certificates configuration page](http://www.local.test/certificates/index.html)
-and add a new website with value www.google.com
-
-<img src="../images/add_google_certificate.gif" width="200"/>
-
-Add a new dns mapping on the [dns configuration](http://www.local.test/dns/index.html) with
-
-* ip: 127.0.0.1
-* dns: www.google.com
-
-<img src="../images/add_google_dns.gif" width="200"/>
-
-Restart the browser to be sure that all DNS caches are cleaned!
-
-Go on https://www.google.com
-
-When you click on the locker near the address you will see that the website
-certificate is generated through "CN=root-cert"... OUR AUTHORITY :)
-
-<img src="../images/google_fake_cert.gif" width="200"/>
-
-## Bing-ify google!<a id="bingifygoogle_01"></a>
-
-Go on the [js-filters plugin](http://www.local.test/plugins/jsfilter/index.html) and
-create a "Google" filter.
-
-* Phase: POST_CALL (change the content received)
-* Host Address: www.google.com
-* Path Address: /
-* Script. Notice the "" added to the response text, this is just to force a cast from Java String to Javscript string
-<pre>
-var regex=/\/images\/branding\/[_a-zA-Z0-9]+\/[_a-zA-Z0-9]+\/[_a-zA-Z0-9]+\.png/gm;
-var responseText = response.getResponseText()+"";
-var changedText = responseText.replace(regex,'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Bing_logo_%282016%29.svg/320px-Bing_logo_%282016%29.svg.png');
-response.setResponseText(changedText);
-return false;
-</pre>
-
-<img src="../images/google_bing_filter.gif" width="200"/>
-
-Navigate to https://www.google.com with BING! logo :D
-
-<img src="../images/google_bing.gif" width="200"/>
+* Stop the application and restart!
+* Delete the script and re-upload Sample.json
+* Select all the calls to http://www.sample.test with the filter and delete them all
+* Select all the calls to http://localhost/int/be.sample.test with the filter and delete them all
+* Stop the "gateway" application
+* Download and save the script as NullBe.json
+* Play the Script
+* Do the navigation as you did while recording
+* Everything will work as if gateway is up!
