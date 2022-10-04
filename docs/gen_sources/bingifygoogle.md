@@ -16,8 +16,8 @@ response.setResponseText(changedText);
 return false;
 </pre>
 
-<img src="../images/google_bing_filter.gif" width="300"/>
+<img src="../images/google_bing_filter.gif" width="200"/>
 
 Navigate to https://www.google.com with BING! logo :D
 
-<img src="../images/google_bing.gif" width="300"/>
+<img src="../images/google_bing.gif" width="200"/>
