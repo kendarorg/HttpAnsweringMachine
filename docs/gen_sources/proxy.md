@@ -6,8 +6,13 @@
     * Go to options
     * Add http and https proxy server with
         * Address: 12.0.0.1
-        * Port 1081
+        * Port 1081.
+      
+          <img alt="Ham Proxyes" src="../images/chrome_proxy.gif" width="300"/>
     * Select "proxy" from the extension menu and back to "direct" when you want to disconnect
+    * 
+      <img alt="Ham Proxyes" src="../images/chrome_proxy_switch.gif" width="100"/>
+     
 * Firefox
     * Navigate to [about:preferences](about:preferences)
     * Search for "proxy"
@@ -18,3 +23,5 @@
         * Port 1080
     * Check the "Proxy DNS when using SOCKS v5" flag
     * Clean the settings when needed
+  
+      <img alt="Ham Proxyes" src="../images/firefox_proxy.gif" width="300"/>
