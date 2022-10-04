@@ -81,7 +81,10 @@ You can now check ham application going on http://www.local.test
   * Back on employee, delete the employee too
 * And stop the recording!
 * Now you will se all the calls on the just created recording
-* Save the recording as "Sample.json"
+
+<img alt="Start recording" src="../images/calendar_recorded.gif" width="200"/>
+
+* "Download" the recording as "Sample.json"
 
 ## Install SSL root certificate<a id="installcertificate_01"></a>
 

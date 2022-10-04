@@ -8,7 +8,13 @@
 * Stop the "fa" application
 * Stop the "gateway" application
 * Select all the calls to http://www.sample.test with the filter and set them as "Stimulator"
+
+<img src="../images/remove_wwwsampletest.gif" width="300"/>
+
 * Select all the calls to http://localhost/int/gateway.sample.test with the filter and set them as "Stimulated"
+
+<img src="../images/remove_wwwsamplegateway.gif" width="300"/>
+
 * Add the verification of the message on the "Stimulator" page
 * Download and save the script as PactFe.json
 * Run the pact test
@@ -33,7 +39,13 @@
 * Stop the "fa" application
 * Stop the "gateway" application
 * Select all the calls to http://localhost/int/be.sample.test with the filter and set them as "Stimulator"
+
+<img src="../images/remove_wwwsamplebe.gif" width="300"/>
+
 * Select all the calls to http://localhost/int/gateway.sample.test with the filter and set them as "Stimulated"
+
+<img src="../images/remove_wwwsamplegateway.gif" width="300"/>
+
 * Add the verification of the message on the "Stimulator" page
 * Download and save the script as PactBeStatic.json
 * Run the pact test

@@ -6,7 +6,13 @@
 * Stop the application and restart!
 * Delete the script and re-upload Sample.json
 * Select all the calls to http://www.sample.test with the filter and delete them all
+
+<img src="../images/remove_wwwsampletest.gif" width="300"/>
+
 * Select all the calls to http://localhost/int/gateway.sample.test with the filter and delete them all
+
+<img src="../images/remove_wwwsamplegateway.gif" width="300"/>
+
 * Stop the "be" application
 * Stop the "gateway" application
 * Download and save the script as NullFe.json
@@ -16,10 +22,16 @@
 
 ### Test the interaction with gateway
 
-* Stop the application and restart!
+* Stop all the applications and restart!
 * Delete the script and re-upload Sample.json
 * Select all the calls to http://www.sample.test with the filter and delete them all
+
+<img src="../images/remove_wwwsampletest.gif" width="300"/>
+
 * Select all the calls to http://localhost/int/be.sample.test with the filter and delete them all
+
+<img src="../images/remove_wwwsamplebe.gif" width="300"/>
+
 * Stop the "gateway" application
 * Download and save the script as NullBe.json
 * Play the Script
