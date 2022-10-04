@@ -14,3 +14,5 @@ This will start
 * be (localhost:8100) proxied by http://localhost/int/be.sample.test
 * gateway (localhost:8090) proxied by http://localhost/int/gateway.sample.test
 * fe (localhost:8080)
+
+<img src="../images/start_sample.gif" width="300"/>

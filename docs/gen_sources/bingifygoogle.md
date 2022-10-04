@@ -6,7 +6,7 @@ create a "Google" filter.
 
 * Phase: POST_CALL (change the content received)
 * Host Address: www.google.com
-* Path Address: empty the field
+* Path Address: /
 * Script. Notice the "" added to the response text, this is just to force a cast from Java String to Javscript string
 <pre>
 var regex=/\/images\/branding\/[_a-zA-Z0-9]+\/[_a-zA-Z0-9]+\/[_a-zA-Z0-9]+\.png/gm;
@@ -16,4 +16,8 @@ response.setResponseText(changedText);
 return false;
 </pre>
 
+<img src="../images/google_bing_filter.gif" width="300"/>
+
 Navigate to https://www.google.com with BING! logo :D
+
+<img src="../images/google_bing.gif" width="300"/>
