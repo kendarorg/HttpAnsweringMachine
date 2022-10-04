@@ -5,7 +5,8 @@ cd %~dp0
 set TARGET=..\generated
 set SOURCE=..\gen_sources
 
-echo In this demo you will > %TARGET%\localsample.md
+type noedit.htm > %TARGET%\localsample.md
+echo In this demo you will >> %TARGET%\localsample.md
 type localsample.md >> %TARGET%\localsample.md
 type %SOURCE%\quickinstall.md >> %TARGET%\localsample.md
 type %SOURCE%\proxy.md >> %TARGET%\localsample.md
