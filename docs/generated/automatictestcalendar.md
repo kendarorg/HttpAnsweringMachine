@@ -84,7 +84,10 @@ You can now check ham application going on http://www.local.test
   * Back on employee, delete the employee too
 * And stop the recording!
 * Now you will se all the calls on the just created recording
-* Save the recording as "Sample.json"
+
+<img alt="Start recording" src="../images/calendar_recorded.gif" width="200"/>
+
+* "Download" the recording as "Sample.json"
 
 ## Automatically test and verify backend<a id="automaticcalendar_01"></a>
 
@@ -95,7 +98,13 @@ You can now check ham application going on http://www.local.test
 * Stop the "fa" application
 * Stop the "gateway" application
 * Select all the calls to http://www.sample.test with the filter and set them as "Stimulator"
+
+<img src="../images/remove_wwwsampletest.gif" width="300"/>
+
 * Select all the calls to http://localhost/int/gateway.sample.test with the filter and set them as "Stimulated"
+
+<img src="../images/remove_wwwsamplegateway.gif" width="300"/>
+
 * Add the verification of the message on the "Stimulator" page
 * Download and save the script as PactFe.json
 * Run the pact test
@@ -120,7 +129,13 @@ You can now check ham application going on http://www.local.test
 * Stop the "fa" application
 * Stop the "gateway" application
 * Select all the calls to http://localhost/int/be.sample.test with the filter and set them as "Stimulator"
+
+<img src="../images/remove_wwwsamplebe.gif" width="300"/>
+
 * Select all the calls to http://localhost/int/gateway.sample.test with the filter and set them as "Stimulated"
+
+<img src="../images/remove_wwwsamplegateway.gif" width="300"/>
+
 * Add the verification of the message on the "Stimulator" page
 * Download and save the script as PactBeStatic.json
 * Run the pact test

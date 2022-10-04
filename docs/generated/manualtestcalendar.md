@@ -83,7 +83,10 @@ You can now check ham application going on http://www.local.test
   * Back on employee, delete the employee too
 * And stop the recording!
 * Now you will se all the calls on the just created recording
-* Save the recording as "Sample.json"
+
+<img alt="Start recording" src="../images/calendar_recorded.gif" width="200"/>
+
+* "Download" the recording as "Sample.json"
 
 ## Simulate the calendar back-end<a id="manualtestcalendar_01"></a>
 
@@ -92,7 +95,13 @@ You can now check ham application going on http://www.local.test
 * Stop the application and restart!
 * Delete the script and re-upload Sample.json
 * Select all the calls to http://www.sample.test with the filter and delete them all
+
+<img src="../images/remove_wwwsampletest.gif" width="300"/>
+
 * Select all the calls to http://localhost/int/gateway.sample.test with the filter and delete them all
+
+<img src="../images/remove_wwwsamplegateway.gif" width="300"/>
+
 * Stop the "be" application
 * Stop the "gateway" application
 * Download and save the script as NullFe.json
@@ -102,10 +111,16 @@ You can now check ham application going on http://www.local.test
 
 ### Test the interaction with gateway
 
-* Stop the application and restart!
+* Stop all the applications and restart!
 * Delete the script and re-upload Sample.json
 * Select all the calls to http://www.sample.test with the filter and delete them all
+
+<img src="../images/remove_wwwsampletest.gif" width="300"/>
+
 * Select all the calls to http://localhost/int/be.sample.test with the filter and delete them all
+
+<img src="../images/remove_wwwsamplebe.gif" width="300"/>
+
 * Stop the "gateway" application
 * Download and save the script as NullBe.json
 * Play the Script
