@@ -11,11 +11,11 @@ To run the sample you can use samples/calendar/docker/single/ImagesRun.(bat|sh)
 
 ## 1: Hosts file and DNS
 
-The setup for the external.json will be like the [localsample](../localsample.md) but without the hosts file
+The setup for the external.json will be like the [localsample](../generated/localsample.md) but without the hosts file
 
 ## 2: Proxying
 
-The setup for the external.json will be like the [localsample](../localsample.md) 
+The setup for the external.json will be like the [localsample](../generated/localsample.md) 
 
 ## 3: Starting the sample application
 
