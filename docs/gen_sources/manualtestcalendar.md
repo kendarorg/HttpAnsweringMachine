@@ -1,38 +1,38 @@
 
 ## Simulate the calendar back-end<a id="manualtestcalendar_01"></a>
 
-### Test the interaction with back-end
+### Test the interaction between front and mock gateway
 
 * Stop the application and restart!
 * Delete the script and re-upload Sample.json
-* Select all the calls to http://www.sample.test with the filter and delete them all
+* Select all the calls to www.sample.test with the filter and delete them all
 
 <img src="../images/remove_wwwsampletest.gif" width="300"/>
 
-* Select all the calls to http://localhost/int/gateway.sample.test with the filter and delete them all
+* Select all the calls to path /int/be.sample.test with the filter and delete them all
 
-<img src="../images/remove_wwwsamplegateway.gif" width="300"/>
+<img src="../images/remove_wwwsamplebe.gif" width="300"/>
 
 * Stop the "be" application
 * Stop the "gateway" application
-* Download and save the script as NullFe.json
+* Download and save the script as NullGateway.json
 * Play the Script
 * Do the navigation as you did while recording
 * Everything will work as if be is up!
 
-### Test the interaction with gateway
+### Test the interaction between fe-gateway and mock be
 
 * Stop all the applications and restart!
 * Delete the script and re-upload Sample.json
-* Select all the calls to http://www.sample.test with the filter and delete them all
+* Select all the calls to www.sample.test with the filter and delete them all
 
 <img src="../images/remove_wwwsampletest.gif" width="300"/>
 
-* Select all the calls to http://localhost/int/be.sample.test with the filter and delete them all
+* Select all the calls to path /int/gateway.sample.test with the filter and delete them all
 
-<img src="../images/remove_wwwsamplebe.gif" width="300"/>
+<img src="../images/remove_wwwsamplegateway.gif" width="300"/>
 
-* Stop the "gateway" application
+* Stop the "be" application
 * Download and save the script as NullBe.json
 * Play the Script
 * Do the navigation as you did while recording

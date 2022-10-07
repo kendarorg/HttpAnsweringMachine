@@ -26,6 +26,13 @@ This will start
 
 <img src="../images/start_sample.gif" width="200"/>
 
+## The calendar sample project
+
+It's composed of three parts
+
+* FE, that calls gateway for all its needs
+* GATEWAY, that acts a "middleman" between FE and BE
+* BE, with the database that is called only by the BE
 ## Configure proxy<a id="proxy_01"></a>
 
 * Chrome:

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+//FIXME Add has content
 public class Response {
     private byte[] responseBytes;
     private String responseText;
