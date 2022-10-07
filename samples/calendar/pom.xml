@@ -13,7 +13,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>ExampleApp</artifactId>
-    <version>3.1.0</version>
+    <version>3.1.1</version>
     <modules>
         <module>gateway</module>
         <module>fe</module>
