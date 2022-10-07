@@ -116,8 +116,6 @@ You can now check ham application going on http://www.local.test
 
 <img src="../images/null_gateway_prepare.gif" width="300"/>
 
-* Add the verification of the message on the "Stimulator" page
-* Download and save the script as NullTestGateway.json
 * Run the "Null test"
 * Check the [results](http://www.local.test/plugins/recording/results.html)!
 
@@ -136,7 +134,9 @@ You can now check ham application going on http://www.local.test
 
 <img src="../images/verify_structure_script.gif" height="300"/>
 
-* Re run the "Null test"!
+* Re run the "Null test"! And be happy
+* Check the [results](http://www.local.test/plugins/recording/results.html)!
+* Download and save the script as NullAutoTestGateway.json
 
 ### Fail the test!
 
