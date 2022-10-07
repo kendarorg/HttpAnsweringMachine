@@ -10,12 +10,27 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
-* [Super fast start](docs/generated/localsample.md)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
 * Maven repos (sorry for the invalid SSL... too $$$. On the www is present)
   * [Release](https://maven.kendar.org/maven2/releases)
   * [Snapshot](https://maven.kendar.org/maven2/snapshots)
-* [Swagger](https://www.kendar.org/swagger/?model=https://raw.githubusercontent.com/kendarorg/HttpAnsweringMachine/main/docs/map.json) :zap: 
+* [Swagger](https://www.kendar.org/swagger/?model=https://raw.githubusercontent.com/kendarorg/HttpAnsweringMachine/main/docs/map.json) :zap:
+
+## Ready-to-run examples
+
+* [Super fast start](docs/generated/localsample.md) 10 minutes
+  * Run the sample application (1 fe, 2 be)
+  * Record the interactions
+  * Bing-ify Google home page
+* [Fast recording/replaying](docs/generated/manualtestcalendar.md) 20 minutes
+  * Run the sample application (1 fe, 2 be)
+  * Run the front-end with a mocked back-end
+  * Run the front-end with a gateway and a mocked back-end
+* [Fast Automatic NullInfrastructure Test](docs/generated/automatictestcalendar.md) 30 minutes
+  * Run the sample application (1 fe, 2 be)
+  * Test the back-end in isolation
+  * Verify match between template data
+  * Test a real back-end in a stateful way
 
 ## Features
 
