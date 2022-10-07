@@ -1,24 +1,45 @@
 
 ## Automatically test and verify backend<a id="automaticcalendar_01"></a>
 
-### Run the interaction with back-end (stateless)
+### Run the interaction with back-end (stateless) and test the GATEWAY in isolation
 
 * Stop the application and restart!
 * Delete the script and re-upload Sample.json
 * Stop the "fa" application
 * Stop the "gateway" application
-* Select all the calls to http://www.sample.test with the filter and set them as "Stimulator"
+* Select all the calls to path /int/be.sample.test with the filter and set them as "Stimulated"
 
-<img src="../images/remove_wwwsampletest.gif" width="300"/>
+<img src="../images/remove_wwwsamplebe.gif" width="300"/>
 
-* Select all the calls to http://localhost/int/gateway.sample.test with the filter and set them as "Stimulated"
+* Select all the calls to path /int/gateway.sample.test with the filter and set them as "Stimulated"
 
 <img src="../images/remove_wwwsamplegateway.gif" width="300"/>
 
+* Thist a part of result:
+
+<img src="../images/null_gateway_prepare.gif" width="300"/>
+
 * Add the verification of the message on the "Stimulator" page
-* Download and save the script as PactFe.json
-* Run the pact test
-* Check the results!
+* Download and save the script as NullTestGateway.json
+* Run the "Null test"
+* Check the [results](http://www.local.test/plugins/recording/results.html)!
+
+### Verify the content structure
+
+* Select all the "Stimulator" calls (use "true" as filter on the "Stimulator" column)
+* Use the global Edit JS and set for all call the verification script in the "post" part
+
+<pre>
+    //FIXME Check has content
+    var diffEngine = new org.kendar.xml.DiffInferrer();
+    if(!expectedresponse.isBinaryResponse()){
+        diffEngine.diff(expectedresponse.getResponseText(),response.getResponseText());
+    }
+</pre>
+
+<img src="../images/verify_structure_script.gif" height="300"/>
+
+* Re run the "Null test"!
 
 ### Fail the test!
 
@@ -32,7 +53,7 @@
 * Run the pact test
 * Check the FAILED results!
 
-### Run the interaction back-end to back-end (stateful)
+### Test the BE in isolation (stateful)
 
 * Stop the application and restart!
 * Delete the script and re-upload Sample.json
@@ -42,9 +63,7 @@
 
 <img src="../images/remove_wwwsamplebe.gif" width="300"/>
 
-* Select all the calls to http://localhost/int/gateway.sample.test with the filter and set them as "Stimulated"
-
-<img src="../images/remove_wwwsamplegateway.gif" width="300"/>
+* Remove all the gateway and www.sample test calls
 
 * Add the verification of the message on the "Stimulator" page
 * Download and save the script as PactBeStatic.json

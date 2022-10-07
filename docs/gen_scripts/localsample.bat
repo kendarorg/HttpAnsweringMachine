@@ -9,6 +9,7 @@ type noedit.htm > %TARGET%
 echo In this demo you will >> %TARGET%
 type localsample.md >> %TARGET%
 type %SOURCE%\quickinstall.md >> %TARGET%
+type %SOURCE%\samplestructure.md >> %TARGET%
 type %SOURCE%\proxy.md >> %TARGET%
 type %SOURCE%\recordcalendar.md >> %TARGET%
 type %SOURCE%\installcertificate.md >> %TARGET%
