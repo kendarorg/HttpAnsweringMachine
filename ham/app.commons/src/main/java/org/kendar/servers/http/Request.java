@@ -3,7 +3,6 @@ package org.kendar.servers.http;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//FIXME Add has content
 public class Request {
 
     private long ms = Calendar.getInstance().getTimeInMillis();
@@ -281,5 +280,10 @@ public class Request {
             }
         }
         return null;
+    }
+
+    public boolean bodyExists(){
+        return (requestBytes!=null && requestBytes.length>0)||
+                (requestText!=null && requestText.length()>0);
     }
 }

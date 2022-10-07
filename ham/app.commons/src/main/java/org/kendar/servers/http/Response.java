@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-//FIXME Add has content
 public class Response {
     private byte[] responseBytes;
     private String responseText;
@@ -15,6 +14,11 @@ public class Response {
     private boolean binaryResponse;
 
     private List<String> messages = new ArrayList<>();
+
+    public boolean bodyExists(){
+        return (responseBytes!=null && responseBytes.length>0)||
+                (responseText!=null && responseText.length()>0);
+    }
 
 
     public byte[] getResponseBytes() {
