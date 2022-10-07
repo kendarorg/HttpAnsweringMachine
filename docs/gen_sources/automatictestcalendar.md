@@ -30,10 +30,10 @@
 * Use the global Edit JS and set for all call the verification script in the "post" part
 
 <pre>
-    //FIXME Check has content
     var diffEngine = new org.kendar.xml.DiffInferrer();
-    if(!expectedresponse.isBinaryResponse()){
-        diffEngine.diff(expectedresponse.getResponseText(),response.getResponseText());
+    diffEngine.diff(expectedresponse.getResponseText(),response.getResponseText());
+    if(expectedresponse.getStatusCode()!=response.getStatusCode()){
+        throw "Expected status code "+expectedresponse.getStatusCode()+" but received "+response.getStatusCode();
     }
 </pre>
 
