@@ -7,9 +7,9 @@ In this demo you will
 * Connect to it through proxy
 * Record the interactions of the sample application
 * Setup a null-infrastructure test with automatic consistency verification. Testing automatically with
-  * Simulated Front-end with Back-end 
-  * Simulated Back-end to Back-end interaction
-* Run stateful reproducible tests!
+* Simulated Front-end with Back-end
+  * Verify the message structures and auto test
+  * Edit a request/response to force a fail
 
 ## Download the last release<a id="quickinstall_01"></a>
 
@@ -138,40 +138,25 @@ You can now check ham application going on http://www.local.test
 * Check the [results](http://www.local.test/plugins/recording/results.html)!
 * Download and save the script as NullAutoTestGateway.json
 
-### Fail the test!
+### Fail the test! To verify it's real
 
-* Find the response to a front-end call
-* Insert in the "response body" something fake like
+* Find the response to a front-end call. A good example can be the first get call to the "/int/gateway.sample.test/api/v1/employees" after the POST inserting the new employee
+
+<img src="../images/edit_the_get.gif" width="300"/>
+
+* Click on the Edit button on the list and open the Request/Response editor
+
+<img src="../images/edit_response_data.gif" width="300"/>
+
+* Replace then the response data with something like this. Adding the field "unexpected"
 
 <pre>
-{"test":"fail"}
+[{"id":1,"name":"John","role":"Doe","unexpected":"field"}]
 </pre>
 
 * Run the pact test
 * Check the FAILED results!
 
-### Test the BE in isolation (stateful)
+<img src="../images/unexpected_field.gif" width="300"/>
 
-* Stop the application and restart!
-* Delete the script and re-upload Sample.json
-* Stop the "fa" application
-* Stop the "gateway" application
-* Select all the calls to http://localhost/int/be.sample.test with the filter and set them as "Stimulator"
 
-<img src="../images/remove_wwwsamplebe.gif" width="300"/>
-
-* Remove all the gateway and www.sample test calls
-
-* Add the verification of the message on the "Stimulator" page
-* Download and save the script as PactBeStatic.json
-* Run the pact test
-* Check the results!
-* Re-run it and... see errors
-
-### Setup the statefulness
-
-* Add variables here and there
-* Download and save the script as PactBeDynamic.json
-* Run the pact test
-* Check the results!
-* Re-run it multiple times and see Successes

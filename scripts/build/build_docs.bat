@@ -14,4 +14,3 @@ call %ROOT_DIR%\docs\gen_scripts\localsample.bat
 call %ROOT_DIR%\docs\gen_scripts\googlehack.bat
 call %ROOT_DIR%\docs\gen_scripts\manualtestcalendar.bat
 call %ROOT_DIR%\docs\gen_scripts\automatictestcalendar.bat
-call %ROOT_DIR%\docs\gen_scripts\android.bat
