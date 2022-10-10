@@ -31,9 +31,8 @@ The AnsweringMachine is built to overcome this troubles
   * Run the front-end with a gateway and a mocked back-end
 * [Fast Automatic NullInfrastructure Test](docs/generated/automatictestcalendar.md) 30 minutes
   * Run the sample application (1 fe, 2 be)
-  * Test the back-end in isolation
+  * Test a back-end in isolation
   * Verify match between template data
-  * Test a real back-end in a stateful way
 
 ## Features
 
