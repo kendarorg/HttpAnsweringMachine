@@ -12,6 +12,3 @@ type %SOURCE%\quickinstall.md >> %TARGET%
 type %SOURCE%\samplestructure.md >> %TARGET%
 type %SOURCE%\proxy.md >> %TARGET%
 type %SOURCE%\recordcalendar.md >> %TARGET%
-type %SOURCE%\installcertificate.md >> %TARGET%
-type %SOURCE%\interceptgoogle.md >> %TARGET%
-type %SOURCE%\bingifygoogle.md >> %TARGET%
