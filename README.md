@@ -18,9 +18,12 @@ The AnsweringMachine is built to overcome this troubles
 
 ## Ready-to-run examples
 
-* [Super fast start](docs/generated/localsample.md) 10 minutes
+* [Recording interactions](docs/generated/localsample.md) 10 minutes
   * Run the sample application (1 fe, 2 be)
   * Record the interactions
+* [Hacking google](docs/generated/hackgoogle.md) 10 minutes
+  * Hijack DNS
+  * Setup a fake root certificate authority
   * Bing-ify Google home page
 * [Fast recording/replaying](docs/generated/manualtestcalendar.md) 20 minutes
   * Run the sample application (1 fe, 2 be)
