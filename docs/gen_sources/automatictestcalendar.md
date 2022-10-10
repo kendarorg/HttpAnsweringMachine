@@ -41,19 +41,30 @@
 * Check the [results](http://www.local.test/plugins/recording/results.html)!
 * Download and save the script as NullAutoTestGateway.json
 
-### Fail the test!
+### Fail the test! To verify it's real
 
-* Find the response to a front-end call
-* Insert in the "response body" something fake like
+* Find the response to a front-end call. A good example can be the first get call to the "/int/gateway.sample.test/api/v1/employees" after the POST inserting the new employee
+
+<img src="../images/edit_the_get.gif" width="300"/>
+
+* Click on the Edit button on the list and open the Request/Response editor
+
+<img src="../images/edit_response_data.gif" width="300"/>
+
+* Replace then the response data with something like this. Adding the field "unexpected"
 
 <pre>
-{"test":"fail"}
+[{"id":1,"name":"John","role":"Doe","unexpected":"field"}]
 </pre>
 
 * Run the pact test
 * Check the FAILED results!
 
-### Test the BE in isolation (stateful)
+<img src="../images/unexpected_field.gif" width="300"/>
+
+### Test the BE in isolation (stateful) - and fail miserably
+
+It will work after the next chapter!
 
 * Stop the application and restart!
 * Delete the script and re-upload Sample.json
