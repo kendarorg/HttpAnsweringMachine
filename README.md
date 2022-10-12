@@ -21,11 +21,11 @@ The AnsweringMachine is built to overcome this troubles
 * [Recording interactions](docs/generated/localsample.md) 10 minutes
   * Run the sample application (1 fe, 2 be)
   * Record the interactions
-* [Hacking google](docs/generated/hackgoogle.md) 10 minutes
+* [Hacking google](docs/generated/googlehack.md) 10 minutes
   * Hijack DNS
   * Setup a fake root certificate authority
   * Bing-ify Google home page
-* [Intercept your phone!](docs/generated/hackgoogle.md) 10 minutes
+* [Intercept your phone!](docs/generated/googlehack_android.md) 10 minutes
   * Hijack DNS
   * Setup a fake root certificate authority
   * Bing-ify Google home page
