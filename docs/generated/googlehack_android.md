@@ -8,6 +8,8 @@ In this demo you will
 * Intercept all Android DNS calls
 * Intercept Google calls and replace the logo!
 
+**Remember to open the 1080 and 1081 ports on the machine with the HAM running!!**
+
 ## Download the last release<a id="quickinstall_01"></a>
 
 Download the tar.gz, ham only from [github releases](https://github.com/kendarorg/HttpAnsweringMachine/releases)
