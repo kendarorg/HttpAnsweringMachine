@@ -2,6 +2,7 @@
 ## Install SSL root certificate<a id="installcertificate_01"></a>
 
 Download [the certificate](http://www.local.test/api/certificates/ca.der)
+
 Open the zip file and install as "Root certificate authority"
 
 * Firefox:

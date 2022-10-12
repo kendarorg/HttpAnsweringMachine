@@ -20,4 +20,10 @@ return false;
 
 Navigate to https://www.google.com with BING! logo :D
 
+On Firefox
+
 <img src="../images/google_bing.gif" width="200"/>
+
+On Android
+
+<img src="../images/google_bing_android.gif" height="300"/>

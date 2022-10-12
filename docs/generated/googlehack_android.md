@@ -3,7 +3,9 @@
 In this demo you will 
 
 * Start locally HAM server
-* Connect to it through proxy
+* Install the HAM certificate on Android
+* Connect to HAM through proxy
+* Intercept all Android DNS calls
 * Intercept Google calls and replace the logo!
 
 ## Download the last release<a id="quickinstall_01"></a>
@@ -19,49 +21,58 @@ This will start ham with all services
 
 <img src="../images/start_sample_proxy.gif" width="200"/>
 
-## Install SSL root certificate<a id="installcertificate_01"></a>
+## Install SSL root certificate 
 
 Download [the certificate](http://www.local.test/api/certificates/ca.der)
 
-Open the zip file and install as "Root certificate authority"
+Open the zip file and send it via mail to your phone
 
-* Firefox:
-    * Go on Settings and search for certificates
-    * Then "View certificates" and "Import"
-    * Check "Trust to identify websites"
-* Chrome:
-    * Go on Settings and search for certificates
-    * Open the "Security" and "Manage certificates" then "Import"
-    * "Place all certificates in the following store" then "Browse"
-    * Select the "Trusted Root Certification Authorities"
-
+* Send via mail the .der file
+* Download it on your phone
+* Open your phone's Settings app
+* Solution 1
+    * Tap Security Advanced
+* Solution 2
+    * Security settings
+* Tap Encryption & credentials
+* Tap Install a certificate. Wi-Fi certificate
+* In the top left, tap Menu
+* Tap where you saved the certificate
+* Tap the file. If needed, enter the key store password
+* Select it as a CA Root Authority
+* Enter a name for the certificate
+* Tap OK
 
 ## Configure proxy<a id="proxy_01"></a>
 
-* Chrome:
-    * Install [Proxy Switch Omega](https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif)
-    * Go to options
-    * Add http and https proxy server with
-        * Address: 12.0.0.1
-        * Port 1081.
-      
-          <img alt="Ham Proxyes" src="../images/chrome_proxy.gif" width="200"/>
-    * Select "proxy" from the extension menu and back to "direct" when you want to disconnect
-    * 
-      <img alt="Ham Proxyes" src="../images/chrome_proxy_switch.gif" width="100"/>
-     
-* Firefox
-    * Navigate to [about:preferences](about:preferences)
-    * Search for "proxy"
-    * Click on "Settings"
-    * Go to "Manual proxy Configuration"
-    * Select the socks5 proxy
-        * Address: 12.0.0.1
-        * Port 1080
-    * Check the "Proxy DNS when using SOCKS v5" flag
-    * Clean the settings when needed
-  
-      <img alt="Ham Proxyes" src="../images/firefox_proxy.gif" width="200"/>
+* Open your Android's Settings
+* Tap Wi-Fi
+* Solution 1
+  * Tap and hold the Wi-Fi Network Name
+  * Select Modify Network
+* Solution 2
+  * CLicke the wheel on the network name
+  * Click the top right pen
+* Click Advanced Options
+* Tap Manual.
+* Change your proxy's settings. Enter the hostname and proxy port (e.g. [yourPcIp]:1081)
+* Tap Save.
+
+<img src="../images/android_proxy.gif" width="300"/>
+
+## Intercept Android
+
+You can now use some app, browse some page. You can check the DNS names 
+captured by ham [here](http://www.local.test/dns/resolved.html)
+
+<img src="../images/dns_resolved_android.gif" width="300"/>
+
+Notice how many stuffs your phone is accessing!
+Here I used (to give an example). 
+
+* Chrome
+* Slack App
+* Linkedin App
 ## Intercept Google!<a id="interceptgoogle_01"></a>
 
 Go on the [certificates configuration page](http://www.local.test/certificates/index.html)

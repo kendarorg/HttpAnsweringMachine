@@ -20,4 +20,10 @@ Go on https://www.google.com
 When you click on the locker near the address you will see that the website
 certificate is generated through "CN=root-cert"... OUR AUTHORITY :)
 
+On Firefox
+
 <img src="../images/google_fake_cert.gif" width="200"/>
+
+Or on Android Chrome
+
+<img src="../images/fake_google_certificate_android.gif" height="300"/>
