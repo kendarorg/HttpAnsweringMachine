@@ -25,6 +25,10 @@ The AnsweringMachine is built to overcome this troubles
   * Hijack DNS
   * Setup a fake root certificate authority
   * Bing-ify Google home page
+* [Intercept your phone!](docs/generated/hackgoogle.md) 10 minutes
+  * Hijack DNS
+  * Setup a fake root certificate authority
+  * Bing-ify Google home page
 * [Fast recording/replaying](docs/generated/manualtestcalendar.md) 20 minutes
   * Run the sample application (1 fe, 2 be)
   * Run the front-end with a mocked back-end

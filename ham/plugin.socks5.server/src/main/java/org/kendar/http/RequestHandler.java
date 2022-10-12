@@ -541,10 +541,10 @@ public class RequestHandler implements Runnable {
                 } while (read >= 0);
             }
             catch (SocketTimeoutException ste) {
-                log.error("Socket timeout",ste);
+                log.trace("Socket timeout",ste);
             }
             catch (IOException e) {
-                log.error("Proxy to client HTTPS read timed out",e);
+                log.trace("Proxy to client HTTPS read timed out",e);
             }
         }
     }
