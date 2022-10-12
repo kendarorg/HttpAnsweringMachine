@@ -25,7 +25,7 @@ The AnsweringMachine is built to overcome this troubles
   * Hijack DNS
   * Setup a fake root certificate authority
   * Bing-ify Google home page
-* [Intercept your phone!](docs/generated/googlehack_android.md) 10 minutes
+* [Intercept your Android phone!](docs/generated/googlehack_android.md) 10 minutes
   * Hijack DNS
   * Setup a fake root certificate authority
   * Bing-ify Google home page
