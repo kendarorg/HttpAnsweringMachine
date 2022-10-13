@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 
 public class RequestHandler implements Runnable {
 
+    public static final int READ_BUFFER_SIZE = 8192;
     /**
      * Socket connected to client passed by Proxy server
      */
@@ -80,8 +81,11 @@ public class RequestHandler implements Runnable {
         String requestString;
         try{
             requestString = proxyToClientBr.readLine();
+            if(requestString==null||requestString.isEmpty()){
+                return;
+            }
         } catch (IOException e) {
-            log.error("Error reading request from client",e);
+            log.trace("Error reading request from client",e);
             return;
         }
 
@@ -446,7 +450,7 @@ public class RequestHandler implements Runnable {
 
             // Listen to remote server and relay to client
             try {
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[READ_BUFFER_SIZE];
                 int read;
                 do {
                     read = proxyToServerSocket.getInputStream().read(buffer);
@@ -459,10 +463,10 @@ public class RequestHandler implements Runnable {
                 } while (read >= 0);
             }
             catch (SocketTimeoutException e) {
-
+                log.trace("Timeout reading socket",e);
             }
             catch (IOException e) {
-                e.printStackTrace();
+                log.trace("Error reading socket",e);
             }
 
 
