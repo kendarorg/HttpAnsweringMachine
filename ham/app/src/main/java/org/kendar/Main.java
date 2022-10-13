@@ -112,6 +112,7 @@ public class Main implements CommandLineRunner {
   private void setupLogging(JsonConfiguration configuration) {
     var loggerBuilder = applicationContext.getBean(LoggerBuilder.class);
     var globalConfig = configuration.getConfiguration(GlobalConfig.class);
+    //loggerBuilder.setLevel("com.sun.net.httpserver",)
     loggerBuilder.setLevel(Logger.ROOT_LOGGER_NAME, globalConfig.getLogging().getLogLevel());
     for (var logConf : globalConfig.getLogging().getLoggers().entrySet()) {
       loggerBuilder.setLevel(logConf.getKey(), logConf.getValue());
