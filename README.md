@@ -11,7 +11,7 @@ errors can arise.
 The AnsweringMachine is built to overcome this troubles
 
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
-* Maven repos (sorry for the invalid SSL... too $$$. On the www is present)
+* Maven repos (sorry for the invalid SSL... too $$$. Only the http is present)
   * [Release](https://maven.kendar.org/maven2/releases)
   * [Snapshot](https://maven.kendar.org/maven2/snapshots)
 * [Swagger](https://www.kendar.org/swagger/?model=https://raw.githubusercontent.com/kendarorg/HttpAnsweringMachine/main/docs/map.json) :zap:
