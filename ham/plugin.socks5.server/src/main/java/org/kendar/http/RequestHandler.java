@@ -613,7 +613,11 @@ public class RequestHandler implements Runnable {
 
             // Open a socket to the remote server
             Socket proxyToServerSocket = new Socket(address, port);
-            proxyToServerSocket.setSoTimeout(5000);
+            if(address.isAnyLocalAddress() || address.isLoopbackAddress()) {
+                proxyToServerSocket.setSoTimeout(100);
+            }else{
+                proxyToServerSocket.setSoTimeout(10000);
+            }
 
             var writer =new OutputStreamWriter(proxyToServerSocket.getOutputStream());
             writer.write(line);

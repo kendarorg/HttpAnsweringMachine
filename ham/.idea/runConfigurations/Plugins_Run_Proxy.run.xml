@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Plugins Run" type="Application" factoryName="Application">
+  <configuration default="false" name="Plugins Run Proxy" type="Application" factoryName="Application">
     <option name="ALTERNATIVE_JRE_PATH" value="11" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="org.springframework.boot.loader.PropertiesLauncher" />
     <module name="app" />
     <shortenClasspath name="NONE" />
-    <option name="VM_PARAMETERS" value="-Dloader.path=libs/ -Dloader.main=org.kendar.Main" />
+    <option name="VM_PARAMETERS" value="-Dloader.path=libs/ -Dloader.main=org.kendar.Main -Djsonconfig=proxy.external.json" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
