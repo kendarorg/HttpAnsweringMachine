@@ -10,6 +10,7 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
+* [Contribute](CONTRIBUTING.md) it's easy :)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
 * Maven repos (sorry for the invalid SSL... too $$$. Only the http is present)
   * [Release](https://maven.kendar.org/maven2/releases)
