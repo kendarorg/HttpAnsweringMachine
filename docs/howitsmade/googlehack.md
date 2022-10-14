@@ -56,6 +56,9 @@ When a browser/application connect a proxy, the DNS request is handled by the pr
 Following this approach you can intercept any browser ([here the sample](../generated/googlehack.md))
 or Android phone ([here the sample](../generated/googlehack_android.md))
 
-#### HAM rewrite
+#### HAM rewrite (named...hem proxy)
 
-It is possible to 
+It is possible to use a mechanism like apache [mod_rewrite](https://httpd.apache.org/docs/current/mod/mod_rewrite.html)
+to fake all possible infrastructures. 
+
+For example if you want to intercept 
