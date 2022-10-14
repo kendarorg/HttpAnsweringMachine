@@ -1,0 +1,61 @@
+## How it works
+
+### Quick internals<a id="quick_internals"></a>
+
+<img src="../images/hamarch02.gif" width="500"/>
+
+#### DNS
+
+HAM embeds a DNS server. When we configure on HAM a DNS name, like www.google.com, 
+associating it with the ip 127.0.0.1 we are telling HAM to handle the request 
+through the internal HAM http/s server.
+
+#### Filters
+
+On each request several filters are executed, dynamically loaded from the libs directory
+or for the Javascript filters, from a specific configuration directory.
+
+The filters are listed in the [filters lifecycle](../lifecycle.md) page
+
+They intercept the request according to their selection mechanism and can
+change the request and response.
+
+When they are "blocking" the data is directly returned to the client
+
+The filters are the way HAM can do its magic :)
+
+#### HTTP
+
+When the call to www.google.com reach the internal http server the following happens:
+
+* The request is translated to the internal format
+* Starts the [filters lifecycle](../lifecycle.md) when a "blocking" filter is found the result is sent back directly to the client
+* The "PRE" filters are called
+* The real www.google.com is invoked and the result parsed
+* The "POST" filters are called and the data is sent back to the client
+
+#### HTTPS
+
+This works with http. But what happens with https and the certificates?
+
+First we need a root CA. This can be downloaded directly from HAM and installed on any
+system be it Java, .NET, browser, phone...etc
+
+Given a root CA, HAM is able to generate "on the fly" the certificates configured with 
+the interface. With this approach is possible to see and parse the content of the https
+requests.
+
+This is really a Man In The Middle (MITM) attack!
+
+### Special features
+
+#### HAM with proxy<a id="ham_with_proxy"></a>
+
+When a browser/application connect a proxy, the DNS request is handled by the proxy itself.
+
+Following this approach you can intercept any browser ([here the sample](../generated/googlehack.md))
+or Android phone ([here the sample](../generated/googlehack_android.md))
+
+#### HAM rewrite
+
+It is possible to 
