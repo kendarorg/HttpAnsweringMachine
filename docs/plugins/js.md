@@ -128,6 +128,14 @@ After that the content of the file will be retrieved
 ### Call java functions
 
 You can always add calls to native java objects and functions, simply create stuffs
-with the FQDN, like this:
+with the FQDN, like this. This function instantiate the JAVA DiffInferrer, check
+the JAVA Strings with the diff and then throws a JAVASCRIPT exception
+when something unexpected happens
 
-	var diffEngine = new org.kendar.xml.DiffInferrer()
+<pre>
+    var diffEngine = new org.kendar.xml.DiffInferrer();
+    diffEngine.diff(expectedresponse.getResponseText(),response.getResponseText());
+    if(expectedresponse.getStatusCode()!=response.getStatusCode()){
+        throw "Expected status code "+expectedresponse.getStatusCode()+" but received "+response.getStatusCode();
+    }
+</pre>

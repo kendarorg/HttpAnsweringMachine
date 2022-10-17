@@ -1,6 +1,7 @@
 The application contains a full DNS Server. 
 
 When you change the DNS settings in some situation you need to restart the application using it:
+
 * Browser: every time the browser goes to a page caches the DNS entry. Going onto a page and then changing the DNS makes mandatory restarting the browser
 * Application: as with browser every major rest client implementation does caches DNS requests and therfore the container application, if called one of the changed names before we changed the DNS name, must be restarted  
 
@@ -137,4 +138,4 @@ You can even add extra servers through the JVM arguments with the "other.dns" pr
 
     java ... -Dother.dns=127.0.0.11,main.local.self ...
 
-This is used (for me) mainly inside docker containers
+This is used (by me) mainly inside docker containers
