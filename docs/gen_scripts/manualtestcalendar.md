@@ -6,3 +6,5 @@
 * Setup a null-infrastructure test. Testing manually with
   * Simulated Back-end
   * Simulated Back-end to Back-end interaction
+
+For more infos [check here](../generated/manualtestcalendar_internals.md)
