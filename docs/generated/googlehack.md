@@ -6,6 +6,8 @@ In this demo you will
 * Connect to it through proxy
 * Intercept Google calls and replace the logo!
 
+For more info [look here](../generated/googlehack_internals.md)!
+
 ## Download the last release<a id="quickinstall_01"></a>
 
 Download the tar.gz, ham only from [github releases](https://github.com/kendarorg/HttpAnsweringMachine/releases)
