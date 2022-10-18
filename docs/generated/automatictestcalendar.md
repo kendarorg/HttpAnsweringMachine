@@ -156,7 +156,7 @@ You can now check ham application going on http://www.local.test
 [{"id":1,"name":"John","role":"Doe","unexpected":"field"}]
 </pre>
 
-* Run the pact test
+* Run the test again
 * Check the FAILED results!
 
 <img src="../images/unexpected_field.gif" width="300"/>
