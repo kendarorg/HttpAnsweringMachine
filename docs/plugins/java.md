@@ -9,10 +9,11 @@ The "copy-dependencies" task is the one that writes all "real" dependencies on t
 "target/classes/lib" directory from which the "copy-jar-dependencies-to-target" will
 take the data and where you could find the real dependencies.
 
-    IMPORTANT
-    You should copy all dependencies, even the tranisitive ones, in the example pom is 
-    even included the "asm-5.0.4.jar" that was not identified as a direct dependency. Do
-    some run to check what is needed
+<u>**IMPORTANT**
+
+You should copy all dependencies, even the tranisitive ones, in the example pom is 
+even included the "asm-5.0.4.jar" that was not identified as a direct dependency. Do
+some run to check what is needed</u>
 
 The jar and the dependencies should be placed into the [libs directory](../basic.md)
 

@@ -56,10 +56,11 @@ This means
 Following this approach you don't need to know in advance the IP of the docker instance 
 with the dns server
 
-    IMPORTANT
-    When the DNS requests are forwarded to the extra servers, the are made all UPPERCASE
-    When an uppercase domain name is requested the answer will be always "no domain found"
-    This is implemented to avoid DNS request infinite loops
+**<u>IMPORTANT</u>**
+
+<u>When the DNS requests are forwarded to the extra servers, the are made all UPPERCASE
+When an uppercase domain name is requested the answer will be always "no domain found"
+This is implemented to avoid DNS request infinite loops</u>
 
 ### Blocker
 

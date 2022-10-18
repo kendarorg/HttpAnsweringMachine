@@ -1,5 +1,6 @@
 * version.txt: the current version
 * build: Build scripts
+    * build_docs: Regenerate the "puzzle" documentation
     * build_docker: Create local docker images for HAM
     * build_docker_samples: Create local docker images for Samples
     * build_release: Create the release tar.gz into "release" dir for HAM

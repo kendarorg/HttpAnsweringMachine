@@ -106,7 +106,7 @@ Then you can unzip the file and install it as trusted root CA.
 #### Java
 
 On java you can download the der  [http://www.local.test/api/certificates/ca.der](http://www.local.test/api/certificates/ca.der).
-And import it into the main keystore
+And import it into the main keystore. For the ham Docker images this is not needed, since they already contains everything.
 
     keytool -import -trustcacerts -alias answeringMachineCa -file ca.der -cacerts -storepass changeit
 

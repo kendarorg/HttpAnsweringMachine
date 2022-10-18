@@ -14,7 +14,6 @@ from a vm to another vm with docker you can use Openvpn (see down in the page)
 
 * For chrome and socks5 you can launch it (as ONLY instance): [chrome location]chrome "--proxy-server=socks5://dockerip:1080"
 
-
 ## Base (ham.base)
 
 The basic docker image. With java 11 and all the certificates registered

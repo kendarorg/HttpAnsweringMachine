@@ -1,4 +1,4 @@
-## Socks5 Proxy server
+## Socks5/Http/S Proxy server
 
 This is a simple socks5+http implementation to allow the usage of
 the applications outside docker without changing the hosts file
@@ -22,14 +22,14 @@ Here is the basic configuration
     
 ### Connecting
 
-* Chrome: just add the parameters calling chrome --proxy-server="socks5://localhost:1080"
-* Firefox: go to "about:preferences" (in the address bar) and set the socks address (remember to set the DNS option for socks)
+* Chrome: just add the parameters calling chrome --proxy-server="socks5://localhost:1080" or install [Switch Omega](https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif)
+* Firefox: go to "about:preferences" (in the address bar) and set the socks address (remember to set the DNS option for the socks)
 * Vscode: as chrome!!
 * [On Baeldung for java](https://www.baeldung.com/java-connect-via-proxy-server)
 * [Some C# suggestions](https://dotnetcoretutorials.com/2021/07/11/socks-proxy-support-in-net/?series)
 * For curl just set the environment variables
 <pre>
- export http_proxy="http://127.0.0.1:9999"
- export https_proxy="http://127.0.0.1:9999"
+ export http_proxy="http://127.0.0.1:1081"
+ export https_proxy="http://127.0.0.1:1081"
  curl  "https://httpbin.org/anything"
 </pre>
