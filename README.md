@@ -38,6 +38,8 @@ The AnsweringMachine is built to overcome this troubles
   * Run the sample application (1 fe, 2 be)
   * Test a back-end in isolation
   * Verify match between template data
+* [Dockerize any application](docs/docker/runyourapp.md) 20 minutes
+  * Build a custom cage for your Java/.NET/Node/... wathever application
 
 ## Features
 
