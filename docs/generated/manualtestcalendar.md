@@ -10,7 +10,7 @@ In this demo you will
   * Simulated Back-end
   * Simulated Back-end to Back-end interaction
 
-For more infos [check here](../generated/manualtestcalendar_internals.md)
+For more infos [check here](../generated/testcalendar_internals.md)
 
 ## Download the last release<a id="quickinstall_01"></a>
 
