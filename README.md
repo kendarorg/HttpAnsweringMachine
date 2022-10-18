@@ -39,7 +39,8 @@ The AnsweringMachine is built to overcome this troubles
   * Test a back-end in isolation
   * Verify match between template data
 * [Dockerize any application](docs/docker/runyourapp.md) 20 minutes
-  * Build a custom cage for your Java/.NET/Node/... wathever application
+  * Build a custom docker cage for your Java/.NET/Node/... wathever application
+  * Access via Proxy or via VPN to experience the full environment
 
 ## Features
 
