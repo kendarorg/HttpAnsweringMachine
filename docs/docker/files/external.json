@@ -103,14 +103,6 @@
     }
   },
   {
-    "id": "derby",
-    "active": false,
-    "port": 1527,
-    "user": "root",
-    "password": "root",
-    "path": "derbydata"
-  },
-  {
     "id": "oidc.server",
     "tokenExpiration": 86400,
     "active": true

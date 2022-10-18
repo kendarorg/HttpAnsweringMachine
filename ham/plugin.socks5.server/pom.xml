@@ -6,6 +6,7 @@
         <artifactId>HttpAnsweringMachine</artifactId>
         <groupId>org.kendar</groupId>
         <version>3.1.1</version>
+        <relativePath></relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -101,11 +102,6 @@
                                     <directory>${project.build.directory}/classes/lib</directory>
                                     <filtering>false</filtering>
                                     <includes>
-                                        <!--<include>mybatis*.jar</include>
-                                        <include>derbyclient*.jar</include>
-                                        <include>tika*.jar</include>
-                                        <include>rhino-*.jar</include>
-                                        <include>hamcrest-*.jar</include>-->
                                     </includes>
                                 </resource>
                             </resources>

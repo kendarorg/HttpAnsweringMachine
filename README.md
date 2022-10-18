@@ -52,7 +52,6 @@ The AnsweringMachine is built to overcome this troubles
 * Java and Javascript plugins to intercept and modify any http/s call
 * Record and replay api flows, with automatic stateful flows detection
 * Custom oidc "authorize all" server
-* Embedded derby server for any need
 * Embedded web server with REST APIs
 * All functions manageable via REST APIs
 * Configurable DNS hijacking (when not using VPNs) or...generated hosts file
