@@ -6,6 +6,7 @@
         <artifactId>HttpAnsweringMachine</artifactId>
         <groupId>org.kendar</groupId>
         <version>3.1.1</version>
+        <relativePath></relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -21,6 +22,11 @@
             <artifactId>junit-jupiter</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -79,17 +85,6 @@
             <version>${org.slf4j.version}</version>
 
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>${apache.derby.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derbyclient</artifactId>
-            <version>${apache.derby.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
@@ -128,7 +123,6 @@
                                     <filtering>false</filtering>
                                     <includes>
                                         <include>mybatis*.jar</include>
-                                        <include>derbyclient*.jar</include>
                                         <include>tika*.jar</include>
                                         <include>rhino-*.jar</include>
                                         <include>hamcrest-*.jar</include>
