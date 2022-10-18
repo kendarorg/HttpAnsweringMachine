@@ -11,6 +11,8 @@ In this demo you will
   * Verify the message structures and auto test
   * Edit a request/response to force a fail
 
+For more infos [check here](../generated/testcalendar_internals.md)
+
 ## Download the last release<a id="quickinstall_01"></a>
 
 Download the two tar.gz, ham and ham-samples from [github releases](https://github.com/kendarorg/HttpAnsweringMachine/releases)

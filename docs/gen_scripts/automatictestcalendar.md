@@ -7,3 +7,5 @@
 * Simulated Front-end with Back-end
   * Verify the message structures and auto test
   * Edit a request/response to force a fail
+
+For more infos [check here](../generated/testcalendar_internals.md)
