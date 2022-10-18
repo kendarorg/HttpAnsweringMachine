@@ -2,8 +2,9 @@
 
 Supposed you can add the system as a second service on the docker image (see [Single Docker Installation](docs/dockersingle.md))
 
-Using a docker system, you will need to add the 127.0.0.1 dns server to the docker machine
-With docker command
+Using a docker system, you will need to add the 127.0.0.1 dns server to the docker machine.
+This approach need a privileged container to run! 
+With following docker command
 
     docker run --name [INSTANCENAME] --privileged ^
         --cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH ^
@@ -34,7 +35,7 @@ adding the certificate generation. The id must be unique
                 "address":"google.com"},
     ...
 
-Now you should enable the DNS server and add the names, as usual the number starts from 0
+Now you enable the DNS server and add the names, as usual the number starts from 0
 
     [{  "id":"dns",
         "active" : true,

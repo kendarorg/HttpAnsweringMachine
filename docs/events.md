@@ -21,10 +21,13 @@ public class PactEvents {
 
 ## Standard Events
 
-### ConfigChangedEvent
-
-Invoked when a config change is detected
-
-Fields:
-
-  * name: The class name of the config that had been changed
+* <u>ConfigChangedEvent</u>  when a config change is detected
+  * Fields
+    * name: The class name of the config that had been changed
+* <u>NullCompleted</u> when a Null test is completed
+* <u>PactCompleted</u> when a Pact test is completed
+* <u>SSLChangedEvent</u> when the SSL hosts are changed. Forces a restart
+* <u>ProxyConfigChanged</u> when the rewrites are changed. Forces their test
+* <u>ScriptsModified</u> force the reloading of all Javascaript scripts
+* <u>ExecuteLocalRequest</u> require the execution of a -local only- request (will not go on the internet)
+* <u>ExecuteRemoteRequest</u> require the execution of a remote request

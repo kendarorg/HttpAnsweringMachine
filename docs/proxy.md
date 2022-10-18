@@ -1,4 +1,4 @@
-The system can act as a proxy (or API Gateway) for every request it receives
+The system can act as a proxy/mod_rewrite (or API Gateway) for every request it receives
 
 For example if you want to forward all requests to https://www.local.test/myapp to
 https://localhost:8020/app then you can add a proxy entry inside the external.json
@@ -21,3 +21,10 @@ sections.
                 "when": "https://www.local.test/myapp",
                 "where": "https://localhost:8020/app",
                 "test": "localhost:8020"},
+
+The test tries 
+
+* ICMP ping request
+* TCP Connection on port 7
+* TCP Connection on specified port
+* TCP Connection on 80 and 443
