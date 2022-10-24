@@ -38,9 +38,13 @@ The AnsweringMachine is built to overcome this troubles
   * Run the sample application (1 fe, 2 be)
   * Test a back-end in isolation
   * Verify match between template data
-* [Dockerize any application](docs/docker/runyourapp.md) 20 minutes
+* **Dockerize any application** 20 minutes
   * Build a custom docker cage for your Java/.NET/Node/... wathever application
   * Access via Proxy or via VPN to experience the full environment
+  * Custom path:
+    * [Java 11](docs/generated/runyourapp_java11.md)
+    * [Java 1.8](docs/generated/runyourapp_java8.md)
+    * [Apache-php 8](docs/generated/runyourapp_apachephp8.md)
 
 ## Features
 
