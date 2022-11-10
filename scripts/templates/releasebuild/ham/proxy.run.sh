@@ -12,5 +12,5 @@ rm tmp_txt || true
 # Start the application
 java "-Dloader.path=$SCRIPT_DIR/libs"  -Dloader.main=org.kendar.Main  \
 	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
-	  	"-Djsonconfig=$SCRIPT_DIR\proxy.external.json" \
+	  	"-Djsonconfig=$SCRIPT_DIR/proxy.external.json" \
 		  -jar "$JAR_NAME" org.springframework.boot.loader.PropertiesLauncher
