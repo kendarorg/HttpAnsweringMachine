@@ -13,6 +13,12 @@
   {
     "id": "global",
     "system": true,
+    "db": {
+      "url": "jdbc:h2:tcp://localhost/ham",
+      "login": "sa",
+      "password": "sa",
+      "startInternalH2" : true
+    },
     "localAddress": "localhost",
     "logging": {
       "logPath": null,
