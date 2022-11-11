@@ -9,6 +9,26 @@ public class GlobalConfigDb implements Copyable<GlobalConfigDb>{
     private String url;
     private String login;
 
+    public String getHibernateDialect() {
+        return hibernateDialect;
+    }
+
+    public void setHibernateDialect(String hibernateDialect) {
+        this.hibernateDialect = hibernateDialect;
+    }
+
+    private String hibernateDialect;
+
+    public String getDriver() {
+        return driver;
+    }
+
+    public void setDriver(String driver) {
+        this.driver = driver;
+    }
+
+    private String driver;
+
     private boolean startInternalH2;
 
     public String getUrl() {
@@ -42,6 +62,8 @@ public class GlobalConfigDb implements Copyable<GlobalConfigDb>{
         result.url = url;
         result.password = password;
         result.startInternalH2 = startInternalH2;
+        result.driver = driver;
+        result.hibernateDialect = hibernateDialect;
         return result;
     }
 

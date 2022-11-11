@@ -55,6 +55,7 @@
         <cucumber.version>7.3.4</cucumber.version>
         <junit.version>5.8.1</junit.version>
         <h2.version>2.1.214</h2.version>
+        <hibernate.version>5.2.6.Final</hibernate.version>
     </properties>
 
     <modules>

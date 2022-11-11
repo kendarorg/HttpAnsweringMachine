@@ -52,6 +52,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
           ConnectionBuilder connectionBuilder,
           EventQueue eventQueue) {
     this.logger = loggerBuilder.build(AnsweringHandlerImpl.class);
+    //TODO Logging
     this.requestLogger = loggerBuilder.build(Request.class);
     this.filteringClassesHandler = filteringClassesHandler;
     this.simpleProxyHandler = simpleProxyHandler;
