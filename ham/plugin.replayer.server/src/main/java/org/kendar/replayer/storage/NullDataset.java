@@ -96,7 +96,7 @@ public class NullDataset extends ReplayerDataset{
             if (!Files.exists(nullDir)) {
                 Files.createDirectory(nullDir);
             }
-            var maps = new HashMap<Integer, ReplayerRow>();
+            var maps = new HashMap<Long, ReplayerRow>();
             var replayerResult = mapper.readValue(FileUtils.readFileToString(stringPath.toFile(), "UTF-8"), ReplayerResult.class);
             for (var call : replayerResult.getStaticRequests()) {
                 maps.put(call.getId(), call);
@@ -106,10 +106,10 @@ public class NullDataset extends ReplayerDataset{
             }
             var indexes = replayerResult.getIndexes().stream()
                     .filter(CallIndex::isStimulatorTest)
-                    .sorted(Comparator.comparingInt(CallIndex::getId))
+                    .sorted(Comparator.comparingLong(CallIndex::getId))
                     .collect(Collectors.toList());
             boolean onIndex = false;
-            int currentIndex = 0;
+            long currentIndex = 0;
             try {
                 for (var toCall : indexes) {
                     onIndex = false;

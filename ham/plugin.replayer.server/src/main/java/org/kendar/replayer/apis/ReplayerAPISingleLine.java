@@ -83,12 +83,12 @@ public class ReplayerAPISingleLine implements FilteringClass {
     dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
     var result = new ListAllRecordList(datasetContent, id,false).getLines();
-    result.sort(Comparator.comparingInt(ReplayerRow::getId));
+    result.sort(Comparator.comparingLong(ReplayerRow::getId));
     for (var i=0;i<result.size();i++) {
       var singleLine = result.get(i);
       if (singleLine.getId() == line) {
-        var prev = -1;
-        var next = -1;
+        var prev = -1L;
+        var next = -1L;
         if(i>0){
           prev=result.get(i-1).getId();
         }

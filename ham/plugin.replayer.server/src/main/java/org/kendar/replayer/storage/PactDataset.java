@@ -103,7 +103,7 @@ public class PactDataset implements BaseDataset {
             if (!Files.exists(pactsDir)) {
                 Files.createDirectory(pactsDir);
             }
-            var maps = new HashMap<Integer, ReplayerRow>();
+            var maps = new HashMap<Long, ReplayerRow>();
 
             var replayerResult = mapper.readValue(FileUtils.readFileToString(stringPath.toFile(), "UTF-8"), ReplayerResult.class);
             for (var call : replayerResult.getStaticRequests()) {
@@ -114,10 +114,10 @@ public class PactDataset implements BaseDataset {
             }
             var indexes = replayerResult.getIndexes().stream()
                     .filter(CallIndex::isPactTest)
-                    .sorted(Comparator.comparingInt(CallIndex::getId))
+                    .sorted(Comparator.comparingLong(CallIndex::getId))
                     .collect(Collectors.toList());
             boolean onIndex = false;
-            int currentIndex = 0;
+            long currentIndex = 0;
             try {
                 for (var toCall : indexes) {
                     onIndex =false;

@@ -89,7 +89,7 @@ public class ReplayerStatus {
         dataset.load(id, rootPath.toString(), description);
     }
 
-    public void addRequest(Request req, Response res) {
+    public void addRequest(Request req, Response res) throws Exception {
         if (state != ReplayerState.RECORDING) return;
         ((RecordingDataset)dataset).add(req, res);
     }

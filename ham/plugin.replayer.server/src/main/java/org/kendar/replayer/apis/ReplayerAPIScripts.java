@@ -77,12 +77,12 @@ public class ReplayerAPIScripts implements FilteringClass {
                 new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
         dataset.load(id, rootPath.toString(),null);
         var datasetContent = dataset.load();
-        var prev = -1;
-        var next = -1;
+        var prev = -1L;
+        var next = -1L;
         var result = new Scripts();
         var allItems = new ArrayList<>(datasetContent.getDynamicRequests());
         allItems.addAll(new ArrayList<>(datasetContent.getStaticRequests()));
-        datasetContent.getIndexes().sort(Comparator.comparingInt(CallIndex::getId));
+        datasetContent.getIndexes().sort(Comparator.comparingLong(CallIndex::getId));
         for(var i=0;i<datasetContent.getIndexes().size();i++){
             var singleLine = datasetContent.getIndexes().get(i);
             if (singleLine.getId() == Integer.parseInt(line)) {
@@ -91,7 +91,7 @@ public class ReplayerAPIScripts implements FilteringClass {
                     continue;
                 }
                 var ref= possible.get();
-                result.setId(Integer.toString(singleLine.getId()));
+                result.setId(Long.toString(singleLine.getId()));
                 result.setHost(ref.getRequest().getHost());
                 result.setPath(ref.getRequest().getPath());
                 result.setMethod(ref.getRequest().getMethod());

@@ -123,7 +123,7 @@ public class ReplayerAPICrud implements FilteringClass {
     dataset.load(id, rootPath.toString(),null);
     var datasetContent = dataset.load();
     ListAllRecordList result = new ListAllRecordList(datasetContent, id,true);
-    result.getLines().sort(Comparator.comparingInt(ReplayerRow::getId));
+    result.getLines().sort(Comparator.comparingLong(ReplayerRow::getId));
     res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
@@ -251,7 +251,7 @@ public class ReplayerAPICrud implements FilteringClass {
     var id = req.getPathParameter("id");
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
     if (Files.exists(rootPath)) {
-      var index = new HashSet<Integer>();
+      var index = new HashSet<Long>();
       var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
       var result = mapper.readValue(fileContent, ReplayerResult.class);
       for(var i = result.getDynamicRequests().size()-1;i>=0;i--){

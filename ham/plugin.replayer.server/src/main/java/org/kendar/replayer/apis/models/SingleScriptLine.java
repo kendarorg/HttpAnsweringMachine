@@ -1,7 +1,7 @@
 package org.kendar.replayer.apis.models;
 
 public class SingleScriptLine {
-    private int id;
+    private Long id;
     private boolean pactTest;
     private boolean stimulatorTest;
     private String queryCalc;
@@ -14,13 +14,13 @@ public class SingleScriptLine {
     private String requestPath;
     private int responseStatusCode;
     private boolean stimulatedTest;
-    private int reference;
+    private long reference;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -120,11 +120,11 @@ public class SingleScriptLine {
         return stimulatedTest;
     }
 
-    public void setReference(int reference) {
+    public void setReference(long reference) {
         this.reference = reference;
     }
 
-    public int getReference() {
+    public long getReference() {
         return reference;
     }
 }

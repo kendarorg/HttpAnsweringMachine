@@ -30,7 +30,7 @@ public class ReplayerDataset implements BaseDataset{
   protected String name;
   protected String replayerDataDir;
   protected String description;
-  protected final ConcurrentHashMap<Integer, Object> states = new ConcurrentHashMap<>();
+  protected final ConcurrentHashMap<Long, Object> states = new ConcurrentHashMap<>();
 
   protected ReplayerResult replayerResult;
 

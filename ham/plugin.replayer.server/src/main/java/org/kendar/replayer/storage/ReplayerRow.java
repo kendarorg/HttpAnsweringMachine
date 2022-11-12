@@ -16,6 +16,7 @@ import java.util.Calendar;
 @Entity
 @Table(name="REPLAYER_ROW")
 public class ReplayerRow {
+    //FIXME SHOULD ADD A DECENT ID
 
     private static ObjectMapper mapper = new ObjectMapper();
 

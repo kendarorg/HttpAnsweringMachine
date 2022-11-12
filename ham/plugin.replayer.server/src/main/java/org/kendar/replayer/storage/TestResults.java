@@ -12,7 +12,7 @@ public class TestResults {
     private Calendar timestamp;
     private long duration;
     private String errors;
-    private List<Integer> executed = new ArrayList<>();
+    private List<Long> executed = new ArrayList<>();
     private String type;
 
     public String getRecordingId() {
@@ -54,11 +54,11 @@ public class TestResults {
         this.errors = errors;
     }
 
-    public List<Integer> getExecuted() {
+    public List<Long> getExecuted() {
         return executed;
     }
 
-    public void setExecuted(List<Integer> executed) {
+    public void setExecuted(List<Long> executed) {
         this.executed = executed;
     }
 
