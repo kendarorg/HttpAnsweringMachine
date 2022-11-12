@@ -114,16 +114,19 @@ public class ReplayerAPICrud implements FilteringClass {
           path = @PathParameter(key = "id"),
           responses = @HamResponse(body =ListAllRecordList.class)
   )
-  public void listAllRecordingSteps(Request req, Response res) throws IOException {
+  public void listAllRecordingSteps(Request req, Response res) throws Exception {
     var id = Long.parseLong(req.getPathParameter("id"));
 
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
-    var dataset =
-        new ReplayerDataset( loggerBuilder, null, md5Tester);
-    dataset.load(id, rootPath.toString(),null);
-    var datasetContent = dataset.load();
-    ListAllRecordList result = new ListAllRecordList(datasetContent, id,true);
+
+
+    //var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+
+    //var dataset =
+    //    new ReplayerDataset( loggerBuilder, null, md5Tester);
+    //dataset.load(id, rootPath.toString(),null);
+    //var datasetContent = dataset.load();
+    ListAllRecordList result = new ListAllRecordList(sessionFactory, id,true);
     result.getLines().sort(Comparator.comparingLong(ReplayerRow::getId));
     res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));

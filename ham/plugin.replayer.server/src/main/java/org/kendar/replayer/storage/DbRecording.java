@@ -4,6 +4,7 @@ package org.kendar.replayer.storage;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.util.HashMap;
 
 @Component
 
@@ -15,6 +16,9 @@ public class DbRecording {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
+    private HashMap<String, String> variables;
+    private HashMap<String, String> preScript;
+    private HashMap<String, String> postScript;
 
     public long getId() {
         return id;
@@ -34,4 +38,29 @@ public class DbRecording {
 
     @Column(name="description")
     private String descripton;
+
+    public HashMap<String, String> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(HashMap<String, String> variables) {
+        this.variables = variables;
+    }
+
+    public HashMap<String, String> getPreScript() {
+
+        return preScript;
+    }
+
+    public void setPreScript(HashMap<String, String> preScript) {
+        this.preScript = preScript;
+    }
+
+    public HashMap<String, String> getPostScript() {
+        return postScript;
+    }
+
+    public void setPostScript(HashMap<String, String> postScript) {
+        this.postScript = postScript;
+    }
 }
