@@ -70,10 +70,13 @@ public class ReplayerRow {
     private String responseHash;
 
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "index")
+    private long index;
 
     public boolean isStaticRequest() {
         return staticRequest;

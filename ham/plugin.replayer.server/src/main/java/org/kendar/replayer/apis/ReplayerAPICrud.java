@@ -18,11 +18,13 @@ import org.kendar.replayer.ReplayerStatus;
 import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.apis.models.LocalRecording;
 import org.kendar.replayer.apis.models.ScriptData;
+import org.kendar.replayer.storage.DbRecording;
 import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerResult;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
@@ -48,17 +50,19 @@ public class ReplayerAPICrud implements FilteringClass {
   private final Logger logger;
   private final ReplayerStatus replayerStatus;
   private final Md5Tester md5Tester;
+  private HibernateSessionFactory sessionFactory;
   private final String replayerData;
 
   private final FileResourcesUtils fileResourcesUtils;
   private final LoggerBuilder loggerBuilder;
 
   public ReplayerAPICrud(
-      FileResourcesUtils fileResourcesUtils,
-      LoggerBuilder loggerBuilder,
-      ReplayerStatus replayerStatus,
-      Md5Tester md5Tester,
-      JsonConfiguration configuration) {
+          FileResourcesUtils fileResourcesUtils,
+          LoggerBuilder loggerBuilder,
+          ReplayerStatus replayerStatus,
+          Md5Tester md5Tester,
+          JsonConfiguration configuration,
+          HibernateSessionFactory sessionFactory) {
 
     this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
 
@@ -68,6 +72,7 @@ public class ReplayerAPICrud implements FilteringClass {
     this.logger = loggerBuilder.build(ReplayerAPICrud.class);
     this.replayerStatus = replayerStatus;
     this.md5Tester = md5Tester;
+    this.sessionFactory = sessionFactory;
   }
 
   @Override
@@ -81,26 +86,22 @@ public class ReplayerAPICrud implements FilteringClass {
       method = "GET")
   @HamDoc(description = "Retrieves the list of recordings",tags = {"plugin/replayer"},
     responses = @HamResponse(body = String[].class))
-  public void listAllLocalRecordings(Request req, Response res) throws JsonProcessingException {
-    var realPath = fileResourcesUtils.buildPath(replayerData);
-    var f = new File(realPath);
-    var pathNames = f.list();
+  public void listAllLocalRecordings(Request req, Response res) throws Exception {
+
     var listOfItems = new ArrayList<LocalRecording>();
     var currentScript = replayerStatus.getCurrentScript();
-    if (pathNames != null) {
-      for (var pathname : pathNames) {
-        if (pathname.toLowerCase(Locale.ROOT).endsWith(".json")) {
-          var lr = new LocalRecording();
-          var tocheck = pathname.substring(0, pathname.length() - 5);
-          lr.setId(tocheck);
-          lr.setState(ReplayerState.NONE);
-          if (tocheck.toLowerCase(Locale.ROOT).equalsIgnoreCase(currentScript)) {
-            lr.setState(replayerStatus.getStatus());
-          }
-          listOfItems.add(lr);
+    sessionFactory.query((em -> {
+      List< DbRecording> allRecs= em.createQuery("SELECT e FROM DbRecording e").getResultList();
+      for(var rs: allRecs){
+        var lr = new LocalRecording();
+        lr.setId(rs.getId());
+        lr.setState(ReplayerState.NONE);
+        if (rs.getId()==currentScript) {
+          lr.setState(replayerStatus.getStatus());
         }
+        listOfItems.add(lr);
       }
-    }
+    }));
     res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(listOfItems));
   }
@@ -114,7 +115,7 @@ public class ReplayerAPICrud implements FilteringClass {
           responses = @HamResponse(body =ListAllRecordList.class)
   )
   public void listAllRecordingSteps(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
+    var id = Long.parseLong(req.getPathParameter("id"));
 
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 

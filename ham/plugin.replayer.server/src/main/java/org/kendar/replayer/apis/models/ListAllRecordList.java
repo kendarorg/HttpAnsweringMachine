@@ -17,7 +17,7 @@ public class ListAllRecordList {
     private HashMap<String,String> preScript;
     private HashMap<String,String> postScript;
 
-    public ListAllRecordList(ReplayerResult datasetContent,String id,boolean cleanJs) {
+    public ListAllRecordList(ReplayerResult datasetContent,Long id,boolean cleanJs) {
         for (var staticLine :
                 datasetContent.getStaticRequests()) {
             staticLine.getRequest().setRequestText(null);

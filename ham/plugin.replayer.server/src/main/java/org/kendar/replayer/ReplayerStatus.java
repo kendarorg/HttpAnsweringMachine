@@ -79,7 +79,7 @@ public class ReplayerStatus {
         state = ReplayerState.NONE;
     }
 
-    public void startRecording(String id, String description) throws IOException {
+    public void startRecording(Long id, String description) throws IOException {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) return;
         logger.info("RECORDING START");
@@ -116,7 +116,7 @@ public class ReplayerStatus {
         return state;
     }
 
-    public String getCurrentScript() {
+    public Long getCurrentScript() {
         if (dataset != null) return dataset.getName();
         return null;
     }
@@ -142,7 +142,7 @@ public class ReplayerStatus {
         dataset = null;
     }
 
-    public void startReplaying(String id) throws IOException {
+    public void startReplaying(Long id) throws IOException {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) return;
         logger.info("REPLAYING START");
@@ -171,7 +171,7 @@ public class ReplayerStatus {
         dataset = null;
     }
 
-    public String startPact(String id) throws IOException {
+    public String startPact(Long id) throws IOException {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         logger.info("PACT START");
@@ -182,7 +182,7 @@ public class ReplayerStatus {
         return runId;
     }
 
-    public void stopPact(String id) {
+    public void stopPact(Long id) {
         if (state != ReplayerState.PLAYING_PACT) throw new RuntimeException("State not allowed");
         logger.info("PACT STOP");
         ((PactDataset)dataset).stop();
@@ -190,7 +190,7 @@ public class ReplayerStatus {
 
     }
 
-    public String startNull(String id) throws IOException {
+    public String startNull(Long id) throws IOException {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         logger.info("NULL START");
@@ -210,7 +210,7 @@ public class ReplayerStatus {
         return rootPath;
     }
 
-    public void stopNull(String id) {
+    public void stopNull(Long id) {
         if (state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) throw new RuntimeException("State not allowed");
         logger.info("NULL STOP");
         ((NullDataset)dataset).stop();

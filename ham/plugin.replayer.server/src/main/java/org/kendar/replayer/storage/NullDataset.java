@@ -53,7 +53,7 @@ public class NullDataset extends ReplayerDataset{
     }
 
     @Override
-    public String getName() {
+    public Long getName() {
         return name;
     }
 

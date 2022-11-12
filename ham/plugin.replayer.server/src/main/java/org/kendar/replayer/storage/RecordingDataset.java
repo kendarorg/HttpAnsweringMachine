@@ -38,17 +38,17 @@ public class RecordingDataset implements BaseDataset{
     private final Md5Tester md5Tester;
     private final Logger logger;
     private HibernateSessionFactory sessionFactory;
-    private String name;
+    private Long name;
     private String replayerDataDir;
     private String description;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public String getName(){
+    public Long getName(){
         return this.name;
     }
 
     @Override
-    public void load(String name, String replayerDataDir, String description) {
+    public void load(Long name, String replayerDataDir, String description) {
         this.description = description;
         this.name = name;
         this.replayerDataDir = replayerDataDir;

@@ -27,7 +27,7 @@ public class ReplayerDataset implements BaseDataset{
 
   protected final ObjectMapper mapper = new ObjectMapper();
 
-  protected String name;
+  protected Long name;
   protected String replayerDataDir;
   protected String description;
   protected final ConcurrentHashMap<Long, Object> states = new ConcurrentHashMap<>();
@@ -43,12 +43,12 @@ public class ReplayerDataset implements BaseDataset{
     this.md5Tester = md5Tester;
   }
 
-  public String getName() {
+  public Long getName() {
     return name;
   }
 
   @Override
-  public void load(String name, String replayerDataDir, String description) {
+  public void load(Long name, String replayerDataDir, String description) {
     this.name = name;
     this.replayerDataDir = replayerDataDir;
     this.description = description;

@@ -3,14 +3,14 @@ package org.kendar.replayer.apis.models;
 import org.kendar.replayer.ReplayerState;
 
 public class LocalRecording {
-    private String id;
+    private long id;
     private ReplayerState state;
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 

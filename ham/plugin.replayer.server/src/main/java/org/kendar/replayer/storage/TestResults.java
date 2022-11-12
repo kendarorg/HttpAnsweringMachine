@@ -8,18 +8,18 @@ import java.util.List;
 
 public class TestResults {
     private String isoDate;
-    private String recordingId;
+    private Long recordingId;
     private Calendar timestamp;
     private long duration;
     private String errors;
     private List<Long> executed = new ArrayList<>();
     private String type;
 
-    public String getRecordingId() {
+    public Long getRecordingId() {
         return recordingId;
     }
 
-    public void setRecordingId(String recordingId) {
+    public void setRecordingId(Long recordingId) {
         this.recordingId = recordingId;
     }
 
