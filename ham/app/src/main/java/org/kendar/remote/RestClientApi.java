@@ -35,7 +35,8 @@ public class RestClientApi implements FilteringClass {
 
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/remote/restclient")
+            pathAddress = "/api/remote/restclient",
+            method = "POST")
     @HamDoc(
             description = "Execute",
 

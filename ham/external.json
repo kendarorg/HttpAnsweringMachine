@@ -24,14 +24,14 @@
     "localAddress": "localhost",
     "logging": {
       "logPath": null,
-      "logRoundtripsPath": "calllogs",
       "logLevel": "INFO",
       "loggers": {
-        "org.kendar.servers.http.Request": "OFF",
-        "org.kendar.servers.http.Response": "OFF",
-        "org.kendar.servers.http.StaticRequest": "OFF",
-        "org.kendar.servers.http.DynamicRequest": "OFF",
-        "org.kendar.dns.DnsQueries": "OFF"
+        "org.kendar.servers.http.Request": "TRACE",
+        "org.kendar.servers.http.Response": "TRACE",
+        "org.kendar.servers.http.StaticRequest": "TRACE",
+        "org.kendar.servers.http.DynamicRequest": "TRACE",
+        "org.kendar.dns.DnsQueries": "TRACE",
+        "org.kendar.servers.http.InternalRequest": "TRACE"
       }
     },
     "filters": {

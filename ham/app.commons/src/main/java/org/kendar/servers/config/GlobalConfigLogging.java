@@ -7,7 +7,6 @@ import ch.qos.logback.classic.Level;
 
 public class GlobalConfigLogging implements Copyable<GlobalConfigLogging> {
     private String logPath;
-    private String logRoundtripsPath;
     private Level logLevel;
     private HashMap<String, Level> loggers = new HashMap<>();
 
@@ -15,7 +14,6 @@ public class GlobalConfigLogging implements Copyable<GlobalConfigLogging> {
     @Override public GlobalConfigLogging copy() {
         var result = new GlobalConfigLogging();
         result.logPath = this.logPath;
-        result.logRoundtripsPath = this.logRoundtripsPath;
         result.loggers = new HashMap<>(this.loggers);
         result.logLevel = this.logLevel;
         return result;
@@ -27,14 +25,6 @@ public class GlobalConfigLogging implements Copyable<GlobalConfigLogging> {
 
     public void setLogPath(String logPath) {
         this.logPath = logPath;
-    }
-
-    public String getLogRoundtripsPath() {
-        return logRoundtripsPath;
-    }
-
-    public void setLogRoundtripsPath(String logRoundtripsPath) {
-        this.logRoundtripsPath = logRoundtripsPath;
     }
 
     public HashMap<String, Level> getLoggers() {

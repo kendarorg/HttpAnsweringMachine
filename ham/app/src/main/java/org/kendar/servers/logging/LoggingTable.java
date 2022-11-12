@@ -4,16 +4,31 @@ import org.kendar.servers.db.DbTable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Component
 @Entity
 @Table(name="LOGS")
 public class LoggingTable implements DbTable {
-    public int getId() {
+    @Column(name = "method")
+    private String method;
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Column(name = "timestamp")
+    private Timestamp timestamp;
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -25,12 +40,12 @@ public class LoggingTable implements DbTable {
         this.protocol = protocol;
     }
 
-    public String getAddress() {
-        return address;
+    public String getHost() {
+        return host;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setHost(String address) {
+        this.host = address;
     }
 
     public String getPath() {
@@ -73,30 +88,15 @@ public class LoggingTable implements DbTable {
         this.responseBody = responseBody;
     }
 
-    public long getRequestData() {
-        return requestData;
-    }
-
-    public void setRequestData(long requestData) {
-        this.requestData = requestData;
-    }
-
-    public long getResponseData() {
-        return responseData;
-    }
-
-    public void setResponseData(long responseData) {
-        this.responseData = responseData;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
     @Column(name = "protocol")
     private String protocol;
-    @Column(name = "address")
-    private String address;
+    @Column(name = "host")
+    private String host;
     @Column(name = "path")
     private String path;
     @Column(name = "query")
@@ -107,8 +107,12 @@ public class LoggingTable implements DbTable {
     private boolean requestBody;
     @Column(name = "responseBody")
     private boolean responseBody;
-    @Column(name = "requestData")
-    private long requestData;
-    @Column(name = "responseData")
-    private long responseData;
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public String getMethod() {
+        return method;
+    }
 }

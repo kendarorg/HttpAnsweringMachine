@@ -109,35 +109,12 @@ configuration.setProperties(properties);
             }
             this.sessionFactory.setConfiguration(hibernateConfig);
 
-            //extracted();
- /*           try {
-                Class.forName("org.h2.Driver");
-                conn = DriverManager.getConnection(config.getUrl(), config.getLogin(), config.getPassword());
-            } finally {
-                if (conn != null)
-                    conn.close();
-            }*/
         }catch (Exception ex){
             logger.error("Error building tables"+ex);
         }
+
+
     }
-
-
-    /* FIXME Remove private void extracted() {
-        try(var sf = sessionFactory.createSession()){
-            var se = sf.openSession();
-            var em = se.getEntityManagerFactory().createEntityManager();
-            var ld = new LoggingDataTable();
-            ld.setContent("STARTING");
-            em.getTransaction().begin();
-            em.persist(ld);
-           em.getTransaction().commit();
-
-            List<LoggingDataTable> listEmployee = em.createQuery("SELECT e FROM LoggingDataTable e").getResultList();
-System.out.println("BUF");
-
-        }
-    }*/
 
     @Override
     public boolean shouldRun() {

@@ -7,5 +7,9 @@ import org.hibernate.cfg.Configuration;
 
 public interface HibernateSessionFactory {
     SessionFactory createSession() throws HibernateException;
+    void transactional(EntityManagerFunction function) throws Exception;
+
+    void query(EntityManagerFunction function) throws Exception;
+
     void setConfiguration(Configuration configuration);
 }

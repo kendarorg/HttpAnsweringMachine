@@ -7,6 +7,9 @@ import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
+import org.kendar.servers.db.HibernateSessionFactory;
+import org.kendar.servers.logging.LoggingDataTable;
+import org.kendar.servers.logging.LoggingTable;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -17,6 +20,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Timestamp;
+import java.util.Calendar;
 
 @Component
 @HttpTypeFilter(hostAddress = "*")
@@ -29,14 +34,15 @@ public class RequestResponseFileLogging implements FilteringClass {
   private final FileResourcesUtils fileResourcesUtils;
   private final JsonConfiguration configuration;
   private final Logger logger;
+  private HibernateSessionFactory sessionFactory;
   private final Logger internalLogger;
-  private String roundtripsPath;
   private String localAddress;
 
   public RequestResponseFileLogging(
       FileResourcesUtils fileResourcesUtils,
       LoggerBuilder loggerBuilder,
-      JsonConfiguration configuration) {
+      JsonConfiguration configuration,
+      HibernateSessionFactory sessionFactory) {
 
     this.fileResourcesUtils = fileResourcesUtils;
     this.responseLogger = loggerBuilder.build(Response.class);
@@ -46,6 +52,7 @@ public class RequestResponseFileLogging implements FilteringClass {
     this.internalLogger = loggerBuilder.build(InternalRequest.class);
     this.configuration = configuration;
     this.logger = loggerBuilder.build(RequestResponseFileLogging.class);
+    this.sessionFactory = sessionFactory;
   }
 
   @Override
@@ -56,20 +63,9 @@ public class RequestResponseFileLogging implements FilteringClass {
   @PostConstruct
   public void init() throws Exception {
       var config = configuration.getConfiguration(GlobalConfig.class);
-      roundtripsPath = fileResourcesUtils.buildPath(config.getLogging().getLogRoundtripsPath());
 
       localAddress = config.getLocalAddress();
-      var np = Path.of(roundtripsPath);
-      var dirPath = new File(np.toString());
-      if(!dirPath.exists()){
 
-        if(!dirPath.mkdir()){
-          throw new Exception("Unable to generate dir "+ dirPath);
-        }
-      }
-      if (!Files.isDirectory(np)) {
-        Files.createDirectory(np);
-      }
   }
 
   private boolean isDebugOrMore(Logger le){
@@ -110,28 +106,30 @@ public class RequestResponseFileLogging implements FilteringClass {
       serRes.setResponseText(null);
     }
     serRes.setResponseBytes(null);
-    var extension = getOptionalExtension(serReq.getPath());
-    var filePath =
-        roundtripsPath
-            + File.separator
-            + cleanUp(serReq.getMs() + "___" + serReq.getHost() + "___" + serReq.getPath());
-    if (extension != null) {
-      filePath += "." + extension;
-    }
-    filePath += ".log";
 
     try {
-      FileWriter myWriter = new FileWriter(filePath);
+      //FileWriter myWriter = new FileWriter(filePath);
 
-      var toWrite = new RequestResponseFileLoggingModel();
-      toWrite.setMethod(serReq.getMethod());
-      toWrite.setProtocol(serReq.getProtocol());
-      toWrite.setHost(serReq.getHost());
-      toWrite.setPath(serReq.getPath());
-      toWrite.setRequest(serReq);
-      toWrite.setResponse(serRes);
-      myWriter.write(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(toWrite));
-      myWriter.close();
+      sessionFactory.transactional((em)->{
+        var lt = new LoggingTable();
+        lt.setProtocol(serReq.getProtocol());
+        lt.setPath(serReq.getPath());
+        lt.setMethod(serReq.getMethod());
+        lt.setHost(serReq.getHost());
+        lt.setRequestBody(serReq.bodyExists());
+        lt.setResponseBody(serRes.bodyExists());
+        lt.setContentType(serReq.getHeader("content-type"));
+        lt.setTimestamp(Timestamp.from(Calendar.getInstance().toInstant()));
+        em.persist(lt);
+
+        var ld = new LoggingDataTable();
+        ld.setId(lt.getId());
+        ld.setResponse(mapper.writeValueAsString(serRes));
+        ld.setRequest(mapper.writeValueAsString(serReq));
+        em.persist(ld);
+
+      });
+
     } catch (Exception ex) {
       logger.trace(ex.getMessage());
     }
