@@ -16,26 +16,27 @@ public class DataReorganizer {
   private void reorganizeV2(ReplayerResult destination, ArrayList<ReplayerRow> source) {
     var staticHashes = new HashSet<String>();
     for (var row :
-            source){
-      var isRowStatic = MimeChecker.isStatic(row.getResponse().getHeader(ConstantsHeader.CONTENT_TYPE),row.getRequest().getPath());
-      if(isRowStatic ){
-        if(!staticHashes.contains(row.getResponseHash())){
+            source) {
+      var isRowStatic = MimeChecker.isStatic(row.getResponse().getHeader(ConstantsHeader.CONTENT_TYPE), row.getRequest().getPath());
+      if (isRowStatic) {
+        if (!staticHashes.contains(row.getResponseHash())) {
           destination.getStaticRequests().add(row);
           staticHashes.add(row.getResponseHash());
         }
-      }else{
+      } else {
         destination.getDynamicRequests().add(row);
       }
     }
     //Clean up indexes
-    for(var i =destination.getIndexes().size()-1;i>=0;i--){
+    for (var i = destination.getIndexes().size() - 1; i >= 0; i--) {
       var current = destination.getIndexes().get(i);
-      if(!source.stream().anyMatch(a->a.getId()==current.getReference())){
+      if (!source.stream().anyMatch(a -> a.getId() == current.getReference())) {
         destination.getIndexes().remove(i);
       }
     }
   }
-
+}
+/*
   private void reorganizeV1(ReplayerResult destination, ArrayList<ReplayerRow> source) {
     var requestGroups = new HashMap<String, List<ReplayerRow>>();
     var requestResponseGroups = new HashMap<String, List<ReplayerRow>>();
@@ -68,8 +69,8 @@ public class DataReorganizer {
       item.getRequest().setStaticRequest(true);
       destination.getStaticRequests().add(item);
     }
-  }
-
+  }*/
+/*
   private void groupMultipleRequests(
       ArrayList<ReplayerRow> source,
       HashMap<String, List<ReplayerRow>> byRequest,
@@ -88,7 +89,8 @@ public class DataReorganizer {
       byRequestResponse.get(byRequestResponseDs).add(row);
     }
   }
-
+*/
+  /*
   private void organizeByNewDiscoveredType(
       HashMap<String, List<ReplayerRow>> requestGroups,
       ArrayList<List<ReplayerRow>> staticIndexes,
@@ -121,7 +123,8 @@ public class DataReorganizer {
       }
     }
   }
-
+*/
+  /*
   private ArrayList<List<ReplayerRow>> setupStaticIndexes(
       HashMap<String, List<ReplayerRow>> requestGroups,
       HashMap<String, List<ReplayerRow>> requestResponseGroups) {
@@ -139,14 +142,15 @@ public class DataReorganizer {
     }
     return staticIndexes;
   }
-
+*/
+  /*
   @SuppressWarnings("RedundantIfStatement")
   private boolean containsTheSameIndexes(List<ReplayerRow> left, List<ReplayerRow> right) {
     if (verifyComparison(left, right)) return false;
     if (verifyComparison(right, left)) return false;
     return true;
-  }
-
+  }*/
+/*
   private boolean verifyComparison(List<ReplayerRow> left, List<ReplayerRow> right) {
     for (var leftItem : left) {
       var found = false;
@@ -162,7 +166,7 @@ public class DataReorganizer {
     }
     return false;
   }
-
+*/ /*
   public String calculateDataResult(ReplayerRow row, boolean byRequestOnly) {
     var req = row.getRequest();
     StringBuilder result = new StringBuilder(req.getHost() + "|" + req.getPath());
@@ -178,4 +182,4 @@ public class DataReorganizer {
     }
     return result.toString();
   }
-}
+}*/

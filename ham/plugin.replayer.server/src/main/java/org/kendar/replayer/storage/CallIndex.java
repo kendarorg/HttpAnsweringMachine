@@ -1,25 +1,57 @@
 package org.kendar.replayer.storage;
 
+import org.springframework.stereotype.Component;
+
+import javax.persistence.*;
+
+@Component
+
+@Entity
+@Table(name="REPLAYER_CALL_INDEX")
 public class CallIndex {
-    private int id;
-    private int reference;
+
+    @Id
+    @Column(name = "id")
+    private long id;
+
+    public long getRecordingId() {
+        return recordingId;
+    }
+
+    public void setRecordingId(long recordingId) {
+        this.recordingId = recordingId;
+    }
+
+    @Column(name="recordingId")
+    private long recordingId;
+
+    @Column(name = "reference")
+    private long reference;
+
+    @Column(name = "description",length = 1024)
     private String description;
+
+
+    @Column(name = "pactTest")
     private boolean pactTest;
+
+
+    @Column(name = "stimulatorTest")
     private boolean stimulatorTest;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getReference() {
+    public long getReference() {
         return reference;
     }
 
-    public void setReference(int reference) {
+    public void setReference(long reference) {
         this.reference = reference;
     }
 

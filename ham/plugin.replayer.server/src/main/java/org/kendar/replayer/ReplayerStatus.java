@@ -7,6 +7,7 @@ import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.storage.*;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.ExternalRequester;
 import org.kendar.servers.http.InternalRequester;
@@ -38,6 +39,7 @@ public class ReplayerStatus {
     private final ExternalRequester externalRequester;
     private final InternalRequester internalRequester;
     private final SimpleProxyHandler simpleProxyHandler;
+    private HibernateSessionFactory sessionFactory;
     private BaseDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
 
@@ -49,7 +51,8 @@ public class ReplayerStatus {
             JsonConfiguration configuration,
             EventQueue eventQueue, ExternalRequester externalRequester,
             DnsMultiResolver multiResolver, InternalRequester internalRequester,
-            SimpleProxyHandler simpleProxyHandler) {
+            SimpleProxyHandler simpleProxyHandler,
+            HibernateSessionFactory sessionFactory) {
 
         this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.loggerBuilder = loggerBuilder;
@@ -61,6 +64,7 @@ public class ReplayerStatus {
         this.externalRequester = externalRequester;
         this.internalRequester = internalRequester;
         this.simpleProxyHandler = simpleProxyHandler;
+        this.sessionFactory = sessionFactory;
         eventQueue.register((a)->pactCompleted(), PactCompleted.class);
         eventQueue.register((a)->nullCompleted(), NullCompleted.class);
     }
@@ -81,7 +85,7 @@ public class ReplayerStatus {
         logger.info("RECORDING START");
         state = ReplayerState.RECORDING;
         dataset =
-                new RecordingDataset( loggerBuilder, dataReorganizer, md5Tester);
+                new RecordingDataset( loggerBuilder, dataReorganizer, md5Tester,sessionFactory);
         dataset.load(id, rootPath.toString(), description);
     }
 

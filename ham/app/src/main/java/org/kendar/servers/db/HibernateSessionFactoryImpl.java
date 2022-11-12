@@ -13,8 +13,10 @@ public class HibernateSessionFactoryImpl implements HibernateSessionFactory{
     @Override
     public SessionFactory createSession() throws HibernateException {
 
-        if(sessionFactory==null) {
-            sessionFactory = configuration.buildSessionFactory();
+        synchronized (sessionFactory) {
+            if (sessionFactory == null) {
+                sessionFactory = configuration.buildSessionFactory();
+            }
         }
         return sessionFactory;
     }

@@ -95,11 +95,11 @@ public class LoggingTable implements DbTable {
     private long id;
     @Column(name = "protocol")
     private String protocol;
-    @Column(name = "host")
+    @Column(name = "host",length = 512)
     private String host;
-    @Column(name = "path")
+    @Column(name = "path",length = 64000)
     private String path;
-    @Column(name = "query")
+    @Column(name = "query",length = 64000)
     private String query;
     @Column(name = "contentType")
     private String contentType;

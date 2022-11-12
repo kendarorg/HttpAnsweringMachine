@@ -3,9 +3,12 @@ package org.kendar.replayer.storage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.utils.Md5Tester;
+import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.MimeChecker;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +17,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,6 +37,7 @@ public class RecordingDataset implements BaseDataset{
     private final ConcurrentLinkedQueue<CallIndex> indexes = new ConcurrentLinkedQueue<>();
     private final Md5Tester md5Tester;
     private final Logger logger;
+    private HibernateSessionFactory sessionFactory;
     private String name;
     private String replayerDataDir;
     private String description;
@@ -53,16 +60,17 @@ public class RecordingDataset implements BaseDataset{
     }
 
     public RecordingDataset(
-                            LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer,
-                            Md5Tester md5Tester) {
+            LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer,
+            Md5Tester md5Tester, HibernateSessionFactory sessionFactory) {
         this.dataReorganizer = dataReorganizer;
         this.md5Tester = md5Tester;
         this.logger = loggerBuilder.build(RecordingDataset.class);
+        this.sessionFactory = sessionFactory;
     }
 
     public void save() throws IOException {
-        synchronized (this) {
-            var result = new ReplayerResult();
+        //synchronized (this) {
+            /*var result = new ReplayerResult();
             var partialResult = new ArrayList<ReplayerRow>();
             var rootPath = Path.of(replayerDataDir);
             if (!Files.isDirectory(rootPath)) {
@@ -97,11 +105,23 @@ public class RecordingDataset implements BaseDataset{
             var stringPath = rootPath + File.separator + name + ".json";
             FileWriter myWriter = new FileWriter(stringPath);
             myWriter.write(allDataString);
-            myWriter.close();
-        }
+            myWriter.close();*/
+            staticRequests.clear();
+            recording =  null;
+        //}
     }
 
-    public void add(Request req, Response res) {
+    private static Map<String,Long> staticRequests = new HashMap<>();
+    private static DbRecording recording;
+
+    public void add(Request req, Response res) throws Exception {
+        if(recording==null){
+            sessionFactory.transactional((em)->{
+                recording = new DbRecording();
+                recording.setDescripton(description);
+                em.persist(recording);
+            });
+        }
         var path = req.getHost() + req.getPath();
         try {
 
@@ -144,9 +164,47 @@ public class RecordingDataset implements BaseDataset{
             replayerRow.setResponseHash(responseHash);
 
             var callIndex = new CallIndex();
-            callIndex.setId(replayerRow.getId());
-            callIndex.setReference(replayerRow.getId());
-            this.indexes.add(callIndex);
+            callIndex.setRecordingId(recording.getId());
+
+            sessionFactory.transactional(em-> {
+                var isRowStatic = MimeChecker.isStatic(res.getHeader(ConstantsHeader.CONTENT_TYPE), req.getPath());
+
+                replayerRow.setRecordingId(recording.getId());
+                var saveRow = true;
+                if (isRowStatic && req.getMethod().equalsIgnoreCase("GET")) {
+                    replayerRow.setStaticRequest(true);
+                    if (staticRequests.containsKey(replayerRow.getResponseHash())) {
+                        saveRow = false;
+                    }
+                } else {
+                    replayerRow.setStaticRequest(false);
+                }
+                /*if (req.isStaticRequest()) {
+
+                    if(!staticData.containsKey(path)){
+                        staticData.put(path, new ArrayList<>());
+                    }
+                    staticData.get(path).add(replayerRow);
+                    callIndex.setReference(replayerRow.getId());
+                } else {
+                    dynamicData.add(replayerRow);
+                }*/
+                em.persist(replayerRow);
+
+                callIndex.setId(replayerRow.getId());
+                if (!saveRow) {
+                    callIndex.setReference(replayerRow.getId());
+                } else {
+                    staticRequests.put(replayerRow.getResponseHash(),replayerRow.getId());
+                    callIndex.setReference(staticRequests.get(replayerRow.getResponseHash()));
+                }
+                em.persist(callIndex);
+                if (!saveRow) {
+                    em.remove(replayerRow);
+                }
+            });
+
+            /*this.indexes.add(callIndex);
             if (req.isStaticRequest()) {
                 if(!staticData.containsKey(path)){
                     staticData.put(path, new ArrayList<>());
@@ -155,7 +213,7 @@ public class RecordingDataset implements BaseDataset{
                 callIndex.setReference(replayerRow.getId());
             } else {
                 dynamicData.add(replayerRow);
-            }
+            }*/
             // ADD the crap
         } catch (Exception e) {
             e.printStackTrace();
