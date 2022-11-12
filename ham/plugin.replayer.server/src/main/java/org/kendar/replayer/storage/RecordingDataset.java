@@ -118,7 +118,7 @@ public class RecordingDataset implements BaseDataset{
         if(recording==null){
             sessionFactory.transactional((em)->{
                 recording = new DbRecording();
-                recording.setDescripton(description);
+                recording.setDescription(description);
                 em.persist(recording);
             });
         }

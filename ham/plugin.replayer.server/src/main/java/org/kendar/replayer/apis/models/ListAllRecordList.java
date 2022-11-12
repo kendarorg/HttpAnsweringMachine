@@ -52,7 +52,7 @@ public class ListAllRecordList {
             getIndexes().add(index);
         }
         this.setId(id);
-        this.setDescription(recording.getDescripton());
+        this.setDescription(recording.getDescription());
     }
 
     public List<ReplayerRow> getLines() {
