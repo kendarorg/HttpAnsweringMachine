@@ -38,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Component
@@ -316,7 +317,7 @@ public class ReplayerAPICrud implements FilteringClass {
           examples = @Example(example = "[1,2,3]"))
   )
   public void deleteLines(Request req, Response res) throws Exception {
-    List<Integer> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Integer[].class)).collect(Collectors.toList());
+    List<Long> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Long[].class)).collect(Collectors.toList());
     var id = Long.valueOf(req.getPathParameter("id"));
     sessionFactory.transactional(em->{
       for(var itemId:jsonFileData) {
@@ -367,25 +368,37 @@ public class ReplayerAPICrud implements FilteringClass {
           examples = @Example(example = "[1,2,3]"))
   )
   public void clone(Request req, Response res) throws Exception {
-    List<Integer> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Integer[].class)).collect(Collectors.toList());
+    Set<Long> jsonFileData = new HashSet<Long>(
+            Arrays.stream(mapper.readValue(req.getRequestText(), Long[].class)).collect(Collectors.toList()));
     var id = Long.valueOf(req.getPathParameter("id"));
+    AtomicLong recordingId = new AtomicLong();
     sessionFactory.query(em-> {
       DbRecording recording = (DbRecording) em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id).getResultList().get(0);
+      recordingId.set(recording.getId());
       List<CallIndex> indexLines = em.createQuery("SELECT e FROM CallIndex e WHERE e.recordingId=" + id).getResultList();
       List<ReplayerRow> rows = em.createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId=" + id).getResultList();
 
-      var newDbRecording= new DbRecording();
-      newDbRecording.setDescription(recording.getDescription());
-      for(var row:rows){
-        if(row.isStaticRequest()){
-          result.getStaticRequests().add(row);
-        }else{
-          result.getDynamicRequests().add(row);
-        }
-      }
+      em.detach(recording);
+      recording.setId(null);
+      em.persist(recording);
+      Set<Long> references = new HashSet<>();
       for(var indexLine:indexLines){
-        result.getIndexes().add(indexLine);
+
+        if(!jsonFileData.contains(indexLine.getId()))continue;
+        references.add(indexLine.getReference());
+        em.detach(indexLine);
+        indexLine.setId(null);
+        indexLine.setRecordingId(recording.getId());
+        em.persist(indexLine);
       }
+      for(var row:rows){
+        if(!references.contains(row.getId()))continue;
+        em.detach(row);
+        row.setIndex(null);
+        row.setRecordingId(recording.getId());
+        em.persist(row);
+      }
+
     });
     
     /*var newid = req.getPathParameter("newid");
@@ -421,7 +434,7 @@ public class ReplayerAPICrud implements FilteringClass {
     
     */
 
-    res.setResponseText(String.valueOf(newRecording.getId()));
+    res.setResponseText(String.valueOf(recordingId.get()));
     res.setStatusCode(200);
   }
 }

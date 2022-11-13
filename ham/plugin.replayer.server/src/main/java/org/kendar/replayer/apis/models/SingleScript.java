@@ -6,14 +6,14 @@ import java.util.List;
 public class SingleScript {
     private List<SingleScriptLine> lines = new ArrayList<>();
     private SingleScriptFilter filter;
-    private String id;
+    private Long id;
     private String description;
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

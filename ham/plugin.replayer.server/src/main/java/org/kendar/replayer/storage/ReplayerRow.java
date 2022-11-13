@@ -20,6 +20,14 @@ public class ReplayerRow {
 
     private static ObjectMapper mapper = new ObjectMapper();
 
+    public Long getIndex() {
+        return index;
+    }
+
+    public void setIndex(Long index) {
+        this.index = index;
+    }
+
     @Column(name="timestamp")
     private Timestamp timestamp = Timestamp.from(Calendar.getInstance().toInstant());
 
@@ -76,7 +84,7 @@ public class ReplayerRow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "index")
-    private long index;
+    private Long index;
 
     public boolean isStaticRequest() {
         return staticRequest;
