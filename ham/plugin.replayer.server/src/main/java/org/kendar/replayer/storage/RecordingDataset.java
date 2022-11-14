@@ -12,29 +12,23 @@ import org.kendar.utils.MimeChecker;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Component
 public class RecordingDataset implements BaseDataset{
-    private final DataReorganizer dataReorganizer;
-    private final ConcurrentLinkedQueue<ReplayerRow> dynamicData = new ConcurrentLinkedQueue<>();
-    private final ConcurrentHashMap<String, List<ReplayerRow>> staticData = new ConcurrentHashMap<>();
+    //private final DataReorganizer dataReorganizer;
+    //private final ConcurrentLinkedQueue<ReplayerRow> dynamicData = new ConcurrentLinkedQueue<>();
+    //private final ConcurrentHashMap<String, List<ReplayerRow>> staticData = new ConcurrentHashMap<>();
     private final ConcurrentLinkedQueue<String> errors = new ConcurrentLinkedQueue<>();
-    private final AtomicInteger counter = new AtomicInteger(0);
-    private final ConcurrentLinkedQueue<CallIndex> indexes = new ConcurrentLinkedQueue<>();
+    private final AtomicLong counter = new AtomicLong(0L);
+    //private final ConcurrentLinkedQueue<CallIndex> indexes = new ConcurrentLinkedQueue<>();
     private final Md5Tester md5Tester;
     private final Logger logger;
     private HibernateSessionFactory sessionFactory;
@@ -62,7 +56,7 @@ public class RecordingDataset implements BaseDataset{
     public RecordingDataset(
             LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer,
             Md5Tester md5Tester, HibernateSessionFactory sessionFactory) {
-        this.dataReorganizer = dataReorganizer;
+        //this.dataReorganizer = dataReorganizer;
         this.md5Tester = md5Tester;
         this.logger = loggerBuilder.build(RecordingDataset.class);
         this.sessionFactory = sessionFactory;
@@ -115,11 +109,17 @@ public class RecordingDataset implements BaseDataset{
     private static DbRecording recording;
 
     public void add(Request req, Response res) throws Exception {
-        if(recording==null){
+        if(name==null){
             sessionFactory.transactional((em)->{
                 recording = new DbRecording();
                 recording.setDescription(description);
                 em.persist(recording);
+                name = recording.getId();
+            });
+        }
+        if(recording == null){
+            recording = sessionFactory.queryResult((em)->{
+                return em.createQuery("SELECT e FROM DbRecording e WHERE e.id="+name).getResultList().get(0);
             });
         }
         var path = req.getHost() + req.getPath();
@@ -127,7 +127,7 @@ public class RecordingDataset implements BaseDataset{
 
             String responseHash;
 
-            if (req.isStaticRequest() && staticData.containsKey(path)) {
+            /*if (req.isStaticRequest() && staticData.containsKey(path)) {
                 var alreadyPresent = staticData.get(path);
                 if (res.isBinaryResponse()) {
                     responseHash = md5Tester.calculateMd5(res.getResponseBytes());
@@ -143,33 +143,43 @@ public class RecordingDataset implements BaseDataset{
                     var callIndex = new CallIndex();
                     callIndex.setId(newId);
                     callIndex.setReference(isAlreadyPresent.get(0).getId());
+                    callIndex.setRecordingId(recording.getId());
+                    sessionFactory.transactional(em->{
+                        em.persist(callIndex);
+                    });
                     this.indexes.add(callIndex);
                     return;
                 }
-            }
+            }*/
+            var newId = counter.getAndIncrement();
             var replayerRow = new ReplayerRow();
             if (res.isBinaryResponse()) {
                 responseHash = md5Tester.calculateMd5(res.getResponseBytes());
             } else {
                 responseHash = md5Tester.calculateMd5(res.getResponseText());
             }
-            replayerRow.setId(counter.getAndIncrement());
+            replayerRow.setId(newId);
             replayerRow.setRequest(req);
             replayerRow.setResponse(res);
+            replayerRow.setPath(req.getPath());
+            replayerRow.setHost(req.getHost());
             if (req.isBinaryRequest()) {
                 replayerRow.setRequestHash(md5Tester.calculateMd5(req.getRequestBytes()));
             } else {
                 replayerRow.setRequestHash(md5Tester.calculateMd5(req.getRequestText()));
             }
             replayerRow.setResponseHash(responseHash);
+            replayerRow.setRecordingId(recording.getId());
 
             var callIndex = new CallIndex();
-            callIndex.setRecordingId(recording.getId());
+            callIndex.setId(newId);
+            callIndex.setReference(newId);
+            callIndex.setRecordingId(newId);
 
             sessionFactory.transactional(em-> {
                 var isRowStatic = MimeChecker.isStatic(res.getHeader(ConstantsHeader.CONTENT_TYPE), req.getPath());
 
-                replayerRow.setRecordingId(recording.getId());
+                ;
                 var saveRow = true;
                 if (isRowStatic && req.getMethod().equalsIgnoreCase("GET")) {
                     replayerRow.setStaticRequest(true);
@@ -189,19 +199,19 @@ public class RecordingDataset implements BaseDataset{
                 } else {
                     dynamicData.add(replayerRow);
                 }*/
-                em.persist(replayerRow);
 
-                callIndex.setId(replayerRow.getId());
+                //callIndex.setId(replayerRow.getId());
                 if (!saveRow) {
-                    callIndex.setReference(replayerRow.getId());
-                } else {
-                    staticRequests.put(replayerRow.getResponseHash(),replayerRow.getId());
+                    //Overwrite when duplicate
+                    //No save row
                     callIndex.setReference(staticRequests.get(replayerRow.getResponseHash()));
+                } else {
+                    if (isRowStatic && req.getMethod().equalsIgnoreCase("GET")) {
+                        staticRequests.put(replayerRow.getResponseHash(), replayerRow.getId());
+                    }
+                    em.persist(replayerRow);
                 }
                 em.persist(callIndex);
-                if (!saveRow) {
-                    em.remove(replayerRow);
-                }
             });
 
             /*this.indexes.add(callIndex);

@@ -3,6 +3,7 @@ package org.kendar.replayer.storage;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.servers.db.DbTable;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
@@ -15,8 +16,44 @@ import java.util.Calendar;
 
 @Entity
 @Table(name="REPLAYER_ROW")
-public class ReplayerRow {
+public class ReplayerRow implements DbTable {
+
+    public boolean isBinaryRequest() {
+        return binaryRequest;
+    }
+
+    public void setBinaryRequest(boolean binaryRequest) {
+        this.binaryRequest = binaryRequest;
+    }
+
+    @Column(name="binaryRequest")
+    private boolean binaryRequest;
     //FIXME SHOULD ADD A DECENT ID
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    @Column(name="path",length = 6400)
+    private String path;
+
+    @Column(name="host",length = 6400)
+    private String host;
+
+    @Column(name="query",length = 6400)
+    private String query;
 
     private static ObjectMapper mapper = new ObjectMapper();
 
@@ -126,6 +163,9 @@ public class ReplayerRow {
 
     public void setRequest(Request request) {
         try {
+            this.host = request.getHost();
+            this.path = request.getPath();
+            this.binaryRequest = request.isBinaryRequest();
             this.requestSerialized = mapper.writeValueAsString(request);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -190,4 +230,11 @@ public class ReplayerRow {
         this.stimulatedTest = stimulatedTest;
     }
 
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
 }

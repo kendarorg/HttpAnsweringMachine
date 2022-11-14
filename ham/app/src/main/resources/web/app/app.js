@@ -151,7 +151,13 @@ class SimpleGrid {
         const msgError = this.objType + " cannot be deleted!";
         const self = this;
         this.data.forEach(function (row, i) {
-            if (row[self.idField].replaceAll("_",".") == id.replaceAll("_",".") && action != false) {
+            var rowId = row[self.idField];
+
+            if(typeof rowId == 'string'){
+                rowId =row[self.idField].replaceAll("_",".");
+                id = id.replaceAll("_",".");
+            }
+            if (rowId == id && action != false) {
                 if (callback == null || callback === undefined) {
                     self.data.splice(i, 1);
                     $("#" + self.tableId + " #" + self.tableId + "-" + id).remove();

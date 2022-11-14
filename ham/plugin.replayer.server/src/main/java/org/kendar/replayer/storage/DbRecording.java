@@ -1,6 +1,7 @@
 package org.kendar.replayer.storage;
 
 
+import org.kendar.servers.db.DbTable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -10,12 +11,14 @@ import java.util.HashMap;
 
 @Entity
 @Table(name="REPLAYER_RECORDING")
-public class DbRecording {
+public class DbRecording implements DbTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name="name")
+    private String name;
 
 
     public Long getId() {
@@ -37,4 +40,11 @@ public class DbRecording {
     @Column(name="description")
     private String description;
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

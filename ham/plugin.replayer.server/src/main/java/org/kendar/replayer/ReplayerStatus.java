@@ -148,9 +148,8 @@ public class ReplayerStatus {
         logger.info("REPLAYING START");
         state = ReplayerState.REPLAYING;
         dataset =
-                new ReplayerDataset(  loggerBuilder, dataReorganizer, md5Tester);
+                new ReplayerDataset(  loggerBuilder, dataReorganizer, md5Tester,sessionFactory);
         dataset.load(id, rootPath.toString(),null);
-        ((ReplayerDataset)dataset).load();
     }
 
     public void restartReplaying() {
@@ -171,11 +170,12 @@ public class ReplayerStatus {
         dataset = null;
     }
 
-    public String startPact(Long id) throws IOException {
+    public Long startPact(Long id) throws Exception {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         logger.info("PACT START");
-        dataset = new PactDataset(loggerBuilder,eventQueue,externalRequester,new Cache(),simpleProxyHandler);
+        dataset = new PactDataset(loggerBuilder,eventQueue,externalRequester,
+                new Cache(),simpleProxyHandler,sessionFactory);
         dataset.load(id, rootPath.toString(),null);
         var runId = ((PactDataset)dataset).start();
         state = ReplayerState.PLAYING_PACT;
@@ -190,13 +190,13 @@ public class ReplayerStatus {
 
     }
 
-    public String startNull(Long id) throws IOException {
+    public Long startNull(Long id) throws Exception {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         logger.info("NULL START");
-        dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue,internalRequester, new Cache(),simpleProxyHandler);
+        dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue,
+                internalRequester, new Cache(),simpleProxyHandler,sessionFactory);
         dataset.load(id, rootPath.toString(),null);
-        ((ReplayerDataset)dataset).load();
         var runId = ((NullDataset)dataset).start();
         state = ReplayerState.PLAYING_NULL_INFRASTRUCTURE;
         return runId;

@@ -184,7 +184,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
         if(brotli){
           responseText = IOUtils.toString(new BrotliInputStream(in), StandardCharsets.UTF_8);
           response.removeHeader("content-encoding");
-        }else if(responseEntity.getContentType().getValue().equalsIgnoreCase(ConstantsMime.JSON_SMILE)){
+        }else if(responseEntity.getContentType()!=null && responseEntity.getContentType().getValue().equalsIgnoreCase(ConstantsMime.JSON_SMILE)){
           responseText = JsonSmile.smileToJSON(IOUtils.toByteArray(in)).toPrettyString();
         }else {
           responseText = IOUtils.toString(in, StandardCharsets.UTF_8);

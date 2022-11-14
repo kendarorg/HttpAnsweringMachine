@@ -3,6 +3,7 @@ package org.kendar.replayer.apis;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
@@ -94,6 +95,7 @@ public class ReplayerAPICrud implements FilteringClass {
         var lr = new LocalRecording();
         lr.setId(rs.getId());
         lr.setState(ReplayerState.NONE);
+        lr.setName(rs.getName());
         if (rs.getId()==currentScript) {
           lr.setState(replayerStatus.getStatus());
         }
@@ -265,9 +267,11 @@ public class ReplayerAPICrud implements FilteringClass {
     requests = @HamRequest(body=JsonFileData.class))
   public void uploadRecording(Request req, Response res) throws Exception {
     JsonFileData jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
-    String fileFullPath = jsonFileData.getName();
+    String realFileName = FilenameUtils.removeExtension(jsonFileData.getName());
     var replayerResult = mapper.readValue(jsonFileData.readAsString(),ReplayerResult.class);
     var recording = new DbRecording();
+    recording.setDescription(replayerResult.getDescription());
+    recording.setName(realFileName);
     sessionFactory.transactional(em->{
       recording.setDescription(replayerResult.getDescription());
       em.persist(recording);

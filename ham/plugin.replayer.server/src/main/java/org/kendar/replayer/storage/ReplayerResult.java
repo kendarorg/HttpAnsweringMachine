@@ -12,8 +12,6 @@ public class ReplayerResult {
     private List<String> errors = new ArrayList<>();
     private List<CallIndex> indexes = new ArrayList<>();
     private HashMap<String,String> variables = new HashMap<>();
-    private HashMap<String,String> preScript = new HashMap<>();
-    private HashMap<String,String> postScript = new HashMap<>();
     private String initScript;
 
     private String description;
@@ -89,21 +87,5 @@ public class ReplayerResult {
 
     public void setInitScript(String initScript) {
         this.initScript = initScript;
-    }
-
-    public HashMap<String, String> getPreScript() {
-        return preScript;
-    }
-
-    public void setPreScript(HashMap<String, String> preScript) {
-        this.preScript = preScript;
-    }
-
-    public HashMap<String, String> getPostScript() {
-        return postScript;
-    }
-
-    public void setPostScript(HashMap<String, String> postScript) {
-        this.postScript = postScript;
     }
 }

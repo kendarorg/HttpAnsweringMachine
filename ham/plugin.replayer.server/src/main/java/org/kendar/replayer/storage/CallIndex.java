@@ -1,5 +1,6 @@
 package org.kendar.replayer.storage;
 
+import org.kendar.servers.db.DbTable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -8,9 +9,12 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="REPLAYER_CALL_INDEX")
-public class CallIndex {
-
+public class CallIndex implements DbTable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "index")
+    private Long index;
+
     @Column(name = "id")
     private Long id;
 
@@ -101,5 +105,13 @@ public class CallIndex {
 
     public void setPactTest(boolean pactTest) {
         this.pactTest = pactTest;
+    }
+
+    public Long getIndex() {
+        return index;
+    }
+
+    public void setIndex(Long index) {
+        this.index = index;
     }
 }

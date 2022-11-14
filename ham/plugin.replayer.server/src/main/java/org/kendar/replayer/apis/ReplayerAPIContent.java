@@ -14,7 +14,6 @@ import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.storage.DataReorganizer;
-import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
@@ -25,8 +24,6 @@ import org.kendar.servers.models.JsonFileData;
 import org.kendar.utils.*;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 
 @Component

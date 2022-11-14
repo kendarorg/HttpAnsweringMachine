@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.utils.Md5Tester;
+import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
@@ -14,9 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ReplayerDataset implements BaseDataset{
@@ -24,6 +23,7 @@ public class ReplayerDataset implements BaseDataset{
   protected final Logger logger;
   protected DataReorganizer dataReorganizer;
   protected Md5Tester md5Tester;
+  protected HibernateSessionFactory sessionFactory;
 
   protected final ObjectMapper mapper = new ObjectMapper();
 
@@ -35,12 +35,14 @@ public class ReplayerDataset implements BaseDataset{
   protected ReplayerResult replayerResult;
 
   public ReplayerDataset(
-      LoggerBuilder loggerBuilder,
-      DataReorganizer dataReorganizer,
-      Md5Tester md5Tester) {
+          LoggerBuilder loggerBuilder,
+          DataReorganizer dataReorganizer,
+          Md5Tester md5Tester,
+          HibernateSessionFactory sessionFactory) {
     this.logger = loggerBuilder.build(ReplayerDataset.class);
     this.dataReorganizer = dataReorganizer;
     this.md5Tester = md5Tester;
+    this.sessionFactory = sessionFactory;
   }
 
   public Long getName() {
@@ -61,31 +63,41 @@ public class ReplayerDataset implements BaseDataset{
   }
 
 
-  public ReplayerResult load() throws IOException {
-    var rootPath = Path.of(replayerDataDir);
-    if (!Files.isDirectory(rootPath)) {
-      Files.createDirectory(rootPath);
-    }
-    var stringPath = Path.of(rootPath + File.separator + name + ".json");
-    replayerResult = mapper.readValue(FileUtils.readFileToString(stringPath.toFile(), "UTF-8"), ReplayerResult.class);
-    return replayerResult;
-  }
 
-  private ReplayerRow findStaticMatch(Request sreq, String contentHash) {
+  private ReplayerRow findRequestMatch(Request sreq, String contentHash,boolean staticRequest) throws Exception {
     var matchingQuery = -1;
     ReplayerRow founded = null;
-    for (var row : replayerResult.getStaticRequests()) {
+    var staticRequests = new ArrayList<ReplayerRow>();
+    sessionFactory.query(em->{
+      var query =em.createQuery("SELECT e FROM ReplayerRow  e WHERE " +
+              " e.staticRequest=:sr " +
+              " AND e.recordingId=:recordingId" +
+              " AND e.path=:path" +
+              " AND e.host=:host" +
+              " ORDER BY e.id ASC");
+      query.setParameter("sr",staticRequest);
+      query.setParameter("recordingId",name);
+      query.setParameter("path",sreq.getPath());
+      query.setParameter("host",sreq.getHost());
+      staticRequests.addAll(query.getResultList());
+    });
+
+    for (var row : staticRequests) {
+      if(!staticRequest){
+        if(states.contains(row.getId())){
+          continue;
+        }
+      }
       var rreq = row.getRequest();
-      if (!sreq.getPath().equals(rreq.getPath())) continue;
-      if (!sreq.getHost().equals(rreq.getHost())) continue;
       if(!superMatch(row))continue;
-      var matchedQuery = matchQuery(rreq.getQuery(), sreq.getQuery());
+      var matchedQuery=0;
       if (rreq.isBinaryRequest() == sreq.isBinaryRequest()) {
         if (row.getRequestHash().equalsIgnoreCase(contentHash)) {
           matchedQuery += 20;
         }
       }
 
+      matchedQuery += matchQuery(rreq.getQuery(), sreq.getQuery());
       if (matchedQuery > matchingQuery) {
         matchingQuery = matchedQuery;
         founded = row;
@@ -98,32 +110,6 @@ public class ReplayerDataset implements BaseDataset{
     return true;
   }
 
-  private ReplayerRow findDynamicMatch(Request sreq) {
-    var matchingQuery = -1;
-    ReplayerRow founded = null;
-    for (var row : replayerResult.getDynamicRequests()) {
-      var rreq = row.getRequest();
-      // Avoid already running stuffs
-      if(row.done())continue;
-      if (states.contains(row.getId())) continue;
-      if (!sreq.getPath().equals(rreq.getPath())) continue;
-      if (!sreq.getHost().equals(rreq.getHost())) continue;
-      if(!superMatch(row))continue;
-      var matchedQuery = matchQuery(rreq.getQuery(), sreq.getQuery());
-      if (rreq.isBinaryRequest() == sreq.isBinaryRequest()) {
-        matchedQuery += 1;
-      }
-
-      if (matchedQuery > matchingQuery) {
-        matchingQuery = matchedQuery;
-        founded = row;
-      }
-    }
-    if (founded != null) {
-      states.put(founded.getId(), "");
-    }
-    return founded;
-  }
 
   public Response findResponse(Request req) {
     try {
@@ -134,19 +120,19 @@ public class ReplayerDataset implements BaseDataset{
       } else {
         contentHash = md5Tester.calculateMd5(req.getRequestText());
       }
-      ReplayerRow founded = findStaticMatch(req, contentHash);
+      ReplayerRow founded = findRequestMatch(req, contentHash,true);
       if (founded != null) {
         var result =  founded.getResponse();
         result.addHeader("X-REPLAYER-ID",founded.getId()+"");
         result.addHeader("X-REPLAYER-TYPE","STATIC");
         return result;
       }
-      founded = findDynamicMatch(req);
+      founded = findRequestMatch(req, contentHash,false);
       if (founded != null) {
         var result =  founded.getResponse();
         result.addHeader("X-REPLAYER-ID",founded.getId()+"");
         result.addHeader("X-REPLAYER-TYPE","DYNAMIC");
-        founded.markAsDone();
+        states.put(founded.getId(),null);
         return result;
       }
       return null;
@@ -175,33 +161,6 @@ public class ReplayerDataset implements BaseDataset{
     return result;
   }
 
-  public void delete(int line) {
-    List<ReplayerRow> staticRequests = replayerResult.getStaticRequests();
-    for (int i = staticRequests.size()-1; i >=0 ; i--) {
-      ReplayerRow entry = staticRequests.get(i);
-      if (entry.getId() == line) {
-        staticRequests.remove(i);
-        return;
-      }
-    }
-    List<ReplayerRow> dynamicRequests = replayerResult.getDynamicRequests();
-    for (int i = dynamicRequests.size()-1; i >=0 ; i--) {
-      ReplayerRow entry = dynamicRequests.get(i);
-      if (entry.getId() == line) {
-        dynamicRequests.remove(i);
-        return;
-      }
-    }
-    List<CallIndex> steps = replayerResult.getIndexes();
-    for (int i = steps.size()-1; i >=0 ; i--) {
-      CallIndex entry = steps.get(i);
-      if (entry.getReference() == line) {
-        steps.remove(i);
-        return;
-      }
-    }
-  }
-
   public void add(ReplayerRow row) {
     if (row.getRequest().isStaticRequest()) {
       replayerResult.getStaticRequests().add(row);
@@ -210,34 +169,4 @@ public class ReplayerDataset implements BaseDataset{
     }
   }
 
-  public void saveMods() throws IOException {
-    var partialResult = new ArrayList<ReplayerRow>();
-    partialResult.addAll(replayerResult.getDynamicRequests());
-    partialResult.addAll(replayerResult.getStaticRequests());
-    replayerResult.setStaticRequests(new ArrayList<>());
-    replayerResult.setDynamicRequests(new ArrayList<>());
-    dataReorganizer.reorganizeData(replayerResult, partialResult);
-    justSave(replayerResult);
-  }
-
-  public void justSave(Object data) throws IOException {
-    var rootPath = Path.of(replayerDataDir);
-    var allDataString = mapper.writeValueAsString(data);
-    var stringPath = rootPath + File.separator + name + ".json";
-    FileWriter myWriter = new FileWriter(stringPath);
-    myWriter.write(allDataString);
-    myWriter.close();
-  }
-
-
-  public void deleteIndex(int line) {
-      List<CallIndex> steps = replayerResult.getIndexes();
-      for (int i = steps.size()-1; i >=0 ; i--) {
-        CallIndex entry = steps.get(i);
-        if (entry.getId() == line) {
-          steps.remove(i);
-          return;
-        }
-      }
-    }
 }

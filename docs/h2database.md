@@ -24,3 +24,11 @@ HibernateSessionFactory sessionFactory
             List<LoggingDataTable> listEmployee = em.createQuery("SELECT e FROM LoggingDataTable e").getResultList();
             System.out.println("BUF");
         }));
+        
+
+
+@Component
+
+@Entity
+@Table(name="REPLAYER_RECORDING")
+public class DbRecording implements DbTable {

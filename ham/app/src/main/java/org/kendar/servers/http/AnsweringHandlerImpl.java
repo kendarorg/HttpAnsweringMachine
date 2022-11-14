@@ -71,6 +71,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
             DynamicReqest.class.getName(), "Log dynamic requests as file (DEBUG), precedence over Req/Res");
     pluginsInitializer.addSpecialLogger(
             InternalRequest.class.getName(), "Log internal requests (DEBUG)");
+    pluginsInitializer.addSpecialLogger(
+            "org.hibernate", "Log hibernate");
 
 
 

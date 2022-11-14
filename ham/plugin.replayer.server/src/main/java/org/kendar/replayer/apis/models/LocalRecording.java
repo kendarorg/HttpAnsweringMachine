@@ -5,6 +5,7 @@ import org.kendar.replayer.ReplayerState;
 public class LocalRecording {
     private long id;
     private ReplayerState state;
+    private String name;
 
     public long getId() {
         return id;
@@ -20,5 +21,13 @@ public class LocalRecording {
 
     public void setState(ReplayerState state) {
         this.state = state;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }
