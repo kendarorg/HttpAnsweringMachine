@@ -73,8 +73,12 @@ public class ReplayerAPISingleLine implements FilteringClass {
           )
   )
   public void retrieveSingleLineData(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
-    var line = Integer.parseInt(req.getPathParameter("line"));
+    var id = Long.parseLong(req.getPathParameter("id"));
+    var line = Long.parseLong(req.getPathParameter("line"));
+
+    sessionFactory.query(em-> {
+
+            }
 
     var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 
