@@ -125,16 +125,25 @@ public class FileLogsApi implements FilteringClass {
                     }
             ),tags = {"base/logs"})
     public void getLogFile(Request req, Response res) throws Exception {
-        String id = req.getPathParameter("id");
+        Long id = Long.parseLong(req.getPathParameter("id"));
         var result = new HashMap<String,Object>();
         sessionFactory.query(em->{
+
+
+            var prevId = (Long)em.createQuery("SELECT COALESCE( MAX(e.id),-1) FROM LoggingTable e WHERE" +
+                    " e.id<"+id).getResultList().get(0);
+
+            var nexIt = (Long)em.createQuery("SELECT COALESCE( MIN(e.id),-1) FROM LoggingTable e WHERE" +
+                    " e.id>"+id).getResultList().get(0);
+
+
             var query =em.createQuery("SELECT e FROM LoggingTable e WHERE e.id=:id");
-            query.setParameter("id",Long.parseLong(id));
+            query.setParameter("id",id);
             LoggingTable rs = (LoggingTable)query.getResultList().get(0);
             result.put("common",rs);
 
             query =em.createQuery("SELECT e FROM LoggingDataTable e WHERE e.id=:id");
-            query.setParameter("id",Long.parseLong(id));
+            query.setParameter("id",id);
             LoggingDataTable rsld = (LoggingDataTable)query.getResultList().get(0);
             var reqs = mapper.readValue(rsld.getRequest(),Request.class);
             var ress = mapper.readValue(rsld.getResponse(),Response.class);
@@ -146,8 +155,14 @@ public class FileLogsApi implements FilteringClass {
             if(ress.bodyExists()&& !ress.isBinaryResponse()) {
                 result.put("response_body",ress.getResponseText());
             }
+
+            if(prevId>=0){
+                res.addHeader("X-PAST", prevId.toString());
+            }
+            if(nexIt!=null){
+                res.addHeader("X-NEXT", nexIt.toString());
+            }
         });
-        //FIXME Next previous
 
         /*var data = Files.readString(Path.of(roundtripsPath.toString(),id));
         List<FileLogListItem> result = getFileLogListItems();
@@ -166,12 +181,7 @@ public class FileLogsApi implements FilteringClass {
                 past = resu.getId();
             }
         }*/
-        /*if(next!=null){
-            res.addHeader("X-NEXT", next);
-        }
-        if(past!=null){
-            res.addHeader("X-PAST", past);
-        }*/
+        /**/
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(result));
     }

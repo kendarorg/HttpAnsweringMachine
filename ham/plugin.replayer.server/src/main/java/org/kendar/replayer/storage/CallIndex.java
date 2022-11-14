@@ -32,6 +32,30 @@ public class CallIndex {
     private String description;
 
 
+    @Column(name = "preScript")
+    @Lob
+    private String preScript;
+
+    public String getPreScript() {
+        return preScript;
+    }
+
+    public void setPreScript(String preScript) {
+        this.preScript = preScript;
+    }
+
+    public String getPostScript() {
+        return postScript;
+    }
+
+    public void setPostScript(String postScript) {
+        this.postScript = postScript;
+    }
+
+    @Column(name = "postScript")
+    @Lob
+    private String postScript;
+
     @Column(name = "pactTest")
     private boolean pactTest;
 
