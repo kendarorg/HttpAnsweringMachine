@@ -191,58 +191,82 @@ public class ReplayerAPIScripts implements FilteringClass {
                     body = String.class
             )
     )
-    public void putScript(Request req, Response res) throws IOException {
-        var id = Long.parseLong(req.getPathParameter("id"));
+    public void putScript(Request req, Response res) throws Exception {
+        var recordingId = Long.parseLong(req.getPathParameter("id"));
         var lines = Arrays.stream(req.getPathParameter("line").split(","))
                 .map(Long::parseLong).collect(Collectors.toList());
 
 
         var data = mapper.readValue(req.getRequestText(),Scripts.class);
 
-        asdfasdf
+        sessionFactory.transactional(em-> {
 
-        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+            for(var line:lines) {
+                var index = (CallIndex) em.createQuery("SELECT e FROM CallIndex e WHERE" +
+                        " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
 
-        var dataset =
-                new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-        dataset.load(id, rootPath.toString(),null);
-        var datasetContent = dataset.load();
+                var row = (ReplayerRow)em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+                        " e.recordingId="+recordingId+" AND e.id="+line).getResultList().get(0);
 
-        for(var line:lines) {
-            if (data.getPre() == null || data.getPre().trim().isEmpty()) {
-                datasetContent.getPreScript().remove(line + "");
-            } else {
-                datasetContent.getPreScript().put(line + "", data.getPre().trim());
-            }
-
-            if (data.getPost() == null || data.getPost().trim().isEmpty()) {
-                datasetContent.getPostScript().remove(line + "");
-            } else {
-                datasetContent.getPostScript().put(line + "", data.getPost().trim());
-            }
-        }
-
-        if(lines.size()==1) {
-            var line = lines.get(0);
-            ReplayerRow foundedRow = null;
-            for (var dyr : datasetContent.getDynamicRequests()) {
-                if (dyr.getId() == line) {
-                    foundedRow = dyr;
-                    break;
+                if (data.getPre() == null || data.getPre().trim().isEmpty()) {
+                    index.setPreScript(null);
+                } else {
+                    index.setPreScript(data.getPre().trim());
                 }
-            }
-            for (var dyr : datasetContent.getStaticRequests()) {
-                if (dyr.getId() == line) {
-                    foundedRow = dyr;
-                    break;
+
+                if (data.getPost() == null || data.getPost().trim().isEmpty()) {
+                    index.setPostScript(null);
+                } else {
+                    index.setPostScript(data.getPost().trim());
                 }
+                row.getRequest().setHost(data.getHost());
+                row.getRequest().setPath(data.getPath());
+                em.persist(index);
             }
-            if (foundedRow != null) {
-                foundedRow.getRequest().setHost(data.getHost());
-                foundedRow.getRequest().setPath(data.getPath());
-            }
-        }
-        dataset.justSave(datasetContent);
+        });
+//
+//        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+//
+//        var dataset =
+//                new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
+//        dataset.load(id, rootPath.toString(),null);
+//        var datasetContent = dataset.load();
+//
+//        for(var line:lines) {
+//            if (data.getPre() == null || data.getPre().trim().isEmpty()) {
+//                datasetContent.getPreScript().remove(line + "");
+//            } else {
+//                datasetContent.getPreScript().put(line + "", data.getPre().trim());
+//            }
+//
+//            if (data.getPost() == null || data.getPost().trim().isEmpty()) {
+//                datasetContent.getPostScript().remove(line + "");
+//            } else {
+//                datasetContent.getPostScript().put(line + "", data.getPost().trim());
+//            }
+//        }
+//
+//        if(lines.size()==1) {
+//            var line = lines.get(0);
+//            ReplayerRow foundedRow = null;
+//            for (var dyr : datasetContent.getDynamicRequests()) {
+//                if (dyr.getId() == line) {
+//                    foundedRow = dyr;
+//                    break;
+//                }
+//            }
+//            for (var dyr : datasetContent.getStaticRequests()) {
+//                if (dyr.getId() == line) {
+//                    foundedRow = dyr;
+//                    break;
+//                }
+//            }
+//            if (foundedRow != null) {
+//                foundedRow.getRequest().setHost(data.getHost());
+//                foundedRow.getRequest().setPath(data.getPath());
+//            }
+//        }
+//        dataset.justSave(datasetContent);
     }
 
     @Override
