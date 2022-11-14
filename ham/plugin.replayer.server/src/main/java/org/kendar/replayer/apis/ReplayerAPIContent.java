@@ -85,11 +85,16 @@ public class ReplayerAPIContent implements FilteringClass {
     var line = Long.parseLong(getPathParameter(req, "line"));
     var requestOrResponse = getPathParameter(req, "requestOrResponse");
 
-    sessionFactory.query(em-> {
-      var row = (ReplayerRow)em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
-              " e.recordingId="+recordingId+" AND e.id="+line).getResultList().get(0);
-      sendBackContent(res, line, requestOrResponse, row);
-    });
+    try {
+      sessionFactory.query(em -> {
+        var row = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+                " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
+        sendBackContent(res, line, requestOrResponse, row);
+      });
+    }catch (Exception e){
+      res.setStatusCode(404);
+      res.setResponseText("Missing id " + recordingId + " with line " + line);
+    }
 
 //    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
 //
@@ -108,8 +113,7 @@ public class ReplayerAPIContent implements FilteringClass {
 //        return;
 //      }
 //    }
-    res.setStatusCode(404);
-    res.setResponseText("Missing id " + recordingId + " with line " + line);
+
   }
 
   private String getPathParameter(Request req, String id) {
@@ -207,12 +211,18 @@ public class ReplayerAPIContent implements FilteringClass {
     var line = Long.parseLong(getPathParameter(req, "line"));
     var requestOrResponse = getPathParameter(req, "requestOrResponse");
 
-    sessionFactory.transactional(em-> {
-      var row = (ReplayerRow)em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
-              " e.recordingId="+recordingId+" AND e.id="+line).getResultList().get(0);
-      deleted(res, line, requestOrResponse, row);
-      em.persist(row);
-    });
+    try {
+      sessionFactory.transactional(em -> {
+        var row = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+                " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
+        deleted(res, line, requestOrResponse, row);
+        em.persist(row);
+      });
+
+    }catch (Exception e){
+      res.setStatusCode(404);
+      res.setResponseText("Missing id " + recordingId + " with line " + line);
+    }
 
 //
 //    var id = getPathParameter(req, "id");
@@ -238,8 +248,6 @@ public class ReplayerAPIContent implements FilteringClass {
 //        return;
 //      }
 //    }
-    res.setStatusCode(404);
-    res.setResponseText("Missing id " + recordingId + " with line " + line);
   }
 
   @HttpMethodFilter(
@@ -262,12 +270,18 @@ public class ReplayerAPIContent implements FilteringClass {
     var requestOrResponse = getPathParameter(req, "requestOrResponse");
     var data = mapper.readValue(req.getRequestText(), JsonFileData.class);
 
-    sessionFactory.transactional(em-> {
-      var row = (ReplayerRow)em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
-              " e.recordingId="+recordingId+" AND e.id="+line).getResultList().get(0);
-      updated( line, requestOrResponse, row,data);
-      em.persist(row);
-    });
+    try {
+      sessionFactory.transactional(em -> {
+        var row = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+                " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
+        updated(line, requestOrResponse, row, data);
+        em.persist(row);
+      });
+
+    }catch (Exception e){
+      res.setStatusCode(404);
+      res.setResponseText("Missing id " + recordingId + " with line " + line);
+    }
 
 
 //    var id = getPathParameter(req, "id");
@@ -293,8 +307,6 @@ public class ReplayerAPIContent implements FilteringClass {
 //        return;
 //      }
 //    }
-    res.setStatusCode(404);
-    res.setResponseText("Missing id " + recordingId + " with line " + line);
   }
 
   private void updated(

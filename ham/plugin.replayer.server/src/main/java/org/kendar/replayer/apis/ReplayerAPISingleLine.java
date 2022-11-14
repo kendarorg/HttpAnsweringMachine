@@ -17,6 +17,7 @@ import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.ConstantsHeader;
@@ -38,14 +39,16 @@ public class ReplayerAPISingleLine implements FilteringClass {
   private final DataReorganizer dataReorganizer;
   final ObjectMapper mapper = new ObjectMapper();
   private final Md5Tester md5Tester;
+  private HibernateSessionFactory sessionFactory;
   private final String replayerData;
 
   public ReplayerAPISingleLine(
-      FileResourcesUtils fileResourcesUtils,
-      LoggerBuilder loggerBuilder,
-      DataReorganizer dataReorganizer,
-      Md5Tester md5Tester,
-      JsonConfiguration configuration) {
+          FileResourcesUtils fileResourcesUtils,
+          LoggerBuilder loggerBuilder,
+          DataReorganizer dataReorganizer,
+          Md5Tester md5Tester,
+          JsonConfiguration configuration,
+          HibernateSessionFactory sessionFactory) {
 
     this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
 
@@ -53,6 +56,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
     this.loggerBuilder = loggerBuilder;
     this.dataReorganizer = dataReorganizer;
     this.md5Tester = md5Tester;
+    this.sessionFactory = sessionFactory;
   }
 
   @Override
@@ -72,42 +76,56 @@ public class ReplayerAPISingleLine implements FilteringClass {
                   body = ReplayerRow.class
           )
   )
-  public void retrieveSingleLineData(Request req, Response res) throws IOException {
-    var id = Long.parseLong(req.getPathParameter("id"));
+  public void retrieveSingleLineData(Request req, Response res) throws Exception {
+    var recordingId = Long.parseLong(req.getPathParameter("id"));
     var line = Long.parseLong(req.getPathParameter("line"));
 
-    sessionFactory.query(em-> {
+    sessionFactory.query(em -> {
+      var prevId = (Long) em.createQuery("SELECT COALESCE( MAX(e.id),-1) FROM CallIndex e WHERE" +
+              " e.recordingId=" + recordingId + " AND e.id<" + line).getResultList().get(0);
 
-            }
+      var nexId = (Long) em.createQuery("SELECT COALESCE( MIN(e.id),-1) FROM CallIndex e WHERE" +
+              " e.recordingId=" + recordingId + " AND e.id>" + line).getResultList().get(0);
 
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+      var row = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+              " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
 
-    var dataset =
-        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-    dataset.load(id, rootPath.toString(),null);
-    var datasetContent = dataset.load();
-    var result = new ListAllRecordList(datasetContent, id,false).getLines();
-    result.sort(Comparator.comparingLong(ReplayerRow::getId));
-    for (var i=0;i<result.size();i++) {
-      var singleLine = result.get(i);
-      if (singleLine.getId() == line) {
-        var prev = -1L;
-        var next = -1L;
-        if(i>0){
-          prev=result.get(i-1).getId();
-        }
-        if(i<(result.size()-1)){
-          next=result.get(i+1).getId();
-        }
-        res.addHeader("X-NEXT", ""+next);
-        res.addHeader("X-PREV", ""+prev);
-        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-        res.setResponseText(mapper.writeValueAsString(singleLine));
-        return;
-      }
-    }
+      res.addHeader("X-NEXT", "" + nexId);
+      res.addHeader("X-PREV", "" + prevId);
+      res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
+      res.setResponseText(mapper.writeValueAsString(row));
+      return;
+    });
     res.setStatusCode(404);
-    res.setResponseText("Missing id " + id + " with line " + line);
+    res.setResponseText("Missing id " + recordingId + " with line " + line);
+
+//
+//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+//
+//    var dataset =
+//        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
+//    dataset.load(id, rootPath.toString(),null);
+//    var datasetContent = dataset.load();
+//    var result = new ListAllRecordList(datasetContent, id,false).getLines();
+//    result.sort(Comparator.comparingLong(ReplayerRow::getId));
+//    for (var i=0;i<result.size();i++) {
+//      var singleLine = result.get(i);
+//      if (singleLine.getId() == line) {
+//        var prev = -1L;
+//        var next = -1L;
+//        if(i>0){
+//          prev=result.get(i-1).getId();
+//        }
+//        if(i<(result.size()-1)){
+//          next=result.get(i+1).getId();
+//        }
+//        res.addHeader("X-NEXT", ""+next);
+//        res.addHeader("X-PREV", ""+prev);
+//        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
+//        res.setResponseText(mapper.writeValueAsString(singleLine));
+//        return;
+//      }
+//    }
   }
 
   @HttpMethodFilter(
@@ -120,34 +138,49 @@ public class ReplayerAPISingleLine implements FilteringClass {
                   body = ReplayerRow.class
           )
   )
-  public void modifySingleLineData(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
-    var line = Integer.parseInt(req.getPathParameter("line"));
+  public void modifySingleLineData(Request req, Response res) throws Exception {
+    var recordingId = Long.parseLong(req.getPathParameter("id"));
+    var line = Long.parseLong(req.getPathParameter("line"));
+    var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
 
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+    sessionFactory.transactional(em -> {
 
-    var dataset =
-        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-    dataset.load(id, rootPath.toString(),null);
-    var datasetContent = dataset.load();
-    for (var destination : datasetContent.getStaticRequests()) {
-      if (destination.getId() == line) {
-        var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
-        cloneToRow(destination, source);
-        dataset.saveMods();
-        return;
-      }
-    }
-    for (var destination : datasetContent.getDynamicRequests()) {
-      if (destination.getId() == line) {
-        var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
-        cloneToRow(destination, source);
-        dataset.saveMods();
-        return ;
-      }
-    }
+      var destination = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+              " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
+      cloneToRow(destination, source);
+      em.persist(destination);
+      return;
+    });
     res.setStatusCode(404);
-    res.setResponseText("Missing id " + id + " with line " + line);
+    res.setResponseText("Missing id " + recordingId + " with line " + line);
+
+//    var id = req.getPathParameter("id");
+//    var line = Integer.parseInt(req.getPathParameter("line"));
+//
+//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+//
+//    var dataset =
+//        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
+//    dataset.load(id, rootPath.toString(),null);
+//    var datasetContent = dataset.load();
+//    for (var destination : datasetContent.getStaticRequests()) {
+//      if (destination.getId() == line) {
+//        var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
+//        cloneToRow(destination, source);
+//        dataset.saveMods();
+//        return;
+//      }
+//    }
+//    for (var destination : datasetContent.getDynamicRequests()) {
+//      if (destination.getId() == line) {
+//        var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
+//        cloneToRow(destination, source);
+//        dataset.saveMods();
+//        return ;
+//      }
+//    }
+//    res.setStatusCode(404);
+//    res.setResponseText("Missing id " + id + " with line " + line);
   }
 
   @HttpMethodFilter(
