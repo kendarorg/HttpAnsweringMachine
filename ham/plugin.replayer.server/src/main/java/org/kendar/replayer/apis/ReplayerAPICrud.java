@@ -273,7 +273,6 @@ public class ReplayerAPICrud implements FilteringClass {
     recording.setDescription(replayerResult.getDescription());
     recording.setName(realFileName);
     sessionFactory.transactional(em->{
-      recording.setDescription(replayerResult.getDescription());
       em.persist(recording);
       for(var row:replayerResult.getDynamicRequests()){
         row.setRecordingId(recording.getId());
