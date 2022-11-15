@@ -35,10 +35,9 @@ public class NullDataset extends ReplayerDataset{
 
     public NullDataset(
             LoggerBuilder loggerBuilder,
-            DataReorganizer dataReorganizer,
             Md5Tester md5Tester, EventQueue eventQueue, InternalRequester internalRequester, Cache cache,
             SimpleProxyHandler simpleProxyHandler, HibernateSessionFactory sessionFactory) {
-        super(loggerBuilder,dataReorganizer,md5Tester,sessionFactory);
+        super(loggerBuilder,md5Tester,sessionFactory);
         this.eventQueue = eventQueue;
         this.internalRequester = internalRequester;
         this.cache = cache;
@@ -87,23 +86,8 @@ public class NullDataset extends ReplayerDataset{
 
     private void runNullDataset(TestResults testResult) throws Exception {
         running.set(true);
-//        var result = new TestResults();
-//        result.setType("NullInfrastructure");
-//        result.setTimestamp(Calendar.getInstance());
-//        result.setRecordingId(name);
         long start = System.currentTimeMillis();
-//        var rootPath = Path.of(replayerDataDir);
-//
-//        var stringPath = Path.of(rootPath + File.separator + name + ".json");
-//        var nullDir = Path.of(rootPath + File.separator + "null" + File.separator);
-//        var resultsFile =  Path.of(rootPath + File.separator + "null" + File.separator+ name+"."+id+".json");
         try {
-//            if (!Files.isDirectory(rootPath)) {
-//                Files.createDirectory(rootPath);
-//            }
-//            if (!Files.exists(nullDir)) {
-//                Files.createDirectory(nullDir);
-//            }
             var indexes = new ArrayList<CallIndex>();
             sessionFactory.query(e->{
                 indexes.addAll(e.createQuery("SELECT e FROM CallIndex e WHERE " +
@@ -111,25 +95,12 @@ public class NullDataset extends ReplayerDataset{
                         " AND e.stimulatorTest=true ORDER BY e.id ASC").getResultList());
 
             });
-//            var maps = new HashMap<Long, ReplayerRow>();
-//            //FIXME HERE LOADS DATA
-//            zxcv
-//            var replayerResult = mapper.readValue(FileUtils.readFileToString(stringPath.toFile(), "UTF-8"), ReplayerResult.class);
-//            for (var call : replayerResult.getStaticRequests()) {
-//                maps.put(call.getId(), call);
-//            }
-//            for (var call : replayerResult.getDynamicRequests()) {
-//                maps.put(call.getId(), call);
-//            }
-//            var indexes = replayerResult.getIndexes().stream()
-//                    .filter(CallIndex::isStimulatorTest)
-//                    .sorted(Comparator.comparingLong(CallIndex::getId))
-//                    .collect(Collectors.toList());
             boolean onIndex = false;
             long currentIndex = 0;
             try {
                 for (var toCall : indexes) {
                     onIndex = false;
+
                     currentIndex = toCall.getId();
                     if (!running.get()) break;
                     ReplayerRow reqResp = sessionFactory.queryResult(e->{
@@ -137,7 +108,6 @@ public class NullDataset extends ReplayerDataset{
                                 " e.recordingId="+testResult.getRecordingId()+" " +
                                 " AND e.id="+toCall.getReference()).getResultList().get(0);
                     });
-                    //var reqResp = maps.get(toCall.getReference());
                     var response = new Response();
                     var request = reqResp.getRequest().copy();
                     var expectedResponse = reqResp.getResponse().copy();
@@ -175,11 +145,18 @@ public class NullDataset extends ReplayerDataset{
                     sessionFactory.transactional(em -> {
                         em.persist(resultLine);
                     });
-//                    result.getExecuted().add(toCall.getId());
                 }
             } catch (Exception ex) {
                 var extra = "Error calling index "+currentIndex+" running "+(onIndex?"index script":"optimized script. ");
                 testResult.setError(extra+"\n"+ex.getMessage());
+
+                var resultLine = new TestResultsLine();
+                resultLine.setResultId(testResult.getId());
+                resultLine.setRecordingId(testResult.getRecordingId());
+                resultLine.setExecutedLine(currentIndex);
+                sessionFactory.transactional(em -> {
+                    em.persist(resultLine);
+                });
             }
         }catch (Exception e){
             testResult.setError(e.getMessage());
@@ -191,8 +168,7 @@ public class NullDataset extends ReplayerDataset{
         sessionFactory.transactional(em->{
             em.merge(testResult);
         });
-//        var toWrite = mapper.writeValueAsString(result);
-//        Files.writeString(resultsFile,toWrite);
+
         this.eventQueue.handle(new NullCompleted());
     }
     public void stop() {

@@ -11,7 +11,6 @@ import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.storage.CallIndex;
-import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
@@ -24,15 +23,12 @@ import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class ReplayerAPISingleLine implements FilteringClass {
 
   private final FileResourcesUtils fileResourcesUtils;
   private final LoggerBuilder loggerBuilder;
-  private final DataReorganizer dataReorganizer;
   final ObjectMapper mapper = new ObjectMapper();
   private final Md5Tester md5Tester;
   private HibernateSessionFactory sessionFactory;
@@ -41,7 +37,6 @@ public class ReplayerAPISingleLine implements FilteringClass {
   public ReplayerAPISingleLine(
           FileResourcesUtils fileResourcesUtils,
           LoggerBuilder loggerBuilder,
-          DataReorganizer dataReorganizer,
           Md5Tester md5Tester,
           JsonConfiguration configuration,
           HibernateSessionFactory sessionFactory) {
@@ -50,7 +45,6 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
     this.fileResourcesUtils = fileResourcesUtils;
     this.loggerBuilder = loggerBuilder;
-    this.dataReorganizer = dataReorganizer;
     this.md5Tester = md5Tester;
     this.sessionFactory = sessionFactory;
   }
@@ -99,33 +93,6 @@ public class ReplayerAPISingleLine implements FilteringClass {
       res.setResponseText("Missing id " + recordingId + " with line " + line);
     }
 
-//
-//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-//
-//    var dataset =
-//        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-//    dataset.load(id, rootPath.toString(),null);
-//    var datasetContent = dataset.load();
-//    var result = new ListAllRecordList(datasetContent, id,false).getLines();
-//    result.sort(Comparator.comparingLong(ReplayerRow::getId));
-//    for (var i=0;i<result.size();i++) {
-//      var singleLine = result.get(i);
-//      if (singleLine.getId() == line) {
-//        var prev = -1L;
-//        var next = -1L;
-//        if(i>0){
-//          prev=result.get(i-1).getId();
-//        }
-//        if(i<(result.size()-1)){
-//          next=result.get(i+1).getId();
-//        }
-//        res.addHeader("X-NEXT", ""+next);
-//        res.addHeader("X-PREV", ""+prev);
-//        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-//        res.setResponseText(mapper.writeValueAsString((ReplayerRow)singleLine));
-//        return;
-//      }
-//    }
   }
 
   @HttpMethodFilter(
@@ -156,34 +123,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
       res.setStatusCode(404);
       res.setResponseText("Missing id " + recordingId + " with line " + line);
     }
-//
-//    var id = req.getPathParameter("id");
-//    var line = Integer.parseInt(req.getPathParameter("line"));
-//
-//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-//
-//    var dataset =
-//        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-//    dataset.load(id, rootPath.toString(),null);
-//    var datasetContent = dataset.load();
-//    for (var destination : datasetContent.getStaticRequests()) {
-//      if (destination.getId() == line) {
-//        var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
-//        cloneToRow(destination, source);
-//        dataset.saveMods();
-//        return;
-//      }
-//    }
-//    for (var destination : datasetContent.getDynamicRequests()) {
-//      if (destination.getId() == line) {
-//        var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
-//        cloneToRow(destination, source);
-//        dataset.saveMods();
-//        return ;
-//      }
-//    }
-//    res.setStatusCode(404);
-//    res.setResponseText("Missing id " + id + " with line " + line);
+
   }
 
   @HttpMethodFilter(
@@ -217,33 +157,9 @@ public class ReplayerAPISingleLine implements FilteringClass {
       callIndex.setReference(source.getId());
       callIndex.setId(line);
       em.persist(callIndex);
-      //return;
     });
 
-//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-//
-//    var dataset =
-//        new ReplayerDataset( loggerBuilder, dataReorganizer, md5Tester);
-//    dataset.load(id, rootPath.toString(),null);
-//    var datasetContent = dataset.load();
-//    for (var destination : datasetContent.getStaticRequests()) {
-//      if (destination.getId() == line) {
-//        res.setStatusCode(409);
-//        res.setResponseText("Duplicate id");
-//        return;
-//      }
-//    }
-//    for (var destination : datasetContent.getDynamicRequests()) {
-//      if (destination.getId() == line) {
-//        res.setStatusCode(409);
-//        res.setResponseText("Duplicate id");
-//        return;
-//      }
-//    }
-//
-//    var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
-//    datasetContent.getDynamicRequests().add(source);
-//    dataset.saveMods();
+
     res.setStatusCode(200);
   }
 
@@ -267,20 +183,8 @@ public class ReplayerAPISingleLine implements FilteringClass {
       em.createQuery("DELETE ReplayerRow WHERE" +
               " recordingId="+recordingId+" AND id="+line).executeUpdate();
 
-      //return;
     });
 
-//    var id = req.getPathParameter("id");
-//    var line = Integer.parseInt(req.getPathParameter("line"));
-//
-//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-//
-//    var dataset =
-//        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-//    dataset.load(id, rootPath.toString(),null);
-//    dataset.load();
-//    dataset.delete(line);
-//    dataset.saveMods();
     res.setStatusCode(200);
   }
 
@@ -312,21 +216,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
         em.createQuery("DELETE ReplayerRow WHERE" +
                 " recordingId="+recordingId+" AND id="+index.getReference()).executeUpdate();
       }
-
-      //return;
     });
-
-//    var id = req.getPathParameter("id");
-//    var line = Integer.parseInt(req.getPathParameter("line"));
-//
-//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-//
-//    var dataset =
-//            new ReplayerDataset( loggerBuilder, dataReorganizer, md5Tester);
-//    dataset.load(id, rootPath.toString(),null);
-//    dataset.load();
-//    dataset.deleteIndex(line);
-//    dataset.saveMods();
     res.setStatusCode(200);
   }
 
@@ -383,23 +273,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
       res.setStatusCode(404);
       res.setResponseText("Missing id " + recordingId + " with line " + line);
     }
-//    var id = req.getPathParameter("id");
-//    var line = Integer.parseInt(req.getPathParameter("line"));
-//
-//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-//
-//    var dataset =
-//            new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-//    dataset.load(id, rootPath.toString(),null);
-//    var datasetContent = dataset.load();
-//    ListAllRecordList result = new ListAllRecordList(datasetContent, id,false);
-//    for (var singleLine : result.getIndexes()) {
-//      if (singleLine.getId() == line) {
-//        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-//        res.setResponseText(mapper.writeValueAsString(singleLine));
-//        return;
-//      }
-//    }
+
   }
 
 
@@ -431,21 +305,6 @@ public class ReplayerAPISingleLine implements FilteringClass {
       res.setStatusCode(404);
       res.setResponseText("Missing id " + recordingId + " with line " + line);
     }
-
-//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-//
-//    var dataset =
-//            new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-//    dataset.load(id, rootPath.toString(),null);
-//    var datasetContent = dataset.load();
-//    for (var destination : datasetContent.getIndexes()) {
-//      if (destination.getId() == line) {
-//        var source = mapper.readValue(req.getRequestText(), CallIndex.class);
-//        cloneToIndex(destination, source);
-//        dataset.saveMods();
-//        return;
-//      }
-//    }
   }
 
   private void cloneToIndex(CallIndex destination, CallIndex source) {

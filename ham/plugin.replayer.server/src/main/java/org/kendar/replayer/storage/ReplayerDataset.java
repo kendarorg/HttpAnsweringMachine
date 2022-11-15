@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ReplayerDataset implements BaseDataset{
   protected static final String MAIN_FILE = "runall.json";
   protected final Logger logger;
-  protected DataReorganizer dataReorganizer;
   protected Md5Tester md5Tester;
   protected HibernateSessionFactory sessionFactory;
 
@@ -36,11 +35,9 @@ public class ReplayerDataset implements BaseDataset{
 
   public ReplayerDataset(
           LoggerBuilder loggerBuilder,
-          DataReorganizer dataReorganizer,
           Md5Tester md5Tester,
           HibernateSessionFactory sessionFactory) {
     this.logger = loggerBuilder.build(ReplayerDataset.class);
-    this.dataReorganizer = dataReorganizer;
     this.md5Tester = md5Tester;
     this.sessionFactory = sessionFactory;
   }
@@ -84,7 +81,8 @@ public class ReplayerDataset implements BaseDataset{
 
     for (var row : staticRequests) {
       if(!staticRequest){
-        if(states.contains(row.getId())){
+        var st = states.get(row.getId());
+        if(null!=st){
           continue;
         }
       }

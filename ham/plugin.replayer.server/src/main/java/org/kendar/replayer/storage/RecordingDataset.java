@@ -23,12 +23,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class RecordingDataset implements BaseDataset{
-    //private final DataReorganizer dataReorganizer;
-    //private final ConcurrentLinkedQueue<ReplayerRow> dynamicData = new ConcurrentLinkedQueue<>();
-    //private final ConcurrentHashMap<String, List<ReplayerRow>> staticData = new ConcurrentHashMap<>();
     private final ConcurrentLinkedQueue<String> errors = new ConcurrentLinkedQueue<>();
     private final AtomicLong counter = new AtomicLong(0L);
-    //private final ConcurrentLinkedQueue<CallIndex> indexes = new ConcurrentLinkedQueue<>();
     private final Md5Tester md5Tester;
     private final Logger logger;
     private HibernateSessionFactory sessionFactory;

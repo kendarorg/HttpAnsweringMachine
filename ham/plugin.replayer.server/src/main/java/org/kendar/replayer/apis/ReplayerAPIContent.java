@@ -14,7 +14,6 @@ import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.storage.CallIndex;
-import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
@@ -22,7 +21,10 @@ import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
-import org.kendar.utils.*;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
+import org.kendar.utils.FileResourcesUtils;
+import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
 
 import java.security.NoSuchAlgorithmException;
@@ -32,7 +34,6 @@ import java.security.NoSuchAlgorithmException;
 public class ReplayerAPIContent implements FilteringClass {
   private final FileResourcesUtils fileResourcesUtils;
   private final LoggerBuilder loggerBuilder;
-  private final DataReorganizer dataReorganizer;
   private final Md5Tester md5Tester;
   private HibernateSessionFactory sessionFactory;
   private final String replayerData;
@@ -41,7 +42,6 @@ public class ReplayerAPIContent implements FilteringClass {
   public ReplayerAPIContent(
           FileResourcesUtils fileResourcesUtils,
           LoggerBuilder loggerBuilder,
-          DataReorganizer dataReorganizer,
           Md5Tester md5Tester,
           JsonConfiguration configuration,
           HibernateSessionFactory sessionFactory) {
@@ -49,7 +49,6 @@ public class ReplayerAPIContent implements FilteringClass {
     this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
     this.fileResourcesUtils = fileResourcesUtils;
     this.loggerBuilder = loggerBuilder;
-    this.dataReorganizer = dataReorganizer;
     this.md5Tester = md5Tester;
     this.sessionFactory = sessionFactory;
   }
@@ -93,25 +92,6 @@ public class ReplayerAPIContent implements FilteringClass {
       res.setStatusCode(404);
       res.setResponseText("Missing id " + recordingId + " with line " + line);
     }
-
-//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-//
-//    var dataset =
-//        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-//    dataset.load(id, rootPath.toString(),null);
-//    var datasetContent = dataset.load();
-//
-//    for (var singleLine : datasetContent.getStaticRequests()) {
-//      if (sendBackContent(res, line, requestOrResponse, singleLine)) {
-//        return;
-//      }
-//    }
-//    for (var singleLine : datasetContent.getDynamicRequests()) {
-//      if (sendBackContent(res, line, requestOrResponse, singleLine)) {
-//        return;
-//      }
-//    }
-
   }
 
   private String getPathParameter(Request req, String id) {
@@ -120,7 +100,7 @@ public class ReplayerAPIContent implements FilteringClass {
 
   private void sendBackContent(
       Response res, long line, String requestOrResponse, ReplayerRow singleLine) {
-    //if (singleLine.getId() == line) {
+
       var allTypes= MimeTypes.getDefaultMimeTypes();
       if ("request".equalsIgnoreCase(requestOrResponse)) {
         var contentType =singleLine.getRequest().getHeader(ConstantsHeader.CONTENT_TYPE);
@@ -166,9 +146,6 @@ public class ReplayerAPIContent implements FilteringClass {
           res.addHeader("Content-Disposition","attachment;request."+ line +".txt");
         }
       }
-      //return true;
-    //}
-    //return false;
   }
 
   private void setResultContentType(Response res, long line, MimeTypes allTypes, String contentType) {
@@ -221,31 +198,6 @@ public class ReplayerAPIContent implements FilteringClass {
       res.setStatusCode(404);
       res.setResponseText("Missing id " + recordingId + " with line " + line);
     }
-
-//
-//    var id = getPathParameter(req, "id");
-//    var line = Integer.parseInt(getPathParameter(req, "line"));
-//    var requestOrResponse = getPathParameter(req, "requestOrResponse");
-//
-//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-//
-//    var dataset =
-//        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-//    dataset.load(id, rootPath.toString(),null);
-//    var datasetContent = dataset.load();
-//
-//    for (var singleLine : datasetContent.getStaticRequests()) {
-//      if (deleted(res, line, requestOrResponse, singleLine)) {
-//        dataset.saveMods();
-//        return;
-//      }
-//    }
-//    for (var singleLine : datasetContent.getDynamicRequests()) {
-//      if (deleted(res, line, requestOrResponse, singleLine)) {
-//        dataset.saveMods();
-//        return;
-//      }
-//    }
   }
 
   @HttpMethodFilter(
@@ -282,31 +234,6 @@ public class ReplayerAPIContent implements FilteringClass {
       res.setStatusCode(404);
       res.setResponseText("Missing id " + recordingId + " with line " + line);
     }
-
-
-//    var id = getPathParameter(req, "id");
-//    var line = Integer.parseInt(getPathParameter(req, "line"));
-//    var requestOrResponse = getPathParameter(req, "requestOrResponse");
-//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-//    var data = mapper.readValue(req.getRequestText(), JsonFileData.class);
-//
-//    var dataset =
-//        new ReplayerDataset( loggerBuilder, dataReorganizer, md5Tester);
-//    dataset.load(id, rootPath.toString(),null);
-//    var datasetContent = dataset.load();
-//
-//    for (var singleLine : datasetContent.getStaticRequests()) {
-//      if (updated( line, requestOrResponse, singleLine, data)) {
-//        dataset.saveMods();
-//        return;
-//      }
-//    }
-//    for (var singleLine : datasetContent.getDynamicRequests()) {
-//      if (updated( line, requestOrResponse, singleLine, data)) {
-//        dataset.saveMods();
-//        return;
-//      }
-//    }
   }
 
   private void updated(

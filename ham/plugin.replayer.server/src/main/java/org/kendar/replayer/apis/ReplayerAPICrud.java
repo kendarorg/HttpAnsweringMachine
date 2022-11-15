@@ -1,8 +1,6 @@
 package org.kendar.replayer.apis;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
@@ -19,7 +17,10 @@ import org.kendar.replayer.ReplayerStatus;
 import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.apis.models.LocalRecording;
 import org.kendar.replayer.apis.models.ScriptData;
-import org.kendar.replayer.storage.*;
+import org.kendar.replayer.storage.CallIndex;
+import org.kendar.replayer.storage.DbRecording;
+import org.kendar.replayer.storage.ReplayerResult;
+import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.db.HibernateSessionFactory;
@@ -33,11 +34,6 @@ import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -116,16 +112,6 @@ public class ReplayerAPICrud implements FilteringClass {
   )
   public void listAllRecordingSteps(Request req, Response res) throws Exception {
     var id = Long.parseLong(req.getPathParameter("id"));
-
-
-
-
-    //var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-
-    //var dataset =
-    //    new ReplayerDataset( loggerBuilder, null, md5Tester);
-    //dataset.load(id, rootPath.toString(),null);
-    //var datasetContent = dataset.load();
     ListAllRecordList result = new ListAllRecordList(sessionFactory, id,true);
     result.getLines().sort(Comparator.comparingLong(ReplayerRow::getId));
     res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
@@ -146,10 +132,7 @@ public class ReplayerAPICrud implements FilteringClass {
       em.createQuery("DELETE From ReplayerRow WHERE recordingId="+id).executeUpdate();
       em.createQuery("DELETE From CallIndex WHERE recordingId="+id).executeUpdate();
     });
-//    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
-//    if (Files.exists(rootPath)) {
-//      Files.delete(rootPath);
-//    }
+
     res.setStatusCode(200);
   }
 
@@ -182,33 +165,7 @@ public class ReplayerAPICrud implements FilteringClass {
         em.merge(row);
       }
     });
-    /*var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
-    if (Files.exists(rootPath)) {
-      var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
 
-      var result = mapper.readValue(fileContent, ReplayerResult.class);
-      result.setDescription(scriptData.getDescription());
-      result.setFilter(scriptData.getFilter());
-
-      //Update indexes
-      //Update fulls
-      for (var indexLine : result.getIndexes()) {
-        indexLine.setPactTest(scriptData.getPactTest().stream().anyMatch(a->a.intValue()==indexLine.getId()));
-      }
-      for (var indexLine : result.getIndexes()) {
-        indexLine.setStimulatorTest(scriptData.getStimulatorTest().stream().anyMatch(a->a.intValue()==indexLine.getId()));
-      }
-
-      for (var row : result.getDynamicRequests()) {
-        row.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==row.getId()));
-      }
-      for (var row : result.getStaticRequests()) {
-        row.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==row.getId()));
-      }
-
-      var resultInFile = mapper.writeValueAsString(result);
-      Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
-    }*/
     res.setStatusCode(200);
   }
 
@@ -249,14 +206,6 @@ public class ReplayerAPICrud implements FilteringClass {
     res.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.JSON);
     res.addHeader("Content-Disposition", "attachment;"+id+".json");
     res.setStatusCode(200);
-
-      /*var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
-    if (Files.exists(rootPath)) {
-      var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
-
-    }else {
-      res.setStatusCode(404);
-    }*/
   }
 
   @HttpMethodFilter(
@@ -288,23 +237,6 @@ public class ReplayerAPICrud implements FilteringClass {
       }
     });
 
-    /*
-
-    var scriptName = fileFullPath.substring(0, fileFullPath.lastIndexOf('.'));
-
-    crud.setDescription(scriptName);
-
-    var dirPath = new File(Path.of(fileResourcesUtils.buildPath(replayerData)).toString());
-    if(!dirPath.exists()){
-      if(!dirPath.mkdir()){
-        res.setResponseText("ERROR CREATING "+ dirPath);
-        res.setStatusCode(500);
-        return;
-      }
-    }
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, scriptName + ".json"));
-    var resultInFile = mapper.writeValueAsString(crud);
-    Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));*/
     logger.info("Uploaded replayer binary script ");
     res.setResponseText(String.valueOf(recording.getId()));
     res.setStatusCode(200);
@@ -328,36 +260,7 @@ public class ReplayerAPICrud implements FilteringClass {
         em.createQuery("DELETE FROM ReplayerRow WHERE id="+itemId+" AND recordingId="+id).executeUpdate();
       }
     });
-    /*var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
-    if (Files.exists(rootPath)) {
-      var index = new HashSet<Long>();
-      var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
-      var result = mapper.readValue(fileContent, ReplayerResult.class);
-      for(var i = result.getDynamicRequests().size()-1;i>=0;i--){
-        var dq = result.getDynamicRequests().get(i);
-        if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
-          index.add(dq.getId());
-          result.getDynamicRequests().remove(i);
 
-        }
-      }
-      for(var i = result.getStaticRequests().size()-1;i>=0;i--){
-        var dq = result.getStaticRequests().get(i);
-        if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
-          index.add(dq.getId());
-          result.getStaticRequests().remove(i);
-        }
-      }
-      for(var i = result.getIndexes().size()-1;i>=0;i--){
-        var dq = result.getIndexes().get(i);
-        if(index.contains(dq.getReference())){
-          result.getIndexes().remove(i);
-        }
-      }
-
-      var resultInFile = mapper.writeValueAsString(result);
-      Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
-    }*/
     res.setStatusCode(200);
   }
 
@@ -403,39 +306,6 @@ public class ReplayerAPICrud implements FilteringClass {
       }
 
     });
-    
-    /*var newid = req.getPathParameter("newid");
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
-    var newRootPath = Path.of(fileResourcesUtils.buildPath(replayerData, newid + ".json"));
-
-    if (Files.exists(rootPath)) {
-      var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
-      var result = mapper.readValue(fileContent, ReplayerResult.class);
-
-      var newReplayerData = new ReplayerResult();
-      newReplayerData.setDescription(result.getDescription());
-      newReplayerData.setFilter(result.getFilter());
-      newReplayerData.setDynamicRequests(new ArrayList<>());
-      newReplayerData.setStaticRequests(new ArrayList<>());
-
-      for(var i = result.getDynamicRequests().size()-1;i>=0;i--){
-        var dq = result.getDynamicRequests().get(i);
-        if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
-          newReplayerData.getDynamicRequests().add(dq);
-        }
-      }
-      for(var i = result.getStaticRequests().size()-1;i>=0;i--){
-        var dq = result.getStaticRequests().get(i);
-        if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
-          newReplayerData.getStaticRequests().add(dq);
-        }
-      }
-
-      var resultInFile = mapper.writeValueAsString(newReplayerData);
-      Files.write(newRootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
-    }
-    
-    */
 
     res.setResponseText(String.valueOf(recordingId.get()));
     res.setStatusCode(200);

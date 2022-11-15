@@ -41,14 +41,12 @@ public class SingleScriptAPI implements FilteringClass {
     private final String replayerData;
     private final FileResourcesUtils fileResourcesUtils;
     private final LoggerBuilder loggerBuilder;
-    private final DataReorganizer dataReorganizer;
     private final Md5Tester md5Tester;
     private HibernateSessionFactory sessionFactory;
 
     public SingleScriptAPI(
             FileResourcesUtils fileResourcesUtils,
             LoggerBuilder loggerBuilder,
-            DataReorganizer dataReorganizer,
             Md5Tester md5Tester,
             JsonConfiguration configuration,
             HibernateSessionFactory sessionFactory) {
@@ -57,7 +55,6 @@ public class SingleScriptAPI implements FilteringClass {
 
         this.fileResourcesUtils = fileResourcesUtils;
         this.loggerBuilder = loggerBuilder;
-        this.dataReorganizer = dataReorganizer;
         this.md5Tester = md5Tester;
         this.sessionFactory = sessionFactory;
     }
@@ -120,72 +117,10 @@ public class SingleScriptAPI implements FilteringClass {
 
         });
 
-//            var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-//
-//        var dataset =
-//                new ReplayerDataset( loggerBuilder, null, md5Tester);
-//        dataset.load(id, rootPath.toString(),null);
-//        var datasetContent = dataset.load();
-//
-//        var result = convertDataset(datasetContent, id,true);
-
 
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(result));
     }
-
-//    private SingleScript convertDataset(ReplayerResult datasetContent, String id, boolean b) {
-//        var result = new SingleScript();
-//
-//        var lines = new ArrayList<ReplayerRow>();
-//        for (var staticLine :
-//                datasetContent.getStaticRequests()) {
-//            staticLine.getRequest().setRequestText(null);
-//            staticLine.getRequest().setRequestBytes(null);
-//            staticLine.getResponse().setResponseBytes(null);
-//            staticLine.getResponse().setResponseText(null);
-//            lines.add((staticLine));
-//        }
-//        for (var dynamicLine :
-//                datasetContent.getDynamicRequests()) {
-//            dynamicLine.getRequest().setRequestText(null);
-//            dynamicLine.getRequest().setRequestBytes(null);
-//            dynamicLine.getResponse().setResponseBytes(null);
-//            dynamicLine.getResponse().setResponseText(null);
-//            lines.add((dynamicLine));
-//        }
-//
-//        //variables = datasetContent.getVariables();
-//        //preScript = datasetContent.getPreScript();
-//        //postScript= datasetContent.getPostScript();
-//
-//        for(var index: datasetContent.getIndexes()){
-//            var referencedRowOption = lines.stream()
-//                    .filter(replayerRow -> replayerRow.getId()==index.getReference())
-//                    .findFirst();
-//            if(referencedRowOption.isEmpty())continue;
-//            var line = referencedRowOption.get();
-//            var newLine = new SingleScriptLine();
-//            newLine.setId(index.getId());
-//            newLine.setRequestMethod(line.getRequest().getMethod());
-//            newLine.setRequestPath(line.getRequest().getPath());
-//            newLine.setRequestHost(line.getRequest().getHost());
-//            newLine.setReference(index.getReference());
-//            newLine.setPactTest(index.isPactTest());
-//            newLine.setStimulatorTest(index.isStimulatorTest());
-//            newLine.setStimulatedTest(line.isStimulatedTest());
-//            newLine.setQueryCalc(RequestUtils.buildFullQuery(line.getRequest()));
-//            newLine.setPreScript(datasetContent.getPreScript().containsKey(String.valueOf(line.getId())));
-//            newLine.setScript(datasetContent.getPostScript().containsKey(String.valueOf(line.getId())));
-//            newLine.setRequestHashCalc(isHashPresent(line.getRequestHash()));
-//            newLine.setResponseHashCalc(isHashPresent(line.getResponseHash()));
-//            newLine.setResponseStatusCode(line.getResponse().getStatusCode());
-//            result.getLines().add(newLine);
-//        }
-//        result.setId(id);
-//        result.setDescription(datasetContent.getDescription());
-//        return result;
-//    }
 
     private boolean isHashPresent(String hash) {
         return hash!=null && !hash.isEmpty() && !hash.equalsIgnoreCase("0");

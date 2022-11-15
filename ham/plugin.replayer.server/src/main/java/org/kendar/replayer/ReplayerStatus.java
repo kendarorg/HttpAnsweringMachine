@@ -15,7 +15,6 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.FileResourcesUtils;
-import org.kendar.utils.JsonSmile;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -29,7 +28,6 @@ public class ReplayerStatus {
 
     private static final String MAIN_FILE = "runall.json";
     private final LoggerBuilder loggerBuilder;
-    private final DataReorganizer dataReorganizer;
     private final FileResourcesUtils fileResourcesUtils;
     private final ObjectMapper mapper = new ObjectMapper();
     private final String replayerData;
@@ -45,7 +43,6 @@ public class ReplayerStatus {
 
     public ReplayerStatus(
             LoggerBuilder loggerBuilder,
-            DataReorganizer dataReorganizer,
             FileResourcesUtils fileResourcesUtils,
             Md5Tester md5Tester,
             JsonConfiguration configuration,
@@ -57,7 +54,6 @@ public class ReplayerStatus {
         this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.loggerBuilder = loggerBuilder;
         this.logger= loggerBuilder.build(ReplayerStatus.class);
-        this.dataReorganizer = dataReorganizer;
         this.fileResourcesUtils = fileResourcesUtils;
         this.md5Tester = md5Tester;
         this.eventQueue = eventQueue;
@@ -148,7 +144,7 @@ public class ReplayerStatus {
         logger.info("REPLAYING START");
         state = ReplayerState.REPLAYING;
         dataset =
-                new ReplayerDataset(  loggerBuilder, dataReorganizer, md5Tester,sessionFactory);
+                new ReplayerDataset(  loggerBuilder, md5Tester,sessionFactory);
         dataset.load(id, rootPath.toString(),null);
     }
 
@@ -194,7 +190,7 @@ public class ReplayerStatus {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         logger.info("NULL START");
-        dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue,
+        dataset = new NullDataset(loggerBuilder,md5Tester,eventQueue,
                 internalRequester, new Cache(),simpleProxyHandler,sessionFactory);
         dataset.load(id, rootPath.toString(),null);
         var runId = ((NullDataset)dataset).start();

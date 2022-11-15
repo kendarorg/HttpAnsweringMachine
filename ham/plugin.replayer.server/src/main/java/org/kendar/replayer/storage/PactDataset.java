@@ -98,32 +98,9 @@ public class PactDataset implements BaseDataset {
     private void runPactDataset(TestResults testResult) throws Exception {
 
         long start = System.currentTimeMillis();
-//        var rootPath = Path.of(replayerDataDir);
-//        var stringPath = Path.of(rootPath + File.separator + name + ".json");
-//        var pactsDir = Path.of(rootPath + File.separator + "pacts" + File.separator);
-//        var resultsFile = Path.of(rootPath + File.separator + "pacts" + File.separator + name+"."+ id + ".json");
 
         try {
             running.set(true);
-
-//            if (!Files.isDirectory(rootPath)) {
-//                Files.createDirectory(rootPath);
-//            }
-//            if (!Files.exists(pactsDir)) {
-//                Files.createDirectory(pactsDir);
-//            }
-//            var maps = new HashMap<Long, ReplayerRow>();
-//
-//
-//            //FIXME HERE STARTS LOADING
-//            ASDFASD
-//            var replayerResult = mapper.readValue(FileUtils.readFileToString(stringPath.toFile(), "UTF-8"), ReplayerResult.class);
-//            for (var call : replayerResult.getStaticRequests()) {
-//                maps.put(call.getId(), call);
-//            }
-//            for (var call : replayerResult.getDynamicRequests()) {
-//                maps.put(call.getId(), call);
-//            }
             ArrayList<CallIndex> indexes = sessionFactory.queryResult(e->{
                 return e.createQuery("SELECT e FROM CallIndex e WHERE " +
                         " e.recordingId="+testResult.getRecordingId()+
@@ -180,11 +157,18 @@ public class PactDataset implements BaseDataset {
                     sessionFactory.transactional(em -> {
                         em.persist(resultLine);
                     });
-                    //result.getExecuted().add(toCall.getId());
                 }
             }catch(Exception ex){
                 var extra = "Error calling index "+currentIndex+" running "+(onIndex?"index script":"optimized script. ");
                 testResult.setError(extra+ex.getMessage());
+
+                var resultLine = new TestResultsLine();
+                resultLine.setResultId(testResult.getId());
+                resultLine.setRecordingId(testResult.getRecordingId());
+                resultLine.setExecutedLine(currentIndex);
+                sessionFactory.transactional(em -> {
+                    em.persist(resultLine);
+                });
             }
 
         } catch (IOException e) {
@@ -199,8 +183,6 @@ public class PactDataset implements BaseDataset {
         sessionFactory.transactional(em->{
             em.merge(testResult);
         });
-//        var toWrite = mapper.writeValueAsString(result);
-//        Files.writeString(resultsFile,toWrite);
         this.eventQueue.handle(new PactCompleted());
     }
 
