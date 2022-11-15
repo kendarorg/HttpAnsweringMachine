@@ -29,11 +29,13 @@ echo Cleaning ham
 call mvn clean
 call %UTILS_LIB% rm_rf %ROOT_DIR%\ham\jsplugins  2>&1 1>NUL
 call %UTILS_LIB% rm_rf %ROOT_DIR%\ham\libs  2>&1 1>NUL
+call %UTILS_LIB% rm_rf %ROOT_DIR%\ham\data  2>&1 1>NUL
 call %UTILS_LIB% rm_rf %ROOT_DIR%\ham\callogs  2>&1 1>NUL
 call %UTILS_LIB% rm_rf %ROOT_DIR%\ham\replayerdata  2>&1 1>NUL
 
 call %UTILS_LIB% rm_rf %ROOT_DIR%\jsplugins  2>&1 1>NUL
 call %UTILS_LIB% rm_rf %ROOT_DIR%\libs  2>&1 1>NUL
+call %UTILS_LIB% rm_rf %ROOT_DIR%\data  2>&1 1>NUL
 call %UTILS_LIB% rm_rf %ROOT_DIR%\callogs  2>&1 1>NUL
 call %UTILS_LIB% rm_rf %ROOT_DIR%\replayerdata  2>&1 1>NUL
 
