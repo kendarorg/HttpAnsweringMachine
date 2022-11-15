@@ -197,7 +197,7 @@ public class PactDataset implements BaseDataset {
         testResult.setDuration(timeElapsed);
 
         sessionFactory.transactional(em->{
-            em.persist(testResult);
+            em.merge(testResult);
         });
 //        var toWrite = mapper.writeValueAsString(result);
 //        Files.writeString(resultsFile,toWrite);

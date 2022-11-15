@@ -80,11 +80,19 @@ public class SingleScriptAPI implements FilteringClass {
             List<CallIndex> indexLines = em
                     .createQuery("SELECT e FROM CallIndex e WHERE e.recordingId=" + id)
                     .getResultList();
-            HashMap<Long,ReplayerRow> rows =(HashMap<Long,ReplayerRow>) em
+            HashMap<Long,ReplayerRow> rows = new HashMap<>();
+            em
                     .createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId=" + id)
                     .getResultList()
                     .stream()
-                    .collect(Collectors.toMap(a->((ReplayerRow)a).getId(),a->(ReplayerRow)a));
+                    .forEach((a)->{
+                        var idr = ((ReplayerRow)a).getId();
+                        if(!rows.containsKey(idr)) {
+                            rows.put(idr, (ReplayerRow) a);
+                        }else{
+                            System.out.println("AAAAAAA");
+                        }
+                    });
 
             result.setId(recording.getId());
             result.setDescription(recording.getDescription());

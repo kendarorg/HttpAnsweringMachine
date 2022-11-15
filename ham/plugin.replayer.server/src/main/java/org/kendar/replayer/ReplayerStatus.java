@@ -85,7 +85,7 @@ public class ReplayerStatus {
         logger.info("RECORDING START");
         state = ReplayerState.RECORDING;
         dataset =
-                new RecordingDataset( loggerBuilder, dataReorganizer, md5Tester,sessionFactory);
+                new RecordingDataset( loggerBuilder, md5Tester,sessionFactory);
         dataset.load(id, rootPath.toString(), description);
     }
 

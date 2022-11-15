@@ -170,16 +170,16 @@ public class ReplayerAPICrud implements FilteringClass {
       List<ReplayerRow> rows = em.createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId="+id).getResultList();
 
       recording.setDescription(scriptData.getDescription());
-      em.persist(recording);
+      em.merge(recording);
       for(var ci:indexLines){
         ci.setPactTest(scriptData.getPactTest().stream().anyMatch(a->a.intValue()==ci.getId()));
         ci.setStimulatorTest(scriptData.getStimulatorTest().stream().anyMatch(a->a.intValue()==ci.getId()));
-        em.persist(ci);
+        em.merge(ci);
       }
       for(var row:rows){
         row.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==row.getId()));
         row.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==row.getId()));
-        em.persist(row);
+        em.merge(row);
       }
     });
     /*var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
@@ -325,8 +325,8 @@ public class ReplayerAPICrud implements FilteringClass {
     var id = Long.valueOf(req.getPathParameter("id"));
     sessionFactory.transactional(em->{
       for(var itemId:jsonFileData) {
-        em.createQuery("DELETE FROM CallIndex WHERE reference="+itemId+" AND recordingId="+id);
-        em.createQuery("DELETE FROM ReplayerRow WHERE id="+itemId+" AND recordingId="+id);
+        em.createQuery("DELETE FROM CallIndex WHERE reference="+itemId+" AND recordingId="+id).executeUpdate();
+        em.createQuery("DELETE FROM ReplayerRow WHERE id="+itemId+" AND recordingId="+id).executeUpdate();
       }
     });
     /*var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));

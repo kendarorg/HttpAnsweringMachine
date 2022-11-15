@@ -149,7 +149,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
       var destination = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
               " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
       cloneToRow(destination, source);
-      em.persist(destination);
+      em.merge(destination);
       return;
     });
     }catch (Exception e){
@@ -204,7 +204,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
     sessionFactory.transactional(em -> {
       em.createQuery("UPDATE CallIndex SET id=id+1 WHERE" +
               " recordingId="+recordingId+" AND id>="+line).executeUpdate();
-      var nexId = (Long)em.createQuery("SELECT MAX(id) FROM ReplayerRow  WHERE" +
+      var nexId = (Long)em.createQuery("SELECT MAX(id) FROM CallIndex  WHERE" +
               " recordingId="+recordingId).getResultList().get(0)+1;
 
       source.setIndex(null);
@@ -303,11 +303,12 @@ public class ReplayerAPISingleLine implements FilteringClass {
       em.createQuery("DELETE CallIndex WHERE" +
               " recordingId="+recordingId+" AND id="+line).executeUpdate();
 
-      List<CallIndex> callIndexList = em.createQuery("SELECT CallIndex WHERE" +
-              " recordingId="+recordingId+" AND reference="+index.getReference()).getResultList();
+      Long callIndexList = (Long)em.createQuery("SELECT COUNT(*) FROM CallIndex WHERE" +
+              " recordingId="+recordingId+" AND reference="+index.getReference())
+              .getResultList().get(0);
 
       //remove the row if nobody references it
-      if(callIndexList.isEmpty()){
+      if(callIndexList >0){
         em.createQuery("DELETE ReplayerRow WHERE" +
                 " recordingId="+recordingId+" AND id="+index.getReference()).executeUpdate();
       }
@@ -416,7 +417,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
       var destination = (CallIndex)em.createQuery("SELECT e FROM CallIndex e WHERE" +
               " e.recordingId="+recordingId+" AND e.id="+line).getResultList().get(0);
       cloneToIndex(destination, source);
-      em.persist(destination);
+      em.merge(destination);
       return;
 
     });

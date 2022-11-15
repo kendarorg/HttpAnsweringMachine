@@ -54,55 +54,17 @@ public class RecordingDataset implements BaseDataset{
     }
 
     public RecordingDataset(
-            LoggerBuilder loggerBuilder, DataReorganizer dataReorganizer,
+            LoggerBuilder loggerBuilder,
             Md5Tester md5Tester, HibernateSessionFactory sessionFactory) {
-        //this.dataReorganizer = dataReorganizer;
         this.md5Tester = md5Tester;
         this.logger = loggerBuilder.build(RecordingDataset.class);
         this.sessionFactory = sessionFactory;
     }
 
     public void save() throws IOException {
-        //synchronized (this) {
-            /*var result = new ReplayerResult();
-            var partialResult = new ArrayList<ReplayerRow>();
-            var rootPath = Path.of(replayerDataDir);
-            if (!Files.isDirectory(rootPath)) {
-                Files.createDirectory(rootPath);
-            }
-            for (var staticRow : this.staticData.entrySet()) {
-                var rowValue = staticRow.getValue();
-                if(rowValue.size()==1) {
-                    partialResult.add(rowValue.get(0));
-                }else{
-                    rowValue.forEach(a->a.getRequest().setStaticRequest(false));
-                    partialResult.addAll(rowValue);
-                }
-            }
 
-            while (!dynamicData.isEmpty()) {
-                // consume element
-                var rowValue = dynamicData.poll();
-                partialResult.add(rowValue);
-            }
-
-            while (!errors.isEmpty()) {
-                // consume element
-                result.addError(errors.poll());
-            }
-
-            result.setDescription(description);
-            result.setIndexes(new ArrayList<>(indexes));
-            dataReorganizer.reorganizeData(result, partialResult);
-
-            var allDataString = mapper.writeValueAsString(result);
-            var stringPath = rootPath + File.separator + name + ".json";
-            FileWriter myWriter = new FileWriter(stringPath);
-            myWriter.write(allDataString);
-            myWriter.close();*/
-            staticRequests.clear();
-            recording =  null;
-        //}
+        staticRequests.clear();
+        recording =  null;
     }
 
     private static Map<String,Long> staticRequests = new HashMap<>();
@@ -126,31 +88,6 @@ public class RecordingDataset implements BaseDataset{
         try {
 
             String responseHash;
-
-            /*if (req.isStaticRequest() && staticData.containsKey(path)) {
-                var alreadyPresent = staticData.get(path);
-                if (res.isBinaryResponse()) {
-                    responseHash = md5Tester.calculateMd5(res.getResponseBytes());
-                } else {
-                    responseHash = md5Tester.calculateMd5(res.getResponseText());
-                }
-
-                final var lambdaHash = responseHash;
-                var isAlreadyPresent = alreadyPresent.stream().filter(present->
-                        lambdaHash.equalsIgnoreCase(present.getResponseHash())).collect(Collectors.toList());
-                if (isAlreadyPresent.size()>0) {
-                    var newId = counter.getAndIncrement();
-                    var callIndex = new CallIndex();
-                    callIndex.setId(newId);
-                    callIndex.setReference(isAlreadyPresent.get(0).getId());
-                    callIndex.setRecordingId(recording.getId());
-                    sessionFactory.transactional(em->{
-                        em.persist(callIndex);
-                    });
-                    this.indexes.add(callIndex);
-                    return;
-                }
-            }*/
             var newId = counter.getAndIncrement();
             var replayerRow = new ReplayerRow();
             if (res.isBinaryResponse()) {
@@ -174,12 +111,10 @@ public class RecordingDataset implements BaseDataset{
             var callIndex = new CallIndex();
             callIndex.setId(newId);
             callIndex.setReference(newId);
-            callIndex.setRecordingId(newId);
+            callIndex.setRecordingId(recording.getId());
 
             sessionFactory.transactional(em-> {
                 var isRowStatic = MimeChecker.isStatic(res.getHeader(ConstantsHeader.CONTENT_TYPE), req.getPath());
-
-                ;
                 var saveRow = true;
                 if (isRowStatic && req.getMethod().equalsIgnoreCase("GET")) {
                     replayerRow.setStaticRequest(true);
@@ -189,21 +124,9 @@ public class RecordingDataset implements BaseDataset{
                 } else {
                     replayerRow.setStaticRequest(false);
                 }
-                /*if (req.isStaticRequest()) {
-
-                    if(!staticData.containsKey(path)){
-                        staticData.put(path, new ArrayList<>());
-                    }
-                    staticData.get(path).add(replayerRow);
-                    callIndex.setReference(replayerRow.getId());
-                } else {
-                    dynamicData.add(replayerRow);
-                }*/
-
-                //callIndex.setId(replayerRow.getId());
                 if (!saveRow) {
                     //Overwrite when duplicate
-                    //No save row
+                    //No save row only callIndex
                     callIndex.setReference(staticRequests.get(replayerRow.getResponseHash()));
                 } else {
                     if (isRowStatic && req.getMethod().equalsIgnoreCase("GET")) {
@@ -213,18 +136,6 @@ public class RecordingDataset implements BaseDataset{
                 }
                 em.persist(callIndex);
             });
-
-            /*this.indexes.add(callIndex);
-            if (req.isStaticRequest()) {
-                if(!staticData.containsKey(path)){
-                    staticData.put(path, new ArrayList<>());
-                }
-                staticData.get(path).add(replayerRow);
-                callIndex.setReference(replayerRow.getId());
-            } else {
-                dynamicData.add(replayerRow);
-            }*/
-            // ADD the crap
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("Error recording request " + path, e);

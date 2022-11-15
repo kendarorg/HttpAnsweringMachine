@@ -213,7 +213,7 @@ public class ReplayerAPIContent implements FilteringClass {
         var row = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
                 " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
         deleted(res, line, requestOrResponse, row);
-        em.persist(row);
+        em.remove(row);
       });
 
     }catch (Exception e){
@@ -272,7 +272,7 @@ public class ReplayerAPIContent implements FilteringClass {
         var row = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
                 " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
         updated(line, requestOrResponse, row, data);
-        em.persist(row);
+        em.merge(row);
       });
 
     }catch (Exception e){

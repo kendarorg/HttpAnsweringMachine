@@ -158,7 +158,7 @@ public class ReplayerAPIScripts implements FilteringClass {
                     " e.recordingId="+recordingId+" AND e.id="+line).getResultList().get(0);
             index.setPostScript(null);
             index.setPreScript(null);
-            em.persist(index);
+            em.merge(index);
         });
 
        /* var id = req.getPathParameter("id");
@@ -215,7 +215,8 @@ public class ReplayerAPIScripts implements FilteringClass {
                 }
                 row.getRequest().setHost(data.getHost());
                 row.getRequest().setPath(data.getPath());
-                em.persist(index);
+                em.merge(index);
+                em.merge(row);
             }
         });
 //
