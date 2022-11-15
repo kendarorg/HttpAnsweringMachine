@@ -331,22 +331,28 @@ public class ReplayerAPISingleLine implements FilteringClass {
   }
 
   private void cloneToRow(ReplayerRow destination, ReplayerRow source) {
-    destination.getResponse().setBinaryResponse(source.getResponse().isBinaryResponse());
-    destination.getResponse().setHeaders(source.getResponse().getHeaders());
-    destination.getResponse().setStatusCode(source.getResponse().getStatusCode());
+    var res = destination.getResponse();
+    var req = destination.getRequest();
+    res.setBinaryResponse(source.getResponse().isBinaryResponse());
+    res.setHeaders(source.getResponse().getHeaders());
+    res.setStatusCode(source.getResponse().getStatusCode());
+    destination.setResponse(res);
 
-    destination.getRequest().setBinaryRequest(source.getRequest().isBinaryRequest());
-    destination.getRequest().setHeaders(source.getRequest().getHeaders());
-    destination.getRequest().setMethod(source.getRequest().getMethod());
-    destination.getRequest().setProtocol(source.getRequest().getProtocol());
-    destination.getRequest().setQuery(source.getRequest().getQuery());
-    destination.getRequest().setHost(source.getRequest().getHost());
-    destination.getRequest().setPath(source.getRequest().getPath());
-    destination.getRequest().setPort(source.getRequest().getPort());
-    destination.getRequest().setPostParameters(source.getRequest().getPostParameters());
-    destination.getRequest().setStaticRequest(source.getRequest().isStaticRequest());
-    destination.getRequest().setSoapRequest(source.getRequest().isSoapRequest());
+    req.setBinaryRequest(source.getRequest().isBinaryRequest());
+    req.setHeaders(source.getRequest().getHeaders());
+    req.setMethod(source.getRequest().getMethod());
+    req.setProtocol(source.getRequest().getProtocol());
+    req.setQuery(source.getRequest().getQuery());
+    req.setHost(source.getRequest().getHost());
+    req.setPath(source.getRequest().getPath());
+    req.setPort(source.getRequest().getPort());
+    req.setPostParameters(source.getRequest().getPostParameters());
+    req.setStaticRequest(source.getRequest().isStaticRequest());
+    req.setSoapRequest(source.getRequest().isSoapRequest());
     destination.setStimulatedTest(source.isStimulatedTest());
+
+    destination.setRequest(req);
+    destination.setResponse(res);
   }
 
 

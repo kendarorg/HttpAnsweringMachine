@@ -13,6 +13,7 @@ import org.kendar.http.annotations.multi.HamRequest;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
+import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DataReorganizer;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
@@ -269,8 +270,10 @@ public class ReplayerAPIContent implements FilteringClass {
 
     try {
       sessionFactory.transactional(em -> {
-        var row = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+        var ci = (CallIndex) em.createQuery("SELECT e FROM CallIndex e WHERE" +
                 " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
+        var row = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+                " e.recordingId=" + recordingId + " AND e.id=" + ci.getReference()).getResultList().get(0);
         updated(line, requestOrResponse, row, data);
         em.merge(row);
       });
@@ -314,23 +317,27 @@ public class ReplayerAPIContent implements FilteringClass {
       throws NoSuchAlgorithmException {
       if ("request".equalsIgnoreCase(requestOrResponse)) {
         singleLine.setRequestHash(md5Tester.calculateMd5(data.readAsByte()));
+        var req =singleLine.getRequest();
         if (!data.matchContentType("text/plain")) {
-          singleLine.getRequest().setRequestBytes(data.readAsByte());
-          singleLine.getRequest().setBinaryRequest(true);
+          req.setRequestBytes(data.readAsByte());
+          req.setBinaryRequest(true);
         }else{
-          singleLine.getRequest().setRequestText(data.readAsString());
-          singleLine.getRequest().setBinaryRequest(false);
+          req.setRequestText(data.readAsString());
+          req.setBinaryRequest(false);
         }
+        singleLine.setRequest(req);
 
       } else if ("response".equalsIgnoreCase(requestOrResponse)) {
         singleLine.setResponseHash(md5Tester.calculateMd5(data.readAsByte()));
+        var res =singleLine.getResponse();
         if (!data.matchContentType("text/plain")) {
-          singleLine.getResponse().setResponseBytes(data.readAsByte());
-          singleLine.getResponse().setBinaryResponse(true);
+          res.setResponseBytes(data.readAsByte());
+          res.setBinaryResponse(true);
         }else{
-          singleLine.getResponse().setResponseText(data.readAsString());
-          singleLine.getResponse().setBinaryResponse(false);
+          res.setResponseText(data.readAsString());
+          res.setBinaryResponse(false);
         }
+        singleLine.setResponse(res);
       }
   }
 }
