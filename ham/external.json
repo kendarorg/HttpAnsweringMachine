@@ -14,7 +14,7 @@
     "id": "global",
     "system": true,
     "db": {
-      "url": "jdbc:h2:tcp://localhost/ham;MODE=MYSQL",
+      "url": "jdbc:h2:tcp://localhost/ham;MODE=MYSQL;",
       "login": "sa",
       "password": "sa",
       "startInternalH2" : true,
@@ -26,12 +26,13 @@
       "logPath": null,
       "logLevel": "INFO",
       "loggers": {
-        "org.kendar.servers.http.Request": "TRACE",
-        "org.kendar.servers.http.Response": "TRACE",
-        "org.kendar.servers.http.StaticRequest": "TRACE",
-        "org.kendar.servers.http.DynamicRequest": "TRACE",
-        "org.kendar.dns.DnsQueries": "TRACE",
-        "org.kendar.servers.http.InternalRequest": "TRACE"
+        "org.kendar.servers.http.Request": "OFF",
+        "org.kendar.servers.http.Response": "OFF",
+        "org.kendar.servers.http.StaticRequest": "OFF",
+        "org.kendar.servers.http.DynamicRequest": "OFF",
+        "org.kendar.dns.DnsQueries": "OFF",
+        "org.kendar.servers.http.InternalRequest": "OFF",
+        "org.hibernate": "INFO"
       }
     },
     "filters": {

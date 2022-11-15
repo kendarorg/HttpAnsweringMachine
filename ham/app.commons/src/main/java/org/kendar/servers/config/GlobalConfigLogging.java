@@ -6,25 +6,15 @@ import java.util.HashMap;
 import ch.qos.logback.classic.Level;
 
 public class GlobalConfigLogging implements Copyable<GlobalConfigLogging> {
-    private String logPath;
     private Level logLevel;
     private HashMap<String, Level> loggers = new HashMap<>();
 
 
     @Override public GlobalConfigLogging copy() {
         var result = new GlobalConfigLogging();
-        result.logPath = this.logPath;
         result.loggers = new HashMap<>(this.loggers);
         result.logLevel = this.logLevel;
         return result;
-    }
-
-    public String getLogPath() {
-        return logPath;
-    }
-
-    public void setLogPath(String logPath) {
-        this.logPath = logPath;
     }
 
     public HashMap<String, Level> getLoggers() {

@@ -179,7 +179,7 @@ public class NullDataset extends ReplayerDataset{
                 }
             } catch (Exception ex) {
                 var extra = "Error calling index "+currentIndex+" running "+(onIndex?"index script":"optimized script. ");
-                testResult.setError(extra+ex.getMessage());
+                testResult.setError(extra+"\n"+ex.getMessage());
             }
         }catch (Exception e){
             testResult.setError(e.getMessage());
