@@ -224,14 +224,17 @@ public class ReplayerAPICrud implements FilteringClass {
     sessionFactory.transactional(em->{
       em.persist(recording);
       for(var row:replayerResult.getDynamicRequests()){
+        row.setIndex(null);
         row.setRecordingId(recording.getId());
         em.persist(row);
       }
       for(var row:replayerResult.getStaticRequests()){
+        row.setIndex(null);
         row.setRecordingId(recording.getId());
         em.persist(row);
       }
       for(var row:replayerResult.getIndexes()){
+        row.setIndex(null);
         row.setRecordingId(recording.getId());
         em.persist(row);
       }
