@@ -10,7 +10,6 @@
     }
   ],
   "paths": {
-    "/api/remote/mirror": {},
     "/api/remote/execute": {
       "post": {
         "tags": [
@@ -41,6 +40,7 @@
         }
       }
     },
+    "/api/remote/mirror": {},
     "/api/remote/restclient": {
       "post": {
         "tags": [
@@ -87,6 +87,30 @@
         }
       }
     },
+    "/api/certificates": {
+      "get": {
+        "tags": [
+          "base/certificates"
+        ],
+        "description": "Retrieve the list of certificates",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/certificates/{file}": {
       "get": {
         "tags": [
@@ -125,30 +149,6 @@
                 "schema": {
                   "type": "string",
                   "format": "byte"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/certificates": {
-      "get": {
-        "tags": [
-          "base/certificates"
-        ],
-        "description": "Retrieve the list of certificates",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
                 }
               }
             }
@@ -332,6 +332,32 @@
         }
       }
     },
+    "/api/dns/hosts": {
+      "get": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Generate hosts file",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "127.0.0.1 localhost\n127.0.0.1 www.local.test"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/dns/mappings": {
       "get": {
         "tags": [
@@ -451,32 +477,6 @@
         "responses": {
           "200": {
             "description": "200"
-          }
-        }
-      }
-    },
-    "/api/dns/hosts": {
-      "get": {
-        "tags": [
-          "base/dns"
-        ],
-        "description": "Generate hosts file",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "": {
-                    "value": "127.0.0.1 localhost\n127.0.0.1 www.local.test"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -610,64 +610,6 @@
         }
       }
     },
-    "/api/filters/phase/{phase}": {
-      "get": {
-        "tags": [
-          "base/filters"
-        ],
-        "description": "List the filters by phase",
-        "parameters": [
-          {
-            "name": "phase",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/filters/phase": {
-      "get": {
-        "tags": [
-          "base/filters"
-        ],
-        "description": "List all the possible phases",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/filters/id/{id}": {
       "get": {
         "tags": [
@@ -724,6 +666,30 @@
         }
       }
     },
+    "/api/filters/class": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List all the classes for Java filters",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/filters/id/{id}/enable": {
       "put": {
         "tags": [
@@ -744,6 +710,40 @@
         "responses": {
           "200": {
             "description": "200"
+          }
+        }
+      }
+    },
+    "/api/filters/phase/{phase}": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List the filters by phase",
+        "parameters": [
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -772,12 +772,12 @@
         }
       }
     },
-    "/api/filters/class": {
+    "/api/filters/phase": {
       "get": {
         "tags": [
           "base/filters"
         ],
-        "description": "List all the classes for Java filters",
+        "description": "List all the possible phases",
         "parameters": [],
         "responses": {
           "200": {
@@ -796,22 +796,13 @@
         }
       }
     },
-    "/api/filters/phase/{phase}/{clazz}": {
+    "/api/filters/class/{clazz}": {
       "get": {
         "tags": [
           "base/filters"
         ],
-        "description": "List all the filters implemented by given class for phase",
+        "description": "List all the filters implemented by given class",
         "parameters": [
-          {
-            "name": "phase",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          },
           {
             "name": "clazz",
             "in": "path",
@@ -873,13 +864,22 @@
         }
       }
     },
-    "/api/filters/class/{clazz}": {
+    "/api/filters/phase/{phase}/{clazz}": {
       "get": {
         "tags": [
           "base/filters"
         ],
-        "description": "List all the filters implemented by given class",
+        "description": "List all the filters implemented by given class for phase",
         "parameters": [
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
           {
             "name": "clazz",
             "in": "path",
@@ -978,6 +978,52 @@
         }
       }
     },
+    "/api/log/files": {
+      "get": {
+        "tags": [
+          "base/logs"
+        ],
+        "description": "List all log files",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FileLogListItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "base/logs"
+        ],
+        "description": "Clean all log files",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FileLogListItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/log/files/{id}": {
       "get": {
         "tags": [
@@ -1018,30 +1064,6 @@
               "application/json": {
                 "schema": {
                   "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/log/files": {
-      "get": {
-        "tags": [
-          "base/logs"
-        ],
-        "description": "List all log files",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FileLogListItem"
-                  }
                 }
               }
             }
@@ -1194,6 +1216,51 @@
         }
       }
     },
+    "/api/proxyes": {
+      "get": {
+        "tags": [
+          "base/proxy"
+        ],
+        "description": "Retrieve all configured proxies",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RemoteServerStatus"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "base/proxy"
+        ],
+        "description": "Add proxy",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimpleProxyConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
     "/api/proxyes/{id}": {
       "get": {
         "tags": [
@@ -1271,51 +1338,6 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      }
-    },
-    "/api/proxyes": {
-      "get": {
-        "tags": [
-          "base/proxy"
-        ],
-        "description": "Retrieve all configured proxies",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RemoteServerStatus"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "base/proxy"
-        ],
-        "description": "Add proxy",
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SimpleProxyConfig"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "200"
@@ -1455,6 +1477,51 @@
         }
       }
     },
+    "/api/plugins/jsfilter/filters": {
+      "get": {
+        "tags": [
+          "plugin/js"
+        ],
+        "description": "List all js filters",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "plugin/js"
+        ],
+        "description": "Create Single filter",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsFilterConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
     "/api/plugins/jsfilter/filters/{filtername}": {
       "get": {
         "tags": [
@@ -1532,51 +1599,6 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      }
-    },
-    "/api/plugins/jsfilter/filters": {
-      "get": {
-        "tags": [
-          "plugin/js"
-        ],
-        "description": "List all js filters",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "plugin/js"
-        ],
-        "description": "Create Single filter",
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/JsFilterConfig"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "200"
@@ -1757,6 +1779,79 @@
         }
       }
     },
+    "/api/plugins/oidc/jwks": {
+      "get": {
+        "tags": [
+          "plugin/oidc"
+        ],
+        "description": "Jwks endpoint",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "{\"keys\":[{\"kty\":\"RSA\",\"e\":\"AQAB\",\"kid\":\"rsa1\",\"alg\":\"RS256\",\"n\":\"nVGg2Pw8MK1H6_on7PV8_zphnXVpa6bRcKfF8H61NEqK1rW9JUblyLuv7QNXD7ujC6v6laRVgNPFLZyFjGbU_PyCc3oIKgT9gbllGXMjBhZo70OEQ5uutrK1dTB6kSsX4GRTjxNG6ilb26NEUJZifun5QbjK8Lj0cc4VgfGvUkSLlggv7V45CIYvVQprB5Kbd1gM__xP7MHxaYY4LZNOq0OrxX7f6O7a-LjjHQw4dENCgzyPr4z7mlCIc4rBOKiva9QwKVC-VXlhB0KlYGaBhwt_KZLaGmzSwdZKKhHcEk9kxV9KNcl8gdZegOiq1jtikX_sTLL894tqLdaQXcuXMQ\"}]}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/plugins/oidc/userinfo": {
+      "get": {
+        "tags": [
+          "plugin/oidc"
+        ],
+        "description": "Get user info",
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "header",
+            "description": "access_token",
+            "schema": {
+              "type": "string",
+              "example": "token from authorize-token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "Filled": {
+                    "value": "{\n  \"sub\"         : \"83692\",\n  \"name\"        : \"Alice Adams\",\n  \"given_name\"  : \"Alice\",\n  \"family_name\" : \"Adams\",\n  \"email\"       : \"alice@example.com\",\n  \"picture\"     : \"https://example.com/83692/photo.jpg\"\n}"
+                  },
+                  "oidc.server": {
+                    "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEifQ.eyJzdWIiOiJhbGljZSIsImVtYWlsIjoiYWxpY2VAd29u\nZGVybGFuZC5uZXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6IkFsaWNlIEFkYW1zIiwiYXV\nkIjoiMDAwMTIzIiwiaXNzIjoiaHR0cDpcL1wvbG9jYWxob3N0OjgwODBcL2MyaWQiLCJmYW1pbHlfbm\nFtZSI6IkFkYW1zIiwiaWF0IjoxNDEzOTg1NDAyLCJncm91cHMiOlsiYWRtaW4iLCJhdWRpdCJdfQ.FJ\nv9UnxvQxYvlc2F_v657SIyZkjQ382Bc108O--UFh3cvkjxiO5P2sJyvcqfuGrlzgvU7gCKzTIqqrV74\nEcHwGb_xyBUPOKuIJGaDKirBdnPbIXMDGpSqmBQes4tc6L8pkhZfRENIlmkP-KphI3wPd4jtko2HXAd\nDFVjzK-FPic"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OidcBearer": []
+          },
+          {
+            "OidcBasic": []
+          }
+        ]
+      }
+    },
     "/api/plugins/oidc/authorize": {
       "get": {
         "tags": [
@@ -1859,79 +1954,6 @@
         }
       }
     },
-    "/api/plugins/oidc/jwks": {
-      "get": {
-        "tags": [
-          "plugin/oidc"
-        ],
-        "description": "Jwks endpoint",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "": {
-                    "value": "{\"keys\":[{\"kty\":\"RSA\",\"e\":\"AQAB\",\"kid\":\"rsa1\",\"alg\":\"RS256\",\"n\":\"nVGg2Pw8MK1H6_on7PV8_zphnXVpa6bRcKfF8H61NEqK1rW9JUblyLuv7QNXD7ujC6v6laRVgNPFLZyFjGbU_PyCc3oIKgT9gbllGXMjBhZo70OEQ5uutrK1dTB6kSsX4GRTjxNG6ilb26NEUJZifun5QbjK8Lj0cc4VgfGvUkSLlggv7V45CIYvVQprB5Kbd1gM__xP7MHxaYY4LZNOq0OrxX7f6O7a-LjjHQw4dENCgzyPr4z7mlCIc4rBOKiva9QwKVC-VXlhB0KlYGaBhwt_KZLaGmzSwdZKKhHcEk9kxV9KNcl8gdZegOiq1jtikX_sTLL894tqLdaQXcuXMQ\"}]}"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/plugins/oidc/userinfo": {
-      "get": {
-        "tags": [
-          "plugin/oidc"
-        ],
-        "description": "Get user info",
-        "parameters": [
-          {
-            "name": "access_token",
-            "in": "header",
-            "description": "access_token",
-            "schema": {
-              "type": "string",
-              "example": "token from authorize-token"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Filled": {
-                    "value": "{\n  \"sub\"         : \"83692\",\n  \"name\"        : \"Alice Adams\",\n  \"given_name\"  : \"Alice\",\n  \"family_name\" : \"Adams\",\n  \"email\"       : \"alice@example.com\",\n  \"picture\"     : \"https://example.com/83692/photo.jpg\"\n}"
-                  },
-                  "oidc.server": {
-                    "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEifQ.eyJzdWIiOiJhbGljZSIsImVtYWlsIjoiYWxpY2VAd29u\nZGVybGFuZC5uZXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6IkFsaWNlIEFkYW1zIiwiYXV\nkIjoiMDAwMTIzIiwiaXNzIjoiaHR0cDpcL1wvbG9jYWxob3N0OjgwODBcL2MyaWQiLCJmYW1pbHlfbm\nFtZSI6IkFkYW1zIiwiaWF0IjoxNDEzOTg1NDAyLCJncm91cHMiOlsiYWRtaW4iLCJhdWRpdCJdfQ.FJ\nv9UnxvQxYvlc2F_v657SIyZkjQ382Bc108O--UFh3cvkjxiO5P2sJyvcqfuGrlzgvU7gCKzTIqqrV74\nEcHwGb_xyBUPOKuIJGaDKirBdnPbIXMDGpSqmBQes4tc6L8pkhZfRENIlmkP-KphI3wPd4jtko2HXAd\nDFVjzK-FPic"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "OidcBearer": []
-          },
-          {
-            "OidcBasic": []
-          }
-        ]
-      }
-    },
     "/api/plugins/oidc/introspect": {
       "post": {
         "tags": [
@@ -1964,39 +1986,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/plugins/replayer/recording/{id}/replay/{action}": {
-      "get": {
-        "tags": [
-          "plugin/replayer"
-        ],
-        "description": "Start/stop/pauses replaying",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          },
-          {
-            "name": "action",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200"
           }
         }
       }
@@ -2034,12 +2023,12 @@
         }
       }
     },
-    "/api/plugins/replayer/recording/{id}/null/{action}": {
+    "/api/plugins/replayer/recording/{id}/pact/{action}": {
       "get": {
         "tags": [
           "plugin/replayer"
         ],
-        "description": "Start/stop/pauses null test",
+        "description": "Start/stop/pauses pact test",
         "parameters": [
           {
             "name": "id",
@@ -2067,12 +2056,45 @@
         }
       }
     },
-    "/api/plugins/replayer/recording/{id}/pact/{action}": {
+    "/api/plugins/replayer/recording/{id}/replay/{action}": {
       "get": {
         "tags": [
           "plugin/replayer"
         ],
-        "description": "Start/stop/pauses pact test",
+        "description": "Start/stop/pauses replaying",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/null/{action}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Start/stop/pauses null test",
         "parameters": [
           {
             "name": "id",
@@ -2289,51 +2311,6 @@
         }
       }
     },
-    "/api/plugins/replayer/recording": {
-      "get": {
-        "tags": [
-          "plugin/replayer"
-        ],
-        "description": "Retrieves the list of recordings",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "plugin/replayer"
-        ],
-        "description": "Create/update recording",
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/JsonFileData"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      }
-    },
     "/api/plugins/replayer/recording/{id}": {
       "get": {
         "tags": [
@@ -2418,33 +2395,47 @@
         }
       }
     },
-    "/api/plugins/replayer/recording/{id}/full": {
+    "/api/plugins/replayer/recording": {
       "get": {
         "tags": [
           "plugin/replayer"
         ],
-        "description": "Alternative retrieval of recording",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
+        "description": "Retrieves the list of recordings",
+        "parameters": [],
         "responses": {
           "200": {
             "description": "200",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 }
               }
             }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Create/update recording",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonFileData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
           }
         }
       }
@@ -2486,6 +2477,37 @@
         "responses": {
           "200": {
             "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/full": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Alternative retrieval of recording",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }
@@ -2572,6 +2594,117 @@
           "plugin/replayer"
         ],
         "description": "delete the scripts associate with a recording line",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/plugins/replayer/recording/{id}/lineindex/{line}": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Retrieves the indexline (aka the pointer to replayer row)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallIndex"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Addes the indexline (aka the pointer to replayer row)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "line",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CallIndex"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Remove the indexline (aka the pointer to replayer row)",
         "parameters": [
           {
             "name": "id",
@@ -2723,117 +2856,6 @@
           "plugin/replayer"
         ],
         "description": "Remove a replayer row with is lineindex",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          },
-          {
-            "name": "line",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      }
-    },
-    "/api/plugins/replayer/recording/{id}/lineindex/{line}": {
-      "get": {
-        "tags": [
-          "plugin/replayer"
-        ],
-        "description": "Retrieves the indexline (aka the pointer to replayer row)",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          },
-          {
-            "name": "line",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CallIndex"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "plugin/replayer"
-        ],
-        "description": "Addes the indexline (aka the pointer to replayer row)",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          },
-          {
-            "name": "line",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CallIndex"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "plugin/replayer"
-        ],
-        "description": "Remove the indexline (aka the pointer to replayer row)",
         "parameters": [
           {
             "name": "id",
@@ -3335,11 +3357,11 @@
           "done": {
             "type": "boolean"
           },
-          "request": {
-            "$ref": "#/components/schemas/Request"
-          },
           "response": {
             "$ref": "#/components/schemas/Response"
+          },
+          "request": {
+            "$ref": "#/components/schemas/Request"
           }
         }
       },

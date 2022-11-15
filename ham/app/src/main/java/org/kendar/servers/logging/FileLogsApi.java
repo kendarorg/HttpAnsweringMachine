@@ -39,9 +39,7 @@ public class FileLogsApi implements FilteringClass {
     final ObjectMapper mapper = new ObjectMapper();
     private final JsonConfiguration configuration;
     private final LoggerBuilder loggerBuilder;
-    private final FileResourcesUtils fileResourcesUtils;
     private HibernateSessionFactory sessionFactory;
-    private Path roundtripsPath;
 
     public FileLogsApi(JsonConfiguration configuration,
                        LoggerBuilder loggerBuilder,
@@ -50,7 +48,6 @@ public class FileLogsApi implements FilteringClass {
 
         this.configuration = configuration;
         this.loggerBuilder = loggerBuilder;
-        this.fileResourcesUtils = fileResourcesUtils;
         this.sessionFactory = sessionFactory;
     }
 
@@ -88,26 +85,10 @@ public class FileLogsApi implements FilteringClass {
 
             }
         });
-        /*try (DirectoryStream<Path> stream = Files.newDirectoryStream(roundtripsPath)) {
-            for (Path file: stream) {
-                var all =file.getFileName().toString().split("\\.");
-                var expl = file.getFileName().toString().split("___",3);
-                var newItem = new FileLogListItem();
-                newItem.setId(file.getFileName().toString());
-                newItem.setHost(expl[1].replaceAll("\\-","."));
-                newItem.setPath(expl[2].substring(0,expl[2].length()-all.length-2).replaceAll("\\-","/"));
-                newItem.setTimestamp(Long.parseLong(expl[0]));
-                var date = new Date(newItem.getTimestamp());
-                newItem.setTime(sdf.format(date));
-                result.add(newItem);
-            }
-        } catch (Exception x) {
-            // IOException can never be thrown by the iteration.
-            // In this snippet, it can only be thrown by newDirectoryStream.
-            System.err.println(x);
-        }*/
         return result;
     }
+
+
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
@@ -164,24 +145,6 @@ public class FileLogsApi implements FilteringClass {
             }
         });
 
-        /*var data = Files.readString(Path.of(roundtripsPath.toString(),id));
-        List<FileLogListItem> result = getFileLogListItems();
-        long past=0;
-        long founded = 0;
-        long next = 0;
-        for(var resu :result){
-            if(founded!=0){
-                next = resu.getId();
-                break;
-            }
-            if(founded == 0 && id.equalsIgnoreCase(resu.getId())){
-                founded = id;
-            }
-            if(founded == 0) {
-                past = resu.getId();
-            }
-        }*/
-        /**/
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(result));
     }
@@ -189,5 +152,22 @@ public class FileLogsApi implements FilteringClass {
     @Override
     public String getId() {
         return this.getClass().getName();
+    }
+
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/log/files",
+            method = "DELETE")
+    @HamDoc(
+            description = "Clean all log files",
+            responses = @HamResponse(
+                    body = FileLogListItem[].class
+            ),tags = {"base/logs"})
+    public void cleanLogFiles(Request req, Response res) throws Exception {
+        sessionFactory.transactional(em-> {
+            em.createQuery("DELETE FROM LoggingTable").executeUpdate();
+            em.createQuery("DELETE FROM LoggingDataTable ").executeUpdate();
+        });
     }
 }
