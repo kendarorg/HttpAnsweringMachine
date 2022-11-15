@@ -72,7 +72,7 @@ public class TestResults implements DbTable {
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
         if(timestamp!=null){
-            var date = timestamp.toLocalDateTime();
+            Date date=new Date(timestamp.getTime());
 
 // Conversion
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");

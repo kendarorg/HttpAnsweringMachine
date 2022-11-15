@@ -104,13 +104,13 @@ You can now check ham application going on http://www.local.test
 
 * Stop the application and restart!
 * Delete the script and re-upload Sample.json
-* Stop the "fa" application
-* Stop the "gateway" application
+* Stop the "fe" application
+* Stop the "be" application
 * Select all the calls to path /int/be.sample.test with the filter and set them as "Stimulated"
 
 <img src="../images/remove_wwwsamplebe.gif" width="300"/>
 
-* Select all the calls to path /int/gateway.sample.test with the filter and set them as "Stimulated"
+* Select all the calls to path /int/gateway.sample.test with the filter and set them as "Stimulator"
 
 <img src="../images/remove_wwwsamplegateway.gif" width="300"/>
 

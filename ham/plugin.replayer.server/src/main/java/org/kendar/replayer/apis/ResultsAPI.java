@@ -11,8 +11,11 @@ import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.RecordingItem;
+import org.kendar.replayer.storage.DbRecording;
 import org.kendar.replayer.storage.TestResults;
+import org.kendar.replayer.storage.TestResultsLine;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.ConstantsHeader;
@@ -25,26 +28,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.*;
+
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class ResultsAPI  implements FilteringClass {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final String replayerData;
-    private final FileResourcesUtils fileResourcesUtils;
+    private HibernateSessionFactory sessionFactory;
 
-    public ResultsAPI(JsonConfiguration configuration, FileResourcesUtils fileResourcesUtils){
+    public ResultsAPI(JsonConfiguration configuration, HibernateSessionFactory sessionFactory){
         this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
-        this.fileResourcesUtils = fileResourcesUtils;
-    }
-
-    private Path getRootPath() throws IOException {
-        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-        if (!Files.isDirectory(rootPath)) {
-            Files.createDirectory(rootPath);
-        }
-        return rootPath;
+        this.sessionFactory = sessionFactory;
     }
 
     @HttpMethodFilter(
@@ -55,11 +51,31 @@ public class ResultsAPI  implements FilteringClass {
     responses = @HamResponse(
             body = RecordingItem[].class
     ))
-    public void getResults(Request request, Response response) throws IOException {
-        var rootPath = getRootPath();
+    public void getResults(Request request, Response response) throws Exception {
+
+        List<TestResults> resultsList = new ArrayList<>();
+        Map<Long,String> recNames = new HashMap<>();
         var result = new ArrayList<RecordingItem>();
-        loadFileResults(rootPath, result, "null");
-        loadFileResults(rootPath, result, "pacts");
+        sessionFactory.query(em->{
+            resultsList.addAll(em.createQuery("SELECT e FROM TestResults e ORDER BY e.timestamp DESC").getResultList());
+
+            List<DbRecording> recordings = em.createQuery("SELECT e FROM DbRecording e").getResultList();
+            for(var rs:recordings){
+                recNames.put(rs.getId(),rs.getName());
+            }
+        });
+
+        for(var rs:resultsList) {
+            var ra = new RecordingItem();
+            ra.setSuccessful(rs.getError()==null || rs.getError().isEmpty() );
+            ra.setFileId(rs.getId());
+            ra.setTestType(rs.getType());
+            ra.setDate(rs.getIsoDate());
+            ra.setName(recNames.get(rs.getRecordingId()));
+            result.add(ra);
+
+        }
+
         response.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         response.setResponseText(mapper.writeValueAsString(result));
     }
@@ -73,24 +89,29 @@ public class ResultsAPI  implements FilteringClass {
                     body = RecordingItem[].class
             )
     )
-    public void getResult(Request request, Response response) throws IOException {
-        var id = request.getPathParameter("id");
-        var rootPath = getRootPath();
-        var result = new ArrayList<RecordingItem>();
-        loadFileResults(rootPath, result, "null");
-        loadFileResults(rootPath, result, "pacts");
-        var founded = result.stream().filter(a-> a.getFileId().equalsIgnoreCase(id)).findFirst();
+    public void getResult(Request request, Response response) throws Exception {
+        var id = Long.parseLong(request.getPathParameter("id"));
+        var result = new RecordingItem();
 
-        if(founded.isPresent()){
-            var item = founded.get();
-            var fullFile = Path.of(rootPath + File.separator + item.getTestType() + File.separator+item.getFileId());
-            if(Files.exists(fullFile)){
-                response.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.JSON);
-                response.setResponseText(Files.readString(fullFile));
-                return;
+        sessionFactory.query(em->{
+            var dbResult = (TestResults)em.createQuery("SELECT e FROM TestResults e WHERE e.id="+id).getResultList().get(0);
+            var recording = (DbRecording)em.createQuery("SELECT e FROM DbRecording e WHERE e.id="+dbResult.getRecordingId()).getResultList().get(0);
+            result.setResult(new ArrayList<>());
+            result.setFileId(id);
+            result.setDate(dbResult.getIsoDate());
+            result.setSuccessful(dbResult.getErrors()==null ||dbResult.getErrors().isEmpty());
+            result.setTestType(dbResult.getType());
+            result.setName(recording.getName());
+            for(var ss:em.createQuery("SELECT e FROM TestResultsLine e " +
+                    " WHERE e.resultId="+dbResult.getId()+
+                    " ORDER BY e.id DESC").getResultList()){
+                em.detach(ss);
+                result.getResult().add((TestResultsLine) ss);
             }
-        }
-        response.setStatusCode(404);
+        });
+
+        response.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.JSON);
+        response.setResponseText(mapper.writeValueAsString(result));
 
     }
 
@@ -101,57 +122,16 @@ public class ResultsAPI  implements FilteringClass {
     @HamDoc(description = "Deletes a single result",tags = {"plugin/replayer"},
             path = @PathParameter(key = "id")
     )
-    public void deleteresult(Request request, Response response) throws IOException {
-        var id = request.getPathParameter("id");
-        var rootPath = getRootPath();
-        var result = new ArrayList<RecordingItem>();
-        loadFileResults(rootPath, result, "null");
-        loadFileResults(rootPath, result, "pacts");
+    public void deleteresult(Request request, Response response) throws Exception {
+        var id = Long.parseLong(request.getPathParameter("id"));
 
-        var founded = result.stream().filter(a-> a.getFileId().equalsIgnoreCase(id)).findFirst();
-
-        if(founded.isPresent()){
-            var item = founded.get();
-            var fullFile = Path.of(rootPath + File.separator + item.getTestType() + File.separator+item.getFileId());
-            if(Files.exists(fullFile)){
-                Files.delete(fullFile);
-            }
-        }
+        sessionFactory.transactional(em->{
+            var dbResult = (TestResults)em.createQuery("SELECT e FROM TestResults e WHERE e.id="+id).getResultList().get(0);
+            em.createQuery("DELETE FROM TestResultsLine e " +
+                    " WHERE e.resultId="+dbResult.getId()).executeUpdate();
+            em.remove(dbResult);
+        });
     }
-
-    private void loadFileResults(Path rootPath, ArrayList<RecordingItem> result, String type) {
-        var nullDir = Path.of(rootPath + File.separator + type + File.separator);
-        if(!Files.exists(nullDir))return;
-        File file = new File(nullDir.toString());
-        String[] fileList = file.list();
-        if(fileList==null){
-            return;
-        }
-        for(String str : fileList) {
-            Path path = Paths.get(str);
-            Path fileName = path.getFileName();
-            var parts = fileName.toString().split("\\.");
-            var ra = new RecordingItem();
-            ra.setSuccessful(true);
-            try {
-                var rp = Path.of(nullDir.toString(),fileName.toString());
-                var fcc = FileUtils.readFileToString(rp.toFile(),"UTF-8");
-                var ts =mapper.readValue(fcc, TestResults.class);
-                ra.setDate(ts.getIsoDate());
-                if(ts.getError()!=null && !ts.getError().isEmpty()){
-                    ra.setSuccessful(false);
-                }
-            } catch (Exception e) {
-                continue;
-            }
-            ra.setTestType(type);
-            ra.setFileId(fileName.toString());
-            ra.setName(parts[0]);
-            result.add(ra);
-        }
-
-    }
-
     @Override
     public String getId() {
         return this.getClass().getName();

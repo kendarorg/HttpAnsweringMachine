@@ -47,10 +47,12 @@
             });
         },
         function (table,id) {
+            id = id+"";
             window.open("/api/plugins/replayer/results/"+id.replaceAll("_","."));
         },
         function (table,id) {
             table.deleteFromTable(id,function(id,success,error){
+                id = id+"";
                 $.ajax({
                     url: "/api/plugins/replayer/results/"+id.replaceAll("_","."),
                     type: 'DELETE',
@@ -64,7 +66,7 @@
             });
         },
         null,[
-            {id:"fileId",type:"string"},
+            {id:"fileId",type:"number"},
             {id:"name",type:"string"},
             {id:"testType",type:"string"}]).load();
 

@@ -132,7 +132,7 @@ public class ReplayerDataset implements BaseDataset{
         var result =  founded.getResponse();
         result.addHeader("X-REPLAYER-ID",founded.getId()+"");
         result.addHeader("X-REPLAYER-TYPE","DYNAMIC");
-        states.put(founded.getId(),null);
+        states.put(founded.getId(),"");
         return result;
       }
       return null;
