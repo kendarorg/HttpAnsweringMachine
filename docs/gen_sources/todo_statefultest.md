@@ -10,7 +10,7 @@ It will work after the next chapter!
 
 * Stop the application and restart!
 * Delete the script and re-upload Sample.json
-* Stop the "fa" application
+* Stop the "fe" application
 * Stop the "gateway" application
 * Select all the calls to http://localhost/int/be.sample.test with the filter and set them as "Stimulator"
 

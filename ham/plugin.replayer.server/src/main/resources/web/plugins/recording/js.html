@@ -167,8 +167,12 @@
     function save(){
         var id = getUrlParameter("id");
         var line = getUrlParameter("line");
+        var lineForData = $("#id").val();
+        if(lineForData.indexOf(",")>0){
+            lineForData = "-1";
+        }
         var data = {
-            id:$("#id").val(),
+            id:lineForData,
             timestamp: $("#timestamp").val(),
             method:$("#request_method").val(),
             host:$("#request_host").val(),

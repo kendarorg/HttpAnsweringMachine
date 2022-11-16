@@ -7,6 +7,7 @@ import org.kendar.replayer.Cache;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.utils.JsReplayerExecutor;
+import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.ExternalRequester;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -19,10 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.UUID;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -33,31 +32,33 @@ public class PactDataset implements BaseDataset {
     private final ExternalRequester externalRequester;
     private final Cache cache;
     private final SimpleProxyHandler simpleProxyHandler;
-    private String name;
+    private HibernateSessionFactory sessionFactory;
+    private Long name;
     private String replayerDataDir;
-    private String id;
+    private Long id;
     private final ObjectMapper mapper = new ObjectMapper();
     private final AtomicBoolean running = new AtomicBoolean(false);
     private final JsReplayerExecutor executor = new JsReplayerExecutor();
 
     public PactDataset(LoggerBuilder loggerBuilder, EventQueue eventQueue, ExternalRequester externalRequester
-            , Cache cache,
-                       SimpleProxyHandler simpleProxyHandler) {
+            , Cache cache, SimpleProxyHandler simpleProxyHandler,
+                       HibernateSessionFactory sessionFactory) {
 
         this.logger = loggerBuilder.build(PactDataset.class);
         this.eventQueue = eventQueue;
         this.externalRequester = externalRequester;
         this.cache = cache;
         this.simpleProxyHandler = simpleProxyHandler;
+        this.sessionFactory = sessionFactory;
     }
 
     @Override
-    public String getName() {
+    public Long getName() {
         return name;
     }
 
     @Override
-    public void load(String name, String replayerDataDir, String description) {
+    public void load(Long name, String replayerDataDir, String description) {
         this.name = name;
         this.replayerDataDir = replayerDataDir;
     }
@@ -68,62 +69,57 @@ public class PactDataset implements BaseDataset {
         return ReplayerState.PLAYING_PACT;
     }
 
-    public String start() {
-        id = UUID.randomUUID().toString();
+    public Long start() throws Exception {
+        var result = new TestResults();
+        result.setType("NullInfrastructure");
+        result.setTimestamp(Timestamp.from(Calendar.getInstance().toInstant()));
+        result.setRecordingId(name);
+
+        sessionFactory.transactional(em -> {
+            em.persist(result);
+        });
+
+        id = result.getId();
         Thread thread = new Thread(() -> {
             try {
-                cache.set(id, "runid", id);
-                runPactDataset(id);
+                cache.set(id, "runid", id+"");
+                runPactDataset(result);
                 cache.remove(id);
             } catch (IOException e) {
                 logger.error("ERROR EXECUTING RECORDING", e);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         });
         thread.start();
         return id;
     }
 
-    private void runPactDataset(String id) throws IOException {
-        var result = new TestResults();
-        result.setType("Pact");
-        result.setTimestamp(Calendar.getInstance());
-        result.setRecordingId(name);
+    private void runPactDataset(TestResults testResult) throws Exception {
+
         long start = System.currentTimeMillis();
-        var rootPath = Path.of(replayerDataDir);
-        var stringPath = Path.of(rootPath + File.separator + name + ".json");
-        var pactsDir = Path.of(rootPath + File.separator + "pacts" + File.separator);
-        var resultsFile = Path.of(rootPath + File.separator + "pacts" + File.separator + name+"."+ id + ".json");
 
         try {
             running.set(true);
+            ArrayList<CallIndex> indexes = sessionFactory.queryResult(e->{
+                return e.createQuery("SELECT e FROM CallIndex e WHERE " +
+                        " e.recordingId="+testResult.getRecordingId()+
+                        " AND e.pactTest=true ORDER BY e.id ASC").getResultList();
 
-            if (!Files.isDirectory(rootPath)) {
-                Files.createDirectory(rootPath);
-            }
-            if (!Files.exists(pactsDir)) {
-                Files.createDirectory(pactsDir);
-            }
-            var maps = new HashMap<Integer, ReplayerRow>();
+            });
 
-            var replayerResult = mapper.readValue(FileUtils.readFileToString(stringPath.toFile(), "UTF-8"), ReplayerResult.class);
-            for (var call : replayerResult.getStaticRequests()) {
-                maps.put(call.getId(), call);
-            }
-            for (var call : replayerResult.getDynamicRequests()) {
-                maps.put(call.getId(), call);
-            }
-            var indexes = replayerResult.getIndexes().stream()
-                    .filter(CallIndex::isPactTest)
-                    .sorted(Comparator.comparingInt(CallIndex::getId))
-                    .collect(Collectors.toList());
             boolean onIndex = false;
-            int currentIndex = 0;
+            long currentIndex = 0;
             try {
                 for (var toCall : indexes) {
                     onIndex =false;
                     currentIndex = toCall.getId();
                     if (!running.get()) break;
-                    var reqResp = maps.get(toCall.getReference());
+                    ReplayerRow reqResp = sessionFactory.queryResult(e->{
+                        return e.createQuery("SELECT e FROM ReplayerRow e WHERE " +
+                                " e.recordingId="+testResult.getRecordingId()+" " +
+                                " AND e.id="+toCall.getReference()).getResultList().get(0);
+                    });
 
                     var response = new Response();
                     var request = reqResp.getRequest().copy();
@@ -138,8 +134,8 @@ public class PactDataset implements BaseDataset {
                     expectedResponse = mapper.readValue(stringResponse, Response.class);
 
                     //Call request
-                    if(replayerResult.getPreScript().containsKey(currentIndex+"")){
-                        var jsCallback = replayerResult.getPreScript().get(currentIndex+"");
+                    if(toCall.getPreScript()!=null && !toCall.getPreScript().isEmpty()){
+                        var jsCallback = toCall.getPreScript();
                         if(jsCallback!=null && jsCallback.trim().length()>0) {
                             var script = executor.prepare(jsCallback);
                             executor.run(this.id, request, response, expectedResponse, script);
@@ -147,30 +143,46 @@ public class PactDataset implements BaseDataset {
                     }
                     request = simpleProxyHandler.translate(request);
                     externalRequester.callSite(request, response);
-                    if(replayerResult.getPostScript().containsKey(currentIndex+"")){
-                        var jsCallback = replayerResult.getPostScript().get(currentIndex+"");
+                    if(toCall.getPostScript()!=null && !toCall.getPostScript().isEmpty()){
+                        var jsCallback = toCall.getPostScript();
                         if(jsCallback!=null && jsCallback.trim().length()>0) {
                             var script = executor.prepare(jsCallback);
                             executor.run(this.id, request, response, expectedResponse, script);
                         }
                     }
-                    result.getExecuted().add(toCall.getId());
+                    var resultLine = new TestResultsLine();
+                    resultLine.setResultId(testResult.getId());
+                    resultLine.setRecordingId(testResult.getRecordingId());
+                    resultLine.setExecutedLine(toCall.getId());
+                    sessionFactory.transactional(em -> {
+                        em.persist(resultLine);
+                    });
                 }
             }catch(Exception ex){
                 var extra = "Error calling index "+currentIndex+" running "+(onIndex?"index script":"optimized script. ");
-                result.setError(extra+ex.getMessage());
+                testResult.setError(extra+ex.getMessage());
+
+                var resultLine = new TestResultsLine();
+                resultLine.setResultId(testResult.getId());
+                resultLine.setRecordingId(testResult.getRecordingId());
+                resultLine.setExecutedLine(currentIndex);
+                sessionFactory.transactional(em -> {
+                    em.persist(resultLine);
+                });
             }
 
         } catch (IOException e) {
-            result.setError(e.getMessage());
+            testResult.setError(e.getMessage());
         } catch (Exception e) {
-            result.setError(e.getMessage());
+            testResult.setError(e.getMessage());
         }
         long finish = System.currentTimeMillis();
         long timeElapsed = finish - start;
-        result.setDuration(timeElapsed);
-        var toWrite = mapper.writeValueAsString(result);
-        Files.writeString(resultsFile,toWrite);
+        testResult.setDuration(timeElapsed);
+
+        sessionFactory.transactional(em->{
+            em.merge(testResult);
+        });
         this.eventQueue.handle(new PactCompleted());
     }
 

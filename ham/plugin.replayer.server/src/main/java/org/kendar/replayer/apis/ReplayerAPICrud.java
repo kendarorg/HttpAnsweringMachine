@@ -1,8 +1,7 @@
 package org.kendar.replayer.apis;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
@@ -18,11 +17,13 @@ import org.kendar.replayer.ReplayerStatus;
 import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.apis.models.LocalRecording;
 import org.kendar.replayer.apis.models.ScriptData;
-import org.kendar.replayer.storage.ReplayerDataset;
+import org.kendar.replayer.storage.CallIndex;
+import org.kendar.replayer.storage.DbRecording;
 import org.kendar.replayer.storage.ReplayerResult;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
@@ -33,12 +34,8 @@ import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Component
@@ -48,17 +45,19 @@ public class ReplayerAPICrud implements FilteringClass {
   private final Logger logger;
   private final ReplayerStatus replayerStatus;
   private final Md5Tester md5Tester;
+  private HibernateSessionFactory sessionFactory;
   private final String replayerData;
 
   private final FileResourcesUtils fileResourcesUtils;
   private final LoggerBuilder loggerBuilder;
 
   public ReplayerAPICrud(
-      FileResourcesUtils fileResourcesUtils,
-      LoggerBuilder loggerBuilder,
-      ReplayerStatus replayerStatus,
-      Md5Tester md5Tester,
-      JsonConfiguration configuration) {
+          FileResourcesUtils fileResourcesUtils,
+          LoggerBuilder loggerBuilder,
+          ReplayerStatus replayerStatus,
+          Md5Tester md5Tester,
+          JsonConfiguration configuration,
+          HibernateSessionFactory sessionFactory) {
 
     this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
 
@@ -68,6 +67,7 @@ public class ReplayerAPICrud implements FilteringClass {
     this.logger = loggerBuilder.build(ReplayerAPICrud.class);
     this.replayerStatus = replayerStatus;
     this.md5Tester = md5Tester;
+    this.sessionFactory = sessionFactory;
   }
 
   @Override
@@ -81,26 +81,23 @@ public class ReplayerAPICrud implements FilteringClass {
       method = "GET")
   @HamDoc(description = "Retrieves the list of recordings",tags = {"plugin/replayer"},
     responses = @HamResponse(body = String[].class))
-  public void listAllLocalRecordings(Request req, Response res) throws JsonProcessingException {
-    var realPath = fileResourcesUtils.buildPath(replayerData);
-    var f = new File(realPath);
-    var pathNames = f.list();
+  public void listAllLocalRecordings(Request req, Response res) throws Exception {
+
     var listOfItems = new ArrayList<LocalRecording>();
     var currentScript = replayerStatus.getCurrentScript();
-    if (pathNames != null) {
-      for (var pathname : pathNames) {
-        if (pathname.toLowerCase(Locale.ROOT).endsWith(".json")) {
-          var lr = new LocalRecording();
-          var tocheck = pathname.substring(0, pathname.length() - 5);
-          lr.setId(tocheck);
-          lr.setState(ReplayerState.NONE);
-          if (tocheck.toLowerCase(Locale.ROOT).equalsIgnoreCase(currentScript)) {
-            lr.setState(replayerStatus.getStatus());
-          }
-          listOfItems.add(lr);
+    sessionFactory.query((em -> {
+      List< DbRecording> allRecs= em.createQuery("SELECT e FROM DbRecording e").getResultList();
+      for(var rs: allRecs){
+        var lr = new LocalRecording();
+        lr.setId(rs.getId());
+        lr.setState(ReplayerState.NONE);
+        lr.setName(rs.getName());
+        if (rs.getId()==currentScript) {
+          lr.setState(replayerStatus.getStatus());
         }
+        listOfItems.add(lr);
       }
-    }
+    }));
     res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(listOfItems));
   }
@@ -113,17 +110,10 @@ public class ReplayerAPICrud implements FilteringClass {
           path = @PathParameter(key = "id"),
           responses = @HamResponse(body =ListAllRecordList.class)
   )
-  public void listAllRecordingSteps(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
-
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-
-    var dataset =
-        new ReplayerDataset( loggerBuilder, null, md5Tester);
-    dataset.load(id, rootPath.toString(),null);
-    var datasetContent = dataset.load();
-    ListAllRecordList result = new ListAllRecordList(datasetContent, id,true);
-    result.getLines().sort(Comparator.comparingInt(ReplayerRow::getId));
+  public void listAllRecordingSteps(Request req, Response res) throws Exception {
+    var id = Long.parseLong(req.getPathParameter("id"));
+    ListAllRecordList result = new ListAllRecordList(sessionFactory, id,true);
+    result.getLines().sort(Comparator.comparingLong(ReplayerRow::getId));
     res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
     res.setResponseText(mapper.writeValueAsString(result));
   }
@@ -135,12 +125,14 @@ public class ReplayerAPICrud implements FilteringClass {
   @HamDoc(description = "Delete a recording",tags = {"plugin/replayer"},
           path = @PathParameter(key = "id")
   )
-  public void deleteRecordin(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
-    if (Files.exists(rootPath)) {
-      Files.delete(rootPath);
-    }
+  public void deleteRecordin(Request req, Response res) throws Exception {
+    var id = Long.parseLong(req.getPathParameter("id"));
+    sessionFactory.transactional(em->{
+      em.createQuery("DELETE From DbRecording WHERE id="+id).executeUpdate();
+      em.createQuery("DELETE From ReplayerRow WHERE recordingId="+id).executeUpdate();
+      em.createQuery("DELETE From CallIndex WHERE recordingId="+id).executeUpdate();
+    });
+
     res.setStatusCode(200);
   }
 
@@ -152,35 +144,28 @@ public class ReplayerAPICrud implements FilteringClass {
           path = @PathParameter(key = "id"),
           requests = @HamRequest(body = ReplayerResult.class)
   )
-  public void updateRecord(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
-    if (Files.exists(rootPath)) {
-      var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
-      var result = mapper.readValue(fileContent, ReplayerResult.class);
-      var scriptData = mapper.readValue(req.getRequestText(), ScriptData.class);
-      result.setDescription(scriptData.getDescription());
-      result.setFilter(scriptData.getFilter());
+  public void updateRecord(Request req, Response res) throws Exception {
+    var id = Long.parseLong(req.getPathParameter("id"));
+    var scriptData = mapper.readValue(req.getRequestText(), ScriptData.class);
+    sessionFactory.transactional(em->{
+      DbRecording recording = (DbRecording)em.createQuery("SELECT e FROM DbRecording e WHERE e.id="+id).getResultList().get(0);
+      List<CallIndex> indexLines = em.createQuery("SELECT e FROM CallIndex e WHERE e.recordingId="+id).getResultList();
+      List<ReplayerRow> rows = em.createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId="+id).getResultList();
 
-      //Update indexes
-      //Update fulls
-      for (var indexLine : result.getIndexes()) {
-        indexLine.setPactTest(scriptData.getPactTest().stream().anyMatch(a->a.intValue()==indexLine.getId()));
+      recording.setDescription(scriptData.getDescription());
+      em.merge(recording);
+      for(var ci:indexLines){
+        ci.setPactTest(scriptData.getPactTest().stream().anyMatch(a->a.intValue()==ci.getId()));
+        ci.setStimulatorTest(scriptData.getStimulatorTest().stream().anyMatch(a->a.intValue()==ci.getId()));
+        em.merge(ci);
       }
-      for (var indexLine : result.getIndexes()) {
-        indexLine.setStimulatorTest(scriptData.getStimulatorTest().stream().anyMatch(a->a.intValue()==indexLine.getId()));
-      }
-
-      for (var row : result.getDynamicRequests()) {
+      for(var row:rows){
         row.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==row.getId()));
-      }
-      for (var row : result.getStaticRequests()) {
         row.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==row.getId()));
+        em.merge(row);
       }
+    });
 
-      var resultInFile = mapper.writeValueAsString(result);
-      Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
-    }
     res.setStatusCode(200);
   }
 
@@ -194,18 +179,33 @@ public class ReplayerAPICrud implements FilteringClass {
           responses = @HamResponse(body = String.class)
 
   )
-  public void getFull(Request req, Response res) throws IOException {
+  public void getFull(Request req, Response res) throws Exception {
     var id = req.getPathParameter("id");
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
-    if (Files.exists(rootPath)) {
-      var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
-      res.setResponseText(fileContent);
-      res.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.JSON);
-      res.addHeader("Content-Disposition", "attachment;"+id+".json");
-      res.setStatusCode(200);
-    }else {
-      res.setStatusCode(404);
-    }
+    var result = new ReplayerResult();
+
+
+    sessionFactory.query(em-> {
+      DbRecording recording = (DbRecording) em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id).getResultList().get(0);
+      List<CallIndex> indexLines = em.createQuery("SELECT e FROM CallIndex e WHERE e.recordingId=" + id).getResultList();
+      List<ReplayerRow> rows = em.createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId=" + id).getResultList();
+
+      result.setDescription(recording.getDescription());
+      for(var row:rows){
+        if(row.isStaticRequest()){
+          result.getStaticRequests().add(row);
+        }else{
+          result.getDynamicRequests().add(row);
+        }
+      }
+      for(var indexLine:indexLines){
+        result.getIndexes().add(indexLine);
+      }
+    });
+
+    res.setResponseText(mapper.writeValueAsString(result));
+    res.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.JSON);
+    res.addHeader("Content-Disposition", "attachment;"+id+".json");
+    res.setStatusCode(200);
   }
 
   @HttpMethodFilter(
@@ -216,24 +216,32 @@ public class ReplayerAPICrud implements FilteringClass {
     requests = @HamRequest(body=JsonFileData.class))
   public void uploadRecording(Request req, Response res) throws Exception {
     JsonFileData jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
-    String fileFullPath = jsonFileData.getName();
-
-    var scriptName = fileFullPath.substring(0, fileFullPath.lastIndexOf('.'));
-    var crud = mapper.readValue(jsonFileData.readAsString(),ReplayerResult.class);
-    crud.setDescription(scriptName);
-
-    var dirPath = new File(Path.of(fileResourcesUtils.buildPath(replayerData)).toString());
-    if(!dirPath.exists()){
-      if(!dirPath.mkdir()){
-        res.setResponseText("ERROR CREATING "+ dirPath);
-        res.setStatusCode(500);
-        return;
+    String realFileName = FilenameUtils.removeExtension(jsonFileData.getName());
+    var replayerResult = mapper.readValue(jsonFileData.readAsString(),ReplayerResult.class);
+    var recording = new DbRecording();
+    recording.setDescription(replayerResult.getDescription());
+    recording.setName(realFileName);
+    sessionFactory.transactional(em->{
+      em.persist(recording);
+      for(var row:replayerResult.getDynamicRequests()){
+        row.setIndex(null);
+        row.setRecordingId(recording.getId());
+        em.persist(row);
       }
-    }
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, scriptName + ".json"));
-    var resultInFile = mapper.writeValueAsString(crud);
-    Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
-    logger.info("Uploaded replayer binary script " + rootPath);
+      for(var row:replayerResult.getStaticRequests()){
+        row.setIndex(null);
+        row.setRecordingId(recording.getId());
+        em.persist(row);
+      }
+      for(var row:replayerResult.getIndexes()){
+        row.setIndex(null);
+        row.setRecordingId(recording.getId());
+        em.persist(row);
+      }
+    });
+
+    logger.info("Uploaded replayer binary script ");
+    res.setResponseText(String.valueOf(recording.getId()));
     res.setStatusCode(200);
   }
 
@@ -247,38 +255,15 @@ public class ReplayerAPICrud implements FilteringClass {
           examples = @Example(example = "[1,2,3]"))
   )
   public void deleteLines(Request req, Response res) throws Exception {
-    List<Integer> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Integer[].class)).collect(Collectors.toList());
-    var id = req.getPathParameter("id");
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
-    if (Files.exists(rootPath)) {
-      var index = new HashSet<Integer>();
-      var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
-      var result = mapper.readValue(fileContent, ReplayerResult.class);
-      for(var i = result.getDynamicRequests().size()-1;i>=0;i--){
-        var dq = result.getDynamicRequests().get(i);
-        if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
-          index.add(dq.getId());
-          result.getDynamicRequests().remove(i);
+    List<Long> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Long[].class)).collect(Collectors.toList());
+    var id = Long.valueOf(req.getPathParameter("id"));
+    sessionFactory.transactional(em->{
+      for(var itemId:jsonFileData) {
+        em.createQuery("DELETE FROM CallIndex WHERE reference="+itemId+" AND recordingId="+id).executeUpdate();
+        em.createQuery("DELETE FROM ReplayerRow WHERE id="+itemId+" AND recordingId="+id).executeUpdate();
+      }
+    });
 
-        }
-      }
-      for(var i = result.getStaticRequests().size()-1;i>=0;i--){
-        var dq = result.getStaticRequests().get(i);
-        if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
-          index.add(dq.getId());
-          result.getStaticRequests().remove(i);
-        }
-      }
-      for(var i = result.getIndexes().size()-1;i>=0;i--){
-        var dq = result.getIndexes().get(i);
-        if(index.contains(dq.getReference())){
-          result.getIndexes().remove(i);
-        }
-      }
-
-      var resultInFile = mapper.writeValueAsString(result);
-      Files.write(rootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
-    }
     res.setStatusCode(200);
   }
 
@@ -292,38 +277,40 @@ public class ReplayerAPICrud implements FilteringClass {
           examples = @Example(example = "[1,2,3]"))
   )
   public void clone(Request req, Response res) throws Exception {
-    List<Integer> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Integer[].class)).collect(Collectors.toList());
-    var id = req.getPathParameter("id");
-    var newid = req.getPathParameter("newid");
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
-    var newRootPath = Path.of(fileResourcesUtils.buildPath(replayerData, newid + ".json"));
+    Set<Long> jsonFileData = new HashSet<Long>(
+            Arrays.stream(mapper.readValue(req.getRequestText(), Long[].class)).collect(Collectors.toList()));
+    var id = Long.valueOf(req.getPathParameter("id"));
+    AtomicLong recordingId = new AtomicLong();
+    sessionFactory.query(em-> {
+      DbRecording recording = (DbRecording) em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id).getResultList().get(0);
+      recordingId.set(recording.getId());
+      List<CallIndex> indexLines = em.createQuery("SELECT e FROM CallIndex e WHERE e.recordingId=" + id).getResultList();
+      List<ReplayerRow> rows = em.createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId=" + id).getResultList();
 
-    if (Files.exists(rootPath)) {
-      var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
-      var result = mapper.readValue(fileContent, ReplayerResult.class);
+      em.detach(recording);
+      recording.setId(null);
+      em.persist(recording);
+      Set<Long> references = new HashSet<>();
+      for(var indexLine:indexLines){
 
-      var newReplayerData = new ReplayerResult();
-      newReplayerData.setDescription(result.getDescription());
-      newReplayerData.setFilter(result.getFilter());
-      newReplayerData.setDynamicRequests(new ArrayList<>());
-      newReplayerData.setStaticRequests(new ArrayList<>());
-
-      for(var i = result.getDynamicRequests().size()-1;i>=0;i--){
-        var dq = result.getDynamicRequests().get(i);
-        if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
-          newReplayerData.getDynamicRequests().add(dq);
-        }
+        if(!jsonFileData.contains(indexLine.getId()))continue;
+        references.add(indexLine.getReference());
+        em.detach(indexLine);
+        indexLine.setId(null);
+        indexLine.setRecordingId(recording.getId());
+        em.persist(indexLine);
       }
-      for(var i = result.getStaticRequests().size()-1;i>=0;i--){
-        var dq = result.getStaticRequests().get(i);
-        if(jsonFileData.stream().anyMatch(a->a==dq.getId())){
-          newReplayerData.getStaticRequests().add(dq);
-        }
+      for(var row:rows){
+        if(!references.contains(row.getId()))continue;
+        em.detach(row);
+        row.setIndex(null);
+        row.setRecordingId(recording.getId());
+        em.persist(row);
       }
 
-      var resultInFile = mapper.writeValueAsString(newReplayerData);
-      Files.write(newRootPath, resultInFile.getBytes(StandardCharsets.UTF_8));
-    }
+    });
+
+    res.setResponseText(String.valueOf(recordingId.get()));
     res.setStatusCode(200);
   }
 }

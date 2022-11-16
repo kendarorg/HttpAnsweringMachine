@@ -5,7 +5,7 @@ public class FileLogListItem {
     private String path;
     private String host;
     private String time;
-    private String id;
+    private long id;
 
     public long getTimestamp() {
         return timestamp;
@@ -39,11 +39,11 @@ public class FileLogListItem {
         this.time = time;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 }

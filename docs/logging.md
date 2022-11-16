@@ -10,19 +10,12 @@ Here a map of the log levels:
 
 ### The configuration
 
-The logPath variables sets the log file location, null means inside the 
-main jar directory
-
-The logRoundtripsPath sets the directory where to store the full static 
-and dynamic requests. If null does not store anything
-
 The logLevel is the global log level
 
     [{  "id": "global",
         ...
         "logging": {
-            "logPath": null,
-            "logRoundtripsPath": null,
+            
             "logLevel": "INFO",
             "loggers": {
                 "org.kendar.servers.http.Request":"DEBUG",

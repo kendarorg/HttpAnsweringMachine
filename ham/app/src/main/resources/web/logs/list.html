@@ -15,6 +15,10 @@
             <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
         </div>
         <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="clearLogs()">Clear</button>
+        </div>
+        <div class="col-md-8">
             <h3>Logs</h3>
             <table class="table table-striped" id="logsTable">
                 <tr>
@@ -31,6 +35,15 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
+    var clearLogs = function(){
+        $.ajax({
+            url: "/api/log/files",
+            type: 'DELETE',
+            success: function(res) {
+                location.reload();
+            }
+        });
+    }
     var logsTable = new SimpleGrid("Plugin","logsTable","id",["id","time","host","path","_show"],
         function(table){
             $.ajax({

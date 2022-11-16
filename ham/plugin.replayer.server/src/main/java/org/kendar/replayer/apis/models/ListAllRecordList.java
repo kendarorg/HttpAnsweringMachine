@@ -1,15 +1,19 @@
 package org.kendar.replayer.apis.models;
 
 import org.kendar.replayer.storage.CallIndex;
+import org.kendar.replayer.storage.DbRecording;
 import org.kendar.replayer.storage.ReplayerResult;
 import org.kendar.replayer.storage.ReplayerRow;
+import org.kendar.servers.db.HibernateSessionFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class ListAllRecordList {
-    private String id;
+    private List<CallIndex> callIndex;
+    private List<ReplayerRow> replayerRows;
+    private Long id;
     private String description;
     private List<ReplayerRow> lines = new ArrayList<>();
     private List<CallIndex> indexes = new ArrayList<>();
@@ -17,31 +21,38 @@ public class ListAllRecordList {
     private HashMap<String,String> preScript;
     private HashMap<String,String> postScript;
 
-    public ListAllRecordList(ReplayerResult datasetContent,String id,boolean cleanJs) {
-        for (var staticLine :
-                datasetContent.getStaticRequests()) {
-            staticLine.getRequest().setRequestText(null);
-            staticLine.getRequest().setRequestBytes(null);
-            staticLine.getResponse().setResponseBytes(null);
-            staticLine.getResponse().setResponseText(null);
-            getLines().add((staticLine));
+    private DbRecording recording;
+
+    public ListAllRecordList(HibernateSessionFactory sessionFactory, Long id, boolean cleanJs) throws Exception {
+
+        sessionFactory.query(em->{
+            recording = (DbRecording) em.createQuery("SELECT e FROM DbRecording e").getResultList().get(0);
+            replayerRows = (List<ReplayerRow>) em.createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId="+id).getResultList();
+            callIndex =  (List<CallIndex>) em.createQuery("SELECT e FROM CallIndex e WHERE e.recordingId="+id).getResultList();
+        });
+
+        for(var row:replayerRows){
+            var req = row.getRequest();
+            req.setRequestText(null);
+            req.setRequestBytes(null);
+            row.setRequest(req);
+
+            var res = row.getResponse();
+            res.setResponseText(null);
+            res.setResponseBytes(null);
+            row.setResponse(res);
         }
-        variables = datasetContent.getVariables();
-        preScript = datasetContent.getPreScript();
-        postScript= datasetContent.getPostScript();
-        for (var dynamicLine :
-                datasetContent.getDynamicRequests()) {
-            dynamicLine.getRequest().setRequestText(null);
-            dynamicLine.getRequest().setRequestBytes(null);
-            dynamicLine.getResponse().setResponseBytes(null);
-            dynamicLine.getResponse().setResponseText(null);
-            getLines().add((dynamicLine));
-        }
-        for(var index: datasetContent.getIndexes()){
+  /*
+  FIXME
+        variables = recording.getVariables();
+        preScript = recording.getPreScript();
+        postScript= recording.getPostScript();
+*/
+        for(var index: callIndex){
             getIndexes().add(index);
         }
         this.setId(id);
-        this.setDescription(datasetContent.getDescription());
+        this.setDescription(recording.getDescription());
     }
 
     public List<ReplayerRow> getLines() {
@@ -52,11 +63,11 @@ public class ListAllRecordList {
         this.lines = lines;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

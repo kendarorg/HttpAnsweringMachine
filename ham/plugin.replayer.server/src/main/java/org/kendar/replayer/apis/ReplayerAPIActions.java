@@ -36,7 +36,7 @@ public class ReplayerAPIActions implements FilteringClass {
             path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
     )
     public void recording(Request req, Response res) throws IOException {
-        var id = req.getPathParameter("id");
+        var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
 
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
@@ -60,7 +60,7 @@ public class ReplayerAPIActions implements FilteringClass {
             path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
     )
     public void replaying(Request req, Response res) throws IOException {
-        var id = req.getPathParameter("id");
+        var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
             replayerStatus.startReplaying(id);
@@ -80,11 +80,11 @@ public class ReplayerAPIActions implements FilteringClass {
     @HamDoc(description = "Start/stop/pauses pact test" ,tags = {"plugin/replayer"},
             path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
     )
-    public void pact(Request req, Response res) throws IOException {
-        var id = req.getPathParameter("id");
+    public void pact(Request req, Response res) throws Exception {
+        var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
-            String runId = replayerStatus.startPact(id);
+            Long runId = replayerStatus.startPact(id);
         }else if(action.equalsIgnoreCase("stop") &&
                 replayerStatus.getStatus()==ReplayerState.PLAYING_PACT){
             replayerStatus.stopPact(id);
@@ -97,11 +97,11 @@ public class ReplayerAPIActions implements FilteringClass {
     @HamDoc(description = "Start/stop/pauses null test" ,tags = {"plugin/replayer"},
             path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
     )
-    public void nullReplay(Request req, Response res) throws IOException {
-        var id = req.getPathParameter("id");
+    public void nullReplay(Request req, Response res) throws Exception {
+        var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
-            String runId = replayerStatus.startNull(id);
+            Long runId = replayerStatus.startNull(id);
         }else if(action.equalsIgnoreCase("stop") &&
                 replayerStatus.getStatus()==ReplayerState.PLAYING_NULL_INFRASTRUCTURE){
             replayerStatus.stopNull(id);

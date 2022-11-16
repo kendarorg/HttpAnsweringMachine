@@ -52,6 +52,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
           ConnectionBuilder connectionBuilder,
           EventQueue eventQueue) {
     this.logger = loggerBuilder.build(AnsweringHandlerImpl.class);
+
     this.requestLogger = loggerBuilder.build(Request.class);
     this.filteringClassesHandler = filteringClassesHandler;
     this.simpleProxyHandler = simpleProxyHandler;
@@ -70,6 +71,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
             DynamicReqest.class.getName(), "Log dynamic requests as file (DEBUG), precedence over Req/Res");
     pluginsInitializer.addSpecialLogger(
             InternalRequest.class.getName(), "Log internal requests (DEBUG)");
+    pluginsInitializer.addSpecialLogger(
+            "org.hibernate", "Log hibernate");
 
 
 

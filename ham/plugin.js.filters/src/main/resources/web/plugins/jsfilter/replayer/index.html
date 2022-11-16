@@ -19,8 +19,9 @@
             <h3>CHOOSE RECORDING</h3>
             <table class="table table-striped" id="scriptTable">
                 <tr>
-                    <th>Name</th>
+                    <th>Id</th>
                     <th>State</th>
+                    <th>Name</th>
                     <th colspan="2"></th>
                 </tr>
             </table>
@@ -29,7 +30,7 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
-    var scriptsTable = new SimpleGrid("Script","scriptTable","id",["id","state"],
+    var scriptsTable = new SimpleGrid("Script","scriptTable","id",["id","state","name"],
         function(table){
             $.ajax({
                 url: "/api/plugins/replayer/recording",

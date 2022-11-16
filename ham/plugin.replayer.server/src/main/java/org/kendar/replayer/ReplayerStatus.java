@@ -7,6 +7,7 @@ import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.storage.*;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.ExternalRequester;
 import org.kendar.servers.http.InternalRequester;
@@ -14,7 +15,6 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.FileResourcesUtils;
-import org.kendar.utils.JsonSmile;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,6 @@ public class ReplayerStatus {
 
     private static final String MAIN_FILE = "runall.json";
     private final LoggerBuilder loggerBuilder;
-    private final DataReorganizer dataReorganizer;
     private final FileResourcesUtils fileResourcesUtils;
     private final ObjectMapper mapper = new ObjectMapper();
     private final String replayerData;
@@ -38,29 +37,30 @@ public class ReplayerStatus {
     private final ExternalRequester externalRequester;
     private final InternalRequester internalRequester;
     private final SimpleProxyHandler simpleProxyHandler;
+    private HibernateSessionFactory sessionFactory;
     private BaseDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
 
     public ReplayerStatus(
             LoggerBuilder loggerBuilder,
-            DataReorganizer dataReorganizer,
             FileResourcesUtils fileResourcesUtils,
             Md5Tester md5Tester,
             JsonConfiguration configuration,
             EventQueue eventQueue, ExternalRequester externalRequester,
             DnsMultiResolver multiResolver, InternalRequester internalRequester,
-            SimpleProxyHandler simpleProxyHandler) {
+            SimpleProxyHandler simpleProxyHandler,
+            HibernateSessionFactory sessionFactory) {
 
         this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.loggerBuilder = loggerBuilder;
         this.logger= loggerBuilder.build(ReplayerStatus.class);
-        this.dataReorganizer = dataReorganizer;
         this.fileResourcesUtils = fileResourcesUtils;
         this.md5Tester = md5Tester;
         this.eventQueue = eventQueue;
         this.externalRequester = externalRequester;
         this.internalRequester = internalRequester;
         this.simpleProxyHandler = simpleProxyHandler;
+        this.sessionFactory = sessionFactory;
         eventQueue.register((a)->pactCompleted(), PactCompleted.class);
         eventQueue.register((a)->nullCompleted(), NullCompleted.class);
     }
@@ -75,17 +75,17 @@ public class ReplayerStatus {
         state = ReplayerState.NONE;
     }
 
-    public void startRecording(String id, String description) throws IOException {
+    public void startRecording(Long id, String description) throws IOException {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) return;
         logger.info("RECORDING START");
         state = ReplayerState.RECORDING;
         dataset =
-                new RecordingDataset( loggerBuilder, dataReorganizer, md5Tester);
+                new RecordingDataset( loggerBuilder, md5Tester,sessionFactory);
         dataset.load(id, rootPath.toString(), description);
     }
 
-    public void addRequest(Request req, Response res) {
+    public void addRequest(Request req, Response res) throws Exception {
         if (state != ReplayerState.RECORDING) return;
         ((RecordingDataset)dataset).add(req, res);
     }
@@ -112,7 +112,7 @@ public class ReplayerStatus {
         return state;
     }
 
-    public String getCurrentScript() {
+    public Long getCurrentScript() {
         if (dataset != null) return dataset.getName();
         return null;
     }
@@ -138,15 +138,14 @@ public class ReplayerStatus {
         dataset = null;
     }
 
-    public void startReplaying(String id) throws IOException {
+    public void startReplaying(Long id) throws IOException {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) return;
         logger.info("REPLAYING START");
         state = ReplayerState.REPLAYING;
         dataset =
-                new ReplayerDataset(  loggerBuilder, dataReorganizer, md5Tester);
+                new ReplayerDataset(  loggerBuilder, md5Tester,sessionFactory);
         dataset.load(id, rootPath.toString(),null);
-        ((ReplayerDataset)dataset).load();
     }
 
     public void restartReplaying() {
@@ -167,18 +166,19 @@ public class ReplayerStatus {
         dataset = null;
     }
 
-    public String startPact(String id) throws IOException {
+    public Long startPact(Long id) throws Exception {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         logger.info("PACT START");
-        dataset = new PactDataset(loggerBuilder,eventQueue,externalRequester,new Cache(),simpleProxyHandler);
+        dataset = new PactDataset(loggerBuilder,eventQueue,externalRequester,
+                new Cache(),simpleProxyHandler,sessionFactory);
         dataset.load(id, rootPath.toString(),null);
         var runId = ((PactDataset)dataset).start();
         state = ReplayerState.PLAYING_PACT;
         return runId;
     }
 
-    public void stopPact(String id) {
+    public void stopPact(Long id) {
         if (state != ReplayerState.PLAYING_PACT) throw new RuntimeException("State not allowed");
         logger.info("PACT STOP");
         ((PactDataset)dataset).stop();
@@ -186,13 +186,13 @@ public class ReplayerStatus {
 
     }
 
-    public String startNull(String id) throws IOException {
+    public Long startNull(Long id) throws Exception {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         logger.info("NULL START");
-        dataset = new NullDataset(loggerBuilder,dataReorganizer,md5Tester,eventQueue,internalRequester, new Cache(),simpleProxyHandler);
+        dataset = new NullDataset(loggerBuilder,md5Tester,eventQueue,
+                internalRequester, new Cache(),simpleProxyHandler,sessionFactory);
         dataset.load(id, rootPath.toString(),null);
-        ((ReplayerDataset)dataset).load();
         var runId = ((NullDataset)dataset).start();
         state = ReplayerState.PLAYING_NULL_INFRASTRUCTURE;
         return runId;
@@ -206,7 +206,7 @@ public class ReplayerStatus {
         return rootPath;
     }
 
-    public void stopNull(String id) {
+    public void stopNull(Long id) {
         if (state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) throw new RuntimeException("State not allowed");
         logger.info("NULL STOP");
         ((NullDataset)dataset).stop();
