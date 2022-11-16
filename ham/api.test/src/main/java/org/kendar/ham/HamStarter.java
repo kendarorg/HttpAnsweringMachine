@@ -3,6 +3,8 @@ package org.kendar.ham;
 import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.loader.PropertiesLauncher;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -19,6 +21,7 @@ public class HamStarter {
     private static Logger logger = LoggerFactory.getLogger(HamStarter.class);
 
     private static boolean showTrace = false;
+    private static Thread realThread;
 
     public static void showTrace(){
         showTrace = true;
@@ -79,51 +82,101 @@ public class HamStarter {
     }
     private static ConcurrentHashMap<String,ThreadAndProc> processes = new ConcurrentHashMap<>();
     public static void runHamJar(Class<?> caller) throws HamTestException {
-        var commandLine = new ArrayList<String>();
-        commandLine.add(findJava());
+        if(realThread!=null && realThread.isAlive()){
+            return;
+        }
+
+
+
+//        var commandLine = new ArrayList<String>();
+//        commandLine.add(findJava());
 
         var externalJsonPath  =Path.of(getRootPath(caller),"ham","test.external.json").toString();
-        commandLine.add("-Djsonconfig="+externalJsonPath);
+        //commandLine.add("-Djsonconfig="+externalJsonPath);
         var libsPath  =Path.of(getRootPath(caller),"ham","libs").toString();
-        commandLine.add("-Dloader.path="+libsPath);
-        commandLine.add("-Dloader.main=org.kendar.Main");
+//        commandLine.add("-Dloader.path="+libsPath);
+//        commandLine.add("-Dloader.main=org.kendar.Main");
+        var rootPath  =Path.of(getRootPath(caller),"ham").toString();
+        System.setProperty("user.dir", rootPath);
+        System.setProperty("jsonconfig",externalJsonPath);
+        System.setProperty("loader.main","org.kendar.Main");
+        System.setProperty("loader.path",libsPath);
+        System.setProperty("loader.home",rootPath);
+        //loader.home
+        try {
 
+            var starter = Class.forName("org.kendar.Main");
+            //starter = PropertiesLauncher.class;
 
+            javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+                    (hostname, sslSession) -> true);
 
-        var appPathRootPath = Path.of(getRootPath(caller),"ham","app","target");
+            SpringApplicationBuilder uws = new SpringApplicationBuilder(starter)
+                    .lazyInitialization(true)
+                    .properties("loader.path=" + libsPath,
+                            "jsonconfig=" + externalJsonPath,
+                            "loader.home=" + rootPath+"/target",
+                            "loader.main=org.kendar.Main");
 
-        if(!appPathRootPath.toFile().exists()){
-            throw new HamTestException("WRONG STARTING PATH "+appPathRootPath);
+            realThread = new Thread(()->{
+                uws.run();
+            });
+            realThread.start();
+
+            var ready = false;
+            while(!ready){
+                try {
+                    URL url = new URL("http://localhost/api/health");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("GET");
+                    int status = con.getResponseCode();
+                    ready = true;
+                }catch (Exception ex){
+
+                }
+            }
+            Thread.sleep(1000);
+            ///api/health
+        }catch (Exception ex){
+            throw new HamTestException(ex);
         }
-        File[] matchingFiles = appPathRootPath.toFile().listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                if(name == null) return false;
-                return name.startsWith("app-") && name.endsWith(".jar");
-            }
-        });
-        var appPathRoot  =Path.of(matchingFiles[0].getAbsolutePath()).toString();
-        /*try {
-            Files.copy(Path.of(appPathRoot),Path.of(appPathRoot+".tmp"), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new HamTestException(e);
-        }*/
-        commandLine.add("-jar");
-        commandLine.add(appPathRoot);
-        var jarDir= Path.of(matchingFiles[0].getAbsolutePath()).getParent().toAbsolutePath().toString();
-        //processBuilder.directory(new File("src"));
-        runJar(commandLine,jarDir,()-> {
-            deleteDirectory(Path.of(getRootPath(caller),"jsplugins").toFile());
-            deleteDirectory(Path.of(getRootPath(caller),"calllogs").toFile());
-            deleteDirectory(Path.of(getRootPath(caller),"replayerdata").toFile());
-            return true;
-        },()-> {
-            try {
-                var result = getHTML("http://127.0.0.1/api/dns/lookup/test");
-                return true;
-            } catch (Exception ex) {
-                return false;
-            }
-        });
+
+
+
+//        var appPathRootPath = Path.of(getRootPath(caller),"ham","app","target");
+//
+//        if(!appPathRootPath.toFile().exists()){
+//            throw new HamTestException("WRONG STARTING PATH "+appPathRootPath);
+//        }
+//        File[] matchingFiles = appPathRootPath.toFile().listFiles(new FilenameFilter() {
+//            public boolean accept(File dir, String name) {
+//                if(name == null) return false;
+//                return name.startsWith("app-") && name.endsWith(".jar");
+//            }
+//        });
+//        var appPathRoot  =Path.of(matchingFiles[0].getAbsolutePath()).toString();
+//        /*try {
+//            Files.copy(Path.of(appPathRoot),Path.of(appPathRoot+".tmp"), StandardCopyOption.REPLACE_EXISTING);
+//        } catch (IOException e) {
+//            throw new HamTestException(e);
+//        }*/
+//        commandLine.add("-jar");
+//        commandLine.add(appPathRoot);
+//        var jarDir= Path.of(matchingFiles[0].getAbsolutePath()).getParent().toAbsolutePath().toString();
+//        //processBuilder.directory(new File("src"));
+//        runJar(commandLine,jarDir,()-> {
+//            deleteDirectory(Path.of(getRootPath(caller),"jsplugins").toFile());
+//            deleteDirectory(Path.of(getRootPath(caller),"calllogs").toFile());
+//            deleteDirectory(Path.of(getRootPath(caller),"replayerdata").toFile());
+//            return true;
+//        },()-> {
+//            try {
+//                var result = getHTML("http://127.0.0.1/api/dns/lookup/test");
+//                return true;
+//            } catch (Exception ex) {
+//                return false;
+//            }
+//        });
 
     }
 

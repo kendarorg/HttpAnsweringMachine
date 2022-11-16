@@ -19,7 +19,7 @@ public class ProxyDnsSslCheckIT {
         HamStarter.runHamJar(ProxyDnsSslCheckIT.class);
     }
     @Test
-    public void verifyProxyDnsHttpsStuffs() throws HamException, IOException {
+    public void verifyProxyDnsHttpsStuffs() throws HamException, IOException, InterruptedException {
         var hamCertificateNotInstalledOnJvm = true;
         var hamBuilder = (HamBuilder)GlobalSettings.builder();
 
@@ -29,9 +29,11 @@ public class ProxyDnsSslCheckIT {
         var proxyId = hamBuilder.proxies().addProxy(
                 "https://www.github.com",
                 "https://www.microsoft.com",
-                "www.microsoft.com:443");
+                "127.0.0.1");
         //Intercept the ceritficate
         var certificateId = hamBuilder.certificates().addAltName("www.github.com");
+
+        Thread.sleep(5000);
 
 
         HttpGet httpGet = new HttpGet("https://www.github.com/index.html");
