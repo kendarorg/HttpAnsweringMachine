@@ -137,6 +137,8 @@ public class HamStarter {
             }
             Thread.sleep(1000);
             ///api/health
+        }catch (ClassNotFoundException ex){
+            throw new HamTestException(ex);
         }catch (Exception ex){
             throw new HamTestException(ex);
         }

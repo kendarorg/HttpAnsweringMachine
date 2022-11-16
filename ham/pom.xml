@@ -74,6 +74,7 @@
         <module>api.replayer</module>
         <module>api.js.builder</module>
         <module>api.test</module>
+        <module>jacoco</module>
     </modules>
     <build>
         <extensions>

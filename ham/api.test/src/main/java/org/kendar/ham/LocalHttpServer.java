@@ -68,16 +68,20 @@ public class LocalHttpServer {
         try {
             if (headers != null) {
                 for (var header : headers.entrySet()) {
-                    exchange.getResponseHeaders().add(header.getKey(), header.getValue());
+                    exchange.getResponseHeaders().set(header.getKey(), header.getValue());
                 }
             }
-            exchange.sendResponseHeaders(code, (data != null) ? (data.length) : 0);
+            var dl = (data != null) ? (data.length) : -1;
+            exchange.sendResponseHeaders(code, dl);
 
-            OutputStream os = exchange.getResponseBody();
-            if (data != null) {
+
+            if (data != null && dl>0) {
+                OutputStream os = exchange.getResponseBody();
                 os.write(data);
+                os.flush();
+                os.close();
             }
-            os.close();
+            exchange.close();
         }catch(Exception ex){
             throw new HamTestException(ex);
         }

@@ -33,6 +33,12 @@
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
+            <artifactId>app</artifactId>
+            <version>4.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
             <artifactId>api.test</artifactId>
             <version>4.0.1</version>
 
