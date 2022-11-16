@@ -45,6 +45,7 @@
             <h3>SCRIPTS</h3>
             <table class="table table-striped" id="scriptTable">
                 <tr>
+                    <th>Id</th>
                     <th>Name</th>
                     <th>State</th>
                     <th colspan="2"></th>
@@ -55,7 +56,7 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
-    var scriptsTable = new SimpleGrid("Script","scriptTable","id",["id","state"],
+    var scriptsTable = new SimpleGrid("Script","scriptTable","id",["id","name","state"],
         function(table){
             $.ajax({
                 url: "/api/plugins/replayer/recording",
@@ -86,7 +87,8 @@
                 });
             });
         },null,[
-            {id:"id",type:"string"}]).load();
+            {id:"id",type:"number"},
+            {id:"name",type:"string"}]).load();
 
     $("#btLoadFile").click(function(){
         document.getElementById("uploadScript").click();
@@ -117,7 +119,7 @@
                 window.uploadScript=[];
                 document.getElementById("uploadScriptShow").value ="";
                 alert("File Uploaded");
-                location.href = "script.html?id="+name;
+                location.href = "script.html?id="+response;
             }
         });
     });
@@ -135,7 +137,7 @@
             data: JSON.stringify(data),
             contentType: "text/plain",
             success: function(response){
-                location.reload();
+                location.href = "script.html?id="+response;
             }
         });
     });

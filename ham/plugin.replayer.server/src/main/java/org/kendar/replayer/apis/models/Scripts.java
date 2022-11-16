@@ -1,18 +1,18 @@
 package org.kendar.replayer.apis.models;
 
 public class Scripts {
-    private String id;
+    private Long id;
     private String pre;
     private String post;
     private String host;
     private String path;
     private String method;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -44,13 +44,13 @@ public class ReplayerAPIStatus implements FilteringClass {
             tags = {"plugin/replayer"})
     public void recording(Request req, Response res) throws IOException {
         String realStatus;
-        String currentScript;
+        Long currentScript;
         try{
             realStatus = replayerStatus.getStatus().toString();
             currentScript = replayerStatus.getCurrentScript();
         }catch(Exception ex){
             realStatus = "NONE";
-            currentScript = "NONE";
+            currentScript = null;
         }
         var status = "{\"status\":\""+realStatus+"\",\"running\":\""+currentScript+"\"}";
         res.setResponseText(status);

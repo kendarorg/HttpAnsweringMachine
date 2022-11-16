@@ -89,16 +89,27 @@
     "id": "global",
     "system": true,
     "localAddress": "www.local.test",
+
+    "db": {
+      "url": "jdbc:h2:tcp://localhost/ham;MODE=MYSQL;",
+      "login": "sa",
+      "password": "sa",
+      "startInternalH2" : true,
+      "driver": "org.h2.Driver",
+      "hibernateDialect":"org.hibernate.dialect.MySQLDialect"
+    },
     "logging": {
-      "logPath": null,
-      "logRoundtripsPath": "calllogs",
+
+
       "logLevel": "INFO",
       "loggers": {
         "org.kendar.servers.http.Request": "OFF",
         "org.kendar.servers.http.Response": "OFF",
         "org.kendar.servers.http.StaticRequest": "OFF",
         "org.kendar.servers.http.DynamicRequest": "OFF",
-        "org.kendar.dns.DnsQueries": "OFF"
+        "org.kendar.dns.DnsQueries": "OFF",
+        "org.kendar.servers.http.InternalRequest": "OFF",
+        "org.hibernate": "OFF"
       }
     }
   },

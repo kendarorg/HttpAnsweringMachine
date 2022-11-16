@@ -17,6 +17,7 @@ some run to check what is needed</u>
 
 The jar and the dependencies should be placed into the [libs directory](../basic.md)
 
+To use the db on plugins go [here](../database.md)
 * [Filters](java/jfilters.md)
 * [Static pages](java/jstatic.md)
 * [Servers](java/jserver.md)

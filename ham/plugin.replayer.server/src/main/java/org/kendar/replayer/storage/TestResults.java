@@ -1,36 +1,78 @@
 package org.kendar.replayer.storage;
 
+import org.kendar.servers.db.DbTable;
+import org.springframework.stereotype.Component;
+
+import javax.persistence.*;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class TestResults {
+@Component
+
+@Entity
+@Table(name="REPLAYER_RESULT")
+public class TestResults implements DbTable {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getErrors() {
+        return errors;
+    }
+
+    public void setErrors(String errors) {
+        this.errors = errors;
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+
+    @Column(name = "isoDate")
     private String isoDate;
-    private String recordingId;
-    private Calendar timestamp;
+
+    @Column(name = "recordingId")
+    private Long recordingId;
+
+    @Column(name = "timestamp")
+    private Timestamp timestamp;
+
+    @Column(name = "duration")
     private long duration;
+
+    @Column(name = "errors",length = 64000)
     private String errors;
-    private List<Integer> executed = new ArrayList<>();
+
+    @Column(name = "type")
     private String type;
 
-    public String getRecordingId() {
+    public Long getRecordingId() {
         return recordingId;
     }
 
-    public void setRecordingId(String recordingId) {
+    public void setRecordingId(Long recordingId) {
         this.recordingId = recordingId;
     }
 
-    public Calendar getTimestamp() {
+    public Timestamp getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Calendar timestamp) {
+    public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
         if(timestamp!=null){
-            Date date = timestamp.getTime();
+            Date date=new Date(timestamp.getTime());
 
 // Conversion
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
@@ -54,13 +96,6 @@ public class TestResults {
         this.errors = errors;
     }
 
-    public List<Integer> getExecuted() {
-        return executed;
-    }
-
-    public void setExecuted(List<Integer> executed) {
-        this.executed = executed;
-    }
 
     public String getType() {
         return type;

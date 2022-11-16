@@ -10,13 +10,11 @@ import org.kendar.http.annotations.multi.HamRequest;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
-import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.storage.CallIndex;
-import org.kendar.replayer.storage.DataReorganizer;
-import org.kendar.replayer.storage.ReplayerDataset;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.ConstantsHeader;
@@ -25,34 +23,30 @@ import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Comparator;
-
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class ReplayerAPISingleLine implements FilteringClass {
 
   private final FileResourcesUtils fileResourcesUtils;
   private final LoggerBuilder loggerBuilder;
-  private final DataReorganizer dataReorganizer;
   final ObjectMapper mapper = new ObjectMapper();
   private final Md5Tester md5Tester;
+  private HibernateSessionFactory sessionFactory;
   private final String replayerData;
 
   public ReplayerAPISingleLine(
-      FileResourcesUtils fileResourcesUtils,
-      LoggerBuilder loggerBuilder,
-      DataReorganizer dataReorganizer,
-      Md5Tester md5Tester,
-      JsonConfiguration configuration) {
+          FileResourcesUtils fileResourcesUtils,
+          LoggerBuilder loggerBuilder,
+          Md5Tester md5Tester,
+          JsonConfiguration configuration,
+          HibernateSessionFactory sessionFactory) {
 
     this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
 
     this.fileResourcesUtils = fileResourcesUtils;
     this.loggerBuilder = loggerBuilder;
-    this.dataReorganizer = dataReorganizer;
     this.md5Tester = md5Tester;
+    this.sessionFactory = sessionFactory;
   }
 
   @Override
@@ -72,38 +66,33 @@ public class ReplayerAPISingleLine implements FilteringClass {
                   body = ReplayerRow.class
           )
   )
-  public void retrieveSingleLineData(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
-    var line = Integer.parseInt(req.getPathParameter("line"));
+  public void retrieveSingleLineData(Request req, Response res) throws Exception {
+    var recordingId = Long.parseLong(req.getPathParameter("id"));
+    var line = Long.parseLong(req.getPathParameter("line"));
 
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+    try{
+    sessionFactory.query(em -> {
+      var prevId = (Long) em.createQuery("SELECT COALESCE( MAX(e.id),-1) FROM CallIndex e WHERE" +
+              " e.recordingId=" + recordingId + " AND e.id<" + line).getResultList().get(0);
 
-    var dataset =
-        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-    dataset.load(id, rootPath.toString(),null);
-    var datasetContent = dataset.load();
-    var result = new ListAllRecordList(datasetContent, id,false).getLines();
-    result.sort(Comparator.comparingInt(ReplayerRow::getId));
-    for (var i=0;i<result.size();i++) {
-      var singleLine = result.get(i);
-      if (singleLine.getId() == line) {
-        var prev = -1;
-        var next = -1;
-        if(i>0){
-          prev=result.get(i-1).getId();
-        }
-        if(i<(result.size()-1)){
-          next=result.get(i+1).getId();
-        }
-        res.addHeader("X-NEXT", ""+next);
-        res.addHeader("X-PREV", ""+prev);
-        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-        res.setResponseText(mapper.writeValueAsString(singleLine));
-        return;
-      }
+      var nexId = (Long) em.createQuery("SELECT COALESCE( MIN(e.id),-1) FROM CallIndex e WHERE" +
+              " e.recordingId=" + recordingId + " AND e.id>" + line).getResultList().get(0);
+
+      var row = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+              " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
+
+      res.addHeader("X-NEXT", "" + nexId);
+      res.addHeader("X-PREV", "" + prevId);
+      res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
+      res.setResponseText(mapper.writeValueAsString(row));
+      return;
+    });
+
+    }catch (Exception e){
+      res.setStatusCode(404);
+      res.setResponseText("Missing id " + recordingId + " with line " + line);
     }
-    res.setStatusCode(404);
-    res.setResponseText("Missing id " + id + " with line " + line);
+
   }
 
   @HttpMethodFilter(
@@ -116,34 +105,25 @@ public class ReplayerAPISingleLine implements FilteringClass {
                   body = ReplayerRow.class
           )
   )
-  public void modifySingleLineData(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
-    var line = Integer.parseInt(req.getPathParameter("line"));
+  public void modifySingleLineData(Request req, Response res) throws Exception {
+    var recordingId = Long.parseLong(req.getPathParameter("id"));
+    var line = Long.parseLong(req.getPathParameter("line"));
+    var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
 
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+    try{
+    sessionFactory.transactional(em -> {
 
-    var dataset =
-        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-    dataset.load(id, rootPath.toString(),null);
-    var datasetContent = dataset.load();
-    for (var destination : datasetContent.getStaticRequests()) {
-      if (destination.getId() == line) {
-        var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
-        cloneToRow(destination, source);
-        dataset.saveMods();
-        return;
-      }
+      var destination = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+              " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
+      cloneToRow(destination, source);
+      em.merge(destination);
+      return;
+    });
+    }catch (Exception e){
+      res.setStatusCode(404);
+      res.setResponseText("Missing id " + recordingId + " with line " + line);
     }
-    for (var destination : datasetContent.getDynamicRequests()) {
-      if (destination.getId() == line) {
-        var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
-        cloneToRow(destination, source);
-        dataset.saveMods();
-        return ;
-      }
-    }
-    res.setStatusCode(404);
-    res.setResponseText("Missing id " + id + " with line " + line);
+
   }
 
   @HttpMethodFilter(
@@ -156,34 +136,30 @@ public class ReplayerAPISingleLine implements FilteringClass {
                   body = ReplayerRow.class
           )
   )
-  public void addLineData(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
-    var line = Integer.parseInt(req.getPathParameter("line"));
-
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-
-    var dataset =
-        new ReplayerDataset( loggerBuilder, dataReorganizer, md5Tester);
-    dataset.load(id, rootPath.toString(),null);
-    var datasetContent = dataset.load();
-    for (var destination : datasetContent.getStaticRequests()) {
-      if (destination.getId() == line) {
-        res.setStatusCode(409);
-        res.setResponseText("Duplicate id");
-        return;
-      }
-    }
-    for (var destination : datasetContent.getDynamicRequests()) {
-      if (destination.getId() == line) {
-        res.setStatusCode(409);
-        res.setResponseText("Duplicate id");
-        return;
-      }
-    }
-
+  public void addLineData(Request req, Response res) throws Exception {
+    var recordingId = Long.parseLong(req.getPathParameter("id"));
+    var line = Long.parseLong(req.getPathParameter("line"));
     var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
-    datasetContent.getDynamicRequests().add(source);
-    dataset.saveMods();
+
+    sessionFactory.transactional(em -> {
+      em.createQuery("UPDATE CallIndex SET id=id+1 WHERE" +
+              " recordingId="+recordingId+" AND id>="+line).executeUpdate();
+      var nexId = (Long)em.createQuery("SELECT MAX(id) FROM CallIndex  WHERE" +
+              " recordingId="+recordingId).getResultList().get(0)+1;
+
+      source.setIndex(null);
+      source.setId(nexId);
+      source.setRecordingId(recordingId);
+      em.persist(source);
+
+      var callIndex= new CallIndex();
+      callIndex.setRecordingId(recordingId);
+      callIndex.setReference(source.getId());
+      callIndex.setId(line);
+      em.persist(callIndex);
+    });
+
+
     res.setStatusCode(200);
   }
 
@@ -191,63 +167,82 @@ public class ReplayerAPISingleLine implements FilteringClass {
       phase = HttpFilterType.API,
       pathAddress = "/api/plugins/replayer/recording/{id}/line/{line}",
       method = "DELETE")
-  @HamDoc(description = "Remove a replayer row",tags = {"plugin/replayer"},
+  @HamDoc(description = "Remove a replayer row with is lineindex",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")}
   )
-  public void deleteSingleLineData(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
-    var line = Integer.parseInt(req.getPathParameter("line"));
+  public void deleteSingleLineData(Request req, Response res) throws Exception {
 
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+    var recordingId = Long.parseLong(req.getPathParameter("id"));
+    var line = Long.parseLong(req.getPathParameter("line"));
+    var source = mapper.readValue(req.getRequestText(), ReplayerRow.class);
 
-    var dataset =
-        new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-    dataset.load(id, rootPath.toString(),null);
-    dataset.load();
-    dataset.delete(line);
-    dataset.saveMods();
+    sessionFactory.transactional(em -> {
+      em.createQuery("DELETE CallIndex WHERE" +
+              " recordingId="+recordingId+" AND reference="+line).executeUpdate();
+
+      em.createQuery("DELETE ReplayerRow WHERE" +
+              " recordingId="+recordingId+" AND id="+line).executeUpdate();
+
+    });
+
     res.setStatusCode(200);
   }
 
   @HttpMethodFilter(
           phase = HttpFilterType.API,
-          pathAddress = "/api/plugins/replayer/recording/{id}/indexline/{line}",
+          pathAddress = "/api/plugins/replayer/recording/{id}/lineindex/{line}",
           method = "DELETE")
   @HamDoc(description = "Remove the indexline (aka the pointer to replayer row)",tags = {"plugin/replayer"},
           path = {@PathParameter(key = "id", description="Script Id"),@PathParameter(key = "line",description = "Script line")}
   )
-  public void deleteSingleIndexLineData(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
-    var line = Integer.parseInt(req.getPathParameter("line"));
+  public void deleteSingleIndexLineData(Request req, Response res) throws Exception {
+    var recordingId = Long.parseLong(req.getPathParameter("id"));
+    var line = Long.parseLong(req.getPathParameter("line"));
 
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
+    sessionFactory.transactional(em -> {
+      var index = (CallIndex)em.createQuery("SELECT e FROM CallIndex e WHERE" +
+              " e.recordingId="+recordingId+" AND e.id="+line).getResultList().get(0);
 
-    var dataset =
-            new ReplayerDataset( loggerBuilder, dataReorganizer, md5Tester);
-    dataset.load(id, rootPath.toString(),null);
-    dataset.load();
-    dataset.deleteIndex(line);
-    dataset.saveMods();
+      em.detach(index);
+      em.createQuery("DELETE CallIndex WHERE" +
+              " recordingId="+recordingId+" AND id="+line).executeUpdate();
+
+      Long callIndexList = (Long)em.createQuery("SELECT COUNT(*) FROM CallIndex WHERE" +
+              " recordingId="+recordingId+" AND reference="+index.getReference())
+              .getResultList().get(0);
+
+      //remove the row if nobody references it
+      if(callIndexList >0){
+        em.createQuery("DELETE ReplayerRow WHERE" +
+                " recordingId="+recordingId+" AND id="+index.getReference()).executeUpdate();
+      }
+    });
     res.setStatusCode(200);
   }
 
   private void cloneToRow(ReplayerRow destination, ReplayerRow source) {
-    destination.getResponse().setBinaryResponse(source.getResponse().isBinaryResponse());
-    destination.getResponse().setHeaders(source.getResponse().getHeaders());
-    destination.getResponse().setStatusCode(source.getResponse().getStatusCode());
+    var res = destination.getResponse();
+    var req = destination.getRequest();
+    res.setBinaryResponse(source.getResponse().isBinaryResponse());
+    res.setHeaders(source.getResponse().getHeaders());
+    res.setStatusCode(source.getResponse().getStatusCode());
+    destination.setResponse(res);
 
-    destination.getRequest().setBinaryRequest(source.getRequest().isBinaryRequest());
-    destination.getRequest().setHeaders(source.getRequest().getHeaders());
-    destination.getRequest().setMethod(source.getRequest().getMethod());
-    destination.getRequest().setProtocol(source.getRequest().getProtocol());
-    destination.getRequest().setQuery(source.getRequest().getQuery());
-    destination.getRequest().setHost(source.getRequest().getHost());
-    destination.getRequest().setPath(source.getRequest().getPath());
-    destination.getRequest().setPort(source.getRequest().getPort());
-    destination.getRequest().setPostParameters(source.getRequest().getPostParameters());
-    destination.getRequest().setStaticRequest(source.getRequest().isStaticRequest());
-    destination.getRequest().setSoapRequest(source.getRequest().isSoapRequest());
+    req.setBinaryRequest(source.getRequest().isBinaryRequest());
+    req.setHeaders(source.getRequest().getHeaders());
+    req.setMethod(source.getRequest().getMethod());
+    req.setProtocol(source.getRequest().getProtocol());
+    req.setQuery(source.getRequest().getQuery());
+    req.setHost(source.getRequest().getHost());
+    req.setPath(source.getRequest().getPath());
+    req.setPort(source.getRequest().getPort());
+    req.setPostParameters(source.getRequest().getPostParameters());
+    req.setStaticRequest(source.getRequest().isStaticRequest());
+    req.setSoapRequest(source.getRequest().isSoapRequest());
     destination.setStimulatedTest(source.isStimulatedTest());
+
+    destination.setRequest(req);
+    destination.setResponse(res);
   }
 
 
@@ -261,26 +256,24 @@ public class ReplayerAPISingleLine implements FilteringClass {
             body =  CallIndex.class
           )
   )
-  public void retrieveSingleLineIndexData(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
-    var line = Integer.parseInt(req.getPathParameter("line"));
+  public void retrieveSingleLineIndexData(Request req, Response res) throws Exception {
+    var recordingId = Long.parseLong(req.getPathParameter("id"));
+    var line = Long.parseLong(req.getPathParameter("line"));
 
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-
-    var dataset =
-            new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-    dataset.load(id, rootPath.toString(),null);
-    var datasetContent = dataset.load();
-    ListAllRecordList result = new ListAllRecordList(datasetContent, id,false);
-    for (var singleLine : result.getIndexes()) {
-      if (singleLine.getId() == line) {
+    try {
+      sessionFactory.query(em -> {
+        var index = (CallIndex) em.createQuery("SELECT e FROM CallIndex e WHERE" +
+                " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-        res.setResponseText(mapper.writeValueAsString(singleLine));
+        res.setResponseText(mapper.writeValueAsString(index));
         return;
-      }
+
+      });
+    }catch(Exception ex){
+      res.setStatusCode(404);
+      res.setResponseText("Missing id " + recordingId + " with line " + line);
     }
-    res.setStatusCode(404);
-    res.setResponseText("Missing id " + id + " with line " + line);
+
   }
 
 
@@ -295,26 +288,23 @@ public class ReplayerAPISingleLine implements FilteringClass {
                   body =  CallIndex.class
           )
   )
-  public void modifySingleLineIndexData(Request req, Response res) throws IOException {
-    var id = req.getPathParameter("id");
-    var line = Integer.parseInt(req.getPathParameter("line"));
+  public void modifySingleLineIndexData(Request req, Response res) throws Exception {
+    var recordingId = Long.parseLong(req.getPathParameter("id"));
+    var line = Long.parseLong(req.getPathParameter("line"));
+    var source = mapper.readValue(req.getRequestText(), CallIndex.class);
+    try{
+    sessionFactory.transactional(em -> {
+      var destination = (CallIndex)em.createQuery("SELECT e FROM CallIndex e WHERE" +
+              " e.recordingId="+recordingId+" AND e.id="+line).getResultList().get(0);
+      cloneToIndex(destination, source);
+      em.merge(destination);
+      return;
 
-    var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-
-    var dataset =
-            new ReplayerDataset(loggerBuilder, dataReorganizer, md5Tester);
-    dataset.load(id, rootPath.toString(),null);
-    var datasetContent = dataset.load();
-    for (var destination : datasetContent.getIndexes()) {
-      if (destination.getId() == line) {
-        var source = mapper.readValue(req.getRequestText(), CallIndex.class);
-        cloneToIndex(destination, source);
-        dataset.saveMods();
-        return;
-      }
+    });
+    }catch (Exception e){
+      res.setStatusCode(404);
+      res.setResponseText("Missing id " + recordingId + " with line " + line);
     }
-    res.setStatusCode(404);
-    res.setResponseText("Missing id " + id + " with line " + line);
   }
 
   private void cloneToIndex(CallIndex destination, CallIndex source) {

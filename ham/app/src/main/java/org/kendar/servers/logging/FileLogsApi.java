@@ -13,6 +13,7 @@ import org.kendar.http.annotations.multi.Header;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
+import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.logging.model.FileLogListItem;
@@ -29,10 +30,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -41,21 +39,16 @@ public class FileLogsApi implements FilteringClass {
     final ObjectMapper mapper = new ObjectMapper();
     private final JsonConfiguration configuration;
     private final LoggerBuilder loggerBuilder;
-    private final FileResourcesUtils fileResourcesUtils;
-    private Path roundtripsPath;
+    private HibernateSessionFactory sessionFactory;
 
     public FileLogsApi(JsonConfiguration configuration,
                        LoggerBuilder loggerBuilder,
-                       FileResourcesUtils fileResourcesUtils){
+                       FileResourcesUtils fileResourcesUtils,
+                       HibernateSessionFactory sessionFactory){
 
         this.configuration = configuration;
         this.loggerBuilder = loggerBuilder;
-        this.fileResourcesUtils = fileResourcesUtils;
-    }
-    @PostConstruct
-    public void init() throws Exception {
-        var config = configuration.getConfiguration(GlobalConfig.class);
-        roundtripsPath =  Path.of(fileResourcesUtils.buildPath(config.getLogging().getLogRoundtripsPath()));
+        this.sessionFactory = sessionFactory;
     }
 
     @HttpMethodFilter(
@@ -67,36 +60,35 @@ public class FileLogsApi implements FilteringClass {
             responses = @HamResponse(
                     body = FileLogListItem[].class
             ),tags = {"base/logs"})
-    public void getLogFiles(Request req, Response res) throws JsonProcessingException {
+    public void getLogFiles(Request req, Response res) throws Exception {
         ArrayList<FileLogListItem> result = getFileLogListItems();
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(result.stream().sorted(Comparator.comparing(FileLogListItem::getTimestamp)).collect(Collectors.toList())));
 
     }
 
-    private ArrayList<FileLogListItem> getFileLogListItems() {
+    private ArrayList<FileLogListItem> getFileLogListItems() throws Exception {
         var result = new ArrayList<FileLogListItem>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS", Locale.ROOT);
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(roundtripsPath)) {
-            for (Path file: stream) {
-                var all =file.getFileName().toString().split("\\.");
-                var expl = file.getFileName().toString().split("___",3);
+
+        sessionFactory.query(em->{
+            List<LoggingTable> rs = em.createQuery("SELECT e FROM LoggingTable e ORDER BY e.id ASC").getResultList();
+            for(var srs:rs){
                 var newItem = new FileLogListItem();
-                newItem.setId(file.getFileName().toString());
-                newItem.setHost(expl[1].replaceAll("\\-","."));
-                newItem.setPath(expl[2].substring(0,expl[2].length()-all.length-2).replaceAll("\\-","/"));
-                newItem.setTimestamp(Long.parseLong(expl[0]));
+                newItem.setId(srs.getId());
+                newItem.setHost(srs.getHost());
+                newItem.setPath(srs.getPath());
+                newItem.setTimestamp(srs.getTimestamp().getTime());
                 var date = new Date(newItem.getTimestamp());
                 newItem.setTime(sdf.format(date));
                 result.add(newItem);
+
             }
-        } catch (Exception x) {
-            // IOException can never be thrown by the iteration.
-            // In this snippet, it can only be thrown by newDirectoryStream.
-            System.err.println(x);
-        }
+        });
         return result;
     }
+
+
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
@@ -113,37 +105,69 @@ public class FileLogsApi implements FilteringClass {
                             @Header(key = "X-PREV", description = "Previous file id if present")
                     }
             ),tags = {"base/logs"})
-    public void getLogFile(Request req, Response res) throws IOException {
-        String id = req.getPathParameter("id");
-        var data = Files.readString(Path.of(roundtripsPath.toString(),id));
-        ArrayList<FileLogListItem> result = getFileLogListItems();
-        String past=null;
-        String founded = null;
-        String next = null;
-        for(var resu :result){
-            if(founded!=null){
-                next = resu.getId();
-                break;
+    public void getLogFile(Request req, Response res) throws Exception {
+        Long id = Long.parseLong(req.getPathParameter("id"));
+        var result = new HashMap<String,Object>();
+        sessionFactory.query(em->{
+
+
+            var prevId = (Long)em.createQuery("SELECT COALESCE( MAX(e.id),-1) FROM LoggingTable e WHERE" +
+                    " e.id<"+id).getResultList().get(0);
+
+            var nexIt = (Long)em.createQuery("SELECT COALESCE( MIN(e.id),-1) FROM LoggingTable e WHERE" +
+                    " e.id>"+id).getResultList().get(0);
+
+
+            var query =em.createQuery("SELECT e FROM LoggingTable e WHERE e.id=:id");
+            query.setParameter("id",id);
+            LoggingTable rs = (LoggingTable)query.getResultList().get(0);
+            result.put("common",rs);
+
+            query =em.createQuery("SELECT e FROM LoggingDataTable e WHERE e.id=:id");
+            query.setParameter("id",id);
+            LoggingDataTable rsld = (LoggingDataTable)query.getResultList().get(0);
+            var reqs = mapper.readValue(rsld.getRequest(),Request.class);
+            var ress = mapper.readValue(rsld.getResponse(),Response.class);
+            result.put("request",reqs);
+            result.put("response",ress);
+            if(reqs.bodyExists()&& !reqs.isBinaryRequest()) {
+                result.put("request_body",reqs.getRequestText());
             }
-            if(founded == null && id.equalsIgnoreCase(resu.getId())){
-                founded = id;
+            if(ress.bodyExists()&& !ress.isBinaryResponse()) {
+                result.put("response_body",ress.getResponseText());
             }
-            if(founded == null) {
-                past = resu.getId();
+
+            if(prevId>=0){
+                res.addHeader("X-PAST", prevId.toString());
             }
-        }
-        if(next!=null){
-            res.addHeader("X-NEXT", next);
-        }
-        if(past!=null){
-            res.addHeader("X-PAST", past);
-        }
+            if(nexIt!=null){
+                res.addHeader("X-NEXT", nexIt.toString());
+            }
+        });
+
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-        res.setResponseText(data);
+        res.setResponseText(mapper.writeValueAsString(result));
     }
 
     @Override
     public String getId() {
         return this.getClass().getName();
+    }
+
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/log/files",
+            method = "DELETE")
+    @HamDoc(
+            description = "Clean all log files",
+            responses = @HamResponse(
+                    body = FileLogListItem[].class
+            ),tags = {"base/logs"})
+    public void cleanLogFiles(Request req, Response res) throws Exception {
+        sessionFactory.transactional(em-> {
+            em.createQuery("DELETE FROM LoggingTable").executeUpdate();
+            em.createQuery("DELETE FROM LoggingDataTable ").executeUpdate();
+        });
     }
 }

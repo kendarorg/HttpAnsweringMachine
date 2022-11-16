@@ -27,7 +27,7 @@ public class SingleRequestGenerator {
     public Map<String, byte[]> generateRequestResponse(String pack,String recordingId, ReplayerResult data) throws JsonProcessingException {
         var result = new HashMap<String, byte[]>();
 
-        var allRows = new HashMap<Integer, ReplayerRow>();
+        var allRows = new HashMap<Long, ReplayerRow>();
         for (var row : data.getStaticRequests()) {
             allRows.put(row.getId(), row);
         }
@@ -78,7 +78,7 @@ public class SingleRequestGenerator {
         }
     }
 
-    private String buildTestCode(String pack, String recordingId, ReplayerResult data, HashMap<Integer, ReplayerRow> allRows) {
+    private String buildTestCode(String pack, String recordingId, ReplayerResult data, HashMap<Long, ReplayerRow> allRows) {
 
 
         return new SpecialStringBuilder()

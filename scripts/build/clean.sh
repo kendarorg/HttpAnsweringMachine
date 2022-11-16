@@ -28,11 +28,13 @@ echo Building ham
 mvn clean
 rm -rf $ROOT_DIR/ham/jsplugins
 rm -rf $ROOT_DIR/ham/libs
+rm -rf $ROOT_DIR/ham/data
 rm -rf $ROOT_DIR/ham/callogs
 rm -rf $ROOT_DIR/ham/replayerdata
 
 rm -rf $ROOT_DIR/jsplugins
 rm -rf $ROOT_DIR/libs
+rm -rf $ROOT_DIR/data
 rm -rf $ROOT_DIR/callogs
 rm -rf $ROOT_DIR/replayerdata
 

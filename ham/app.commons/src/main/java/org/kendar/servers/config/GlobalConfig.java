@@ -9,6 +9,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GlobalConfig extends BaseJsonConfig<GlobalConfig> {
   private String localAddress;
   private GlobalConfigLogging logging;
+
+  public GlobalConfigDb getDb() {
+    return db;
+  }
+
+  public void setDb(GlobalConfigDb db) {
+    this.db = db;
+  }
+
+  private GlobalConfigDb db;
   private ConcurrentHashMap<String, Boolean> filters = new ConcurrentHashMap<>();
 
   @Override
@@ -40,6 +50,7 @@ public class GlobalConfig extends BaseJsonConfig<GlobalConfig> {
     result.logging = this.logging.copy();
     result.filters = new ConcurrentHashMap<>();
     result.filters.putAll(this.filters);
+    result.db = db.copy();
     return result;
   }
 

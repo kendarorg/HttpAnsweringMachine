@@ -1,11 +1,29 @@
 package org.kendar.replayer.apis.models;
 
+import org.kendar.replayer.storage.TestResultsLine;
+
+import java.util.List;
+
 public class RecordingItem {
     private String date;
     private String testType;
     private String name;
-    private String fileId;
+    private Long fileId;
     private boolean successful=false;
+
+    public boolean isSuccessful() {
+        return successful;
+    }
+
+    public List<TestResultsLine> getResult() {
+        return result;
+    }
+
+    public void setResult(List<TestResultsLine> result) {
+        this.result = result;
+    }
+
+    private List<TestResultsLine> result;
 
     public String getTestType() {
         return testType;
@@ -23,11 +41,11 @@ public class RecordingItem {
         this.name = name;
     }
 
-    public String getFileId() {
+    public Long getFileId() {
         return fileId;
     }
 
-    public void setFileId(String fileId) {
+    public void setFileId(Long fileId) {
         this.fileId = fileId;
     }
 

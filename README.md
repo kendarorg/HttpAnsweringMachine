@@ -10,12 +10,14 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
+[Internal database added!](docs/database.md) :zap:
+
 * [Contribute](CONTRIBUTING.md) it's easy :)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
 * Maven repos (sorry for the invalid SSL... too $$$. Only the http is present)
   * [Release](https://maven.kendar.org/maven2/releases)
   * [Snapshot](https://maven.kendar.org/maven2/snapshots)
-* [Swagger](https://www.kendar.org/swagger/?model=https://raw.githubusercontent.com/kendarorg/HttpAnsweringMachine/main/docs/map.json) :zap:
+* [Swagger](https://www.kendar.org/swagger/?model=https://raw.githubusercontent.com/kendarorg/HttpAnsweringMachine/main/docs/map.json) 
 
 ## Ready-to-run examples
 
@@ -48,6 +50,8 @@ The AnsweringMachine is built to overcome this troubles
 
 ## Features
 
+* Store logs and recordings on any Jdbc DB
+* Default embedded h2 database
 * Proxying of any kind of http/https calls
 * Internal socks5/http/https proxy to run even dockerless
 * Spy mode to log all traffic  
@@ -124,6 +128,7 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 * [Basic local configuration](docs/basic.md)
 * [Logging](docs/logging.md)
 * [Docker configuration](docs/docker/commons.md)
+* [Database configuration](docs/database.md)
 
 ## Basic functions  
 

@@ -28,7 +28,7 @@ set DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 
 cd %HAM_DIR%
 
-echo Building project
+echo Building project %HAM_DIR%
 call mvn install
 
 cd %DOCKER_ROOT%\base

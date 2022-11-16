@@ -1,6 +1,6 @@
 FROM ham.master
 
-RUN echo 3.1.1
+RUN echo 4.0.1
 
 COPY data/*.* /etc/app/dns/
 RUN chmod +x /etc/app/dns/*.sh
