@@ -72,10 +72,9 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.6</version>
                 <configuration>
-                    <excludes>
-                        <exclude>**/h2*.jar</exclude>
-                        <exclude>**/*junit*.jar</exclude>
-                    </excludes>
+                    <includes>
+                        <include>org.kendar.**</include>
+                    </includes>
                 </configuration>
                 <executions>
                     <execution>

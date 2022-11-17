@@ -19,12 +19,14 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.lang.System.exit;
 
 @SpringBootApplication
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 public class Main implements CommandLineRunner {
   private static final int MAX_THREADS = 10;
-  private boolean doRun = true;
   @Autowired private ApplicationContext applicationContext;
 
   public static void main(String[] args) {
@@ -34,6 +36,8 @@ public class Main implements CommandLineRunner {
     app.setLazyInitialization(true);
     app.run(args);
   }
+
+  public static AtomicBoolean doRun = new AtomicBoolean(true);
 
   @Override
   public void run(String... args) {
@@ -49,17 +53,18 @@ public class Main implements CommandLineRunner {
     //Create fake futures (terminated futures)
     Map<AnsweringServer, Future<?>> futures = setupFakeFutures(answeringServers);
 
-    while (doRun) {
+    while (doRun.get()) {
       //Prepare the runners that should ... well ... run
       initializeRunners(executor, futures);
       //Run everething
       runRunners(executor, futures);
       Sleeper.sleep(1000);
     }
+    exit(0);
   }
 
   public void stop(){
-    doRun = false;
+    doRun.set(false);
   }
 
   /**

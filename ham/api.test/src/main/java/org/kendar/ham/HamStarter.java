@@ -3,8 +3,6 @@ package org.kendar.ham;
 import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.loader.PropertiesLauncher;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -81,106 +79,7 @@ public class HamStarter {
         return possible;*/
     }
     private static ConcurrentHashMap<String,ThreadAndProc> processes = new ConcurrentHashMap<>();
-    public static void runHamJar(Class<?> caller) throws HamTestException {
-        if(realThread!=null && realThread.isAlive()){
-            return;
-        }
 
-
-
-//        var commandLine = new ArrayList<String>();
-//        commandLine.add(findJava());
-
-        var externalJsonPath  =Path.of(getRootPath(caller),"ham","test.external.json").toString();
-        //commandLine.add("-Djsonconfig="+externalJsonPath);
-        var libsPath  =Path.of(getRootPath(caller),"ham","libs").toString();
-//        commandLine.add("-Dloader.path="+libsPath);
-//        commandLine.add("-Dloader.main=org.kendar.Main");
-        var rootPath  =Path.of(getRootPath(caller),"ham").toString();
-        System.setProperty("user.dir", rootPath);
-        System.setProperty("jsonconfig",externalJsonPath);
-        System.setProperty("loader.main","org.kendar.Main");
-        System.setProperty("loader.path",libsPath);
-        System.setProperty("loader.home",rootPath);
-        //loader.home
-        try {
-
-            var starter = Class.forName("org.kendar.Main");
-            //starter = PropertiesLauncher.class;
-
-            javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
-                    (hostname, sslSession) -> true);
-
-            SpringApplicationBuilder uws = new SpringApplicationBuilder(starter)
-                    .lazyInitialization(true)
-                    .properties("loader.path=" + libsPath,
-                            "jsonconfig=" + externalJsonPath,
-                            "loader.home=" + rootPath+"/target",
-                            "loader.main=org.kendar.Main");
-
-            realThread = new Thread(()->{
-                uws.run();
-            });
-            realThread.start();
-
-            var ready = false;
-            while(!ready){
-                try {
-                    URL url = new URL("http://localhost/api/health");
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("GET");
-                    int status = con.getResponseCode();
-                    ready = true;
-                }catch (Exception ex){
-
-                }
-            }
-            Thread.sleep(1000);
-            ///api/health
-        }catch (ClassNotFoundException ex){
-            throw new HamTestException(ex);
-        }catch (Exception ex){
-            throw new HamTestException(ex);
-        }
-
-
-
-//        var appPathRootPath = Path.of(getRootPath(caller),"ham","app","target");
-//
-//        if(!appPathRootPath.toFile().exists()){
-//            throw new HamTestException("WRONG STARTING PATH "+appPathRootPath);
-//        }
-//        File[] matchingFiles = appPathRootPath.toFile().listFiles(new FilenameFilter() {
-//            public boolean accept(File dir, String name) {
-//                if(name == null) return false;
-//                return name.startsWith("app-") && name.endsWith(".jar");
-//            }
-//        });
-//        var appPathRoot  =Path.of(matchingFiles[0].getAbsolutePath()).toString();
-//        /*try {
-//            Files.copy(Path.of(appPathRoot),Path.of(appPathRoot+".tmp"), StandardCopyOption.REPLACE_EXISTING);
-//        } catch (IOException e) {
-//            throw new HamTestException(e);
-//        }*/
-//        commandLine.add("-jar");
-//        commandLine.add(appPathRoot);
-//        var jarDir= Path.of(matchingFiles[0].getAbsolutePath()).getParent().toAbsolutePath().toString();
-//        //processBuilder.directory(new File("src"));
-//        runJar(commandLine,jarDir,()-> {
-//            deleteDirectory(Path.of(getRootPath(caller),"jsplugins").toFile());
-//            deleteDirectory(Path.of(getRootPath(caller),"calllogs").toFile());
-//            deleteDirectory(Path.of(getRootPath(caller),"replayerdata").toFile());
-//            return true;
-//        },()-> {
-//            try {
-//                var result = getHTML("http://127.0.0.1/api/dns/lookup/test");
-//                return true;
-//            } catch (Exception ex) {
-//                return false;
-//            }
-//        });
-
-    }
 
     private static String getHTML(String urlToRead) throws Exception {
         StringBuilder result = new StringBuilder();
@@ -319,7 +218,11 @@ public class HamStarter {
                 // place your code here
                 for(var proc : processes.values()){
                     System.out.println("DESTROYING "+proc.process);
-                    proc.process.destroy();
+                    try {
+                        var res =getHTML("http://127.0.0.1/api/shutdown");
+                        //Thread.sleep(60*000);
+                    }catch (Exception ex){}
+                    //proc.process.destroy();
 
 
 
@@ -327,5 +230,124 @@ public class HamStarter {
             }
 
         });
+    }
+    public static void runHamJarCommand(Class<?> caller) throws HamTestException {
+        var commandLine = new ArrayList<String>();
+        commandLine.add(findJava());
+
+        var agentPath = Path.of(getRootPath(caller),"ham","api.test","org.jacoco.agent-0.8.8-runtime.jar");
+        var jacocoExecPath = Path.of(getRootPath(caller),"ham","api.test","target","jacoco.exec");
+        var externalJsonPath  =Path.of(getRootPath(caller),"ham","test.external.json").toString();
+        commandLine.add("-Djsonconfig="+externalJsonPath);
+        var libsPath  =Path.of(getRootPath(caller),"ham","libs").toString();
+        commandLine.add("-Dloader.path="+libsPath);
+        commandLine.add("-Dloader.main=org.kendar.Main");
+        //commandLine.add("\"-javaagent:"+agentPath+"=destfile="+jacocoExecPath+",includes=org.kendar.*\"");
+        commandLine.add("\"-javaagent:"+agentPath+"=destfile="+jacocoExecPath+"\"");
+
+
+
+        var appPathRootPath = Path.of(getRootPath(caller),"ham","app","target");
+
+        if(!appPathRootPath.toFile().exists()){
+            throw new HamTestException("WRONG STARTING PATH "+appPathRootPath);
+        }
+        File[] matchingFiles = appPathRootPath.toFile().listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                if(name == null) return false;
+                return name.startsWith("app-") && name.endsWith(".jar");
+            }
+        });
+        var appPathRoot  =Path.of(matchingFiles[0].getAbsolutePath()).toString();
+        /*try {
+            Files.copy(Path.of(appPathRoot),Path.of(appPathRoot+".tmp"), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new HamTestException(e);
+        }*/
+        commandLine.add("-jar");
+        //-javaagent:/opt/coverage/lib/jacocoagent.jar=destfile=/opt/coverage/jacoco.exec,include=org.kendar.*
+        //
+        commandLine.add(appPathRoot);
+        var jarDir= Path.of(matchingFiles[0].getAbsolutePath()).getParent().toAbsolutePath().toString();
+        //processBuilder.directory(new File("src"));
+        runJar(commandLine,jarDir,()-> {
+            deleteDirectory(Path.of(getRootPath(caller),"jsplugins").toFile());
+            deleteDirectory(Path.of(getRootPath(caller),"calllogs").toFile());
+            deleteDirectory(Path.of(getRootPath(caller),"replayerdata").toFile());
+            return true;
+        },()-> {
+            try {
+                var result = getHTML("http://127.0.0.1/api/dns/lookup/test");
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        });
+
+    }
+//
+//    public static void runHamJarInternal(Class<?> caller) throws HamTestException {
+//        if(realThread!=null && realThread.isAlive())return;
+////        var commandLine = new ArrayList<String>();
+////        commandLine.add(findJava());
+//
+//        var externalJsonPath  =Path.of(getRootPath(caller),"ham","test.external.json").toString();
+//        //commandLine.add("-Djsonconfig="+externalJsonPath);
+//        var libsPath  =Path.of(getRootPath(caller),"ham","libs").toString();
+////        commandLine.add("-Dloader.path="+libsPath);
+////        commandLine.add("-Dloader.main=org.kendar.Main");
+//        var rootPath  =Path.of(getRootPath(caller),"ham").toString();
+//        System.setProperty("user.dir", rootPath);
+//        System.setProperty("jsonconfig",externalJsonPath);
+//        System.setProperty("loader.main","org.kendar.Main");
+//        System.setProperty("loader.path",libsPath);
+//        System.setProperty("loader.home",rootPath);
+//        //loader.home
+//        try {
+//
+//            /*try {
+//                var starter = Class.forName("org.kendar.Main");
+//            }catch (Exception xx){}
+//            var starter = Class.forName("org.kendar.Main");*/
+//            //var starter = PropertiesLauncher.class;
+//
+//            javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+//                    (hostname, sslSession) -> true);
+//
+//            SpringApplicationBuilder uws = new SpringApplicationBuilder(OtherMain.class)
+//                    //.lazyInitialization(true)
+//                    .properties("loader.path=" + libsPath,
+//                            "jsonconfig=" + externalJsonPath,
+//                            "loader.home=" + rootPath+"/target",
+//                            "loader.main=org.kendar.Main");
+//
+//            realThread = new Thread(()->{
+//                uws.run();
+//            });
+//            realThread.start();
+//
+//            var ready = false;
+//            while(!ready){
+//                try {
+//                    URL url = new URL("http://localhost/api/health");
+//                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//                    con.setRequestMethod("GET");
+//                    int status = con.getResponseCode();
+//                    ready = true;
+//                }catch (Exception ex){
+//
+//                }
+//            }
+//            Thread.sleep(1000);
+//            ///api/health
+//        }catch (Exception ex){
+//            throw new HamTestException(ex);
+//        }
+//    }
+
+
+    public static void runHamJar(Class<?> caller) throws HamTestException {
+        //runHamJarInternal(caller);
+        runHamJarCommand(caller);
     }
 }

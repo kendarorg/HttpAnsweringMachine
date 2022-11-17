@@ -33,12 +33,6 @@
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
-            <artifactId>app</artifactId>
-            <version>4.0.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kendar</groupId>
             <artifactId>api.test</artifactId>
             <version>4.0.1</version>
 
@@ -54,18 +48,6 @@
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
             <version>${junit.platform.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kendar</groupId>
-            <artifactId>plugin.js.filters</artifactId>
-            <version>4.0.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kendar</groupId>
-            <artifactId>plugin.replayer.server</artifactId>
-            <version>4.0.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
