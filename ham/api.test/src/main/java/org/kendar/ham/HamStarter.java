@@ -236,14 +236,14 @@ public class HamStarter {
         commandLine.add(findJava());
 
         var agentPath = Path.of(getRootPath(caller),"ham","api.test","org.jacoco.agent-0.8.8-runtime.jar");
-        var jacocoExecPath = Path.of(getRootPath(caller),"ham","api.test","target","jacoco.exec");
+        var jacocoExecPath = Path.of(getRootPath(caller),"ham","api.test","target","jacoco_starter.exec");
         var externalJsonPath  =Path.of(getRootPath(caller),"ham","test.external.json").toString();
         commandLine.add("-Djsonconfig="+externalJsonPath);
         var libsPath  =Path.of(getRootPath(caller),"ham","libs").toString();
         commandLine.add("-Dloader.path="+libsPath);
         commandLine.add("-Dloader.main=org.kendar.Main");
-        //commandLine.add("\"-javaagent:"+agentPath+"=destfile="+jacocoExecPath+",includes=org.kendar.*\"");
-        commandLine.add("\"-javaagent:"+agentPath+"=destfile="+jacocoExecPath+"\"");
+        commandLine.add("\"-javaagent:"+agentPath+"=destfile="+jacocoExecPath+",includes=org.kendar.**\"");
+        //commandLine.add("\"-javaagent:"+agentPath+"=destfile="+jacocoExecPath+"\"");
 
 
 
