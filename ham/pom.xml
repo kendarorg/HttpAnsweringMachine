@@ -74,6 +74,7 @@
         <module>api.replayer</module>
         <module>api.js.builder</module>
         <module>api.test</module>
+        <module>jacoco</module>
     </modules>
     <build>
         <extensions>
@@ -83,6 +84,31 @@
                 <version>3.5.1</version>
             </extension>
         </extensions>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.8</version>
+                <configuration>
+                    <includes>
+                        <include>org.kendar.**</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>agent-for-ut</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <distributionManagement>

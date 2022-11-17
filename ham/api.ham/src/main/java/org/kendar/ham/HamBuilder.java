@@ -210,12 +210,10 @@ public class HamBuilder implements HamInternalBuilder {
         return execute(request,false);
     }
 
-    private static Map<String, HttpClientBuilder> builders = new HashMap<>();
-
     public CloseableHttpResponse execute(HttpUriRequest request,boolean ignoreSSLCertificates) throws HamException {
 
         var key = String.format("%s|%s|%s|%s|%s",dnsServer,dnsPort,proxyIp,proxyPort,""+ignoreSSLCertificates);
-        var newBuilder = !builders.containsKey(key);
+
         try {
             DnsResolver dnsResolver = null;
 
@@ -225,12 +223,9 @@ public class HamBuilder implements HamInternalBuilder {
             SSLConnectionSocketFactory ssfs = null;
 
             if (this.proxyIp != null) {
-                HttpClientBuilder custom = null;
-                if(!builders.containsKey(key)){
-                    builders.put(key,getHttpClientBuilder(ignoreSSLCertificates, dnsResolver));
-                }
+                HttpClientBuilder custom = getHttpClientBuilder(ignoreSSLCertificates, dnsResolver);
 
-                CloseableHttpClient httpclient = builders.get(key).build();
+                CloseableHttpClient httpclient = custom.build();
 
                 InetSocketAddress socksaddr = new InetSocketAddress(this.proxyIp, this.proxyPort);
                 HttpClientContext context = HttpClientContext.create();
@@ -239,10 +234,7 @@ public class HamBuilder implements HamInternalBuilder {
                 return httpclient.execute(request, context);
             } else {
                 HttpClientBuilder custom = null;
-                if(!builders.containsKey(key)){
-                    builders.put(key,getHttpClientBuilderNoProxy(ignoreSSLCertificates, dnsResolver, ssfs));
-                }
-                CloseableHttpClient httpClient = builders.get(key).build();
+                CloseableHttpClient httpClient = getHttpClientBuilderNoProxy(ignoreSSLCertificates, dnsResolver, ssfs).build();
 
                 return httpClient.execute(request);
             }
