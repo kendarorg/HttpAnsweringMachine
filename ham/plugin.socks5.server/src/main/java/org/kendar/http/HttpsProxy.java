@@ -42,6 +42,7 @@ public class HttpsProxy implements AnsweringServer {
             proxyHttp.listen();
 
         } catch (Exception ex) {
+
             logger.error(
                     "Failed to create Http/s server on port " + config.getHttpProxyPort() + " of localhost", ex);
         } finally {

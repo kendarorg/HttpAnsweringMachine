@@ -66,17 +66,22 @@ public class LocalHttpServer {
     public static void sendResponse(HttpExchange exchange, int code, byte[] data, Map<String,String> headers ) throws HamTestException {
 
         try {
-            exchange.sendResponseHeaders(code, (data != null) ? (data.length) : 0);
             if (headers != null) {
                 for (var header : headers.entrySet()) {
-                    exchange.getResponseHeaders().add(header.getKey(), header.getValue());
+                    exchange.getResponseHeaders().set(header.getKey(), header.getValue());
                 }
             }
-            OutputStream os = exchange.getResponseBody();
-            if (data != null) {
+            var dl = (data != null) ? (data.length) : -1;
+            exchange.sendResponseHeaders(code, dl);
+
+
+            if (data != null && dl>0) {
+                OutputStream os = exchange.getResponseBody();
                 os.write(data);
+                os.flush();
+                os.close();
             }
-            os.close();
+            exchange.close();
         }catch(Exception ex){
             throw new HamTestException(ex);
         }

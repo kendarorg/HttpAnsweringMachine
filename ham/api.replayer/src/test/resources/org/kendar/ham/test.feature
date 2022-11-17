@@ -9,22 +9,22 @@ Feature: Testing recorder
 
   Scenario: Recording and storing
     Given user create a recording 'Test'
-    And user start recording 'Test'
+    And user start recording
     And user calls 'http://gateway.int.test/api/v2/$metadata'
-    And user stop recording 'Test'
-    Then user can download 'Test' as 'test.json'
+    And user stop recording
+    Then user can download as 'test.json'
     And file 'test.json' contains 'www.nuget.org'
     And file 'test.json' contains 'gateway.int.test'
     And file 'test.json' replace 'microsoft' with 'MARKERTESTWORD'
-    And user delete recording 'Test'
+    And user delete recording
 
   Scenario: Replaying
     Given user upload 'test.json' as 'Test'
-    And user start replaying 'Test'
+    And user start replaying
     And user calls 'http://gateway.int.test/api/v2/$metadata'
     And the response should contain 'MARKERTESTWORD'
-    And user stop replaying 'Test'
-    And user delete recording 'Test'
+    And user stop replaying
+    And user delete recording
 
 
 #  Scenario: Null Working
