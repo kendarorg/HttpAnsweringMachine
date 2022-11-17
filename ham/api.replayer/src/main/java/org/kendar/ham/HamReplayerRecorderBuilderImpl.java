@@ -7,7 +7,7 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
 
     private HamInternalBuilder hamBuilder;
     private String lastUsedType;
-    private String lastUsedId;
+    private long lastUsedId;
 
     public HamReplayerRecorderBuilderImpl(HamInternalBuilder hamBuilder){
         this.hamBuilder = hamBuilder;
@@ -17,24 +17,26 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
     public HamReplayerRecorderBuilderImpl init() { return null; }
 
     @Override
-    public void createRecording(String id) throws HamException {
+    public long createRecording(String id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withPath("/api/plugins/replayer/recording")
                 .withHamFile(id+".json","{}", ConstantsMime.JSON);
-        hamBuilder.call(request.build());
+        var response = hamBuilder.call(request.build());
+        return Long.parseLong(response.getResponseText());
     }
 
     @Override
-    public void uploadRecording(String id, String jsonContent) throws HamException {
+    public long uploadRecording(String id, String jsonContent) throws HamException {
         var request = hamBuilder.newRequest()
                 .withPost()
                 .withPath("/api/plugins/replayer/recording")
                 .withHamFile(id+".json",jsonContent,ConstantsMime.JSON);
-        hamBuilder.call(request.build());
+        var response = hamBuilder.call(request.build());
+        return Long.parseLong(response.getResponseText());
     }
 
     @Override
-    public void deleteRecording(String id) throws HamException {
+    public void deleteRecording(long id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withDelete()
                 .withPath("/api/plugins/replayer/recording/"+id);
@@ -42,11 +44,11 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
     }
 
     @Override
-    public HamReplayerRecorderStop startRecording(String id) throws HamException {
+    public HamReplayerRecorderStop startRecording(long id) throws HamException {
         return executeAct("start","record", id);
     }
 
-    private HamReplayerRecorderBuilderImpl executeAct(String action, String usedType, String id) throws HamException {
+    private HamReplayerRecorderBuilderImpl executeAct(String action, String usedType, long id) throws HamException {
         lastUsedType = usedType;
         lastUsedId = id;
         var request = hamBuilder.newRequest()
@@ -56,22 +58,22 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
     }
 
     @Override
-    public HamReplayerWait startReplaying(String id) throws HamException {
+    public HamReplayerWait startReplaying(long id) throws HamException {
         return (HamReplayerWait)executeAct("start","replay", id);
     }
 
     @Override
-    public HamReplayerWait startPact(String id) throws HamException {
+    public HamReplayerWait startPact(long id) throws HamException {
         return (HamReplayerWait)executeAct("start","pact", id);
     }
 
     @Override
-    public HamReplayerWait startNullInfrastructure(String id) throws HamException {
+    public HamReplayerWait startNullInfrastructure(long id) throws HamException {
         return (HamReplayerWait)executeAct("start","null", id);
     }
 
     @Override
-    public String downloadRecording(String id) throws HamException {
+    public String downloadRecording(long id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withPath("/api/plugins/replayer/recording/"+ id +"/full");
         var response = hamBuilder.call(request.build());

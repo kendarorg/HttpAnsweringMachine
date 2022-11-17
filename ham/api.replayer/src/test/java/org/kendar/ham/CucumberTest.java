@@ -9,6 +9,6 @@ import io.cucumber.junit.platform.engine.Cucumber;
 /*@SelectClasspathResource("org/kendar/ham")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "org.kendar.ham")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "org.kendar.ham")*/
-public class CucumberTestIT {
+public class CucumberTest {
 
 }

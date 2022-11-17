@@ -21,43 +21,44 @@ public class ReplayerStates   extends BaseStates{
 
 
 
-    @Given("^user start replaying '(.+)'$")
-    public void user_start_replaying(String name) throws HamException {
+    @Given("^user start replaying$")
+    public void user_start_replaying() throws HamException {
         replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
-        replayerBuilder.startReplaying(name);
+        replayerBuilder.startReplaying(recordingId);
         // Write code here that turns the phrase above into concrete actions\
     }
+    public long recordingId;
     @When("^user create a recording '(.+)'$")
     public void userCreateRecording(String name) throws HamException {
         var builder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
-        builder.createRecording(name);
+        recordingId = builder.createRecording(name);
     }
 
-    @When("^user start recording '(.+)'$")
-    public void userStartsRecording(String name) throws HamException {
+    @When("^user start recording$")
+    public void userStartsRecording() throws HamException {
         replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
-        replayerBuilder.startRecording(name);
+        replayerBuilder.startRecording(recordingId);
     }
 
-    @Given("^user stop replaying '(.+)'$")
-    public void user_stop_replaying(String string) throws HamException {
+    @Given("^user stop replaying$")
+    public void user_stop_replaying() throws HamException {
         ((HamReplayerRecorderStop)replayerBuilder).stop();
     }
 
-    @When("^user stop recording '(.+)'$")
-    public void userStopRecording(String name) throws HamException {
+    @When("^user stop recording$")
+    public void userStopRecording() throws HamException {
         ((HamReplayerRecorderStop)replayerBuilder).stop();
     }
 
 
-    @When("^user delete recording '(.+)'$")
-    public void userDeleteRecording(String name) throws HamException {
+    @When("^user delete recording$")
+    public void userDeleteRecording() throws HamException {
         var replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
-        replayerBuilder.deleteRecording(name);
+        replayerBuilder.deleteRecording(recordingId);
     }
 
-    @When("^user can download '(.+)' as '(.+)'$")
-    public void userCanDownload(String recordingId,String destinationFile) throws HamException, IOException {
+    @When("^user can download as '(.+)'$")
+    public void userCanDownload(String destinationFile) throws HamException, IOException {
         var replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
         var content = replayerBuilder.downloadRecording(recordingId);
         Files.writeString(Path.of(destinationFile),content);
@@ -80,6 +81,6 @@ public class ReplayerStates   extends BaseStates{
     public void users_upload(String file,String id) throws IOException, HamException {
         var data = Files.readString(Path.of(file));
         var replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
-        replayerBuilder.uploadRecording(id,data);
+        recordingId = replayerBuilder.uploadRecording(id,data);
     }
 }
