@@ -6,6 +6,7 @@
     <title>Title</title>
     <script src="./libs/vue.js"></script>
     <script src="./libs/httpVueLoader.js"></script>
+    <link rel="stylesheet" type="text/css" href="./vcss/style.css" />
 </head>
 <body>
     <div id="app">
@@ -14,13 +15,33 @@
             <button-counter></button-counter>
             <button-counter></button-counter>
         </div>
+        <form id="search">
+            Search <input name="query" v-model="searchQuery" />
+        </form>
+        <simple-grid
+                :heroes="gridData"
+                :columns="gridColumns"
+                :filter-key="searchQuery"
+        >
+        </simple-grid>
     </div>
     <script type="text/javascript">
         let appPath = '';
         new Vue({
             el: '#app',
             components: {
-                'button-counter': httpVueLoader('vcomponents/test.vue')
+                'button-counter': httpVueLoader('vcomponents/test.vue'),
+                'simple-grid': httpVueLoader('vcomponents/testgrid.vue')
+            },
+            data:{
+                searchQuery: "",
+                gridColumns: ["name", "power"],
+                gridData: [
+                    { name: "Chuck Norris", power: Infinity },
+                    { name: "Bruce Lee", power: 9000 },
+                    { name: "Jackie Chan", power: 7000 },
+                    { name: "Jet Li", power: 8000 }
+                ]
             }
         });
     </script>
