@@ -6,8 +6,12 @@
     <title>Title</title>
     <script src="./libs/vue.js"></script>
     <script src="./libs/httpVueLoader.js"></script>
+    <script src="./libs/axios.min.js"></script>
     <link rel="stylesheet" type="text/css" href="./vcss/style.css" />
 </head>
+<!--
+Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates-with-vue-js-d9236ab183bb
+-->
 <body>
     <div id="app">
         <div id="components-demo">
@@ -19,14 +23,15 @@
             Search <input name="query" v-model="searchQuery" />
         </form>
         <simple-grid
-                :heroes="gridData"
                 :columns="gridColumns"
+                :templates="gridTemplates"
                 :filter-key="searchQuery"
+                :address="address"
         >
         </simple-grid>
     </div>
     <script type="text/javascript">
-        let appPath = '';
+
         new Vue({
             el: '#app',
             components: {
@@ -35,13 +40,12 @@
             },
             data:{
                 searchQuery: "",
-                gridColumns: ["name", "power"],
-                gridData: [
-                    { name: "Chuck Norris", power: Infinity },
-                    { name: "Bruce Lee", power: 9000 },
-                    { name: "Jackie Chan", power: 7000 },
-                    { name: "Jet Li", power: 8000 }
-                ]
+                gridColumns: [
+                    {id:"name",template:"string"},
+                    {id:"power",template:"long"}
+                ],
+                gridTemplates: ["string", "string"],
+                address:"vdata/simplegrid.json"
             }
         });
     </script>
