@@ -46,8 +46,7 @@ module.exports = {
     };
   },
   components:{
-    'dynamic-template': httpVueLoader('vcomponents/dynamictemplate.vue'),
-    'tstring': httpVueLoader('vcomponents/tstring.vue')
+    'dynamic-template': httpVueLoader('vcomponents/dynamictemplate.vue')
   },
   computed: {
     filteredHeroes: function () {
