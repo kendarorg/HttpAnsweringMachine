@@ -9,7 +9,7 @@ module.exports = {
     entry: Object,
     entrykey: String
   },
-  name: 'tboolw',
+  name: 'cboolw',
   computed: {
     realData:  {
       get: function() {

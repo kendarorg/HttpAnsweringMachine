@@ -4,7 +4,7 @@
 </template>
 <script>
 module.exports = {
-  name: 'dynamic-template',
+  name: 'dynamic-column',
   props: ["data","type","def","entry","entrykey"]
       /*{
     data:String,
@@ -22,7 +22,7 @@ module.exports = {
       if (!this.type) {
         return null
       }
-      return httpVueLoader(`vcomponents/grid/t${this.type}.vue`);
+      return httpVueLoader(`vcomponents/grid/column/c${this.type}.vue`);
     },
   },
   mounted() {
@@ -31,7 +31,7 @@ module.exports = {
           this.component = () => this.loader()
         })
         .catch(() => {
-          this.component = httpVueLoader('vcomponents/grid/tstring.vue')
+          this.component = httpVueLoader('vcomponents/grid/column/cstring.vue')
         })
   },
 }

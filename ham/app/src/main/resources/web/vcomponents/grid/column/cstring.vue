@@ -8,6 +8,6 @@ module.exports = {
     entry: Object,
     entrykey: String
   },
-  name: 'tstring'
+  name: 'cstring'
 }
 </script>

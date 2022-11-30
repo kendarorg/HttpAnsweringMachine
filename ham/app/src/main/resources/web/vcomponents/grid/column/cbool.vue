@@ -1,13 +1,13 @@
 <template>
-  <span>{{data}}</span>
+  <input type="checkbox" id="checkbox" v-model="data" disabled="true"/>
 </template>
 <script>
 module.exports = {
   props: {
-    data: Number,
+    data: Boolean,
     entry: Object,
     entrykey: String
   },
-  name: 'tlong'
+  name: 'cbool'
 }
 </script>

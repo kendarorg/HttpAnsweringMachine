@@ -15,14 +15,24 @@
     </tr>
     </thead>
     <tbody>
+    <tr>
+      <td v-for="key in extra">
+        <dynamic-search :ref="'search'+key.id" :type="key.template" :def="key.default"
+                        :grid="setSearchField" :entrykey="key.id" />
+      </td>
+      <td v-for="key in columns">
+        <dynamic-search :ref="'search'+key.id" :type="key.template" :def="key.default"
+                         :grid="setSearchField" :entrykey="key.id" />
+      </td>
+    </tr>
     <tr v-for="entry in filteredData">
       <td v-for="key in extra">
-        <dynamic-template :data="entry[key.id]" :type="key.template" :def="key.default"
+        <dynamic-column :data="entry[key.id]" :type="key.template" :def="key.default"
                           :entry="entry" :entrykey="key.id" />
       </td>
       <td v-for="key in columns">
         <!--{{ entry[key.id] }}-->
-        <dynamic-template :data="entry[key.id]" :type="key.template"
+        <dynamic-column :data="entry[key.id]" :type="key.template"
                           :entry="entry" :entrykey="key.id"/>
       </td>
     </tr>
@@ -49,6 +59,7 @@ module.exports = {
       sortOrders[key.id] = 1;
     });
     return {
+      filterKeys:[],
       extrasCalculated: false,
       data: [],
       sortKey: "",
@@ -56,7 +67,8 @@ module.exports = {
     };
   },
   components:{
-    'dynamic-template': httpVueLoader('vcomponents/grid/dynamictemplate.vue')
+    'dynamic-column': httpVueLoader('vcomponents/grid/dynamiccolumn.vue'),
+    'dynamic-search': httpVueLoader('vcomponents/grid/dynamicsearch.vue')
   },
   computed: {
     filteredData: function () {
@@ -105,10 +117,20 @@ module.exports = {
     getData: function () {
       return this.data;
     },
+    setSearchField: function (key,value,type) {
+      console.log("setSearchField "+key+"-"+value+"-"+type);
+    },
     reload: async function () {
       this.extrasCalculated=false;
       let response = await axios.get("http://localhost:63342/ham/app/web/" + this.address);
       this.data = response.data;
+      var th = this;
+      this.extra.forEach(function (ex) {
+        th.$refs['search'+ex.id][0].clean();
+      });
+      this.columns.forEach(function (ex) {
+        th.$refs['search'+ex.id][0].clean();
+      });
       this.calculateExtra();
     },
     calculateExtra: function () {
