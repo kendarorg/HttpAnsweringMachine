@@ -41,8 +41,7 @@ module.exports = {
     this.extrasCalculated = false;
   },
   async mounted() {
-    let response = await axios.get("http://localhost:63342/ham/app/web/" + this.address);
-    this.data = response.data;
+    await this.reload();
   },
   data: function () {
     var sortOrders = {};
@@ -61,16 +60,6 @@ module.exports = {
   },
   computed: {
     filteredData: function () {
-      if(!this.extrasCalculated && typeof this.data !="undefined" && this.data.length >0){
-        this.extrasCalculated = true;
-        var th = this;
-        this.extra.forEach(function (ex){
-          th.data.forEach(function (item){
-            item[ex.id] = ex.default;
-          })
-        })
-
-      }
       var sortKey = this.sortKey;
       var filterKey = this.filterKey && this.filterKey.toLowerCase();
       var order = this.sortOrders[sortKey] || 1;
@@ -115,6 +104,26 @@ module.exports = {
     },
     getData: function () {
       return this.data;
+    },
+    reload: async function () {
+      this.extrasCalculated=false;
+      let response = await axios.get("http://localhost:63342/ham/app/web/" + this.address);
+      this.data = response.data;
+      this.calculateExtra();
+    },
+    calculateExtra: function () {
+      if(!this.extrasCalculated && typeof this.data !="undefined" && this.data.length >0) {
+        this.extrasCalculated = true;
+        var th = this;
+        this.extra.forEach(function (ex) {
+          var eex = ex;
+          th.data.forEach(function (item) {
+
+            item[eex.id] = eex.default;
+
+          })
+        })
+      }
     }
   }
 }

@@ -2,5 +2,6 @@
   { "name": "Chuck Norris", "power": 500000 ,"evil": false},
   { "name": "Bruce Lee", "power": 9000 ,"evil": false},
   { "name": "Jackie Chan", "power": 7000 ,"evil": true},
-  { "name": "Jet Li", "power": 8000,"evil": true }
+  { "name": "Jet Li", "power": 8000,"evil": true },
+  { "name": "Susan Song", "power": 8000,"evil": true }
 ]

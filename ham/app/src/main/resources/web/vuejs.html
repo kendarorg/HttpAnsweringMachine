@@ -21,6 +21,7 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
         </div>
         <br>
         <button v-on:click="doAlert()">Test</button>
+        <button v-on:click="reload()">Reload</button>
         <form id="search">
             Search <input name="query" v-model="searchQuery" />
         </form>
@@ -56,6 +57,9 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
             methods:{
                 doAlert:function(){
                     console.log(JSON.stringify(this.$refs.simpleGrid.getData()));
+                },
+                reload:function(){
+                    this.$refs.simpleGrid.reload();
                 }
             }
         });
