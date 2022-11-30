@@ -15,7 +15,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr v-for="entry in filteredHeroes">
+    <tr v-for="entry in filteredData">
       <td v-for="key in extra">
         <dynamic-template :data="entry[key.id]" :type="key.template" :def="key.default"
                           :entry="entry" :entrykey="key.id" />
@@ -42,7 +42,7 @@ module.exports = {
   },
   async mounted() {
     let response = await axios.get("http://localhost:63342/ham/app/web/" + this.address);
-    this.heroes = response.data;
+    this.data = response.data;
   },
   data: function () {
     var sortOrders = {};
@@ -51,7 +51,7 @@ module.exports = {
     });
     return {
       extrasCalculated: false,
-      heroes: [],
+      data: [],
       sortKey: "",
       sortOrders: sortOrders
     };
@@ -60,13 +60,13 @@ module.exports = {
     'dynamic-template': httpVueLoader('vcomponents/grid/dynamictemplate.vue')
   },
   computed: {
-    filteredHeroes: function () {
-      if(!this.extrasCalculated && typeof this.heroes !="undefined" && this.heroes.length >0){
+    filteredData: function () {
+      if(!this.extrasCalculated && typeof this.data !="undefined" && this.data.length >0){
         this.extrasCalculated = true;
         var th = this;
-        this.extra.forEach(function (item){
-          th.heroes.forEach(function (hero){
-            hero[item.id] = item.default;
+        this.extra.forEach(function (ex){
+          th.data.forEach(function (item){
+            item[ex.id] = ex.default;
           })
         })
 
@@ -74,9 +74,9 @@ module.exports = {
       var sortKey = this.sortKey;
       var filterKey = this.filterKey && this.filterKey.toLowerCase();
       var order = this.sortOrders[sortKey] || 1;
-      var heroes = this.heroes;
+      var data = this.data;
       if (filterKey) {
-        heroes = heroes.filter(function (row) {
+        data = data.filter(function (row) {
           return Object.keys(row).some(function (key) {
             return (
                 String(row[key])
@@ -87,13 +87,13 @@ module.exports = {
         });
       }
       if (sortKey) {
-        heroes = heroes.slice().sort(function (a, b) {
+        data = data.slice().sort(function (a, b) {
           a = a[sortKey];
           b = b[sortKey];
           return (a === b ? 0 : a > b ? 1 : -1) * order;
         });
       }
-      return heroes;
+      return data;
 
     }
   },
@@ -114,7 +114,7 @@ module.exports = {
       this.sortOrders[key] = this.sortOrders[key] * -1;
     },
     getData: function () {
-      return this.heroes;
+      return this.data;
     }
   }
 }

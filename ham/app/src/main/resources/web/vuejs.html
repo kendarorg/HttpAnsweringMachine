@@ -28,7 +28,6 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
                 ref="simpleGrid"
                 :columns="gridColumns"
                 :extra="extraColumns"
-                :templates="gridTemplates"
                 :filter-key="searchQuery"
                 :address="address"
         >
@@ -52,7 +51,6 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
                 extraColumns:[
                     {id:"select",template:"boolw",default:false}
                 ],
-                gridTemplates: ["string", "string"],
                 address:"vdata/simplegrid.json"
             },
             methods:{
