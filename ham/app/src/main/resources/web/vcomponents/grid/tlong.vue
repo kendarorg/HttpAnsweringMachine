@@ -4,7 +4,9 @@
 <script>
 module.exports = {
   props: {
-    data: Number
+    data: Number,
+    entry: Object,
+    entrykey: String
   },
   name: 'tlong'
 }

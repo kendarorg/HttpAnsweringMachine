@@ -4,7 +4,9 @@
 <script>
 module.exports = {
   props: {
-    data: Boolean
+    data: Boolean,
+    entry: Object,
+    entrykey: String
   },
   name: 'tstring'
 }

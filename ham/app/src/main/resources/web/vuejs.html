@@ -19,11 +19,15 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
             <button-counter></button-counter>
             <button-counter></button-counter>
         </div>
+        <br>
+        <button v-on:click="doAlert()">Test</button>
         <form id="search">
             Search <input name="query" v-model="searchQuery" />
         </form>
         <simple-grid
+                ref="simpleGrid"
                 :columns="gridColumns"
+                :extra="extraColumns"
                 :templates="gridTemplates"
                 :filter-key="searchQuery"
                 :address="address"
@@ -45,8 +49,16 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
                     {id:"power",template:"long"},
                     {id:"evil",template:"bool"}
                 ],
+                extraColumns:[
+                    {id:"select",template:"boolw",default:false}
+                ],
                 gridTemplates: ["string", "string"],
                 address:"vdata/simplegrid.json"
+            },
+            methods:{
+                doAlert:function(){
+                    console.log(JSON.stringify(this.$refs.simpleGrid.getData()));
+                }
             }
         });
     </script>

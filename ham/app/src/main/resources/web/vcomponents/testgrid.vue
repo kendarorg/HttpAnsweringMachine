@@ -2,6 +2,9 @@
   <table>
     <thead>
     <tr>
+      <th v-for="key in extra">
+        {{ key.id | capitalize }}
+      </th>
       <th v-for="key in columns"
           @click="sortBy(key.id)"
           :class="{ active: sortKey == key.id }">
@@ -13,9 +16,14 @@
     </thead>
     <tbody>
     <tr v-for="entry in filteredHeroes">
+      <td v-for="key in extra">
+        <dynamic-template :data="entry[key.id]" :type="key.template" :def="key.default"
+                          :entry="entry" :entrykey="key.id" />
+      </td>
       <td v-for="key in columns">
         <!--{{ entry[key.id] }}-->
-        <dynamic-template :data="entry[key.id]" :type="key.template" />
+        <dynamic-template :data="entry[key.id]" :type="key.template"
+                          :entry="entry" :entrykey="key.id"/>
       </td>
     </tr>
     </tbody>
@@ -25,10 +33,12 @@
 module.exports = {
   props: {
     columns: Array,
+    extra: Array,
     filterKey: String,
     address: String
   },
   created: function () {
+    this.extrasCalculated = false;
   },
   async mounted() {
     let response = await axios.get("http://localhost:63342/ham/app/web/" + this.address);
@@ -40,17 +50,27 @@ module.exports = {
       sortOrders[key.id] = 1;
     });
     return {
+      extrasCalculated: false,
       heroes: [],
       sortKey: "",
       sortOrders: sortOrders
     };
   },
   components:{
-    'dynamic-template': httpVueLoader('vcomponents/dynamictemplate.vue')
+    'dynamic-template': httpVueLoader('vcomponents/grid/dynamictemplate.vue')
   },
   computed: {
     filteredHeroes: function () {
+      if(!this.extrasCalculated && typeof this.heroes !="undefined" && this.heroes.length >0){
+        this.extrasCalculated = true;
+        var th = this;
+        this.extra.forEach(function (item){
+          th.heroes.forEach(function (hero){
+            hero[item.id] = item.default;
+          })
+        })
 
+      }
       var sortKey = this.sortKey;
       var filterKey = this.filterKey && this.filterKey.toLowerCase();
       var order = this.sortOrders[sortKey] || 1;
@@ -83,9 +103,18 @@ module.exports = {
     }
   },
   methods: {
+    retrieve: function(entry,key){
+      return {
+        entry:entry,
+        key:key
+      };
+    },
     sortBy: function (key) {
       this.sortKey = key;
       this.sortOrders[key] = this.sortOrders[key] * -1;
+    },
+    getData: function () {
+      return this.heroes;
     }
   }
 }
