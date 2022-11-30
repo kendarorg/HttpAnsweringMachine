@@ -22,14 +22,10 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
         <br>
         <button v-on:click="doAlert()">Test</button>
         <button v-on:click="reload()">Reload</button>
-        <form id="search">
-            Search <input name="query" v-model="searchQuery" />
-        </form>
         <simple-grid
                 ref="simpleGrid"
                 :columns="gridColumns"
                 :extra="extraColumns"
-                :filter-key="searchQuery"
                 :address="address"
         >
         </simple-grid>
@@ -43,7 +39,6 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
                 'simple-grid': httpVueLoader('vcomponents/testgrid.vue')
             },
             data:{
-                searchQuery: "",
                 gridColumns: [
                     {id:"name",template:"string"},
                     {id:"power",template:"long"},

@@ -44,7 +44,6 @@ module.exports = {
   props: {
     columns: Array,
     extra: Array,
-    filterKey: String,
     address: String
   },
   created: function () {
@@ -58,8 +57,9 @@ module.exports = {
     this.columns.forEach(function (key) {
       sortOrders[key.id] = 1;
     });
+    console.log("data");
     return {
-      filterKeys:[],
+      filterKeys:{},
       extrasCalculated: false,
       data: [],
       sortKey: "",
@@ -72,19 +72,25 @@ module.exports = {
   },
   computed: {
     filteredData: function () {
+      var filterKeys = this.filterKeys;
+
       var sortKey = this.sortKey;
-      var filterKey = this.filterKey && this.filterKey.toLowerCase();
       var order = this.sortOrders[sortKey] || 1;
       var data = this.data;
-      if (filterKey) {
+      if (filterKeys) {
+
+
         data = data.filter(function (row) {
-          return Object.keys(row).some(function (key) {
-            return (
-                String(row[key])
-                    .toLowerCase()
-                    .indexOf(filterKey) > -1
-            );
-          });
+          let allGood=true;
+          for (const [key, value] of Object.entries(filterKeys)) {
+            if(value==null|| typeof value=="undefined")continue;
+            allGood = String(row[key])
+                .toLowerCase()
+                .indexOf(String(value)
+                    .toLowerCase()) > -1;
+            if(!allGood)break;
+          }
+          return allGood;
         });
       }
       if (sortKey) {
@@ -117,8 +123,23 @@ module.exports = {
     getData: function () {
       return this.data;
     },
-    setSearchField: function (key,value,type) {
-      console.log("setSearchField "+key+"-"+value+"-"+type);
+    setSearchField: function (keyNew,valueNew,type) {
+      let temp = {};
+
+      var th = this;
+      for (const [key, value] of Object.entries(this.filterKeys)) {
+        temp[key]=value;
+      };
+
+      if(valueNew===false || valueNew===true){
+        temp[keyNew] = valueNew;
+      }else if(valueNew==null || typeof valueNew == "undefined" || valueNew==""){
+        delete temp[keyNew];
+      }else {
+        temp[keyNew] = valueNew;
+      }
+
+      this.filterKeys=temp;
     },
     reload: async function () {
       this.extrasCalculated=false;

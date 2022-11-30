@@ -21,8 +21,13 @@ module.exports = {
       if(val==null|| typeof val == "undefined"){
         this.grid(this.entrykey,null,"string");
       }else{
-        var isTrueSet = (val.toLowerCase() === 'true')||val==="1";
-        this.grid(this.entrykey,isTrueSet,"string");
+        if((val.toLowerCase() === 'true')||val==="1"){
+          this.grid(this.entrykey,true,"string");
+        }else if((val.toLowerCase() === 'false')||val==="1"){
+          this.grid(this.entrykey,false,"string");
+        }else{
+          this.grid(this.entrykey,null,"string");
+        }
       }
     }
   },
