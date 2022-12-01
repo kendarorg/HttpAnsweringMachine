@@ -6,7 +6,8 @@ module.exports = {
   props: {
     data: String,
     entry: Object,
-    entrykey: String
+    entrykey: String,
+    properties: Object
   },
   name: 'cstring'
 }

@@ -8,7 +8,8 @@ module.exports = {
   props: {
     data: String,
     grid: Function,
-    entrykey: String
+    entrykey: String,
+    properties: Object
   },
   name: 'sstring',
   data:function(){

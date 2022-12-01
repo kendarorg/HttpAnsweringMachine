@@ -7,7 +7,8 @@ module.exports = {
     data: Boolean,
     def:Boolean,
     entry: Object,
-    entrykey: String
+    entrykey: String,
+    properties: Object
   },
   name: 'cboolw',
   computed: {

@@ -1,11 +1,11 @@
 <template>
   <component :is="component" :data="data" :def="def" v-if="component"
-             :entry="entry" :entrykey="entrykey"/>
+             :entry="entry" :entrykey="entrykey" :properties="properties"/>
 </template>
 <script>
 module.exports = {
   name: 'dynamic-column',
-  props: ["data","type","def","entry","entrykey"]
+  props: ["data","type","def","entry","entrykey","properties"]
       /*{
     data:String,
     type: String,

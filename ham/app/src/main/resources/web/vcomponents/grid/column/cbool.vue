@@ -6,7 +6,8 @@ module.exports = {
   props: {
     data: Boolean,
     entry: Object,
-    entrykey: String
+    entrykey: String,
+    properties: Object
   },
   name: 'cbool'
 }

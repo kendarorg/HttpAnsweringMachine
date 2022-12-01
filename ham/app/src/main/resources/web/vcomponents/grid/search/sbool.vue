@@ -8,7 +8,8 @@ module.exports = {
   props: {
     data: Boolean,
     grid: Function,
-    entrykey: String
+    entrykey: String,
+    properties: Object
   },
   name: 'sbool',
   data:function(){

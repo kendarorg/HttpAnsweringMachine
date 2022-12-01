@@ -1,16 +1,20 @@
 <template>
-  <table>
+  <table class="rounded-top">
     <thead>
-    <tr>
-      <th v-for="key in extra">
+    <tr >
+      <th v-for="key in extra" >
+        <span class="btn btn-kendar btn-sm">
         {{ key.id | capitalize }}
+          </span>
       </th>
       <th v-for="key in columns"
           @click="sortBy(key.id)"
-          :class="{ active: sortKey == key.id }">
+          >
+        <span class="btn btn-kendar btn-sm" :class="{ active: sortKey == key.id }">
         {{ key.id | capitalize }}
-        <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+        <span :class="(sortOrders[key] > 0 ? 'arrow asc' : 'arrow dsc')">
               </span>
+          </span>
       </th>
     </tr>
     </thead>
@@ -119,6 +123,7 @@ module.exports = {
     sortBy: function (key) {
       this.sortKey = key;
       this.sortOrders[key] = this.sortOrders[key] * -1;
+      console.log(key+ " "+this.sortOrders[key]);
     },
     getData: function () {
       return this.data;
@@ -173,8 +178,9 @@ module.exports = {
 </script>
 <style>
 table {
+  border-collapse:separate;
   border: 2px solid #42b983;
-  border-radius: 3px;
+  border-radius: 5px;
   background-color: #fff;
 }
 

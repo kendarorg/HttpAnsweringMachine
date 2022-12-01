@@ -6,8 +6,9 @@ module.exports = {
   props: {
     data: Number,
     entry: Object,
-    entrykey: String
+    entrykey: String,
+    properties: Object
   },
-  name: 'clong'
+  name: 'calong'
 }
 </script>

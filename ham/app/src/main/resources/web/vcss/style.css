@@ -4,4 +4,40 @@ body {
     color: #444;
 }
 
+input {
 
+    border: 1px solid;
+    border-radius: 5px;
+}
+
+
+
+.btn-kendar{color:#fff;background-color:#5cb85c;border-color:#4cae4c}
+.btn-kendar.focus,
+.btn-kendar:focus{color:#fff;background-color:#449d44;border-color:#255625}
+.btn-kendar:hover{color:#fff;background-color:#449d44;border-color:#398439}
+.btn-kendar.active,
+.btn-kendar:active,
+.open>.dropdown-toggle.btn-kendar{color:#fff;background-color:#449d44;border-color:#398439}
+.btn-kendar.active.focus,
+.btn-kendar.active:focus,
+.btn-kendar.active:hover,
+.btn-kendar:active.focus,
+.btn-kendar:active:focus,
+.btn-kendar:active:hover,
+.open>.dropdown-toggle.btn-kendar.focus,
+.open>.dropdown-toggle.btn-kendar:focus,
+.open>.dropdown-toggle.btn-kendar:hover{color:#fff;background-color:#398439;border-color:#255625}
+.btn-kendar.active,
+.btn-kendar:active,
+.open>.dropdown-toggle.btn-kendar{background-image:none}
+.btn-kendar.disabled.focus,
+.btn-kendar.disabled:focus,
+.btn-kendar.disabled:hover,
+.btn-kendar[disabled].focus,
+.btn-kendar[disabled]:focus,
+.btn-kendar[disabled]:hover,
+fieldset[disabled] .btn-kendar.focus,
+fieldset[disabled] .btn-kendar:focus,
+fieldset[disabled] .btn-kendar:hover{background-color:#5cb85c;border-color:#4cae4c}
+.btn-kendar .badge{color:#5cb85c;background-color:#fff}

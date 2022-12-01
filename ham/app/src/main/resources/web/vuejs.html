@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <base href="http://localhost:63342/ham/app/web/">
     <title>Title</title>
+    <link href="./libs/bootstrap.min.css" rel="stylesheet"/>
     <script src="./libs/vue.js"></script>
     <script src="./libs/httpVueLoader.js"></script>
     <script src="./libs/axios.min.js"></script>
@@ -15,13 +16,13 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
 <body>
     <div id="app">
         <div id="components-demo">
-            <button-counter></button-counter>
-            <button-counter></button-counter>
-            <button-counter></button-counter>
+            <button-counter class="btn btn-primary btn-sm"></button-counter>
+            <button-counter class="btn btn-primary btn-sm"></button-counter>
+            <button-counter class="btn btn-primary btn-sm"></button-counter>
         </div>
         <br>
-        <button v-on:click="doAlert()">Test</button>
-        <button v-on:click="reload()">Reload</button>
+        <button v-on:click="doAlert()" class="btn btn-primary btn-sm">Test</button>
+        <button v-on:click="reload()" class="btn btn-primary btn-sm">Reload</button>
         <simple-grid
                 ref="simpleGrid"
                 :columns="gridColumns"

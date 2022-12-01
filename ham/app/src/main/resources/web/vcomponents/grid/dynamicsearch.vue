@@ -1,11 +1,11 @@
 <template>
   <component :is="component"  :def="def" v-if="component"
-              :entrykey="entrykey" :grid="grid"/>
+              :entrykey="entrykey" :grid="grid" :properties="properties"/>
 </template>
 <script>
 module.exports = {
   name: 'dynamic-search',
-  props: ["type","def","entrykey","grid"]
+  props: ["type","def","entrykey","grid","properties"]
       /*{
     data:String,
     type: String,
