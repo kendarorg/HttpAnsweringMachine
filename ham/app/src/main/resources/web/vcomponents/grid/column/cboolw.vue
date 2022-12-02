@@ -4,26 +4,23 @@
 <script>
 module.exports = {
   props: {
-    data: Boolean,
-    def:Boolean,
-    entry: Object,
-    entrykey: String,
-    properties: Object
+    value: Boolean,
+    descriptor:Object,
+    index: Array
   },
   name: 'cboolw',
   computed: {
     realData:  {
       get: function() {
-        // if(typeof  this.data == "undefined"){
-        //   return this.def;
-        // }
-        return this.data;
+        return this.value;
       },
       set: function(newValue) {
-        this.entry[this.entrykey]=newValue;
-        //this.data=newValue;
+        this.$parent.$parent.setField(this.descriptor.id,this.index,newValue);
       }
     }
+  },
+  methods:{
+    clean:function(){}
   }
 }
 </script>

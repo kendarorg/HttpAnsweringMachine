@@ -1,17 +1,11 @@
 <template>
-  <component :is="component" :data="data" :def="def" v-if="component"
-             :entry="entry" :entrykey="entrykey" :properties="properties"/>
+  <component  :is="component"  v-if="component"
+              :descriptor="descriptor" :index="index" :value="value"/>
 </template>
 <script>
 module.exports = {
   name: 'dynamic-column',
-  props: ["data","type","def","entry","entrykey","properties"]
-      /*{
-    data:String,
-    type: String,
-    def:String,
-    callback: Function
-  }*/,
+  props:['descriptor','index','value'],
   data() {
     return {
       component: null,
@@ -19,11 +13,13 @@ module.exports = {
   },
   computed: {
     loader() {
-      if (!this.type) {
+      if (!this.descriptor.template) {
         return null
       }
-      return httpVueLoader(`vcomponents/grid/column/c${this.type}.vue`);
+      return httpVueLoader(`vcomponents/grid/column/c${this.descriptor.template}.vue`);
     },
+  },
+  methods:{
   },
   mounted() {
     this.loader()

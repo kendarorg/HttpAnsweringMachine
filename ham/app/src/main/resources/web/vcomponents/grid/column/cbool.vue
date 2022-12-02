@@ -1,14 +1,16 @@
 <template>
-  <input type="checkbox" id="checkbox" v-model="data" disabled="true"/>
+  <input type="checkbox" id="checkbox" v-model="value" disabled="true"/>
 </template>
 <script>
 module.exports = {
   props: {
-    data: Boolean,
-    entry: Object,
-    entrykey: String,
-    properties: Object
+    value: Boolean,
+    descriptor:Object,
+    index: Array
   },
-  name: 'cbool'
+  name: 'cbool',
+  methods:{
+    clean:function(){}
+  }
 }
 </script>

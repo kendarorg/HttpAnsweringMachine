@@ -3,14 +3,14 @@
     <thead>
     <tr >
       <th v-for="key in extra" >
-        <span class="btn btn-kendar btn-sm">
+        <span v-if="key.id.indexOf('_')!=0" class="btn btn-kendar btn-sm">
         {{ key.id | capitalize }}
           </span>
       </th>
       <th v-for="key in columns"
           @click="sortBy(key.id)"
           >
-        <span class="btn btn-kendar btn-sm" :class="{ active: sortKey == key.id }">
+        <span v-if="key.id.indexOf('_')!=0" class="btn btn-kendar btn-sm" :class="{ active: sortKey == key.id }">
         {{ key.id | capitalize }}
         <span :class="(sortOrders[key] > 0 ? 'arrow asc' : 'arrow dsc')">
               </span>
@@ -21,23 +21,26 @@
     <tbody>
     <tr>
       <td v-for="key in extra">
-        <dynamic-search :ref="'search'+key.id" :type="key.template" :def="key.default"
-                        :grid="setSearchField" :entrykey="key.id" />
+        <dynamic-search v-if="key.id.indexOf('_')!=0"
+                        :ref="'search'+key.id"
+                        :descriptor="key"/>
       </td>
       <td v-for="key in columns">
-        <dynamic-search :ref="'search'+key.id" :type="key.template" :def="key.default"
-                         :grid="setSearchField" :entrykey="key.id" />
+        <dynamic-search v-if="key.id.indexOf('_')!=0"
+                        :ref="'search'+key.id"
+                        :descriptor="key"/>
       </td>
     </tr>
     <tr v-for="entry in filteredData">
       <td v-for="key in extra">
-        <dynamic-column :data="entry[key.id]" :type="key.template" :def="key.default"
-                          :entry="entry" :entrykey="key.id" />
+        <dynamic-column :descriptor="key"
+                        :value="entry[key.id]"
+                        :index="buildId(entry)" />
       </td>
       <td v-for="key in columns">
-        <!--{{ entry[key.id] }}-->
-        <dynamic-column :data="entry[key.id]" :type="key.template"
-                          :entry="entry" :entrykey="key.id"/>
+        <dynamic-column :descriptor="key"
+                        :value="entry[key.id]"
+                        :index="buildId(entry)"/>
       </td>
     </tr>
     </tbody>
@@ -61,13 +64,13 @@ module.exports = {
     this.columns.forEach(function (key) {
       sortOrders[key.id] = 1;
     });
-    console.log("data");
     return {
       filterKeys:{},
       extrasCalculated: false,
       data: [],
       sortKey: "",
-      sortOrders: sortOrders
+      sortOrders: sortOrders,
+      forceUpdate:0
     };
   },
   components:{
@@ -76,6 +79,7 @@ module.exports = {
   },
   computed: {
     filteredData: function () {
+      this.forceUpdate;
       var filterKeys = this.filterKeys;
 
       var sortKey = this.sortKey;
@@ -127,6 +131,39 @@ module.exports = {
     getData: function () {
       return this.data;
     },
+    getById: function (indexArray) {
+      for(var row of this.data){
+        var tempId = this.buildId(row);
+        var tempIdMatch = true;
+        for(var i=0;i<indexArray.length;i++){
+          if(indexArray[i]!=tempId[i]){
+            tempIdMatch = false;
+            break;
+          }
+        }
+        if(tempIdMatch) return row;
+      }
+      return null;
+    },
+    getByRow: function (otherRow) {
+      var indexArray = this.buildId(otherRow);
+      return this.getById(indexArray);
+    },
+    setField: function(id,indexArray,newValue){
+      var row = this.getById(indexArray);
+      row[id]=newValue;
+      this.forceUpdate++;
+    },
+    buildId: function (row){
+      var idList = [];
+      for(const key of this.columns){
+        if(key.hasOwnProperty("index") && key.index){
+          idList.push(row[key.id]);
+        }
+      }
+
+      return idList;
+    },
     setSearchField: function (keyNew,valueNew,type) {
       let temp = {};
 
@@ -151,10 +188,18 @@ module.exports = {
       this.data = response.data;
       var th = this;
       this.extra.forEach(function (ex) {
-        th.$refs['search'+ex.id][0].clean();
+        if(th.$refs.hasOwnProperty('search'+ex.id)) {
+          if(th.$refs['search' + ex.id].length>0) {
+            th.$refs['search' + ex.id][0].clean();
+          }
+        }
       });
       this.columns.forEach(function (ex) {
-        th.$refs['search'+ex.id][0].clean();
+          if(th.$refs.hasOwnProperty('search'+ex.id)) {
+            if(th.$refs['search' + ex.id].length>0) {
+              th.$refs['search' + ex.id][0].clean();
+            }
+          }
       });
       this.calculateExtra();
     },
@@ -199,8 +244,8 @@ td {
 
 th,
 td {
-  min-width: 120px;
-  padding: 10px 20px;
+  min-width: 10px;
+  padding: 5px 5px;
 }
 
 th.active {

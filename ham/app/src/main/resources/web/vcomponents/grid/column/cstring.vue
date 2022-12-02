@@ -1,14 +1,16 @@
 <template>
-  <span>{{data}}</span>
+  <span>{{value}}</span>
 </template>
 <script>
 module.exports = {
   props: {
-    data: String,
-    entry: Object,
-    entrykey: String,
-    properties: Object
+    value: String,
+    descriptor:Object,
+    index: Array
   },
-  name: 'cstring'
+  name: 'cstring',
+  methods:{
+    clean:function(){}
+  }
 }
 </script>

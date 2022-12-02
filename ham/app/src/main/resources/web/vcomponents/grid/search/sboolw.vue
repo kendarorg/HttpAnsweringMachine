@@ -6,10 +6,7 @@
 <script>
 module.exports = {
   props: {
-    data: Boolean,
-    grid: Function,
-    entrykey: String,
-    properties: Object
+    descriptor: Object
   },
   name: 'sboolw',
   data:function(){
@@ -19,17 +16,17 @@ module.exports = {
   },
   watch:{
     searchQuery:function(val,oldVal){
-      if(val==null|| typeof val == "undefined"){
-        this.grid(this.entrykey,null,"string");
-      }else{
+      if(!(val==null|| typeof val == "undefined")){
+        val = val+"";
         if((val.toLowerCase() === 'true')||val==="1"){
-          this.grid(this.entrykey,true,"string");
-        }else if((val.toLowerCase() === 'false')||val==="1"){
-          this.grid(this.entrykey,false,"string");
-        }else{
-          this.grid(this.entrykey,null,"string");
+          this.$parent.$parent.setSearchField(this.descriptor.id,true,this.descriptor.template);
+          return;
+        }else if((val.toLowerCase() === 'false')||val==="0"){
+          this.$parent.$parent.setSearchField(this.descriptor.id,false,this.descriptor.template);
+          return;
         }
       }
+      this.$parent.$parent.setSearchField(this.descriptor.id,null,this.descriptor.template);
     }
   },
   methods:{

@@ -6,10 +6,7 @@
 <script>
 module.exports = {
   props: {
-    data: Number,
-    grid: Function,
-    entrykey: String,
-    properties: Object
+    descriptor: Object,
   },
   name: 'slong',
   data:function(){
@@ -19,7 +16,7 @@ module.exports = {
   },
   watch:{
     searchQuery:function(val,oldVal){
-      this.grid(this.entrykey,val,"string");
+      this.$parent.$parent.setSearchField(this.descriptor.id,val,this.descriptor.template);
     }
   },
   methods:{

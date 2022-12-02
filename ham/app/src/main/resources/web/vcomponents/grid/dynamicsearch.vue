@@ -1,17 +1,14 @@
 <template>
-  <component :is="component"  :def="def" v-if="component"
-              :entrykey="entrykey" :grid="grid" :properties="properties"/>
+  <component  :is="component"  v-if="component"
+              :descriptor="descriptor" />
 </template>
 <script>
 module.exports = {
   name: 'dynamic-search',
-  props: ["type","def","entrykey","grid","properties"]
-      /*{
-    data:String,
-    type: String,
-    def:String,
-    callback: Function
-  }*/,
+  props: /*["data"]*/
+      {
+        descriptor:Object
+  },
   data() {
     return {
       component: null,
@@ -19,10 +16,10 @@ module.exports = {
   },
   computed: {
     loader() {
-      if (!this.type) {
+      if (!this.descriptor.template) {
         return null
       }
-      return httpVueLoader(`vcomponents/grid/search/s${this.type}.vue`);
+      return httpVueLoader(`vcomponents/grid/search/s${this.descriptor.template}.vue`);
     },
   },
   mounted() {

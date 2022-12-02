@@ -23,7 +23,10 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
         <br>
         <button v-on:click="doAlert()" class="btn btn-primary btn-sm">Test</button>
         <button v-on:click="reload()" class="btn btn-primary btn-sm">Reload</button>
+        <button v-on:click="toggleSelect()" class="btn btn-primary btn-sm">Toggle Select</button>
+        <button v-on:click="selectAll()" class="btn btn-primary btn-sm">Select All</button>
         <simple-grid
+                v-on:gridclicked="gridClicked"
                 ref="simpleGrid"
                 :columns="gridColumns"
                 :extra="extraColumns"
@@ -40,22 +43,51 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
                 'simple-grid': httpVueLoader('vcomponents/testgrid.vue')
             },
             data:{
+                ids:["id"],
                 gridColumns: [
+                    {id:"id",template:"string",index:true},
                     {id:"name",template:"string"},
                     {id:"power",template:"long"},
                     {id:"evil",template:"bool"}
                 ],
                 extraColumns:[
-                    {id:"select",template:"boolw",default:false}
+                    {id:"select",template:"boolw",default:false},
+                    {id:"_edit",template:"button",default:false,properties:{
+                            name:"Edit",style:"btn btn-success btn-sm"
+                        }},
+                    {id:"_delete",template:"button",default:false,properties:{
+                            name:"Delete",style:"btn btn-danger btn-sm"
+                        }}
                 ],
                 address:"vdata/simplegrid.json"
             },
             methods:{
                 doAlert:function(){
-                    console.log(JSON.stringify(this.$refs.simpleGrid.getData()));
+                    console.log(JSON.stringify(this.$refs.simpleGrid.filteredData));
+                },
+                toggleSelect:function(){
+                    var sg = this.$refs.simpleGrid;
+
+                    sg.filteredData.forEach(function(toSel){
+                        var index =sg.buildId(toSel);
+                        sg.setField('select',index,!toSel.select);
+                    });
+                },
+                selectAll:function(){
+                    var sg = this.$refs.simpleGrid;
+                    sg.filteredData.forEach(function(toSel){
+                        var index =sg.buildId(toSel);
+                        sg.setField('select',index,true);
+                    });
                 },
                 reload:function(){
                     this.$refs.simpleGrid.reload();
+                },
+                gridClicked:function(evt){
+                    var row = this.$refs.simpleGrid.getById(evt.index);
+
+                    console.log(evt);
+                    console.log(row);
                 }
             }
         });
