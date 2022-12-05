@@ -4,14 +4,14 @@
       <thead>
       <tr >
         <th v-for="key in extra" >
-          <span v-if="key.id.indexOf('_')!=0" class="btn btn-kendar btn-sm">
+          <span v-if="getBoolVal(key.sortable,true)" class="btn btn-kendar btn-sm">
           {{ key.id | capitalize }}
             </span>
         </th>
         <th v-for="key in columns"
             @click="sortBy(key.id)"
             >
-          <span v-if="key.id.indexOf('_')!=0" class="btn btn-kendar btn-sm" :class="{ active: sortKey == key.id }">
+          <span v-if="getBoolVal(key.sortable,true)" class="btn btn-kendar btn-sm" :class="{ active: sortKey == key.id }">
           {{ key.id | capitalize }}
           <span :class="(sortOrders[key] > 0 ? 'arrow asc' : 'arrow dsc')">
                 </span>
@@ -22,12 +22,12 @@
       <tbody>
       <tr>
         <td v-for="key in extra">
-          <dynamic-search v-if="key.id.indexOf('_')!=0"
+          <dynamic-search v-if="getBoolVal(key.searchable,true)"
                           :ref="'search'+key.id"
                           :descriptor="key"/>
         </td>
         <td v-for="key in columns">
-          <dynamic-search v-if="key.id.indexOf('_')!=0"
+          <dynamic-search v-if="getBoolVal(key.searchable,true)"
                           :ref="'search'+key.id"
                           :descriptor="key"/>
         </td>
@@ -77,8 +77,8 @@ module.exports = {
     };
   },
   components:{
-    'dynamic-column': httpVueLoader('vcomponents/grid/dynamiccolumn.vue'),
-    'dynamic-search': httpVueLoader('vcomponents/grid/dynamicsearch.vue')
+    'dynamic-column': httpVueLoader('/vcomponents/grid/dynamiccolumn.vue'),
+    'dynamic-search': httpVueLoader('/vcomponents/grid/dynamicsearch.vue')
   },
   computed: {
     filteredData: function () {
@@ -130,6 +130,16 @@ module.exports = {
         key:key
       };
     },
+    getBoolVal: function(val,defVal){
+
+      if(typeof val == "undefined") {
+        return defVal;
+      }
+      if(val===false || val ===true) {
+        return val;
+      }
+      return defVal;
+    },
     sortBy: function (key) {
       this.sortKey = key;
       this.sortOrders[key] = this.sortOrders[key] * -1;
@@ -147,7 +157,15 @@ module.exports = {
             break;
           }
         }
-        if(tempIdMatch) return row;
+
+        if(tempIdMatch) {
+          var realData = {};
+          for(const key of this.columns){
+            console.log(key.id+":"+row[key.id])
+            realData[key.id]=row[key.id];
+          }
+          return realData;
+        }
       }
       return null;
     },
@@ -207,7 +225,6 @@ module.exports = {
       if(result.err!=null){
         throw result.err;
       }
-      console.log(JSON.stringify(result.data))
       return result.data;
     },
     reload: function () {

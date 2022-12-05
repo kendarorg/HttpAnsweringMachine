@@ -1,6 +1,6 @@
 <template>
   <form id="search">
-    <input name="query" v-model="searchQuery" />
+    <input name="query" style="width:40px"  v-model="searchQuery" />
   </form>
 </template>
 <script>

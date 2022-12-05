@@ -16,7 +16,7 @@ module.exports = {
       if (!this.descriptor.template) {
         return null
       }
-      return httpVueLoader(`vcomponents/grid/column/c${this.descriptor.template}.vue`);
+      return httpVueLoader(`/vcomponents/grid/column/c${this.descriptor.template}.vue`);
     },
   },
   methods:{
@@ -27,7 +27,7 @@ module.exports = {
           this.component = () => this.loader()
         })
         .catch(() => {
-          this.component = httpVueLoader('vcomponents/grid/column/cstring.vue')
+          this.component = httpVueLoader('/vcomponents/grid/column/cstring.vue')
         })
   },
 }

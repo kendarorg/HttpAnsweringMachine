@@ -46,16 +46,16 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
                 ids:["id"],
                 gridColumns: [
                     {id:"id",template:"string",index:true},
-                    {id:"name",template:"string"},
+                    {id:"name",template:"string",searchable:false},
                     {id:"power",template:"long"},
                     {id:"evil",template:"boolw"}
                 ],
                 extraColumns:[
                     {id:"select",template:"boolw",default:false},
-                    {id:"_edit",template:"button",default:false,properties:{
+                    {id:"_edit",template:"button",default:false,searchable:true,properties:{
                             name:"Edit",style:"btn btn-success btn-sm"
                         }},
-                    {id:"_delete",template:"button",default:false,properties:{
+                    {id:"_delete",template:"button",default:false,searchable:false,properties:{
                             name:"Delete",style:"btn btn-danger btn-sm"
                         }}
                 ]

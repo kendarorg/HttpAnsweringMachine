@@ -19,7 +19,7 @@ module.exports = {
       if (!this.descriptor.template) {
         return null
       }
-      return httpVueLoader(`vcomponents/grid/search/s${this.descriptor.template}.vue`);
+      return httpVueLoader(`/vcomponents/grid/search/s${this.descriptor.template}.vue`);
     },
   },
   mounted() {
@@ -28,7 +28,7 @@ module.exports = {
           this.component = () => this.loader();
         })
         .catch(() => {
-          this.component = httpVueLoader('vcomponents/grid/search/sstring.vue')
+          this.component = httpVueLoader('/vcomponents/grid/search/snothing.vue')
         })
   },
   methods:{

@@ -1,112 +1,101 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
-    <script src="/libs/jquery-3.2.1.min.js"></script>
-    <script src="/libs/bootstrap.min.js"></script>
-    <script src="/libs/lodash.js"></script>
-    <link href="/app/app.css" rel="stylesheet"/>
-    <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="./libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="./libs/vue.js"></script>
+    <script src="./libs/httpVueLoader.js"></script>
+    <script src="./libs/axios.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./vcss/style.css" />
 </head>
 <body>
-<div class="container">
+<div class="container" id="app">
     <div class="row">
         <div class="col-md-8">
             <h3>MAIN FUNCTIONS</h3>
-            <table class="table table-striped" id="mainTable">
-                <tr>
-                    <td>
-                        <a class='unlinked' href='dns/index.html'>Dns</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a class='unlinked' href='proxy/index.html'>Proxy</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a class='unlinked' href='certificates/index.html'>SSL/Certificates</a>
-                    </td>
-                </tr>
-                <!--<tr>
-                    <td>
-                        <a class='unlinked' href=''>Filters</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a class='unlinked' href=''>Disabled Filters</a>
-                    </td>
-                </tr>-->
-                <tr>
-                    <td>
-                        <a class='unlinked' href='utils/index.html'>Utils</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a class='unlinked' href='logs/index.html'>Logs Management</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a class='unlinked' href='logs/list.html'>Logs viewer</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a class='unlinked' href='swagger/index.html'>Swagger</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a class='unlinked' href='utils/settings.html'>Settings</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a class='unlinked' href='utils/restclient.html'>Simplified Rest Client</a>
-                    </td>
-                </tr>
-            </table>
+            <simple-grid
+                    ref="pluginsGrid"
+                    :columns="gridColumns"
+                    :extra="extraColumns"
+                    :retrieve-data="mainRetrieveData"
+            >
+            </simple-grid>
         </div>
         <div class="col-md-8">
             <h3>PLUGINS</h3>
-            <table class="table table-striped" id="pluginsTable">
-                <tr>
-                    <th>Name</th>
-                </tr>
-            </table>
+            <simple-grid
+                    ref="pluginsGrid"
+                    :columns="gridColumns"
+                    :extra="extraColumns"
+                    :retrieve-data="pluginsRetrieveData"
+            >
+            </simple-grid>
         </div>
     </div>
 </div>
-<script src="/app/app.js"></script>
-<script>
-    var scriptsTable = new SimpleGrid("Plugin","pluginsTable","_id",["_addressCalc"],
-        function(table){
-            $.ajax({
-                url: "/api/plugins",
-                type: 'GET',
-                success: function(res) {
-                    for(var v=0;v<res.length;v++) {
-                        res[v]["_id"]=v;
-                        res[v]["_addressCalc"]="<a class='unlinked' href='"+res[v]["address"]+"'>"+res[v]["description"]+"</a>";
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        components: {
+            'simple-grid': httpVueLoader('vcomponents/testgrid.vue')
+        },
+        data:{
+            extraColumns:[],
+            gridColumns: [
+                {id:"description",template:"string",index:true},
+                {id:"address",template:"link",name:"Go",searchable:false,sortable:false}
+            ]
+        },
+        methods:{
+            pluginsRetrieveData: async function(){
+                var result = await axios.get("/api/plugins");
+                return result;
+            },
+            mainRetrieveData: async function(){
+                var result = {data:null};
+                result.data = [
+                    {
+                        address:"dns/index.html",
+                        description:"Dns"
+                    },
+                    {
+                        address:"proxy/index.html",
+                        description:"Url rewrite"
+                    },
+                    {
+                        address:"certificates/index.html",
+                        description:"SSL/Certificates"
+                    },
+                    {
+                        address:"utils/index.html",
+                        description:"Utils"
+                    },
+                    {
+                        address:"logs/index.html",
+                        description:"Logs Management"
+                    },
+                    {
+                        address:"logs/list.html",
+                        description:"Logs Viewer"
+                    },
+                    {
+                        address:"swagger/index.html",
+                        description:"Swagger"
+                    },
+                    {
+                        address:"utils/settings.html",
+                        description:"Settings"
+                    },
+                    {
+                        address:"utils/restclient.html",
+                        description:"Simple REST Client"
                     }
-                    $.each(res, function(i, script) {
-                        //tSource,tableId,id,data,fields
-                        //table.appendToTable({id:"test"});
-                        table.appendToTable(script,false);
-                    });
-                }
-            });
-        },
-        function (table,id) {
-
-        },
-        function (table,id) {
-
-        },null).load();
-
+                ]
+                return result;
+            }
+        }
+    });
 </script>
 </body>
 </html>

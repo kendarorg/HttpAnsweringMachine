@@ -24,7 +24,7 @@
           <div class="modal-footer">
             <slot name="footer">
               <button type="button" class="btn btn-secondary" @click="$emit('close')">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-primary" v-on:click="saveTheModal">Save changes</button>
             </slot>
           </div>
         </div>
@@ -34,10 +34,18 @@
 </template>
 <script>
 module.exports = {
-  name: 'kvp-modal',
+  name: 'simple-modal',
+  props:{
+    modalData:Object
+  },
   data: function() {
     return {
       showModal: false
+    }
+  },
+  methods:{
+    saveTheModal:function(){
+      this.modalData.save();
     }
   }
 }
