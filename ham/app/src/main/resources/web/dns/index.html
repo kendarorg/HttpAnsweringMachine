@@ -40,19 +40,17 @@
         </div>
         <div class="col-md-8">
             <h3>DNS Mappings</h3>
-            <button id="hostsfile" name="hostsfile" type="button"  class="btn btn-default" onClick="hostsfile();">
-                <i class="bi bi-signpost"></i>Download hosts file</button>
-            <br>
-            <table class="table table-striped" id="dnsMappingTable">
-                <tr>
-                    <th>Id</th>
-                    <th>Ip</th>
-                    <th>Dns</th>
-                    <th colspan="2">
-                        <button id="addDnsMapping" name="addDnsMapping" type="button"  class="btn btn-default" onClick="addDnsMapping();">Add new mapping</button>
-                    </th>
-                </tr>
-            </table>
+            <button v-on:click="dnsMappingsReload()" class="btn btn-primary btn-sm">Reload</button>
+            <button v-on:click="dnsMappingsAddNew(false,[])" class="btn btn-primary btn-sm">Add new</button>
+            <button v-on:click="hostsfile()" class="btn btn-primary btn-sm">Download hosts file</button>
+            <simple-grid
+                    v-on:gridclicked="dnsMappingsGridClicked"
+                    ref="dnsMappingsGrid"
+                    :columns="dnsMappingsColumns"
+                    :extra="dnsMappingsExtraColumns"
+                    :retrieve-data="dnsMappingsRetrieveData"
+            >
+            </simple-grid>
         </div>
     </div>
 </div>
@@ -61,7 +59,6 @@
         el: '#app',
         components: {
             'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
-            'kvp-modal': httpVueLoader('/vcomponents/tkvpmodal.vue'),
             'simple-modal': httpVueLoader('/vcomponents/tmodal.vue'),
             'change-dns-server': httpVueLoader('/dns/veditdnsserver.vue')
         },
@@ -81,6 +78,19 @@
                         name:"Delete",style:"btn btn-danger btn-sm"}}
             ],
 
+            dnsMappingsModalData:null,
+            dnsMappingsModalShow:false,
+            dnsMappingsColumns: [
+                {id:"id",template:"string",index:true},
+                {id:"ip",template:"ip"},
+                {id:"dns",template:"dns"}
+            ],
+            dnsMappingsExtraColumns: [
+                {id:"_edit",template:"button",default:false,searchable:false,sortable:false,properties:{
+                        name:"Edit",style:"btn btn-success btn-sm"}},
+                {id:"_delete",template:"button",default:false,searchable:false,sortable:false,properties:{
+                        name:"Delete",style:"btn btn-danger btn-sm"}}
+            ],
         },
         methods: {
             dnsServerRetrieveData: async function(){
@@ -124,6 +134,53 @@
                     });
                 }else{
                     await axios.post('/api/dns/servers', this.dnsServerModalData.data).then(()=>{
+                        this.dnsServerModalShow=false;
+                        this.dnsServerReload();
+                    });
+                }
+            },
+
+            dnsMappingsRetrieveData: async function(){
+                var result = await axios.get("/api/dns/mappings");
+                return result;
+            },
+            dnsMappingsGridClicked: async function(evt){
+                var row = this.$refs.dnsMappingsGrid.getById(evt.index);
+
+                if(evt.buttonid=="_edit"){
+                    this.dnsServerAddNew(true,evt.index)
+                }else if(evt.buttonid=="_delete"){
+                    await axios.delete("/api/dns/mappings/"+row['id'])
+                    this.dnsServerReload();
+                }
+            },
+            dnsMappingsReload:function(){
+                this.$refs.dnsServerGrid.reload();
+            },
+            dnsMappingsAddNew:function(shouldEdit,rowId){
+                var row = null;
+                if(shouldEdit) {
+                    row = this.$refs.dnsMappingsGrid.getById(rowId);
+                }else{
+                    row = {
+                        id:URL.createObjectURL(new Blob([])).substr(-36)
+                    }
+                }
+                this.dnsServerModalData={
+                    data:row,
+                    edit:shouldEdit,
+                    save:this.dnsServerSave
+                };
+                this.dnsServerModalShow=true;
+            },
+            dnsMappingsSave:async function(){
+                if(this.dnsServerModalData.edit){
+                    await axios.put('/api/dns/mappings/'+this.dnsServerModalData.data.id, this.dnsServerModalData.data).then(()=>{
+                        this.dnsServerModalShow=false;
+                        this.dnsServerReload();
+                    });
+                }else{
+                    await axios.post('/api/dns/mappings', this.dnsServerModalData.data).then(()=>{
                         this.dnsServerModalShow=false;
                         this.dnsServerReload();
                     });
