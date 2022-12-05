@@ -8,7 +8,6 @@
     <script src="./libs/vue.js"></script>
     <script src="./libs/httpVueLoader.js"></script>
     <script src="./libs/axios.min.js"></script>
-    <script src="./vcomponents/testgrid.js"></script>
     <link rel="stylesheet" type="text/css" href="./vcss/style.css" />
 </head>
 <!--
@@ -16,16 +15,16 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
 -->
 <body>
     <div id="app">
-        <div id="components-demo">
-            <button-counter class="btn btn-primary btn-sm"></button-counter>
-            <button-counter class="btn btn-primary btn-sm"></button-counter>
-            <button-counter class="btn btn-primary btn-sm"></button-counter>
-        </div>
-        <br>
+        <kvp-modal v-if="showModal"
+                   :modal-data="modalData"
+                   @close="showModal = false">
+        </kvp-modal>
+
         <button v-on:click="doAlert()" class="btn btn-primary btn-sm">Test</button>
         <button v-on:click="reload()" class="btn btn-primary btn-sm">Reload</button>
         <button v-on:click="toggleSelect()" class="btn btn-primary btn-sm">Toggle Select</button>
         <button v-on:click="selectAll()" class="btn btn-primary btn-sm">Select All</button>
+        <button v-on:click="addNew(false,[])" class="btn btn-primary btn-sm">Add new</button>
         <simple-grid
                 v-on:gridclicked="gridClicked"
                 ref="simpleGrid"
@@ -40,10 +39,12 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
         new Vue({
             el: '#app',
             components: {
-                'button-counter': httpVueLoader('vcomponents/test.vue'),
-                'simple-grid': httpVueLoader('vcomponents/testgrid.vue')
+                'simple-grid': httpVueLoader('vcomponents/testgrid.vue'),
+                'kvp-modal': httpVueLoader('vcomponents/tkvpmodal.vue')
             },
             data:{
+                showModal:false,
+                modalData:{},
                 ids:["key"],
                 gridColumns: [
                     {id:"key",template:"string",index:true},
@@ -60,6 +61,24 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
                 ]
             },
             methods:{
+                addNew:function(shouldEdit,rowId){
+                    console.log("AAAAAAAAAAAAA");
+                    var row = null;
+                    if(shouldEdit) {
+                        row = this.$refs.simpleGrid.getById(rowId);
+                    }
+                    let newId = URL.createObjectURL(new Blob([])).substr(-36);
+                    this.modalData={
+                        valDesc:"Name",
+                        valValue:row==null?"":row['name'],
+                        keyDesc:"Key",
+                        keyValue:row==null?newId:row['key'],
+                        title:"Key-Name tuple",
+                        edit:shouldEdit,
+                        save:this.saveItem
+                    };
+                    this.showModal=true;
+                },
                 retrieveData: async function(){
                     var result = await axios.get("http://localhost:63342/ham/app/web/vdata/keyval.json");
                     result.data.push({
@@ -80,11 +99,20 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
                 reload:function(){
                     this.$refs.simpleGrid.reload();
                 },
+                saveItem:function(data){
+                    console.log("==================");
+                    console.log(this.modalData);
+                    this.$refs.simpleGrid.reload();
+                },
                 gridClicked:function(evt){
-                    var row = this.$refs.simpleGrid.getById(evt.index);
+                    //var row = this.$refs.simpleGrid.getById(evt.index);
 
-                    console.log(evt);
-                    console.log(row);
+                    if(evt.buttonid=="_edit"){
+                        this.addNew(true,evt.index)
+                    }else if(evt.buttonid=="_delete"){
+                        axios.get("http://localhost:63342/ham/app/web/vdata/keyval.json")
+                        this.$refs.simpleGrid.reload();
+                    }
                 }
             }
         });
