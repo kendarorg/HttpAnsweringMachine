@@ -1,50 +1,52 @@
 <template>
-  <table class="rounded-top">
-    <thead>
-    <tr >
-      <th v-for="key in extra" >
-        <span v-if="key.id.indexOf('_')!=0" class="btn btn-kendar btn-sm">
-        {{ key.id | capitalize }}
-          </span>
-      </th>
-      <th v-for="key in columns"
-          @click="sortBy(key.id)"
-          >
-        <span v-if="key.id.indexOf('_')!=0" class="btn btn-kendar btn-sm" :class="{ active: sortKey == key.id }">
-        {{ key.id | capitalize }}
-        <span :class="(sortOrders[key] > 0 ? 'arrow asc' : 'arrow dsc')">
-              </span>
-          </span>
-      </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td v-for="key in extra">
-        <dynamic-search v-if="key.id.indexOf('_')!=0"
-                        :ref="'search'+key.id"
-                        :descriptor="key"/>
-      </td>
-      <td v-for="key in columns">
-        <dynamic-search v-if="key.id.indexOf('_')!=0"
-                        :ref="'search'+key.id"
-                        :descriptor="key"/>
-      </td>
-    </tr>
-    <tr v-for="entry in filteredData">
-      <td v-for="key in extra">
-        <dynamic-column :descriptor="key"
-                        :value="entry[key.id]"
-                        :index="buildId(entry)" />
-      </td>
-      <td v-for="key in columns">
-        <dynamic-column :descriptor="key"
-                        :value="entry[key.id]"
-                        :index="buildId(entry)"/>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <div>
+    <table class="rounded-top">
+      <thead>
+      <tr >
+        <th v-for="key in extra" >
+          <span v-if="key.id.indexOf('_')!=0" class="btn btn-kendar btn-sm">
+          {{ key.id | capitalize }}
+            </span>
+        </th>
+        <th v-for="key in columns"
+            @click="sortBy(key.id)"
+            >
+          <span v-if="key.id.indexOf('_')!=0" class="btn btn-kendar btn-sm" :class="{ active: sortKey == key.id }">
+          {{ key.id | capitalize }}
+          <span :class="(sortOrders[key] > 0 ? 'arrow asc' : 'arrow dsc')">
+                </span>
+            </span>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td v-for="key in extra">
+          <dynamic-search v-if="key.id.indexOf('_')!=0"
+                          :ref="'search'+key.id"
+                          :descriptor="key"/>
+        </td>
+        <td v-for="key in columns">
+          <dynamic-search v-if="key.id.indexOf('_')!=0"
+                          :ref="'search'+key.id"
+                          :descriptor="key"/>
+        </td>
+      </tr>
+      <tr v-for="entry in filteredData">
+        <td v-for="key in extra">
+          <dynamic-column :descriptor="key"
+                          :value="entry[key.id]"
+                          :index="buildId(entry)" />
+        </td>
+        <td v-for="key in columns">
+          <dynamic-column :descriptor="key"
+                          :value="entry[key.id]"
+                          :index="buildId(entry)"/>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 <script>
 module.exports = {
