@@ -53,7 +53,8 @@ module.exports = {
   props: {
     columns: Array,
     extra: Array,
-    address: String
+    address: String,
+    retrieveData: Function
   },
   created: function () {
     this.extrasCalculated = false;
@@ -81,6 +82,9 @@ module.exports = {
   },
   computed: {
     filteredData: function () {
+      if(this.data == null || typeof this.data =="undefined"){
+        return [];
+      }
       this.forceUpdate;
       var filterKeys = this.filterKeys;
 
@@ -184,26 +188,50 @@ module.exports = {
 
       this.filterKeys=temp;
     },
-    reload: async function () {
-      this.extrasCalculated=false;
-      let response = await axios.get("http://localhost:63342/ham/app/web/" + this.address);
-      this.data = response.data;
-      var th = this;
-      this.extra.forEach(function (ex) {
-        if(th.$refs.hasOwnProperty('search'+ex.id)) {
-          if(th.$refs['search' + ex.id].length>0) {
-            th.$refs['search' + ex.id][0].clean();
-          }
-        }
-      });
-      this.columns.forEach(function (ex) {
+    asyncRequestsRunner: function(asyncFunc){
+      let promises = [asyncFunc()]
+      //let promises = [async function(){ return await asyncFunc();}]
+      let result={
+        data:[],
+        err:null
+      };
+
+      Promise.all(promises)
+          .then(results=>{
+            result.data=results[0];
+            console.log("SOLVED")
+          })
+          .catch(err => {
+            result.err=err
+          });
+      if(result.err!=null){
+        throw result.err;
+      }
+      console.log(JSON.stringify(result.data))
+      return result.data;
+    },
+    reload: function () {
+      var th= this;
+      this.retrieveData().then(function(result){
+        th.extrasCalculated=false;
+        th.data =  result.data;
+        th.extra.forEach(function (ex) {
           if(th.$refs.hasOwnProperty('search'+ex.id)) {
             if(th.$refs['search' + ex.id].length>0) {
               th.$refs['search' + ex.id][0].clean();
             }
           }
+        });
+        th.columns.forEach(function (ex) {
+          if(th.$refs.hasOwnProperty('search'+ex.id)) {
+            if(th.$refs['search' + ex.id].length>0) {
+              th.$refs['search' + ex.id][0].clean();
+            }
+          }
+        });
+        th.calculateExtra();
       });
-      this.calculateExtra();
+
     },
     calculateExtra: function () {
       if(!this.extrasCalculated && typeof this.data !="undefined" && this.data.length >0) {
@@ -218,6 +246,20 @@ module.exports = {
           })
         })
       }
+    },
+    toggleSelect : function(selectField){
+      var th = this;
+      this.filteredData.forEach(function(toSel){
+        var index =th.buildId(toSel);
+        th.setField(selectField,index,!toSel.select);
+      });
+    },
+    selectAll : function(selectField){
+      var th = this;
+      this.filteredData.forEach(function(toSel){
+        var index =th.buildId(toSel);
+        th.setField(selectField,index,true);
+      });
     }
   }
 }

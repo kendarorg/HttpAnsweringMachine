@@ -8,6 +8,7 @@
     <script src="./libs/vue.js"></script>
     <script src="./libs/httpVueLoader.js"></script>
     <script src="./libs/axios.min.js"></script>
+    <script src="./vcomponents/testgrid.js"></script>
     <link rel="stylesheet" type="text/css" href="./vcss/style.css" />
 </head>
 <!--
@@ -30,7 +31,7 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
                 ref="simpleGrid"
                 :columns="gridColumns"
                 :extra="extraColumns"
-                :address="address"
+                :retrieve-data="retrieveData"
         >
         </simple-grid>
     </div>
@@ -43,12 +44,10 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
                 'simple-grid': httpVueLoader('vcomponents/testgrid.vue')
             },
             data:{
-                ids:["id"],
+                ids:["key"],
                 gridColumns: [
-                    {id:"id",template:"string",index:true},
-                    {id:"name",template:"string"},
-                    {id:"power",template:"long"},
-                    {id:"evil",template:"boolw"}
+                    {id:"key",template:"string",index:true},
+                    {id:"name",template:"string"}
                 ],
                 extraColumns:[
                     {id:"select",template:"boolw",default:false},
@@ -58,27 +57,25 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
                     {id:"_delete",template:"button",default:false,properties:{
                             name:"Delete",style:"btn btn-danger btn-sm"
                         }}
-                ],
-                address:"vdata/simplegrid.json"
+                ]
             },
             methods:{
+                retrieveData: async function(){
+                    var result = await axios.get("http://localhost:63342/ham/app/web/vdata/keyval.json");
+                    result.data.push({
+                        key:"test",
+                        name:"tost"
+                    });
+                    return result;
+                },
                 doAlert:function(){
                     console.log(JSON.stringify(this.$refs.simpleGrid.filteredData));
                 },
                 toggleSelect:function(){
-                    var sg = this.$refs.simpleGrid;
-
-                    sg.filteredData.forEach(function(toSel){
-                        var index =sg.buildId(toSel);
-                        sg.setField('select',index,!toSel.select);
-                    });
+                    this.$refs.simpleGrid.toggleSelect("select");
                 },
                 selectAll:function(){
-                    var sg = this.$refs.simpleGrid;
-                    sg.filteredData.forEach(function(toSel){
-                        var index =sg.buildId(toSel);
-                        sg.setField('select',index,true);
-                    });
+                   this.$refs.simpleGrid.selectAll("select");
                 },
                 reload:function(){
                     this.$refs.simpleGrid.reload();
