@@ -75,6 +75,7 @@ module.exports = {
   methods: {
     setResult(result) {
       this.search = result;
+      this.$emit('input', this.search);
       this.isOpen = false;
     },
     filterResults() {
@@ -110,6 +111,7 @@ module.exports = {
     },
     onEnter() {
       this.search = this.results[this.arrowCounter];
+      this.$emit('input', this.search);
       this.isOpen = false;
       this.arrowCounter = -1;
     },
