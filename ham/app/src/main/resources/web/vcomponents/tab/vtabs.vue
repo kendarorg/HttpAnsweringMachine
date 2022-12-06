@@ -3,7 +3,7 @@
       <ul class=" v-effect-link">
         <li  v-for="tab in tabs" >
           <a  :href="tab.href"  @click="selectTab(tab)">
-            <span :class="{ 'is-active': tab.isActive }"><h2>{{ tab.name }}</h2></span>
+            <span :class="{ 'is-active': tab.isActive }"><h3>{{ tab.name }}</h3></span>
           </a>
         </li>
       </ul>
