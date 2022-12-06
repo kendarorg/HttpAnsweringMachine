@@ -8,6 +8,7 @@
     <script src="./libs/vue.js"></script>
     <script src="./libs/httpVueLoader.js"></script>
     <script src="./libs/axios.min.js"></script>
+    <link href="./libs/icons/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="./vcss/style.css" />
 </head>
 <!--
@@ -29,6 +30,7 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
         <simple-grid
                 v-on:gridclicked="gridClicked"
                 ref="simpleGrid"
+                :page-size="2"
                 :columns="gridColumns"
                 :extra="extraColumns"
                 :retrieve-data="retrieveData"
@@ -37,11 +39,23 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
     </div>
     <script type="text/javascript">
 
+        httpVueLoader.httpRequest = function(url) {
+
+            return axios.get("http://localhost:63342/ham/app/web"+url)
+                .then(function(res) {
+
+                    return res.data;
+                })
+                .catch(function(err) {
+
+                    return Promise.reject(err.status);
+                });
+        }
         new Vue({
             el: '#app',
             components: {
-                'simple-grid': httpVueLoader('vcomponents/testgrid.vue'),
-                'kvp-modal': httpVueLoader('vcomponents/tkvpmodal.vue')
+                'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
+                'kvp-modal': httpVueLoader('/vcomponents/tkvpmodal.vue')
             },
             data:{
                 showModal:false,
@@ -80,7 +94,7 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
                     };
                     this.showModal=true;
                 },
-                retrieveData: async function(){
+                retrieveData: async function(index,page){
                     var result = await axios.get("http://localhost:63342/ham/app/web/vdata/keyval.json");
                     result.data.push({
                         key:"test",

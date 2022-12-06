@@ -23,7 +23,9 @@
             <br><br>
             <simple-grid
                     v-on:gridclicked="gridClicked"
+                    :page-size="50"
                     ref="grid"
+                    :server-pagination="true"
                     :columns="gridColumns"
                     :extra="extraColumns"
                     :retrieve-data="retrieveData"
@@ -54,8 +56,8 @@
             ]
         },
         methods:{
-            retrieveData: async function(){
-                var result = await axios.get("/api/log/files");
+            retrieveData: async function(index,pageSize){
+                var result = await axios.get("/api/log/files?index="+index+"&pageSize="+pageSize);
                 return result;
             },
             gridClicked: async function (evt) {

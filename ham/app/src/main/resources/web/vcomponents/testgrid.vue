@@ -1,5 +1,13 @@
 <template>
   <div>
+    <div v-if="pageSize!=null">
+      <br>
+      <button v-bind:disabled="index<=0" class="bi bi bi-skip-backward" @click="goStart" title="Start"></button>
+      <button v-bind:disabled="index<=0" class="bi bi-skip-start" @click="goPrev" title="Prev"> </button>
+      <button v-bind:disabled="!canGoNext()" class="bi bi-skip-end" @click="goNext" title="Next"></button>
+      <button v-bind:disabled="!canGoNext()" class="bi bi-skip-forward" @click="goEnd" title="End"></button>
+      <br><br>
+    </div>
     <table class="rounded-top">
       <thead>
       <tr >
@@ -57,7 +65,9 @@ module.exports = {
     columns: Array,
     extra: Array,
     address: String,
-    retrieveData: Function
+    retrieveData: Function,
+    pageSize:Number,
+    serverPagination:Boolean
   },
   created: function () {
     this.extrasCalculated = false;
@@ -71,9 +81,11 @@ module.exports = {
       sortOrders[key.id] = 1;
     });
     return {
+      index:0,
       filterKeys:{},
       extrasCalculated: false,
       data: [],
+      length:0,
       sortKey: "",
       sortOrders: sortOrders,
       forceUpdate:0
@@ -130,6 +142,31 @@ module.exports = {
     }
   },
   methods: {
+    canGoNext:function(){
+      return this.length>(this.index+1)*this.pageSize
+    },
+    goStart:function(){
+      this.index=0;
+      this.reload();
+    },
+    goNext:function(){
+      this.index++;
+      this.reload();
+    },
+    goEnd:function(){
+      var supposedIndex = Math.floor(this.length/ this.pageSize);
+      var remainder = this.length % this.pageSize;
+      if(remainder==0){
+        supposedIndex--;
+      }
+      if(supposedIndex<0)supposedIndex=0;
+      this.index  = supposedIndex;
+      this.reload();
+    },
+    goPrev:function(){
+      this.index--;
+      this.reload();
+    },
     retrieve: function(entry,key){
       return {
         entry:entry,
@@ -163,7 +200,6 @@ module.exports = {
     cleanRow:function(inrow){
       var realData = {};
       for(const key of this.columns){
-        console.log(key.id+":"+inrow[key.id])
         realData[key.id]=inrow[key.id];
       }
       return realData;
@@ -233,7 +269,6 @@ module.exports = {
       Promise.all(promises)
           .then(results=>{
             result.data=results[0];
-            console.log("SOLVED")
           })
           .catch(err => {
             result.err=err
@@ -245,9 +280,31 @@ module.exports = {
     },
     reload: function () {
       var th= this;
-      this.retrieveData().then(function(result){
+      this.retrieveData(this.index,this.pageSize).then(function(result){
         th.extrasCalculated=false;
-        th.data =  result.data;
+        if(th.pageSize!=null && typeof th.pageSize !="undefined" && th.pageSize !=0 &&
+            (th.serverPagination==null || typeof th.serverPagination =="undefined" || th.serverPagination ===false)) {
+          var newData = [];
+          th.length = result.data.length;
+          var start = th.index * th.pageSize;
+          var end = start+ th.pageSize;
+          for (var i=start;i<end && i<result.data.length;i++){
+            newData.push(result.data[i]);
+          }
+          th.data = newData;
+        }else if(th.serverPagination!=null && typeof th.serverPagination !="undefined" && th.serverPagination ===true){
+          var newData = [];
+          var realIndex = th.index;
+          if(realIndex<0)realIndex=0;
+          th.length=Math.max(th.length,th.pageSize*realIndex+result.data.length);
+          for (var i=0;i<th.pageSize && i<result.data.length;i++){
+            newData.push(result.data[i]);
+          }
+          th.data = newData;
+        }else{
+          debugger;
+          th.data = result.data;
+        }
         if(th.extra) {
           th.extra.forEach(function (ex) {
             if (th.$refs.hasOwnProperty('search' + ex.id)) {
