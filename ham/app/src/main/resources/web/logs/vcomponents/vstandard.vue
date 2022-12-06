@@ -60,7 +60,7 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axios.delete("/api/log/logger/" + row['id']+"?level="+row['value'])
+        await axios.delete("/api/log/logger/" + row['key']+"?level="+row['value'])
         this.reload();
       }
     },

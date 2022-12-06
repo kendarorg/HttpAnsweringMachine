@@ -27,7 +27,6 @@ module.exports = {
   },
   watch:{
     tabs:function(val,oldVal){
-      console.log("tabs changed")
       if(val.length>0){
         val[0].isActive=true;
       }

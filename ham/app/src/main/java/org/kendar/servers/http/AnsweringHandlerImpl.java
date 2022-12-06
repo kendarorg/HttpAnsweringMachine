@@ -197,6 +197,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
     if (filteringClassesHandler.handle(
             config, HttpFilterType.STATIC, request, response, connManager)) {
+      response.getHeaders().put("Cache Control","max-age=3600,s-maxage=3600");
+      response.getHeaders().put("Last-Modified","Wed, 21 Oct 2015 07:28:00 GMT");
       // ALWAYS WHEN CALLED
       return;
     }
