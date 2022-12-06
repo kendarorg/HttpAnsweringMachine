@@ -6,16 +6,19 @@
         <th v-for="key in extra" >
           <span v-if="getBoolVal(key.sortable,true)" class="btn btn-kendar btn-sm">
           {{ key.id | cleanUp }}
-            </span>
+          </span>
         </th>
         <th v-for="key in columns"
             @click="sortBy(key.id)"
             >
           <span v-if="getBoolVal(key.sortable,true)" class="btn btn-kendar btn-sm" :class="{ active: sortKey == key.id }">
-          {{ key.id | cleanUp }}
-          <span :class="(sortOrders[key] > 0 ? 'arrow asc' : 'arrow dsc')">
+                {{ key.id | cleanUp }}
+                <span :class="(sortOrders[key] > 0 ? 'arrow asc' : 'arrow dsc')">
                 </span>
-            </span>
+          </span>
+          <span v-else class="btn btn-kendar btn-sm">
+                {{ key.id | cleanUp }}
+          </span>
         </th>
       </tr>
       </thead>
@@ -143,9 +146,16 @@ module.exports = {
       }
       return defVal;
     },
-    sortBy: function (key) {
-      this.sortKey = key;
-      this.sortOrders[key] = this.sortOrders[key] * -1;
+    sortBy: function (inputKey) {
+
+      for(const key of this.columns){
+        if(key.id.toUpperCase()==inputKey.toUpperCase() && !key.sortable)return;
+      }
+      for(const key of this.extra){
+        if(key.id.toUpperCase()==inputKey.toUpperCase() && !key.sortable)return;
+      }
+      this.sortKey = inputKey;
+      this.sortOrders[inputKey] = this.sortOrders[inputKey] * -1;
     },
     getData: function () {
       return this.data;
@@ -238,13 +248,15 @@ module.exports = {
       this.retrieveData().then(function(result){
         th.extrasCalculated=false;
         th.data =  result.data;
-        th.extra.forEach(function (ex) {
-          if(th.$refs.hasOwnProperty('search'+ex.id)) {
-            if(th.$refs['search' + ex.id].length>0) {
-              th.$refs['search' + ex.id][0].clean();
+        if(th.extra) {
+          th.extra.forEach(function (ex) {
+            if (th.$refs.hasOwnProperty('search' + ex.id)) {
+              if (th.$refs['search' + ex.id].length > 0) {
+                th.$refs['search' + ex.id][0].clean();
+              }
             }
-          }
-        });
+          });
+        }
         th.columns.forEach(function (ex) {
           if(th.$refs.hasOwnProperty('search'+ex.id)) {
             if(th.$refs['search' + ex.id].length>0) {
@@ -257,7 +269,9 @@ module.exports = {
 
     },
     calculateExtra: function () {
-      if(!this.extrasCalculated && typeof this.data !="undefined" && this.data.length >0) {
+
+      if(!this.extrasCalculated && typeof this.data !="undefined" && this.data.length >0
+      && this.extra) {
         this.extrasCalculated = true;
         var th = this;
         this.extra.forEach(function (ex) {

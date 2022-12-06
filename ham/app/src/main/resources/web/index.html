@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link href="./libs/bootstrap.min.css" rel="stylesheet"/>
-    <script src="./libs/vue.js"></script>
-    <script src="./libs/httpVueLoader.js"></script>
-    <script src="./libs/axios.min.js"></script>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/vue.js"></script>
+    <script src="/libs/httpVueLoader.js"></script>
+    <script src="/libs/axios.min.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
-    <link rel="stylesheet" type="text/css" href="./vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
 </head>
 <body>
 <div class="container" id="app">
@@ -39,7 +39,7 @@
     new Vue({
         el: '#app',
         components: {
-            'simple-grid': httpVueLoader('vcomponents/testgrid.vue')
+            'simple-grid': httpVueLoader('/vcomponents/testgrid.vue')
         },
         data:{
             extraColumns:[],
