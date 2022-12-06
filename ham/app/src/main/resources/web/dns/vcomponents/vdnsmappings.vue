@@ -6,9 +6,10 @@
     <span slot="header">Dns Mapping</span>
     <span slot="body"><change-dns-mapping :data="modalData.data"/></span>
   </simple-modal>
-  <h3>DNS Mappings</h3>
-  <button v-on:click="reload()" class="btn btn-primary btn-sm">Reload</button>
-  <button v-on:click="addNew(false,[])" class="btn btn-primary btn-sm">Add new</button>
+  <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+  <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+  <button v-on:click="downloadHostFiles()" class="bi bi-download" title="Download Hosts File"></button>
+  <br><br>
   <simple-grid
       v-on:gridclicked="gridClicked"
       ref="grid"
@@ -38,13 +39,13 @@ module.exports = {
       ],
       extraColumns: [
         {
-          id: "_edit", template: "button", default: false, searchable: false, sortable: false, properties: {
-            name: "Edit", style: "btn btn-success btn-sm"
+          id: "_edit", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+            name: "Edit", style: "bi bi-pen-fill"
           }
         },
         {
-          id: "_delete", template: "button", default: false, searchable: false, sortable: false, properties: {
-            name: "Delete", style: "btn btn-danger btn-sm"
+          id: "_delete", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+            name: "Delete", style: "bi bi-trash"
           }
         }
       ]
@@ -97,6 +98,9 @@ module.exports = {
           this.reload();
         });
       }
+    },
+    downloadHostFiles:function(){
+      downloadFile("/api/dns/hosts","hosts");
     }
   }
 }

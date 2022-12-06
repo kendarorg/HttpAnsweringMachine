@@ -27,8 +27,8 @@
           </div>
 
           <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" @click="$emit('close')">Close</button>
-              <button type="button" class="btn btn-primary" v-on:click="saveTheModal">Save changes</button>
+            <button type="button" class="bi bi-x-square" @click="$emit('close')" title="Close"></button>
+            <button type="button" class="bi bi-save" v-on:click="saveTheModal" title="Save changes"></button>
           </div>
         </div>
       </div>

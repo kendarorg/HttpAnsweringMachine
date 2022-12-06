@@ -5,14 +5,14 @@
       <tr >
         <th v-for="key in extra" >
           <span v-if="getBoolVal(key.sortable,true)" class="btn btn-kendar btn-sm">
-          {{ key.id | capitalize }}
+          {{ key.id | cleanUp }}
             </span>
         </th>
         <th v-for="key in columns"
             @click="sortBy(key.id)"
             >
           <span v-if="getBoolVal(key.sortable,true)" class="btn btn-kendar btn-sm" :class="{ active: sortKey == key.id }">
-          {{ key.id | capitalize }}
+          {{ key.id | cleanUp }}
           <span :class="(sortOrders[key] > 0 ? 'arrow asc' : 'arrow dsc')">
                 </span>
             </span>
@@ -119,7 +119,10 @@ module.exports = {
     }
   },
   filters: {
-    capitalize: function (str) {
+    cleanUp: function (str) {
+      if(str.charAt(0)=="_"){
+        str = str.substring(1);
+      }
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
   },
@@ -147,6 +150,14 @@ module.exports = {
     getData: function () {
       return this.data;
     },
+    cleanRow:function(inrow){
+      var realData = {};
+      for(const key of this.columns){
+        console.log(key.id+":"+inrow[key.id])
+        realData[key.id]=inrow[key.id];
+      }
+      return realData;
+    },
     getById: function (indexArray) {
       for(var row of this.data){
         var tempId = this.buildId(row);
@@ -159,12 +170,7 @@ module.exports = {
         }
 
         if(tempIdMatch) {
-          var realData = {};
-          for(const key of this.columns){
-            console.log(key.id+":"+row[key.id])
-            realData[key.id]=row[key.id];
-          }
-          return realData;
+          return this.cleanRow(row);
         }
       }
       return null;

@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
     <script src="/libs/vue.js"></script>
     <script src="/libs/httpVueLoader.js"></script>
     <script src="/libs/axios.min.js"></script>
+    <script src="/libs/utils.js"></script>
     <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
 </head>
 <body>
@@ -17,12 +19,26 @@
         <div class="col-md-8">
             <br>
             <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
-            <button type="button"  class="btn btn-default" onClick="location.href='resolved.html'">Resolved</button>
         </div>
-        <dns-servers class="col-md-8">
-        </dns-servers>
-        <dns-mappings class="col-md-8">
-        </dns-mappings>
+        <vtabs>
+            <vtab name="Dns servers">
+                <br>
+                <dns-servers class="col-md-8">
+                </dns-servers>
+            </vtab>
+            <vtab name="Dns mappings">
+                <br>
+                <dns-mappings class="col-md-8">
+                </dns-mappings>
+            </vtab>
+            <vtab name="Resolved">
+                <br>
+                <dns-resolved class="col-md-8">
+                </dns-resolved>
+            </vtab>
+        </vtabs>
+
+
     </div>
 </div>
 <script>
@@ -30,7 +46,10 @@
         el: '#app',
         components: {
             'dns-servers': httpVueLoader('/dns/vcomponents/vdnsservers.vue'),
-            'dns-mappings': httpVueLoader('/dns/vcomponents/vdnsmappings.vue')
+            'dns-mappings': httpVueLoader('/dns/vcomponents/vdnsmappings.vue'),
+            'dns-resolved': httpVueLoader('/dns/vcomponents/vdnsresolved.vue'),
+            'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
+            'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
         }
     });
 </script>
