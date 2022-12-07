@@ -150,6 +150,7 @@ module.exports = {
   },
   filters: {
     cleanUp: function (str) {
+      if(typeof str == "undefined") return str;
       if(str.charAt(0)=="_"){
         str = str.substring(1);
       }
