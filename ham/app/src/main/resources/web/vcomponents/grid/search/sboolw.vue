@@ -19,14 +19,14 @@ module.exports = {
       if(!(val==null|| typeof val == "undefined")){
         val = val+"";
         if((val.toLowerCase() === 'true')||val==="1"){
-          this.$parent.$parent.setSearchField(this.descriptor.id,true,this.descriptor.template);
+          this.$parent.setSearchField(this.descriptor.id,true,this.descriptor.template);
           return;
         }else if((val.toLowerCase() === 'false')||val==="0"){
-          this.$parent.$parent.setSearchField(this.descriptor.id,false,this.descriptor.template);
+          this.$parent.setSearchField(this.descriptor.id,false,this.descriptor.template);
           return;
         }
       }
-      this.$parent.$parent.setSearchField(this.descriptor.id,null,this.descriptor.template);
+      this.$parent.setSearchField(this.descriptor.id,null,this.descriptor.template);
     }
   },
   methods:{

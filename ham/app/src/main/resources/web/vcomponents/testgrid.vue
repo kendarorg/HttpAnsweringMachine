@@ -6,6 +6,9 @@
       <button v-bind:disabled="index<=0" class="bi bi-skip-start" @click="goPrev" title="Prev"> </button>
       <button v-bind:disabled="!canGoNext()" class="bi bi-skip-end" @click="goNext" title="Next"></button>
       <button v-bind:disabled="!canGoNext()" class="bi bi-skip-forward" @click="goEnd" title="End"></button>
+      <!--&nbsp;&nbsp;
+
+      <button v-if="serverPagination===true" class="bi bi-binoculars" @click="search()" title="Search"></button>-->
       <br><br>
     </div>
     <table class="rounded-top">
@@ -33,24 +36,24 @@
       <tbody>
       <tr>
         <td v-for="key in extra">
-          <dynamic-search v-if="getBoolVal(key.searchable,true)"
+          <component :is="'s'+key.template" v-if="getBoolVal(key.searchable,true)"
                           :ref="'search'+key.id"
                           :descriptor="key"/>
         </td>
         <td v-for="key in columns">
-          <dynamic-search v-if="getBoolVal(key.searchable,true)"
+          <component :is="'s'+key.template" v-if="getBoolVal(key.searchable,true)"
                           :ref="'search'+key.id"
                           :descriptor="key"/>
         </td>
       </tr>
       <tr v-for="entry in filteredData">
         <td v-for="key in extra">
-          <dynamic-column :descriptor="key"
+          <component :is="'c'+key.template" :descriptor="key"
                           :value="entry[key.id]"
                           :index="buildId(entry)" />
         </td>
         <td v-for="key in columns">
-          <dynamic-column :descriptor="key"
+          <component :is="'c'+key.template" :descriptor="key"
                           :value="entry[key.id]"
                           :index="buildId(entry)"/>
         </td>
@@ -92,8 +95,20 @@ module.exports = {
     };
   },
   components:{
-    'dynamic-column': httpVueLoader('/vcomponents/grid/dynamiccolumn.vue'),
-    'dynamic-search': httpVueLoader('/vcomponents/grid/dynamicsearch.vue')
+    'sbool': httpVueLoader('/vcomponents/grid/search/sbool.vue'),
+    'sboolw': httpVueLoader('/vcomponents/grid/search/sboolw.vue'),
+    'sbutton': httpVueLoader('/vcomponents/grid/search/sbutton.vue'),
+    'slink': httpVueLoader('/vcomponents/grid/search/slink.vue'),
+    'slong': httpVueLoader('/vcomponents/grid/search/slong.vue'),
+    'sstring': httpVueLoader('/vcomponents/grid/search/sstring.vue'),
+
+    'cbool': httpVueLoader('/vcomponents/grid/column/cbool.vue'),
+    'cboolw': httpVueLoader('/vcomponents/grid/column/cboolw.vue'),
+    'cbutton': httpVueLoader('/vcomponents/grid/column/cbutton.vue'),
+    'clink': httpVueLoader('/vcomponents/grid/column/clink.vue'),
+    'clong': httpVueLoader('/vcomponents/grid/column/clong.vue'),
+    'cstring': httpVueLoader('/vcomponents/grid/column/cstring.vue'),
+    'ciconbutton': httpVueLoader('/vcomponents/grid/column/ciconbutton.vue')
   },
   computed: {
     filteredData: function () {
@@ -278,31 +293,39 @@ module.exports = {
       }
       return result.data;
     },
+    loadClientPagination:function(result){
+      var th= this;
+      var newData = [];
+      th.length = result.data.length;
+      var start = th.index * th.pageSize;
+      var end = start+ th.pageSize;
+      for (var i=start;i<end && i<result.data.length;i++){
+        newData.push(result.data[i]);
+      }
+      th.data = newData;
+    },
+    loadServerPagination:function(result){
+      var th= this;
+      var newData = [];
+      var realIndex = th.index;
+      if(realIndex<0)realIndex=0;
+      th.length=Math.max(th.length,th.pageSize*realIndex+result.data.length);
+      for (var i=0;i<th.pageSize && i<result.data.length;i++){
+        newData.push(result.data[i]);
+      }
+      th.data = newData;
+    },
+
     reload: function () {
       var th= this;
       this.retrieveData(this.index,this.pageSize).then(function(result){
         th.extrasCalculated=false;
         if(th.pageSize!=null && typeof th.pageSize !="undefined" && th.pageSize !=0 &&
             (th.serverPagination==null || typeof th.serverPagination =="undefined" || th.serverPagination ===false)) {
-          var newData = [];
-          th.length = result.data.length;
-          var start = th.index * th.pageSize;
-          var end = start+ th.pageSize;
-          for (var i=start;i<end && i<result.data.length;i++){
-            newData.push(result.data[i]);
-          }
-          th.data = newData;
+          th.loadClientPagination(result);
         }else if(th.serverPagination!=null && typeof th.serverPagination !="undefined" && th.serverPagination ===true){
-          var newData = [];
-          var realIndex = th.index;
-          if(realIndex<0)realIndex=0;
-          th.length=Math.max(th.length,th.pageSize*realIndex+result.data.length);
-          for (var i=0;i<th.pageSize && i<result.data.length;i++){
-            newData.push(result.data[i]);
-          }
-          th.data = newData;
+          th.loadServerPagination(result);
         }else{
-          debugger;
           th.data = result.data;
         }
         if(th.extra) {

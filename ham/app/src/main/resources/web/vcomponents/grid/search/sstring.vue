@@ -16,7 +16,7 @@ module.exports = {
   },
   watch:{
     searchQuery : function(val,oldVal){
-      this.$parent.$parent.setSearchField(this.descriptor.id,val,this.descriptor.template);
+      this.$parent.setSearchField(this.descriptor.id,val,this.descriptor.template);
     }
   },
   methods:{

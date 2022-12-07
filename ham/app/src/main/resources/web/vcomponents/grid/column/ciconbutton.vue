@@ -12,7 +12,7 @@ module.exports = {
         index: this.index,
         buttonid :this.descriptor.id
       }
-      this.$parent.$parent.$emit("gridclicked",eventData);
+      this.$parent.$emit("gridclicked",eventData);
     }
   }
 }

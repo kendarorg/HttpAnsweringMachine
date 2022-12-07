@@ -15,7 +15,7 @@ module.exports = {
         return this.value;
       },
       set: function(newValue) {
-        this.$parent.$parent.setField(this.descriptor.id,this.index,newValue);
+        this.$parent.setField(this.descriptor.id,this.index,newValue);
       }
     }
   },
