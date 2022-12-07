@@ -26,7 +26,6 @@ module.exports = {
   name: 'ham-upload',
   data:function(){
     return {
-      scriptName: "",
       fileContent:null,
       uploadScriptShow:""
     };
@@ -49,20 +48,22 @@ module.exports = {
       });
     },
     upload:function(){
+      var contentType=this.contentType;
       if(this.contentType==null||typeof this.contentType =="undefined"||this.contentType==""){
-        this.contentType="application/json";
+        contentType="application/json";
       }
       if(this.useFormData==null||typeof this.useFormData == "undefined"||this.useFormData==false) {
         var toUpload = JSON.stringify(this.fileContent);
-        const headers = {'Content-Type': this.contentType};
+        const headers = {'Content-Type': contentType};
         var th=this;
         axios.post(this.path, toUpload, {headers}).then((res) => {
           location.href = "script.html?id=" + res;
-          th.$emit('success',{
+          var data = {
             response:res,
             name:th.uploadScriptShow,
             length:toUpload.length
-          })
+          };
+          th.$emit('success',data)
         });
       }else {
         const formData = new FormData();
@@ -89,7 +90,7 @@ module.exports = {
       if (files && files.length) {
         try {
           for (let i = 0; i < files.length; i++) {
-            const uploadedImageBase64 = await this.convertFileToBase64(files[i], callback);
+            const uploadedImageBase64 = await this.convertFileToBase64(files[i]);
             filesLoaded.push({
               data: this.splitOnFirst(uploadedImageBase64, ",")[1],
               name: files[i].name,
@@ -101,7 +102,7 @@ module.exports = {
             });
           }
 
-
+          callback(filesLoaded)
         } catch (exception) {
           this.$emit('error', {
             files : filesLoadedEvent,

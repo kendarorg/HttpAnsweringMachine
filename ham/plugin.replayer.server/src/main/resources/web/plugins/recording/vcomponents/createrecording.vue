@@ -47,7 +47,7 @@ module.exports = {
   },
   data: function() {
     return {
-
+      scriptName:""
     }
   },
   components: {
@@ -60,7 +60,17 @@ module.exports = {
     onError:function(data){
       alert(data.error);
     },
-    create:function(){}
+    create:function(){
+      var data = {
+        name:this.scriptName+".json",
+        data:btoa("{}"),
+        type:"application/json"
+      };
+      const headers = {'Content-Type': this.contentType};
+      axios.post("/api/plugins/replayer/recording", data, {headers}).then((res) => {
+        location.href = "script.html?id=" + res.data;
+      });
+    }
   }
 }
 </script>

@@ -19,6 +19,8 @@
                   @close="modalShow = false">
         <span slot="header">Recording</span>
         <span slot="body"><create-recording :data="modalData.data"/></span>
+        <span slot="footer">
+              <button type="button" class="bi bi-x-square" @click="$emit('close')" title="Close"></button></span>
     </simple-modal>
     <div class="row">
         <div class="col-md-8">
@@ -87,7 +89,7 @@
                 var row = this.$refs.grid.getById(evt.index);
 
                 if (evt.buttonid == "_edit") {
-                    this.addNew(true, evt.index)
+                    location.href = "script.html?id="+row['id'];
                 } else if (evt.buttonid == "_delete") {
                     await axios.delete("/api/plugins/replayer/recording/" + row['id'])
                     this.reload();
