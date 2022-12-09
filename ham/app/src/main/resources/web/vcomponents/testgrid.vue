@@ -16,19 +16,19 @@
       <tr >
         <th v-for="key in extra" >
           <span v-if="getBoolVal(key.sortable,true)" class="btn btn-kendar btn-sm">
-          {{ key.id | cleanUp }}
+          {{ buildLabel(key) | cleanUp }}
           </span>
         </th>
         <th v-for="key in columns"
             @click="sortBy(key.id)"
             >
           <span v-if="getBoolVal(key.sortable,true)" class="btn btn-kendar btn-sm" :class="{ active: sortKey == key.id }">
-                {{ key.id | cleanUp }}
+                {{ buildLabel(key) | cleanUp }}
                 <span :class="(sortOrders[key] > 0 ? 'arrow asc' : 'arrow dsc')">
                 </span>
           </span>
           <span v-else class="btn btn-kendar btn-sm">
-                {{ key.id | cleanUp }}
+                {{ buildLabel(key) | cleanUp }}
           </span>
         </th>
       </tr>
@@ -158,6 +158,10 @@ module.exports = {
     }
   },
   methods: {
+    buildLabel: function(key){
+      if(typeof key.label=="undefined") return key.id;
+      return key.label;
+    },
     canGoNext:function(){
       return this.length>(this.index+1)*this.pageSize
     },
@@ -220,29 +224,32 @@ module.exports = {
       }
       return realData;
     },
-    getById: function (indexArray) {
-      for(var row of this.data){
+    getByIdFull:function (indexArray) {
+      for (var row of this.data) {
         var tempId = this.buildId(row);
         var tempIdMatch = true;
-        for(var i=0;i<indexArray.length;i++){
-          if(indexArray[i]!=tempId[i]){
+        for (var i = 0; i < indexArray.length; i++) {
+          if (indexArray[i] != tempId[i]) {
             tempIdMatch = false;
             break;
           }
         }
-
-        if(tempIdMatch) {
-          return this.cleanRow(row);
+        if(tempIdMatch) {return row;}
         }
-      }
       return null;
+
+    },
+    getById: function (indexArray) {
+      var founded = this.getByIdFull(indexArray);
+      if(null == founded) return null;
+      return this.cleanRow(founded);
     },
     getByRow: function (otherRow) {
       var indexArray = this.buildId(otherRow);
       return this.getById(indexArray);
     },
     setField: function(id,indexArray,newValue){
-      var row = this.getById(indexArray);
+      var row = this.getByIdFull(indexArray);
       row[id]=newValue;
       this.forceUpdate++;
     },
@@ -316,37 +323,60 @@ module.exports = {
       }
       th.data = newData;
     },
-
-    reload: function () {
-      var th= this;
-      this.retrieveData(this.index,this.pageSize).then(function(result){
-        th.extrasCalculated=false;
-        if(th.pageSize!=null && typeof th.pageSize !="undefined" && th.pageSize !=0 &&
-            (th.serverPagination==null || typeof th.serverPagination =="undefined" || th.serverPagination ===false)) {
-          th.loadClientPagination(result);
-        }else if(th.serverPagination!=null && typeof th.serverPagination !="undefined" && th.serverPagination ===true){
-          th.loadServerPagination(result);
-        }else{
-          th.data = result.data;
-        }
-        if(th.extra) {
-          th.extra.forEach(function (ex) {
-            if (th.$refs.hasOwnProperty('search' + ex.id)) {
-              if (th.$refs['search' + ex.id].length > 0) {
-                th.$refs['search' + ex.id][0].clean();
-              }
-            }
-          });
-        }
-        th.columns.forEach(function (ex) {
-          if(th.$refs.hasOwnProperty('search'+ex.id)) {
-            if(th.$refs['search' + ex.id].length>0) {
+    reloadFieldsAndOrdering:function(){
+      var th=this;
+      if(th.extra) {
+        th.extra.forEach(function (ex) {
+          if (th.$refs.hasOwnProperty('search' + ex.id)) {
+            if (th.$refs['search' + ex.id].length > 0) {
               th.$refs['search' + ex.id][0].clean();
             }
           }
         });
-        th.calculateExtra();
+      }
+      th.columns.forEach(function (ex) {
+        if(th.$refs.hasOwnProperty('search'+ex.id)) {
+          if(th.$refs['search' + ex.id].length>0) {
+            th.$refs['search' + ex.id][0].clean();
+          }
+        }
       });
+      th.calculateExtra();
+    },
+    reloadDataInternal:function(result){
+      var th = this;
+      th.extrasCalculated=false;
+      if(th.pageSize!=null && typeof th.pageSize !="undefined" && th.pageSize !=0 &&
+          (th.serverPagination==null || typeof th.serverPagination =="undefined" || th.serverPagination ===false)) {
+        th.loadClientPagination(result);
+      }else if(th.serverPagination!=null && typeof th.serverPagination !="undefined" && th.serverPagination ===true){
+        th.loadServerPagination(result);
+      }else{
+        th.data = result.data;
+      }
+      this.reloadFieldsAndOrdering();
+
+    },
+    reload: function (possibleData) {
+      var th= this;
+      if(this.retrieveData==null || typeof this.retrieveData =="undefined"){
+        if(possibleData!=null && typeof possibleData !="undefined") {
+          this.reloadDataInternal({
+            data: possibleData
+          })
+        }else{
+          this.reloadFieldsAndOrdering();
+        }
+      }else {
+        this.retrieveData(this.index, this.pageSize).then(function (result) {
+          if (typeof result == "undefined") {
+            result = {
+              data: []
+            }
+          }
+          th.reloadDataInternal(result);
+        });
+      }
 
     },
     calculateExtra: function () {
@@ -369,8 +399,17 @@ module.exports = {
       var th = this;
       this.filteredData.forEach(function(toSel){
         var index =th.buildId(toSel);
-        th.setField(selectField,index,!toSel.select);
+        th.setField(selectField,index,!toSel[selectField]);
       });
+    },
+    onSelected:function(functoApply){
+      var th = this;
+      this.filteredData.forEach(function(toSel){
+        var index =th.buildId(toSel);
+        var row = th.getByIdFull(index);
+        functoApply(row);
+      });
+      this.forceUpdate++;
     },
     selectAll : function(selectField){
       var th = this;

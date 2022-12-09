@@ -189,6 +189,7 @@ public class ReplayerAPICrud implements FilteringClass {
       List<CallIndex> indexLines = em.createQuery("SELECT e FROM CallIndex e WHERE e.recordingId=" + id).getResultList();
       List<ReplayerRow> rows = em.createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId=" + id).getResultList();
 
+      result.setName(recording.getName());
       result.setDescription(recording.getDescription());
       for(var row:rows){
         if(row.isStaticRequest()){

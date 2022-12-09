@@ -91,6 +91,7 @@ public class SingleScriptAPI implements FilteringClass {
                         }
                     });
 
+            result.setName(recording.getName());
             result.setId(recording.getId());
             result.setDescription(recording.getDescription());
             for(var index: indexLines){

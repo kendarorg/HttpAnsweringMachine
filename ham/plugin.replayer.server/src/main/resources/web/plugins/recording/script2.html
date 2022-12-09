@@ -1,0 +1,670 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <script src="/libs/lodash.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+    <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-8">
+            <br>
+            <button type="button" class="btn btn-default" onClick="location.href='../../index.html'">Main</button>
+            <button type="button" class="btn btn-default" onClick="location.href='index.html'">Scripts</button>
+        </div>
+        <div class="col-md-8">
+            <br>
+            <button id="startrecording" name="startrecording" type="button" class="btn btn-default"
+                    onClick="executeAct('start','record');">Start Recording
+            </button>
+            <button id="pauserecording" name="pauserecording" type="button" class="btn btn-default"
+                    onClick="executeAct('pause','record');">
+                <i class="bi bi-pause-fill"></i>Pause Recording
+            </button>
+            <button id="stoprecording" name="stoprecording" type="button" class="btn btn-default"
+                    onClick="executeAct('stop','record');">
+                <i class="bi bi-stop-fill"></i>Stop Recording
+            </button>
+
+            <button id="startreplaying" name="startreplaying" type="button" class="btn btn-default"
+                    onClick="executeAct('start','replay');">
+                <i class="bi bi-play-fill"></i>Start Replaying
+            </button>
+            <button id="pausereplaying" name="pausereplaying" type="button" class="btn btn-default"
+                    onClick="executeAct('pause','replay');">
+                <i class="bi bi-pause-fill"></i>Pause Replaying
+            </button>
+            <button id="stopreplaying" name="stopreplaying" type="button" class="btn btn-default"
+                    onClick="executeAct('stop','replay');">
+                <i class="bi bi-stop-fill"></i>Stop Replaying
+            </button>
+
+            <button id="play_pact" name="play_pact" type="button" class="btn btn-default"
+                    onClick="executeAct('start','pact');">
+                <i class="bi bi-fingerpring"></i>Start PACT
+            </button>
+            <button id="stop_pact" name="stop_pact" type="button" class="btn btn-default"
+                    onClick="executeAct('stop','pact');">
+                <i class="bi bi-stop-fill"></i>Stop PACT
+            </button>
+
+            <button id="play_null" name="play_null" type="button" class="btn btn-default"
+                    onClick="executeAct('start','null');">
+                <i class="bi bi-mic"></i>Start NULL
+            </button>
+            <button id="stop_null" name="stop_null" type="button" class="btn btn-default"
+                    onClick="executeAct('stop','null');">
+                <i class="bi bi-stop-fill"></i>Stop NULL
+            </button>
+        </div>
+        <div class="col-md-8">
+            <h3>SCRIPT</h3>
+        </div>
+        <div class="col-md-8">
+            <br>
+            <button id="save" name="save" type="button" class="btn btn-default" onClick="save();">
+                <i class="bi bi-save"></i>Save
+            </button>
+            <button id="download" name="download" type="button" class="btn btn-default" onClick="download();">
+                <i class="bi bi-filetype-json"></i>Download
+            </button>
+            <button id="downloadTest" name="downloadTest" type="button" class="btn btn-default"
+                    onClick="downloadTest();">
+                <i class="bi bi-file-zip"></i>Download test project
+            </button>
+        </div>
+        <div class="col-md-8">
+            <br>
+            <div class="form-group">
+                <label for="id">Id</label>
+                <input class="form-control" readonly type="text" name="id" id="id"/>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input class="form-control" type="text" name="description" id="description"/>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <h4>FILTER</h4>
+        </div>
+        <div class="col-md-8">
+            <br>
+            <div class="form-group">
+                <label for="src">Source</label>
+                <input class="form-control" type="text" name="src" id="src"/>
+            </div>
+            <div class="form-group">
+                <label for="dst">Destination</label>
+                <input class="form-control" type="text" name="dst" id="dst"/>
+            </div>
+            <div class="form-group">
+                <label for="test">Test</label>
+                <input class="form-control" type="text" name="test" id="test"/>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="col-md-8">
+                <button id="full_selectall" name="full_selectall" type="button" class="btn btn-default"
+                        onClick="full_selectall();">
+                    <i class="bi bi-check-all"></i>Select All
+                </button>
+                <button id="full_deselectall" name="full_deselectall" type="button" class="btn btn-default"
+                        onClick="full_unselectall();">
+                    <i class="bi bi-square"></i>Unselect All
+                </button>
+                <div class="card" style="width: fit-content;">
+
+                    <div class="card-body">
+                        <h4>Selected operations</h4>
+                        <button id="selected_script_edit" name="selected_script_edit" type="button"
+                                class="btn btn-default" onClick="selected_script_edit();">
+                            <i class="bi bi-filetype-js"></i>Edit Js
+                        </button>
+                        <br><br>
+                        <button id="full_togglepactselected" name="full_togglepactselected" type="button"
+                                class="btn btn-default" onClick="togglepactselected();">
+                            <i class="bi bi-fingerprint"></i>Set as PACT
+                        </button>
+                        <br><br>
+                        <button id="full_togglestimulatorselected" name="full_togglestimulatorselected" type="button"
+                                class="btn btn-default" onClick="togglestimulatorselected();">
+                            <i class="bi bi-mic"></i>Set stimulatOR
+                        </button>
+                        <button id="script_togglestimulatedselected" name="script_togglestimulatedselected"
+                                type="button" class="btn btn-default" onClick="togglestimulatedselected();">
+                            <i class="bi bi-headphones"></i>Set stimulatED
+                        </button>
+                        <br>
+                        <br>
+                        <button id="script_deleteselected" name="script_deleteselected" type="button"
+                                class="btn btn-default" onClick="deleteSelected();">
+                            <i class="bi bi-eraser-fill"></i>Delete Selected
+                        </button>
+                        <br>
+                        <br>
+                        <button id="script_dnsselected" name="script_dnsselected" type="button"
+                                class="btn btn-default" onClick="dnsSelected();">
+                            <i class="bi bi-signpost"></i>Add DNS for selected
+                        </button>
+                        <button id="script_sslselected" name="script_sslselected" type="button"
+                                class="btn btn-default" onClick="sslSelected();">
+                            <i class="bi bi-lock"></i>Add SSL for selected
+                        </button>
+                    </div>
+                </div>
+                <br>
+            </div>
+            <div class="col-md-8">
+                <table class="table table-striped" id="allCalls" name="allCalls">
+                    <tr>
+                        <th>Selected</th>
+                        <th colspan="3">
+                            <!--<button class="btn btn-danger form-control"
+                                    onClick="addLine();">Add</button>-->
+                        </th>
+                        <th>Id&nbsp;&nbsp;</th>
+                        <th>Pact&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th>Stimulator</th>
+                        <th>Stimulated</th>
+                        <th>Method</th>
+                        <th>Host</th>
+                        <th>Path&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th>Query&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th>Res.Status</th>
+                        <th>Req.Body</th>
+                        <th>Res.Body</th>
+                        <th>Pre Script</th>
+                        <th>Script</th>
+                    </tr>
+                </table>
+            </div>
+            <!--</div>
+        </div>-->
+        </div>
+
+
+    </div>
+</div>
+<!-- Modal -->
+<div aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Update User</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+<script src="/app/app.js"></script>
+<script>
+
+    var selected_script_edit = function(){
+        var selected= getSelectedLines();
+        if(selected.length==0)return;
+        var line = selected.join(",");
+        location.href="js.html?id="+getUrlParameter("id")+"&line="+line;
+    }
+    var previousActiveTabIndex = 0;
+    $(".tab-switcher").on('click keypress', function (event) {
+        // event.which === 13 means the "Enter" key is pressed
+        if ((event.type === "keypress" && event.which === 13) || event.type === "click") {
+            var tabClicked = $(this).data("tab-index");
+            if(tabClicked != previousActiveTabIndex) {
+                $("#allTabsContainer .tab-container").each(function () {
+                    if($(this).data("tab-index") == tabClicked) {
+                        $(".tab-container").hide();
+                        $(this).show();
+                        previousActiveTabIndex = $(this).data("tab-index");
+                        return;
+                    }
+                });
+            }
+        }
+    });
+
+    var scriptModal = `
+            <div class="form-group">
+    <label for="line">line</label>
+    <input class="form-control" type="text" name="line"  id="line" />
+    </div>
+            <div class="form-group">
+                <label for="jsScript">PRE</label>
+                <textarea class="form-control" rows="6" cols="50" name="jsScript" id="jsScript"></textarea>
+            </div>
+    `;
+
+    var saveScript = function(url,data){
+
+        $.ajax({
+            url: url,
+            type: 'PUT',
+            data: data,
+            contentType: "text/plain",
+            success: function(response){
+                location.reload();
+            }});
+    }
+
+    var setScript = function(line){
+        location.href="js.html?id="+getUrlParameter("id")+"&line="+line;
+    }
+
+    var buttonsMask=[
+        {id:["startreplaying"],states:["PAUSED_REPLAYING","NONE"],callback:function(){
+                return allCalls.data.length>0;
+            }},
+        {id:["stopreplaying"],states:["PAUSED_REPLAYING","REPLAYING"]},
+        {id:["pausereplaying"],states:["REPLAYING"]},
+        {id:["startrecording"],states:["NONE","PAUSED_RECORDING"],callback:function(){
+                return allCalls.data.length==0;
+            }},
+        {id:["stoprecording"],states:["RECORDING","PAUSED_RECORDING"]},
+        {id:["pauserecording"],states:["RECORDING"]},
+        //{id:["script_clone"],states:["NONE","OTHER_RUNNING"]},
+        {id:["save"],states:["NONE","OTHER_RUNNING"]},
+
+        {id:["script_addline","script_deleteselected","script_togglestimulatorseleted"],states:["NONE","OTHER_RUNNING"]},
+
+        {id:["script_togglestimulatorseleted","script_togglepactselected"],states:["NONE","OTHER_RUNNING"]},
+
+        {id:["play_pact"],states:["NONE"],callback:function(){
+                return allCalls.data.length>0;
+            }},
+        {id:["stop_pact"],states:["PLAYING_PACT"]},
+
+        {id:["play_null"],states:["NONE"],callback:function(){
+                return allCalls.data.length>0;
+            }},
+        {id:["stop_null"],states:["PLAYING_NULL_INFRASTRUCTURE"]}
+    ];
+
+
+
+    var checkButtons = function(){
+        $.ajax({
+            url: "/api/plugins/replayer/status",
+            type: 'GET',
+            success: function (res) {
+                var status = res["status"].toUpperCase();
+                var running = res["running"].toUpperCase();
+                var thisScript = getUrlParameter("id").toUpperCase();
+                if(status!="NONE" && thisScript!=running){
+                    status="OTHER_RUNNING";
+                }
+                buttonEnabler(buttonsMask,status);
+            }});
+    };
+
+    longPolling(1000,function(){
+       checkButtons();
+    });
+
+    //'_pactTest','_stimulatorTest
+    var loadIndexData = function(table){
+        $.ajax({
+            url: "/api/plugins/replayer/v2/recording/" + getUrlParameter("id"),
+            type: 'GET',
+            success: function (res) {
+                $("#description").val(res['description']);
+                if (res['filter'] != undefined) {
+                    $("#dst").val(res['filter']['dst']);
+                    $("#src").val(res['filter']['src']);
+                    $("#test").val(res['filter']['test']);
+                }
+                $("#id").val(res['id']);
+
+                //Load lines
+                var lines = res["lines"];
+                for (var v = 0; v < lines.length; v++) {
+
+                    line = JSON.parse(JSON.stringify(lines[v]));
+                    line['_selected'] = `<div class="form-check">
+<label class="form-check-label">
+                <input class="form-check-input"  type="checkbox" value="false" id="selected_` + line['id'] + `" name="selected_`+line['id']+`">
+</label>
+            </div>`
+                    var checkedItem = line['pactTest']?"checked='checked' value='true'":"value='false'";
+                    line['_pactTest'] = `<div class="form-check">
+<label class="form-check-label">
+                <input class="form-check-input"  type="checkbox" `+checkedItem+` id="pactTest_` + line['id'] + `" name="pactTest_`+
+                        line['id']+`">
+</label>
+            </div>`;
+                    checkedItem = line['stimulatorTest']?"checked='checked' value='true'":"value='false'";
+                    line['_stimulatorTest'] = `<div class="form-check">
+<label class="form-check-label">
+                <input class="form-check-input"  type="checkbox" `+checkedItem+` id="stimulatorTest_` + line['id'] + `" name="stimulatorTest_`+
+                        line['id']+`">
+</label>
+            </div>`;
+                    checkedItem = line['stimulatedTest']?"checked='checked' value='true'":"value='false'";
+                    line['_stimulatedTest'] = `<div class="form-check">
+                <input class="form-check-input" type="checkbox" `+checkedItem+` value="" id="stimulatedTest_` + line['id'] + `" name="stimulatedTest_`+
+                        line['id']+`">
+            </div>`;
+
+
+                    setChecked($('#allCalls #pactTest_'+line['id']),line['pactTest']);
+                    setChecked($('#allCalls #stimulatorTest_'+line['id']),line['stimulatorTest']);
+                    setChecked($('#allCalls #stimulatedTest_'+line['id']),line['stimulatedTest']);
+
+                    const lineid= line['id'];
+                    $(document).on('change', '#allCalls #pactTest_'+line['id'], function() {
+                        var checkbox = $(this); // Selected or current checkbox
+                        var index=-1;
+                        allCalls.data.forEach(function (row, i,array) {
+                            if(row['id']==lineid && index<0) {
+                                index=i;
+                            }
+                        });
+                        if(index==-1)return;
+                        allCalls.data[index]['pactTest']=setChecked($('#allCalls #pactTest_'+
+                            allCalls.data[index]['id']),checkbox.is(':checked'));
+                    });
+                    $(document).on('change', '#allCalls #stimulatorTest_'+line['id'], function() {
+                        var checkbox = $(this); // Selected or current checkbox
+                        var index=-1;
+                        allCalls.data.forEach(function (row, i,array) {
+                            if(row['id']==lineid && index<0) {
+                                index=i;
+                            }
+                        });
+                        if(index==-1)return;
+                        allCalls.data[index]['stimulatorTest']=setChecked($('#allCalls #stimulatorTest_'+
+                            allCalls.data[index]['id']),checkbox.is(':checked'));
+                    });
+                    $(document).on('change', '#allCalls #stimulatedTest_'+line['id'], function() {
+                        var checkbox = $(this); // Selected or current checkbox
+                        var index=-1;
+                        allCalls.data.forEach(function (row, i,array) {
+                            if(row['id']==lineid && index<0) {
+                                index=i;
+                            }
+                        });
+                        if(index==-1)return;
+                        allCalls.data[index]['stimulatedTest']=setChecked($('#allCalls #stimulatedTest_'+
+                            allCalls.data[index]['id']),checkbox.is(':checked'));
+                    });
+
+                    //line['_script'] = (line['id'] in postscripts)?"Yes":"No";
+                    //line['_preScript'] = (line['id'] in prescripts)?"Yes":"No";
+                    //if (line['responseHash'] != "0") line['_responseHashCalc'] = "Yes";
+                    //if (line['requestHash'] != "0") line['_requestHashCalc'] = "Yes";
+                    line['_editScript'] = `<button type="button" onclick="setScript(`+line['id']+`)" class="btn btn-default form-control"><i class="bi bi-filetype-js"></i></button>`;
+                    line['_edit'] = `<button type="button" onclick="doEditFunc(`+line['reference']+`)" class="btn btn-success form-control"><i class="bi bi-pencil"></i></button>`;
+                    line['_delete'] = `<button type="button" onclick="doDeleteFunc(`+line['reference']+`)" class="btn btn-danger form-control"><i class="bi bi-trash"></i></button>`;
+                    //tSource,tableId,id,data,fields
+                    allCalls.appendToTable(line,false);
+                }
+            }
+        });
+    }
+    var doEditFunc = function(id){
+        allCalls.editFunction(allCalls, id);
+    }
+    var doDeleteFunc = function(id){
+        allCalls.deleteFunction(allCalls, id);
+    }
+
+    var fieldsAllCalls = ['_selected','_editScript','_edit','_delete','id','_pactTest','_stimulatorTest','_stimulatedTest',
+        'requestMethod','requestHost','requestPath','queryCalc','responseStatusCode',
+        'requestHashCalc','responseHashCalc','preScript','script'];
+    var allCalls = new SimpleGrid("Request-Response","allCalls","id",fieldsAllCalls,
+        function (table){
+            loadIndexData(table);
+        },
+        function (table,id) {
+            location.href = "line.html?line="+id+"&id="+getUrlParameter("id");
+        },
+        function (table,id) {
+            table.deleteFromTable(id,function(id,success,error){
+                $.ajax({
+                    url: "/api/plugins/replayer/recording/"+getUrlParameter("id")+"/lineindex/" + id,
+                    type: 'DELETE',
+                    success: function (res) {
+                        success();
+                    },
+                    error:function(res){
+                        error();
+                    }
+                });
+            });
+        },null,[
+            {id:"id",type:"string"},
+            {id:"_pactTest",type:"bool",field:"pactTest"},
+            {id:"_stimulatorTest",type:"bool",field:"stimulatorTest"},
+            {id:"_stimulatedTest",type:"bool",field:"stimulatedTest"},
+            {id:"requestHost",type:"string"},
+            {id:"requestPath",type:"string"},
+            {id:"script",type:"bool"},
+            {id:"preScript",type:"bool"},
+            {id:"queryCalc",type:"string"}]);
+
+    function download(){
+        window.location = ("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/full");
+    }
+
+    function downloadTest(){
+        var pack = prompt("Insert the package");
+        window.location = ("/api/plugins/replayer/generator/"+getUrlParameter("id")+"?package="+pack);
+    }
+
+    //linesTable.load();
+    allCalls.load();
+
+
+
+    function calculateQuery(query){
+        var result ="";
+        $.each(query, function (i, v) {
+            if(result!="")result+="&";
+            result+=i+"="+v;
+        });
+        return result;
+    }
+
+    function addLine(){
+        var maxValue = 0;
+        for(var i=0;i<allCalls.data.length;i++){
+            var curr = allCalls.data[i];
+            if(curr['id']>maxValue){
+                maxValue=curr['id'];
+            }
+        }
+        maxValue++;
+        location.href = "line.html?line="+maxValue+"&id="+getUrlParameter("id");
+    }
+
+    function executeAct(action,usedType){
+        var id = getUrlParameter("id");
+        var url = "/api/plugins/replayer/recording/"+id+"/"+usedType+"/"+action;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(res) {
+                location.reload();
+            }
+        });
+    }
+
+    function getSelectedLines(){
+
+        var result = [];
+        allCalls.data.forEach(function (row, i) {
+            if($('#allCalls #selected_'+row['id']).prop("checked")) {
+                result.push(row['id']);
+            }
+        });
+        return result;
+    }
+
+    function cloneselected(){
+        var resp = window.prompt("The name of the clone?")
+        var id = getUrlParameter("id");
+        var data = getSelectedLines();
+        $.ajax({
+            url: '/api/plugins/replayer/recording/'+id+'/clone/'+resp,
+            type: 'post',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(response){
+                location.reload();
+            }
+        });
+    }
+
+    function deleteSelected(){
+
+        let confirmAction = confirm("Are you sure to delete the line");
+        if (confirmAction) {
+
+            var id = getUrlParameter("id");
+            var data = getSelectedLines();
+            //
+            $.ajax({
+                url: '/api/plugins/replayer/recording/'+id+'/deletelines',
+                type: 'post',
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function(response){
+                    location.reload();
+                }
+            });
+        }
+    }
+
+
+    function full_selectall(){
+        allCalls.data.forEach(function (row, i) {
+            setChecked($('#allCalls #selected_'+row['id']),true);
+        });
+    }
+
+    function full_unselectall(){
+        allCalls.data.forEach(function (row, i) {
+            setChecked($('#allCalls #selected_'+row['id']),false);
+        });
+    }
+
+    function togglestimulatedselected(){
+        allCalls.data.forEach(function (row, i,array) {
+            if(!$('#allCalls #selected_'+row['id']).prop("checked"))return;
+            allCalls.data[i]['stimulatedTest']=toggleCheck($('#allCalls #stimulatedTest_'+row['id']));
+        });
+        debugger;
+    }
+
+    function togglestimulatorselected(){
+        allCalls.data.forEach(function (row, i,array) {
+            if(!$('#allCalls #selected_'+row['id']).prop("checked"))return;
+            allCalls.data[i]['stimulatorTest']= toggleCheck($('#allCalls #stimulatorTest_'+row['id']));
+        });
+    }
+    function togglepactselected(){
+        allCalls.data.forEach(function (row, i, array) {
+            if(!$('#allCalls #selected_'+row['id']).prop("checked"))return;
+            allCalls.data[i]['pactTest'] =toggleCheck($('#allCalls #pactTest_'+row['id']));
+        });
+    }
+
+
+
+    function save(){
+        var id = getUrlParameter("id");
+
+        var stimulatedTest = [];
+        var pactTest = [];
+        var stimulatorTest = [];
+        allCalls.data.forEach(function (row, i) {
+            if(row['stimulatedTest']==true){
+                stimulatedTest.push(row['id']);
+            }
+            if(row['pactTest']==true){
+                pactTest.push(row['id']);
+            }
+            if(row['stimulatorTest']==true){
+                stimulatorTest.push(row['id']);
+            }
+        });
+
+        var data = {
+            id:id,
+            description: $("#description").val(),
+            filter:{
+                dst:$("#dst").val(),
+                src:$("#src").val(),
+                test:$("#test").val()
+            },
+            stimulatorTest:stimulatorTest,
+            pactTest:pactTest,
+            stimulatedTest:stimulatedTest
+        };
+        $.ajax({
+            url: '/api/plugins/replayer/recording/'+id,
+            type: 'put',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(response){
+                location.reload();
+            }
+        });
+    }
+    function getSelectedHosts(){
+
+        var result = [];
+        allCalls.data.forEach(function (row, i) {
+            if($('#allCalls #selected_'+row['id']).prop("checked")) {
+                result.push(row['requestHost']);
+            }
+        });
+        return result;
+    }
+
+    var dnsSelected = function(){
+        var selected= getSelectedHosts();   //List of integers
+        if(selected.length==0)return;
+        $.ajax({
+            url: "/api/dns/mappings",
+            type: "POST",
+            data:JSON.stringify(selected),
+            contentType: "application/json",
+            success: function (res) {
+                success();
+            },
+            error:function(res){
+                error();
+            }
+        });
+
+    }
+    var sslSelected = function(){
+        var selected= getSelectedHosts();
+        if(selected.length==0)return;
+        $.ajax({
+            url: "/api/ssl",
+            type: "POST",
+            data:JSON.stringify(selected),
+            contentType: "application/json",
+            success: function (res) {
+                success();
+            },
+            error:function(res){
+                error();
+            }
+        });
+
+    }
+</script>
+</body>
+</html>

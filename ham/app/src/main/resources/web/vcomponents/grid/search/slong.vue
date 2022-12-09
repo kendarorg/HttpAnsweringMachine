@@ -1,6 +1,6 @@
 <template>
   <form id="search">
-    <input name="query" v-model="searchQuery" />
+    <input name="query" v-model="searchQuery" v-bind:size="inputLength"/>
   </form>
 </template>
 <script>
@@ -13,6 +13,12 @@ module.exports = {
     return {
       searchQuery: ""
     };
+  },
+  computed: {
+    inputLength: function () {
+      if(typeof this.descriptor.size =="undefined")return 30;
+      return this.descriptor.size;
+    }
   },
   watch:{
     searchQuery:function(val,oldVal){

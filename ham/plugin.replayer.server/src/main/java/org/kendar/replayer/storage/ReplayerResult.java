@@ -13,6 +13,7 @@ public class ReplayerResult {
     private List<CallIndex> indexes = new ArrayList<>();
     private HashMap<String,String> variables = new HashMap<>();
     private String initScript;
+    private String name;
 
     private String description;
     private RedirectFilter filter;
@@ -87,5 +88,13 @@ public class ReplayerResult {
 
     public void setInitScript(String initScript) {
         this.initScript = initScript;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
