@@ -57,7 +57,6 @@ module.exports = {
         const headers = {'Content-Type': contentType};
         var th=this;
         axios.post(this.path, toUpload, {headers}).then((res) => {
-          location.href = "script.html?id=" + res;
           var data = {
             response:res,
             name:th.uploadScriptShow,
