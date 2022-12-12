@@ -20,7 +20,7 @@
 module.exports = {
   name: "current-line",
   props:{
-    selectedRow:Number
+    currentRow:Number
   },
   data:function(){
     return {
@@ -35,11 +35,12 @@ module.exports = {
     'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
   },
   watch: {
-    selectedRow: function (val, oldVal) {
+    currentRow: function (val, oldVal) {
       var th=this;
       axios.get("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/line/" + val)
           .then(function(result){
             th.data=result.data;
+            console.log(th.data)
           })
     }
   }
