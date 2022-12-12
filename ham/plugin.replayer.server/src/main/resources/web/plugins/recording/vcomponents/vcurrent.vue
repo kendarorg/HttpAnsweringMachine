@@ -12,9 +12,17 @@
 
         </request-line>
       </vtab>
+      <vtab name="REQDATA">
+        <br>
+        REQUEST DATA
+      </vtab>
       <vtab name="RESPONSE">
         <br>
         RESPONSE
+      </vtab>
+      <vtab name="RESDATA">
+        <br>
+        RESPONSE DATA
       </vtab>
       <vtab name="SCRIPT">
         <br>
