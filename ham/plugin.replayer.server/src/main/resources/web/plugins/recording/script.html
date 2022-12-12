@@ -41,6 +41,7 @@
         <div class="col-md-8">
             <vtabs>
                 <vtab name="RECORDINGS">
+                    <br>
                     <recording-list
                             v-on:selectrow="rowSelected"
                         v-on:download="download"
@@ -48,6 +49,7 @@
                         ref="recordingList" ></recording-list>
                 </vtab>
                 <vtab name="SELECTED">
+                    <br>
                     <current-line
                             :current-row="selectedRow"
                             ref="currentLine">

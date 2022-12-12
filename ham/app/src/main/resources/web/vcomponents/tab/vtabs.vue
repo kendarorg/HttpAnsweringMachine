@@ -1,9 +1,9 @@
 <template>
   <div class="col-md-8">
-      <ul class=" v-effect-link">
-        <li  v-for="tab in tabs" >
-          <a  :href="tab.href"  @click="selectTab(tab)">
-            <span :class="{ 'is-active': tab.isActive }"><h3>[{{ tab.name }}]</h3></span>
+      <ul class="nav nav-tabs">
+        <li  v-for="tab in tabs" class="nav-item">
+          <a class="nav-link" :href="tab.href" :class="{ 'really-active': tab.isActive }" @click="selectTab(tab)">
+            {{ tab.name }}
           </a>
         </li>
       </ul>
@@ -41,7 +41,18 @@ module.exports = {
   }
 }
 </script>
-<style scoped>
+<style >
+.really-active {
+  border: 1px solid;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  color: #495057;
+  background-color: #EEEEEE;
+  border-color: black black black;
+}
+</style>
+<!--<style scoped>
+  border-color: #dee2e6 #dee2e6 #fff;
 .v-effect-link {
   list-style-type: none;
   margin: 0;
@@ -94,4 +105,4 @@ module.exports = {
   transition: all 0.3s cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
 
-</style>
+</style>-->
