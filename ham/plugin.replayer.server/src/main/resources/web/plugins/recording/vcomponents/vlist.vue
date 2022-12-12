@@ -30,7 +30,7 @@ module.exports = {
       data:[],
       columns: [
         {id: "id", template: "long", index: true,size:4},
-        {id: "pacttests", template: "boolw",label:"Pact"},
+        {id: "pactTest", template: "boolw",label:"Pact"},
         {id: "stimulatorTest", template: "boolw",label:"Stimulator"},
         {id: "stimulatedTest", template: "boolw",label:"Stimultated"},
         {id: "requestMethod", template: "string",label:"Method",size:7},

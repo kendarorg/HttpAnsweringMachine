@@ -18,7 +18,9 @@
       </vtab>
       <vtab name="RESPONSE">
         <br>
-        RESPONSE
+        <response-line :data="data" v-if="hasData" width="800px">
+
+        </response-line>
       </vtab>
       <vtab name="RESDATA">
         <br>
@@ -46,6 +48,7 @@ module.exports = {
     // 'recording-list': httpVueLoader('/plugins/recording/vcomponents/vlist.vue'),
     'global-line': httpVueLoader('/plugins/recording/vcomponents/line/vglobal.vue'),
     'request-line': httpVueLoader('/plugins/recording/vcomponents/line/vrequest.vue'),
+    'response-line': httpVueLoader('/plugins/recording/vcomponents/line/vresponse.vue'),
     'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
     'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
   },

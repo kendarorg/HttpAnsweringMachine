@@ -106,7 +106,7 @@ public class SingleScriptAPI implements FilteringClass {
                 newLine.setReference(index.getReference());
                 newLine.setPactTest(index.isPactTest());
                 newLine.setStimulatorTest(index.isStimulatorTest());
-                newLine.setStimulatedTest(line.isStimulatedTest());
+                newLine.setStimulatedTest(index.isStimulatedTest());
                 newLine.setQueryCalc(RequestUtils.buildFullQuery(line.getRequest()));
                 newLine.setPreScript(index.getPreScript()!=null);
                 newLine.setScript(index.getPostScript()!=null);

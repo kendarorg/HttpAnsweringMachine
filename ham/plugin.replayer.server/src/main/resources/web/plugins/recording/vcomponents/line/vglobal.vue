@@ -14,12 +14,12 @@
         Stimulated Test
       </label>
       &nbsp;
-      <input class="form-check-input" type="checkbox" value="" id="stimulatorTest" name="stimulatorTest">
+      <input class="form-check-input" type="checkbox" value="" id="stimulatorTest" name="stimulatorTest" v-model="data.stimulatorTest">
       <label class="form-check-label" for="stimulatorTest">
         Stimulator Test
       </label>
       &nbsp;
-      <input class="form-check-input" type="checkbox" value="" id="pactTest" name="pactTest">
+      <input class="form-check-input" type="checkbox" value="" id="pactTest" name="pactTest" v-model="data.pactTest">
       <label class="form-check-label" for="pactTest">
         PACT Test
       </label>

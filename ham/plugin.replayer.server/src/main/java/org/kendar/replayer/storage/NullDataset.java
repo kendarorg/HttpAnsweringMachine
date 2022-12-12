@@ -1,6 +1,5 @@
 package org.kendar.replayer.storage;
 
-import org.apache.commons.io.FileUtils;
 import org.kendar.events.EventQueue;
 import org.kendar.replayer.Cache;
 import org.kendar.replayer.ReplayerState;
@@ -14,14 +13,9 @@ import org.kendar.servers.http.Response;
 import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.LoggerBuilder;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 
 public class NullDataset extends ReplayerDataset{
@@ -80,8 +74,8 @@ public class NullDataset extends ReplayerDataset{
     }
 
     @Override
-    protected boolean superMatch(ReplayerRow row) {
-        return row.isStimulatedTest();
+    protected boolean superMatch(ReplayerRow row, CallIndex callIndex) {
+        return callIndex.isStimulatedTest();
     }
 
     private void runNullDataset(TestResults testResult) throws Exception {

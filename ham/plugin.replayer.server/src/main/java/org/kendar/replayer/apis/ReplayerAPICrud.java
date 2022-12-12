@@ -157,12 +157,8 @@ public class ReplayerAPICrud implements FilteringClass {
       for(var ci:indexLines){
         ci.setPactTest(scriptData.getPactTest().stream().anyMatch(a->a.intValue()==ci.getId()));
         ci.setStimulatorTest(scriptData.getStimulatorTest().stream().anyMatch(a->a.intValue()==ci.getId()));
+        ci.setStimulatedTest(scriptData.getStimulatorTest().stream().anyMatch(a->a.intValue()==ci.getId()));
         em.merge(ci);
-      }
-      for(var row:rows){
-        row.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==row.getId()));
-        row.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==row.getId()));
-        em.merge(row);
       }
     });
 
