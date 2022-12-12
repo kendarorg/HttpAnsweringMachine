@@ -12,12 +12,12 @@
     <div class="row">
         <div class="col-md-8">
             <br>
-            <button type="button"  class="btn btn-default" onClick="location.href='../../index.html'">Main</button>
-            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Scripts</button>
-            <button type="button"  class="btn btn-default" id="backToSingle"  name="backToSingle" >???</button>
-            <button type="button"  class="btn btn-default" id="backToLine"  name="backToLine" >???</button>
+            <button type="button" class="btn btn-default" onClick="location.href='../../index.html'">Main</button>
+            <button type="button" class="btn btn-default" onClick="location.href='index.html'">Scripts</button>
+            <button type="button" class="btn btn-default" id="backToSingle" name="backToSingle">???</button>
+            <button type="button" class="btn btn-default" id="backToLine" name="backToLine">???</button>
             <br>
-            <button type="button" id="prev" name="prev"  class="btn btn-default" onClick="prev()">Prev</button>
+            <button type="button" id="prev" name="prev" class="btn btn-default" onClick="prev()">Prev</button>
             <button type="button" id="next" name="next" class="btn btn-default" onClick="next()">Next</button>
         </div>
         <div class="col-md-8">
@@ -25,7 +25,7 @@
         </div>
         <div class="col-md-8">
             <br>
-            <button id="save" name="save" type="button"  class="btn btn-default" onClick="save();">Save</button>
+            <button id="save" name="save" type="button" class="btn btn-default" onClick="save();">Save</button>
 
         </div>
 
@@ -44,9 +44,10 @@
                     Is Stimulated Test
                 </label>
             </div>
-        </div><div class="col-md-8">
-        <h3>REQUEST</h3>
-    </div>
+        </div>
+        <div class="col-md-8">
+            <h3>REQUEST</h3>
+        </div>
         <div class="col-md-8">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="request_static" name="request_static">
@@ -68,11 +69,14 @@
             </div>
             <div class="form-group">
                 <br>
-                <button id="request_content" name="request_content" type="button"  class="btn btn-default">
-                    Edit Request Data</button>
+                <button id="request_content" name="request_content" type="button" class="btn btn-default">
+                    Edit Request Data
+                </button>
 
-                <button id="request_content_download" name="request_content_download" type="button"  class="btn btn-default">
-                    Download Request Data</button>
+                <button id="request_content_download" name="request_content_download" type="button"
+                        class="btn btn-default">
+                    Download Request Data
+                </button>
 
             </div>
             <div class="form-group">
@@ -107,7 +111,8 @@
                     <th>Value</th>
                     <th colspan="2">
                         <button class="btn btn-danger form-control"
-                                onClick="addRequestQuery();">Add</button>
+                                onClick="addRequestQuery();">Add
+                        </button>
                     </th>
                 </tr>
             </table>
@@ -122,7 +127,8 @@
                     <th>Value</th>
                     <th colspan="2">
                         <button class="btn btn-danger form-control"
-                                onClick="addRequestPost();">Add</button>
+                                onClick="addRequestPost();">Add
+                        </button>
                     </th>
                 </tr>
             </table>
@@ -137,7 +143,8 @@
                     <th>Value</th>
                     <th colspan="2">
                         <button class="btn btn-danger form-control"
-                                onClick="addRequestHeader();">Add</button>
+                                onClick="addRequestHeader();">Add
+                        </button>
                     </th>
                 </tr>
             </table>
@@ -157,10 +164,13 @@
 
             <div class="form-group">
                 <br>
-                <button id="response_content" name="response_content" type="button"  class="btn btn-default">
-                    Edit Response Data</button>
-                <button id="response_content_download" name="response_content_download" type="button"  class="btn btn-default">
-                    Download Response Data</button>
+                <button id="response_content" name="response_content" type="button" class="btn btn-default">
+                    Edit Response Data
+                </button>
+                <button id="response_content_download" name="response_content_download" type="button"
+                        class="btn btn-default">
+                    Download Response Data
+                </button>
             </div>
             <div class="form-group">
                 <label htmlFor="response_code">Status Code</label>
@@ -177,7 +187,8 @@
                     <th>Value</th>
                     <th colspan="2">
                         <button class="btn btn-danger form-control"
-                                onClick="addResponseHeader();">Add</button>
+                                onClick="addResponseHeader();">Add
+                        </button>
                     </th>
                 </tr>
             </table>
@@ -201,14 +212,14 @@
 </div>
 <script src="/app/app.js"></script>
 <script>
-    var buttonsMask=[
-        {id:["save"],states:["NONE","OTHER_RUNNING"]}
+    var buttonsMask = [
+        {id: ["save"], states: ["NONE", "OTHER_RUNNING"]}
     ];
 
-    var prevLine=-1;
-    var nextLine=-1;
+    var prevLine = -1;
+    var nextLine = -1;
 
-    var checkButtons = function(){
+    var checkButtons = function () {
         $.ajax({
             url: "/api/plugins/replayer/status",
             type: 'GET',
@@ -216,83 +227,84 @@
                 var status = res["status"].toUpperCase();
                 var running = res["running"].toUpperCase();
                 var thisScript = getUrlParameter("id").toUpperCase();
-                if(status!="NONE" && thisScript!=running){
-                    status="OTHER_RUNNING";
+                if (status != "NONE" && thisScript != running) {
+                    status = "OTHER_RUNNING";
                 }
-                buttonEnabler(buttonsMask,status);
-            }});
+                buttonEnabler(buttonsMask, status);
+            }
+        });
     };
-    longPolling(1000,function(){
+    longPolling(1000, function () {
         checkButtons();
     });
 
     var defaultSaveAction = "put";
-    var request_headerTable = new SimpleGrid("Request-Headers","request_headerTable","key",["key","value"],
+    var request_headerTable = new SimpleGrid("Request-Headers", "request_headerTable", "key", ["key", "value"],
         null,
-        function (table,id) {
-            editKvp(".modal",table,id,"key","value")
+        function (table, id) {
+            editKvp(".modal", table, id, "key", "value")
         },
-        function (table,id) {
-            deleteKvp(".modal",table,id,"key","value")
+        function (table, id) {
+            deleteKvp(".modal", table, id, "key", "value")
         },
-        function (table,id,saveOrUpdate) {
-            updateKvp(".modal",table,id,"key","value")
+        function (table, id, saveOrUpdate) {
+            updateKvp(".modal", table, id, "key", "value")
         });
-    var request_queryTable = new SimpleGrid("Query","request_queryTable","key",["key","value"],
+    var request_queryTable = new SimpleGrid("Query", "request_queryTable", "key", ["key", "value"],
         null,
-        function (table,id) {
-            editKvp(".modal",table,id,"key","value")
+        function (table, id) {
+            editKvp(".modal", table, id, "key", "value")
         },
-        function (table,id) {
-            deleteKvp(".modal",table,id,"key","value")
+        function (table, id) {
+            deleteKvp(".modal", table, id, "key", "value")
         },
-        function (table,id,saveOrUpdate) {
-            updateKvp(".modal",table,id,"key","value")
+        function (table, id, saveOrUpdate) {
+            updateKvp(".modal", table, id, "key", "value")
         });
-    var request_postTable = new SimpleGrid("PostParameters","request_postTable","key",["key","value"],
+    var request_postTable = new SimpleGrid("PostParameters", "request_postTable", "key", ["key", "value"],
         null,
-        function (table,id) {
-            editKvp(".modal",table,id,"key","value")
+        function (table, id) {
+            editKvp(".modal", table, id, "key", "value")
         },
-        function (table,id) {
-            deleteKvp(".modal",table,id,"key","value")
+        function (table, id) {
+            deleteKvp(".modal", table, id, "key", "value")
         },
-        function (table,id,saveOrUpdate) {
-            updateKvp(".modal",table,id,"key","value")
+        function (table, id, saveOrUpdate) {
+            updateKvp(".modal", table, id, "key", "value")
         });
-    var response_headerTable = new SimpleGrid("Response-Headers","response_headerTable","key",["key","value"],
+    var response_headerTable = new SimpleGrid("Response-Headers", "response_headerTable", "key", ["key", "value"],
         null,
-        function (table,id) {
-            editKvp(".modal",table,id,"key","value")
+        function (table, id) {
+            editKvp(".modal", table, id, "key", "value")
         },
-        function (table,id) {
-            deleteKvp(".modal",table,id,"key","value")
+        function (table, id) {
+            deleteKvp(".modal", table, id, "key", "value")
         },
-        function (table,id,saveOrUpdate) {
-            updateKvp(".modal",table,id,"key","value")
+        function (table, id, saveOrUpdate) {
+            updateKvp(".modal", table, id, "key", "value")
         });
 
-    var prev = function(){
-        location.href="line.html?id="+getUrlParameter("id")+"&line="+prevLine;
+    var prev = function () {
+        location.href = "line.html?id=" + getUrlParameter("id") + "&line=" + prevLine;
     }
-    var next = function(){
-        location.href="line.html?id="+getUrlParameter("id")+"&line="+nextLine;
+    var next = function () {
+        location.href = "line.html?id=" + getUrlParameter("id") + "&line=" + nextLine;
     }
 
     $.ajax({
-        url: "/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line"),
+        url: "/api/plugins/replayer/recording/" + getUrlParameter("id") + "/line/" + getUrlParameter("line"),
         type: 'GET',
         success: function (res, textStatus, request) {
             $("#timestamp").val(res['timestamp']);
             $("#id").val(res['id']);
 
-            prevLine= parseInt(request.getResponseHeader('X-PREV'));
-            nextLine= parseInt(request.getResponseHeader('X-NEXT'));
+            prevLine = parseInt(request.getResponseHeader('X-PREV'));
+            nextLine = parseInt(request.getResponseHeader('X-NEXT'));
 
-            if(prevLine==-1){
+            if (prevLine == -1) {
                 $("#prev").hide();
             }
-            if(nextLine==-1){
+            if (nextLine == -1) {
                 $("#next").hide();
             }
 
@@ -302,150 +314,153 @@
             $("#request_host").val(res['request']['host']);
             $("#request_path").val(res['request']['path']);
             $("#request_port").val(res['request']['port']);
-            setChecked($("#request_static"),res['request']['staticRequest']);
-            setChecked($("#request_soap"),res['request']['soapRequest']);
-            setChecked($("#request_binary"),res['request']['binaryRequest']);
-            setChecked($("#stimulatedTest"),res['request']['stimulatedTest']);
+            setChecked($("#request_static"), res['request']['staticRequest']);
+            setChecked($("#request_soap"), res['request']['soapRequest']);
+            setChecked($("#request_binary"), res['request']['binaryRequest']);
+            setChecked($("#stimulatedTest"), res['request']['stimulatedTest']);
             var editContent = "text.html";
-            if(res['request']['binaryRequest']){
+            if (res['request']['binaryRequest']) {
                 editContent = "binary.html";
             }
             $("#request_content").click(
-                function(){
+                function () {
                     editContent = "text.html";
-                    if($("#request_binary").prop("checked")){
+                    if ($("#request_binary").prop("checked")) {
                         editContent = "binary.html";
                     }
-                    location.href=editContent+"?type=request"+
-                    "&id="+getUrlParameter("id")+
-                    "&line="+getUrlParameter("line"); });
+                    location.href = editContent + "?type=request" +
+                        "&id=" + getUrlParameter("id") +
+                        "&line=" + getUrlParameter("line");
+                });
 
             $.each(res["request"]["headers"], function (i, v) {
-                var line = {key:i,value:v};
-                request_headerTable.appendToTable( line);
+                var line = {key: i, value: v};
+                request_headerTable.appendToTable(line);
             });
             $.each(res["request"]["query"], function (i, v) {
-                var line = {key:i,value:v};
+                var line = {key: i, value: v};
                 request_queryTable.appendToTable(line);
             });
             $.each(res["request"]["postParameters"], function (i, v) {
-                var line = {key:i,value:v};
+                var line = {key: i, value: v};
                 request_postTable.appendToTable(line);
             });
 
             //Response
             $("#response_code").val(res['response']['statusCode']);
-            setChecked($("#response_binary"),res['response']['binaryResponse']);
+            setChecked($("#response_binary"), res['response']['binaryResponse']);
 
             $("#response_content").click(
-                function(){
+                function () {
                     editContent = "text.html";
-                    if($("#response_binary").prop("checked")){
+                    if ($("#response_binary").prop("checked")) {
                         editContent = "binary.html";
                     }
-                    location.href=editContent+"?type=response"+
-                    "&id="+getUrlParameter("id")+
-                    "&line="+getUrlParameter("line"); });
+                    location.href = editContent + "?type=response" +
+                        "&id=" + getUrlParameter("id") +
+                        "&line=" + getUrlParameter("line");
+                });
 
             $.each(res["response"]["headers"], function (i, v) {
-                var line = {key:i,value:v};
+                var line = {key: i, value: v};
                 response_headerTable.appendToTable(line);
             });
 
-            if(res["requestHash"]!="0" && res["requestHash"]!=""){
+            if (res["requestHash"] != "0" && res["requestHash"] != "") {
                 $("#request_content_download").show();
-            }else{
+            } else {
                 $("#request_content_download").hide();
             }
-            if(res["responseHash"]!="0" && res["responseHash"]!=""){
+            if (res["responseHash"] != "0" && res["responseHash"] != "") {
                 $("#response_content_download").show();
-            }else{
+            } else {
                 $("#response_content_download").hide();
             }
         },
-        error: function( xhr, textStatus, errorThrown ){
-            if(xhr.status==404) {
+        error: function (xhr, textStatus, errorThrown) {
+            if (xhr.status == 404) {
                 $("#timestamp").val(Math.floor(Date.now() / 1000));
                 $("#id").val(getUrlParameter("line"));
                 $("#request_content").hide();
                 $("#response_content").hide();
                 $("#request_content_download").hide();
                 $("#response_content_download").hide();
-                defaultSaveAction="post";
+                defaultSaveAction = "post";
             }
         }
     });
 
-    $("#request_content_download").click(function(){
-        downloadFile("/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/request");
+    $("#request_content_download").click(function () {
+        downloadFile("/api/plugins/replayer/recording/" + getUrlParameter("id") + "/line/" + getUrlParameter("line") + "/request");
     });
 
-    $("#response_content_download").click(function(){
-        downloadFile("/api/plugins/replayer/recording/" + getUrlParameter("id")+"/line/"+getUrlParameter("line")+"/response");
+    $("#response_content_download").click(function () {
+        downloadFile("/api/plugins/replayer/recording/" + getUrlParameter("id") + "/line/" + getUrlParameter("line") + "/response");
     });
 
-    $("#backToSingle").click(function(){
-        location.href="script.html?id="+getUrlParameter("id"); })
-        .html("Script: "+getUrlParameter("id"));
+    $("#backToSingle").click(function () {
+        location.href = "script.html?id=" + getUrlParameter("id");
+    })
+        .html("Script: " + getUrlParameter("id"));
 
 
-    $("#backToLine").click(function(){
-        location.href="js.html?id="+getUrlParameter("id")+"&line="+getUrlParameter("line"); })
-        .html("Js: "+getUrlParameter("line"));
+    $("#backToLine").click(function () {
+        location.href = "js.html?id=" + getUrlParameter("id") + "&line=" + getUrlParameter("line");
+    })
+        .html("Js: " + getUrlParameter("line"));
 
 
-
-    function save(){
+    function save() {
         var id = getUrlParameter("id");
         var line = getUrlParameter("line");
         var data = {
-            id:$("#id").val(),
+            id: $("#id").val(),
             timestamp: $("#timestamp").val(),
-            stimulatedTest:$("#stimulatedTest").prop("checked"),
-            request:{
-                method:$("#request_method").val(),
-                protocol:$("#request_protocol").val(),
-                host:$("#request_host").val(),
-                path:$("#request_path").val(),
-                port:$("#request_port").val(),
-                staticRequest:$("#request_static").prop("checked"),
-                soapRequest:$("#request_soap").prop("checked"),
-                binaryRequest:$("#request_binary").prop("checked"),
-                headers:getKvpData(request_headerTable,"key","value"),
-                query:getKvpData(request_queryTable,"key","value"),
-                postParameters:getKvpData(request_postTable,"key","value"),
+            stimulatedTest: $("#stimulatedTest").prop("checked"),
+            request: {
+                method: $("#request_method").val(),
+                protocol: $("#request_protocol").val(),
+                host: $("#request_host").val(),
+                path: $("#request_path").val(),
+                port: $("#request_port").val(),
+                staticRequest: $("#request_static").prop("checked"),
+                soapRequest: $("#request_soap").prop("checked"),
+                binaryRequest: $("#request_binary").prop("checked"),
+                headers: getKvpData(request_headerTable, "key", "value"),
+                query: getKvpData(request_queryTable, "key", "value"),
+                postParameters: getKvpData(request_postTable, "key", "value"),
             },
-            response:{
-                statusCode:$("#response_code").val(),
-                binaryResponse:$("#response_binary").prop("checked"),
-                headers:getKvpData(response_headerTable,"key","value"),
+            response: {
+                statusCode: $("#response_code").val(),
+                binaryResponse: $("#response_binary").prop("checked"),
+                headers: getKvpData(response_headerTable, "key", "value"),
             }
         };
         $.ajax({
-            url: '/api/plugins/replayer/recording/'+id+'/line/'+line,
+            url: '/api/plugins/replayer/recording/' + id + '/line/' + line,
             type: defaultSaveAction,
             data: JSON.stringify(data),
             contentType: "application/json",
-            success: function(response){
+            success: function (response) {
                 location.reload();
             }
         });
     }
 
-    function addRequestQuery(){
-        addKvp('.modal',request_queryTable,'key','value');
+    function addRequestQuery() {
+        addKvp('.modal', request_queryTable, 'key', 'value');
     }
 
-    function addRequestPost(){
-        addKvp('.modal',request_postTable,'key','value');
+    function addRequestPost() {
+        addKvp('.modal', request_postTable, 'key', 'value');
     }
 
-    function addRequestHeader(){
-        addKvp('.modal',request_headerTable,'key','value');
+    function addRequestHeader() {
+        addKvp('.modal', request_headerTable, 'key', 'value');
     }
 
-    function addResponseHeader(){
-        addKvp('.modal',response_headerTable,'key','value');
+    function addResponseHeader() {
+        addKvp('.modal', response_headerTable, 'key', 'value');
     }
 </script>
 </body>

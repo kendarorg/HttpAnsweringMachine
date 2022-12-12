@@ -60,17 +60,32 @@
       </tr>
       </tbody>
     </table>
+    <br>
   </div>
 </template>
 <script>
 module.exports = {
   props: {
-    columns: Array,
+    columns: {
+      type:Array,
+      default: () => [
+        {id:"key",template:"string",index:true,sortable:true},
+        {id:"value",template:"string",sortable:true}
+      ]
+    },
     extra: Array,
     address: String,
-    retrieveData: Function,
+    retrieveData: {
+      type:Function,
+      optional:true,
+      default:null
+    },
     pageSize:Number,
-    serverPagination:Boolean
+    serverPagination:Boolean,
+    isObject:{
+      type: Boolean,
+      default: false
+    }
   },
   created: function () {
     this.extrasCalculated = false;
@@ -208,8 +223,10 @@ module.exports = {
       for(const key of this.columns){
         if(key.id.toUpperCase()==inputKey.toUpperCase() && !key.sortable)return;
       }
-      for(const key of this.extra){
-        if(key.id.toUpperCase()==inputKey.toUpperCase() && !key.sortable)return;
+      if(this.extra) {
+        for (const key of this.extra) {
+          if (key.id.toUpperCase() == inputKey.toUpperCase() && !key.sortable) return;
+        }
       }
       this.sortKey = inputKey;
       this.sortOrders[inputKey] = this.sortOrders[inputKey] * -1;
@@ -346,13 +363,30 @@ module.exports = {
     reloadDataInternal:function(result){
       var th = this;
       th.extrasCalculated=false;
+      var resultData = {
+        data:[]
+      };
+      if(this.isObject){
+        var keys = Object.keys(result.data);
+        for(var i=0;i<keys.length;i++){
+          var key = keys[i];
+          var value = result.data[key];
+          resultData.data.push({
+            key:key,
+            value:value
+          });
+        }
+      }else{
+        resultData = result;
+      }
+
       if(th.pageSize!=null && typeof th.pageSize !="undefined" && th.pageSize !=0 &&
           (th.serverPagination==null || typeof th.serverPagination =="undefined" || th.serverPagination ===false)) {
-        th.loadClientPagination(result);
+        th.loadClientPagination(resultData);
       }else if(th.serverPagination!=null && typeof th.serverPagination !="undefined" && th.serverPagination ===true){
-        th.loadServerPagination(result);
+        th.loadServerPagination(resultData);
       }else{
-        th.data = result.data;
+        th.data = resultData.data;
       }
       this.reloadFieldsAndOrdering();
 
@@ -417,6 +451,112 @@ module.exports = {
         var index =th.buildId(toSel);
         th.setField(selectField,index,true);
       });
+    },
+    arrayEquals:function(a, b) {
+      return Array.isArray(a) &&
+          Array.isArray(b) &&
+          a.length === b.length &&
+          a.every((val, index) => val === b[index]);
+    },
+    updateInternal(row,dataArray){
+      var th=this;
+      var index =th.buildId(row);
+
+      if(this.isObject){
+        var newArray=[];
+        var foundedNew = true;
+        var keys = Object.keys(dataArray);
+        for(var i=0;i<keys.length;i++){
+          var key = keys[i];
+          var value = dataArray[key];
+          if(row['key'].toUpperCase()==key.toUpperCase()){
+            foundedNew=false;
+            dataArray[row['key']]=row['value'];
+            newArray.push(row);
+          }else {
+            newArray.push({
+              key: key,
+              value: value
+            });
+          }
+        }
+        if(foundedNew){
+          dataArray[row['key']]=row['value'];
+          newArray.push(row);
+        }
+        this.data = newArray;
+        return !foundedNew;
+      }else{
+        var newArray=[];
+        var foundedNew=true;
+        for (let i = 0; i < dataArray.length; i++){
+          var item = dataArray[i];
+          newArray.push(item);
+          var itemIndex =th.buildId(item);
+          if(th.arrayEquals(index,itemIndex)){
+            foundedNew = false;
+            for(var j=0;j<this.columns.length;j++){
+              var col = this.columns[j];
+              newArray[col.id]=row[col.id];
+            }
+          }
+        }
+        if(foundedNew){
+          newArray.push(row);
+          this.data = newArray;
+          return false;
+        }
+        this.data = newArray;
+        return true;
+      }
+    },
+    update:function(row,realData){
+      if(typeof realData!="undefined"){
+        return this.updateInternal(row,realData);
+      }else{
+        return this.updateInternal(row,this.data);
+      }
+
+    },
+    delete:function(index,realData){
+      if(typeof realData!="undefined"){
+        return this.deleteInternal(index,realData);
+      }else{
+        return this.deleteInternal(index,this.data);
+      }
+
+    },
+    deleteInternal(row,dataArray){
+      var th=this;
+      var index =th.buildId(row);
+
+      if(this.isObject){
+        var newArray=[];
+        var keys = Object.keys(dataArray);
+        for(var i=0;i<keys.length;i++){
+          var key = keys[i];
+          var value = dataArray[key];
+          if(row[0].toUpperCase()==key.toUpperCase()){
+            delete dataArray[row];
+          }else {
+            newArray.push({
+              key: key,
+              value: value
+            });
+          }
+        }
+        this.data = newArray;
+      }else{
+        var newArray=[];
+        for (let i = 0; i < dataArray.length; i++){
+          var item = dataArray[i];
+          var itemIndex =th.buildId(item);
+          if(!th.arrayEquals(index,itemIndex)){
+            newArray.push(item);
+          }
+        }
+        this.data = newArray;
+      }
     }
   }
 }

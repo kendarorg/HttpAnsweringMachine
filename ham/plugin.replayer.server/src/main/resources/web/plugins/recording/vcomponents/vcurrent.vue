@@ -1,20 +1,26 @@
 <template>
-  <div class="col-md-8">
-    <vtabs>
+    <vtabs width="800px" >
       <vtab name="GLOBAL">
-        GLOBAL
+        <br>
+        <global-line :data="data" v-if="hasData" width="800px">
+
+        </global-line>
       </vtab>
       <vtab name="REQUEST">
-        REQUEST
+        <br>
+        <request-line :data="data" v-if="hasData" width="800px">
+
+        </request-line>
       </vtab>
       <vtab name="RESPONSE">
+        <br>
         RESPONSE
       </vtab>
       <vtab name="SCRIPT">
+        <br>
         SCRIPT
       </vtab>
     </vtabs>
-  </div>
 </template>
 <script>
 module.exports = {
@@ -24,13 +30,14 @@ module.exports = {
   },
   data:function(){
     return {
-      data:{}
+      data:undefined
     }
   },
   components: {
     // 'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
     // 'recording-list': httpVueLoader('/plugins/recording/vcomponents/vlist.vue'),
-    // 'current-line': httpVueLoader('/plugins/recording/vcomponents/vcurrent.vue'),
+    'global-line': httpVueLoader('/plugins/recording/vcomponents/line/vglobal.vue'),
+    'request-line': httpVueLoader('/plugins/recording/vcomponents/line/vrequest.vue'),
     'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
     'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
   },
@@ -43,6 +50,16 @@ module.exports = {
             console.log(th.data)
           })
     }
+  },
+  methods:{
+    hasData:function(){
+      return typeof this.data != 'undefined' && this.data!=null;
+    }
   }
 }
 </script>
+<style scoped >
+.tabs-width {
+  width: 800px;
+}
+</style>
