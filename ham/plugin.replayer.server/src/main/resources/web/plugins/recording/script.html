@@ -87,15 +87,20 @@
         methods: {
             rowSelected:function(rowId){
                 this.selectedRow=rowId;
-                console.log(rowId)
+                sessionStorage.setItem("recordingCurrentLine", rowId);
+                console.log("LOADED")
             },
             reloadForm: function(){
                 var th=this;
                 axios.get("/api/plugins/replayer/v2/recording/" + getUrlParameter("id"))
                     .then(function (result){
                         th.data=result.data;
-                        console.log("AAAAAAAAA")
                         th.$refs.recordingList.reload(th.data.lines);
+
+                        var current = sessionStorage.getItem("recordingCurrentLine");
+                        if(null!=current){
+                            this.selectedRow=parseInt(current);
+                        }
                     });
             },
             download:function(){

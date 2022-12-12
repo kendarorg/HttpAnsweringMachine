@@ -86,8 +86,6 @@ public class SingleScriptAPI implements FilteringClass {
                         var idr = ((ReplayerRow)a).getId();
                         if(!rows.containsKey(idr)) {
                             rows.put(idr, (ReplayerRow) a);
-                        }else{
-                            System.out.println("AAAAAAA");
                         }
                     });
 

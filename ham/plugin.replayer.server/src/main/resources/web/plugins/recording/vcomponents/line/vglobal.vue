@@ -9,19 +9,14 @@
       <input class="form-control" readOnly type="text" name="timestamp" id="timestamp" v-model="data.timestamp"/>
     </div>
     <div width="800px">
-      <input class="form-check-input" type="checkbox" value="" id="stimulatedTest" name="stimulatedTest" v-model="data.stimulatedTest">
-      <label class="form-check-label" for="stimulatedTest">
-        Stimulated Test
+      <input class="form-check-input" type="checkbox" value="" id="binaryRequest" name="binaryRequest" v-model="data.request.isBinaryRequest">
+      <label class="form-check-label" for="binaryRequest">
+        Binary request
       </label>
       &nbsp;
-      <input class="form-check-input" type="checkbox" value="" id="stimulatorTest" name="stimulatorTest" v-model="data.stimulatorTest">
-      <label class="form-check-label" for="stimulatorTest">
-        Stimulator Test
-      </label>
-      &nbsp;
-      <input class="form-check-input" type="checkbox" value="" id="pactTest" name="pactTest" v-model="data.pactTest">
-      <label class="form-check-label" for="pactTest">
-        PACT Test
+      <input class="form-check-input" type="checkbox" value="" id="binaryResponse" name="binaryResponse" v-model="data.request.isBinaryResponse">
+      <label class="form-check-label" for="binaryResponse">
+        Binary response
       </label>
     </div>
     <div class="form-group">

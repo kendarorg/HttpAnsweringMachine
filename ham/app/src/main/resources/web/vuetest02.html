@@ -77,7 +77,6 @@ Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates
             },
             methods:{
                 addNew:function(shouldEdit,rowId){
-                    console.log("AAAAAAAAAAAAA");
                     var row = null;
                     if(shouldEdit) {
                         row = this.$refs.simpleGrid.getById(rowId);

@@ -60,7 +60,6 @@ module.exports = {
   },
   methods:{
     reload(externalData){
-      console.log("RELOAD VLIST")
       this.$refs.grid.reload(externalData);
     },
     download:function(){
