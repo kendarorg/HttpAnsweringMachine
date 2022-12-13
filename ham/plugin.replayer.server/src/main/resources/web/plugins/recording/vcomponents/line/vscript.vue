@@ -1,6 +1,7 @@
 <template>
   <div  v-if="typeof this.data!='undefined'" width="800px">
-    <button type="button" class="bi bi-save" v-on:click="updateContent()" title="Save changes"></button>
+    <button type="button" class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
+    <br><br>
     <div class="form-group">
       <label htmlFor="request_method">Method</label>
       <input class="form-control" type="text" name="request_method" id="request_method" v-model="data.method"/>

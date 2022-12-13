@@ -41,3 +41,11 @@ fieldset[disabled] .btn-kendar.focus,
 fieldset[disabled] .btn-kendar:focus,
 fieldset[disabled] .btn-kendar:hover{background-color:#5cb85c;border-color:#4cae4c}
 .btn-kendar .badge{color:#5cb85c;background-color:#fff}
+
+/**
+https://unicode-table.com/en/1F5AB/
+ */
+.bi-floppy::before {
+    font-size: 18px;
+    content: "\1F5AB";
+}

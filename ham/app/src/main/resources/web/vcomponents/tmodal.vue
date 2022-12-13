@@ -24,7 +24,7 @@
           <div class="modal-footer">
             <slot name="footer">
               <button type="button" class="bi bi-x-square" @click="$emit('close')" title="Close"></button>
-              <button type="button" class="bi bi-save" v-on:click="saveTheModal" title="Save changes"></button>
+              <button type="button" class="bi bi-floppy" v-on:click="saveTheModal" title="Save changes"></button>
             </slot>
           </div>
         </div>

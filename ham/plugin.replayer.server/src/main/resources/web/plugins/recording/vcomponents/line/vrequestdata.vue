@@ -9,9 +9,9 @@
     ></ham-upload>
 
     <button v-if="data.requestHash!='0'" v-on:click="downloadData()" class="bi bi-download" title="Download Data"></button>
+    <button v-if="!data.request.binaryRequest" type="button" class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
     <div v-if="!data.request.binaryRequest">
       <br>
-      <button type="button" class="bi bi-save" v-on:click="updateContent()" title="Save changes"></button>
       <div class="form-group">
         <label for="free_content">Value</label>
         <textarea class="form-control" rows="6" cols="50"

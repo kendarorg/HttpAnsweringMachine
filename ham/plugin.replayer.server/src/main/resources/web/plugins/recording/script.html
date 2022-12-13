@@ -22,8 +22,6 @@
         </div>
 
         <div class="col-md-8">
-            <button type="button"  class="btn save" @click="saveRecordingData" title="Save"></button>
-            <br>
 
             <div class="form-group">
                 <label for="id">Id</label>
@@ -37,6 +35,10 @@
                 <label for="description">Description</label>
                 <input class="form-control" type="text" name="description" id="description" v-model="data.description"/>
             </div>
+            <br>
+            <button type="button"  class="bi bi-floppy" @click="saveRecordingData" title="Save"></button>
+            <br>
+            <br>
         </div>
         <div width="800px">
             <vtabs>

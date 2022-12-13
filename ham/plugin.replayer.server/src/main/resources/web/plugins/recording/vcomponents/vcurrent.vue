@@ -1,7 +1,8 @@
 <template>
-  <div width="800px" v-if="hasData">
-  <button type="button" class="bi bi-save" v-on:click="updateContent()" title="Save changes"></button>
-  <br>
+  <div width="800px" >
+  <button type="button" class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
+    <br>
+    <br>
     <vtabs width="800px" >
       <vtab name="GLOBAL">
         <br>
@@ -46,7 +47,8 @@
 module.exports = {
   name: "current-line",
   props:{
-    currentRow:Number
+    currentRow:Number,
+    default:-1
   },
   data:function(){
     return {
@@ -55,11 +57,6 @@ module.exports = {
         response:{}
       },
       script:{}
-    }
-  },
-  computed:{
-    hasData:function(){
-      return typeof this.data!="undefined";
     }
   },
   components: {
@@ -90,12 +87,6 @@ module.exports = {
   },
 
   methods:{
-    // hasData:function(){
-    //   return typeof this.data != 'undefined' && this.data!=null;
-    // },
-    // hasScript:function(){
-    //   return typeof this.script != 'undefined' && this.script!=null;
-    // },
     updateContent:function (){
       axios.put("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/line/" + this.currentRow,this.data)
           .then(function(result){
