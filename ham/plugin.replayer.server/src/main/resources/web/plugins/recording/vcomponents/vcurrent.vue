@@ -1,42 +1,46 @@
 <template>
+  <div width="800px" v-if="hasData">
+  <button type="button" class="bi bi-save" v-on:click="updateContent()" title="Save changes"></button>
+  <br>
     <vtabs width="800px" >
       <vtab name="GLOBAL">
         <br>
-        <global-line :data="data" v-if="hasData" width="800px">
+        <global-line :data="data" width="800px">
 
         </global-line>
       </vtab>
       <vtab name="REQUEST">
         <br>
-        <request-line :data="data" v-if="hasData" width="800px">
+        <request-line :data="data.request" width="800px">
 
         </request-line>
       </vtab>
       <vtab name="REQDATA">
         <br>
-        <request-data :data="data" v-if="hasData" width="800px">
+        <request-data :data="data"  width="800px">
 
         </request-data>
       </vtab>
       <vtab name="RESPONSE">
         <br>
-        <response-line :data="data" v-if="hasData" width="800px">
+        <response-line   :data="data.response" width="800px">
 
         </response-line>
       </vtab>
       <vtab name="RESDATA">
         <br>
-        <response-data :data="data" v-if="hasData" width="800px">
+        <response-data :data="data"  width="800px">
 
         </response-data>
       </vtab>
       <vtab name="SCRIPT">
         <br>
-        <global-script :data="script" v-if="hasScript" width="800px">
+        <global-script :data="script"  width="800px">
 
         </global-script>
       </vtab>
     </vtabs>
+  </div>
 </template>
 <script>
 module.exports = {
@@ -46,8 +50,16 @@ module.exports = {
   },
   data:function(){
     return {
-      data:undefined,
-      script:undefined
+      data:{
+        request:{},
+        response:{}
+      },
+      script:{}
+    }
+  },
+  computed:{
+    hasData:function(){
+      return typeof this.data!="undefined";
     }
   },
   components: {
@@ -76,12 +88,19 @@ module.exports = {
           })
     }
   },
+
   methods:{
-    hasData:function(){
-      return typeof this.data != 'undefined' && this.data!=null;
-    },
-    hasScript:function(){
-      return typeof this.script != 'undefined' && this.script!=null;
+    // hasData:function(){
+    //   return typeof this.data != 'undefined' && this.data!=null;
+    // },
+    // hasScript:function(){
+    //   return typeof this.script != 'undefined' && this.script!=null;
+    // },
+    updateContent:function (){
+      axios.put("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/line/" + this.currentRow,this.data)
+          .then(function(result){
+            //th.data=result.data;
+          });
     }
   }
 }

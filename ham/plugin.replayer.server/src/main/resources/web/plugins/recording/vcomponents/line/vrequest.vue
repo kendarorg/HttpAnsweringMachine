@@ -1,22 +1,25 @@
 <template>
-  <div width="800px">
+  <div v-if="typeof this.data!='undefined'" width="800px">
     <kvp-modal v-if="showModal"
                :modal-data="modalData"
                @close="showModal = false">
     </kvp-modal>
     <div width="800px" >
       <div class="form-check" width="800px">
-        <input class="form-check-input" type="checkbox" value="" id="request_static" name="request_static">
-        <label class="form-check-label" for="request_static">
+        <input class="form-check-input" type="checkbox" value="" id="request_static" name="request_static"
+               v-model="data.static">
+        <label class="form-check-label" for="request_static" >
           Is Static
         </label>
         &nbsp;
-        <input class="form-check-input" type="checkbox" value="" id="request_soap" name="request_soap">
+        <input class="form-check-input" type="checkbox" value="" id="request_soap" name="request_soap"
+               v-model="data.soap">
         <label class="form-check-label" for="request_soap">
           Is Soap
         </label>
         &nbsp;
-        <input class="form-check-input" type="checkbox" value="" id="request_binary" name="request_binary">
+        <input class="form-check-input" type="checkbox" value="" id="request_binary" name="request_binary"
+               v-model="data.binaryRequest">
         <label class="form-check-label" for="request_binary">
           Is Binary
         </label>
@@ -86,10 +89,10 @@ module.exports = {
     }
   },
   watch:{
-    data:function(val,oldVal){
-      this.$refs.headersGrid.reload(val.request.headers)
-      this.$refs.queryGrid.reload(val.request.query)
-      this.$refs.postGrid.reload(val.request.postParameters)
+    data:function(val,old){
+      this.$refs.headersGrid.reload(this.data.headers)
+      this.$refs.queryGrid.reload(this.data.query)
+      this.$refs.postGrid.reload(this.data.postParameters)
     }
   },
   components: {
@@ -101,7 +104,7 @@ module.exports = {
       if(evt.buttonid=="_edit"){
         this.addNewHeader(true,evt.index)
       }else if(evt.buttonid=="_delete"){
-        this.$refs.headersGrid.delete(evt.index,this.data.request.headers);
+        this.$refs.headersGrid.delete(evt.index,this.data.headers);
       }
     },
     addNewHeader: function (shouldEdit, rowId) {
@@ -125,14 +128,14 @@ module.exports = {
         key:this.modalData.keyValue,
         value:this.modalData.valValue
       };
-      this.$refs.headersGrid.update(realData,this.data.request.headers);
+      this.$refs.headersGrid.update(realData,this.data.headers);
       this.showModal=false;
     },
     queryGridClicked: async function (evt) {
       if(evt.buttonid=="_edit"){
         this.addNewQuery(true,evt.index)
       }else if(evt.buttonid=="_delete"){
-        this.$refs.queryGrid.delete(evt.index,this.data.request.query);
+        this.$refs.queryGrid.delete(evt.index,this.data.query);
       }
     },
     addNewQuery: function (shouldEdit, rowId) {
@@ -156,14 +159,14 @@ module.exports = {
         key:this.modalData.keyValue,
         value:this.modalData.valValue
       };
-      this.$refs.queryGrid.update(realData,this.data.request.query);
+      this.$refs.queryGrid.update(realData,this.data.query);
       this.showModal=false;
     },
     postGridClicked: async function (evt) {
       if(evt.buttonid=="_edit"){
         this.addNewPost(true,evt.index)
       }else if(evt.buttonid=="_delete"){
-        this.$refs.postGrid.delete(evt.index,this.data.request.postParameters);
+        this.$refs.postGrid.delete(evt.index,this.data.postParameters);
       }
     },
     addNewPost: function (shouldEdit, rowId) {
@@ -187,8 +190,15 @@ module.exports = {
         key:this.modalData.keyValue,
         value:this.modalData.valValue
       };
-      this.$refs.postGrid.update(realData,this.data.request.postParameters);
+      this.$refs.postGrid.update(realData,this.data.postParameters);
       this.showModal=false;
+    },
+    reload:function(val){
+
+
+    },
+    updated: function () {
+
     },
   }
 }

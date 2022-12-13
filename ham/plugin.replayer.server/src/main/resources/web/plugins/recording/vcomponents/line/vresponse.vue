@@ -1,9 +1,16 @@
 <template>
-  <div width="800px">
+  <div v-if="typeof this.data!='undefined'" width="800px">
     <kvp-modal v-if="showModal"
                :modal-data="modalData"
                @close="showModal = false">
     </kvp-modal>
+    <div  width="800px">
+    <input class="form-check-input" type="checkbox" value="" id="request_binary" name="request_binary"
+           v-model="data.binaryResponse">
+    <label class="form-check-label" for="request_binary">
+      Is Binary
+    </label>
+      </div>
     <div  width="800px">
       <h4>RESPONSE HEADERS</h4>
     </div>
@@ -44,8 +51,8 @@ module.exports = {
     }
   },
   watch:{
-    data:function(val,oldVal){
-      this.$refs.headersGrid.reload(val.response.headers)
+    data:function(val,old){
+      this.$refs.headersGrid.reload(this.data.headers)
     }
   },
   components: {
@@ -57,7 +64,7 @@ module.exports = {
       if(evt.buttonid=="_edit"){
         this.addNewHeader(true,evt.index)
       }else if(evt.buttonid=="_delete"){
-        this.$refs.headersGrid.delete(evt.index,this.data.response.headers);
+        this.$refs.headersGrid.delete(evt.index,this.data.headers);
       }
     },
     addNewHeader: function (shouldEdit, rowId) {
@@ -81,7 +88,7 @@ module.exports = {
         key:this.modalData.keyValue,
         value:this.modalData.valValue
       };
-      this.$refs.headersGrid.update(realData,this.data.response.headers);
+      this.$refs.headersGrid.update(realData,this.data.headers);
       this.showModal=false;
     }
   }

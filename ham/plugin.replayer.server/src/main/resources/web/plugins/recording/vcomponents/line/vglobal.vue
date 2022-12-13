@@ -9,12 +9,12 @@
       <input class="form-control" readOnly type="text" name="timestamp" id="timestamp" v-model="data.timestamp"/>
     </div>
     <div width="800px">
-      <input class="form-check-input" type="checkbox" value="" id="binaryRequest" name="binaryRequest" v-model="data.request.isBinaryRequest">
+      <input class="form-check-input" type="checkbox" value="" id="binaryRequest" name="binaryRequest" v-model="data.request.binaryRequest">
       <label class="form-check-label" for="binaryRequest">
         Binary request
       </label>
       &nbsp;
-      <input class="form-check-input" type="checkbox" value="" id="binaryResponse" name="binaryResponse" v-model="data.request.isBinaryResponse">
+      <input class="form-check-input" type="checkbox" value="" id="binaryResponse" name="binaryResponse" v-model="data.request.binaryResponse">
       <label class="form-check-label" for="binaryResponse">
         Binary response
       </label>
@@ -48,9 +48,7 @@ module.exports = {
     data:Object
   },
   methods:{
-    hasData:function(){
-      return typeof this.data != 'undefined' && this.data!=null;
-    }
+
   }
 
 }

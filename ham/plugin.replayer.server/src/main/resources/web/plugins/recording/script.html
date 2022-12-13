@@ -88,7 +88,7 @@
             rowSelected:function(rowId){
                 this.selectedRow=rowId;
                 sessionStorage.setItem("recordingCurrentLine", rowId);
-                console.log("LOADED")
+                sessionStorage.setItem("recordingId", getUrlParameter("id"));
             },
             reloadForm: function(){
                 var th=this;
@@ -97,10 +97,17 @@
                         th.data=result.data;
                         th.$refs.recordingList.reload(th.data.lines);
 
-                        var current = sessionStorage.getItem("recordingCurrentLine");
-                        if(null!=current){
-                            this.selectedRow=parseInt(current);
+                        var recording = sessionStorage.getItem("recordingId");
+                        if(null!=recording){
+                            recording = recording+"";
+                            if(recording==getUrlParameter("id")){
+                                var current = sessionStorage.getItem("recordingCurrentLine");
+                                if(null!=current){
+                                    th.selectedRow=parseInt(current);
+                                }
+                            }
                         }
+
                     });
             },
             download:function(){

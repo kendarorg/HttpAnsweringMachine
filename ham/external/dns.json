@@ -26,6 +26,16 @@
       "id": "0",
       "dns": "www.local.test",
       "ip": "127.0.0.1"
+    },
+    {
+      "id": "1",
+      "dns": "reqbin.com",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "2",
+      "dns": "www.reqbin.com",
+      "ip": "127.0.0.1"
     }
   ]
 }

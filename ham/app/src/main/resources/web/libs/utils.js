@@ -86,3 +86,18 @@ const convertFileToBase64 = function (file) {
         reader.onerror = reject;
     });
 };
+
+const isUndefined=function(variable){
+    if(typeof variable=="undefined" || variable==null)return true;
+    if (variable.constructor === String && variable=="")return true;
+    return false;
+}
+
+const waitForAvailableVariable=function(variable,timeout,func){
+    if(isUndefined(variable)){
+        setTimeout(function(){
+            func(variable);
+        }, timeout);
+    }
+    func(variable);
+}
