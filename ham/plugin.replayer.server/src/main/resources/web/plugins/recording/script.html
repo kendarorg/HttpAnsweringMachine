@@ -33,7 +33,9 @@
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
-                <input class="form-control" type="text" name="description" id="description" v-model="data.description"/>
+                <textarea class="form-control" rows="6" cols="50"
+                          name="description" id="description"
+                          v-model="data.description"></textarea>
             </div>
             <br>
             <button type="button"  class="bi bi-floppy" @click="saveRecordingData" title="Save"></button>
@@ -116,7 +118,43 @@
                 downloadFile("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/full",this.data.name);
             },
             saveRecordingData:function (){
-                alert("SAVE NAME, DESCRIPTION AND WHOLE LIST")
+                var id = getUrlParameter("id");
+
+                var stimulatedTest = [];
+                var pactTest = [];
+                var stimulatorTest = [];
+                console.log("AAAAAAAAAAAA")
+                this.data.lines.forEach(function (row, i) {
+                    if(row['stimulatedTest']==true){
+                        stimulatedTest.push(row['id']);
+                    }
+                    if(row['pactTest']==true){
+                        pactTest.push(row['id']);
+                    }
+                    if(row['stimulatorTest']==true){
+                        stimulatorTest.push(row['id']);
+                    }
+                });
+
+                var data = {
+                    id:id,
+                    description: this.data.description,
+                    name:this.data.name,
+                    filter:{
+                        dst:"",
+                        src:"",
+                        test:""
+                    },
+                    stimulatorTest:stimulatorTest,
+                    pactTest:pactTest,
+                    stimulatedTest:stimulatedTest
+                };
+
+                const headers = {'Content-Type': 'application/json'};
+                axios.put('/api/plugins/replayer/recording/'+id,
+                    data, {headers}).then((res) => {
+
+                });
             }
         }
     });

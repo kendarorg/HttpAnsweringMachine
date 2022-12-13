@@ -96,7 +96,7 @@ module.exports = {
 
       this.$refs.grid.onSelected(function(row){
         if(row['select']){
-          row['pacttests']=true;
+          row['pactTest']=true;
         }
       })
     },
