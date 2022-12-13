@@ -93,11 +93,22 @@ const isUndefined=function(variable){
     return false;
 }
 
-const waitForAvailableVariable=function(variable,timeout,func){
-    if(isUndefined(variable)){
-        setTimeout(function(){
-            func(variable);
+const waitForAvailableVariableTimes=function(variable,timeout,func,times){
+    times--;
+    if(times<0)return;
+    if(isUndefined(variable())){
+        setTimeout(function () {
+            if(isUndefined(variable())){
+                waitForAvailableVariableTimes(variable,timeout,func,times);
+            }else {
+                func(variable());
+            }
         }, timeout);
+    }else{
+        func(variable());
     }
-    func(variable);
+}
+
+const waitForAvailableVariable=function(variable,timeout,func){
+    waitForAvailableVariableTimes(variable,timeout,func,1)
 }

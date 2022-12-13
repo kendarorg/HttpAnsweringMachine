@@ -15,7 +15,7 @@
       <h4>RESPONSE HEADERS</h4>
     </div>
     <div  width="800px">
-      <button v-on:click="addNewHeader(false,[])" class="bi bi-plus-square" title="Add new"></button><br/>
+      <button v-on:click="addNewHeader(false,[])" class="bi bi-plus-square" title="Add new"></button><br/><br/>
       <simple-grid
           :is-object="true"
           :extra="extraColumns"
@@ -52,7 +52,17 @@ module.exports = {
   },
   watch:{
     data:function(val,old){
-      this.$refs.headersGrid.reload(this.data.headers)
+      var th=this;
+      waitForAvailableVariableTimes(
+          ()=>th.$refs.headersGrid,
+          100,
+          function(){
+            th.$nextTick(function () {
+
+              th.$refs.headersGrid.reload(th.data.headers)
+            })
+          },10
+      );
     }
   },
   components: {

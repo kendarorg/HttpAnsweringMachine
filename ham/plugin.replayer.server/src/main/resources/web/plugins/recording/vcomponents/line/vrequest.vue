@@ -29,7 +29,7 @@
       <h4>REQUEST QUERY</h4>
     </div>
     <div  width="800px">
-      <button v-on:click="addNewQuery(false,[])" class="bi bi-plus-square" title="Add new"></button><br/>
+      <button v-on:click="addNewQuery(false,[])" class="bi bi-plus-square" title="Add new"></button><br/><br/>
       <simple-grid
           :is-object="true"
           :extra="extraColumns"
@@ -41,7 +41,7 @@
       <h4>REQUEST POST PARAMETERS</h4>
     </div>
     <div  width="800px">
-      <button v-on:click="addNewPost(false,[])" class="bi bi-plus-square" title="Add new"></button><br/>
+      <button v-on:click="addNewPost(false,[])" class="bi bi-plus-square" title="Add new"></button><br/><br/>
       <simple-grid
           :is-object="true"
           :extra="extraColumns"
@@ -53,7 +53,7 @@
       <h4>REQUEST HEADERS</h4>
     </div>
     <div  width="800px">
-      <button v-on:click="addNewHeader(false,[])" class="bi bi-plus-square" title="Add new"></button><br/>
+      <button v-on:click="addNewHeader(false,[])" class="bi bi-plus-square" title="Add new"></button><br/><br/>
       <simple-grid
           :is-object="true"
           :extra="extraColumns"
@@ -90,9 +90,19 @@ module.exports = {
   },
   watch:{
     data:function(val,old){
-      this.$refs.headersGrid.reload(this.data.headers)
-      this.$refs.queryGrid.reload(this.data.query)
-      this.$refs.postGrid.reload(this.data.postParameters)
+      var th=this;
+      waitForAvailableVariableTimes(
+          ()=>th.$refs.headersGrid,
+          100,
+          function(){
+            th.$nextTick(function () {
+
+              th.$refs.headersGrid.reload(th.data.headers)
+              th.$refs.queryGrid.reload(th.data.query)
+              th.$refs.postGrid.reload(th.data.postParameters)
+            })
+          },10
+      );
     }
   },
   components: {

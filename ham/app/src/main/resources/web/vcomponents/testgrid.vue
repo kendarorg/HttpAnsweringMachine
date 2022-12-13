@@ -392,6 +392,9 @@ module.exports = {
 
     },
     reload: function (possibleData) {
+      if(isUndefined(possibleData)){
+        possibleData=[];
+      }
       var th= this;
       if(this.retrieveData==null || typeof this.retrieveData =="undefined"){
         if(possibleData!=null && typeof possibleData !="undefined") {

@@ -33,7 +33,7 @@
     </div>
     <div class="form-group">
       <label htmlFor="request_host">Host</label>
-      <input class="form-control" type="text" name="request_host" id="request_host" v-model="data.request.host"/>
+      <input class="form-control" type="text" name="request_host" id="request_host" v-model="data['request']['host']"/>
     </div>
     <div class="form-group">
       <label htmlFor="request_path">Path</label>
