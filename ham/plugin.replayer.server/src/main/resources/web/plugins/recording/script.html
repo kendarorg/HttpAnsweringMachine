@@ -38,7 +38,12 @@
                           v-model="data.description"></textarea>
             </div>
             <br>
-            <button type="button"  class="bi bi-floppy" @click="saveRecordingData" title="Save"></button>
+            <button type="button"  class="bi bi-floppy" @click="saveRecordingData" title="Save">Save</button>&nbsp;
+            <button type="button"  class="bi bi-record-btn" @click="noop" title="Save">Record</button>&nbsp;
+            <button type="button"  class="bi bi-stop-btn" @click="noop" title="Save">Stop</button>&nbsp;
+            <button type="button"  class="bi bi-play-btn" @click="noop" title="Save">Play</button>&nbsp;
+            <button type="button"  class="bi bi-pencil-square" @click="noop" title="Save">Play Pact</button>&nbsp;
+            <button type="button"  class="bi bi-cloud" @click="noop" title="Save">Play Null</button>
             <br>
             <br>
         </div>
@@ -89,6 +94,7 @@
             }
         },
         methods: {
+            noop:function(){},
             rowSelected:function(rowId){
                 this.selectedRow=rowId;
                 sessionStorage.setItem("recordingCurrentLine", rowId);

@@ -14,7 +14,7 @@
         Binary request
       </label>
       &nbsp;
-      <input class="form-check-input" type="checkbox" value="" id="binaryResponse" name="binaryResponse" v-model="data.request.binaryResponse">
+      <input class="form-check-input" type="checkbox" value="" id="binaryResponse" name="binaryResponse" v-model="data.response.binaryResponse">
       <label class="form-check-label" for="binaryResponse">
         Binary response
       </label>
@@ -33,7 +33,7 @@
     </div>
     <div class="form-group">
       <label htmlFor="request_host">Host</label>
-      <input class="form-control" type="text" name="request_host" id="request_host" v-model="data['request']['host']"/>
+      <input class="form-control" type="text" name="request_host" id="request_host" v-model="data.request.host"/>
     </div>
     <div class="form-group">
       <label htmlFor="request_path">Path</label>
