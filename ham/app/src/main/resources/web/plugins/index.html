@@ -1,52 +1,55 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
     <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
-    <script src="/libs/jquery-3.2.1.min.js"></script>
-    <script src="/libs/bootstrap.min.js"></script>
-    <script src="/libs/lodash.js"></script>
-    <link href="/app/app.css" rel="stylesheet"/>
+    <script src="/libs/vue.js"></script>
+    <script src="/libs/httpVueLoader.js"></script>
+    <script src="/libs/axios.min.js"></script>
+    <script src="/libs/utils.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
 </head>
 <body>
-<div class="container">
-    <div class="row">
+<div class="container" id="app">
+        <div class="row"><div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+        </div>
+        <br>
         <div class="col-md-8">
             <h3>PLUGINS</h3>
-            <table class="table table-striped" id="pluginsTable">
-                <tr>
-                    <th>Name</th>
-                </tr>
-            </table>
+            <simple-grid
+                    ref="pluginsGrid"
+                    :columns="gridColumns"
+                    :extra="extraColumns"
+                    :retrieve-data="pluginsRetrieveData"
+            >
+            </simple-grid>
         </div>
     </div>
 </div>
-<script src="/app/app.js"></script>
-<script>
-    var scriptsTable = new SimpleGrid("Plugin","pluginsTable","_id",["_addressCalc"],
-        function(table){
-            $.ajax({
-                url: "/api/plugins",
-                type: 'GET',
-                success: function(res) {
-                    for(var v=0;v<res.length;v++) {
-                        res[v]["_id"]=v;
-                        res[v]["_addressCalc"]="<a class='unlinked' href='../"+res[v]["address"]+"'>"+res[v]["description"]+"</a>";
-                    }
-                    $.each(res, function(i, script) {
-                        //tSource,tableId,id,data,fields
-                        //table.appendToTable({id:"test"});
-                        table.appendToTable(script,false);
-                    });
-                }
-            });
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        components: {
+            'simple-grid': httpVueLoader('/vcomponents/testgrid.vue')
         },
-        function (table,id) {
-
+        data:{
+            extraColumns:[],
+            gridColumns: [
+                {id:"description",template:"string",index:true},
+                {id:"address",template:"link",name:"Go",searchable:false,sortable:false}
+            ]
         },
-        function (table,id) {
-
-        },null).load();
-
+        methods:{
+            pluginsRetrieveData: async function(){
+                var result = await axios.get("/api/plugins");
+                return result;
+            }
+        }
+    });
 </script>
 </body>
 </html>

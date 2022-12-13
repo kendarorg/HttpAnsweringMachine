@@ -239,7 +239,6 @@ public class ReplayerAPISingleLine implements FilteringClass {
     req.setPostParameters(source.getRequest().getPostParameters());
     req.setStaticRequest(source.getRequest().isStaticRequest());
     req.setSoapRequest(source.getRequest().isSoapRequest());
-    destination.setStimulatedTest(source.isStimulatedTest());
 
     destination.setRequest(req);
     destination.setResponse(res);

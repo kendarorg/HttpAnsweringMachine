@@ -71,7 +71,7 @@ public class PactDataset implements BaseDataset {
 
     public Long start() throws Exception {
         var result = new TestResults();
-        result.setType("NullInfrastructure");
+        result.setType("PACT");
         result.setTimestamp(Timestamp.from(Calendar.getInstance().toInstant()));
         result.setRecordingId(name);
 

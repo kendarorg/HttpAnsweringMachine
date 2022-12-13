@@ -1,8 +1,6 @@
 package org.kendar.servers.logging;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.kendar.dns.configurations.ExtraDnsServer;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
@@ -12,7 +10,6 @@ import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.Header;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
-import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -21,14 +18,8 @@ import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
-import org.kendar.xml.model.XmlAttribute;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,18 +52,23 @@ public class FileLogsApi implements FilteringClass {
                     body = FileLogListItem[].class
             ),tags = {"base/logs"})
     public void getLogFiles(Request req, Response res) throws Exception {
-        ArrayList<FileLogListItem> result = getFileLogListItems();
+        var index =Long.parseLong(req.getQuery("index"));
+        var pageSize =Long.parseLong(req.getQuery("pageSize"));
+        ArrayList<FileLogListItem> result = getFileLogListItems(index,pageSize);
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(result.stream().sorted(Comparator.comparing(FileLogListItem::getTimestamp)).collect(Collectors.toList())));
 
     }
 
-    private ArrayList<FileLogListItem> getFileLogListItems() throws Exception {
+    private ArrayList<FileLogListItem> getFileLogListItems(long index, long pageSize) throws Exception {
         var result = new ArrayList<FileLogListItem>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS", Locale.ROOT);
-
+        var start = index*pageSize;
         sessionFactory.query(em->{
-            List<LoggingTable> rs = em.createQuery("SELECT e FROM LoggingTable e ORDER BY e.id ASC").getResultList();
+            var query =em.createQuery("SELECT e FROM LoggingTable e ORDER BY e.id ASC");
+            query.setFirstResult((int)start);
+            query.setMaxResults((int)(pageSize*2));
+            List<LoggingTable> rs = query.getResultList();
             for(var srs:rs){
                 var newItem = new FileLogListItem();
                 newItem.setId(srs.getId());

@@ -86,11 +86,10 @@ public class SingleScriptAPI implements FilteringClass {
                         var idr = ((ReplayerRow)a).getId();
                         if(!rows.containsKey(idr)) {
                             rows.put(idr, (ReplayerRow) a);
-                        }else{
-                            System.out.println("AAAAAAA");
                         }
                     });
 
+            result.setName(recording.getName());
             result.setId(recording.getId());
             result.setDescription(recording.getDescription());
             for(var index: indexLines){
@@ -105,7 +104,7 @@ public class SingleScriptAPI implements FilteringClass {
                 newLine.setReference(index.getReference());
                 newLine.setPactTest(index.isPactTest());
                 newLine.setStimulatorTest(index.isStimulatorTest());
-                newLine.setStimulatedTest(line.isStimulatedTest());
+                newLine.setStimulatedTest(index.isStimulatedTest());
                 newLine.setQueryCalc(RequestUtils.buildFullQuery(line.getRequest()));
                 newLine.setPreScript(index.getPreScript()!=null);
                 newLine.setScript(index.getPostScript()!=null);

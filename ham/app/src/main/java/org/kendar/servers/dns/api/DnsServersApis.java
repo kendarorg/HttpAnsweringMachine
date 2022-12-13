@@ -145,12 +145,16 @@ public class DnsServersApis implements FilteringClass {
         continue;
       }
       clone.setAddress(newData.getAddress());
+      clone.setEnabled(newData.isEnabled());
       if (prepareResolvedResponse(res, newList, newData, clone)) return;
     }
 
     for (var item : newList) {
-      if (item.getResolved().equalsIgnoreCase(newData.getResolved()))
-        throw new Exception("Duplicate dns resolution");
+      if (item.getResolved().equalsIgnoreCase(newData.getResolved())) {
+        if(!item.getAddress().equalsIgnoreCase(newData.getAddress())) {
+          throw new Exception("Duplicate dns resolution");
+        }
+      }
     }
     cloned.setExtraServers(newList);
     configuration.setConfiguration(cloned);

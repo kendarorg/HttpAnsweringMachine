@@ -1,98 +1,135 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
     <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
-    <script src="/libs/jquery-3.2.1.min.js"></script>
-    <script src="/libs/bootstrap.min.js"></script>
-    <script src="/libs/lodash.js"></script>
-    <link href="/app/app.css" rel="stylesheet"/>
+    <script src="/libs/vue.js"></script>
+    <script src="/libs/httpVueLoader.js"></script>
+    <script src="/libs/axios.min.js"></script>
+    <script src="/libs/utils.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
 </head>
 <body>
-<div class="container">
+<div class="container" id="app">
     <div class="row">
         <div class="col-md-8">
             <br>
             <button type="button" class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+            <button type="button" class="btn btn-default" onClick="location.href='list.html'">Logs</button>
+            <button v-if="goPrev" type="button"  class="btn btn-default" v-on:click="movePrev()">Prev</button>
+            <button v-if="goNext" type="button"  class="btn btn-default" v-on:click="moveNext()">Next</button>
         </div>
         <div class="col-md-8">
             <br>
             <span id="prev" name="prev"></span>
             <span id="next" name="next"></span>
         </div>
+
         <div class="col-md-8">
-            <label htmlFor="source">source</label>
-            <textarea spellcheck="false"
-                      class="form-control"
-                      rows="6" cols="50" name="source" id="source"></textarea>
-        </div>
-        <div class="col-md-8">
-            <label htmlFor="request">request</label>
-            <textarea spellcheck="false"
-                      class="form-control"
-                      rows="6" cols="50" name="request" id="request"></textarea>
-        </div>
-        <div class="col-md-8">
-            <label htmlFor="request_body">request_body</label>
-            <textarea spellcheck="false"
-                      class="form-control"
-                      rows="6" cols="50" name="request_body" id="request_body"></textarea>
-        </div>
-        <div class="col-md-8">
-            <label htmlFor="response">response</label>
-            <textarea spellcheck="false"
-                      class="form-control"
-                      rows="6" cols="50" name="response" id="response"></textarea>
-        </div>
-        <div class="col-md-8">
-            <label htmlFor="response_body">response_body</label>
-            <textarea spellcheck="false"
-                      class="form-control"
-                      rows="6" cols="50" name="response_body" id="response_body"></textarea>
+            <vtabs>
+                <vtab name="RESPONSE">
+                    <div class="col-md-8">
+                        <label htmlFor="response">response</label>
+                        <textarea spellcheck="false"
+                                  class="form-control"
+                                  rows="6" cols="50" name="response" id="response" v-model="response"></textarea>
+                    </div>
+                    <div class="col-md-8">
+                        <label htmlFor="response_body">response_body</label>
+                        <textarea spellcheck="false"
+                                  class="form-control"
+                                  rows="6" cols="50" name="response_body" id="response_body" v-model="responseBody"></textarea>
+                    </div>
+                </vtab>
+                <vtab name="REQUEST">
+                    <div class="col-md-8">
+                        <label htmlFor="request">request</label>
+                        <textarea spellcheck="false"
+                                  class="form-control"
+                                  rows="6" cols="50" name="request" id="request" v-model="request"></textarea>
+                    </div>
+                    <div class="col-md-8">
+                        <label htmlFor="request_body">request_body</label>
+                        <textarea spellcheck="false"
+                                  class="form-control"
+                                  rows="6" cols="50" name="request_body" id="request_body" v-model="requestBody"></textarea>
+                    </div>
+                </vtab>
+                <vtab name="ENVELOPE">
+                    <div class="col-md-8">
+                        <label htmlFor="source">source</label>
+                        <textarea spellcheck="false"
+                                  class="form-control"
+                                  rows="6" cols="50" name="source" id="source" v-model="source"></textarea>
+                    </div>
+                </vtab>
+            </vtabs>
         </div>
     </div>
 </div>
-<script src="/app/app.js"></script>
-<script>
-    $.ajax({
-        url: "/api/log/files/" + getUrlParameter("id"),
-        type: 'GET',
-        contentType: "text/plain",
-        success: function (res, textStatus, rr) {
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        components: {
+            'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
+            'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
+        },
+        async created() {
+            var response = await axios.get("/api/log/files/" + getUrlParameter("id"));
+            var next = response.headers.get("X-NEXT");
+            if(next==null|| typeof next == "undefined")next="";
+            var past = response.headers.get("X-PAST");
+            if(past==null|| typeof past == "undefined")past="";
+            this.next = next;
+            this.past = past;
+            console.log(next+" "+past)
+            var res=response.data;
 
-            if ((rr.getResponseHeader("X-NEXT") + "") != "" && rr.getResponseHeader("X-NEXT")!=null) {
-                $("#next").html(`<button type="button"  class="btn btn-default" onClick="location.href='single.html?id=` +
-                    rr.getResponseHeader("X-NEXT")
-                    + `'">Next</button>`);
-            } else {
-                $("#next").html( ``);
-            }
-            if ((rr.getResponseHeader("X-PAST") + "") != "" && rr.getResponseHeader("X-PAST")!=null) {
-                $("#prev").html(`<button type="button"  class="btn btn-default" onClick="location.href='single.html?id=` +
-                    rr.getResponseHeader("X-PAST")
-                    + `'">Prev</button>`);
-            } else {
-                $("#prev").html( ``);
-            }
             var cloned = JSON.parse(JSON.stringify(res));
             cloned['request'] = "NA";
             cloned['response'] = "NA";
-            $("#source").text(JSON.stringify(cloned, null, 2));
+            this.source = JSON.stringify(cloned, null, 2);
 
             var request = JSON.parse(JSON.stringify(res['request']));
             request['requestBytes'] = "NA";
             request['requestText'] = "NA";
-            $("#request").text(JSON.stringify(request, null, 2));
+            this.request = JSON.stringify(request, null, 2);
             if (!request['binaryRequest']) {
-                $("#request_body").text(res['request']['requestText']);
+                this.requestBody = res['request']['requestText'];
             }
-
 
             var response = JSON.parse(JSON.stringify(res['response']));
             response['responseBytes'] = "NA";
             response['responseText'] = "NA";
-            $("#response").text(JSON.stringify(response, null, 2));
+            this.response = JSON.stringify(response, null, 2);
             if (!response['binaryResponse']) {
-                $("#response_body").text(res['response']['responseText']);
+                this.responseBody = res['response']['responseText'];
+            }
+        },
+        computed: {
+            goPrev:function(){return typeof this.past != "undefined" && this.past!="" && this.past!=null;},
+            goNext:function(){return typeof this.next != "undefined" && this.next!=""
+                && this.next!=null && this.next!="-1" && this.next!=-1;},
+        },
+        data: function(){
+            return {
+                source:"",
+                request:"",
+                requestBody:"",
+                response:"",
+                responseBody:"",
+                next:"",
+                past:""
+            }
+        },
+        methods:{
+            movePrev:function(){
+                location.href='single.html?id='+this.past;
+            },
+            moveNext:function(){
+                location.href='single.html?id='+this.next;
             }
         }
     });

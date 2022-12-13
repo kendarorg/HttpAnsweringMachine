@@ -1,148 +1,134 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
     <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
-    <script src="/libs/jquery-3.2.1.min.js"></script>
-    <script src="/libs/bootstrap.min.js"></script>
-    <script src="/libs/lodash.js"></script>
-    <link href="/app/app.css" rel="stylesheet"/>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+    <script src="/libs/vue.js"></script>
+    <script src="/libs/httpVueLoader.js"></script>
+    <script src="/libs/axios.min.js"></script>
+    <script src="/libs/utils.js"></script>
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
 </head>
 <body>
-<div class="container">
+
+<div class="container" id="app">
+    <simple-modal v-if="modalShow"
+                  :modal-data="modalData"
+                  @close="modalShow = false">
+        <span slot="header">Recording</span>
+        <span slot="body"><create-recording :data="modalData.data"/></span>
+        <span slot="footer">
+              <button type="button" class="bi bi-x-square" @click="$emit('close')" title="Close"></button></span>
+    </simple-modal>
     <div class="row">
         <div class="col-md-8">
             <br>
-            <button type="button"  class="btn btn-default" onClick="location.href='../../index.html'">Main</button>
+            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
             <button type="button"  class="btn btn-default" onClick="location.href='results.html'">Test results</button>
         </div>
         <div class="col-md-8">
-            <h3>UPLOAD SCRIPT</h3>
-            <form action="" id="addUser"  method="POST"  >
-                <div class="form-group">
-                <button type="button" id="btLoadFile" name="btLoadFile" class="btn btn-default">Open file</button>
-                <input type="file" style="width:0;height: 0;opacity:0;" id="uploadScript" name="uploadScript" >
-                </div>
-                    <div class="form-group">
-                <input class="form-control" type="text" name="uploadScriptShow" id="uploadScriptShow" />
-                    </div>
-                <div class="form-group">
-                <button type="button" id="btUploadScript" name="btUploadScript" class="btn btn-default">Upload</button>
-                </div>
-            </form>
+            <h3>RECORDINGS</h3>
+            <br>
+
+            <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+            <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+            <br><br>
+            <simple-grid
+                    v-on:gridclicked="gridClicked"
+                    ref="grid"
+                    :columns="columns"
+                    :extra="extraColumns"
+                    :retrieve-data="retrieveData"
+            >
+            </simple-grid>
         </div>
-        <div class="col-md-8">
-            <h3>CREATE RECORDING</h3>
-            <form action="" id="createScript"  method="POST"  >
-                <div class="form-group">
-                    <input class="form-control" type="text" name="createScriptName" id="createScriptName" />
-                </div>
-                <div class="form-group">
-                    <button type="button" id="createScriptBt" name="createScriptBt" class="btn btn-default">Create</button>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-8">
-            <h3>SCRIPTS</h3>
-            <table class="table table-striped" id="scriptTable">
-                <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>State</th>
-                    <th colspan="2"></th>
-                </tr>
-            </table>
-        </div>
+
     </div>
 </div>
-<script src="/app/app.js"></script>
 <script>
-    var scriptsTable = new SimpleGrid("Script","scriptTable","id",["id","name","state"],
-        function(table){
-            $.ajax({
-                url: "/api/plugins/replayer/recording",
-                type: 'GET',
-                success: function(res) {
-                    $.each(res, function(i, script) {
-                        //tSource,tableId,id,data,fields
-                        //table.appendToTable({id:"test"});
-                        table.appendToTable(script);
+    new Vue({
+        el: '#app',
+        components: {
+            'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
+            'simple-modal': httpVueLoader('/vcomponents/tmodal.vue'),
+            'create-recording': httpVueLoader('/plugins/recording/vcomponents/createrecording.vue'),
+            'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
+            'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
+        },
+        data: function () {
+            return {
+                modalData: null,
+                modalShow: false,
+                columns: [
+                    {id: "id", template: "long", index: true},
+                    {id: "state", template: "string"},
+                    {id: "name", template: "string"}
+                ],
+                extraColumns: [
+                    {
+                        id: "_edit", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                            name: "Edit", style: "bi bi-pen-fill"
+                        }
+                    },
+                    {
+                        id: "_delete", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                            name: "Delete", style: "bi bi-trash"
+                        }
+                    }
+                ]
+            }
+        },
+        methods: {
+            retrieveData: async function () {
+                var result = await axios.get("/api/plugins/replayer/recording");
+                return result;
+            },
+            gridClicked: async function (evt) {
+                var row = this.$refs.grid.getById(evt.index);
+
+                if (evt.buttonid == "_edit") {
+                    location.href = "script.html?id="+row['id'];
+                } else if (evt.buttonid == "_delete") {
+                    await axios.delete("/api/plugins/replayer/recording/" + row['id'])
+                    this.reload();
+                }
+            },
+            reload: function () {
+                this.$refs.grid.reload();
+            },
+            addNew: function (shouldEdit, rowId) {
+                var row = null;
+                if (shouldEdit) {
+                    row = this.$refs.grid.getById(rowId);
+                } else {
+                    row = {
+                        id: URL.createObjectURL(new Blob([])).substr(-36)
+                    }
+                }
+                this.modalData = {
+                    data: row,
+                    edit: shouldEdit,
+                    save: this.save
+                };
+                this.modalShow = true;
+            },
+            save: async function () {
+                if (this.modalData.edit) {
+                    await axios.put('/api/plugins/replayer/recording/' + this.modalData.data.id, this.modalData.data).then(() => {
+                        this.modalShow = false;
+                        this.reload();
+                    });
+                } else {
+                    await axios.post('/api/plugins/replayer/recording', this.modalData.data).then(() => {
+                        this.modalShow = false;
+                        this.reload();
                     });
                 }
-            });
-        },
-        function (table,id) {
-            location.href = "script.html?id="+id;
-        },
-        function (table,id) {
-            table.deleteFromTable(id,function(id,success,error){
-                $.ajax({
-                    url: "/api/plugins/replayer/recording/" + id,
-                    type: 'DELETE',
-                    success: function (res) {
-                        success();
-                    },
-                    error:function(res){
-                        error();
-                    }
-                });
-            });
-        },null,[
-            {id:"id",type:"number"},
-            {id:"name",type:"string"}]).load();
-
-    $("#btLoadFile").click(function(){
-        document.getElementById("uploadScript").click();
-    });
-    $("#uploadScript").change(function(){
-        window.uploadScript = [];
-        uploadAsyncFile($('#uploadScript')[0].files,function(data){
-            window.uploadScript = data;
-            document.getElementById("uploadScriptShow").value = data[0].name;
-        },function(exception){
-            alert(exception);
-        });
-    });
-    $("#btUploadScript").click(function(){
-        if(window.uploadScript === undefined || window.uploadScript.length==0){
-            alert("NO FILES SELECTED");
-            return;
+            }
         }
-        var toUpload = window.uploadScript[0];
-        var name = toUpload["name"].substr(0,toUpload["name"].length-5);
-        $.ajax({
-            url: '/api/plugins/replayer/recording',
-            type: 'post',
-            data: JSON.stringify(toUpload),
-            contentType: "application/json",
-            processData: false,
-            success: function(response){
-                window.uploadScript=[];
-                document.getElementById("uploadScriptShow").value ="";
-                alert("File Uploaded");
-                location.href = "script.html?id="+response;
-            }
-        });
     });
-
-    $("#createScriptBt").click(function(){
-        var name = $('#createScriptName').val();
-        var data = {
-            name:name+".json",
-            data:btoa("{}"),
-            type:"application/json"
-        };
-        $.ajax({
-            url: '/api/plugins/replayer/recording',
-            type: 'post',
-            data: JSON.stringify(data),
-            contentType: "text/plain",
-            success: function(response){
-                location.href = "script.html?id="+response;
-            }
-        });
-    });
-
-
 </script>
 </body>
 </html>
