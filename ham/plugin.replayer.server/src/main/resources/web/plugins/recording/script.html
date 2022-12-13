@@ -38,12 +38,15 @@
                           v-model="data.description"></textarea>
             </div>
             <br>
-            <button type="button"  class="bi bi-floppy" @click="saveRecordingData" title="Save">Save</button>&nbsp;
-            <button type="button"  class="bi bi-record-btn" @click="noop" title="Save">Record</button>&nbsp;
-            <button type="button"  class="bi bi-stop-btn" @click="noop" title="Save">Stop</button>&nbsp;
-            <button type="button"  class="bi bi-play-btn" @click="noop" title="Save">Play</button>&nbsp;
-            <button type="button"  class="bi bi-pencil-square" @click="noop" title="Save">Play Pact</button>&nbsp;
-            <button type="button"  class="bi bi-cloud" @click="noop" title="Save">Play Null</button>
+            <button type="button" :disabled="buttons.save" class="bi bi-floppy" @click="saveRecordingData" title="Save">Save</button>&nbsp;
+            <button type="button" :disabled="buttons.record"  class="bi bi-record-btn" @click="executeAct('start','record')" title="Save">Record</button>&nbsp;
+            <button type="button" :disabled="buttons.stop"  class="bi bi-stop-btn" @click="executeAct('stop')" title="Save">Stop</button>&nbsp;
+            <button type="button" :disabled="buttons.play"  class="bi bi-play-btn" @click="executeAct('start','replay')" title="Save">Play</button>&nbsp;
+            <button type="button" :disabled="buttons.pact"  class="bi bi-pencil-square" @click="executeAct('start','pact')" title="Save">Play Pact</button>&nbsp;
+            <button type="button" :disabled="buttons.nullinf"  class="bi bi-cloud" @click="executeAct('start','null')" title="Save">Play Null</button>
+            <button type="button" :disabled="buttons.pause"  class="bi bi-pause-btn" @click="executeAct('pause')" title="Save">Pause</button>
+
+            <button v-on:click="updateButtons()" class="btn btn-primary btn-sm">Reload status</button>
             <br>
             <br>
         </div>
@@ -66,6 +69,16 @@
                     </current-line>
                 </vtab>
                 <vtab name="RESULTS">
+                    <button v-on:click="reloadResult()" class="bi bi-arrow-clockwise" title="Reload"></button>
+                    <br><br>
+                    <simple-grid
+                            v-on:gridclicked="gridClickedResult"
+                            ref="results"
+                            :columns="columnsResult"
+                            :extra="extraColumnsResult"
+                            :retrieve-data="retrieveDataResult"
+                    >
+                    </simple-grid>
                 </vtab>
             </vtabs>
 
@@ -88,17 +101,164 @@
         },
         data: function () {
             return {
+                columnsResult: [
+                    {id: "fileId", template: "long", index: true},
+                    {id: "date", template: "string"},
+                    {id: "name", template: "string"},
+                    {id: "testType", template: "string"},
+                    {id: "successful", template: "bool"}
+                ],
+                extraColumnsResult: [
+                    {
+                        id: "_download", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                            name: "Download", style: "bi bi-pen-fill"
+                        }
+                    },
+                    {
+                        id: "_delete", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                            name: "Delete", style: "bi bi-trash"
+                        }
+                    }
+                ],
                 selectedRow:null,
-                data:{}
+                data:{},
+                buttons:{
+                    save:false,
+                    record:false,
+                    stop:true,
+                    play:true,
+                    pact:true,
+                    nullinf:true,
+                    pause:true
+                }
 
             }
         },
         methods: {
-            noop:function(){},
+            retrieveDataResult: async function () {
+                var id = getUrlParameter("id");
+                var result = await axios.get("/api/plugins/replayer/results?id="+id);
+                return result;
+            },
+            gridClickedResult: async function (evt) {
+                var row = this.$refs.results.getById(evt.index);
+
+                if (evt.buttonid == "_download") {
+                    window.open("/api/plugins/replayer/results/"+row['fileId']);
+                } else if (evt.buttonid == "_delete") {
+                    await axios.delete("/api/plugins/replayer/results/" + row['fileId']);
+                    this.$refs.results.delete(evt.index)
+
+                }
+            },
+            reloadResult: function () {
+                this.$refs.results.reload();
+            },
+            executeAct:function(what,onWhat){
+                var th = this;
+                var id = getUrlParameter("id");
+                if(!isUndefined(onWhat)){
+                    var id = getUrlParameter("id");
+                    var url = "/api/plugins/replayer/recording/"+id+"/"+onWhat+"/"+what;
+                    axios.get(url)
+                        .then(function (result) {
+                            th.updateButtons();
+                        });
+                }else {
+                    axios.get("/api/plugins/replayer/status")
+                        .then(function (result) {
+                            var data = result.data;
+                            data.status = data.status.toUpperCase();
+                            data.running = data.running.toUpperCase();
+
+                            if (id == data.running) {
+                                if (data.status == "RECORDING")th.executeAct(what,'record');
+                                if (data.status == "PAUSED_RECORDING")th.executeAct(what,'record');
+                                if (data.status == "REPLAYING")th.executeAct(what,'replay');
+                                if (data.status == "PAUSED_REPLAYING")th.executeAct(what,'replay');
+                                if (data.status == "PLAYING_NULL_INFRASTRUCTURE")th.executeAct(what,'null');
+                                if (data.status == "PLAYING_PACT")th.executeAct(what,'pact');
+                            }
+                        })
+                }
+            },
             rowSelected:function(rowId){
                 this.selectedRow=rowId;
                 sessionStorage.setItem("recordingCurrentLine", rowId);
                 sessionStorage.setItem("recordingId", getUrlParameter("id"));
+            },
+            updateButtons:function(){
+                var th=this;
+                axios.get("/api/plugins/replayer/status")
+                    .then(function(result){
+                        var data = result.data;
+                        data.status=data.status.toUpperCase();
+                        data.running=data.running.toUpperCase();
+                        var thisScript =getUrlParameter("id");
+                        if(data.status!="NONE" && thisScript!=data.running ){
+                            data.status="OTHER_RUNNING";
+                        }
+
+                        if(th.data.lines.length==0 && data.status=="NONE"){
+                            th.buttons.record=false;
+                        }
+                        if(data.status=="OTHER_RUNNING"){
+                            th.buttons.save=false;
+                            th.buttons.stop=true;
+                            th.buttons.play=true;
+                            th.buttons.pact=true;
+                            th.buttons.nullinf=true;
+                        }else if(data.status=="RECORDING"||data.status=="REPLAYING"){
+                            th.buttons.save=true;
+                            th.buttons.stop=false;
+                            th.buttons.record=true;
+                            th.buttons.pause=false;
+                            th.buttons.play=true;
+                            th.buttons.pact=true;
+                            th.buttons.nullinf=true;
+                        }else if(data.status=="PLAYING_NULL_INFRASTRUCTURE"||data.status=="PLAYING_PACT"){
+                            th.buttons.save=true;
+                            th.buttons.stop=false;
+                            th.buttons.pause=true;
+                            th.buttons.record=true;
+                            th.buttons.play=true;
+                            th.buttons.pact=true;
+                            th.buttons.nullinf=true;
+                        }else if(data.status=="PAUSED_RECORDING"){
+                            th.buttons.record=false;
+                            th.buttons.save=true;
+                            th.buttons.stop=false;
+                            th.buttons.pause=true;
+                            th.buttons.play=true;
+                            th.buttons.pact=true;
+                            th.buttons.nullinf=true;
+                        }else if(data.status=="PAUSED_REPLAYING"){
+                            th.buttons.record=true;
+                            th.buttons.save=true;
+                            th.buttons.stop=false;
+                            th.buttons.pause=true;
+                            th.buttons.play=false;
+                            th.buttons.pact=true;
+                            th.buttons.nullinf=true;
+                        }else if(data.status=="NONE"){
+                            th.buttons.save=false;
+                            th.buttons.stop=true;
+                            th.buttons.pause=true;
+                            if(th.data.lines.length>0){
+                                th.buttons.record=true;
+                                th.buttons.play=false;
+                                th.buttons.pact=false;
+                                th.buttons.nullinf=false;
+                            }else{
+                                th.buttons.record=false;
+                                th.buttons.play=true;
+                                th.buttons.pact=true;
+                                th.buttons.nullinf=true;
+                            }
+
+                        }
+
+                    })
             },
             reloadForm: function(){
                 var th=this;
@@ -106,6 +266,9 @@
                     .then(function (result){
                         th.data=result.data;
                         th.$refs.recordingList.reload(th.data.lines);
+                        //if(th.data.linse.length>0){
+                            th.updateButtons();
+                        //}
 
                         var recording = sessionStorage.getItem("recordingId");
                         if(null!=recording){

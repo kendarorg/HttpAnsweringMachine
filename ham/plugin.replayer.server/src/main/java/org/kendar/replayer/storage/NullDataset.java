@@ -51,7 +51,7 @@ public class NullDataset extends ReplayerDataset{
 
     public Long start() throws Exception {
         var result = new TestResults();
-        result.setType("NullInfrastructure");
+        result.setType("NULL");
         result.setTimestamp(Timestamp.from(Calendar.getInstance().toInstant()));
         result.setRecordingId(name);
 

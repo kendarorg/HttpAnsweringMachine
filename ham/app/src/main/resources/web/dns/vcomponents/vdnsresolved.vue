@@ -36,7 +36,7 @@ module.exports = {
         {id: "resolved", template: "string"}
       ],
       extraColumns: [
-        {id: "_select", template: "boolw", default: false}
+        {id:"select",template:"boolw",default:false},
       ]
     }
   },
@@ -49,31 +49,31 @@ module.exports = {
       this.$refs.grid.reload();
     },
     toggleSelect: function () {
-      this.$refs.grid.toggleSelect("_select");
+      this.$refs.grid.toggleSelect("select");
     },
     selectAll: function () {
-      this.$refs.grid.selectAll("_select");
+      this.$refs.grid.selectAll("select");
     },
     generateSSLMappings: async function () {
       var data = [];
-      this.$refs.grid.getData().forEach(function (row, i) {
-        if (row['_select'] === true) {
-          data.push(this.$refs.grid.cleanRow(row));
-        }
+      this.$refs.grid.onSelected(function(row){
+          data.push(row['name']);
       });
-      await axios.post('/api/ssl', data).then(() => {
-        alert("SSL Certificates Generated!");
+      var toUpload = JSON.stringify(data);
+      const headers = {'Content-Type': 'application/json'};
+      axios.post('/api/ssl', toUpload, {headers}).then((res) => {
+
       });
     },
     generateDNSMappings: async function () {
       var data = [];
-      this.$refs.grid.getData().forEach(function (row, i) {
-        if (row['_select'] === true) {
-          data.push(row['name']);
-        }
+      this.$refs.grid.onSelected(function(row){
+        data.push(row['name']);
       });
-      await axios.post('/api/dns/mappings', data).then(() => {
-        alert("DNS Mappings Generated!");
+      var toUpload = JSON.stringify(data);
+      const headers = {'Content-Type': 'application/json'};
+      axios.post('/api/dns/mappings', toUpload, {headers}).then((res) => {
+
       });
     }
   }

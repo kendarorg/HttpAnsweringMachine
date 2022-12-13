@@ -1,10 +1,22 @@
 <template>
 <div>
+  <simple-modal v-if="modalShow"
+                :modal-data="modalData"
+                @close="modalShow = false">
+    <span slot="header">Multiple Scripts</span>
+    <span slot="body"><global-script :data="modalData"/></span>
+<!--    <span slot="footer">-->
+<!--              <button type="button" class="bi bi-x-square" @click="$emit('close')" title="Close"></button></span>-->
+  </simple-modal>
   <button v-on:click="selectAll()" class="btn btn-default" title="Check All">Check all</button>
   <button v-on:click="toggleSelect()" class="btn btn-default" title="Toggle">Toggle Selected</button>
   <button v-on:click="selectedToStimulator()" class="btn btn-default" title="Toggle">Selected Stimulator</button>
   <button v-on:click="selectedToStimulated()" class="btn btn-default" title="Toggle">Selected Stimulated</button>
   <button v-on:click="selectedToPact()" class="btn btn-default" title="Toggle">Selected Pact</button>
+  <Br><br>
+  <button v-on:click="generateDns()" class="btn btn-default" title="Toggle">Gnerate DNS for selected</button>
+  <button v-on:click="generateSSL()" class="btn btn-default" title="Toggle">Gnerate SSL for selected</button>
+  <button v-on:click="setScript()" class="btn btn-default" title="Toggle">Set SCript for selected</button>
   <Br><br>
   <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
   <!--<button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>-->
@@ -23,10 +35,14 @@
 module.exports = {
   name: "recording-list",
   components: {
-    'simple-grid': httpVueLoader('/vcomponents/testgrid.vue')
+    'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
+    'global-script': httpVueLoader('/plugins/recording/vcomponents/line/vscript.vue'),
+    'simple-modal': httpVueLoader('/vcomponents/tmodal.vue'),
   },
   data:function (){
     return {
+      modalData: null,
+      modalShow: false,
       data:[],
       columns: [
         {id: "id", template: "long", index: true,size:4},
@@ -105,24 +121,69 @@ module.exports = {
     },
     selectAll: function () {
       this.$refs.grid.selectAll("select");
-    }
-    /*,
-    addNew: function (shouldEdit, rowId) {
-      var row = null;
-      if (shouldEdit) {
-        row = this.$refs.grid.getById(rowId);
-      } else {
-        row = {
+    },
+    generateDns:function (){
+      var allHosts = [];
+      this.$refs.grid.onSelected(function(row){
+        allHosts.push(row['requestHost']);
+      })
+      var toUpload = JSON.stringify(allHosts);
+      const headers = {'Content-Type': 'application/json'};
+      axios.post('/api/dns/mappings', toUpload, {headers}).then((res) => {
 
-        }
-      }
-      this.modalData = {
-        data: row,
-        edit: shouldEdit,
-        save: this.save
+      });
+    },
+    setScript:function (){
+      var allHosts = [];
+      this.$refs.grid.onSelected(function(row){
+        allHosts.push(row['id']);
+      })
+      var ids = allHosts.join(",");
+      this.modalData ={
+        method:null,
+        host:null,
+        path:null,
+        id:ids,
+        pre:"",
+        post:"",
+        save:this.savePrePosts
       };
       this.modalShow = true;
-    }*/
+    },
+    savePrePosts: async function(){
+      var pathId = this.modalData.id;
+      var realId = this.modalData.id;
+      if(realId.indexOf(",")>0){
+        realId = "-1";
+      }
+      var toPost = {
+        id:realId,
+        method:"",
+        host:"",
+        path:"",
+        pre :this.modalData.pre,
+        post :this.modalData.post
+      }
+
+
+      var toUpload = JSON.stringify(toPost);
+      const headers = {'Content-Type': 'application/json'};
+      await axios.put('/api/plugins/replayer/recording/'+getUrlParameter("id")+'/script/'+pathId,toUpload, {headers}).then(() => {
+        this.modalShow = false;
+        location.reload();
+      });
+    },
+    generateSSL:function (){
+      var allHosts = [];
+      this.$refs.grid.onSelected(function(row){
+        allHosts.push(row['requestHost']);
+      })
+      var toUpload = JSON.stringify(allHosts);
+      const headers = {'Content-Type': 'application/json'};
+      axios.post('/api/ssl', toUpload, {headers}).then((res) => {
+
+      });
+    }
   }
 }
 </script>

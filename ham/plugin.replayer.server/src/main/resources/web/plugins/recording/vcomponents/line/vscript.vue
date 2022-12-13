@@ -3,6 +3,10 @@
     <button type="button" class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
     <br><br>
     <div class="form-group">
+      <label htmlFor="request_id">Id</label>
+      <input class="form-control" type="text" name="request_id" id="request_id" v-model="data.id"/>
+    </div>
+    <div class="form-group">
       <label htmlFor="request_method">Method</label>
       <input class="form-control" type="text" name="request_method" id="request_method" v-model="data.method"/>
     </div>
