@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="form-group">
-      <button type="button" id="btLoadFile" name="btLoadFile" class="btn btn-default" v-on:click="openFile">Open file</button>
+      <button type="button" id="btLoadFile" name="btLoadFile" class="bi bi-folder2-open" v-on:click="openFile" title="Open File"></button>
+      <button type="button" id="btUploadScript" name="btUploadScript" class="bi bi-cloud-plus" v-on:click="upload" title="Upload"></button>
       <input ref="uploadScript" type="file" style="width:0;height: 0;opacity:0;"
              id="uploadScript" name="uploadScript"
              @change="loadFile"
@@ -10,9 +11,6 @@
     <div class="form-group">
       <input class="form-control" type="text" name="uploadScriptShow" id="uploadScriptShow"
              v-model="uploadScriptShow"/>
-    </div>
-    <div class="form-group">
-      <button type="button" id="btUploadScript" name="btUploadScript" class="btn btn-default" v-on:click="upload">Upload</button>
     </div>
   </div>
 </template>
