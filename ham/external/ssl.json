@@ -10,6 +10,14 @@
     {
       "id": "1",
       "address": "local.test"
+    },
+    {
+      "id": "2",
+      "address": "reqbin.com"
+    },
+    {
+      "id": "3",
+      "address": "www.reqbin.com"
     }
   ]
 }

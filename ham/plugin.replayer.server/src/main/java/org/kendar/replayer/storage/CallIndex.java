@@ -67,6 +67,9 @@ public class CallIndex implements DbTable {
     @Column(name = "stimulatorTest")
     private boolean stimulatorTest;
 
+    @Column(name = "stimulatedTest")
+    private boolean stimulatedTest;
+
     public Long getId() {
         return id;
     }
@@ -113,5 +116,13 @@ public class CallIndex implements DbTable {
 
     public void setIndex(Long index) {
         this.index = index;
+    }
+
+    public boolean isStimulatedTest() {
+        return stimulatedTest;
+    }
+
+    public void setStimulatedTest(boolean stimulatedTest) {
+        this.stimulatedTest = stimulatedTest;
     }
 }

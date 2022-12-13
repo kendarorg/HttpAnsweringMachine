@@ -8,6 +8,7 @@ public class SingleScript {
     private SingleScriptFilter filter;
     private Long id;
     private String description;
+    private String name;
 
     public void setId(Long id) {
         this.id = id;
@@ -39,5 +40,13 @@ public class SingleScript {
 
     public void setFilter(SingleScriptFilter filter) {
         this.filter = filter;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

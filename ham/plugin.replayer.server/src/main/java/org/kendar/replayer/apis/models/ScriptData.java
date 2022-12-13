@@ -5,6 +5,7 @@ import java.util.List;
 
 public class ScriptData {
     private String description;
+    private String name;
     private String id;
     private RedirectFilter filter;
     private List<Integer> stimulatorTest = new ArrayList<>();
@@ -57,5 +58,13 @@ public class ScriptData {
 
     public void setStimulatedTest(List<Integer> stimulatedTest) {
         this.stimulatedTest = stimulatedTest;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

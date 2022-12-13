@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <base href="http://localhost:63342/ham/app/web/">
+    <title>Title</title>
+    <link href="./libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="./libs/vue.js"></script>
+    <script src="./libs/httpVueLoader.js"></script>
+    <script src="./libs/axios.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./vcss/style.css" />
+</head>
+<!--
+Dynamic loaded templates: https://medium.com/scrumpy/dynamic-component-templates-with-vue-js-d9236ab183bb
+-->
+<body>
+    <div id="app">
+        <div id="components-demo">
+            <button-counter class="btn btn-primary btn-sm"></button-counter>
+            <button-counter class="btn btn-primary btn-sm"></button-counter>
+            <button-counter class="btn btn-primary btn-sm"></button-counter>
+        </div>
+        <br>
+        <button v-on:click="doAlert()" class="btn btn-primary btn-sm">Test</button>
+        <button v-on:click="reload()" class="btn btn-primary btn-sm">Reload</button>
+        <button v-on:click="toggleSelect()" class="btn btn-primary btn-sm">Toggle Select</button>
+        <button v-on:click="selectAll()" class="btn btn-primary btn-sm">Select All</button>
+        <simple-grid
+                v-on:gridclicked="gridClicked"
+                ref="simpleGrid"
+                :columns="gridColumns"
+                :extra="extraColumns"
+                :retrieve-data="retrieveData"
+        >
+        </simple-grid>
+    </div>
+    <script type="text/javascript">
+
+        new Vue({
+            el: '#app',
+            components: {
+                'button-counter': httpVueLoader('vcomponents/test.vue'),
+                'simple-grid': httpVueLoader('vcomponents/testgrid.vue')
+            },
+            data:{
+                ids:["id"],
+                gridColumns: [
+                    {id:"id",template:"string",index:true},
+                    {id:"name",template:"string",searchable:false},
+                    {id:"power",template:"long"},
+                    {id:"evil",template:"boolw"}
+                ],
+                extraColumns:[
+                    {id:"select",template:"boolw",default:false},
+                    {id:"_edit",template:"button",default:false,searchable:true,properties:{
+                            name:"Edit",style:"btn btn-success btn-sm"
+                        }},
+                    {id:"_delete",template:"button",default:false,searchable:false,properties:{
+                            name:"Delete",style:"btn btn-danger btn-sm"
+                        }}
+                ]
+            },
+            methods:{
+                retrieveData: async function(){
+                    var result = await axios.get("http://localhost:63342/ham/app/web/vdata/simplegrid.json");
+                    return result;
+                },
+                doAlert:function(){
+                    console.log(JSON.stringify(this.$refs.simpleGrid.filteredData));
+                },
+                toggleSelect:function(){
+                    this.$refs.simpleGrid.toggleSelect("select");
+                },
+                selectAll:function(){
+                   this.$refs.simpleGrid.selectAll("select");
+                },
+                reload:function(){
+                    this.$refs.simpleGrid.reload();
+                },
+                gridClicked:function(evt){
+                    var row = this.$refs.simpleGrid.getById(evt.index);
+
+                    console.log(evt);
+                    console.log(row);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

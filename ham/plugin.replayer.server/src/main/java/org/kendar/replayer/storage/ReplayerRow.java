@@ -139,8 +139,6 @@ public class ReplayerRow implements DbTable {
         this.done = done;
     }
 
-    @Column(name = "stimulatedTest")
-    private boolean stimulatedTest;
 
     @Column(name = "staticRequest")
     private boolean staticRequest;
@@ -220,14 +218,6 @@ public class ReplayerRow implements DbTable {
 
     public boolean done(){
         return done;
-    }
-
-    public boolean isStimulatedTest() {
-        return stimulatedTest;
-    }
-
-    public void setStimulatedTest(boolean stimulatedTest) {
-        this.stimulatedTest = stimulatedTest;
     }
 
     public String getQuery() {

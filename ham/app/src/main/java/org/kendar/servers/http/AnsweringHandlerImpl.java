@@ -23,7 +23,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Locale;
 
 @Component
@@ -195,6 +197,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
 
     if (filteringClassesHandler.handle(
             config, HttpFilterType.STATIC, request, response, connManager)) {
+      response.getHeaders().put("Cache Control","max-age=3600,s-maxage=3600");
+      response.getHeaders().put("Last-Modified","Wed, 21 Oct 2015 07:28:00 GMT");
       // ALWAYS WHEN CALLED
       return;
     }
@@ -235,6 +239,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
       } else {
         request = requestResponseBuilder.fromExchange(httpExchange, "http");
       }
+      request.setMs(Date.from(Instant.now()).getTime());
 
       //START REQUEST
       if(request.getHeader("X-BLOCK-RECURSIVE")!=null){

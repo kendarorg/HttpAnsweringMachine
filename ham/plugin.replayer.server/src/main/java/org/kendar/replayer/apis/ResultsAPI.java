@@ -49,6 +49,12 @@ public class ResultsAPI  implements FilteringClass {
     ))
     public void getResults(Request request, Response response) throws Exception {
 
+        long recordingId = -1;
+        var recordingIdString = request.getQuery("id");
+        if(recordingIdString!=null){
+            recordingId = Long.parseLong(recordingIdString);
+        }
+
         List<TestResults> resultsList = new ArrayList<>();
         Map<Long,String> recNames = new HashMap<>();
         var result = new ArrayList<RecordingItem>();
@@ -62,6 +68,9 @@ public class ResultsAPI  implements FilteringClass {
         });
 
         for(var rs:resultsList) {
+            if(recordingId>=0 && recordingId!=rs.getRecordingId()){
+                continue;
+            }
             var ra = new RecordingItem();
             ra.setSuccessful(rs.getError()==null || rs.getError().isEmpty() );
             ra.setFileId(rs.getId());

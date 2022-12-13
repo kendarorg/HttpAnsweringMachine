@@ -1,7 +1,6 @@
 package org.kendar.replayer.storage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.FileUtils;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.db.HibernateSessionFactory;
@@ -10,13 +9,9 @@ import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class ReplayerDataset implements BaseDataset{
   protected static final String MAIN_FILE = "runall.json";
@@ -79,6 +74,18 @@ public class ReplayerDataset implements BaseDataset{
       staticRequests.addAll(query.getResultList());
     });
 
+    var indexes = staticRequests.stream().map(r->r.getIndex()).collect(Collectors.toList()).toArray(Long[]::new);
+    var callIndexes = new ArrayList<CallIndex>();
+    sessionFactory.query(em->{
+      var query =em.createQuery("SELECT e FROM CallIndex  e WHERE " +
+              " e.reference IN :reqs" +
+              " AND e.recordingId=:recordingId" +
+              " ORDER BY e.reference ASC");
+      query.setParameter("recordingId",name);
+      query.setParameter("reqs",indexes);
+      callIndexes.addAll(query.getResultList());
+    });
+
     for (var row : staticRequests) {
       if(!staticRequest){
         var st = states.get(row.getId());
@@ -87,7 +94,10 @@ public class ReplayerDataset implements BaseDataset{
         }
       }
       var rreq = row.getRequest();
-      if(!superMatch(row))continue;
+      var callIndex = callIndexes.stream().filter(
+              ci->ci.getReference()==row.getId()
+      ).findFirst();
+      if(!superMatch(row,callIndex.get()))continue;
       var matchedQuery=0;
       if (rreq.isBinaryRequest() == sreq.isBinaryRequest()) {
         if (row.getRequestHash().equalsIgnoreCase(contentHash)) {
@@ -104,7 +114,7 @@ public class ReplayerDataset implements BaseDataset{
     return founded;
   }
 
-  protected boolean superMatch(ReplayerRow row) {
+  protected boolean superMatch(ReplayerRow row, CallIndex callIndex) {
     return true;
   }
 

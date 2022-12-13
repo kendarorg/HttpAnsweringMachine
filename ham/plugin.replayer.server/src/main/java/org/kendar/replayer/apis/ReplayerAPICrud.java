@@ -153,16 +153,13 @@ public class ReplayerAPICrud implements FilteringClass {
       List<ReplayerRow> rows = em.createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId="+id).getResultList();
 
       recording.setDescription(scriptData.getDescription());
+      recording.setName(scriptData.getName());
       em.merge(recording);
       for(var ci:indexLines){
         ci.setPactTest(scriptData.getPactTest().stream().anyMatch(a->a.intValue()==ci.getId()));
         ci.setStimulatorTest(scriptData.getStimulatorTest().stream().anyMatch(a->a.intValue()==ci.getId()));
+        ci.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==ci.getId()));
         em.merge(ci);
-      }
-      for(var row:rows){
-        row.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==row.getId()));
-        row.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==row.getId()));
-        em.merge(row);
       }
     });
 
@@ -189,6 +186,7 @@ public class ReplayerAPICrud implements FilteringClass {
       List<CallIndex> indexLines = em.createQuery("SELECT e FROM CallIndex e WHERE e.recordingId=" + id).getResultList();
       List<ReplayerRow> rows = em.createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId=" + id).getResultList();
 
+      result.setName(recording.getName());
       result.setDescription(recording.getDescription());
       for(var row:rows){
         if(row.isStaticRequest()){

@@ -1,76 +1,77 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
     <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
-    <script src="/libs/jquery-3.2.1.min.js"></script>
-    <script src="/libs/bootstrap.min.js"></script>
-    <script src="/libs/lodash.js"></script>
-    <link href="/app/app.css" rel="stylesheet"/>
+    <script src="/libs/vue.js"></script>
+    <script src="/libs/httpVueLoader.js"></script>
+    <script src="/libs/axios.min.js"></script><script src="/libs/utils.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
 </head>
 <body>
-<div class="container">
-    <div class="row">
+<div class="container" id="app">
+    <div class="row"><div class="col-md-8">
+        <br>
+        <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+    </div>
         <div class="col-md-8">
+            <h3>LOGS</h3>
             <br>
-            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
-        </div>
-        <div class="col-md-8">
-            <br>
-            <button type="button"  class="btn btn-default" onClick="clearLogs()">Clear</button>
-        </div>
-        <div class="col-md-8">
-            <h3>Logs</h3>
-            <table class="table table-striped" id="logsTable">
-                <tr>
-                    <th style="width:0px">Id</th>
-                    <th>Time</th>
-                    <th>Host</th>
-                    <th>Path</th>
-                    <th></th>
-                    <th colspan="2"></th>
-                </tr>
-            </table>
+            <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+            <br><br>
+            <simple-grid
+                    v-on:gridclicked="gridClicked"
+                    :page-size="1000"
+                    ref="grid"
+                    :server-pagination="true"
+                    :columns="gridColumns"
+                    :extra="extraColumns"
+                    :retrieve-data="retrieveData"
+            >
+            </simple-grid>
         </div>
     </div>
 </div>
-<script src="/app/app.js"></script>
-<script>
-    var clearLogs = function(){
-        $.ajax({
-            url: "/api/log/files",
-            type: 'DELETE',
-            success: function(res) {
-                location.reload();
-            }
-        });
-    }
-    var logsTable = new SimpleGrid("Plugin","logsTable","id",["id","time","host","path","_show"],
-        function(table){
-            $.ajax({
-                url: "/api/log/files",
-                type: 'GET',
-                success: function(res) {
-                    $.each(res, function(i, script) {
-                        //script["id"]=script["id"].replaceAll("\.","_");
-                        script["_show"]="<a class='unlinked' href='single.html?id="+script['id']+"'>Show</a>";
-                        //tSource,tableId,id,data,fields
-                        //table.appendToTable({id:"test"});
-                        table.appendToTable(script,false);
-                    });
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        components: {
+            'simple-grid': httpVueLoader('/vcomponents/testgrid.vue')
+        },
+        data:{
+            gridColumns: [
+                {id:"id",template:"long",index:true},
+                {id:"time",template:"string"},
+                {id:"host",template:"string"},
+                {id:"path",template:"string"}
+            ],
+            extraColumns: [
+                {
+                    id: "_go", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                        name: "Go", style: "bi bi-link-45deg"
+                    }
                 }
-            });
+            ]
         },
-        function (table,id) {
-
-        },
-        function (table,id) {
-
-        },null,[
-            {id:"time",type:"string"},
-            {id:"host",type:"string"},
-            {id:"path",type:"string"}
-        ]).load();
-
+        methods:{
+            retrieveData: async function(index,pageSize){
+                var result = await axios.get("/api/log/files?index="+index+"&pageSize="+pageSize);
+                return result;
+            },
+            gridClicked: async function (evt) {
+                console.log(row);
+                var row = this.$refs.grid.getById(evt.index);
+                if (evt.buttonid == "_go") {
+                    window.location="single.html?id="+row['id'];
+                }
+            },
+            reload: function () {
+                this.$refs.grid.reload();
+            }
+        }
+    });
 </script>
 </body>
 </html>
