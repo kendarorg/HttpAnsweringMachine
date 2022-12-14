@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost"
+      "url": "http://www.local.test"
     }
   ],
   "paths": {
@@ -87,30 +87,6 @@
         }
       }
     },
-    "/api/certificates": {
-      "get": {
-        "tags": [
-          "base/certificates"
-        ],
-        "description": "Retrieve the list of certificates",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/certificates/{file}": {
       "get": {
         "tags": [
@@ -156,6 +132,54 @@
         }
       }
     },
+    "/api/certificates": {
+      "get": {
+        "tags": [
+          "base/certificates"
+        ],
+        "description": "Retrieve the list of certificates",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ssl/{id}": {
+      "delete": {
+        "tags": [
+          "base/ssl"
+        ],
+        "description": "Delete ssl item",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
     "/api/ssl": {
       "get": {
         "tags": [
@@ -194,30 +218,6 @@
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      }
-    },
-    "/api/ssl/{id}": {
-      "delete": {
-        "tags": [
-          "base/ssl"
-        ],
-        "description": "Delete ssl item",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "200"
@@ -324,32 +324,6 @@
                 "examples": {
                   "": {
                     "value": "192.168.1.1"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/dns/hosts": {
-      "get": {
-        "tags": [
-          "base/dns"
-        ],
-        "description": "Generate hosts file",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "": {
-                    "value": "127.0.0.1 localhost\n127.0.0.1 www.local.test"
                   }
                 }
               }
@@ -481,47 +455,28 @@
         }
       }
     },
-    "/api/dns/servers": {
+    "/api/dns/hosts": {
       "get": {
         "tags": [
           "base/dns"
         ],
-        "description": "Retrieve all dns servers",
+        "description": "Generate hosts file",
         "parameters": [],
         "responses": {
           "200": {
             "description": "200",
             "content": {
-              "application/json": {
+              "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ExtraDnsServer"
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "127.0.0.1 localhost\n127.0.0.1 www.local.test"
                   }
                 }
               }
             }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "base/dns"
-        ],
-        "description": "Add custom dns server",
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExtraDnsServer"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "200"
           }
         }
       }
@@ -610,6 +565,133 @@
         }
       }
     },
+    "/api/dns/servers": {
+      "get": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Retrieve all dns servers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExtraDnsServer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "base/dns"
+        ],
+        "description": "Add custom dns server",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtraDnsServer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/filters/phase": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List all the possible phases",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/filters/phase/{phase}": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List the filters by phase",
+        "parameters": [
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/filters/class": {
+      "get": {
+        "tags": [
+          "base/filters"
+        ],
+        "description": "List all the classes for Java filters",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/filters/id/{id}": {
       "get": {
         "tags": [
@@ -666,30 +748,6 @@
         }
       }
     },
-    "/api/filters/class": {
-      "get": {
-        "tags": [
-          "base/filters"
-        ],
-        "description": "List all the classes for Java filters",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/filters/id/{id}/enable": {
       "put": {
         "tags": [
@@ -710,40 +768,6 @@
         "responses": {
           "200": {
             "description": "200"
-          }
-        }
-      }
-    },
-    "/api/filters/phase/{phase}": {
-      "get": {
-        "tags": [
-          "base/filters"
-        ],
-        "description": "List the filters by phase",
-        "parameters": [
-          {
-            "name": "phase",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -772,13 +796,23 @@
         }
       }
     },
-    "/api/filters/phase": {
+    "/api/filters/loaders/{loader}": {
       "get": {
         "tags": [
           "base/filters"
         ],
-        "description": "List all the possible phases",
-        "parameters": [],
+        "description": "List all filters by loader",
+        "parameters": [
+          {
+            "name": "loader",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "200",
@@ -805,40 +839,6 @@
         "parameters": [
           {
             "name": "clazz",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/filters/loaders/{loader}": {
-      "get": {
-        "tags": [
-          "base/filters"
-        ],
-        "description": "List all filters by loader",
-        "parameters": [
-          {
-            "name": "loader",
             "in": "path",
             "required": true,
             "schema": {
@@ -949,6 +949,32 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/PluginDescriptor"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shutdown": {
+      "get": {
+        "tags": [
+          "base/utils"
+        ],
+        "description": "Retrieve the application status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "OK"
                   }
                 }
               }
@@ -1216,51 +1242,6 @@
         }
       }
     },
-    "/api/proxyes": {
-      "get": {
-        "tags": [
-          "base/proxy"
-        ],
-        "description": "Retrieve all configured proxies",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RemoteServerStatus"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "base/proxy"
-        ],
-        "description": "Add proxy",
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SimpleProxyConfig"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      }
-    },
     "/api/proxyes/{id}": {
       "get": {
         "tags": [
@@ -1338,6 +1319,51 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
+    "/api/proxyes": {
+      "get": {
+        "tags": [
+          "base/proxy"
+        ],
+        "description": "Retrieve all configured proxies",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RemoteServerStatus"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "base/proxy"
+        ],
+        "description": "Add proxy",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimpleProxyConfig"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "200"
@@ -1852,6 +1878,42 @@
         ]
       }
     },
+    "/api/plugins/oidc/introspect": {
+      "post": {
+        "tags": [
+          "plugin/oidc"
+        ],
+        "description": "Infos about an access token",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token",
+            "schema": {
+              "type": "string",
+              "example": "token from authorize-token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "": {
+                    "value": "{\n  \"active\": true,\n  \"scope\": \"profile\",\n  \"client_id\": \"random test_client_id\",\n  \"username\": null,\n  \"token_type\": \"Bearer\",\n  \"exp\": 1657800457213,\n  \"sub\": null,\n  \"iss\": \"https://localhost/api/plugins/oidc/\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/plugins/oidc/authorize": {
       "get": {
         "tags": [
@@ -1954,48 +2016,12 @@
         }
       }
     },
-    "/api/plugins/oidc/introspect": {
-      "post": {
-        "tags": [
-          "plugin/oidc"
-        ],
-        "description": "Infos about an access token",
-        "parameters": [
-          {
-            "name": "token",
-            "in": "header",
-            "description": "token",
-            "schema": {
-              "type": "string",
-              "example": "token from authorize-token"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "": {
-                    "value": "{\n  \"active\": true,\n  \"scope\": \"profile\",\n  \"client_id\": \"random test_client_id\",\n  \"username\": null,\n  \"token_type\": \"Bearer\",\n  \"exp\": 1657800457213,\n  \"sub\": null,\n  \"iss\": \"https://localhost/api/plugins/oidc/\"\n}"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/plugins/replayer/recording/{id}/record/{action}": {
+    "/api/plugins/replayer/recording/{id}/replay/{action}": {
       "get": {
         "tags": [
           "plugin/replayer"
         ],
-        "description": "Start/stop/pauses recording",
+        "description": "Start/stop/pauses replaying",
         "parameters": [
           {
             "name": "id",
@@ -2056,12 +2082,12 @@
         }
       }
     },
-    "/api/plugins/replayer/recording/{id}/replay/{action}": {
+    "/api/plugins/replayer/recording/{id}/record/{action}": {
       "get": {
         "tags": [
           "plugin/replayer"
         ],
-        "description": "Start/stop/pauses replaying",
+        "description": "Start/stop/pauses recording",
         "parameters": [
           {
             "name": "id",
@@ -2311,6 +2337,51 @@
         }
       }
     },
+    "/api/plugins/replayer/recording": {
+      "get": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Retrieves the list of recordings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "plugin/replayer"
+        ],
+        "description": "Create/update recording",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonFileData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200"
+          }
+        }
+      }
+    },
     "/api/plugins/replayer/recording/{id}": {
       "get": {
         "tags": [
@@ -2388,51 +2459,6 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "200"
-          }
-        }
-      }
-    },
-    "/api/plugins/replayer/recording": {
-      "get": {
-        "tags": [
-          "plugin/replayer"
-        ],
-        "description": "Retrieves the list of recordings",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "plugin/replayer"
-        ],
-        "description": "Create/update recording",
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/JsonFileData"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "200"
@@ -3172,6 +3198,9 @@
           },
           "description": {
             "type": "string"
+          },
+          "name": {
+            "type": "string"
           }
         }
       },
@@ -3231,6 +3260,9 @@
             }
           },
           "initScript": {
+            "type": "string"
+          },
+          "name": {
             "type": "string"
           },
           "description": {
@@ -3348,20 +3380,17 @@
             "type": "integer",
             "format": "int64"
           },
-          "stimulatedTest": {
-            "type": "boolean"
-          },
           "staticRequest": {
             "type": "boolean"
           },
           "done": {
             "type": "boolean"
           },
-          "response": {
-            "$ref": "#/components/schemas/Response"
-          },
           "request": {
             "$ref": "#/components/schemas/Request"
+          },
+          "response": {
+            "$ref": "#/components/schemas/Response"
           }
         }
       },
@@ -3530,6 +3559,9 @@
             "type": "boolean"
           },
           "stimulatorTest": {
+            "type": "boolean"
+          },
+          "stimulatedTest": {
             "type": "boolean"
           }
         }
