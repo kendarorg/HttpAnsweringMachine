@@ -1,6 +1,6 @@
 <template>
   <div width="800px" >
-  <button type="button" class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
+  <button type="button" :disabled="typeof data.id =='undefined'"  class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
     <br>
     <br>
     <vtabs width="800px" >
@@ -48,7 +48,6 @@ module.exports = {
   name: "current-line",
   props:{
     currentRow:Number,
-    default:-1
   },
   data:function(){
     return {
