@@ -89,6 +89,10 @@ public class RecordingDataset implements BaseDataset{
             String responseHash;
             var newId = counter.getAndIncrement();
             var replayerRow = new ReplayerRow();
+            replayerRow.setType("http");
+            if(req.getPath().startsWith("/db/")){
+                replayerRow.setType("db");
+            }
             if (res.isBinaryResponse()) {
                 responseHash = md5Tester.calculateMd5(res.getResponseBytes());
             } else {
@@ -115,6 +119,9 @@ public class RecordingDataset implements BaseDataset{
 
             sessionFactory.transactional(em-> {
                 var isRowStatic = MimeChecker.isStatic(res.getHeader(ConstantsHeader.CONTENT_TYPE), req.getPath());
+                if(replayerRow.getType().equalsIgnoreCase("db")){
+                    isRowStatic=false;
+                }
                 var saveRow = true;
                 if (isRowStatic && req.getMethod().equalsIgnoreCase("GET")) {
                     replayerRow.setStaticRequest(true);
