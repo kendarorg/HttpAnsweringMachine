@@ -44,7 +44,7 @@
                 </simple-grid>
             </vtab>
             <vtab name="CURRENT">
-                <edit-js>
+                <edit-js :selected-row="selectedRow">
 
                 </edit-js>
             </vtab>
@@ -64,6 +64,7 @@
         },
         data: function () {
             return {
+                selectedRow:null,
                 modalData: null,
                 modalShow: false,
                 columns: [
@@ -100,10 +101,10 @@
                 var row = this.$refs.grid.getById(evt.index);
 
                 if (evt.buttonid == "_edit") {
-                    location.href = "script.html?id="+row['id'];
+                    this.selectedRow=row['id'];
                 } else if (evt.buttonid == "_delete") {
-                    await axios.delete("/api/plugins/jsfilter/filters/" + row['id'])
-                    this.reload();
+                    await axios.delete("/api/plugins/jsfilter/filters/" + row['id']);
+                    this.$refs.grid.delete(evt.index);
                 }
             },
             reload: function () {
