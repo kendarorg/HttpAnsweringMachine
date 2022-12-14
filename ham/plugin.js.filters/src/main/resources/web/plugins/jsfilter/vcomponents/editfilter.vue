@@ -73,20 +73,23 @@
               rows="6" cols="50"  name="source" id="source" v-model="source"></textarea>
   </div>
 
-  <div class="col-md-8">
+  <!--<div class="col-md-8">
     <h4>REQUIRES</h4>
   </div>
   <div class="col-md-8">
-    <table class="table table-striped" id="requires_list">
-      <tr>
-        <th>Id</th>
-        <th colspan="2">
-          <button class="btn btn-danger form-control"
-                  onClick="addRequires();">Add</button>
-        </th>
-      </tr>
-    </table>
-  </div>
+    <br>
+    <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+    <br><br>
+    <simple-grid
+        v-on:gridclicked="gridClicked"
+        ref="grid"
+        :columns="columns"
+        :extra="extraColumns"
+        :retrieve-data="retrieveData"
+    >
+    </simple-grid>
+  </div>-->
 </div>
 </template>
 <script>
@@ -98,10 +101,29 @@ module.exports = {
   data:function(){
     return {
       data:{},
-      source:""
+      source:"",
+      columns: [
+        {id: "id", template: "string", index: true},
+        {id: "value", template: "string"}
+      ],
+      extraColumns: [
+        {
+          id: "_edit", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+            name: "Edit", style: "bi bi-pen-fill"
+          }
+        },
+        {
+          id: "_delete", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+            name: "Delete", style: "bi bi-trash"
+          }
+        }
+      ]
     }
   },
-
+  components: {
+    'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
+    'simple-modal': httpVueLoader('/vcomponents/tmodal.vue'),
+  },
   watch: {
     selectedRow: function (val, oldVal) {
       if(isUndefined(val))return;
@@ -111,6 +133,21 @@ module.exports = {
             th.data=result.data;
             th.source = th.fromArray(th.data.source);
           });
+    },
+    data:function(val,old){
+      // var th=this;
+      // waitForAvailableVariableTimes(
+      //     ()=>th.$refs.grid,
+      //     100,
+      //     function(){
+      //       th.$nextTick(function () {
+      //
+      //         th.$refs.grid.reload(th.data.headers)
+      //         th.$refs.queryGrid.reload(th.data.query)
+      //         th.$refs.postGrid.reload(th.data.postParameters)
+      //       })
+      //     },10
+      // );
     }
   },
   methods:{
@@ -127,7 +164,24 @@ module.exports = {
           .then(function(result){
             //th.data=result.data;
           });
-    }
+    },
+    // gridClicked: async function (evt) {
+    //   var row = this.$refs.grid.getById(evt.index);
+    //
+    //   if (evt.buttonid == "_edit") {
+    //     location.href="text.html?id="+getUrlParameter("id")+
+    //         "&file="+value["value"]+"&action=edit";
+    //   } else if (evt.buttonid == "_delete") {
+    //     alert("DELETE TO BE IMPLEMENTED"); //TODO
+    //     this.$refs.grid.delete(evt.index);
+    //   }
+    // },
+    // retrieveData: async function () {
+    //
+    //   return {
+    //     data:[]
+    //   };
+    // },
   }
 }
 </script>
