@@ -5,6 +5,10 @@
       <input class="form-control" readOnly type="text" name="id" id="id" v-model="data.id"/>
     </div>
     <div class="form-group">
+      <label htmlFor="type">Type</label>
+      <input class="form-control" readOnly type="text" name="type" id="type" v-model="data.type"/>
+    </div>
+    <div class="form-group">
       <label htmlFor="timestamp">Timestamp</label>
       <input class="form-control" readOnly type="text" name="timestamp" id="timestamp" v-model="data.timestamp"/>
     </div>

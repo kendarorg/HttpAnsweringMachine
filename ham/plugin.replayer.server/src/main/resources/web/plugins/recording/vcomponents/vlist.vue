@@ -46,6 +46,7 @@ module.exports = {
       data:[],
       columns: [
         {id: "id", template: "long", index: true,size:4},
+        {id: "type", template: "string",label:"Type"},
         {id: "pactTest", template: "boolw",label:"Pact"},
         {id: "stimulatorTest", template: "boolw",label:"Stimulator"},
         {id: "stimulatedTest", template: "boolw",label:"Stimultated"},

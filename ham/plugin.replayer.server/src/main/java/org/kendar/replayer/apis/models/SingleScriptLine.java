@@ -15,6 +15,7 @@ public class SingleScriptLine {
     private int responseStatusCode;
     private boolean stimulatedTest;
     private long reference;
+    private String type;
 
     public Long getId() {
         return id;
@@ -126,5 +127,13 @@ public class SingleScriptLine {
 
     public long getReference() {
         return reference;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 }
