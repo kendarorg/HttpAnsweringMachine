@@ -5,6 +5,7 @@
 module.exports = {
   name: 'vtab',
   props: {
+    title: String,
     name: { required: true },
     selected: { default: false}
   },
@@ -14,7 +15,13 @@ module.exports = {
     };
   },
   computed: {
-    href() {
+    compTitle:function(){
+      if(isUndefined(this.title)){
+        return this.name;
+      }
+      return this.title;
+    },
+    href:function() {
       return '#' + this.name.toLowerCase().replace(/ /g, '-');
     }
   },

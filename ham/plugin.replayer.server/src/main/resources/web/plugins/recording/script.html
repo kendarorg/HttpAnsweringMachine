@@ -59,7 +59,7 @@
                             v-on:reload="reloadForm"
                             ref="recordingList" ></recording-list>
                 </vtab>
-                <vtab name="SELECTED">
+                <vtab name="SELECTED" :title="selectedRowTitle">
                     <br>
                     <current-line
                             @rowchanged="changeRow"
@@ -133,6 +133,14 @@
                 }
 
             }
+        },
+        computed:{
+          selectedRowTitle:function(){
+              if(isUndefined(this.selectedRow) || this.selectedRow<0){
+                  return "NONE";
+              }
+              return "[SELECTED "+this.selectedRow+"]";
+          }
         },
         methods: {
             changeRow:function(newRow){
