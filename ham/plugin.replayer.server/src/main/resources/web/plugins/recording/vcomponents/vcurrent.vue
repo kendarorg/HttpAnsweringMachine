@@ -1,6 +1,8 @@
 <template>
   <div width="800px" >
-  <button type="button" :disabled="typeof data.id =='undefined'"  class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
+    <button type="button" :disabled="typeof data.id =='undefined'"  class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
+    <button type="button" :disabled="prev<0"  class="bi bi-floppy" v-on:click="prevRow()" title="Save changes">Prev</button>
+    <button type="button" :disabled="next<0"  class="bi bi-floppy" v-on:click="nextRow()" title="Save changes">Next</button>
     <br>
     <br>
     <vtabs width="800px" >
@@ -51,6 +53,9 @@ module.exports = {
   },
   data:function(){
     return {
+
+      prev:-1,
+      next:-1,
       data:{
         request:{},
         response:{}
@@ -76,6 +81,8 @@ module.exports = {
       var th=this;
       axios.get("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/line/" + val)
           .then(function(result){
+            th.next = parseInt(result.headers.get("X-NEXT"));
+            th.prev = parseInt(result.headers.get("X-PREV"));
             th.data=result.data;
           });
       axios.get("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/script/" + val)
@@ -86,6 +93,12 @@ module.exports = {
   },
 
   methods:{
+    prevRow:function(newRow){
+      this.$emit('rowchanged', this.prev);
+    },
+    nextRow:function(newRow){
+      this.$emit('rowchanged', this.next);
+    },
     updateContent:function (){
       axios.put("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/line/" + this.currentRow,this.data)
           .then(function(result){

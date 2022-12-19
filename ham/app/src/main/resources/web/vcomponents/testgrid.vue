@@ -210,9 +210,10 @@ module.exports = {
     },
     getBoolVal: function(val,defVal){
 
-      if(typeof val == "undefined") {
+      if(typeof val == "undefined" || val==null) {
         return defVal;
       }
+
       if(val===false || val ===true) {
         return val;
       }
