@@ -62,6 +62,7 @@
                 <vtab name="SELECTED">
                     <br>
                     <current-line
+                            @rowchanged="changeRow"
                             :current-row="selectedRow"
                             ref="currentLine">
 
@@ -134,6 +135,9 @@
             }
         },
         methods: {
+            changeRow:function(newRow){
+               this.selectedRow = newRow;
+            },
             retrieveDataResult: async function () {
                 var id = getUrlParameter("id");
                 var result = await axios.get("/api/plugins/replayer/results?id="+id);
