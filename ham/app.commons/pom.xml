@@ -12,6 +12,22 @@
     <artifactId>app.commons</artifactId>
     <dependencies>
         <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>janus-driver</artifactId>
+            <version>${janus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>janus-engine</artifactId>
+            <version>${janus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>typeconverter</artifactId>
+            <version>${janus.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>

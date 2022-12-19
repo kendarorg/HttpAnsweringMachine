@@ -36,7 +36,8 @@ public class RecordFilter  implements FilteringClass {
     public boolean record(Request reqArrived, Response res){
         var req = reqArrived.retrieveOriginal();
         if(req.getHost().equalsIgnoreCase(localAddress) &&
-                (!req.getPath().startsWith("/int/")||!req.getPath().startsWith("/db/")))return false;
+                !req.getPath().startsWith("/int/")&&
+                        !req.getPath().startsWith("/db/"))return false;
         if(req.getPath().contains("api/dns/lookup"))return false;
         if(replayerStatus.getStatus()!= ReplayerState.RECORDING)return false;
         try {
