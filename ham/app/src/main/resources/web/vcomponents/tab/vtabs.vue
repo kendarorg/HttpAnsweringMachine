@@ -3,7 +3,7 @@
     <ul class="nav nav-tabs tabs-width">
       <li  v-for="tab in tabs" class="nav-item">
         <a class="nav-link" :href="tab.href" :class="{ 'really-active': tab.isActive }" @click="selectTab(tab)">
-          {{ tab.name }}
+          {{ tab.compTitle }}
         </a>
       </li>
     </ul>
