@@ -117,6 +117,7 @@ public class SingleScriptAPI implements FilteringClass {
 
         });
 
+        result.getLines().sort(Comparator.comparingLong(SingleScriptLine::getId));;
 
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(result));
