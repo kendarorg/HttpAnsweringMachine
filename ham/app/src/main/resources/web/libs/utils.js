@@ -112,3 +112,86 @@ const waitForAvailableVariableTimes=function(variable,timeout,func,times){
 const waitForAvailableVariable=function(variable,timeout,func){
     waitForAvailableVariableTimes(variable,timeout,func,1)
 }
+
+
+const  isAPrimitiveValue=function(value) {
+    return (
+        typeof value === "symbol" ||
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean" ||
+        typeof value === "undefined" ||
+        value === null ||
+        typeof value === "bigint"
+    );
+};
+
+const isAnArray = function(input){
+    return Array.isArray(input)//(!isAnObject(input) && !isAPrimitiveValue(input))
+}
+
+// Check if input is not primitive value, therefore object:
+const isAnObject = function (input) {
+    if (isAPrimitiveValue(input) ||isAnArray(input)) {
+        return false;
+    }
+    return true;
+};
+const convertToNodes = function(serializedObject){
+    var ob = serializedObject;
+    var keys = Object.keys(ob);
+    var typeValues = [];
+    var valValues = [];
+    var valChildrens = [];
+    var valSizes = [];
+    var allKeys = [];
+    keys.forEach(function(id){
+
+        var size=0;
+        valSizes[id]=null;
+        valChildrens[id]=[];
+        if(id.startsWith("[")){
+            valSizes[id.substring(1,id.length-1)]=parseInt(ob[id]);
+        }else if(id.startsWith(":")){
+            typeValues[id.substring(1,id.length-1)]=ob[id];
+        }else{
+            allKeys.push(id);
+            var subVal = ob[id];
+            if(isAnObject(subVal)){
+                if(isAnArray(subVal))debugger;
+                var nodes = convertToNodes(subVal);
+                nodes.forEach(function(v){
+                    valChildrens[id].push(v);
+                })
+
+            }else if(isAnArray(subVal)){
+                var tmp = [];
+                subVal.forEach(function(v){
+                    var nodes = convertToNodes(v);
+                    if(nodes.length>1)debugger;
+                    tmp.push(nodes[0])
+                    size++;
+                });
+                valChildrens[id]=tmp;
+            }else{
+                if(isAnArray(subVal))debugger;
+                valValues[id]=subVal;
+            }
+
+        }
+    })
+    // console.log(typeValues);
+    // console.log(valValues);
+    // console.log(allKeys);
+    var nodes = [];
+    allKeys.forEach(function(id){
+        var node = {};
+        node.name = id;
+        node.type = typeValues[id];
+        node.size = valSizes[id];
+        node.value = valValues[id];
+        node.children = valChildrens[id];
+        nodes.push(node);
+    });
+    return nodes;
+}
