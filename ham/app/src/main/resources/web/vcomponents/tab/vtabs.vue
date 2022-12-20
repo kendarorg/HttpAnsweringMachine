@@ -16,6 +16,13 @@
 <script>
 module.exports = {
   name: 'vtabs',
+  props:{
+    reactToHashBang: {
+      type: Boolean,
+      required: false,
+      default:false
+    }
+  },
   data() {
     return {tabs: [] };
   },
