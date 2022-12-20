@@ -35,6 +35,8 @@ public class RecordingDataset implements BaseDataset{
     private String replayerDataDir;
     private String description;
     private final ObjectMapper mapper = new ObjectMapper();
+    private boolean recordDbCalls;
+    private boolean recordVoidDbCalls;
 
     public Long getName(){
         return this.name;
@@ -50,6 +52,16 @@ public class RecordingDataset implements BaseDataset{
     @Override
     public ReplayerState getType() {
         return ReplayerState.RECORDING;
+    }
+
+    @Override
+    public void setRecordDbCalls(boolean recordDbCalls) {
+        this.recordDbCalls = recordDbCalls;
+    }
+
+    @Override
+    public void setRecordVoidDbCalls(boolean recordVoidDbCalls) {
+        this.recordVoidDbCalls = recordVoidDbCalls;
     }
 
     public RecordingDataset(
@@ -90,8 +102,13 @@ public class RecordingDataset implements BaseDataset{
             var newId = counter.getAndIncrement();
             var replayerRow = new ReplayerRow();
             replayerRow.setType("http");
-            if(req.getPath().startsWith("/db/")){
+            if(req.getPath().startsWith("/api/db/")){
                 replayerRow.setType("db");
+                if(!recordDbCalls)return;
+                if(!recordVoidDbCalls){
+                    if(res.getResponseText()==null)return;
+                    if(res.getResponseText().contains("VoidResult"))return;
+                }
             }
             if (res.isBinaryResponse()) {
                 responseHash = md5Tester.calculateMd5(res.getResponseBytes());

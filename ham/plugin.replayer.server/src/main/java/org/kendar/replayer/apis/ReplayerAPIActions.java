@@ -6,6 +6,7 @@ import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.PathParameter;
+import org.kendar.http.annotations.multi.QueryString;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.ReplayerStatus;
 import org.kendar.servers.http.Request;
@@ -33,7 +34,15 @@ public class ReplayerAPIActions implements FilteringClass {
             pathAddress = "/api/plugins/replayer/recording/{id}/record/{action}",
             method = "GET",id="3000daa6-277f-11ec-9621-0242ac1afe002")
     @HamDoc(description = "Start/stop/pauses recording" ,tags = {"plugin/replayer"},
-            path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
+            path = {
+                    @PathParameter(key = "id"),
+                    @PathParameter(key="action", description = "start/pause/stop")
+            },
+            query = {
+                    @QueryString(key = "recordDbCalls",type = "boolean",description = "True when recording db calls"),
+                    @QueryString(key = "recordVoidDbCalls",type = "boolean",description = "True when recording even " +
+                            "db calls that do not return values")
+            }
     )
     public void recording(Request req, Response res) throws IOException {
         var id = Long.valueOf(req.getPathParameter("id"));
@@ -41,7 +50,9 @@ public class ReplayerAPIActions implements FilteringClass {
 
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
             var description = req.getQuery("description");
-            replayerStatus.startRecording(id,description);
+            var recordVoidDbCalls=Boolean.parseBoolean(req.getQuery("recordVoidDbCalls"));
+            var recordDbCalls=Boolean.parseBoolean(req.getQuery("recordDbCalls"));
+            replayerStatus.startRecording(id,description,recordDbCalls,recordVoidDbCalls);
         }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_RECORDING){
 
             replayerStatus.restartRecording();

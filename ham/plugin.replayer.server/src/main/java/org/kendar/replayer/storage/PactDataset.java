@@ -69,6 +69,16 @@ public class PactDataset implements BaseDataset {
         return ReplayerState.PLAYING_PACT;
     }
 
+    @Override
+    public void setRecordDbCalls(boolean recordDbCalls) {
+
+    }
+
+    @Override
+    public void setRecordVoidDbCalls(boolean recordVoidDbCalls) {
+
+    }
+
     public Long start() throws Exception {
         var result = new TestResults();
         result.setType("PACT");

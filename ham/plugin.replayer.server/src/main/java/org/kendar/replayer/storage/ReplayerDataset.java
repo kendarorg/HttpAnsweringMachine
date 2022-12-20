@@ -54,6 +54,15 @@ public class ReplayerDataset implements BaseDataset{
     return ReplayerState.REPLAYING;
   }
 
+  @Override
+  public void setRecordDbCalls(boolean recordDbCalls) {
+
+  }
+
+  @Override
+  public void setRecordVoidDbCalls(boolean recordVoidDbCalls) {
+
+  }
 
 
   private ReplayerRow findRequestMatch(Request sreq, String contentHash,boolean staticRequest) throws Exception {
