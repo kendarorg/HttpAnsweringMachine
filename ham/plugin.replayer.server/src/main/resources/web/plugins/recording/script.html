@@ -46,6 +46,18 @@
             <button type="button" :disabled="buttons.pause"  class="bi bi-pause-btn" @click="executeAct('pause')" title="Save">Pause</button>
 
             <button v-on:click="updateButtons()" class="btn btn-primary btn-sm">Reload status</button>
+            <div>
+                <input :disabled="buttons.record" class="form-check-input" type="checkbox" value="" id="recordVoidDbCalls" name="recordVoidDbCalls"
+                       v-model="recordVoidDbCalls">
+                <label class="form-check-label" for="recordVoidDbCalls" >
+                    Record void db calls
+                </label>
+                <input :disabled="buttons.record" class="form-check-input" type="checkbox" value="" id="recordDbCalls" name="recordDbCalls"
+                       v-model="recordDbCalls">
+                <label class="form-check-label" for="recordDbCalls" >
+                    Record db calls
+                </label>
+            </div>
             <br>
             <br>
         </div>
@@ -101,6 +113,8 @@
         },
         data: function () {
             return {
+                recordVoidDbCalls:false,
+                recordDbCalls:false,
                 columnsResult: [
                     {id: "fileId", template: "long", index: true},
                     {id: "date", template: "string"},
@@ -169,8 +183,13 @@
                 var th = this;
                 var id = getUrlParameter("id");
                 if(!isUndefined(onWhat)){
+                    var extra = "";
+                    if(onWhat=="record"){
+                        extra="?recordVoidDbCalls="+this.recordVoidDbCalls+
+                            "&recordDbCalls="+this.recordDbCalls;
+                    }
                     var id = getUrlParameter("id");
-                    var url = "/api/plugins/replayer/recording/"+id+"/"+onWhat+"/"+what;
+                    var url = "/api/plugins/replayer/recording/"+id+"/"+onWhat+"/"+what+extra;
                     axios.get(url)
                         .then(function (result) {
                             th.updateButtons();

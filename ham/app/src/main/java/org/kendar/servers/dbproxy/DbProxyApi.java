@@ -1,25 +1,21 @@
 package org.kendar.servers.dbproxy;
 
-import org.kendar.dns.configurations.DnsConfig;
-import org.kendar.events.Event;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
-import org.kendar.http.annotations.multi.Example;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.http.annotations.multi.QueryString;
 import org.kendar.janus.JdbcDriver;
-import org.kendar.janus.cmd.Exec;
 import org.kendar.janus.cmd.JdbcCommand;
 import org.kendar.janus.results.JdbcResult;
-import org.kendar.janus.results.ObjectResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.janus.server.ServerEngine;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.http.PluginsInitializer;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.ConstantsHeader;
@@ -30,8 +26,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.sql.DriverManager;
-import java.sql.Statement;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -40,16 +36,20 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DbProxyApi implements FilteringClass {
     private final JsonTypedSerializer serializer;
     private final Logger logger;
+    private final Logger specialLogger;
     private JsonConfiguration configuration;
     private EventQueue eventQueue;
     private ConcurrentHashMap<String,ServerData> janusEngines = new ConcurrentHashMap<>();
 
-    public DbProxyApi(JsonConfiguration configuration, EventQueue eventQueue, LoggerBuilder loggerBuilder){
+    public DbProxyApi(JsonConfiguration configuration, EventQueue eventQueue, LoggerBuilder loggerBuilder,
+                      PluginsInitializer pluginsInitializer){
         this.logger = loggerBuilder.build(DbProxyApi.class);
+        this.specialLogger = loggerBuilder.build(ProxyDb.class);
         this.configuration = configuration;
         this.eventQueue = eventQueue;
         this.serializer = new JsonTypedSerializer();
         eventQueue.register(this::handleConfigChange,DbProxyConfigChanged.class);
+        pluginsInitializer.addSpecialLogger(ProxyDb.class.getName(), "Basic db logging (DEBUG)");
     }
 
     private Object syncObject = new Object();
@@ -91,11 +91,11 @@ public class DbProxyApi implements FilteringClass {
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
-            pathAddress = "/db/{dbName}/{connectionId}/",
+            pathAddress = "/api/db/{dbName}",
             method = "GET")
     @HamDoc(
             tags = {"base/proxydb"},
-            description = "Proxies db",
+            description = "Test the connection with a db",
             path = {
                     @PathParameter(
                             key = "dbName",
@@ -116,16 +116,23 @@ public class DbProxyApi implements FilteringClass {
                     body = String.class
             ))
     public void testConnection(Request req, Response res) throws Exception {
-
+        var id = req.getPathParameter("dBname");
+        var query = req.getQuery("query");
+        if(query==null){
+            query = "SELECT 1=1";
+        }
         DriverManager.registerDriver(new JdbcDriver());
-        var connection = DriverManager.getConnection("jdbc:janus:http://localhost/db/local");
-        connection.createStatement().execute("SELECT 1=1");
+        var connection = DriverManager.getConnection("jdbc:janus:http://localhost/api/db/"+id);
+        var statement = connection.createStatement();
+        var resultset = statement.executeQuery(query);
+        var next = resultset.next();
+        System.out.println("TEST");
     }
 
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
-            pathAddress = "/db/{dbName}/{connectionId}/{itemId}",
+            pathAddress = "/api/db/{dbName}/{connectionId}/{commandId}/{itemId}",
             method = "POST")
     @HamDoc(
             tags = {"base/proxydb"},
@@ -138,6 +145,10 @@ public class DbProxyApi implements FilteringClass {
                     @PathParameter(
                             key = "connectionId",
                             description = "Connecction Id",
+                            example = "22"),
+                    @PathParameter(
+                            key = "commandId",
+                            description = "Command Id",
                             example = "22"),
 
                     @PathParameter(
@@ -159,7 +170,19 @@ public class DbProxyApi implements FilteringClass {
         var deser = serializer.newInstance();
         deser.deserialize(req.getRequestText());
         var deserialized = (JdbcCommand) deser.read("command");
+
+        var uuid = UUID.randomUUID();
+        if(specialLogger.isTraceEnabled()||specialLogger.isDebugEnabled()) {
+            specialLogger.debug(uuid+" REQ: "+req.getPath());
+        }
         JdbcResult result = janusEngines.get(id).getServerEngine().execute(deserialized, connectionId, itemId);
+        if(specialLogger.isTraceEnabled()||specialLogger.isDebugEnabled()) {
+            if(result!=null){
+                specialLogger.debug(uuid+" RES: "+result.getClass().getSimpleName());
+            }else{
+                specialLogger.debug(uuid+" RES: null");
+            }
+        }
 
         var ser = serializer.newInstance();
         ser.write("result", result);

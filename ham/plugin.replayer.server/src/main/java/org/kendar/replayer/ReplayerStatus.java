@@ -2,6 +2,8 @@ package org.kendar.replayer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
+import org.kendar.janus.results.VoidResult;
+import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.replayer.events.NullCompleted;
 import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.storage.*;
@@ -40,6 +42,8 @@ public class ReplayerStatus {
     private HibernateSessionFactory sessionFactory;
     private BaseDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
+    private boolean recordDbCalls;
+    private boolean recordVoidDbCalls;
 
     public ReplayerStatus(
             LoggerBuilder loggerBuilder,
@@ -75,13 +79,17 @@ public class ReplayerStatus {
         state = ReplayerState.NONE;
     }
 
-    public void startRecording(Long id, String description) throws IOException {
+    public void startRecording(Long id, String description, boolean recordDbCalls, boolean recordVoidDbCalls) throws IOException {
+        this.recordDbCalls = recordDbCalls;
+        this.recordVoidDbCalls = recordVoidDbCalls;
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) return;
         logger.info("RECORDING START");
         state = ReplayerState.RECORDING;
         dataset =
                 new RecordingDataset( loggerBuilder, md5Tester,sessionFactory);
+        dataset.setRecordDbCalls(recordDbCalls);
+        dataset.setRecordVoidDbCalls(recordVoidDbCalls);
         dataset.load(id, rootPath.toString(), description);
     }
 
@@ -89,6 +97,8 @@ public class ReplayerStatus {
         if (state != ReplayerState.RECORDING) return;
         ((RecordingDataset)dataset).add(req, res);
     }
+
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
 
     public boolean replay(Request req, Response res) {
         if (state != ReplayerState.REPLAYING  && state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) return false;
@@ -102,6 +112,14 @@ public class ReplayerStatus {
             }
             res.setHeaders(response.getHeaders());
             res.setStatusCode(response.getStatusCode());
+            return true;
+        }
+        if(req.getPath().startsWith("/db")){
+            var ser= serializer.newInstance();
+            ser.write("result", new VoidResult());
+            res.getHeaders().put("content-type","application/json");
+            res.setResponseText((String)ser.getSerialized());
+            res.setStatusCode(200);
             return true;
         }
         return false;
@@ -210,5 +228,13 @@ public class ReplayerStatus {
         if (state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) throw new RuntimeException("State not allowed");
         logger.info("NULL STOP");
         ((NullDataset)dataset).stop();
+    }
+
+    public boolean isRecordDbCalls() {
+        return recordDbCalls;
+    }
+
+    public boolean isRecordVoidDbCalls() {
+        return recordVoidDbCalls;
     }
 }
