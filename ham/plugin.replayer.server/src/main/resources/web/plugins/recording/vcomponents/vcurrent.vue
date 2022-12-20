@@ -50,7 +50,21 @@
       <button type="button" :disabled="prev<0"  class="bi bi-floppy" v-on:click="prevRow()" title="Save changes">Prev</button>
       <button type="button" :disabled="next<0"  class="bi bi-floppy" v-on:click="nextRow()" title="Save changes">Next</button>
       <br><br>
-      DB ROW
+      <h3>{{data.request.path}}</h3>
+      <vtabs width="800px" >
+        <vtab name="REQDATA">
+          <br>
+          <serializable-object :data="data.request.requestText"  @changed="changedAt" width="800px">
+
+          </serializable-object>
+        </vtab>
+        <vtab name="RESDATA">
+          <br>
+          <serializable-object :data="data.response.responseText" @changed="changedRt" width="800px">
+
+          </serializable-object>
+        </vtab>
+      </vtabs>
     </div>
   </div>
 </template>
@@ -81,6 +95,7 @@ module.exports = {
     'response-line': httpVueLoader('/plugins/recording/vcomponents/line/vresponse.vue'),
     'request-data': httpVueLoader('/plugins/recording/vcomponents/line/vrequestdata.vue'),
     'response-data': httpVueLoader('/plugins/recording/vcomponents/line/vresponsedata.vue'),
+    'serializable-object': httpVueLoader('/plugins/recording/vcomponents/line/vserobject.vue'),
     'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
     'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
   },
@@ -102,6 +117,12 @@ module.exports = {
   },
 
   methods:{
+    changedAt:function(val){
+      this.data.request.requestText=val;
+    },
+    changedRt:function(val){
+      this.data.response.responseText=val;
+    },
     prevRow:function(newRow){
       this.$emit('rowchanged', this.prev);
     },
