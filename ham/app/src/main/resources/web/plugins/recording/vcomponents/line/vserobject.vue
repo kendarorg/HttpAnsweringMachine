@@ -6,13 +6,14 @@
                 name="free_content" id="free_content"
                 v-model="shown"></textarea>
     </div>
-    <table class="rounded-top">
-      <tr v-for="key in fields" >
-        <td  >
-          {{key}}
-        </td>
-      </tr>
-    </table>
+    <ul >
+      <simple-tree
+          class="item"
+          :item="treeData"
+          @make-folder="makeFolder"
+          @add-item="addItem"
+      ></simple-tree>
+    </ul>
   </div>
 </template>
 <script>
@@ -21,24 +22,30 @@ module.exports = {
   props:{
     data:String
   },
+  components: {
+    'simple-tree': httpVueLoader('/vcomponents/vtree.vue')
+  },
   data:function(){
 
     return {
-      fields:[],
+      treeData:{
+        name: "My Tree",
+        type: "ROOT",
+        value: null,
+        children:[]
+      },
       actual:{},
       visualization:null
     }
   },
   watch:{
     data:function (val,oldVal){
-      console.log(val)
-      this.actual = JSON.parse(val);
-      //this.fields = ;
+      this.treeData.children = convertToNodes(JSON.parse(val));
+      this.visualization=this.val;
     },
   },
   created: function () {
-    this.actual = JSON.parse(this.data);
-    this.fields = Object.keys(this.actual);
+    this.treeData.children = convertToNodes(JSON.parse(this.data));
   },
   computed:{
     shown:{
@@ -52,10 +59,20 @@ module.exports = {
       set: function (newValue) {
         this.$emit("changed",newValue);
         this.visualization=newValue;
-        this.actual = JSON.parse(this.visualization);
-        this.fields = Object.keys(this.actual);
-        console.log("WHAT")
+        this.treeData.children = convertToNodes(JSON.parse(this.visualization));
+        this.treeData.children = convertToNodes(JSON.parse(this.visualization));
       }
+    }
+  },
+  methods: {
+    makeFolder: function(item) {
+      Vue.set(item, "children", []);
+      this.addItem(item);
+    },
+    addItem: function(item) {
+      item.children.push({
+        name: "new stuff"
+      });
     }
   }
 }
