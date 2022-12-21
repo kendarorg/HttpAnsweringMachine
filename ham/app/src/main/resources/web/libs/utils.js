@@ -140,6 +140,7 @@ const isAnObject = function (input) {
 const convertToNodes = function(serializedObject){
     var ob = serializedObject;
     var keys = Object.keys(ob);
+    //console.log(keys);
     var typeValues = [];
     var valValues = [];
     var valChildrens = [];
@@ -191,7 +192,29 @@ const convertToNodes = function(serializedObject){
         node.size = valSizes[id];
         node.value = valValues[id];
         node.children = valChildrens[id];
+        if(typeof node.children=="undefined")debugger;
+        if(node.children){
+            node.children.forEach(function(child){
+                if(typeof child=="undefined")return;
+                child.parent=node;
+            })
+        }
         nodes.push(node);
     });
     return nodes;
+}
+
+const jsonStringifyRecursive =function (obj) {
+    const cache = new Set();
+    return JSON.stringify(obj, (key, value) => {
+        if (typeof value === 'object' && value !== null) {
+            if (cache.has(value)) {
+                // Circular reference found, discard key
+                return "#ref";
+            }
+            // Store value in our collection
+            cache.add(value);
+        }
+        return value;
+    }, 4);
 }
