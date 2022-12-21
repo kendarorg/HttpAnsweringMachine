@@ -108,11 +108,16 @@ module.exports = {
             th.next = parseInt(result.headers.get("X-NEXT"));
             th.prev = parseInt(result.headers.get("X-PREV"));
             th.data=result.data;
-          });
-      axios.get("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/script/" + val)
-          .then(function(result){
-            th.script=result.data;
-          })
+            axios.get("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/script/" + val)
+                .then(function(result){
+                  th.script=result.data;
+                }.catch(function(result){
+                  th.script={};
+                }))
+          }.catch(function(result){
+
+          }))
+
     }
   },
 

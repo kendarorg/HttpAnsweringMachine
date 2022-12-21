@@ -1,6 +1,6 @@
 <template>
 
-  <div>
+  <div v-if="value.type=='org.kendar.janus.cmd.Exec'">
     <b>{{value.type}}</b><br>
     <div class="form-group">
       <label htmlFor="method">Method</label>
@@ -8,11 +8,19 @@
     </div>
     <br>
     <b>Parameters</b>
-    <ul>
-      <li v-for="(item,index) in value.children[1].children">
-        {{item.value}} = {{value.children[2].children[index].value}}
-      </li>
-    </ul>
+    <table>
+      <tr>
+        <th><button class="bi bi-plus-square" @click="doAdd()" title="Add"></button></th><th>Type</th><th>Value</th>
+      </tr>
+      <tr v-for="(item,index) in value.children[1].children">
+        <td>
+          <button class="bi bi-pen-fill" @click="doEdit(item,index)" title="Edit"></button>
+          <button class="bi bi-trash" @click="doDelete(item,index)" title="Delete"></button>
+        </td>
+        <td>{{item.value}}</td>
+        <td>{{value.children[2].children[index].value}}</td>
+      </tr>
+    </table>
   </div>
 </template>
 <script>
@@ -20,6 +28,17 @@ module.exports = {
   name: "orgkendarjanuscmdexec",
   props:{
     value:Object
+  },
+  methods:{
+    doAdd:function(){
+      alert("doAdd")
+    },
+    doDelete:function(item,index){
+      alert("doDelete")
+    },
+    doEdit:function(item,index){
+      alert("doEdit")
+    }
   },
   data:function () {
     return {

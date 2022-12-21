@@ -1,11 +1,11 @@
 <template>
   <component  :is="component"  v-if="component"
-              :descriptor="descriptor" :index="index" :value="value"/>
+               :value="value"/>
 </template>
 <script>
 module.exports = {
-  name: 'dynamic-column',
-  props:['descriptor','index','value'],
+  name: 'dynamic-component',
+  props:['template','path','default','value'],
   data() {
     return {
       component: null,
@@ -13,22 +13,32 @@ module.exports = {
   },
   computed: {
     loader() {
-      if (!this.descriptor.template) {
+      if (!this.template) {
         return null
       }
-      return httpVueLoader(`/vcomponents/grid/column/c${this.descriptor.template}.vue`);
+      return httpVueLoader(this.path + "/" + this.template + ".vue");
     },
   },
-  methods:{
+  watch:{
+    template:function(val,oldVal){
+      if (this.template) {
+        this.reload();
+      }
+    }
+  },
+  methods: {
+    reload:function(){
+      this.loader()
+          .then(() => {
+            this.component = () => this.loader()
+          })
+          .catch(() => {
+            this.component = httpVueLoader(this.path+"/"+this.default+'.vue')
+          })
+    }
   },
   mounted() {
-    this.loader()
-        .then(() => {
-          this.component = () => this.loader()
-        })
-        .catch(() => {
-          this.component = httpVueLoader('/vcomponents/grid/column/cstring.vue')
-        })
+    this.reload();
   },
 }
 </script>
