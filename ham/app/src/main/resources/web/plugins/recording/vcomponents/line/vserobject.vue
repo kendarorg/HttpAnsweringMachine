@@ -18,7 +18,8 @@
                            :path="'/plugins/recording/vcomponents/line'"
                            :default="'basic'"
                            :template="selectedComponentType|normalize"
-                           :value="selectedComponentItem"/>
+                           :value="selectedComponentItem"
+                           @componentevent="onComponentEvent"/>
       </div>
       <br><br>
 
@@ -88,6 +89,11 @@ module.exports = {
     }
   },
   methods: {
+    onComponentEvent:function(evt){
+      if(evt.id=="changed"){
+        this.visualization =JSON.stringify(convertToStructure(this.treeData.children))
+      }
+    },
     prepareTree: function (newData) {
       this.treeData.children = convertToNodes(JSON.parse(newData));
       var th = this;
