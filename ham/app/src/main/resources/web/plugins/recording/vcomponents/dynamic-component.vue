@@ -1,6 +1,6 @@
 <template>
   <component  :is="component"  v-if="component"
-               :value="value"/>
+               :value="value" @componentevent="onComponentEvent"/>
 </template>
 <script>
 module.exports = {
@@ -35,6 +35,9 @@ module.exports = {
           .catch(() => {
             this.component = httpVueLoader(this.path+"/"+this.default+'.vue')
           })
+    },
+    onComponentEvent:function(evt){
+      this.$emit("componentevent",evt);
     }
   },
   mounted() {

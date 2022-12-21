@@ -137,72 +137,7 @@ const isAnObject = function (input) {
     }
     return true;
 };
-const convertToNodes = function(serializedObject){
-    var ob = serializedObject;
-    var keys = Object.keys(ob);
-    //console.log(keys);
-    var typeValues = [];
-    var valValues = [];
-    var valChildrens = [];
-    var valSizes = [];
-    var allKeys = [];
-    keys.forEach(function(id){
 
-        var size=0;
-        valSizes[id]=null;
-        valChildrens[id]=[];
-        if(id.startsWith("[")){
-            valSizes[id.substring(1,id.length-1)]=parseInt(ob[id]);
-        }else if(id.startsWith(":")){
-            typeValues[id.substring(1,id.length-1)]=ob[id];
-        }else{
-            allKeys.push(id);
-            var subVal = ob[id];
-            if(isAnObject(subVal)){
-                if(isAnArray(subVal))debugger;
-                var nodes = convertToNodes(subVal);
-                nodes.forEach(function(v){
-                    valChildrens[id].push(v);
-                })
-
-            }else if(isAnArray(subVal)){
-                var tmp = [];
-                subVal.forEach(function(v){
-                    var nodes = convertToNodes(v);
-                    if(nodes.length>1)debugger;
-                    tmp.push(nodes[0])
-                    size++;
-                });
-                valChildrens[id]=tmp;
-            }else{
-                if(isAnArray(subVal))debugger;
-                valValues[id]=subVal;
-            }
-
-        }
-    })
-    // console.log(typeValues);
-    // console.log(valValues);
-    // console.log(allKeys);
-    var nodes = [];
-    allKeys.forEach(function(id){
-        var node = {};
-        node.name = id;
-        node.type = typeValues[id];
-        node.size = valSizes[id];
-        node.value = valValues[id];
-        node.children = valChildrens[id];
-        if(typeof node.children=="undefined")debugger;
-        if(node.children){
-            node.children.forEach(function(child){
-                if(typeof child=="undefined")return;
-                child.parent=node;
-            })
-        }
-        nodes.push(node);
-    });
-    return nodes;
-}
 
 const jsonStringifyRecursive =function (obj) {
     const cache = new Set();
