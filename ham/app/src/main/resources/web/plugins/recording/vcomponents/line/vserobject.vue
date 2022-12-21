@@ -8,14 +8,17 @@
     </div>
     <ul width="1000px">
       <simple-tree width="1000px"
-          class="item"
-          :item="treeData"
-          @show-content="showContent"
+                   class="item"
+                   :item="treeData"
+                   @show-content="showContent"
       ></simple-tree>
       <br><br>
       <div>
-        <component v-if="selectedComponentItem!=null" :is="selectedComponentType|normalize"
-                   :value="selectedComponentItem"/>
+        <dynamic-component v-if="selectedComponentItem!=null"
+                           :path="'/plugins/recording/vcomponents/line'"
+                           :default="'basic'"
+                           :template="selectedComponentType|normalize"
+                           :value="selectedComponentItem"/>
       </div>
       <br><br>
 
@@ -30,21 +33,22 @@ module.exports = {
   },
   components: {
     'simple-tree': httpVueLoader('/vcomponents/vtree.vue'),
-    'basiccomponent': httpVueLoader('/plugins/recording/vcomponents/line/vbasic.vue'),
-    'orgkendarjanuscmdexec': httpVueLoader('/plugins/recording/vcomponents/line/orgkendarjanuscmdexec.vue'),
+    //'basiccomponent': httpVueLoader('/plugins/recording/vcomponents/line/vbasic.vue'),
+    //'orgkendarjanuscmdexec': httpVueLoader('/plugins/recording/vcomponents/line/orgkendarjanuscmdexec.vue'),
     'root': httpVueLoader('/plugins/recording/vcomponents/line/root.vue'),
+    'dynamic-component': httpVueLoader('/plugins/recording/vcomponents/dynamic-component.vue'),
   },
   data: function () {
 
     return {
-      selectedComponentItem:null,
-      selectedComponentType:"basiccomponent",
+      selectedComponentItem: null,
+      selectedComponentType: "basic",
       treeData: {
         name: "My Tree",
         type: "ROOT",
         value: null,
         children: [],
-        parent:null
+        parent: null
       },
       actual: {},
       visualization: null
@@ -52,6 +56,8 @@ module.exports = {
   },
   watch: {
     data: function (val, oldVal) {
+      this.selectedComponentItem=null;
+      this.selectedComponentType = "basic";
       this.prepareTree(val);
       this.visualization = val;
     },
@@ -61,8 +67,8 @@ module.exports = {
   },
   filters: {
     normalize: function (str) {
-      if(typeof str == "undefined") return str;
-      return str.replaceAll(".","").toLowerCase();
+      if (typeof str == "undefined") return str;
+      return str.replaceAll(".", "").toLowerCase();
     }
   },
   computed: {
@@ -82,28 +88,30 @@ module.exports = {
     }
   },
   methods: {
-    prepareTree:function(newData){
+    prepareTree: function (newData) {
       this.treeData.children = convertToNodes(JSON.parse(newData));
-      var th=this;
-      this.treeData.children.forEach(function(child){
-        child.parent=this.treeData;
+      var th = this;
+      this.treeData.children.forEach(function (child) {
+        child.parent = this.treeData;
       })
     },
     showContent: function (item) {
-      if(!item){
-        this.selectedComponentItem=null;
-        this.selectedComponentType="basiccomponent";
+      if (!item) {
+        this.selectedComponentItem = null;
+        this.selectedComponentType = "basic";
         return;
       }
       this.selectedComponentItem = item;
-      var type = item.type.replaceAll(".","").toLowerCase();
+      var type = item.type.replaceAll(".", "").toLowerCase();
+      this.selectedComponentType = item.type;
+      /*
       let componentExists = type in this.$options.components
-      if(componentExists) {
-        this.selectedComponentType = item.type;
-      }else{
-        console.error("MISSING COMPONENT FOR "+item.type);
-        this.selectedComponentType="basiccomponent";
-      }
+      if (componentExists) {
+
+      } else {
+
+        this.selectedComponentType = "basic";
+      }*/
       //Vue.set(item, "children", []);
       //this.addItem(item);
     },
