@@ -1,11 +1,11 @@
 <template>
-  <li v-if="item">
+  <li>
     <div
         :class="{bold: isFolder}"
-        @click="showContent"
-        @dblclick="showContent">
+        @click="toggle"
+        @dblclick="makeFolder">
       <b>Name:</b>{{ item.name }}  <b>Type:</b>{{item.type}}  <span v-if="typeof item.value!='undefined'&&item.value!=null"><b>Value:</b>{{item.value}}</span>
-      <span  @click="toggle" v-if="isFolder">[{{ isOpen ? '-' : '+' }}]</span>
+      <span v-if="isFolder">[{{ isOpen ? '-' : '+' }}]</span>
     </div>
     <ul v-show="isOpen" v-if="isFolder">
       <simple-tree
@@ -13,7 +13,8 @@
           v-for="(child, index) in item.children"
           :key="index"
           :item="child"
-          @show-content="$emit('show-content', $event)"
+          @make-folder="$emit('make-folder', $event)"
+          @add-item="$emit('add-item', $event)"
       ></simple-tree>
       <!--<li class="add" @click="$emit('add-item', item)">+</li>-->
     </ul>
@@ -32,6 +33,7 @@ module.exports = {
   },
   computed: {
     isFolder: function() {
+      if(typeof this.item.children =="undefined") return false;
       return this.item.children && this.item.children.length;
     }
   },
@@ -41,8 +43,11 @@ module.exports = {
         this.isOpen = !this.isOpen;
       }
     },
-    showContent: function() {
-      this.$emit("show-content", this.item);
+    makeFolder: function() {
+      if (!this.isFolder) {
+        this.$emit("make-folder", this.item);
+        this.isOpen = true;
+      }
     }
   }
 }
