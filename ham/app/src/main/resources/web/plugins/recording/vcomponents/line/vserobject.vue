@@ -8,10 +8,12 @@
     </div>
     <ul width="1000px">
       <simple-tree width="1000px"
+                   :open-item="true"
                    class="item"
                    :item="treeData"
                    @show-content="showContent"
       ></simple-tree>
+    </ul>
       <br><br>
       <div>
         <dynamic-component v-if="selectedComponentItem!=null"
@@ -22,8 +24,6 @@
                            @componentevent="onComponentEvent"/>
       </div>
       <br><br>
-
-    </ul>
   </div>
 </template>
 <script>
@@ -44,13 +44,7 @@ module.exports = {
     return {
       selectedComponentItem: null,
       selectedComponentType: "basic",
-      treeData: {
-        name: "My Tree",
-        type: "ROOT",
-        value: null,
-        children: [],
-        parent: null
-      },
+      treeData: {},
       actual: {},
       visualization: null
     }
@@ -65,6 +59,8 @@ module.exports = {
   },
   created: function () {
     this.prepareTree(this.data);
+    this.selectedComponentItem = this.treeData;
+    this.selectedComponentType = this.treeData.type.replaceAll(".", "").toLowerCase();
   },
   filters: {
     normalize: function (str) {
@@ -91,15 +87,11 @@ module.exports = {
   methods: {
     onComponentEvent:function(evt){
       if(evt.id=="changed"){
-        this.visualization =JSON.stringify(convertToStructure(this.treeData.children))
+        this.visualization =JSON.stringify(convertToStructure([this.treeData]))
       }
     },
     prepareTree: function (newData) {
-      this.treeData.children = convertToNodes(JSON.parse(newData));
-      var th = this;
-      this.treeData.children.forEach(function (child) {
-        child.parent = this.treeData;
-      })
+      this.treeData = convertToNodes(JSON.parse(newData))[0];
     },
     showContent: function (item) {
       if (!item) {

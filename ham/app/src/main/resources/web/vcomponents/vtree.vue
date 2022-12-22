@@ -23,11 +23,15 @@
 module.exports = {
   name: 'simple-tree',
   props: {
-    item: Object
+    item: Object,
+    openItem:{
+      type:Boolean,
+      default:false
+    }
   },
   data: function() {
     return {
-      isOpen: false
+      isOpen: this.openItem
     };
   },
   computed: {
