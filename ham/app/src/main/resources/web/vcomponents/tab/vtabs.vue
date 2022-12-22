@@ -41,8 +41,15 @@ module.exports = {
   },
   methods: {
     selectTab(selectedTab) {
+      var toSelect = "";
+      if(typeof selectedTab === 'string'){
+        toSelect=selectedTab;
+      }else{
+        toSelect=selectedTab.name;
+      }
       this.tabs.forEach(tab => {
-        tab.isActive = (tab.name == selectedTab.name);
+        if(tab.isActive == (tab.name == toSelect))return;
+        tab.isActive = (tab.name == toSelect);
       });
     }
   }

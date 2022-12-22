@@ -66,7 +66,7 @@
             <br>
         </div>
         <div width="800px">
-            <vtabs>
+            <vtabs ref="tab">
                 <vtab name="RECORDINGS">
                     <br>
                     <recording-list
@@ -157,7 +157,9 @@
               if(isUndefined(this.selectedRow) || this.selectedRow<0){
                   return "NONE";
               }
-              return "[SELECTED "+this.selectedRow+"]";
+              var result = "[SELECTED "+this.selectedRow+"]";
+
+              return result;
           }
         },
         methods: {

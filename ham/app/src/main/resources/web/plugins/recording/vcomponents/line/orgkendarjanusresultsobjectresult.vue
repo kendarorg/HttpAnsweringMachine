@@ -1,7 +1,7 @@
 <template>
   <div v-if="value.type=='org.kendar.janus.results.ObjectResult'">
 
-    <b>{{ value.type }}</b><br>
+    <h3>{{value.type}}</h3><br>
     <div class="form-group">
       <label htmlFor="typ">Result Type</label>
       <input class="form-control" type="text" name="typ" id="typ" v-model="otype"/>

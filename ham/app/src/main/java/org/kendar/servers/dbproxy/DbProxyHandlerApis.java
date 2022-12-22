@@ -14,7 +14,6 @@ import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
-import org.kendar.servers.proxy.ProxyConfigChanged;
 import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.ConstantsMime;
 import org.springframework.stereotype.Component;
@@ -101,7 +100,7 @@ public class DbProxyHandlerApis implements FilteringClass {
         }
         clone.setProxies(newList);
         configuration.setConfiguration(clone);
-        eventQueue.handle(new ProxyConfigChanged());
+        eventQueue.handle(new DbProxyConfigChanged());
         res.setStatusCode(200);
     }
 
@@ -137,7 +136,7 @@ public class DbProxyHandlerApis implements FilteringClass {
         }
         cloneConf.setProxies(newList);
         configuration.setConfiguration(cloneConf);
-        eventQueue.handle(new ProxyConfigChanged());
+        eventQueue.handle(new DbProxyConfigChanged());
         res.setStatusCode(200);
     }
 
@@ -159,7 +158,7 @@ public class DbProxyHandlerApis implements FilteringClass {
             proxyes.add(newData);
             configuration.setConfiguration(cloneConf);
         }
-        eventQueue.handle(new ProxyConfigChanged());
+        eventQueue.handle(new DbProxyConfigChanged());
         res.setStatusCode(200);
     }
 }
