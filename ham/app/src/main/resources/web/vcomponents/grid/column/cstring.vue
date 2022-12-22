@@ -1,14 +1,21 @@
 <template>
-  <span>{{value}}</span>
+  <span>{{shown}}</span>
 </template>
 <script>
 module.exports = {
   props: {
-    value: String,
+    value: Object,
     descriptor:Object,
     index: Array
   },
   name: 'cstring',
+  computed:{
+    shown: function() {
+      return (typeof this.descriptor.func =="function")?
+          this.descriptor.func(this.value):
+          this.value[this.descriptor.id];
+    }
+  },
   methods:{
     clean:function(){}
   }
