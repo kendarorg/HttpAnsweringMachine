@@ -1,29 +1,35 @@
 <template>
-  <div v-if="typeof this.data!='undefined'" width="800px">
-    <div class="form-group">
-      <label for="free_content">Value</label>
-      <textarea class="form-control" rows="6" cols="50"
-                name="free_content" id="free_content"
-                v-model="shown"></textarea>
-    </div>
-    <ul width="1000px">
-      <simple-tree width="1000px"
-                   :open-item="true"
-                   class="item"
-                   :item="treeData"
-                   @show-content="showContent"
-      ></simple-tree>
-    </ul>
-      <br><br>
-      <div>
-        <dynamic-component v-if="selectedComponentItem!=null"
+  <div v-if="typeof this.data!='undefined'" width="1000px">
+    <vtabs width="1000px">
+      <vtab name="JSON" width="1000px">
+        <br>
+        <div class="form-group" width="1000px">
+          <label for="free_content">Value</label>
+          <textarea style="width:1000px" class="form-control" rows="12" cols="100"
+                    name="free_content" id="free_content"
+                    v-model="shown"></textarea>
+        </div>
+      </vtab>
+      <vtab name="COMPONENT" width="1000px">
+        <br>
+        <dynamic-component width="1000px" v-if="selectedComponentItem!=null"
                            :path="'/plugins/recording/vcomponents/line'"
                            :default="'basic'"
                            :template="selectedComponentType|normalize"
                            :value="selectedComponentItem"
                            @componentevent="onComponentEvent"/>
-      </div>
-      <br><br>
+      </vtab>
+      <vtab name="TREE" width="1000px">
+        <ul style="width:1000px">
+          <simple-tree style="width:1000px"
+                       :open-item="false"
+                       class="item"
+                       :item="treeData"
+                       @show-content="showContent"
+          ></simple-tree>
+        </ul>
+      </vtab>
+    </vtabs>
   </div>
 </template>
 <script>
@@ -38,6 +44,8 @@ module.exports = {
     //'orgkendarjanuscmdexec': httpVueLoader('/plugins/recording/vcomponents/line/orgkendarjanuscmdexec.vue'),
     'root': httpVueLoader('/plugins/recording/vcomponents/line/root.vue'),
     'dynamic-component': httpVueLoader('/plugins/recording/vcomponents/dynamic-component.vue'),
+    'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
+    'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
   },
   data: function () {
 
@@ -51,10 +59,10 @@ module.exports = {
   },
   watch: {
     data: function (val, oldVal) {
-      this.selectedComponentItem=null;
-      this.selectedComponentType = "basic";
       this.prepareTree(val);
       this.visualization = val;
+      this.selectedComponentItem = this.treeData;
+      this.selectedComponentType = this.treeData.type.replaceAll(".", "").toLowerCase();
     },
   },
   created: function () {
@@ -85,9 +93,9 @@ module.exports = {
     }
   },
   methods: {
-    onComponentEvent:function(evt){
-      if(evt.id=="changed"){
-        this.visualization =JSON.stringify(convertToStructure([this.treeData]))
+    onComponentEvent: function (evt) {
+      if (evt.id == "changed") {
+        this.visualization = JSON.stringify(convertToStructure([this.treeData]))
       }
     },
     prepareTree: function (newData) {

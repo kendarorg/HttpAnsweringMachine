@@ -22,7 +22,7 @@
       </span>
     </simple-modal>
 
-    <b>{{ value.type }}</b><br>
+    <h3>{{value.type}}</h3><br>
     <div class="form-group">
       <label htmlFor="method">Method</label>
       <input class="form-control" type="text" name="method" id="method" v-model="value.children[0].value"/>

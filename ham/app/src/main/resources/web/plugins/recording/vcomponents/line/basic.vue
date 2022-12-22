@@ -1,8 +1,8 @@
 <template>
   <div>
-    <b>Name:</b> {{value.name}}<br>
-    <b>Type:</b> {{value.type}}<br>
-    <b>Value:</b> {{value.value}}<br>
+    <h3>{{value.type}}</h3><br>
+    <span v-if="value.name"><b>Name:</b> {{value.name}}<br></span>
+    <span v-if="value.name"><b>Value:</b> {{value.value}}<br></span>
   </div>
 </template>
 <script>
