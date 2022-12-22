@@ -46,6 +46,9 @@
         methods:{
             pluginsRetrieveData: async function(){
                 var result = await axios.get("/api/plugins");
+                result.data.forEach(function(lk){
+                    lk.address="../"+lk.address;
+                });
                 return result;
             }
         }
