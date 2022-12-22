@@ -7,6 +7,7 @@ import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.HamResponse;
+import org.kendar.http.annotations.multi.Header;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.http.annotations.multi.QueryString;
 import org.kendar.janus.JdbcDriver;
@@ -132,28 +133,31 @@ public class DbProxyApi implements FilteringClass {
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
-            pathAddress = "/api/db/{dbName}/{connectionId}/{commandId}/{itemId}",
+            pathAddress = "/api/db/{dbName}/{targetType}/{command}/{targetId}",
             method = "POST")
     @HamDoc(
             tags = {"base/proxydb"},
             description = "Proxies db",
+            header = {
+              @Header(key="X-Connection-Id",description = "The connection id")
+            },
             path = {
                     @PathParameter(
                             key = "dbName",
                             description = "DbName on confix",
                             example = "local"),
                     @PathParameter(
-                            key = "connectionId",
-                            description = "Connecction Id",
-                            example = "22"),
+                            key = "targetType",
+                            description = "The type of object for invocation",
+                            example = "ResultSet"),
                     @PathParameter(
-                            key = "commandId",
-                            description = "Command Id",
-                            example = "22"),
+                            key = "command",
+                            description = "the command to execute",
+                            example = "getResultSetMetaData"),
 
                     @PathParameter(
-                            key = "itemId",
-                            description = "Jdbc Object Id",
+                            key = "targetId",
+                            description = "Jdbc Id of the target",
                             example = "77")
             },
             responses = @HamResponse(
@@ -165,8 +169,8 @@ public class DbProxyApi implements FilteringClass {
             throw new Exception("Db not existing or inactive");
         }
 
-        var connectionId = Long.parseLong(req.getPathParameter("connectionId"));
-        var itemId = Long.parseLong(req.getPathParameter("itemId"));
+        var connectionId = Long.parseLong(req.getHeader("X-Connection-Id"));
+        var itemId = Long.parseLong(req.getPathParameter("targetId"));
         var deser = serializer.newInstance();
         deser.deserialize(req.getRequestText());
         var deserialized = (JdbcCommand) deser.read("command");
