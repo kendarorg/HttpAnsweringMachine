@@ -440,12 +440,18 @@ module.exports = {
         th.setField(selectField,index,!toSel[selectField]);
       });
     },
-    onSelected:function(functoApply){
+    onSelected:function(functoApply,selectField){
+      if(typeof selectField=="undefined" || selectField==null){
+        selectField="select";
+      }
+      var curse = selectField;
       var th = this;
       this.filteredData.forEach(function(toSel){
         var index =th.buildId(toSel);
         var row = th.getByIdFull(index);
-        functoApply(row);
+        if(toSel[curse]) {
+          functoApply(row);
+        }
       });
       this.forceUpdate++;
     },

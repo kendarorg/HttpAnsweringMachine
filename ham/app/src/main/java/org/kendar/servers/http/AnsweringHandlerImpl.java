@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
@@ -239,7 +240,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
       } else {
         request = requestResponseBuilder.fromExchange(httpExchange, "http");
       }
-      request.setMs(Date.from(Instant.now()).getTime());
+      request.setMs(Calendar.getInstance().getTimeInMillis());
 
       //START REQUEST
       if(request.getHeader("X-BLOCK-RECURSIVE")!=null){

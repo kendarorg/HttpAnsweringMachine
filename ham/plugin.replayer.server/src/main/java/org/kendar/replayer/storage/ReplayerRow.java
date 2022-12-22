@@ -69,7 +69,7 @@ public class ReplayerRow implements DbTable {
     }
 
     @Column(name="timestamp")
-    private Timestamp timestamp = Timestamp.from(Calendar.getInstance().toInstant());
+    private long timestamp = Calendar.getInstance().getTimeInMillis();
 
     public String getRequestSerialized() {
         return requestSerialized;
@@ -146,11 +146,11 @@ public class ReplayerRow implements DbTable {
     @Column(name = "staticRequest")
     private boolean staticRequest;
 
-    public Timestamp getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 

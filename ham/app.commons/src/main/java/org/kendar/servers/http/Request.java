@@ -1,10 +1,13 @@
 package org.kendar.servers.http;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 public class Request {
+    private static AtomicLong counter = new AtomicLong(0);
 
+    private long id = counter.incrementAndGet();
     private long ms = Calendar.getInstance().getTimeInMillis();
     private boolean binaryRequest;
     private String method;
@@ -226,6 +229,7 @@ public class Request {
 
     public Request copy() {
         var r  = new Request();
+        r.id = this.id;
         r.pathParameters = this.pathParameters.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         r.ms = this.ms;
@@ -285,5 +289,13 @@ public class Request {
     public boolean bodyExists(){
         return (requestBytes!=null && requestBytes.length>0)||
                 (requestText!=null && requestText.length()>0);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

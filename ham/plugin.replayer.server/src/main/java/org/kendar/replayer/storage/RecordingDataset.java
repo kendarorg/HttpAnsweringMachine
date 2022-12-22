@@ -99,7 +99,7 @@ public class RecordingDataset implements BaseDataset{
         try {
 
             String responseHash;
-            var newId = counter.getAndIncrement();
+            var newId = req.getId();
             var replayerRow = new ReplayerRow();
             replayerRow.setType("http");
             if(req.getPath().startsWith("/api/db/")){
@@ -115,7 +115,7 @@ public class RecordingDataset implements BaseDataset{
             } else {
                 responseHash = md5Tester.calculateMd5(res.getResponseText());
             }
-            replayerRow.setTimestamp(new Timestamp(req.getMs()));
+            replayerRow.setTimestamp(req.getMs());
             replayerRow.setId(newId);
             replayerRow.setRequest(req);
             replayerRow.setResponse(res);
@@ -130,6 +130,7 @@ public class RecordingDataset implements BaseDataset{
             replayerRow.setRecordingId(recording.getId());
 
             var callIndex = new CallIndex();
+            callIndex.setTimestamp(req.getMs());
             callIndex.setId(newId);
             callIndex.setReference(newId);
             callIndex.setRecordingId(recording.getId());

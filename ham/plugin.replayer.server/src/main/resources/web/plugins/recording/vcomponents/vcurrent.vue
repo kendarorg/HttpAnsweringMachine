@@ -111,12 +111,8 @@ module.exports = {
             axios.get("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/script/" + val)
                 .then(function(result){
                   th.script=result.data;
-                }.catch(function(result){
-                  th.script={};
-                }))
-          }.catch(function(result){
-
-          }))
+                })
+          })
 
     }
   },

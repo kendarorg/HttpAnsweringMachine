@@ -10,6 +10,7 @@
   </simple-modal>
   <button v-on:click="selectAll()" class="btn btn-default" title="Check All">Check all</button>
   <button v-on:click="toggleSelect()" class="btn btn-default" title="Toggle">Toggle Selected</button>
+  <button v-on:click="deleteSelected()" class="bi bi-trash" title="Toggle">Delete Selected</button>
   <button v-on:click="selectedToStimulator()" class="btn btn-default" title="Toggle">Selected Stimulator</button>
   <button v-on:click="selectedToStimulated()" class="btn btn-default" title="Toggle">Selected Stimulated</button>
   <button v-on:click="selectedToPact()" class="btn btn-default" title="Toggle">Selected Pact</button>
@@ -133,6 +134,22 @@ module.exports = {
       axios.post('/api/dns/mappings', toUpload, {headers}).then((res) => {
 
       });
+    },
+    deleteSelected:function(){
+      let confirmAction = confirm("Are you sure to delete the lines");
+      if (confirmAction) {
+        var data = [];
+        this.$refs.grid.onSelected(function(row){
+          data.push(row['id']);
+        })
+        var id = getUrlParameter("id");
+
+        var th=this;
+        const headers = {'Content-Type': 'application/json'};
+        axios.post('/api/plugins/replayer/recording/'+id+'/deletelines', data, {headers}).then(function(){
+          th.$emit("reload");
+        })
+      }
     },
     setScript:function (){
       var allHosts = [];
