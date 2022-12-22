@@ -1,6 +1,6 @@
 <template>
   <div width="800px">
-    <div width="800px" v-if="data.type=='web'" >
+    <div width="800px" v-if="data.type=='http'" >
       <button type="button" :disabled="typeof data.id =='undefined'"  class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
       <button type="button" :disabled="prev<0"  class="bi bi-floppy" v-on:click="prevRow()" title="Save changes">Prev</button>
       <button type="button" :disabled="next<0"  class="bi bi-floppy" v-on:click="nextRow()" title="Save changes">Next</button>
