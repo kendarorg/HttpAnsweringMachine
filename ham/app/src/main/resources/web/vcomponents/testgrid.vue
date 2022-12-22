@@ -49,13 +49,13 @@
       <tr v-for="entry in filteredData">
         <td v-for="key in extra">
           <component :is="'c'+key.template" :descriptor="key"
-                          :value="entry[key.id]"
+                          :value="entry"
                           :index="buildId(entry)" />
         </td>
         <td v-for="key in columns">
-          <component :is="'c'+key.template" :descriptor="key"
-                          :value="entry[key.id]"
-                          :index="buildId(entry)"/>
+          <component  :is="'c'+key.template" :descriptor="key"
+                     :value="entry"
+                     :index="buildId(entry)"/>
         </td>
       </tr>
       </tbody>
@@ -136,6 +136,7 @@ module.exports = {
       var sortKey = this.sortKey;
       var order = this.sortOrders[sortKey] || 1;
       var data = this.data;
+      var th = this;
       if (filterKeys) {
 
 
@@ -143,7 +144,7 @@ module.exports = {
           let allGood=true;
           for (const [key, value] of Object.entries(filterKeys)) {
             if(value==null|| typeof value=="undefined")continue;
-            allGood = String(row[key])
+            allGood = String(th.retrieveRowData(row[key]))
                 .toLowerCase()
                 .indexOf(String(value)
                     .toLowerCase()) > -1;
@@ -173,6 +174,12 @@ module.exports = {
     }
   },
   methods: {
+    retrieveRowData:function(entry,key){
+      if(typeof key.func=="Function"){
+        return key.func(entry);
+      }
+      return entry[key.id];
+    },
     buildLabel: function(key){
       if(typeof key.label=="undefined") return key.id;
       return key.label;
