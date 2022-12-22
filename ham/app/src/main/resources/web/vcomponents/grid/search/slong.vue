@@ -1,7 +1,7 @@
 <template>
-  <form id="search">
+
     <input name="query" v-model="searchQuery" v-bind:size="inputLength"/>
-  </form>
+
 </template>
 <script>
 module.exports = {
