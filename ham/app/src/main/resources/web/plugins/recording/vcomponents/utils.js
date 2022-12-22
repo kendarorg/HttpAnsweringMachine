@@ -77,6 +77,7 @@ const convertToStructure = function(nodes){
     var result = {};
     nodes.forEach(function(node){
         result[":"+node.name+":"]=node.type;
+
         if(node.children &&
             ((node.size!=null && typeof node.size!="undefined" && node.size>=0)||
                 node.type=="java.util.ArrayList"
@@ -94,11 +95,18 @@ const convertToStructure = function(nodes){
             //Contains an array
 
         }else if(typeof node.value!="undefined"){
-            //Contains an object
-            result[node.name]=node.value
-
+                //Contains an object
+                result[node.name] = node.value
         }else{
-            result[node.name]=convertToStructure(node.children);
+            if(node.children && node.children.length>0 && node.children[0].type=="_MapEntry") {
+                var finalResult = [];
+                node.children.forEach(function(mapEntry){
+                    finalResult.push(convertToStructure(mapEntry.children));
+                });
+                result[node.name] = finalResult;
+            }else{
+                result[node.name]=convertToStructure(node.children);
+            }
         }
         })
     return result;
@@ -135,8 +143,17 @@ const convertToNodes = function(serializedObject){
                 var tmp = [];
                 subVal.forEach(function(v){
                     var nodes = convertToNodes(v);
-                    if(nodes.length>1)debugger;
-                    tmp.push(nodes[0])
+                    if(nodes.length>1){
+                        var mapEntry = {};
+                        mapEntry.name = "_MapEntry";
+                        mapEntry.type = "_MapEntry";
+                        mapEntry.size = null;
+                        mapEntry.value = null;
+                        mapEntry.children = nodes;
+                        tmp.push(mapEntry)
+                    }else{
+                        tmp.push(nodes[0])
+                    }
                     size++;
                 });
                 valChildrens[id]=tmp;
@@ -162,6 +179,12 @@ const convertToNodes = function(serializedObject){
         if(node.children){
             node.children.forEach(function(child){
                 if(typeof child=="undefined")return;
+
+                if( child.type=="_MapEntry"){
+                    child.children.forEach(function(mapCh){
+                        mapCh.parent=child;
+                    })
+                };
                 child.parent=node;
             })
         }

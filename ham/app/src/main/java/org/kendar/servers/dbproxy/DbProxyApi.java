@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -137,7 +138,7 @@ public class DbProxyApi implements FilteringClass {
             method = "POST")
     @HamDoc(
             tags = {"base/proxydb"},
-            description = "Proxies db",
+            description = "Proxies db-not on connections",
             header = {
               @Header(key="X-Connection-Id",description = "The connection id")
             },
@@ -163,7 +164,7 @@ public class DbProxyApi implements FilteringClass {
             responses = @HamResponse(
                     body = String.class
             ))
-    public void handle(Request req, Response res) throws Exception {
+    public void handleGeneral(Request req, Response res) throws Exception {
         var id = req.getPathParameter("dBname");
         if(id==null ||!janusEngines.containsKey(id)||!janusEngines.get(id).isActive()){
             throw new Exception("Db not existing or inactive");
@@ -171,13 +172,57 @@ public class DbProxyApi implements FilteringClass {
 
         var connectionId = Long.parseLong(req.getHeader("X-Connection-Id"));
         var itemId = Long.parseLong(req.getPathParameter("targetId"));
+        runConnection(req, res, id, connectionId, itemId);
+    }
+
+
+
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/db/{dbName}/{targetType}/{command}",
+            method = "POST")
+    @HamDoc(
+            tags = {"base/proxydb"},
+            description = "Proxies db-connections only",
+            header = {
+                    @Header(key="X-Connection-Id",description = "The connection id")
+            },
+            path = {
+                    @PathParameter(
+                            key = "dbName",
+                            description = "DbName on confix",
+                            example = "local"),
+                    @PathParameter(
+                            key = "targetType",
+                            description = "The type of object for invocation",
+                            example = "ResultSet"),
+                    @PathParameter(
+                            key = "command",
+                            description = "the command to execute",
+                            example = "getResultSetMetaData")
+            },
+            responses = @HamResponse(
+                    body = String.class
+            ))
+    public void handleConnections(Request req, Response res) throws Exception {
+        var id = req.getPathParameter("dBname");
+        if(id==null ||!janusEngines.containsKey(id)||!janusEngines.get(id).isActive()){
+            throw new Exception("Db not existing or inactive");
+        }
+
+        var connectionId = Long.parseLong(req.getHeader("X-Connection-Id"));
+        runConnection(req, res, id, connectionId, connectionId);
+    }
+
+    private void runConnection(Request req, Response res, String id, long connectionId, long itemId) throws SQLException {
         var deser = serializer.newInstance();
         deser.deserialize(req.getRequestText());
         var deserialized = (JdbcCommand) deser.read("command");
 
         var uuid = UUID.randomUUID();
         if(specialLogger.isTraceEnabled()||specialLogger.isDebugEnabled()) {
-            specialLogger.debug(uuid+" REQ: "+req.getPath());
+            specialLogger.debug(uuid+" REQ: "+ req.getPath());
         }
         JdbcResult result = janusEngines.get(id).getServerEngine().execute(deserialized, connectionId, itemId);
         if(specialLogger.isTraceEnabled()||specialLogger.isDebugEnabled()) {
