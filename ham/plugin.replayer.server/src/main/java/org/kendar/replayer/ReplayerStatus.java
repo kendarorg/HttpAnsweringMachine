@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @Component
 public class ReplayerStatus {
@@ -39,6 +40,7 @@ public class ReplayerStatus {
     private final InternalRequester internalRequester;
     private final SimpleProxyHandler simpleProxyHandler;
     private HibernateSessionFactory sessionFactory;
+    private List<ReplayerEngine> replayerEngines;
     private BaseDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
     private boolean recordDbCalls;
@@ -52,7 +54,8 @@ public class ReplayerStatus {
             EventQueue eventQueue, ExternalRequester externalRequester,
             DnsMultiResolver multiResolver, InternalRequester internalRequester,
             SimpleProxyHandler simpleProxyHandler,
-            HibernateSessionFactory sessionFactory) {
+            HibernateSessionFactory sessionFactory,
+            List<ReplayerEngine> replayerEngines) {
 
         this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.loggerBuilder = loggerBuilder;
@@ -64,6 +67,7 @@ public class ReplayerStatus {
         this.internalRequester = internalRequester;
         this.simpleProxyHandler = simpleProxyHandler;
         this.sessionFactory = sessionFactory;
+        this.replayerEngines = replayerEngines;
         eventQueue.register((a)->nullCompleted(), NullCompleted.class);
     }
 
@@ -77,7 +81,7 @@ public class ReplayerStatus {
         state = ReplayerState.NONE;
     }
 
-    public void startRecording(Long id, String description, boolean recordDbCalls, boolean recordVoidDbCalls) throws IOException {
+    public void startRecording(Long id, String description, boolean recordDbCalls, boolean recordVoidDbCalls) throws Exception {
         this.recordDbCalls = recordDbCalls;
         this.recordVoidDbCalls = recordVoidDbCalls;
         Path rootPath = getRootPath();
@@ -112,6 +116,7 @@ public class ReplayerStatus {
             res.setStatusCode(response.getStatusCode());
             return true;
         }
+        //When void calls are made to db
         if(req.getPath().startsWith("/db")){
             var ser= serializer.newInstance();
             ser.write("result", new VoidResult());
@@ -154,16 +159,6 @@ public class ReplayerStatus {
         dataset = null;
     }
 
-    public void startReplaying(Long id) throws IOException {
-        Path rootPath = getRootPath();
-        if (state != ReplayerState.NONE) return;
-        logger.info("REPLAYING START");
-        state = ReplayerState.REPLAYING;
-        dataset =
-                new ReplayerDataset(  loggerBuilder, md5Tester,sessionFactory);
-        dataset.load(id, rootPath.toString(),null);
-    }
-
     public void restartReplayingNull(Long id) {
         if (state != ReplayerState.PAUSED_REPLAYING) return;
         logger.info("REPLAYING RE-START");
@@ -189,7 +184,8 @@ public class ReplayerStatus {
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         logger.info("NULL START");
         dataset = new NullDataset(loggerBuilder,md5Tester,eventQueue,
-                internalRequester, new Cache(),simpleProxyHandler,sessionFactory);
+                internalRequester, new Cache(),simpleProxyHandler,sessionFactory,
+                replayerEngines);
         dataset.load(id, rootPath.toString(),null);
         var runId = ((NullDataset)dataset).start();
         state = ReplayerState.REPLAYING;

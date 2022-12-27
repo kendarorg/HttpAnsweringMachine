@@ -18,6 +18,7 @@ public class ReplayerDataset implements BaseDataset{
   protected final Logger logger;
   protected Md5Tester md5Tester;
   protected HibernateSessionFactory sessionFactory;
+  private List<ReplayerEngine> replayerEngines;
 
   protected final ObjectMapper mapper = new ObjectMapper();
 
@@ -31,10 +32,12 @@ public class ReplayerDataset implements BaseDataset{
   public ReplayerDataset(
           LoggerBuilder loggerBuilder,
           Md5Tester md5Tester,
-          HibernateSessionFactory sessionFactory) {
+          HibernateSessionFactory sessionFactory,
+          List<ReplayerEngine> replayerEngines) {
     this.logger = loggerBuilder.build(ReplayerDataset.class);
     this.md5Tester = md5Tester;
     this.sessionFactory = sessionFactory;
+    this.replayerEngines = replayerEngines;
   }
 
   public Long getName() {
@@ -42,10 +45,13 @@ public class ReplayerDataset implements BaseDataset{
   }
 
   @Override
-  public void load(Long name, String replayerDataDir, String description) {
+  public void load(Long name, String replayerDataDir, String description) throws Exception {
     this.name = name;
     this.replayerDataDir = replayerDataDir;
     this.description = description;
+    for(var engine :replayerEngines){
+      engine.loadDb(name);
+    }
 
   }
 
@@ -65,69 +71,6 @@ public class ReplayerDataset implements BaseDataset{
   }
 
 
-  private ReplayerRow findRequestMatch(Request sreq, String contentHash,boolean staticRequest) throws Exception {
-    var matchingQuery = -1;
-    ReplayerRow founded = null;
-    var staticRequests = new ArrayList<ReplayerRow>();
-    sessionFactory.query(em->{
-      var query =em.createQuery("SELECT e FROM ReplayerRow  e WHERE " +
-              " e.staticRequest=:sr " +
-              " AND e.recordingId=:recordingId" +
-              " AND e.path=:path" +
-              " AND e.host=:host" +
-              " ORDER BY e.id ASC");
-      query.setParameter("sr",staticRequest);
-      query.setParameter("recordingId",name);
-      query.setParameter("path",sreq.getPath());
-      query.setParameter("host",sreq.getHost());
-      staticRequests.addAll(query.getResultList());
-    });
-
-    var indexes = staticRequests.stream().map(r->r.getIndex()).collect(Collectors.toList()).toArray(Long[]::new);
-    var callIndexes = new ArrayList<CallIndex>();
-    sessionFactory.query(em->{
-      var query =em.createQuery("SELECT e FROM CallIndex  e WHERE " +
-              " e.reference IN :reqs" +
-              " AND e.recordingId=:recordingId" +
-              " ORDER BY e.reference ASC");
-      query.setParameter("recordingId",name);
-      query.setParameter("reqs",indexes);
-      callIndexes.addAll(query.getResultList());
-    });
-
-    for (var row : staticRequests) {
-      if(!staticRequest){
-        var st = states.get(row.getId());
-        if(null!=st){
-          continue;
-        }
-      }
-      var rreq = row.getRequest();
-      var callIndex = callIndexes.stream().filter(
-              ci->ci.getReference()==row.getId()
-      ).findFirst();
-      if(!superMatch(row,callIndex.get()))continue;
-      var matchedQuery=0;
-      if (rreq.isBinaryRequest() == sreq.isBinaryRequest()) {
-        if (row.getRequestHash().equalsIgnoreCase(contentHash)) {
-          matchedQuery += 20;
-        }
-      }
-
-      matchedQuery += matchQuery(rreq.getQuery(), sreq.getQuery());
-      if (matchedQuery > matchingQuery) {
-        matchingQuery = matchedQuery;
-        founded = row;
-      }
-    }
-    return founded;
-  }
-
-  protected boolean superMatch(ReplayerRow row, CallIndex callIndex) {
-    return true;
-  }
-
-
   public Response findResponse(Request req) {
     try {
 
@@ -137,47 +80,23 @@ public class ReplayerDataset implements BaseDataset{
       } else {
         contentHash = md5Tester.calculateMd5(req.getRequestText());
       }
-      ReplayerRow founded = findRequestMatch(req, contentHash,true);
-      if (founded != null) {
-        var result =  founded.getResponse();
-        result.addHeader("X-REPLAYER-ID",founded.getId()+"");
-        result.addHeader("X-REPLAYER-TYPE","STATIC");
-        return result;
+      for(var engine:replayerEngines){
+        ReplayerRow founded = engine.findRequestMatch(req,contentHash);
+        if(founded!=null){
+          var result =  founded.getResponse();
+          result.addHeader("X-REPLAYER-ID",founded.getId()+"");
+          result.addHeader("X-REPLAYER-DYNAMIC",founded.getRequest().isStaticRequest()?"FALSE":"TRUE");
+          result.addHeader("X-REPLAYER-TYPE",engine.getId());
+          return result;
+        }
       }
-      founded = findRequestMatch(req, contentHash,false);
-      if (founded != null) {
-        var result =  founded.getResponse();
-        result.addHeader("X-REPLAYER-ID",founded.getId()+"");
-        result.addHeader("X-REPLAYER-TYPE","DYNAMIC");
-        states.put(founded.getId(),"");
-        return result;
-      }
+
       return null;
     } catch (Exception ex) {
       logger.error("ERror!", ex);
       return null;
     }
   }
-
-  private int matchQuery(Map<String, String> left, Map<String, String> right) {
-    var result = 0;
-    for (var leftItem : left.entrySet()) {
-      for (var rightItem : right.entrySet()) {
-        if (leftItem.getKey().equalsIgnoreCase(rightItem.getKey())) {
-          result++;
-          if (leftItem.getValue() == null) {
-            if (rightItem.getValue() == null) {
-              result++;
-            }
-          } else if (leftItem.getValue().equalsIgnoreCase(rightItem.getValue())) {
-            result++;
-          }
-        }
-      }
-    }
-    return result;
-  }
-
   public void add(ReplayerRow row) {
     if (row.getRequest().isStaticRequest()) {
       replayerResult.getStaticRequests().add(row);
