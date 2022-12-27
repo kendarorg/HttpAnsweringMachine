@@ -33,8 +33,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@HttpTypeFilter(hostAddress = "${global.localAddress}",
-        blocking = true)
+@HttpTypeFilter(hostAddress = "*",
+        blocking = false)
 public class DbProxyApi implements FilteringClass {
     private final JsonTypedSerializer serializer;
     private final Logger logger;
@@ -117,8 +117,11 @@ public class DbProxyApi implements FilteringClass {
             responses = @HamResponse(
                     body = String.class
             ))
-    public void testConnection(Request req, Response res) throws Exception {
+    public boolean testConnection(Request req, Response res) throws Exception {
         var id = req.getPathParameter("dBname");
+        if(id==null ||!janusEngines.containsKey(id)||!janusEngines.get(id).isActive()){
+            return false;
+        }
         var query = req.getQuery("query");
         if(query==null){
             query = "SELECT 1=1";
@@ -129,6 +132,7 @@ public class DbProxyApi implements FilteringClass {
         var resultset = statement.executeQuery(query);
         var next = resultset.next();
         System.out.println("TEST");
+        return true;
     }
 
 
@@ -164,15 +168,16 @@ public class DbProxyApi implements FilteringClass {
             responses = @HamResponse(
                     body = String.class
             ))
-    public void handleGeneral(Request req, Response res) throws Exception {
+    public boolean handleGeneral(Request req, Response res) throws Exception {
         var id = req.getPathParameter("dBname");
         if(id==null ||!janusEngines.containsKey(id)||!janusEngines.get(id).isActive()){
-            throw new Exception("Db not existing or inactive");
+            return false;
         }
 
         var connectionId = Long.parseLong(req.getHeader("X-Connection-Id"));
         var itemId = Long.parseLong(req.getPathParameter("targetId"));
         runConnection(req, res, id, connectionId, itemId);
+        return true;
     }
 
 
@@ -205,14 +210,16 @@ public class DbProxyApi implements FilteringClass {
             responses = @HamResponse(
                     body = String.class
             ))
-    public void handleConnections(Request req, Response res) throws Exception {
+    public boolean handleConnections(Request req, Response res) throws Exception {
         var id = req.getPathParameter("dBname");
         if(id==null ||!janusEngines.containsKey(id)||!janusEngines.get(id).isActive()){
-            throw new Exception("Db not existing or inactive");
+            return false;
         }
 
         var connectionId = Long.parseLong(req.getHeader("X-Connection-Id"));
         runConnection(req, res, id, connectionId, connectionId);
+
+        return true;
     }
 
     private void runConnection(Request req, Response res, String id, long connectionId, long itemId) throws SQLException {

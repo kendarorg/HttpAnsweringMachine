@@ -12,6 +12,7 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.Sleeper;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -41,7 +42,7 @@ public class NullDataset extends ReplayerDataset{
 
     @Override
     public ReplayerState getType() {
-        return ReplayerState.PLAYING_NULL_INFRASTRUCTURE;
+        return ReplayerState.REPLAYING;
     }
 
     @Override
@@ -81,11 +82,12 @@ public class NullDataset extends ReplayerDataset{
     private void runNullDataset(TestResults testResult) throws Exception {
         running.set(true);
         long start = System.currentTimeMillis();
+        ArrayList<CallIndex> indexes = new ArrayList<>();
         try {
-            var indexes = new ArrayList<CallIndex>();
-            sessionFactory.query(e->{
+
+            sessionFactory.query(e -> {
                 indexes.addAll(e.createQuery("SELECT e FROM CallIndex e WHERE " +
-                        " e.recordingId="+testResult.getRecordingId()+
+                        " e.recordingId=" + testResult.getRecordingId() +
                         " AND e.stimulatorTest=true ORDER BY e.id ASC").getResultList());
 
             });
@@ -93,41 +95,46 @@ public class NullDataset extends ReplayerDataset{
             long currentIndex = 0;
             try {
                 for (var toCall : indexes) {
+                    int maxWait = 60*1000;
+                    while(pause.get()==false && maxWait>0){
+                        Sleeper.sleep(1000);
+                        maxWait-=1000;
+                    }
                     onIndex = false;
 
                     currentIndex = toCall.getId();
                     if (!running.get()) break;
-                    ReplayerRow reqResp = sessionFactory.queryResult(e->{
+                    ReplayerRow reqResp = sessionFactory.queryResult(e -> {
                         return e.createQuery("SELECT e FROM ReplayerRow e WHERE " +
-                                " e.recordingId="+testResult.getRecordingId()+" " +
-                                " AND e.id="+toCall.getReference()).getResultList().get(0);
+                                " e.recordingId=" + testResult.getRecordingId() + " " +
+                                " AND e.id=" + toCall.getReference()).getResultList().get(0);
                     });
                     var response = new Response();
                     var request = reqResp.getRequest().copy();
                     var expectedResponse = reqResp.getResponse().copy();
 
                     var stringRequest = mapper.writeValueAsString(request);
-                    stringRequest = cache.replaceAll(this.id,stringRequest);
+                    stringRequest = cache.replaceAll(this.id, stringRequest);
                     request = mapper.readValue(stringRequest, Request.class);
 
                     var stringResponse = mapper.writeValueAsString(expectedResponse);
-                    stringResponse = cache.replaceAll(this.id,stringResponse);
+                    stringResponse = cache.replaceAll(this.id, stringResponse);
                     expectedResponse = mapper.readValue(stringResponse, Response.class);
 
-                    if(toCall.getPreScript()!=null && !toCall.getPreScript().isEmpty()){
+                    if (toCall.getPreScript() != null && !toCall.getPreScript().isEmpty()) {
                         var jsCallback = toCall.getPreScript();
 
-                        if(jsCallback!=null && jsCallback.trim().length()>0) {
+                        if (jsCallback != null && jsCallback.trim().length() > 0) {
                             var script = executor.prepare(jsCallback);
                             executor.run(this.id, request, response, expectedResponse, script);
                         }
                     }
                     request = simpleProxyHandler.translate(request);
                     internalRequester.callSite(request, response);
-                    if(toCall.getPostScript()!=null && !toCall.getPostScript().isEmpty()){
+                    if (toCall.getPostScript() != null && !toCall.getPostScript().isEmpty()) {
                         var jsCallback = toCall.getPostScript();
 
-                        if(jsCallback!=null && jsCallback.trim().length()>0) {
+                        if (jsCallback != null && jsCallback.trim().length() > 0) {
                             var script = executor.prepare(jsCallback);
                             executor.run(this.id, request, response, expectedResponse, script);
                         }
@@ -141,8 +148,8 @@ public class NullDataset extends ReplayerDataset{
                     });
                 }
             } catch (Exception ex) {
-                var extra = "Error calling index "+currentIndex+" running "+(onIndex?"index script":"optimized script. ");
-                testResult.setError(extra+"\n"+ex.getMessage());
+                var extra = "Error calling index " + currentIndex + " running " + (onIndex ? "index script" : "optimized script. ");
+                testResult.setError(extra + "\n" + ex.getMessage());
 
                 var resultLine = new TestResultsLine();
                 resultLine.setResultId(testResult.getId());
@@ -152,20 +159,32 @@ public class NullDataset extends ReplayerDataset{
                     em.persist(resultLine);
                 });
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             testResult.setError(e.getMessage());
         }
-        long finish = System.currentTimeMillis();
-        long timeElapsed = finish - start;
-        testResult.setDuration(timeElapsed);
+        if (indexes.size()>0) {
+            //If it's a real stimulated test
+            long finish = System.currentTimeMillis();
+            long timeElapsed = finish - start;
+            testResult.setDuration(timeElapsed);
 
-        sessionFactory.transactional(em->{
-            em.merge(testResult);
-        });
+            sessionFactory.transactional(em -> {
+                em.merge(testResult);
+            });
 
-        this.eventQueue.handle(new NullCompleted());
+            this.eventQueue.handle(new NullCompleted());
+        }
     }
     public void stop() {
         running.set(false);
+    }
+
+    public void restart() {
+        pause.set(false);
+    }
+
+    private AtomicBoolean pause = new AtomicBoolean(false);
+    public void pause() {
+        pause.set(true);
     }
 }

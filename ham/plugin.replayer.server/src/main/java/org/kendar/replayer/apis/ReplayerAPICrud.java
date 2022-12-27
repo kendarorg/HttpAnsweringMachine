@@ -156,9 +156,7 @@ public class ReplayerAPICrud implements FilteringClass {
       recording.setName(scriptData.getName());
       em.merge(recording);
       for(var ci:indexLines){
-        ci.setPactTest(scriptData.getPactTest().stream().anyMatch(a->a.intValue()==ci.getId()));
         ci.setStimulatorTest(scriptData.getStimulatorTest().stream().anyMatch(a->a.intValue()==ci.getId()));
-        ci.setStimulatedTest(scriptData.getStimulatedTest().stream().anyMatch(a->a.intValue()==ci.getId()));
         em.merge(ci);
       }
     });

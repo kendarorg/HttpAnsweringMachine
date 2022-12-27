@@ -308,7 +308,6 @@ public class ReplayerAPISingleLine implements FilteringClass {
 
   private void cloneToIndex(CallIndex destination, CallIndex source) {
     destination.setStimulatorTest(source.isStimulatorTest());
-    destination.setPactTest(source.isPactTest());
     destination.setReference(source.getReference());
     destination.setDescription(source.getDescription());
   }

@@ -45,8 +45,6 @@
             <button type="button" :disabled="buttons.record"  class="bi bi-record-btn" @click="executeAct('start','record')" title="Save">Record</button>&nbsp;
             <button type="button" :disabled="buttons.stop"  class="bi bi-stop-btn" @click="executeAct('stop')" title="Save">Stop</button>&nbsp;
             <button type="button" :disabled="buttons.play"  class="bi bi-play-btn" @click="executeAct('start','replay')" title="Save">Play</button>&nbsp;
-            <button type="button" :disabled="buttons.pact"  class="bi bi-pencil-square" @click="executeAct('start','pact')" title="Save">Play Pact</button>&nbsp;
-            <button type="button" :disabled="buttons.nullinf"  class="bi bi-cloud" @click="executeAct('start','null')" title="Save">Play Null</button>
             <button type="button" :disabled="buttons.pause"  class="bi bi-pause-btn" @click="executeAct('pause')" title="Save">Pause</button>
 
             <button v-on:click="updateButtons()" class="btn btn-primary btn-sm">Reload status</button>
@@ -145,8 +143,6 @@
                     record:false,
                     stop:true,
                     play:true,
-                    pact:true,
-                    nullinf:true,
                     pause:true
                 }
 
@@ -212,8 +208,6 @@
                                 if (data.status == "PAUSED_RECORDING")th.executeAct(what,'record');
                                 if (data.status == "REPLAYING")th.executeAct(what,'replay');
                                 if (data.status == "PAUSED_REPLAYING")th.executeAct(what,'replay');
-                                if (data.status == "PLAYING_NULL_INFRASTRUCTURE")th.executeAct(what,'null');
-                                if (data.status == "PLAYING_PACT")th.executeAct(what,'pact');
                             }
                         })
                 }
@@ -242,40 +236,24 @@
                             th.buttons.save=false;
                             th.buttons.stop=true;
                             th.buttons.play=true;
-                            th.buttons.pact=true;
-                            th.buttons.nullinf=true;
                         }else if(data.status=="RECORDING"||data.status=="REPLAYING"){
                             th.buttons.save=true;
                             th.buttons.stop=false;
                             th.buttons.record=true;
                             th.buttons.pause=false;
                             th.buttons.play=true;
-                            th.buttons.pact=true;
-                            th.buttons.nullinf=true;
-                        }else if(data.status=="PLAYING_NULL_INFRASTRUCTURE"||data.status=="PLAYING_PACT"){
-                            th.buttons.save=true;
-                            th.buttons.stop=false;
-                            th.buttons.pause=true;
-                            th.buttons.record=true;
-                            th.buttons.play=true;
-                            th.buttons.pact=true;
-                            th.buttons.nullinf=true;
                         }else if(data.status=="PAUSED_RECORDING"){
                             th.buttons.record=false;
                             th.buttons.save=true;
                             th.buttons.stop=false;
                             th.buttons.pause=true;
                             th.buttons.play=true;
-                            th.buttons.pact=true;
-                            th.buttons.nullinf=true;
                         }else if(data.status=="PAUSED_REPLAYING"){
                             th.buttons.record=true;
                             th.buttons.save=true;
                             th.buttons.stop=false;
                             th.buttons.pause=true;
                             th.buttons.play=false;
-                            th.buttons.pact=true;
-                            th.buttons.nullinf=true;
                         }else if(data.status=="NONE"){
                             th.buttons.save=false;
                             th.buttons.stop=true;
@@ -283,13 +261,9 @@
                             if(th.data.lines.length>0){
                                 th.buttons.record=true;
                                 th.buttons.play=false;
-                                th.buttons.pact=false;
-                                th.buttons.nullinf=false;
                             }else{
                                 th.buttons.record=false;
                                 th.buttons.play=true;
-                                th.buttons.pact=true;
-                                th.buttons.nullinf=true;
                             }
 
                         }
@@ -325,17 +299,10 @@
             saveRecordingData:function (){
                 var id = getUrlParameter("id");
 
-                var stimulatedTest = [];
-                var pactTest = [];
                 var stimulatorTest = [];
                 console.log("AAAAAAAAAAAA")
                 this.data.lines.forEach(function (row, i) {
-                    if(row['stimulatedTest']==true){
-                        stimulatedTest.push(row['id']);
-                    }
-                    if(row['pactTest']==true){
-                        pactTest.push(row['id']);
-                    }
+
                     if(row['stimulatorTest']==true){
                         stimulatorTest.push(row['id']);
                     }
@@ -350,9 +317,7 @@
                         src:"",
                         test:""
                     },
-                    stimulatorTest:stimulatorTest,
-                    pactTest:pactTest,
-                    stimulatedTest:stimulatedTest
+                    stimulatorTest:stimulatorTest
                 };
 
                 const headers = {'Content-Type': 'application/json'};

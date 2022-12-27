@@ -5,7 +5,6 @@ import org.kendar.events.EventQueue;
 import org.kendar.janus.results.VoidResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.replayer.events.NullCompleted;
-import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.storage.*;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
@@ -65,7 +64,6 @@ public class ReplayerStatus {
         this.internalRequester = internalRequester;
         this.simpleProxyHandler = simpleProxyHandler;
         this.sessionFactory = sessionFactory;
-        eventQueue.register((a)->pactCompleted(), PactCompleted.class);
         eventQueue.register((a)->nullCompleted(), NullCompleted.class);
     }
 
@@ -101,7 +99,7 @@ public class ReplayerStatus {
     private final JsonTypedSerializer serializer = new JsonTypedSerializer();
 
     public boolean replay(Request req, Response res) {
-        if (state != ReplayerState.REPLAYING  && state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) return false;
+        if (state != ReplayerState.REPLAYING ) return false;
         Response response = ((ReplayerDataset)dataset).findResponse(req);
         if (response != null) {
             res.setBinaryResponse(response.isBinaryResponse());
@@ -166,15 +164,17 @@ public class ReplayerStatus {
         dataset.load(id, rootPath.toString(),null);
     }
 
-    public void restartReplaying() {
+    public void restartReplayingNull(Long id) {
         if (state != ReplayerState.PAUSED_REPLAYING) return;
         logger.info("REPLAYING RE-START");
+        ((NullDataset)dataset).restart();
         state = ReplayerState.REPLAYING;
     }
 
-    public void pauseReplaying() {
+    public void pauseReplayingNull(Long id) {
         if (state != ReplayerState.REPLAYING) return;
         logger.info("REPLAYING PAUSE");
+        ((NullDataset)dataset).pause();
         state = ReplayerState.PAUSED_REPLAYING;
     }
 
@@ -182,26 +182,6 @@ public class ReplayerStatus {
         logger.info("REPLAYING STOP");
         state = ReplayerState.NONE;
         dataset = null;
-    }
-
-    public Long startPact(Long id) throws Exception {
-        Path rootPath = getRootPath();
-        if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
-        logger.info("PACT START");
-        dataset = new PactDataset(loggerBuilder,eventQueue,externalRequester,
-                new Cache(),simpleProxyHandler,sessionFactory);
-        dataset.load(id, rootPath.toString(),null);
-        var runId = ((PactDataset)dataset).start();
-        state = ReplayerState.PLAYING_PACT;
-        return runId;
-    }
-
-    public void stopPact(Long id) {
-        if (state != ReplayerState.PLAYING_PACT) throw new RuntimeException("State not allowed");
-        logger.info("PACT STOP");
-        ((PactDataset)dataset).stop();
-        state = ReplayerState.NONE;
-
     }
 
     public Long startNull(Long id) throws Exception {
@@ -212,7 +192,7 @@ public class ReplayerStatus {
                 internalRequester, new Cache(),simpleProxyHandler,sessionFactory);
         dataset.load(id, rootPath.toString(),null);
         var runId = ((NullDataset)dataset).start();
-        state = ReplayerState.PLAYING_NULL_INFRASTRUCTURE;
+        state = ReplayerState.REPLAYING;
         return runId;
     }
 
@@ -225,7 +205,7 @@ public class ReplayerStatus {
     }
 
     public void stopNull(Long id) {
-        if (state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) throw new RuntimeException("State not allowed");
+        if (state != ReplayerState.REPLAYING) throw new RuntimeException("State not allowed");
         logger.info("NULL STOP");
         ((NullDataset)dataset).stop();
     }
