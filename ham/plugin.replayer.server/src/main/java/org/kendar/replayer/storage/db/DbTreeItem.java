@@ -46,7 +46,7 @@ public class DbTreeItem {
         return parent;
     }
 
-    public DbRow getTarget() {
-        return target;
+    public List<DbRow> getTargets() {
+        return targets;
     }
 }
