@@ -85,18 +85,6 @@ public class AnsweringH2DbServer  implements AnsweringServer{
             Class.forName(config.getDriver());
             var hibernateConfig = new Configuration();
 
-            /*
-            Properties properties = new Properties();
-properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-properties.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-properties.put("hibernate.connection.url", "jdbc:mysql://localhost:3306/kode12");
-properties.put("hibernate.connection.username", "root");
-properties.put("hibernate.connection.password", "root");
-properties.put("show_sql", "true");
-properties.put("hbm2ddl.auto", "update");
-configuration.setProperties(properties);
-             */
-
             hibernateConfig.setProperty("hibernate.connection.driver_class", config.getDriver());
             hibernateConfig.setProperty("hibernate.connection.url", config.getUrl());
             hibernateConfig.setProperty("hibernate.connection.username", config.getLogin());

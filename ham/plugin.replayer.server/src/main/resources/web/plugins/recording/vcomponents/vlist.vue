@@ -12,8 +12,6 @@
   <button v-on:click="toggleSelect()" class="btn btn-default" title="Toggle">Toggle Selected</button>
   <button v-on:click="deleteSelected()" class="bi bi-trash" title="Toggle">Delete Selected</button>
   <button v-on:click="selectedToStimulator()" class="btn btn-default" title="Toggle">Selected Stimulator</button>
-  <button v-on:click="selectedToStimulated()" class="btn btn-default" title="Toggle">Selected Stimulated</button>
-  <button v-on:click="selectedToPact()" class="btn btn-default" title="Toggle">Selected Pact</button>
   <Br><br>
   <button v-on:click="generateDns()" class="btn btn-default" title="Toggle">Gnerate DNS for selected</button>
   <button v-on:click="generateSSL()" class="btn btn-default" title="Toggle">Gnerate SSL for selected</button>
@@ -48,9 +46,7 @@ module.exports = {
       columns: [
         {id: "id", template: "long", index: true,size:4,sortable:true},
         {id: "type", template: "string",label:"Type",size:4,sortable:true},
-        {id: "pactTest", template: "boolw",label:"Pact",sortable:true},
         {id: "stimulatorTest", template: "boolw",label:"Stimulator",sortable:true},
-        {id: "stimulatedTest", template: "boolw",label:"Stimultated",sortable:true},
         {id: "requestMethod", template: "string",label:"Method",size:7,sortable:true},
         {id: "requestHost", template: "string",label:"Host",sortable:true,size:15},
         {id: "requestPath", template: "string",label:"Path",sortable:true,size:15},
@@ -103,21 +99,8 @@ module.exports = {
         }
       })
     },
-    selectedToStimulated:function(){
-      this.$refs.grid.onSelected(function(row){
-        if(row['select']){
-          row['stimulatedTest']=true;
-        }
-      })
-    },
-    selectedToPact:function(){
 
-      this.$refs.grid.onSelected(function(row){
-        if(row['select']){
-          row['pactTest']=true;
-        }
-      })
-    },
+
     toggleSelect: function () {
       this.$refs.grid.toggleSelect("select");
     },
