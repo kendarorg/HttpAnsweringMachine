@@ -31,8 +31,9 @@ public class NullDataset extends ReplayerDataset{
     public NullDataset(
             LoggerBuilder loggerBuilder,
             Md5Tester md5Tester, EventQueue eventQueue, InternalRequester internalRequester, Cache cache,
-            SimpleProxyHandler simpleProxyHandler, HibernateSessionFactory sessionFactory) {
-        super(loggerBuilder,md5Tester,sessionFactory);
+            SimpleProxyHandler simpleProxyHandler, HibernateSessionFactory sessionFactory,
+            List<ReplayerEngine> replayerEngines) {
+        super(loggerBuilder,md5Tester,sessionFactory,replayerEngines);
         this.eventQueue = eventQueue;
         this.internalRequester = internalRequester;
         this.cache = cache;
@@ -55,16 +56,27 @@ public class NullDataset extends ReplayerDataset{
         result.setType("NULL");
         result.setTimestamp(Timestamp.from(Calendar.getInstance().toInstant()));
         result.setRecordingId(name);
+        ArrayList<CallIndex> indexes = new ArrayList<>();
 
-        sessionFactory.transactional(em -> {
-            em.persist(result);
+        sessionFactory.query(e -> {
+            indexes.addAll(e.createQuery("SELECT e FROM CallIndex e WHERE " +
+                    " e.recordingId=" + result.getRecordingId() +
+                    " AND e.stimulatorTest=true ORDER BY e.id ASC").getResultList());
+
         });
+
+
+        if(indexes.size()>0) {
+            sessionFactory.transactional(em -> {
+                em.persist(result);
+            });
+        }
 
         id = result.getId();
         Thread thread = new Thread(() -> {
             try {
                 cache.set(id, "runid", id+"");
-                runNullDataset(result);
+                runNullDataset(result,indexes);
                 cache.remove(id);
             } catch (Exception e) {
                 logger.error("ERROR EXECUTING RECORDING", e);
@@ -74,23 +86,12 @@ public class NullDataset extends ReplayerDataset{
         return id;
     }
 
-    @Override
-    protected boolean superMatch(ReplayerRow row, CallIndex callIndex) {
-        return callIndex.isStimulatedTest();
-    }
-
-    private void runNullDataset(TestResults testResult) throws Exception {
+    private void runNullDataset(TestResults testResult, List<CallIndex> indexes) throws Exception {
         running.set(true);
         long start = System.currentTimeMillis();
-        ArrayList<CallIndex> indexes = new ArrayList<>();
         try {
 
-            sessionFactory.query(e -> {
-                indexes.addAll(e.createQuery("SELECT e FROM CallIndex e WHERE " +
-                        " e.recordingId=" + testResult.getRecordingId() +
-                        " AND e.stimulatorTest=true ORDER BY e.id ASC").getResultList());
 
-            });
             boolean onIndex = false;
             long currentIndex = 0;
             try {
@@ -187,4 +188,6 @@ public class NullDataset extends ReplayerDataset{
     public void pause() {
         pause.set(true);
     }
+
+
 }

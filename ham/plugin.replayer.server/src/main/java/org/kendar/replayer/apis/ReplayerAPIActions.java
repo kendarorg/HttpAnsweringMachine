@@ -44,7 +44,7 @@ public class ReplayerAPIActions implements FilteringClass {
                             "db calls that do not return values")
             }
     )
-    public void recording(Request req, Response res) throws IOException {
+    public void recording(Request req, Response res) throws Exception {
         var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
 
