@@ -81,14 +81,7 @@ public class ReplayerDataset implements BaseDataset{
         contentHash = md5Tester.calculateMd5(req.getRequestText());
       }
       for(var engine:replayerEngines){
-        ReplayerRow founded = engine.findRequestMatch(req,contentHash);
-        if(founded!=null){
-          var result =  founded.getResponse();
-          result.addHeader("X-REPLAYER-ID",founded.getId()+"");
-          result.addHeader("X-REPLAYER-DYNAMIC",founded.getRequest().isStaticRequest()?"FALSE":"TRUE");
-          result.addHeader("X-REPLAYER-TYPE",engine.getId());
-          return result;
-        }
+        return engine.findRequestMatch(req,contentHash);
       }
 
       return null;

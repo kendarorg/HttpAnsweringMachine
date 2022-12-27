@@ -5,6 +5,7 @@ import org.kendar.replayer.storage.ReplayerEngine;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
+import org.kendar.servers.http.Response;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -37,8 +38,8 @@ public class HttpReplayer implements ReplayerEngine {
     }
 
     @Override
-    public ReplayerRow findRequestMatch(Request req,String contentHash) throws Exception {
-        ReplayerRow founded = findRequestMatch(req, contentHash,true);
+    public Response findRequestMatch(Request req,String contentHash) throws Exception {
+        Response founded = findRequestMatch(req, contentHash,true);
         if(founded==null){
             founded = findRequestMatch(req, contentHash,false);
         }
@@ -46,7 +47,7 @@ public class HttpReplayer implements ReplayerEngine {
     }
 
 
-    private ReplayerRow findRequestMatch(Request sreq, String contentHash,boolean staticRequest) throws Exception {
+    private Response findRequestMatch(Request sreq, String contentHash, boolean staticRequest) throws Exception {
         var matchingQuery = -1;
         ReplayerRow founded = null;
         var staticRequests = new ArrayList<ReplayerRow>();
@@ -104,7 +105,7 @@ public class HttpReplayer implements ReplayerEngine {
         if(founded!=null){
             states.put(founded.getId(),"");
         }
-        return founded;
+        return founded.getResponse();
     }
 
     private int matchQuery(Map<String, String> left, Map<String, String> right) {
