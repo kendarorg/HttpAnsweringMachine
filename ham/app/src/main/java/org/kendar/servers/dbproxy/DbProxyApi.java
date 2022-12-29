@@ -112,26 +112,55 @@ public class DbProxyApi implements FilteringClass {
                     @QueryString(
                             key = "password",
                             description = "password",
-                            example = "password")
+                            example = "password"),
+                    @QueryString(
+                            key = "query",
+                            description = "Query",
+                            example = "SELECT * FROM REPLAYER_RECORDING")
             },
             responses = @HamResponse(
                     body = String.class
             ))
     public boolean testConnection(Request req, Response res) throws Exception {
-        var id = req.getPathParameter("dBname");
-        if(id==null ||!janusEngines.containsKey(id)||!janusEngines.get(id).isActive()){
-            return false;
+        var result ="";
+        try {
+            var id = req.getPathParameter("dBname");
+            if (id == null || !janusEngines.containsKey(id) || !janusEngines.get(id).isActive()) {
+                return false;
+            }
+            var query = req.getQuery("query");
+            if (query == null) {
+                query = "SELECT 1=1";
+            }
+            DriverManager.registerDriver(new JdbcDriver());
+            var connection = DriverManager.getConnection("jdbc:janus:http://localhost/api/db/" + id);
+            var statement = connection.createStatement();
+            var resultset = statement.executeQuery(query);
+            result += "[";
+            var count = 1;
+            while (resultset.next()) {
+                if (count > 1) result += ",";
+                var partial = "{";
+                for (int i = 1; i <= 100; i++) {
+                    try {
+                        String columnValue = resultset.getString(i);
+                        if (i > 1) partial += ",";
+                        partial += ("'col" + i + "'='" + columnValue + "'");
+                    } catch (Exception ex) {
+
+                    }
+                }
+                partial += "}";
+                result += partial;
+            }
+            result += "]";
+            connection.close();
+            res.getHeaders().put("content-type","application/json");
+        }catch (Exception ex){
+            result=ex.getMessage();
         }
-        var query = req.getQuery("query");
-        if(query==null){
-            query = "SELECT 1=1";
-        }
-        DriverManager.registerDriver(new JdbcDriver());
-        var connection = DriverManager.getConnection("jdbc:janus:http://localhost/api/db/"+id);
-        var statement = connection.createStatement();
-        var resultset = statement.executeQuery(query);
-        var next = resultset.next();
-        System.out.println("TEST");
+
+        res.setResponseText(result);
         return true;
     }
 

@@ -15,6 +15,7 @@ import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.ConstantsMime;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -38,6 +39,10 @@ public class DbReplayer implements ReplayerEngine {
     private Map<String,DbTreeItem> databases= new HashMap<>();
     private JsonTypedSerializer serializer = new JsonTypedSerializer();
 
+
+    public DbTreeItem getTree(String name){
+        return databases.get(name.toLowerCase(Locale.ROOT));
+    }
 
 
     private DbTreeItem getLastWithConnectionId(DbTreeItem dbParent, long connectionId) {
@@ -83,16 +88,33 @@ public class DbReplayer implements ReplayerEngine {
                             }
                         }
                         if(!addedAsTarget){
-                            //Is a nex step into the life of the connection
-                            var dbTreeItem = new DbTreeItem();
-                            dbTreeItem.setParent(realParent);
-                            dbTreeItem.addTarget(dbRow);
-                            realParent.addChild(dbTreeItem);
+                            DbTreeItem dbTreeItem = findDbTreeItem(realParent,dbRow);
+
+                            if(dbTreeItem==null) {
+                                //Is a nex step into the life of the connection
+                                dbTreeItem = new DbTreeItem();
+                                dbTreeItem.setParent(realParent);
+                                dbTreeItem.addTarget(dbRow);
+                                realParent.addChild(dbTreeItem);
+                            }else{
+                                dbTreeItem.addTarget(dbRow);
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    private DbTreeItem findDbTreeItem(DbTreeItem realParent,DbRow dbRow) {
+        for(var child:realParent.getChildren()){
+            for(var target:child.getTargets()){
+                if (matchesContent(target,dbRow)) {
+                    return child;
+                }
+            }
+        }
+        return null;
     }
 
     private boolean matchesContent(DbRow target, DbRow dbRow) {
@@ -108,10 +130,7 @@ public class DbReplayer implements ReplayerEngine {
     private void loadRowsByConnection(Long recordingId, ArrayList<CallIndex> indexes, Map<String, Map<Long, List<DbRow>>> rows) throws Exception {
         for(var index : indexes){
             sessionFactory.query(e -> {
-                var row =(ReplayerRow) e.createQuery("SELECT e FROM ReplayerRow e " +
-                        " WHERE " +
-                        " e.id ="+index.getReference()+" " +
-                        "AND e.recordingId=" + recordingId).getResultList().get(0);
+                ReplayerRow row = getReplayerRow(recordingId, index, e);
                 var reqDeser = serializer.newInstance();
                 reqDeser.deserialize(row.getRequest().getRequestText());
                 var resDeser = serializer.newInstance();
@@ -135,14 +154,26 @@ public class DbReplayer implements ReplayerEngine {
         }
     }
 
-    private void loadIndexes(Long recordingId, ArrayList<CallIndex> indexes) throws Exception {
+    protected ReplayerRow getReplayerRow(Long recordingId, CallIndex index, EntityManager e) {
+        var row =(ReplayerRow) e.createQuery("SELECT e FROM ReplayerRow e " +
+                " WHERE " +
+                " e.id ="+ index.getReference()+" " +
+                "AND e.recordingId=" + recordingId).getResultList().get(0);
+        return row;
+    }
+
+    protected void loadIndexes(Long recordingId, ArrayList<CallIndex> indexes) throws Exception {
         sessionFactory.query(e -> {
-            indexes.addAll(e.createQuery("SELECT e FROM CallIndex e LEFT JOIN ReplayerRow f " +
-                    " ON e.reference = f.id"+
-                    " WHERE " +
-                    " f.type='db' AND e.recordingId=" + recordingId +
-                    " AND e.stimulatorTest=true ORDER BY e.id ASC").getResultList());
+            addAllIndexes(recordingId, indexes, e);
         });
+    }
+
+    protected void addAllIndexes(Long recordingId, ArrayList<CallIndex> indexes, EntityManager e) {
+        indexes.addAll(e.createQuery("SELECT e FROM CallIndex e LEFT JOIN ReplayerRow f " +
+                " ON e.reference = f.id"+
+                " WHERE " +
+                " f.type='db' AND e.recordingId=" + recordingId +
+                " AND e.stimulatorTest=false ORDER BY e.id ASC").getResultList());
     }
 
     private Map<Long,Long> connectionShadow = new HashMap<>();
@@ -151,6 +182,19 @@ public class DbReplayer implements ReplayerEngine {
 
     @Override
     public Response findRequestMatch(Request req, String contentHash) throws Exception {
+        var fullPath = req.getPath().substring(1).split("/");
+        if(req.getPath().startsWith("/api/db")){
+            if(fullPath.length>=5){
+                if(req.getPathParameters().size()==0){
+                    req.getPathParameters().put("dbName",fullPath[2]);
+                    req.getPathParameters().put("targetType",fullPath[3]);
+                    req.getPathParameters().put("command",fullPath[4]);
+                    if(fullPath.length>=6){
+                        req.getPathParameters().put("targetId",fullPath[5]);
+                    }
+                }
+            }
+        }
         if(req.getPathParameter("dbName")==null)return null;
         if(!req.getPath().startsWith("/api/db/"))return null;
         var reqDeser = serializer.newInstance();
@@ -165,7 +209,7 @@ public class DbReplayer implements ReplayerEngine {
                         .findFirst().get();
                 firstNotVisited.setVisited(true);
                 connectionRealPath.put(newConnectionId,new ArrayList<>());
-                connectionRealPath.get(newConnectionId).add(db.getChildren().get(0));
+                connectionRealPath.get(newConnectionId).add(db);
                 var result = new ObjectResult();
                 result.setResult(newConnectionId);
                 return serialize(result);
@@ -194,9 +238,12 @@ public class DbReplayer implements ReplayerEngine {
                                 }
                             }else{
                                 target.setVisited(true);
+                                connectionRealPath.get(connectionId).clear();
                             }
+                        }else{
+                            connectionRealPath.get(connectionId).add(child);
                         }
-                        path.add(child);
+                        //path.add(child);
                         return serialize(result);
                     }
                 }
