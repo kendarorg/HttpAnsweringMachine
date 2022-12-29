@@ -1,0 +1,49 @@
+{
+ Connection
+ targets:[
+  ConnectionConnect{
+   database='jdbc:janus:http://localhost/api/db/local',
+   properties={},
+   clientInfo={janus.client.address=192.168.1.20, janus.client.name=XPS15-KENDAR}}
+ ],
+ children:[
+  {
+   Connection
+   targets:[
+    ConnectionCreateStatement{
+     type=FORWARD_ONLY,
+     concurrency=CONCUR_READ_ONLY,
+     holdability=DEFAULT}
+   ],
+   children:[
+    {
+     Statement
+     targets:[
+      StatementExecuteQuery{
+       sql='SELECT 1=1',
+       resultSetType=FORWARD_ONLY}
+     ],
+     children:[
+      {
+       ResultSet
+       targets:[
+        RetrieveRemainingResultSet{
+         columnCount=1,
+         maxRows=3,
+         currentRow=false}
+       ],
+       children:[
+        {
+         Connection
+         targets:[
+          Close{}
+         ],
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

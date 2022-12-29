@@ -53,7 +53,7 @@ public class NullDataset extends ReplayerDataset{
 
     public Long start() throws Exception {
         var result = new TestResults();
-        result.setType("NULL");
+
         result.setTimestamp(Timestamp.from(Calendar.getInstance().toInstant()));
         result.setRecordingId(name);
         ArrayList<CallIndex> indexes = new ArrayList<>();
@@ -65,12 +65,18 @@ public class NullDataset extends ReplayerDataset{
 
         });
 
-
         if(indexes.size()>0) {
-            sessionFactory.transactional(em -> {
-                em.persist(result);
-            });
+            result.setType("NULL");
+        }else{
+            result.setType("PLAY");
+            result.setDuration(System.currentTimeMillis());
         }
+
+
+
+        sessionFactory.transactional(em -> {
+            em.persist(result);
+        });
 
         id = result.getId();
         Thread thread = new Thread(() -> {
@@ -176,8 +182,20 @@ public class NullDataset extends ReplayerDataset{
             this.eventQueue.handle(new NullCompleted());
         }
     }
-    public void stop() {
+    public void stop() throws Exception {
         running.set(false);
+        sessionFactory.transactional(e -> {
+            var tr = (TestResults)e.createQuery("SELECT e FROM TestResults e WHERE " +
+                    " e.id=" + id ).getResultList().get(0);
+            long finish = System.currentTimeMillis();
+            long timeElapsed = finish - tr.getDuration();
+            tr.setDuration(timeElapsed);
+            e.merge(tr);
+
+        });
+
+
+        this.eventQueue.handle(new NullCompleted());
     }
 
     public void restart() {

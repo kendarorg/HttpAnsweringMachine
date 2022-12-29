@@ -117,13 +117,15 @@ public class ReplayerStatus {
             return true;
         }
         //When void calls are made to db
-        if(req.getPath().startsWith("/db")){
-            var ser= serializer.newInstance();
-            ser.write("result", new VoidResult());
-            res.getHeaders().put("content-type","application/json");
-            res.setResponseText((String)ser.getSerialized());
-            res.setStatusCode(200);
-            return true;
+        if(req.getPath().startsWith("/api/db")){
+            if(req.getPathParameter("targetType")!=null) {
+                var ser = serializer.newInstance();
+                ser.write("result", new VoidResult());
+                res.getHeaders().put("content-type", "application/json");
+                res.setResponseText((String) ser.getSerialized());
+                res.setStatusCode(200);
+                return true;
+            }
         }
         return false;
     }
@@ -200,7 +202,7 @@ public class ReplayerStatus {
         return rootPath;
     }
 
-    public void stopNull(Long id) {
+    public void stopNull(Long id) throws Exception {
         if (state != ReplayerState.REPLAYING) throw new RuntimeException("State not allowed");
         logger.info("NULL STOP");
         ((NullDataset)dataset).stop();
