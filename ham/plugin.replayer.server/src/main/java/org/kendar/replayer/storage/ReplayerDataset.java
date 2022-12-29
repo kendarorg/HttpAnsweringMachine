@@ -37,7 +37,7 @@ public class ReplayerDataset implements BaseDataset{
     this.logger = loggerBuilder.build(ReplayerDataset.class);
     this.md5Tester = md5Tester;
     this.sessionFactory = sessionFactory;
-    this.replayerEngines = replayerEngines;
+    this.replayerEngines = replayerEngines.stream().map(re->re.create()).collect(Collectors.toList());
   }
 
   public Long getName() {
