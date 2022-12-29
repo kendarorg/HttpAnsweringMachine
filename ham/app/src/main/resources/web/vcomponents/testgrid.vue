@@ -100,6 +100,7 @@ module.exports = {
     });
     return {
       index:0,
+      columnsKeyMap:null,
       filterKeys:{},
       extrasCalculated: false,
       data: [],
@@ -130,6 +131,7 @@ module.exports = {
       if(this.data == null || typeof this.data =="undefined"){
         return [];
       }
+
       this.forceUpdate;
       var filterKeys = this.filterKeys;
 
@@ -141,10 +143,17 @@ module.exports = {
 
 
         data = data.filter(function (row) {
+
+          if(th.columnsKeyMap==null){
+            th.columnsKeyMap = {};
+            th.columns.forEach(function(col){
+              th.columnsKeyMap[col.id]=col;
+            })
+          }
           let allGood=true;
           for (const [key, value] of Object.entries(filterKeys)) {
             if(value==null|| typeof value=="undefined")continue;
-            allGood = String(th.retrieveRowData(row[key]))
+            allGood = String(th.retrieveRowData(row,th.columnsKeyMap[key]))
                 .toLowerCase()
                 .indexOf(String(value)
                     .toLowerCase()) > -1;
