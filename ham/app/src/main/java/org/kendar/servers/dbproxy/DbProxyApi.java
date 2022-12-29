@@ -158,6 +158,7 @@ public class DbProxyApi implements FilteringClass {
             res.getHeaders().put("content-type","application/json");
         }catch (Exception ex){
             result=ex.getMessage();
+            logger.error("Error",ex);
         }
 
         res.setResponseText(result);
