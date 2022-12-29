@@ -206,15 +206,16 @@ public class DbReplayer implements ReplayerEngine {
             var newConnectionId = atomicLong.decrementAndGet();
             if(db.getTargets().stream().anyMatch(t->!t.isVisited())){
                 var firstNotVisited = db.getTargets().stream().filter(t->!t.isVisited())
-                        .findFirst().get();
-                firstNotVisited.setVisited(true);
+                        .findFirst();
+                if(firstNotVisited.isEmpty()) return null;
+                firstNotVisited.get().setVisited(true);
                 connectionRealPath.put(newConnectionId,new ArrayList<>());
                 connectionRealPath.get(newConnectionId).add(db);
                 var result = new ObjectResult();
                 result.setResult(newConnectionId);
                 return serialize(result);
             }else{
-                throw new Exception("No more recordings available or static connections");
+                return null;
             }
         }else{
             var connectionId = Long.parseLong(req.getHeader("x-connection-id"));
@@ -241,6 +242,7 @@ public class DbReplayer implements ReplayerEngine {
                                 connectionRealPath.get(connectionId).clear();
                             }
                         }else{
+                            target.setVisited(true);
                             connectionRealPath.get(connectionId).add(child);
                         }
                         //path.add(child);
