@@ -1,7 +1,9 @@
 package org.kendar.replayer.storage.db;
 
-import org.kendar.janus.cmd.JdbcCommand;
+import org.apache.commons.lang3.ClassUtils;
 import org.kendar.janus.cmd.connection.ConnectionConnect;
+import org.kendar.janus.cmd.interfaces.*;
+import org.kendar.janus.cmd.preparedstatement.PreparedStatementParameter;
 import org.kendar.janus.results.JdbcResult;
 import org.kendar.janus.results.ObjectResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
@@ -223,7 +225,7 @@ public class DbReplayer implements ReplayerEngine {
             var last = path.get(path.size()-1);
             for(var child:last.getChildren()){
                 for(var target:child.getTargets()){
-                    if(matchesContent(target,req) && !target.isVisited()){
+                    if(matchesContentForReplaying(target,command) && !target.isVisited()){
                         var result = target.getResponse();
                         if(child.getChildren().size()==0){
                             if(target.getRow().isStaticRequest()){
@@ -256,6 +258,61 @@ public class DbReplayer implements ReplayerEngine {
         return null;
     }
 
+    private boolean matchesContentForReplaying(DbRow target, JdbcCommand command) {
+        var possible = target.getRequest();
+        var equalityValue=0;
+        if(ClassUtils.isAssignable(command.getClass(),JdbcSqlCommand.class)){
+            var p =(JdbcSqlCommand)possible;
+            var c =(JdbcSqlCommand)command;
+            if(matchSql(p.getSql(),c.getSql())){
+                equalityValue+=10;
+            }
+        }
+        if(ClassUtils.isAssignable(command.getClass(), JdbcSqlBatches.class)){
+            var p =(JdbcSqlBatches)possible;
+            var c =(JdbcSqlBatches)command;
+            if(p.getBatches().size()!=c.getBatches().size()){
+                return false;
+            }
+            for (int i = 0; i <  p.getBatches().size(); i++) {
+                var pp = p.getBatches().get(i);
+                var cp = c.getBatches().get(i);
+                if(pp.toString().equalsIgnoreCase(cp.toString())){
+                    equalityValue+=1;
+                }
+            }
+        }
+        if(ClassUtils.isAssignable(command.getClass(), JdbcPreparedStatementParameters.class)){
+            var p =(JdbcPreparedStatementParameters)possible;
+            var c =(JdbcPreparedStatementParameters)command;
+            if(p.getParameters().size()!=c.getParameters().size()){
+                return false;
+            }
+            for (int i = 0; i <  p.getParameters().size(); i++) {
+                var pp = p.getParameters().get(i);
+                var cp = c.getParameters().get(i);
+                if(pp.toString().equalsIgnoreCase(cp.toString())){
+                    equalityValue+=1;
+                }
+            }
+        }
+        if(ClassUtils.isAssignable(command.getClass(), JdbcBatchPreparedStatementParameters.class)){
+            var p =(JdbcBatchPreparedStatementParameters)possible;
+            var c =(JdbcBatchPreparedStatementParameters)command;
+            if(p.getBatches().size()!=c.getBatches().size()){
+                return false;
+            }
+            for (int i = 0; i <  p.getBatches().size(); i++) {
+                var pp = p.getBatches().get(i);
+                var cp = c.getBatches().get(i);
+                if(pp.toString().equalsIgnoreCase(cp.toString())){
+                    equalityValue+=1;
+                }
+            }
+        }
+        return equalityValue>0;
+    }
+
     private Response serialize(Object result) {
         var ser = serializer.newInstance();
         ser.write("result", result);
@@ -263,5 +320,11 @@ public class DbReplayer implements ReplayerEngine {
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText((String) ser.getSerialized());
         return res;
+    }
+
+    private boolean matchSql(String possible, String real) {
+        if(possible.equalsIgnoreCase(real))return true;
+        if(possible.length()!=real.length())return false;
+        return false;
     }
 }

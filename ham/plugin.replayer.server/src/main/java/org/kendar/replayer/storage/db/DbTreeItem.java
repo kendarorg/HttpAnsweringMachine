@@ -1,6 +1,7 @@
 package org.kendar.replayer.storage.db;
 
-import org.kendar.janus.cmd.JdbcCommand;
+
+import org.kendar.janus.cmd.interfaces.JdbcCommand;
 
 import java.util.ArrayList;
 import java.util.List;

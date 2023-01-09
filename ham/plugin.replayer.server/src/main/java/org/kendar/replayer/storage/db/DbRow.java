@@ -1,6 +1,6 @@
 package org.kendar.replayer.storage.db;
 
-import org.kendar.janus.cmd.JdbcCommand;
+import org.kendar.janus.cmd.interfaces.JdbcCommand;
 import org.kendar.janus.results.JdbcResult;
 import org.kendar.replayer.storage.ReplayerRow;
 
