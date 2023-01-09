@@ -16,7 +16,7 @@
 </template>
 <script>
 module.exports = {
-  name: "orgkendarjanusjdbcdatabasemetadata",
+  name: "jdbcdatabasemetadata",
   props: {
     value: Object
   },

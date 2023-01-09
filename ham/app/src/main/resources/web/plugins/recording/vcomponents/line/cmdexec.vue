@@ -52,7 +52,7 @@
 </template>
 <script>
 module.exports = {
-  name: "orgkendarjanuscmdexec",
+  name: "cmdexec",
   props: {
     value: Object
   },

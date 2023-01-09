@@ -14,7 +14,7 @@
 </template>
 <script>
 module.exports = {
-  name: "orgkendarjanusresultsobjectresult",
+  name: "resultsobjectresult",
   props: {
     value: Object
   },
