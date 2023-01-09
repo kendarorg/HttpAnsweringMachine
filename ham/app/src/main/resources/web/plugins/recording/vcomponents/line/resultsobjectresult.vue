@@ -21,7 +21,11 @@ module.exports = {
   computed:{
     otype: {
       get: function () {
-        return this.value.children[0].type;
+        try {
+          return this.value.children[0].type;
+        }catch(e){
+          return {};
+        }
       },
       // setter
       set: function (newValue) {
@@ -33,7 +37,11 @@ module.exports = {
     },
     ovalue: {
       get: function () {
-        return this.value.children[0].value;
+        try{
+          return this.value.children[0].value;
+        }catch(e){
+          return {};
+        }
       },
       // setter
       set: function (newValue) {
