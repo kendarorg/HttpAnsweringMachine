@@ -3,7 +3,7 @@
     <h3>{{value.type}}</h3><br>
     <div class="form-group">
       <label htmlFor="method">Query</label>
-      <textarea style="width:1000px" wrap="soft" class="form-control" rows="12" cols="100"
+      <textarea style="width:1000px" wrap="soft" class="form-control" rows="6" cols="60"
                 name="free_content" id="free_content"
                 v-model="sql"></textarea>
     </div>
@@ -18,10 +18,10 @@ module.exports = {
   computed: {
     sql:{
       get: function() {
-        return this.value.children[0].value;
+        return findChildItemWithType(this.value,'sql').value;
       },
       set: function(newValue) {
-        this.value.children[0].value=newValue;
+        findChildItemWithType(this.value,'sql').value=newValue;
         this.$emit("componentevent",{
           id:"changed"
         })

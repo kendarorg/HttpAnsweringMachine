@@ -3,6 +3,7 @@
                :value="value" @componentevent="onComponentEvent"/>
 </template>
 <script>
+
 module.exports = {
   name: 'dynamic-component',
   props:['template','path','default','value'],
