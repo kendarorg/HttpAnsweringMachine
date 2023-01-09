@@ -7,6 +7,9 @@
                 name="free_content" id="free_content"
                 v-model="sql"></textarea>
     </div>
+    <br>
+    <b>Parameters</b>
+    <listofparams :value="value" field="parameters"/>
   </div>
 </template>
 <script>
@@ -14,6 +17,9 @@ module.exports = {
   name: "cmdpreparedstatementpreparedstatementexecute",
   props: {
     value: Object
+  },
+  components: {
+    'listofparams': httpVueLoader('/plugins/recording/vcomponents/listofparams.vue')
   },
   computed: {
     sql:{
