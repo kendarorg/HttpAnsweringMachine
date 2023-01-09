@@ -49,13 +49,13 @@
       <tr v-for="entry in filteredData">
         <td v-for="key in extra">
           <component :is="'c'+key.template" :descriptor="key"
-                          :value="entry[key.id]"
+                          :value="entry"
                           :index="buildId(entry)" />
         </td>
         <td v-for="key in columns">
-          <component :is="'c'+key.template" :descriptor="key"
-                          :value="entry[key.id]"
-                          :index="buildId(entry)"/>
+          <component  :is="'c'+key.template" :descriptor="key"
+                     :value="entry"
+                     :index="buildId(entry)"/>
         </td>
       </tr>
       </tbody>
@@ -100,6 +100,7 @@ module.exports = {
     });
     return {
       index:0,
+      columnsKeyMap:null,
       filterKeys:{},
       extrasCalculated: false,
       data: [],
@@ -130,20 +131,29 @@ module.exports = {
       if(this.data == null || typeof this.data =="undefined"){
         return [];
       }
+
       this.forceUpdate;
       var filterKeys = this.filterKeys;
 
       var sortKey = this.sortKey;
       var order = this.sortOrders[sortKey] || 1;
       var data = this.data;
+      var th = this;
       if (filterKeys) {
 
 
         data = data.filter(function (row) {
+
+          if(th.columnsKeyMap==null){
+            th.columnsKeyMap = {};
+            th.columns.forEach(function(col){
+              th.columnsKeyMap[col.id]=col;
+            })
+          }
           let allGood=true;
           for (const [key, value] of Object.entries(filterKeys)) {
             if(value==null|| typeof value=="undefined")continue;
-            allGood = String(row[key])
+            allGood = String(th.retrieveRowData(row,th.columnsKeyMap[key]))
                 .toLowerCase()
                 .indexOf(String(value)
                     .toLowerCase()) > -1;
@@ -173,6 +183,12 @@ module.exports = {
     }
   },
   methods: {
+    retrieveRowData:function(entry,key){
+      if(typeof key.func=="Function"){
+        return key.func(entry);
+      }
+      return entry[key.id];
+    },
     buildLabel: function(key){
       if(typeof key.label=="undefined") return key.id;
       return key.label;
@@ -210,9 +226,10 @@ module.exports = {
     },
     getBoolVal: function(val,defVal){
 
-      if(typeof val == "undefined") {
+      if(typeof val == "undefined" || val==null) {
         return defVal;
       }
+
       if(val===false || val ===true) {
         return val;
       }
@@ -439,12 +456,18 @@ module.exports = {
         th.setField(selectField,index,!toSel[selectField]);
       });
     },
-    onSelected:function(functoApply){
+    onSelected:function(functoApply,selectField){
+      if(typeof selectField=="undefined" || selectField==null){
+        selectField="select";
+      }
+      var curse = selectField;
       var th = this;
       this.filteredData.forEach(function(toSel){
         var index =th.buildId(toSel);
         var row = th.getByIdFull(index);
-        functoApply(row);
+        if(toSel[curse]) {
+          functoApply(row);
+        }
       });
       this.forceUpdate++;
     },

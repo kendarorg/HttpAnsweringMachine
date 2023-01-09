@@ -2,8 +2,9 @@ package org.kendar.replayer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
+import org.kendar.janus.results.VoidResult;
+import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.replayer.events.NullCompleted;
-import org.kendar.replayer.events.PactCompleted;
 import org.kendar.replayer.storage.*;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ReplayerStatus {
@@ -38,8 +41,11 @@ public class ReplayerStatus {
     private final InternalRequester internalRequester;
     private final SimpleProxyHandler simpleProxyHandler;
     private HibernateSessionFactory sessionFactory;
+    private List<ReplayerEngine> replayerEngines;
     private BaseDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
+    private boolean recordDbCalls;
+    private boolean recordVoidDbCalls;
 
     public ReplayerStatus(
             LoggerBuilder loggerBuilder,
@@ -49,7 +55,8 @@ public class ReplayerStatus {
             EventQueue eventQueue, ExternalRequester externalRequester,
             DnsMultiResolver multiResolver, InternalRequester internalRequester,
             SimpleProxyHandler simpleProxyHandler,
-            HibernateSessionFactory sessionFactory) {
+            HibernateSessionFactory sessionFactory,
+            List<ReplayerEngine> replayerEngines) {
 
         this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.loggerBuilder = loggerBuilder;
@@ -61,7 +68,7 @@ public class ReplayerStatus {
         this.internalRequester = internalRequester;
         this.simpleProxyHandler = simpleProxyHandler;
         this.sessionFactory = sessionFactory;
-        eventQueue.register((a)->pactCompleted(), PactCompleted.class);
+        this.replayerEngines = replayerEngines;
         eventQueue.register((a)->nullCompleted(), NullCompleted.class);
     }
 
@@ -75,13 +82,17 @@ public class ReplayerStatus {
         state = ReplayerState.NONE;
     }
 
-    public void startRecording(Long id, String description) throws IOException {
+    public void startRecording(Long id, String description, boolean recordDbCalls, boolean recordVoidDbCalls) throws Exception {
+        this.recordDbCalls = recordDbCalls;
+        this.recordVoidDbCalls = recordVoidDbCalls;
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) return;
         logger.info("RECORDING START");
         state = ReplayerState.RECORDING;
         dataset =
                 new RecordingDataset( loggerBuilder, md5Tester,sessionFactory);
+        dataset.setRecordDbCalls(recordDbCalls);
+        dataset.setRecordVoidDbCalls(recordVoidDbCalls);
         dataset.load(id, rootPath.toString(), description);
     }
 
@@ -90,8 +101,10 @@ public class ReplayerStatus {
         ((RecordingDataset)dataset).add(req, res);
     }
 
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
+
     public boolean replay(Request req, Response res) {
-        if (state != ReplayerState.REPLAYING  && state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) return false;
+        if (state != ReplayerState.REPLAYING ) return false;
         Response response = ((ReplayerDataset)dataset).findResponse(req);
         if (response != null) {
             res.setBinaryResponse(response.isBinaryResponse());
@@ -103,6 +116,17 @@ public class ReplayerStatus {
             res.setHeaders(response.getHeaders());
             res.setStatusCode(response.getStatusCode());
             return true;
+        }
+        //When void calls are made to db
+        if(req.getPath().startsWith("/api/db")){
+            if(req.getPathParameter("targetType")!=null) {
+                var ser = serializer.newInstance();
+                ser.write("result", new VoidResult());
+                res.getHeaders().put("content-type", "application/json");
+                res.setResponseText((String) ser.getSerialized());
+                res.setStatusCode(200);
+                return true;
+            }
         }
         return false;
     }
@@ -138,25 +162,17 @@ public class ReplayerStatus {
         dataset = null;
     }
 
-    public void startReplaying(Long id) throws IOException {
-        Path rootPath = getRootPath();
-        if (state != ReplayerState.NONE) return;
-        logger.info("REPLAYING START");
-        state = ReplayerState.REPLAYING;
-        dataset =
-                new ReplayerDataset(  loggerBuilder, md5Tester,sessionFactory);
-        dataset.load(id, rootPath.toString(),null);
-    }
-
-    public void restartReplaying() {
+    public void restartReplayingNull(Long id) {
         if (state != ReplayerState.PAUSED_REPLAYING) return;
         logger.info("REPLAYING RE-START");
+        ((NullDataset)dataset).restart();
         state = ReplayerState.REPLAYING;
     }
 
-    public void pauseReplaying() {
+    public void pauseReplayingNull(Long id) {
         if (state != ReplayerState.REPLAYING) return;
         logger.info("REPLAYING PAUSE");
+        ((NullDataset)dataset).pause();
         state = ReplayerState.PAUSED_REPLAYING;
     }
 
@@ -166,35 +182,16 @@ public class ReplayerStatus {
         dataset = null;
     }
 
-    public Long startPact(Long id) throws Exception {
-        Path rootPath = getRootPath();
-        if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
-        logger.info("PACT START");
-        dataset = new PactDataset(loggerBuilder,eventQueue,externalRequester,
-                new Cache(),simpleProxyHandler,sessionFactory);
-        dataset.load(id, rootPath.toString(),null);
-        var runId = ((PactDataset)dataset).start();
-        state = ReplayerState.PLAYING_PACT;
-        return runId;
-    }
-
-    public void stopPact(Long id) {
-        if (state != ReplayerState.PLAYING_PACT) throw new RuntimeException("State not allowed");
-        logger.info("PACT STOP");
-        ((PactDataset)dataset).stop();
-        state = ReplayerState.NONE;
-
-    }
-
     public Long startNull(Long id) throws Exception {
         Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         logger.info("NULL START");
         dataset = new NullDataset(loggerBuilder,md5Tester,eventQueue,
-                internalRequester, new Cache(),simpleProxyHandler,sessionFactory);
+                internalRequester, new Cache(),simpleProxyHandler,sessionFactory,
+                replayerEngines);
         dataset.load(id, rootPath.toString(),null);
         var runId = ((NullDataset)dataset).start();
-        state = ReplayerState.PLAYING_NULL_INFRASTRUCTURE;
+        state = ReplayerState.REPLAYING;
         return runId;
     }
 
@@ -206,9 +203,17 @@ public class ReplayerStatus {
         return rootPath;
     }
 
-    public void stopNull(Long id) {
-        if (state != ReplayerState.PLAYING_NULL_INFRASTRUCTURE) throw new RuntimeException("State not allowed");
+    public void stopNull(Long id) throws Exception {
+        if (state != ReplayerState.REPLAYING) throw new RuntimeException("State not allowed");
         logger.info("NULL STOP");
         ((NullDataset)dataset).stop();
+    }
+
+    public boolean isRecordDbCalls() {
+        return recordDbCalls;
+    }
+
+    public boolean isRecordVoidDbCalls() {
+        return recordVoidDbCalls;
     }
 }

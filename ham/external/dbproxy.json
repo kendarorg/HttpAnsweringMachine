@@ -1,0 +1,21 @@
+{
+  "id": "dbproxy",
+  "system": true,
+  "proxies": [
+    {
+      "id": "1",
+      "active": true,
+      "driver": "org.h2.Driver",
+      "remote": {
+        "connectionString": "jdbc:h2:tcp://localhost/ham;MODE=MYSQL;",
+        "login": "sa",
+        "password": "sa"
+      },
+      "exposed": {
+        "connectionString": "local",
+        "login": "login",
+        "password": "password"
+      }
+    }
+  ]
+}

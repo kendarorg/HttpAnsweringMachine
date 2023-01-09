@@ -72,8 +72,14 @@ public class SingleScriptAPI implements FilteringClass {
     public void listAllRecordingSteps(Request req, Response res) throws Exception {
         var id = Long.parseLong(req.getPathParameter("id"));
         var result = new SingleScript();
+        var isEmpty = true;
         sessionFactory.query(em-> {
-            DbRecording recording = (DbRecording) em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id).getResultList().get(0);
+            var rslist = em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id).getResultList();
+            if(rslist.size()==0){
+                result.setLines(null);
+                return;
+            }
+            DbRecording recording = (DbRecording)rslist.get(0);
             List<CallIndex> indexLines = em
                     .createQuery("SELECT e FROM CallIndex e WHERE e.recordingId=" + id)
                     .getResultList();
@@ -102,9 +108,8 @@ public class SingleScriptAPI implements FilteringClass {
                 newLine.setRequestPath(line.getRequest().getPath());
                 newLine.setRequestHost(line.getRequest().getHost());
                 newLine.setReference(index.getReference());
-                newLine.setPactTest(index.isPactTest());
                 newLine.setStimulatorTest(index.isStimulatorTest());
-                newLine.setStimulatedTest(index.isStimulatedTest());
+                newLine.setType(line.getType());
                 newLine.setQueryCalc(RequestUtils.buildFullQuery(line.getRequest()));
                 newLine.setPreScript(index.getPreScript()!=null);
                 newLine.setScript(index.getPostScript()!=null);
@@ -116,9 +121,14 @@ public class SingleScriptAPI implements FilteringClass {
 
         });
 
-
-        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-        res.setResponseText(mapper.writeValueAsString(result));
+        if(result.getLines()==null){
+            res.setStatusCode(404);
+            res.setResponseText("MISSING RECORDING WITH ID "+id);
+        }else {
+            result.getLines().sort(Comparator.comparingLong(SingleScriptLine::getId));
+            res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
+            res.setResponseText(mapper.writeValueAsString(result));
+        }
     }
 
     private boolean isHashPresent(String hash) {

@@ -35,7 +35,9 @@ public class RecordFilter  implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.POST_RENDER,pathAddress ="*",method = "*",id="9000daa6-277f-11ec-9621-0242ac1afe002")
     public boolean record(Request reqArrived, Response res){
         var req = reqArrived.retrieveOriginal();
-        if(req.getHost().equalsIgnoreCase(localAddress) && !req.getPath().startsWith("/int/"))return false;
+        if(req.getHost().equalsIgnoreCase(localAddress) &&
+                !req.getPath().startsWith("/int/")&&
+                        !req.getPath().startsWith("/api/db/"))return false;
         if(req.getPath().contains("api/dns/lookup"))return false;
         if(replayerStatus.getStatus()!= ReplayerState.RECORDING)return false;
         try {

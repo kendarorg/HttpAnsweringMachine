@@ -1,5 +1,26 @@
 [
   {
+    "id": "dbproxy",
+    "system": true,
+    "proxies": [
+      {
+        "id": "be",
+        "active": true,
+        "driver": "org.h2.Driver",
+        "remote": {
+          "connectionString": "jdbc:h2:tcp://localhost:9123/./data/be",
+          "login": "sa",
+          "password": "sa"
+        },
+        "exposed": {
+          "connectionString": "be",
+          "login": "login",
+          "password": "password"
+        }
+      }
+    ]
+  },
+  {
     "id": "dns",
     "system": true,
     "active": true,

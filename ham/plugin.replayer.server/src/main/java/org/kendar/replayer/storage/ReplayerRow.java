@@ -18,6 +18,9 @@ import java.util.Calendar;
 @Table(name="REPLAYER_ROW")
 public class ReplayerRow implements DbTable {
 
+    @Column(name="type")
+    private String type;
+
     public boolean isBinaryRequest() {
         return binaryRequest;
     }
@@ -66,7 +69,7 @@ public class ReplayerRow implements DbTable {
     }
 
     @Column(name="timestamp")
-    private Timestamp timestamp = Timestamp.from(Calendar.getInstance().toInstant());
+    private long timestamp = Calendar.getInstance().getTimeInMillis();
 
     public String getRequestSerialized() {
         return requestSerialized;
@@ -143,11 +146,11 @@ public class ReplayerRow implements DbTable {
     @Column(name = "staticRequest")
     private boolean staticRequest;
 
-    public Timestamp getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -226,5 +229,13 @@ public class ReplayerRow implements DbTable {
 
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

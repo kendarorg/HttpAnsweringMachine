@@ -4,6 +4,7 @@ import org.kendar.servers.db.DbTable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.util.Calendar;
 
 @Component
 
@@ -60,15 +61,13 @@ public class CallIndex implements DbTable {
     @Lob
     private String postScript;
 
-    @Column(name = "pactTest")
-    private boolean pactTest;
-
 
     @Column(name = "stimulatorTest")
     private boolean stimulatorTest;
 
-    @Column(name = "stimulatedTest")
-    private boolean stimulatedTest;
+
+    @Column(name="timestamp")
+    private long timestamp = Calendar.getInstance().getTimeInMillis();
 
     public Long getId() {
         return id;
@@ -102,13 +101,6 @@ public class CallIndex implements DbTable {
         this.stimulatorTest = stimulatorTest;
     }
 
-    public boolean isPactTest() {
-        return pactTest;
-    }
-
-    public void setPactTest(boolean pactTest) {
-        this.pactTest = pactTest;
-    }
 
     public Long getIndex() {
         return index;
@@ -118,11 +110,11 @@ public class CallIndex implements DbTable {
         this.index = index;
     }
 
-    public boolean isStimulatedTest() {
-        return stimulatedTest;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setStimulatedTest(boolean stimulatedTest) {
-        this.stimulatedTest = stimulatedTest;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

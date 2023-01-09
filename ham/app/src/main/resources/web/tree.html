@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/vue.js"></script>
+    <script src="/libs/httpVueLoader.js"></script>
+    <script src="/libs/axios.min.js"></script>
+    <script src="/libs/utils.js"></script>
+    <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+</head>
+<body>
+<p>(You can double click on an item to turn it into a folder.)</p>
+
+<!-- the demo root element -->
+<ul id="app">
+    <simple-tree
+            class="item"
+            :item="treeData"
+            @make-folder="makeFolder"
+            @add-item="addItem"
+    ></simple-tree>
+</ul>
+<script type="text/javascript">
+    var treeData = {
+        name: "My Tree",
+        children: [
+            { name: "hello" },
+            { name: "wat" },
+            {
+                name: "child folder",
+                children: [
+                    {
+                        name: "child folder",
+                        children: [{ name: "hello" }, { name: "wat" }]
+                    },
+                    { name: "hello" },
+                    { name: "wat" },
+                    {
+                        name: "child folder",
+                        children: [{ name: "hello" }, { name: "wat" }]
+                    }
+                ]
+            }
+        ]
+    };
+    var stringData = '{' +
+        '  "command": {' +
+        '    "name": "isValid",' +
+        '    ":name:": "java.lang.String",' +
+        '    "paramtype": [{' +
+        '      "_": "int",' +
+        '      ":_:": "java.lang.Class"' +
+        '    }],' +
+        '    ":paramtype:": "[Ljava.lang.Class;",' +
+        '    "[paramtype]": "1",' +
+        '    "parameters": [{' +
+        '      "_": 20,' +
+        '      ":_:": "java.lang.Integer"' +
+        '    }],' +
+        '    ":parameters:": "[Ljava.lang.Object;",' +
+        '    "[parameters]": "1"' +
+        '  },' +
+        '  ":command:": "org.kendar.janus.cmd.Exec"' +
+        '}';
+
+    stringData='{' +
+        '  "result": {' +
+        '    "traceid": 81,' +
+        '    ":traceid:": "java.lang.Long",' +
+        '    "type": "FORWARD_ONLY",' +
+        '    ":type:": "org.kendar.janus.enums.ResultSetType",' +
+        '    "concurrency": "CONCUR_READ_ONLY",' +
+        '    ":concurrency:": "org.kendar.janus.enums.ResultSetConcurrency",' +
+        '    "holdability": "HOLD_CURSORS_OVER_COMMIT",' +
+        '    ":holdability:": "org.kendar.janus.enums.ResultSetHoldability",' +
+        '    "maxrows": 501,' +
+        '    ":maxrows:": "java.lang.Integer",' +
+        '    "prefetchmetadata": false,' +
+        '    ":prefetchmetadata:": "java.lang.Boolean",' +
+        '    "charset": "UTF-8",' +
+        '    ":charset:": "java.lang.String",' +
+        '    "columndescriptors": [{' +
+        '      "_": {' +
+        '        "type": -5,' +
+        '        ":type:": "java.lang.Integer",' +
+        '        "name": "ID",' +
+        '        ":name:": "java.lang.String",' +
+        '        "label": "ID",' +
+        '        ":label:": "java.lang.String"' +
+        '      },' +
+        '      ":_:": "org.kendar.janus.results.ColumnDescriptor"' +
+        '    }, {' +
+        '      "_": {' +
+        '        "type": 12,' +
+        '        ":type:": "java.lang.Integer",' +
+        '        "name": "DESCRIPTION",' +
+        '        ":name:": "java.lang.String",' +
+        '        "label": "DESCRIPTION",' +
+        '        ":label:": "java.lang.String"' +
+        '      },' +
+        '      ":_:": "org.kendar.janus.results.ColumnDescriptor"' +
+        '    }, {' +
+        '      "_": {' +
+        '        "type": 12,' +
+        '        ":type:": "java.lang.Integer",' +
+        '        "name": "NAME",' +
+        '        ":name:": "java.lang.String",' +
+        '        "label": "NAME",' +
+        '        ":label:": "java.lang.String"' +
+        '      },' +
+        '      ":_:": "org.kendar.janus.results.ColumnDescriptor"' +
+        '    }],' +
+        '    ":columndescriptors:": "java.util.ArrayList",' +
+        '    "lastrow": false,' +
+        '    ":lastrow:": "java.lang.Boolean"' +
+        // '    ",rows": [{' +
+        // '      "_": [{' +
+        // '        "_": 1,' +
+        // '        ":_:": "java.lang.Long"' +
+        // '      }, {}, {' +
+        // '        "_": "Test2 (1)",' +
+        // '        ":_:": "java.lang.String"' +
+        // '      }],' +
+        // '      ":_:": "java.util.ArrayList"' +
+        // '    }, {' +
+        // '      "_": [{' +
+        // '        "_": 5,' +
+        // '        ":_:": "java.lang.Long"' +
+        // '      }, {}, {' +
+        // '        "_": "testdb",' +
+        // '        ":_:": "java.lang.String"' +
+        // '      }],' +
+        // '      ":_:": "java.util.ArrayList"' +
+        // '    }],' +
+        // '    ":rows:": "java.util.ArrayList"' +
+        '  },' +
+        '  ":result:": "org.kendar.janus.JdbcResultSet"' +
+        '}';
+
+    // Check if value is primitive value according to MDN docs:
+
+
+    var nodes = convertToNodes(JSON.parse(stringData));
+    treeData = {
+        name: "My Tree",
+        type: "ROOT",
+        value: null,
+        children:nodes
+    }
+
+    console.log(treeData);
+
+
+    new Vue({
+        el: '#app',
+        components: {
+            'simple-tree': httpVueLoader('/vcomponents/vtree.vue')
+        },
+        data: {
+            treeData: treeData
+        },
+        methods: {
+            makeFolder: function(item) {
+                Vue.set(item, "children", []);
+                this.addItem(item);
+            },
+            addItem: function(item) {
+                item.children.push({
+                    name: "new stuff"
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>

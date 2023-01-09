@@ -10,13 +10,13 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
-[Internal database added!](docs/database.md) :zap:
+[Intercept/Replay/Fake Any Jdbc Calls!](docs/jdbc.md) :zap:
 
 * [Contribute](CONTRIBUTING.md) it's easy :)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
-* Maven repos (sorry for the invalid SSL... too $$$. Only the http is present)
-  * [Release](https://maven.kendar.org/maven2/releases)
-  * [Snapshot](https://maven.kendar.org/maven2/snapshots)
+* Maven repos
+  * [Release](https://www.kendar.org/maven2/releases)
+  * [Snapshot](https://www.kendar.org/maven2/snapshots)
 * [Swagger](https://www.kendar.org/swagger/?model=https://raw.githubusercontent.com/kendarorg/HttpAnsweringMachine/main/docs/map.json) 
 
 ## Ready-to-run examples
@@ -134,6 +134,7 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 
 * [The phases](docs/lifecycle.md)
 * [Proxy module](docs/proxy.md)
+* [Database interceptor](docs/jdbc.md)
 * [Http/s hijack module](docs/https.md)
 * [Static pages](docs/static.md)
 * [Dns server](docs/dns.md)
