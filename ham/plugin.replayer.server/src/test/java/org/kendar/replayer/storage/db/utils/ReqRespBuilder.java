@@ -1,6 +1,6 @@
 package org.kendar.replayer.storage.db.utils;
 
-import org.kendar.janus.cmd.JdbcCommand;
+import org.kendar.janus.cmd.interfaces.JdbcCommand;
 import org.kendar.janus.results.JdbcResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.replayer.storage.CallIndex;

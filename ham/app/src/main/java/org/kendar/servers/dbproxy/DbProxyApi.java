@@ -11,7 +11,7 @@ import org.kendar.http.annotations.multi.Header;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.http.annotations.multi.QueryString;
 import org.kendar.janus.JdbcDriver;
-import org.kendar.janus.cmd.JdbcCommand;
+import org.kendar.janus.cmd.interfaces.JdbcCommand;
 import org.kendar.janus.results.JdbcResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.janus.server.ServerEngine;
@@ -79,6 +79,7 @@ public class DbProxyApi implements FilteringClass {
             result.setLocal(local);
             if(result.isActive()) {
                 var serverEngine = new ServerEngine(remote.getConnectionString(), remote.getLogin(), remote.getPassword());
+                serverEngine.setMaxRows(100);
                 result.setServerEngine(serverEngine);
             }
             logger.info("Db Proxy LOADED, from: " + local.getConnectionString()+" to "+remote.getConnectionString());
