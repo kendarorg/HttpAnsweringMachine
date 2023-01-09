@@ -1,14 +1,21 @@
 <template>
-  <input type="checkbox" id="checkbox" v-model="value" disabled="true"/>
+  <input type="checkbox" id="checkbox" v-model="shown" disabled="true"/>
 </template>
 <script>
 module.exports = {
   props: {
-    value: Boolean,
+    value: Object,
     descriptor:Object,
     index: Array
   },
   name: 'cbool',
+  computed:{
+    shown: function() {
+      return (typeof this.descriptor.func =="function")?
+          this.descriptor.func(this.value):
+          this.value[this.descriptor.id];
+    }
+  },
   methods:{
     clean:function(){}
   }

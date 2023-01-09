@@ -112,3 +112,44 @@ const waitForAvailableVariableTimes=function(variable,timeout,func,times){
 const waitForAvailableVariable=function(variable,timeout,func){
     waitForAvailableVariableTimes(variable,timeout,func,1)
 }
+
+
+const  isAPrimitiveValue=function(value) {
+    return (
+        typeof value === "symbol" ||
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean" ||
+        typeof value === "undefined" ||
+        value === null ||
+        typeof value === "bigint"
+    );
+};
+
+const isAnArray = function(input){
+    return Array.isArray(input)//(!isAnObject(input) && !isAPrimitiveValue(input))
+}
+
+// Check if input is not primitive value, therefore object:
+const isAnObject = function (input) {
+    if (isAPrimitiveValue(input) ||isAnArray(input)) {
+        return false;
+    }
+    return true;
+};
+
+
+const jsonStringifyRecursive =function (obj) {
+    const cache = new Set();
+    return JSON.stringify(obj, (key, value) => {
+        if (typeof value === 'object' && value !== null) {
+            if (cache.has(value)) {
+                // Circular reference found, discard key
+                return "#ref";
+            }
+            // Store value in our collection
+            cache.add(value);
+        }
+        return value;
+    }, 4);
+}

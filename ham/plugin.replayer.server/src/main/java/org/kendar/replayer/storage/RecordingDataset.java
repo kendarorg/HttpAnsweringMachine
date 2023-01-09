@@ -35,6 +35,8 @@ public class RecordingDataset implements BaseDataset{
     private String replayerDataDir;
     private String description;
     private final ObjectMapper mapper = new ObjectMapper();
+    private boolean recordDbCalls;
+    private boolean recordVoidDbCalls;
 
     public Long getName(){
         return this.name;
@@ -50,6 +52,16 @@ public class RecordingDataset implements BaseDataset{
     @Override
     public ReplayerState getType() {
         return ReplayerState.RECORDING;
+    }
+
+    @Override
+    public void setRecordDbCalls(boolean recordDbCalls) {
+        this.recordDbCalls = recordDbCalls;
+    }
+
+    @Override
+    public void setRecordVoidDbCalls(boolean recordVoidDbCalls) {
+        this.recordVoidDbCalls = recordVoidDbCalls;
     }
 
     public RecordingDataset(
@@ -87,14 +99,23 @@ public class RecordingDataset implements BaseDataset{
         try {
 
             String responseHash;
-            var newId = counter.getAndIncrement();
+            var newId = req.getId();
             var replayerRow = new ReplayerRow();
+            replayerRow.setType("http");
+            if(req.getPath().startsWith("/api/db/")){
+                replayerRow.setType("db");
+                if(!recordDbCalls)return;
+                if(!recordVoidDbCalls){
+                    if(res.getResponseText()==null)return;
+                    if(res.getResponseText().contains("VoidResult"))return;
+                }
+            }
             if (res.isBinaryResponse()) {
                 responseHash = md5Tester.calculateMd5(res.getResponseBytes());
             } else {
                 responseHash = md5Tester.calculateMd5(res.getResponseText());
             }
-            replayerRow.setTimestamp(new Timestamp(req.getMs()));
+            replayerRow.setTimestamp(req.getMs());
             replayerRow.setId(newId);
             replayerRow.setRequest(req);
             replayerRow.setResponse(res);
@@ -109,12 +130,16 @@ public class RecordingDataset implements BaseDataset{
             replayerRow.setRecordingId(recording.getId());
 
             var callIndex = new CallIndex();
+            callIndex.setTimestamp(req.getMs());
             callIndex.setId(newId);
             callIndex.setReference(newId);
             callIndex.setRecordingId(recording.getId());
 
             sessionFactory.transactional(em-> {
                 var isRowStatic = MimeChecker.isStatic(res.getHeader(ConstantsHeader.CONTENT_TYPE), req.getPath());
+                if(replayerRow.getType().equalsIgnoreCase("db")){
+                    isRowStatic=false;
+                }
                 var saveRow = true;
                 if (isRowStatic && req.getMethod().equalsIgnoreCase("GET")) {
                     replayerRow.setStaticRequest(true);

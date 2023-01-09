@@ -6,7 +6,7 @@
 
     <groupId>org.kendar</groupId>
     <artifactId>HttpAnsweringMachine</artifactId>
-    <version>4.0.1</version>
+    <version>4.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -16,6 +16,28 @@
     </parent>
 
     <repositories>
+
+        <repository>
+            <id>kendar</id>
+            <name>Kendar Repository</name>
+            <url>https://maven.kendar.org/maven2/releases</url>
+            <!-- https://repo.maven.apache.org/maven2 -->
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>kendar2</id>
+            <name>Kendar Repository2</name>
+            <url>https://maven.kendar.org/maven2/snapshots</url>
+            <!-- https://repo.maven.apache.org/maven2 -->
+            <layout>default</layout>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>central2</id>
             <name>Central Repository2</name>
@@ -31,6 +53,7 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <janus.version>1.0.15-SNAPSHOT</janus.version>
         <spring.boot.version>2.4.0</spring.boot.version>
         <apache.http.version>4.5.13</apache.http.version>
         <commons.io.version>2.6</commons.io.version>

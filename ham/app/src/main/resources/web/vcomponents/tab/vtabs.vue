@@ -3,7 +3,7 @@
     <ul class="nav nav-tabs tabs-width">
       <li  v-for="tab in tabs" class="nav-item">
         <a class="nav-link" :href="tab.href" :class="{ 'really-active': tab.isActive }" @click="selectTab(tab)">
-          {{ tab.name }}
+          {{ tab.compTitle }}
         </a>
       </li>
     </ul>
@@ -16,6 +16,13 @@
 <script>
 module.exports = {
   name: 'vtabs',
+  props:{
+    reactToHashBang: {
+      type: Boolean,
+      required: false,
+      default:false
+    }
+  },
   data() {
     return {tabs: [] };
   },
@@ -34,8 +41,15 @@ module.exports = {
   },
   methods: {
     selectTab(selectedTab) {
+      var toSelect = "";
+      if(typeof selectedTab === 'string'){
+        toSelect=selectedTab;
+      }else{
+        toSelect=selectedTab.name;
+      }
       this.tabs.forEach(tab => {
-        tab.isActive = (tab.name == selectedTab.name);
+        if(tab.isActive == (tab.name == toSelect))return;
+        tab.isActive = (tab.name == toSelect);
       });
     }
   }

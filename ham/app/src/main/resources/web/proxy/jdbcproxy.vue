@@ -1,0 +1,116 @@
+<template>
+  <div>
+    <simple-modal v-if="modalShow"
+                  :modal-data="modalData"
+                  @close="modalShow = false">
+      <span slot="header">JDBC Proxy</span>
+      <span slot="body"><change-jdbc-rewrite :data="modalData.data"/></span>
+    </simple-modal>
+
+    <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+    <br><br>
+    <simple-grid
+        v-on:gridclicked="gridClicked"
+        ref="grid"
+        :columns="columns"
+        :extra="extraColumns"
+        :retrieve-data="retrieveData"
+    >
+    </simple-grid>
+  </div>
+</template>
+<script>
+module.exports = {
+  name: 'jdbc-proxy',
+  components: {
+    'change-jdbc-rewrite': httpVueLoader('/proxy/veditjdbcrewrite.vue'),
+    'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
+    'simple-modal': httpVueLoader('/vcomponents/tmodal.vue')
+  },
+  data: function () {
+    return {
+      modalData: null,
+      modalShow: false,
+      columns: [
+        {id: "id", template: "string", index: true},
+        {id: "driver", template: "string"},
+        {id: "remote", template: "string",func:function(e){return e.remote.connectionString; }},
+        {id: "exposed", template: "string",func:function(e){return e.exposed.connectionString; }},
+      ],
+      extraColumns: [
+        {
+          id: "_edit",
+          template: "iconbutton",
+          default: false,
+          searchable: false,
+          sortable: false,
+          properties: {
+            name: "Edit", style: "bi bi-pen-fill"
+          }
+        },
+        {
+          id: "_delete",
+          template: "iconbutton",
+          default: false,
+          searchable: false,
+          sortable: false,
+          properties: {
+            name: "Delete", style: "bi bi-trash"
+          }
+        }
+      ]
+    }
+  },
+  methods: {
+    retrieveData: async function () {
+      var result = await axios.get("/api/jdbcproxyes");
+      return result;
+    },
+    gridClicked: async function (evt) {
+      var row = this.$refs.grid.getById(evt.index);
+
+      if (evt.buttonid == "_edit") {
+        this.addNew(true, evt.index)
+      } else if (evt.buttonid == "_delete") {
+        await axios.delete("/api/jdbcproxyes/" + row['id'])
+        this.reload();
+      }
+    },
+    reload: function () {
+      this.$refs.grid.reload();
+    },
+    addNew: function (shouldEdit, rowId) {
+      var row = null;
+      if (shouldEdit) {
+        row = this.$refs.grid.getById(rowId);
+      } else {
+        row = {
+          id: URL.createObjectURL(new Blob([])).substr(-36),
+          remote:{},
+          exposed:{}
+        }
+      }
+      this.modalData = {
+        data: row,
+        edit: shouldEdit,
+        save: this.save
+      };
+      this.modalShow = true;
+    },
+    save: async function () {
+      if (this.modalData.edit) {
+        await axios.put('/api/jdbcproxyes/' + this.modalData.data.id, this.modalData.data).then(() => {
+          this.modalShow = false;
+          this.reload();
+        });
+      } else {
+        await axios.post('/api/jdbcproxyes', this.modalData.data).then(() => {
+          this.modalShow = false;
+          this.reload();
+        });
+      }
+    }
+  }
+}
+</script>

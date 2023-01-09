@@ -10,9 +10,8 @@
   </simple-modal>
   <button v-on:click="selectAll()" class="btn btn-default" title="Check All">Check all</button>
   <button v-on:click="toggleSelect()" class="btn btn-default" title="Toggle">Toggle Selected</button>
+  <button v-on:click="deleteSelected()" class="bi bi-trash" title="Toggle">Delete Selected</button>
   <button v-on:click="selectedToStimulator()" class="btn btn-default" title="Toggle">Selected Stimulator</button>
-  <button v-on:click="selectedToStimulated()" class="btn btn-default" title="Toggle">Selected Stimulated</button>
-  <button v-on:click="selectedToPact()" class="btn btn-default" title="Toggle">Selected Pact</button>
   <Br><br>
   <button v-on:click="generateDns()" class="btn btn-default" title="Toggle">Gnerate DNS for selected</button>
   <button v-on:click="generateSSL()" class="btn btn-default" title="Toggle">Gnerate SSL for selected</button>
@@ -45,19 +44,18 @@ module.exports = {
       modalShow: false,
       data:[],
       columns: [
-        {id: "id", template: "long", index: true,size:4},
-        {id: "pactTest", template: "boolw",label:"Pact"},
-        {id: "stimulatorTest", template: "boolw",label:"Stimulator"},
-        {id: "stimulatedTest", template: "boolw",label:"Stimultated"},
-        {id: "requestMethod", template: "string",label:"Method",size:7},
-        {id: "requestHost", template: "string",label:"Host"},
-        {id: "requestPath", template: "string",label:"Path"},
-        {id: "queryCalc", template: "string",label:"Query"},
-        {id: "responseStatusCode", template: "long",label:"Status",size:4},
-        {id: "requestHashCalc", template: "bool",label:"Req Body"},
-        {id: "responseHashCalc", template: "bool",label:"Res Body"},
-        {id: "preScript", template: "bool",label:"Pre"},
-        {id: "script", template: "bool",label:"Post"},
+        {id: "id", template: "long", index: true,size:4,sortable:true},
+        {id: "type", template: "string",label:"Type",size:4,sortable:true},
+        {id: "stimulatorTest", template: "boolw",label:"Stimulator",sortable:true},
+        {id: "requestMethod", template: "string",label:"Method",size:7,sortable:true},
+        {id: "requestHost", template: "string",label:"Host",sortable:true,size:15},
+        {id: "requestPath", template: "string",label:"Path",sortable:true,size:15},
+        {id: "queryCalc", template: "string",label:"Query",sortable:true,size:15},
+        {id: "responseStatusCode", template: "long",label:"Status",size:4,sortable:true},
+        {id: "requestHashCalc", template: "bool",label:"Req Body",sortable:true},
+        {id: "responseHashCalc", template: "bool",label:"Res Body",sortable:true},
+        {id: "preScript", template: "bool",label:"Pre",sortable:true},
+        {id: "script", template: "bool",label:"Post",sortable:true},
       ],
       extraColumns: [
         {id:"select",template:"boolw",default:false},
@@ -101,21 +99,8 @@ module.exports = {
         }
       })
     },
-    selectedToStimulated:function(){
-      this.$refs.grid.onSelected(function(row){
-        if(row['select']){
-          row['stimulatedTest']=true;
-        }
-      })
-    },
-    selectedToPact:function(){
 
-      this.$refs.grid.onSelected(function(row){
-        if(row['select']){
-          row['pactTest']=true;
-        }
-      })
-    },
+
     toggleSelect: function () {
       this.$refs.grid.toggleSelect("select");
     },
@@ -132,6 +117,22 @@ module.exports = {
       axios.post('/api/dns/mappings', toUpload, {headers}).then((res) => {
 
       });
+    },
+    deleteSelected:function(){
+      let confirmAction = confirm("Are you sure to delete the lines");
+      if (confirmAction) {
+        var data = [];
+        this.$refs.grid.onSelected(function(row){
+          data.push(row['id']);
+        })
+        var id = getUrlParameter("id");
+
+        var th=this;
+        const headers = {'Content-Type': 'application/json'};
+        axios.post('/api/plugins/replayer/recording/'+id+'/deletelines', data, {headers}).then(function(){
+          th.$emit("reload");
+        })
+      }
     },
     setScript:function (){
       var allHosts = [];

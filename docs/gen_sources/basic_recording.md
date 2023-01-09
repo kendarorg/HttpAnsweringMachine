@@ -19,6 +19,10 @@ server. I can't rely on ["proxy rewrite"](../proxy.md) through dns but i have to
 point to "http://localhost/int/[somepath]" and then add a proxy rewrite to the other server
 like to "http://localhost:[otherserverlocalport]"
 
+#### The "/db" special path
+
+This is the path used to record database requests
+
 #### No http/s request
 
 All the calls to server other than http/s can't be intercepted completely but you can 

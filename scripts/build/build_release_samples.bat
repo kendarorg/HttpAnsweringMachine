@@ -44,6 +44,11 @@ echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
 echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\gateway\run.bat
 
+echo Setup Db
+echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\rundb.sh
+echo java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa >> %HAM_RELEASE_TARGET%\calendar\rundb.sh
+echo call java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa >> %HAM_RELEASE_TARGET%\calendar\rundb.bat
+
 echo Setup fe
 call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\fe
 cd %CALENDAR_DIR%\fe\target\
@@ -59,6 +64,8 @@ call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\be
 cd %CALENDAR_DIR%\be\target\
 call %UTILS_LIB% get_jar_name JAR_NAME
 copy /y %SCRIPT_DIR%\templates\standalone\be.application.properties %HAM_RELEASE_TARGET%\calendar\be\application.properties 1>NUL
+copy /y %SCRIPT_DIR%\templates\standalone\bedb.application.properties %HAM_RELEASE_TARGET%\calendar\be\bedb.application.properties 1>NUL
+copy /y %SCRIPT_DIR%\templates\standalone\bedbham.application.properties %HAM_RELEASE_TARGET%\calendar\be\bedbham.application.properties 1>NUL
 copy /y %CALENDAR_DIR%\be\target\be-*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
 echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.sh

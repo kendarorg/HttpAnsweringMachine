@@ -23,12 +23,28 @@
     <parent>
         <artifactId>HttpAnsweringMachine</artifactId>
         <groupId>org.kendar</groupId>
-        <version>4.0.1</version>
+        <version>4.0.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>janus-driver</artifactId>
+            <version>${janus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>janus-engine</artifactId>
+            <version>${janus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>typeconverter</artifactId>
+            <version>${janus.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -172,7 +188,7 @@
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>lib.schema.checker</artifactId>
-            <version>4.0.1</version>
+            <version>4.0.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

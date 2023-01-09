@@ -4,7 +4,7 @@
 <script>
 module.exports = {
   props: {
-    value: Boolean,
+    value: Object,
     descriptor:Object,
     index: Array
   },
@@ -12,7 +12,7 @@ module.exports = {
   computed: {
     realData:  {
       get: function() {
-        return this.value;
+        return this.value[this.descriptor.id];
       },
       set: function(newValue) {
         this.$parent.setField(this.descriptor.id,this.index,newValue);

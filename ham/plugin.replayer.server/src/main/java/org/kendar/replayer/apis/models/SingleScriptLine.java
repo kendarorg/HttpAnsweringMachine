@@ -2,7 +2,6 @@ package org.kendar.replayer.apis.models;
 
 public class SingleScriptLine {
     private Long id;
-    private boolean pactTest;
     private boolean stimulatorTest;
     private String queryCalc;
     private boolean script;
@@ -13,8 +12,8 @@ public class SingleScriptLine {
     private String requestHost;
     private String requestPath;
     private int responseStatusCode;
-    private boolean stimulatedTest;
     private long reference;
+    private String type;
 
     public Long getId() {
         return id;
@@ -24,13 +23,6 @@ public class SingleScriptLine {
         this.id = id;
     }
 
-    public boolean isPactTest() {
-        return pactTest;
-    }
-
-    public void setPactTest(boolean pactTest) {
-        this.pactTest = pactTest;
-    }
 
     public boolean isStimulatorTest() {
         return stimulatorTest;
@@ -112,19 +104,19 @@ public class SingleScriptLine {
         this.responseStatusCode = responseStatusCode;
     }
 
-    public void setStimulatedTest(boolean stimulatedTest) {
-        this.stimulatedTest = stimulatedTest;
-    }
-
-    public boolean isStimulatedTest() {
-        return stimulatedTest;
-    }
-
     public void setReference(long reference) {
         this.reference = reference;
     }
 
     public long getReference() {
         return reference;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 }

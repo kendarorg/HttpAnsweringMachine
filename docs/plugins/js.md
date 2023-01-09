@@ -4,15 +4,6 @@ First should be defined a directory where to store the js plugins, relative to t
 
     jsfilter.path=jsplugins
 
-## Directory structure
-
-Inside this there is the following file structure.
-Notice that the directory containing the libs must match the name of the json file
-
-    myFilter.json
-    myFilter
-        lib.js
-
 ## Filter descriptor
 
 The myFilter.json is the descriptor of the plugin. The various parts are
@@ -23,7 +14,6 @@ The myFilter.json is the descriptor of the plugin. The various parts are
 * pathAddress: the exact path, started with "/" (or * for any)
 * pathRegexp: the Java regexp to match the path
 * phase: the [phase](../docs/lifecyvle.md) for the filter
-* requires: the list of files needed to run the plugin
 * id: myFilter, aka the name of the file with the filter
 * enabled: true/false
 * blocking: true/false. When blocking the filter result will be sent directly to 
@@ -46,10 +36,6 @@ instruction on [Https hijacking module](../https.md) to se tup the dns
     "pathAddress": "/test",
     "pathRegexp": "",
     "phase": "PRE_RENDER",
-    "requires": [
-        "myhandler/lib.js",
-        "myhandler/fuffa.js"
-    ],
     "id": "uniqueIdentifier",
     "enabled": true,
     "blocking": true,

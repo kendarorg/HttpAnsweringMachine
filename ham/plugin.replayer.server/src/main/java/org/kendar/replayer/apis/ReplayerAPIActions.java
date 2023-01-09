@@ -6,6 +6,7 @@ import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.PathParameter;
+import org.kendar.http.annotations.multi.QueryString;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.ReplayerStatus;
 import org.kendar.servers.http.Request;
@@ -33,15 +34,25 @@ public class ReplayerAPIActions implements FilteringClass {
             pathAddress = "/api/plugins/replayer/recording/{id}/record/{action}",
             method = "GET",id="3000daa6-277f-11ec-9621-0242ac1afe002")
     @HamDoc(description = "Start/stop/pauses recording" ,tags = {"plugin/replayer"},
-            path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
+            path = {
+                    @PathParameter(key = "id"),
+                    @PathParameter(key="action", description = "start/pause/stop")
+            },
+            query = {
+                    @QueryString(key = "recordDbCalls",type = "boolean",description = "True when recording db calls"),
+                    @QueryString(key = "recordVoidDbCalls",type = "boolean",description = "True when recording even " +
+                            "db calls that do not return values")
+            }
     )
-    public void recording(Request req, Response res) throws IOException {
+    public void recording(Request req, Response res) throws Exception {
         var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
 
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
             var description = req.getQuery("description");
-            replayerStatus.startRecording(id,description);
+            var recordVoidDbCalls=Boolean.parseBoolean(req.getQuery("recordVoidDbCalls"));
+            var recordDbCalls=Boolean.parseBoolean(req.getQuery("recordDbCalls"));
+            replayerStatus.startRecording(id,description,recordDbCalls,recordVoidDbCalls);
         }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_RECORDING){
 
             replayerStatus.restartRecording();
@@ -55,44 +66,6 @@ public class ReplayerAPIActions implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/replay/{action}",
-            method = "GET",id="3001daa6-277f-11ec-9621-0242ac1afe002")
-    @HamDoc(description = "Start/stop/pauses replaying" ,tags = {"plugin/replayer"},
-            path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
-    )
-    public void replaying(Request req, Response res) throws IOException {
-        var id = Long.valueOf(req.getPathParameter("id"));
-        var action = req.getPathParameter("action");
-        if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
-            replayerStatus.startReplaying(id);
-        }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_REPLAYING){
-            replayerStatus.restartReplaying();
-        }else if(action.equalsIgnoreCase("pause") && replayerStatus.getStatus()==ReplayerState.REPLAYING){
-            replayerStatus.pauseReplaying();
-        }else if(action.equalsIgnoreCase("stop") &&
-                (replayerStatus.getStatus()==ReplayerState.REPLAYING || replayerStatus.getStatus()==ReplayerState.PAUSED_REPLAYING)){
-            replayerStatus.stopReplaying();
-        }
-    }
-
-    @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/plugins/replayer/recording/{id}/pact/{action}",
-            method = "GET",id="pacta6-277f-11ec-9621-0242ac1afe002")
-    @HamDoc(description = "Start/stop/pauses pact test" ,tags = {"plugin/replayer"},
-            path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
-    )
-    public void pact(Request req, Response res) throws Exception {
-        var id = Long.valueOf(req.getPathParameter("id"));
-        var action = req.getPathParameter("action");
-        if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
-            Long runId = replayerStatus.startPact(id);
-        }else if(action.equalsIgnoreCase("stop") &&
-                replayerStatus.getStatus()==ReplayerState.PLAYING_PACT){
-            replayerStatus.stopPact(id);
-        }
-    }
-
-    @HttpMethodFilter(phase = HttpFilterType.API,
-            pathAddress = "/api/plugins/replayer/recording/{id}/null/{action}",
             method = "GET",id="nullaa6-277f-11ec-9621-0242ac1afe002")
     @HamDoc(description = "Start/stop/pauses null test" ,tags = {"plugin/replayer"},
             path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
@@ -102,8 +75,12 @@ public class ReplayerAPIActions implements FilteringClass {
         var action = req.getPathParameter("action");
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
             Long runId = replayerStatus.startNull(id);
+        }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_REPLAYING){
+            replayerStatus.restartReplayingNull(id);
+        }else if(action.equalsIgnoreCase("pause") && replayerStatus.getStatus()==ReplayerState.REPLAYING){
+            replayerStatus.pauseReplayingNull(id);
         }else if(action.equalsIgnoreCase("stop") &&
-                replayerStatus.getStatus()==ReplayerState.PLAYING_NULL_INFRASTRUCTURE){
+                replayerStatus.getStatus()==ReplayerState.REPLAYING){
             replayerStatus.stopNull(id);
         }
     }
