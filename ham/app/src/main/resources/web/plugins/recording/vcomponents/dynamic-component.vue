@@ -16,7 +16,7 @@ module.exports = {
       if (!this.template) {
         return null
       }
-      return httpVueLoader(this.path + "/" + this.template + ".vue");
+      return httpVueLoader(this.path + "/" + this.template.replace('orgkendarjanus','') + ".vue");
     },
   },
   watch:{
