@@ -123,6 +123,57 @@ public class DbProxyApi implements FilteringClass {
                     body = String.class
             ))
     public boolean testConnection(Request req, Response res) throws Exception {
+        var id = req.getPathParameter("type");
+        if(id!=null && id.equalsIgnoreCase("prepared")){
+            return preparedStatement(req, res);
+        }
+        return simpleExecution(req, res);
+    }
+
+    private boolean preparedStatement(Request req, Response res) {
+        var result ="";
+        try {
+            var id = req.getPathParameter("dBname");
+            if (id == null || !janusEngines.containsKey(id) || !janusEngines.get(id).isActive()) {
+                return false;
+            }
+
+            DriverManager.registerDriver(new JdbcDriver());
+            var connection = DriverManager.getConnection("jdbc:janus:http://localhost/api/db/" + id);
+            var statement = connection.prepareStatement(
+                    "SELECT * FROM REPLAYER_RECORDING WHERE ID>?");
+            statement.setInt(1,0);
+            var resultset = statement.executeQuery();
+            result += "[";
+            var count = 1;
+            while (resultset.next()) {
+                if (count > 1) result += ",";
+                var partial = "{";
+                for (int i = 1; i <= 100; i++) {
+                    try {
+                        String columnValue = resultset.getString(i);
+                        if (i > 1) partial += ",";
+                        partial += ("'col" + i + "'='" + columnValue + "'");
+                    } catch (Exception ex) {
+
+                    }
+                }
+                partial += "}";
+                result += partial;
+            }
+            result += "]";
+            connection.close();
+            res.getHeaders().put("content-type","application/json");
+        }catch (Exception ex){
+            result=ex.getMessage();
+            logger.error("Error",ex);
+        }
+
+        res.setResponseText(result);
+        return true;
+    }
+
+    private boolean simpleExecution(Request req, Response res) {
         var result ="";
         try {
             var id = req.getPathParameter("dBname");

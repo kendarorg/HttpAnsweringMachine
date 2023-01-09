@@ -194,11 +194,12 @@ const convertToNodes = function(serializedObject){
 }
 
 const findChildItemWithType = function(tree,type){
+    type = type.toLowerCase();
     //iterate on children to find the one matching the given name
     for(var i=0;i<tree.children.length;i++){
-        if(tree.children[i].name==type){
+        if(tree.children[i].name.toLowerCase()==type){
             return tree.children[i];
         }
     }
-    return tree;
+    return {value:null};
 }
