@@ -192,3 +192,13 @@ const convertToNodes = function(serializedObject){
     });
     return nodes;
 }
+
+const findChildItemWithType = function(tree,type){
+    //iterate on children to find the one matching the given name
+    for(var i=0;i<tree.children.length;i++){
+        if(tree.children[i].name==type){
+            return tree.children[i];
+        }
+    }
+    return tree;
+}
