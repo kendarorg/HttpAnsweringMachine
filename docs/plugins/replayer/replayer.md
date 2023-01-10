@@ -11,7 +11,7 @@ To have some example you can check
 
 This plugin has several roles
 
-* Record api calls
+* Record api/DB calls
 * Allow modifications on recordings
 * Generate a mock with recorded apis
 * Create PACT-like tests to verify changes on remote apis and intercept them with js scripts
