@@ -7,20 +7,16 @@
 * Delete the script and re-upload Sample.json
 * Stop the "fe" application
 * Stop the "be" application
-* Select all the calls to path /int/be.sample.test with the filter and set them as "Stimulated"
 
-<img src="../images/remove_wwwsamplebe.gif" width="300"/>
+* Select all the calls to path /int/gateway.sample.test with the filter and set them as "Stimulator". These will be run automatically.
 
-* Select all the calls to path /int/gateway.sample.test with the filter and set them as "Stimulator"
+<img src="../images/stimulator_wwwsamplegateway.gif" width="300"/>
 
-<img src="../images/remove_wwwsamplegateway.gif" width="300"/>
+* Run the test
+* Check the results on the results tab!
 
-* Thist a part of result:
 
-<img src="../images/null_gateway_prepare.gif" width="300"/>
-
-* Run the "Null test"
-* Check the [results](http://www.local.test/plugins/recording/results.html)!
+<img src="../images/stimulator_result1.gif" width="300"/>
 
 ### Verify the content structure
 
@@ -37,7 +33,7 @@
 
 <img src="../images/verify_structure_script.gif" height="300"/>
 
-* Re run the "Null test"! And be happy
+* Replay And be happy
 * Check the [results](http://www.local.test/plugins/recording/results.html)!
 * Download and save the script as NullAutoTestGateway.json
 
@@ -58,7 +54,7 @@
 </pre>
 
 * Run the test again
-* Check the FAILED results!
+* Check the FAILED results! Notice that the field "unexpected" is the one we added!
 
 <img src="../images/unexpected_field.gif" width="300"/>
 

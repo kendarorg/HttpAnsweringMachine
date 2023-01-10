@@ -133,7 +133,6 @@ module.exports = {
       if(this.data == null || typeof this.data =="undefined"){
         return [];
       }
-      console.log("filteredData")
 
       this.forceUpdate;
       var filterKeys = this.filterKeys;

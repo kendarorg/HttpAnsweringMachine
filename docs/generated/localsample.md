@@ -6,7 +6,6 @@ In this demo you will
 * Start the sample application
 * Connect to it through proxy
 * Record the interactions of the sample application
-* Intercept Google calls and replace the logo!
 
 ## Download the last release<a id="quickinstall_01"></a>
 
