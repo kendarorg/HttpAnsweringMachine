@@ -243,6 +243,7 @@ public class HamStarter {
         commandLine.add("-Dloader.path="+libsPath);
         commandLine.add("-Dloader.main=org.kendar.Main");
         commandLine.add("\"-javaagent:"+agentPath+"=destfile="+jacocoExecPath+",includes=org.kendar.**\"");
+        //commandLine.add("\"-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5025\"");
         //commandLine.add("\"-javaagent:"+agentPath+"=destfile="+jacocoExecPath+"\"");
 
 
