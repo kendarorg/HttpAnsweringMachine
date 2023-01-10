@@ -1,17 +1,20 @@
 package org.kendar.replayer.storage.http;
 
+import org.hibernate.query.Query;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.ReplayerEngine;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+@Component
 public class HttpReplayer implements ReplayerEngine {
 
     protected final ConcurrentHashMap<Long, Object> states = new ConcurrentHashMap<>();
@@ -66,17 +69,21 @@ public class HttpReplayer implements ReplayerEngine {
             staticRequests.addAll(query.getResultList());
         });
 
-        var indexes = staticRequests.stream().map(r->r.getIndex()).collect(Collectors.toList()).toArray(Long[]::new);
+        var indexesIds = staticRequests.stream().map(r->r.getIndex().toString()).collect(Collectors.toList());
+        var indexes = " e.reference="+String.join(" OR e.reference=",indexesIds);
         var callIndexes = new ArrayList<CallIndex>();
-        sessionFactory.query(em->{
-            var query =em.createQuery("SELECT e FROM CallIndex  e WHERE " +
-                    " e.reference IN :reqs" +
-                    " AND e.recordingId=:recordingId" +
-                    " ORDER BY e.reference ASC");
-            query.setParameter("recordingId",name);
-            query.setParameter("reqs",indexes);
-            callIndexes.addAll(query.getResultList());
-        });
+        var queryString = "SELECT e FROM CallIndex  e WHERE " +
+                "  (" + indexes + ")" +
+                " AND e.recordingId=:recordingId" +
+                " ORDER BY e.reference ASC";
+        if(indexesIds.size()>0) {
+            sessionFactory.query(em -> {
+                var query = em.createQuery(queryString);
+                query.setParameter("recordingId", name);
+                //query.setParameter("reqs",indexes);
+                callIndexes.addAll(query.getResultList());
+            });
+        }
 
         for (var row : staticRequests) {
             if(!staticRequest){
@@ -104,6 +111,8 @@ public class HttpReplayer implements ReplayerEngine {
         }
         if(founded!=null){
             states.put(founded.getId(),"");
+        }else{
+            return null;
         }
         return founded.getResponse();
     }
