@@ -50,12 +50,14 @@
         <td v-for="key in extra">
           <component :is="'c'+key.template" :descriptor="key"
                           :value="entry"
+                          :ref="buildIndexCrc(entry)+key.id"
                           :index="buildId(entry)" />
         </td>
         <td v-for="key in columns">
           <component  :is="'c'+key.template" :descriptor="key"
-                     :value="entry"
-                     :index="buildId(entry)"/>
+                      :value="entry"
+                      :ref="buildIndexCrc(entry)+key.id"
+                      :index="buildId(entry)"/>
         </td>
       </tr>
       </tbody>
@@ -131,6 +133,7 @@ module.exports = {
       if(this.data == null || typeof this.data =="undefined"){
         return [];
       }
+      console.log("filteredData")
 
       this.forceUpdate;
       var filterKeys = this.filterKeys;
@@ -273,6 +276,26 @@ module.exports = {
       return null;
 
     },
+    getIndexByIdFull:function (indexArray) {
+      for (var i=0;i<this.data.length;i++) {
+        var row = this.data[i];
+        var tempId = this.buildId(row);
+        var tempIdMatch = true;
+        for (var i = 0; i < indexArray.length; i++) {
+          if (indexArray[i] != tempId[i]) {
+            tempIdMatch = false;
+            break;
+          }
+        }
+        if(tempIdMatch) {return i;}
+      }
+      return -1;
+
+    },
+    buildIndexCrc:function (entry){
+      var index = this.buildId(entry).join(",");
+      return "row"+b_crc32(index);
+    },
     getById: function (indexArray) {
       var founded = this.getByIdFull(indexArray);
       if(null == founded) return null;
@@ -285,6 +308,9 @@ module.exports = {
     setField: function(id,indexArray,newValue){
       var row = this.getByIdFull(indexArray);
       row[id]=newValue;
+      var crc = this.buildIndexCrc(row)+id;
+      this.$refs[crc][0].forceUpdate();
+
       this.forceUpdate++;
     },
     buildId: function (row){
@@ -455,6 +481,7 @@ module.exports = {
         var index =th.buildId(toSel);
         th.setField(selectField,index,!toSel[selectField]);
       });
+      this.forceUpdate++;
     },
     onSelected:function(functoApply,selectField){
       if(typeof selectField=="undefined" || selectField==null){
@@ -473,10 +500,13 @@ module.exports = {
     },
     selectAll : function(selectField){
       var th = this;
-      this.filteredData.forEach(function(toSel){
+      var toselect = this.filteredData;
+      console.log("select all "+selectField)
+      toselect.forEach(function(toSel){
         var index =th.buildId(toSel);
         th.setField(selectField,index,true);
       });
+      this.forceUpdate++;
     },
     arrayEquals:function(a, b) {
       return Array.isArray(a) &&

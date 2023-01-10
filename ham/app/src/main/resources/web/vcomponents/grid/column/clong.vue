@@ -17,7 +17,8 @@ module.exports = {
   },
   name: 'calong',
   methods:{
-    clean:function(){}
+    clean:function(){},
+    forceUpdate:function(){}
   }
 }
 </script>

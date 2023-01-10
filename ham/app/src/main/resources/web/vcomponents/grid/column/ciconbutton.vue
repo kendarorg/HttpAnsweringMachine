@@ -13,7 +13,8 @@ module.exports = {
         buttonid :this.descriptor.id
       }
       this.$parent.$emit("gridclicked",eventData);
-    }
+    },
+    forceUpdate:function(){}
   }
 }
 </script>
