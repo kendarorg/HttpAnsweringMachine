@@ -104,8 +104,6 @@ module.exports = {
   watch: {
     currentRow: function (val, oldVal) {
       var th=this;
-      console.log("prerceived change")
-      var th=this;
       axios.get("/api/plugins/replayer/recording/" + getUrlParameter("id") + "/line/" + val)
           .then(function (result) {
 
