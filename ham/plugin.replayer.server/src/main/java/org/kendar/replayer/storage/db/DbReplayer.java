@@ -310,6 +310,9 @@ public class DbReplayer implements ReplayerEngine {
                 }
             }
         }
+        if(possible.toString().equalsIgnoreCase(command.toString())){
+            equalityValue=1000;
+        }
         return equalityValue>0;
     }
 
