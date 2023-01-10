@@ -59,6 +59,7 @@ public class DbReplayer implements ReplayerEngine {
     }
     public void loadDb(Long recordingId) throws Exception {
 
+        if(!hasDbRows(recordingId))return;
 
         ArrayList<CallIndex> indexes = new ArrayList<>();
         Map<String,Map<Long,List<DbRow>>> rows = new HashMap<>();
@@ -108,6 +109,8 @@ public class DbReplayer implements ReplayerEngine {
         }
     }
 
+
+
     private DbTreeItem findDbTreeItem(DbTreeItem realParent,DbRow dbRow) {
         for(var child:realParent.getChildren()){
             for(var target:child.getTargets()){
@@ -129,7 +132,21 @@ public class DbReplayer implements ReplayerEngine {
                 request.getRequestText());
     }
 
+    private boolean hasRows = false;
+
+    private boolean hasDbRows(Long recordingId) throws Exception {
+        hasRows = (Long)sessionFactory.queryResult(e -> {
+            return (Long)e.createQuery("SELECT count(*) FROM ReplayerRow e " +
+                            " WHERE " +
+                            " e.type='db'" +
+                            "AND e.recordingId=" + recordingId)
+                    .getResultList().get(0);
+        })>0;
+        return hasRows;
+    }
+
     private void loadRowsByConnection(Long recordingId, ArrayList<CallIndex> indexes, Map<String, Map<Long, List<DbRow>>> rows) throws Exception {
+
         for(var index : indexes){
             sessionFactory.query(e -> {
                 ReplayerRow row = getReplayerRow(recordingId, index, e);
@@ -159,7 +176,8 @@ public class DbReplayer implements ReplayerEngine {
     protected ReplayerRow getReplayerRow(Long recordingId, CallIndex index, EntityManager e) {
         var row =(ReplayerRow) e.createQuery("SELECT e FROM ReplayerRow e " +
                 " WHERE " +
-                " e.id ="+ index.getReference()+" " +
+                " e.type='db'" +
+                " AND e.id ="+ index.getReference()+" " +
                 "AND e.recordingId=" + recordingId).getResultList().get(0);
         return row;
     }
@@ -184,6 +202,7 @@ public class DbReplayer implements ReplayerEngine {
 
     @Override
     public Response findRequestMatch(Request req, String contentHash) throws Exception {
+        if(!hasRows)return null;
         var fullPath = req.getPath().substring(1).split("/");
         if(req.getPath().startsWith("/api/db")){
             if(fullPath.length>=5){

@@ -103,7 +103,7 @@ public class NullDataset extends ReplayerDataset{
             try {
                 for (var toCall : indexes) {
                     int maxWait = 60*1000;
-                    while(pause.get()==false && maxWait>0){
+                    while(pause.get()==true && maxWait>0){
                         Sleeper.sleep(1000);
                         maxWait-=1000;
                     }
@@ -138,6 +138,11 @@ public class NullDataset extends ReplayerDataset{
                     }
                     request = simpleProxyHandler.translate(request);
                     internalRequester.callSite(request, response);
+                    if(response.getStatusCode()!=expectedResponse.getStatusCode()){
+                        throw new Exception("Response code failed for request "+currentIndex+
+                                " Expected "+expectedResponse.getStatusCode()+
+                                " Founded "+response.getStatusCode());
+                    }
                     if (toCall.getPostScript() != null && !toCall.getPostScript().isEmpty()) {
                         var jsCallback = toCall.getPostScript();
 
@@ -163,7 +168,9 @@ public class NullDataset extends ReplayerDataset{
                 resultLine.setRecordingId(testResult.getRecordingId());
                 resultLine.setExecutedLine(currentIndex);
                 sessionFactory.transactional(em -> {
+
                     em.persist(resultLine);
+                    em.merge(testResult);
                 });
             }
         } catch (Exception e) {

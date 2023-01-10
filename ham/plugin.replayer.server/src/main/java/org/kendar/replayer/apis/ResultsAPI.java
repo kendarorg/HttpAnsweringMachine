@@ -107,6 +107,7 @@ public class ResultsAPI  implements FilteringClass {
             result.setSuccessful(dbResult.getErrors()==null ||dbResult.getErrors().isEmpty());
             result.setTestType(dbResult.getType());
             result.setName(recording.getName());
+            result.setError(dbResult.getErrors());
             for(var ss:em.createQuery("SELECT e FROM TestResultsLine e " +
                     " WHERE e.resultId="+dbResult.getId()+
                     " ORDER BY e.id DESC").getResultList()){
