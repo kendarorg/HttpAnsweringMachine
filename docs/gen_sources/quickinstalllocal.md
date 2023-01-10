@@ -10,4 +10,4 @@ Go on the "ham" directory and run "proxy.run.bat/sh"
 
 This will start ham with all services
 
-<img src="../images/start_sample_proxy.gif" width="200"/>
+<img src="../images/start_sample_proxy.gif" width="500"/>

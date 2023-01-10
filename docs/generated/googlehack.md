@@ -19,7 +19,7 @@ Go on the "ham" directory and run "proxy.run.bat/sh"
 
 This will start ham with all services
 
-<img src="../images/start_sample_proxy.gif" width="200"/>
+<img src="../images/start_sample_proxy.gif" width="500"/>
 
 ## Install SSL root certificate<a id="installcertificate_01"></a>
 
@@ -47,7 +47,7 @@ Open the zip file and install as "Root certificate authority"
         * Address: 12.0.0.1
         * Port 1081.
       
-          <img alt="Ham Proxyes" src="../images/chrome_proxy.gif" width="200"/>
+          <img alt="Ham Proxyes" src="../images/chrome_proxy.gif" width="500"/>
     * Select "proxy" from the extension menu and back to "direct" when you want to disconnect
     * 
       <img alt="Ham Proxyes" src="../images/chrome_proxy_switch.gif" width="100"/>
@@ -63,20 +63,20 @@ Open the zip file and install as "Root certificate authority"
     * Check the "Proxy DNS when using SOCKS v5" flag
     * Clean the settings when needed
   
-      <img alt="Ham Proxyes" src="../images/firefox_proxy.gif" width="200"/>
+      <img alt="Ham Proxyes" src="../images/firefox_proxy.gif" width="500"/>
 ## Intercept Google!<a id="interceptgoogle_01"></a>
 
 Go on the [certificates configuration page](http://www.local.test/certificates/index.html)
 and add a new website with value www.google.com
 
-<img src="../images/add_google_certificate.gif" width="200"/>
+<img src="../images/add_google_certificate.gif" width="500"/>
 
 Add a new dns mapping on the [dns configuration](http://www.local.test/dns/index.html) with
 
 * ip: 127.0.0.1
 * dns: www.google.com
 
-<img src="../images/add_google_dns.gif" width="200"/>
+<img src="../images/add_google_dns.gif" width="500"/>
 
 Restart the browser to be sure that all DNS caches are cleaned!
 
@@ -87,7 +87,7 @@ certificate is generated through "CN=root-cert"... OUR AUTHORITY :)
 
 On Firefox
 
-<img src="../images/google_fake_cert.gif" width="200"/>
+<img src="../images/google_fake_cert.gif" width="500"/>
 
 Or on Android Chrome
 
@@ -110,13 +110,13 @@ response.setResponseText(changedText);
 return false;
 </pre>
 
-<img src="../images/google_bing_filter.gif" width="200"/>
+<img src="../images/google_bing_filter.gif" width="500"/>
 
 Navigate to https://www.google.com with BING! logo :D
 
 On Firefox
 
-<img src="../images/google_bing.gif" width="200"/>
+<img src="../images/google_bing.gif" width="500"/>
 
 On Android
 

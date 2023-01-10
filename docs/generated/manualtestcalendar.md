@@ -28,7 +28,7 @@ This will start
 * gateway (localhost:8090) proxied by http://localhost/int/gateway.sample.test
 * fe (localhost:8080)
 
-<img src="../images/start_sample.gif" width="200"/>
+<img src="../images/start_sample.gif" width="500"/>
 
 ## The calendar sample project
 
@@ -46,7 +46,7 @@ It's composed of three parts
         * Address: 12.0.0.1
         * Port 1081.
       
-          <img alt="Ham Proxyes" src="../images/chrome_proxy.gif" width="200"/>
+          <img alt="Ham Proxyes" src="../images/chrome_proxy.gif" width="500"/>
     * Select "proxy" from the extension menu and back to "direct" when you want to disconnect
     * 
       <img alt="Ham Proxyes" src="../images/chrome_proxy_switch.gif" width="100"/>
@@ -62,26 +62,26 @@ It's composed of three parts
     * Check the "Proxy DNS when using SOCKS v5" flag
     * Clean the settings when needed
   
-      <img alt="Ham Proxyes" src="../images/firefox_proxy.gif" width="200"/>
+      <img alt="Ham Proxyes" src="../images/firefox_proxy.gif" width="500"/>
 ## Record some interaction<a id="recordcalendar_01"></a>
 
 You can now check ham application going on http://www.local.test
 
 * Going on [ham proxyes](http://www.local.test/proxy/index.html) you can verify that all proxies are ok if they don't work just "Refresh Status"
 
-<img alt="Ham Proxyes" src="../images/ham_proxies.gif" width="200"/>
+<img alt="Ham Proxyes" src="../images/ham_proxies.gif" width="500"/>
 
 * Navigation on the [application](http://www.sample.test) you can try some interaction
 
-<img alt="Sample application" src="../images/calendar_employees.gif" width="200"/>
+<img alt="Sample application" src="../images/calendar_employees.gif" width="500"/>
 
 * Then you can create a recording on the [recording page](http://www.local.test/plugins/recording)
 
-<img alt="Create recording" src="../images/create_recording.gif" width="200"/>
+<img alt="Create recording" src="../images/create_recording.gif" width="500"/>
 
 * Once you create the recording you can start recording!
 
-<img alt="Start recording" src="../images/start_recording.gif" width="200"/>
+<img alt="Start recording" src="../images/start_recording.gif" width="500"/>
 
 * Go then on the [application](http://www.sample.test) and do some interaction
   * Add an Employee "John Doe"
@@ -93,7 +93,7 @@ You can now check ham application going on http://www.local.test
 * And stop the recording!
 * Now you will se all the calls on the just created recording
 
-<img alt="Start recording" src="../images/calendar_recorded.gif" width="200"/>
+<img alt="Start recording" src="../images/calendar_recorded.gif" width="500"/>
 
 * "Download" the recording as "Sample.json"
 
