@@ -14,4 +14,4 @@
 * Change your proxy's settings. Enter the hostname and proxy port (e.g. [yourPcIp]:1081)
 * Tap Save.
 
-<img src="../images/android_proxy.gif" width="300"/>
+<img src="../images/android_proxy.gif" width="500"/>
