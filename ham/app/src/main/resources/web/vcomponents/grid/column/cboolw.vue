@@ -8,19 +8,24 @@ module.exports = {
     descriptor:Object,
     index: Array
   },
+  data: function () { return {forceUpdateMark:0}},
   name: 'cboolw',
   computed: {
     realData:  {
       get: function() {
+        this.forceUpdateMark;
         return this.value[this.descriptor.id];
       },
       set: function(newValue) {
-        this.$parent.setField(this.descriptor.id,this.index,newValue);
+        if(this.value[this.descriptor.id]!=newValue) {
+          this.$parent.setField(this.descriptor.id, this.index, newValue);
+        }
       }
     }
   },
   methods:{
-    clean:function(){}
+    clean:function(){},
+    forceUpdate:function(){this.forceUpdateMark++;}
   }
 }
 </script>

@@ -17,7 +17,8 @@ module.exports = {
     }
   },
   methods:{
-    clean:function(){}
+    clean:function(){},
+    forceUpdate:function(){}
   }
 }
 </script>
