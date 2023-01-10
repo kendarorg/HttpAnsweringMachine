@@ -69,9 +69,9 @@ module.exports = {
   props:{
     data:Object
   },
+
   data:function (){
     return {
-      shownData:{},
       showModal:false,
       modalData:{},
       extraColumns: [
@@ -92,16 +92,15 @@ module.exports = {
   watch:{
     data:function(val,old){
       var th=this;
-      th.shownData= val;
+
+
       waitForAvailableVariableTimes(
           ()=>th.$refs.headersGrid,
           100,
           function(){
-            th.$nextTick(function () {
-              th.$refs.headersGrid.reload(th.shownData.headers)
-              th.$refs.queryGrid.reload(th.shownData.query)
-              th.$refs.postGrid.reload(th.shownData.postParameters)
-            })
+            th.$refs.headersGrid.reload(th.data.headers)
+            th.$refs.queryGrid.reload(th.data.query)
+            th.$refs.postGrid.reload(th.data.postParameters)
           },10
       );
     }

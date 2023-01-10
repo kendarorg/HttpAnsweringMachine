@@ -136,7 +136,7 @@
                         }
                     }
                 ],
-                selectedRow:null,
+                selectedRow:-1,
                 data:{},
                 buttons:{
                     save:false,
@@ -213,7 +213,9 @@
                 }
             },
             rowSelected:function(rowId){
+                console.log("SELECTED "+rowId)
                 this.selectedRow=rowId;
+                //this.selectedRow=rowId;
                 sessionStorage.setItem("recordingCurrentLine", rowId);
                 sessionStorage.setItem("recordingId", getUrlParameter("id"));
             },
@@ -277,7 +279,7 @@
                         th.data=result.data;
                         th.$refs.recordingList.reload(th.data.lines);
                         //if(th.data.linse.length>0){
-                            th.updateButtons();
+                        th.updateButtons();
                         //}
 
                         var recording = sessionStorage.getItem("recordingId");
@@ -286,7 +288,7 @@
                             if(recording==getUrlParameter("id")){
                                 var current = sessionStorage.getItem("recordingCurrentLine");
                                 if(null!=current){
-                                    th.selectedRow=parseInt(current);
+                                    th.rowSelected(parseInt(current));
                                 }
                             }
                         }
