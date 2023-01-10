@@ -10,6 +10,7 @@ public class RecordingItem {
     private String name;
     private Long fileId;
     private boolean successful=false;
+    private String error;
 
     public boolean isSuccessful() {
         return successful;
@@ -63,5 +64,14 @@ public class RecordingItem {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+
+        this.error = error;
     }
 }

@@ -260,6 +260,7 @@ public class ReplayerAPICrud implements FilteringClass {
       }
     });
 
+    res.setResponseText("{}");
     res.setStatusCode(200);
   }
 

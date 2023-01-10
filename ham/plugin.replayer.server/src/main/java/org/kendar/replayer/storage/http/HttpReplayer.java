@@ -38,10 +38,25 @@ public class HttpReplayer implements ReplayerEngine {
     @Override
     public void loadDb(Long recordingId) throws Exception {
         this.name = recordingId;
+        if(!hasHttpRows(recordingId))return;
+    }
+
+    private boolean hasRows = false;
+
+    private boolean hasHttpRows(Long recordingId) throws Exception {
+        hasRows = (Long)sessionFactory.queryResult(e -> {
+            return (Long)e.createQuery("SELECT count(*) FROM ReplayerRow e " +
+                            " WHERE " +
+                            " e.type='http'" +
+                            "AND e.recordingId=" + recordingId)
+                    .getResultList().get(0);
+        })>0;
+        return hasRows;
     }
 
     @Override
     public Response findRequestMatch(Request req,String contentHash) throws Exception {
+        if(!hasRows) return null;
         Response founded = findRequestMatch(req, contentHash,true);
         if(founded==null){
             founded = findRequestMatch(req, contentHash,false);
