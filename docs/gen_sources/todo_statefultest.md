@@ -14,7 +14,7 @@ It will work after the next chapter!
 * Stop the "gateway" application
 * Select all the calls to http://localhost/int/be.sample.test with the filter and set them as "Stimulator"
 
-<img src="../images/remove_wwwsamplebe.gif" width="300"/>
+<img src="../images/remove_wwwsamplebe.gif" width="500"/>
 
 * Remove all the gateway and www.sample test calls
 
