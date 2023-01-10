@@ -15,4 +15,4 @@ This will start
 * gateway (localhost:8090) proxied by http://localhost/int/gateway.sample.test
 * fe (localhost:8080)
 
-<img src="../images/start_sample.gif" width="200"/>
+<img src="../images/start_sample.gif" width="500"/>

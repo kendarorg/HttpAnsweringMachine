@@ -16,13 +16,13 @@ response.setResponseText(changedText);
 return false;
 </pre>
 
-<img src="../images/google_bing_filter.gif" width="200"/>
+<img src="../images/google_bing_filter.gif" width="500"/>
 
 Navigate to https://www.google.com with BING! logo :D
 
 On Firefox
 
-<img src="../images/google_bing.gif" width="200"/>
+<img src="../images/google_bing.gif" width="500"/>
 
 On Android
 
