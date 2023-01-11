@@ -1,10 +1,12 @@
 package org.kendar.replayer.storage.db.utils;
 
-import org.kendar.janus.cmd.statement.StatementExecute;
+import ch.qos.logback.classic.Level;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.storage.db.DbReplayer;
 import org.kendar.servers.db.HibernateSessionFactory;
+import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -19,7 +21,22 @@ public class FakeDbReplayer extends DbReplayer {
     public Map<Long,CallIndex> callIndexMap = new HashMap<>();
 
     public FakeDbReplayer(HibernateSessionFactory sessionFactory) {
-        super(sessionFactory);
+        super(sessionFactory, new LoggerBuilder() {
+            @Override
+            public void setLevel(String loggerName, Level level) {
+
+            }
+
+            @Override
+            public Level getLevel(String loggerName) {
+                return null;
+            }
+
+            @Override
+            public Logger build(Class<?> toLogClass) {
+                return new FakeLogger();
+            }
+        });
     }
 
     protected boolean hasDbRows(Long recordingId) throws Exception{
