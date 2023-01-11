@@ -22,6 +22,11 @@ public class FakeDbReplayer extends DbReplayer {
         super(sessionFactory);
     }
 
+    protected boolean hasDbRows(Long recordingId) throws Exception{
+        hasRows = true;
+        return true;
+    }
+
     protected ReplayerRow getReplayerRow(Long recordingId, CallIndex index, EntityManager e) {
         return replayerRowMap.get(index.getReference());
     }
