@@ -41,7 +41,7 @@ Find the main class (here: org.springframework.boot.loader.JarLauncher)
         Created-By: Maven JAR Plugin 3.2.2
         Build-Jdk-Spec: 11
         Implementation-Title: be
-        Implementation-Version: 4.0.2-SNAPSHOT
+        Implementation-Version: 4.1.0
         # This is what we are speaking of
         Main-Class: org.springframework.boot.loader.JarLauncher
         Start-Class: org.kendar.be.MainBe
@@ -55,7 +55,7 @@ classpath! The resulting command line will be
 
 The final command line (for HAM calendar/be sample) will be (on windows)
 
-    java -cp "be-4.0.2-SNAPSHOT.jar;../janus-driver-1.0.11-SNAPSHOT.jar" ^
+    java -cp "be-4.1.0.jar;../janus-driver-1.0.11-SNAPSHOT.jar" ^
         org.springframework.boot.loader.JarLauncher ^
         --spring.config.location=file:///%cd%\bedbham.application.properties
 
