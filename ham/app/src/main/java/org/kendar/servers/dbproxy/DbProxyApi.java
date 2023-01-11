@@ -94,7 +94,7 @@ public class DbProxyApi implements FilteringClass {
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
-            pathAddress = "/api/db/{dbName}",
+            pathAddress = "/api/jdbcproxyes/{dbName}",
             method = "GET")
     @HamDoc(
             tags = {"base/proxydb"},
