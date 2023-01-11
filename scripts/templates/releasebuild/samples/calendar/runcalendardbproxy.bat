@@ -64,6 +64,9 @@ REM Wait for startup
 timeout /t 10 /nobreak
 cd %ROOT_PATH%
 
+echo Start it only when recording/replaying is started
+pause
+
 cd %CALENDAR_PATH%\be
 dir /b be*.jar > .temp.txt
 set /p JAR_NAME=<.temp.txt

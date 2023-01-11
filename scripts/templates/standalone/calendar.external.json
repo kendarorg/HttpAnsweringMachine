@@ -8,7 +8,7 @@
         "active": true,
         "driver": "org.h2.Driver",
         "remote": {
-          "connectionString": "jdbc:h2:tcp://localhost:9123/./data/be",
+          "connectionString": "jdbc:h2:tcp://localhost:9123/./data/be;MODE=MYSQL;",
           "login": "sa",
           "password": "sa"
         },
