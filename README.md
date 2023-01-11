@@ -167,4 +167,4 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 * [Recording session](docs/plugins/replayer/recording.md)
 * [PACT test](docs/plugins/replayer/pact.md) To verify against changes on real server
 * [NULL test](ddocs/plugins/replayer/null.md) To test without any infrastructure
-* [UI test](ddocs/plugins/replayer/ui.md) To test UI without any infrastructure
+* [Regression test](ddocs/plugins/replayer/simple.md) To test UI without any infrastructure
