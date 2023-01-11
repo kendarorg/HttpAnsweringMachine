@@ -132,9 +132,9 @@ public class DbReplayer implements ReplayerEngine {
                 request.getRequestText());
     }
 
-    private boolean hasRows = false;
+    protected boolean hasRows = false;
 
-    private boolean hasDbRows(Long recordingId) throws Exception {
+    protected boolean hasDbRows(Long recordingId) throws Exception {
         hasRows = (Long)sessionFactory.queryResult(e -> {
             return (Long)e.createQuery("SELECT count(*) FROM ReplayerRow e " +
                             " WHERE " +
