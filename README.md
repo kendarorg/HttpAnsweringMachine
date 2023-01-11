@@ -10,7 +10,7 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
-[Intercept/Replay/Fake Any Jdbc Calls!](docs/jdbc.md) :zap:
+[Record/replay db calls in integration tests!](docs/generated/dbtest.md) :zap: NO DB REQUIRED TO REPLAY!
 
 * [Contribute](CONTRIBUTING.md) it's easy :)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
@@ -40,6 +40,10 @@ The AnsweringMachine is built to overcome this troubles
   * Run the sample application (1 fe, 2 be)
   * Test a back-end in isolation
   * Verify match between template data
+* [Simulating a real database](docs/generated/dbtest.md) 20 minutes
+  * Record the db interactions
+  * Shut down the real db
+  * Run the application without db!
 * **Dockerize any application** 20 minutes
   * Build a custom docker cage for your Java/.NET/Node/... wathever application
   * Access via Proxy or via VPN to experience the full environment
