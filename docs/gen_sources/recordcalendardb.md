@@ -17,7 +17,7 @@ You can now check the configuration
 
 * Once you create the recording you can start recording! <b>CHECKING THE "Record db calls"</b>
 
-<img alt="Start recording" src="../images/dbproxy_sample03_recorddb.gif" width="500"/>
+<img alt="Start recording" src="../images/dbproxy_sample03_recorddb.gif" width="700"/>
 
 * Now you can start the application on the command line :)
 
