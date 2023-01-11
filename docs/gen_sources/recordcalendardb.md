@@ -15,7 +15,7 @@ You can now check the configuration
 
 <img alt="Create recording" src="../images/create_recording.gif" width="500"/>
 
-* Once you create the recording you can start recording! <b>CHECKING THE "Record db calls"<b>
+* Once you create the recording you can start recording! <b>CHECKING THE "Record db calls"</b>
 
 <img alt="Start recording" src="../images/dbproxy_sample03_recorddb.gif" width="500"/>
 
