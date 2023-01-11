@@ -1,11 +1,12 @@
 package org.kendar.replayer.storage.db;
 
 import org.apache.commons.lang3.ClassUtils;
+import org.kendar.janus.cmd.Close;
 import org.kendar.janus.cmd.connection.ConnectionConnect;
 import org.kendar.janus.cmd.interfaces.*;
-import org.kendar.janus.cmd.preparedstatement.PreparedStatementParameter;
 import org.kendar.janus.results.JdbcResult;
 import org.kendar.janus.results.ObjectResult;
+import org.kendar.janus.results.VoidResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.ReplayerEngine;
@@ -15,20 +16,24 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.ConstantsMime;
+import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class DbReplayer implements ReplayerEngine {
-    public ReplayerEngine create(){
-        return new DbReplayer(sessionFactory);
+    public ReplayerEngine create(LoggerBuilder loggerBuilder){
+        return new DbReplayer(sessionFactory,loggerBuilder);
     }
 
-    public DbReplayer(HibernateSessionFactory sessionFactory) {
+    public DbReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder) {
         this.sessionFactory = sessionFactory;
+        this.logger = loggerBuilder.build(DbReplayer.class);
     }
 
     public String getId(){
@@ -38,12 +43,13 @@ public class DbReplayer implements ReplayerEngine {
 
 
     private HibernateSessionFactory sessionFactory;
-    private Map<String,DbTreeItem> databases= new HashMap<>();
+    private Map<String,DbTreeItem> treeDatabase = new HashMap<>();
+    private Map<String,List<DbRow>> straightDatabase = new HashMap<>();
     private JsonTypedSerializer serializer = new JsonTypedSerializer();
 
 
     public DbTreeItem getTree(String name){
-        return databases.get(name.toLowerCase(Locale.ROOT));
+        return treeDatabase.get(name.toLowerCase(Locale.ROOT));
     }
 
 
@@ -62,18 +68,47 @@ public class DbReplayer implements ReplayerEngine {
         if(!hasDbRows(recordingId))return;
 
         ArrayList<CallIndex> indexes = new ArrayList<>();
-        Map<String,Map<Long,List<DbRow>>> rows = new HashMap<>();
 
         loadIndexes(recordingId, indexes);
+
+
+        //loadDbTree(recordingId, indexes);
+        loadDbStraight(recordingId, indexes);
+    }
+
+    private void loadDbStraight(Long recordingId, ArrayList<CallIndex> indexes) throws Exception {
+        for(var index : indexes){
+            sessionFactory.query(e -> {
+                ReplayerRow row = getReplayerRow(recordingId, index, e);
+                var reqDeser = serializer.newInstance();
+                reqDeser.deserialize(row.getRequest().getRequestText());
+                var resDeser = serializer.newInstance();
+                resDeser.deserialize(row.getResponse().getResponseText());
+
+
+                var dbRowName = row.getRequest().getPathParameter("dbName").toLowerCase(Locale.ROOT);
+                var dbRow = new DbRow(row,
+                        (JdbcCommand) reqDeser.read("command"),
+                        (JdbcResult) resDeser.read("result"));
+                if(!straightDatabase.containsKey(dbRowName)){
+                    straightDatabase.put(dbRowName,new ArrayList<>());
+                }
+                straightDatabase.get(dbRowName).add(dbRow);
+            });
+        }
+    }
+
+    private void loadDbTree(Long recordingId, ArrayList<CallIndex> indexes) throws Exception {
+        Map<String,Map<Long,List<DbRow>>> rows = new HashMap<>();
         loadRowsByConnection(recordingId, indexes, rows);
 
-        for(var db:rows.entrySet()){
-            if(!databases.containsKey(db.getKey())){
-                databases.put(db.getKey(),new DbTreeItem());
+        for(var db: rows.entrySet()){
+            if(!treeDatabase.containsKey(db.getKey())){
+                treeDatabase.put(db.getKey(),new DbTreeItem());
             }
             for(var connection:db.getValue().entrySet()){
                 for(var dbRow:connection.getValue()){
-                    var dbParent = databases.get(db.getKey());
+                    var dbParent = treeDatabase.get(db.getKey());
                     //var targetItemId = db.getKey()+"-"+dbRow.getConnectionId()+"-"+dbRow.getTraceId();
                     if(dbRow.getRequest() instanceof ConnectionConnect){
                         dbParent.addTarget(dbRow);
@@ -144,6 +179,8 @@ public class DbReplayer implements ReplayerEngine {
         })>0;
         return hasRows;
     }
+
+    private final Logger logger;
 
     private void loadRowsByConnection(Long recordingId, ArrayList<CallIndex> indexes, Map<String, Map<Long, List<DbRow>>> rows) throws Exception {
 
@@ -222,8 +259,58 @@ public class DbReplayer implements ReplayerEngine {
         reqDeser.deserialize(req.getRequestText());
         var command = (JdbcCommand) reqDeser.read("command");
         var dbName = req.getPathParameter("dbName").toLowerCase(Locale.ROOT);
-        var db = databases.get(dbName);
-        if(command instanceof ConnectionConnect){
+
+        //return getTreeMatch(req, command, dbName);
+        return getStraightMatch(req, command, dbName);
+    }
+
+    private Response getStraightMatch(Request req, JdbcCommand command, String dbName) {
+        if(command instanceof Close) {
+            var ser = serializer.newInstance();
+            var response = new Response();
+            ser.write("result", new VoidResult());
+            response.getHeaders().put("content-type", "application/json");
+            response.setResponseText((String) ser.getSerialized());
+            response.setStatusCode(200);
+            return response;
+        }else if(command instanceof ConnectionConnect){
+            var newConnectionId = atomicLong.decrementAndGet();
+            var result = new ObjectResult();
+            result.setResult(newConnectionId);
+            return serialize(result);
+        }else{
+            var maxValue = 0;
+            DbRow target = null;
+            var db = straightDatabase.get(dbName);
+            for(var row:db){
+                if(row.isVisited())continue;
+                var current = matchesContentForReplaying(row, command);
+                if(current>maxValue){
+                    target=row;
+                    maxValue=current;
+                }
+            }
+            if(target!=null){
+                if(!target.getRow().isStaticRequest()){
+                    target.setVisited(true);
+                }
+                return serialize(target.getResponse());
+            }
+        }
+        return null;
+    }
+
+    private Response getTreeMatch(Request req, JdbcCommand command, String dbName) {
+        var db = treeDatabase.get(dbName);
+        if(command instanceof Close) {
+            var ser = serializer.newInstance();
+            var response= new Response();
+            ser.write("result", new VoidResult());
+            response.getHeaders().put("content-type", "application/json");
+            response.setResponseText((String) ser.getSerialized());
+            response.setStatusCode(200);
+            return response;
+        }else if(command instanceof ConnectionConnect){
             var newConnectionId = atomicLong.decrementAndGet();
             if(db.getTargets().stream().anyMatch(t->!t.isVisited())){
                 var firstNotVisited = db.getTargets().stream().filter(t->!t.isVisited())
@@ -244,7 +331,7 @@ public class DbReplayer implements ReplayerEngine {
             var last = path.get(path.size()-1);
             for(var child:last.getChildren()){
                 for(var target:child.getTargets()){
-                    if(matchesContentForReplaying(target,command) && !target.isVisited()){
+                    if(matchesContentForReplaying(target, command)>0 && !target.isVisited()){
                         var result = target.getResponse();
                         if(child.getChildren().size()==0){
                             if(target.getRow().isStaticRequest()){
@@ -277,9 +364,10 @@ public class DbReplayer implements ReplayerEngine {
         return null;
     }
 
-    private boolean matchesContentForReplaying(DbRow target, JdbcCommand command) {
+    private int matchesContentForReplaying(DbRow target, JdbcCommand command) {
         var possible = target.getRequest();
         var equalityValue=0;
+        if(command.getClass()!=possible.getClass())return -1;
         if(ClassUtils.isAssignable(command.getClass(),JdbcSqlCommand.class)){
             var p =(JdbcSqlCommand)possible;
             var c =(JdbcSqlCommand)command;
@@ -291,7 +379,7 @@ public class DbReplayer implements ReplayerEngine {
             var p =(JdbcSqlBatches)possible;
             var c =(JdbcSqlBatches)command;
             if(p.getBatches().size()!=c.getBatches().size()){
-                return false;
+                return 0;
             }
             for (int i = 0; i <  p.getBatches().size(); i++) {
                 var pp = p.getBatches().get(i);
@@ -305,7 +393,7 @@ public class DbReplayer implements ReplayerEngine {
             var p =(JdbcPreparedStatementParameters)possible;
             var c =(JdbcPreparedStatementParameters)command;
             if(p.getParameters().size()!=c.getParameters().size()){
-                return false;
+                return 0;
             }
             for (int i = 0; i <  p.getParameters().size(); i++) {
                 var pp = p.getParameters().get(i);
@@ -319,7 +407,7 @@ public class DbReplayer implements ReplayerEngine {
             var p =(JdbcBatchPreparedStatementParameters)possible;
             var c =(JdbcBatchPreparedStatementParameters)command;
             if(p.getBatches().size()!=c.getBatches().size()){
-                return false;
+                return 0;
             }
             for (int i = 0; i <  p.getBatches().size(); i++) {
                 var pp = p.getBatches().get(i);
@@ -332,7 +420,7 @@ public class DbReplayer implements ReplayerEngine {
         if(possible.toString().equalsIgnoreCase(command.toString())){
             equalityValue=1000;
         }
-        return equalityValue>0;
+        return equalityValue;
     }
 
     private Response serialize(Object result) {

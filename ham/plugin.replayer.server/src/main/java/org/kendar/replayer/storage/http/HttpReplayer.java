@@ -1,12 +1,13 @@
 package org.kendar.replayer.storage.http;
 
-import org.hibernate.query.Query;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.ReplayerEngine;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,14 +21,16 @@ public class HttpReplayer implements ReplayerEngine {
     protected final ConcurrentHashMap<Long, Object> states = new ConcurrentHashMap<>();
 
     private final HibernateSessionFactory sessionFactory;
+    private final Logger logger;
     private long name;
 
-    public ReplayerEngine create(){
-        return new HttpReplayer(sessionFactory);
+    public ReplayerEngine create(LoggerBuilder loggerBuilder){
+        return new HttpReplayer(sessionFactory,loggerBuilder);
     }
 
-    public HttpReplayer(HibernateSessionFactory sessionFactory) {
+    public HttpReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder) {
         this.sessionFactory = sessionFactory;
+        this.logger = loggerBuilder.build(HttpReplayer.class);
     }
 
     @Override
