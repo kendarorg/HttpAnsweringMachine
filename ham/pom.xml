@@ -6,7 +6,7 @@
 
     <groupId>org.kendar</groupId>
     <artifactId>HttpAnsweringMachine</artifactId>
-    <version>4.0.2-SNAPSHOT</version>
+    <version>4.1.0</version>
     <packaging>pom</packaging>
 
     <parent>

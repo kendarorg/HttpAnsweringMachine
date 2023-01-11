@@ -1,6 +1,6 @@
 FROM ham.base
 
-RUN echo 4.0.2-SNAPSHOT
+RUN echo 4.1.0
 
 COPY data/ham.sh /etc/app/ham/
 COPY data/app /etc/app/ham/app/

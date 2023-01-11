@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>financialapp</artifactId>
-    <version>4.0.2-SNAPSHOT</version>
+    <version>4.1.0</version>
     <modules>
         <module>core</module>
     </modules>
