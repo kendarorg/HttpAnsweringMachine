@@ -36,3 +36,5 @@ call %DOCKER_LIB% docker_logout
 
 REM Restore previous dir
 cd %START_LOCATION%
+
+pause
