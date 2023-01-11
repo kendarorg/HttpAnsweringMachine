@@ -183,7 +183,7 @@ Load the configuration on docker/images/openvpn/mainuser.local.ovpn for your ope
 
 Now you can start testing everything with [PACT](plugins/replayer/pact.md) 
 or [NULL infrastructure tests](plugins/replayer/null.md)
-or [UI tests](plugins/replayer/ui.md)
+or [Simple tests](plugins/replayer/simple.md)
 
 ### With Proxy
 
