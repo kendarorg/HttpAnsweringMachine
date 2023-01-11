@@ -60,6 +60,7 @@ module.exports = {
   watch: {
     data: function (val, oldVal) {
       this.prepareTree(val);
+      if(typeof this.treeData =="undefined" || typeof this.treeData.type =="undefined") return;
       this.visualization = val;
       this.selectedComponentItem = this.treeData;
       this.selectedComponentType = this.treeData.type.replaceAll(".", "").toLowerCase();
@@ -67,6 +68,7 @@ module.exports = {
   },
   created: function () {
     this.prepareTree(this.data);
+    if(typeof this.treeData =="undefined" || typeof this.treeData.type =="undefined") return;
     this.selectedComponentItem = this.treeData;
     this.selectedComponentType = this.treeData.type.replaceAll(".", "").toLowerCase();
   },
@@ -99,10 +101,14 @@ module.exports = {
       }
     },
     prepareTree: function (newData) {
-      this.treeData = convertToNodes(JSON.parse(newData))[0];
+      try {
+        this.treeData = convertToNodes(JSON.parse(newData))[0];
+      }catch (e) {
+        
+      }
     },
     showContent: function (item) {
-      if (!item) {
+      if (typeof item=="undefined" || item.type=="undefined") {
         this.selectedComponentItem = null;
         this.selectedComponentType = "basic";
         return;

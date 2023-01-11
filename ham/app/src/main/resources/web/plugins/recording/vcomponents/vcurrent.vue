@@ -1,6 +1,6 @@
 <template>
   <div width="800px">
-    <div width="800px" v-if="data.type=='http'" >
+    <div width="800px" v-show="data.type=='http'" >
       <button type="button" :disabled="data.id ==-1"  class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
       <button type="button" :disabled="prev<0"  class="bi bi-floppy" v-on:click="prevRow()" title="Save changes">Prev</button>
       <button type="button" :disabled="next<0"  class="bi bi-floppy" v-on:click="nextRow()" title="Save changes">Next</button>
@@ -45,7 +45,7 @@
         </vtab>
       </vtabs>
     </div>
-    <div width="800px" v-if="data.type=='db'" >
+    <div width="800px" v-show="data.type=='db'" >
       <button type="button" :disabled="data.id ==-1"  class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
       <button type="button" :disabled="prev<0"  class="bi bi-floppy" v-on:click="prevRow()" title="Save changes">Prev</button>
       <button type="button" :disabled="next<0"  class="bi bi-floppy" v-on:click="nextRow()" title="Save changes">Next</button>
@@ -83,8 +83,8 @@ module.exports = {
       data:{
         type:'none',
         id:-1,
-        request:{path:'',requestText:''},
-        response:{responseText:''}
+        request:{path:'',requestText:'{}'},
+        response:{responseText:'{}'}
       }
     }
   },
