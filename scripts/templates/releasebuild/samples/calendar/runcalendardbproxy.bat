@@ -21,6 +21,7 @@ if %errorlevel% EQU 1 (
     del /S /Q %CALENDAR_PATH%\data\*.db 2>&1 1>NUL
 )
 
+
 Rem start db
 cd %CALENDAR_PATH%
 start rundb.bat
@@ -43,14 +44,7 @@ cd %ROOT_PATH%
 
 
 
-Rem start be
-cd %CALENDAR_PATH%\be
-dir /b be*.jar > .temp.txt
-set /p JAR_NAME=<.temp.txt
-start java -jar %JAR_NAME%  --spring.config.location=file:///%cd%\bedbham.application.properties
-REM Wait for startup
-timeout /t 10 /nobreak
-cd %ROOT_PATH%
+
 
 Rem start gateway
 cd %CALENDAR_PATH%\gateway
@@ -70,3 +64,11 @@ REM Wait for startup
 timeout /t 10 /nobreak
 cd %ROOT_PATH%
 
+cd %CALENDAR_PATH%\be
+dir /b be*.jar > .temp.txt
+set /p JAR_NAME=<.temp.txt
+start java -cp "be-4.0.2-SNAPSHOT.jar;../janus-driver-1.0.11-SNAPSHOT.jar" org.springframework.boot.loader.JarLauncher --spring.config.location=file:///%cd%\bedbham.application.properties
+REM start java -jar %JAR_NAME%  --spring.config.location=file:///%cd%\bedbham.application.properties
+REM Wait for startup
+timeout /t 10 /nobreak
+cd %ROOT_PATH%
