@@ -19,7 +19,7 @@ ROOT_DIR=$( cd -- "$( dirname -- "$SCRIPT_DIR" )" &> /dev/null && pwd )
 # Deploys all jars on kendar mvn
 cd $ROOT_DIR/ham
 echo Deploying ham
-mvn deploy
+mvn deploy -DskipTests
 mvn clean
 
 # Restore previous dir

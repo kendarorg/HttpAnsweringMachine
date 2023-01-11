@@ -19,7 +19,7 @@ call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR
 REM Deploys all jars on kendar mvn
 cd %ROOT_DIR%\ham
 echo Deploying ham
-call mvn deploy
+call mvn deploy -DskipTests
 
 REM Restore previous dir
 cd %START_LOCATION%

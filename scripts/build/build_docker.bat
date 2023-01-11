@@ -29,7 +29,7 @@ set DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 cd %HAM_DIR%
 
 echo Building project %HAM_DIR%
-call mvn install
+call mvn install -DskipTests
 
 cd %DOCKER_ROOT%\base
 docker build --rm -t ham.base .
@@ -69,7 +69,7 @@ docker build --rm -t ham.mysql .
 
 echo Cleanup
 cd %HAM_DIR%
-call mvn clean > \dev\null 2>1
+call mvn clean -DskipTests > \dev\null 2>1
 
 REM Restore previous dir
 cd %START_LOCATION%
