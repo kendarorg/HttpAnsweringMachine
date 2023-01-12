@@ -193,6 +193,9 @@ public class ReplayerStatus {
     }
 
     public void startStimulator(Long id) throws Exception {
+        if (state == ReplayerState.NONE){
+            startReplaying(id);
+        }
         logger.info("AUTO TEST START");
         ((ReplayerDataset)dataset).startStimulator();
     }

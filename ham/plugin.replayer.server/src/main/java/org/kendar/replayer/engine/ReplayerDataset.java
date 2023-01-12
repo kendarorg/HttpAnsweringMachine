@@ -48,6 +48,7 @@ public class ReplayerDataset implements BaseDataset{
   protected final ConcurrentHashMap<Long, Object> states = new ConcurrentHashMap<>();
 
   protected ReplayerResult replayerResult;
+  private Thread thread;
 
   public ReplayerDataset(
           LoggerBuilder loggerBuilder,
@@ -99,6 +100,7 @@ public class ReplayerDataset implements BaseDataset{
 
     result.setTimestamp(Timestamp.from(Calendar.getInstance().toInstant()));
     result.setRecordingId(name);
+    result.setType("PLAY");
 
 
 
@@ -190,8 +192,10 @@ public class ReplayerDataset implements BaseDataset{
         resultLine.setRecordingId(testResult.getRecordingId());
         resultLine.setExecutedLine(currentIndex);
         resultLine.setStimulator(true);
-        resultLine.setExpectedResponse(mapper.writeValueAsString(expectedResponse).substring(0,63999));
-        resultLine.setActualResponse(mapper.writeValueAsString(obtainedResponse).substring(0,63999));
+        var er = mapper.writeValueAsString(expectedResponse);
+        var or = mapper.writeValueAsString(obtainedResponse);
+        resultLine.setExpectedResponse(er.substring(0,Math.min(er.length(),63999)));
+        resultLine.setActualResponse(or.substring(0,Math.min(or.length(),63999)));
         sessionFactory.transactional(em -> {
 
           em.persist(resultLine);
@@ -274,6 +278,9 @@ public class ReplayerDataset implements BaseDataset{
 
 
   public void startStimulator() throws Exception {
+    if(thread!=null){
+      return;
+    }
     ArrayList<CallIndex> indexes = new ArrayList<>();
 
     var result = (TestResults)sessionFactory.queryResult(em-> {
@@ -296,7 +303,7 @@ public class ReplayerDataset implements BaseDataset{
     sessionFactory.transactional(em -> {
       em.merge(result);
     });
-    Thread thread = new Thread(() -> {
+    thread = new Thread(() -> {
       try {
         cache.set(id, "runid", id+"");
         runAutoTest(result,indexes);
