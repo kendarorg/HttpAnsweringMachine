@@ -3,7 +3,7 @@ package org.kendar.replayer.generator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.replayer.storage.CallIndex;
-import org.kendar.replayer.storage.ReplayerResult;
+import org.kendar.replayer.engine.ReplayerResult;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.RequestUtils;

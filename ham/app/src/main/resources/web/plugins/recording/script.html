@@ -46,6 +46,7 @@
             <button type="button" :disabled="buttons.stop"  class="bi bi-stop-btn" @click="executeAct('stop')" title="Save">Stop</button>&nbsp;
             <button type="button" :disabled="buttons.play"  class="bi bi-play-btn" @click="executeAct('start','replay')" title="Save">Play</button>&nbsp;
             <button type="button" :disabled="buttons.pause"  class="bi bi-pause-btn" @click="executeAct('pause')" title="Save">Pause</button>
+            <button type="button" :disabled="buttons.auto"  class="bi bi-play-btn" @click="executeAct('start','auto')" title="Save">Play Stimulator</button>&nbsp;
 
             <button v-on:click="updateButtons()" class="btn btn-primary btn-sm">Reload status</button>
             <div>
@@ -143,7 +144,8 @@
                     record:false,
                     stop:true,
                     play:true,
-                    pause:true
+                    pause:true,
+                    auto:true
                 }
 
             }
@@ -238,24 +240,30 @@
                             th.buttons.save=false;
                             th.buttons.stop=true;
                             th.buttons.play=true;
+                            th.buttons.auto=true;
                         }else if(data.status=="RECORDING"||data.status=="REPLAYING"){
                             th.buttons.save=true;
                             th.buttons.stop=false;
                             th.buttons.record=true;
                             th.buttons.pause=false;
                             th.buttons.play=true;
+                            if(data.status=="REPLAYING") {
+                                th.buttons.auto = false;
+                            }
                         }else if(data.status=="PAUSED_RECORDING"){
                             th.buttons.record=false;
                             th.buttons.save=true;
                             th.buttons.stop=false;
                             th.buttons.pause=true;
                             th.buttons.play=true;
+                            th.buttons.auto=true;
                         }else if(data.status=="PAUSED_REPLAYING"){
                             th.buttons.record=true;
                             th.buttons.save=true;
                             th.buttons.stop=false;
                             th.buttons.pause=true;
                             th.buttons.play=false;
+                            th.buttons.auto=true;
                         }else if(data.status=="NONE"){
                             th.buttons.save=false;
                             th.buttons.stop=true;
@@ -263,9 +271,11 @@
                             if(th.data.lines.length>0){
                                 th.buttons.record=true;
                                 th.buttons.play=false;
+                                th.buttons.auto=false;
                             }else{
                                 th.buttons.record=false;
                                 th.buttons.play=true;
+                                th.buttons.auto=true;
                             }
 
                         }

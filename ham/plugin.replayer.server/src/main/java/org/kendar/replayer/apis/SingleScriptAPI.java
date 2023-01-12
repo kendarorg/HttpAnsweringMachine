@@ -9,10 +9,11 @@ import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
-import org.kendar.replayer.apis.models.ListAllRecordList;
 import org.kendar.replayer.apis.models.SingleScript;
 import org.kendar.replayer.apis.models.SingleScriptLine;
-import org.kendar.replayer.storage.*;
+import org.kendar.replayer.storage.CallIndex;
+import org.kendar.replayer.storage.DbRecording;
+import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.db.HibernateSessionFactory;
@@ -25,13 +26,9 @@ import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
@@ -83,7 +80,7 @@ public class SingleScriptAPI implements FilteringClass {
             List<CallIndex> indexLines = em
                     .createQuery("SELECT e FROM CallIndex e WHERE e.recordingId=" + id)
                     .getResultList();
-            HashMap<Long,ReplayerRow> rows = new HashMap<>();
+            HashMap<Long, ReplayerRow> rows = new HashMap<>();
             em
                     .createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId=" + id)
                     .getResultList()

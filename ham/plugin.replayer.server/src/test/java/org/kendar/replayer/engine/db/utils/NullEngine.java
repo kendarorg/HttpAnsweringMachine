@@ -1,4 +1,4 @@
-package org.kendar.replayer.storage.db.utils;
+package org.kendar.replayer.engine.db.utils;
 
 import org.kendar.janus.cmd.RetrieveRemainingResultSet;
 import org.kendar.janus.cmd.interfaces.JdbcCommand;
