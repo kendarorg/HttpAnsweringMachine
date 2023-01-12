@@ -1,9 +1,9 @@
-package org.kendar.replayer.storage.db.utils;
+package org.kendar.replayer.engine.db.utils;
 
 import ch.qos.logback.classic.Level;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.ReplayerRow;
-import org.kendar.replayer.storage.db.DbReplayer;
+import org.kendar.replayer.engine.db.DbReplayer;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;

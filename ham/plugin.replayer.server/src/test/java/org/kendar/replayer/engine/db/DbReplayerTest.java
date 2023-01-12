@@ -1,4 +1,4 @@
-package org.kendar.replayer.storage.db;
+package org.kendar.replayer.engine.db;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -14,10 +14,10 @@ import org.kendar.janus.results.RemainingResultSetResult;
 import org.kendar.janus.results.StatementResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.replayer.storage.CallIndex;
-import org.kendar.replayer.storage.ReplayerEngine;
-import org.kendar.replayer.storage.ReplayerResult;
+import org.kendar.replayer.engine.ReplayerEngine;
+import org.kendar.replayer.engine.ReplayerResult;
 import org.kendar.replayer.storage.ReplayerRow;
-import org.kendar.replayer.storage.db.utils.*;
+import org.kendar.replayer.engine.db.utils.*;
 
 import java.io.IOException;
 import java.sql.SQLException;

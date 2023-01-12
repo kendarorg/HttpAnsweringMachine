@@ -5,7 +5,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.replayer.ReplayerState;
-import org.kendar.replayer.ReplayerStatus;
+import org.kendar.replayer.engine.ReplayerStatus;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.http.Request;

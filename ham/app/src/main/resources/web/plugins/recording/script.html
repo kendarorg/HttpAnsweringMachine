@@ -46,6 +46,7 @@
             <button type="button" :disabled="buttons.stop"  class="bi bi-stop-btn" @click="executeAct('stop')" title="Save">Stop</button>&nbsp;
             <button type="button" :disabled="buttons.play"  class="bi bi-play-btn" @click="executeAct('start','replay')" title="Save">Play</button>&nbsp;
             <button type="button" :disabled="buttons.pause"  class="bi bi-pause-btn" @click="executeAct('pause')" title="Save">Pause</button>
+            <button type="button" :disabled="buttons.auto"  class="bi bi-play-btn" @click="executeAct('start','auto')" title="Save">Play Stimulator</button>&nbsp;
 
             <button v-on:click="updateButtons()" class="btn btn-primary btn-sm">Reload status</button>
             <div>

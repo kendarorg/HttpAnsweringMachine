@@ -1,4 +1,4 @@
-package org.kendar.replayer.storage.db.utils;
+package org.kendar.replayer.engine.db.utils;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;

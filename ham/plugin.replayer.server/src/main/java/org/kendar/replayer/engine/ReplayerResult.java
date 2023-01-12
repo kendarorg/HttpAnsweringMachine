@@ -1,6 +1,8 @@
-package org.kendar.replayer.storage;
+package org.kendar.replayer.engine;
 
 import org.kendar.replayer.apis.models.RedirectFilter;
+import org.kendar.replayer.storage.CallIndex;
+import org.kendar.replayer.storage.ReplayerRow;
 
 import java.util.ArrayList;
 import java.util.HashMap;

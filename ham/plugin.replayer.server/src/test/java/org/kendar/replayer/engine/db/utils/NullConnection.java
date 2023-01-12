@@ -1,4 +1,4 @@
-package org.kendar.replayer.storage.db.utils;
+package org.kendar.replayer.engine.db.utils;
 
 import org.kendar.janus.JdbcConnection;
 import org.kendar.janus.engine.Engine;

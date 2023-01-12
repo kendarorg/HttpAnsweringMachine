@@ -7,8 +7,7 @@ public interface HamReplayerBuilder {
     void deleteRecording(long id) throws HamException;
     HamReplayerRecorderStop startRecording(long id) throws HamException;
     HamReplayerWait startReplaying(long id) throws HamException;
-    HamReplayerWait startPact(long id) throws HamException;
-    HamReplayerWait startNullInfrastructure(long id) throws HamException;
+    HamReplayerWait startAutoTest(long id) throws HamException;
 
     String downloadRecording(long id) throws HamException;
 }
