@@ -146,6 +146,7 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
             e.printStackTrace();
         }
         return HttpClientBuilder.create()
+                .disableAutomaticRetries()
                 .setSSLContext(sslContext).
                 setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).
                         setDnsResolver(dnsResolver)

@@ -69,6 +69,7 @@ public abstract class BaseRequesterImpl implements BaseRequester{
                     .loadTrustMaterial(null, (x509CertChain, authType) -> true)
                     .build();
             httpClient = HttpClientBuilder.create().
+                    disableAutomaticRetries().
                     setSSLContext(sslContext).
                     setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).
                     disableRedirectHandling().
