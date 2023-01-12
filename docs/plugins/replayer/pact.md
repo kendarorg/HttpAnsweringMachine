@@ -12,7 +12,7 @@
         if(expectedresponse.getStatusCode()!=response.getStatusCode()){
             throw "Expected status code "+expectedresponse.getStatusCode()+" but received "+response.getStatusCode();
         }
-* Run the test!
+* Run the test! with "Play Stimulator"
 
 If (of course) during this kind of test the data changes wildly and changes are propagated
 through requests you can check the [JS Interception](replayer.md) section to use variables 
