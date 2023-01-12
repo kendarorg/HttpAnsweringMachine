@@ -11,7 +11,7 @@ import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.generator.SingleRequestGenerator;
-import org.kendar.replayer.storage.ReplayerResult;
+import org.kendar.replayer.engine.ReplayerResult;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;

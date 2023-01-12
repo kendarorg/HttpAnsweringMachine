@@ -114,7 +114,7 @@ You can now check ham application going on http://www.local.test
 * Stop the "be" application
 * Stop the "gateway" application
 * Download and save the script as NullGateway.json
-* Play the Script
+* Play the Script with "Play"
 * Do the navigation as you did while recording
 * Everything will work as if be is up!
 
@@ -132,6 +132,6 @@ You can now check ham application going on http://www.local.test
 
 * Stop the "be" application
 * Download and save the script as NullBe.json
-* Play the Script
+* Play the Script clicking on "Play"
 * Do the navigation as you did while recording
 * Everything will work as if gateway is up!

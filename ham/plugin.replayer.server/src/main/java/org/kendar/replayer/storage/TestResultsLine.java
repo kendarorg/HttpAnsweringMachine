@@ -20,6 +20,17 @@ public class TestResultsLine implements DbTable {
     @Column(name = "id")
     private Long id;
 
+    public boolean isStimulator() {
+        return stimulator;
+    }
+
+    public void setStimulator(boolean stimulator) {
+        this.stimulator = stimulator;
+    }
+
+    @Column(name = "stimulator")
+    private boolean stimulator;
+
     public Long getRecordingId() {
         return recordingId;
     }
@@ -32,6 +43,28 @@ public class TestResultsLine implements DbTable {
     private Long resultId;
     @Column(name="recordingId")
     private Long recordingId;
+
+    @Column(name = "expected",length = 64000)
+    private String expectedResponse;
+
+    @Column(name = "actual",length = 64000)
+    private String actualResponse;
+
+    public String getExpectedResponse() {
+        return expectedResponse;
+    }
+
+    public void setExpectedResponse(String expectedResponse) {
+        this.expectedResponse = expectedResponse;
+    }
+
+    public String getActualResponse() {
+        return actualResponse;
+    }
+
+    public void setActualResponse(String actualResponse) {
+        this.actualResponse = actualResponse;
+    }
 
     public Long getId() {
         return id;

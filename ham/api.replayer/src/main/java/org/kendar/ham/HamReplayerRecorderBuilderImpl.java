@@ -63,13 +63,8 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
     }
 
     @Override
-    public HamReplayerWait startPact(long id) throws HamException {
-        return (HamReplayerWait)executeAct("start","pact", id);
-    }
-
-    @Override
-    public HamReplayerWait startNullInfrastructure(long id) throws HamException {
-        return (HamReplayerWait)executeAct("start","null", id);
+    public HamReplayerWait startAutoTest(long id) throws HamException {
+        return (HamReplayerWait)executeAct("start","auto", id);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package org.kendar.replayer.storage.db;
+package org.kendar.replayer.engine.db;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.kendar.janus.cmd.Close;
@@ -9,7 +9,7 @@ import org.kendar.janus.results.ObjectResult;
 import org.kendar.janus.results.VoidResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.replayer.storage.CallIndex;
-import org.kendar.replayer.storage.ReplayerEngine;
+import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Component
