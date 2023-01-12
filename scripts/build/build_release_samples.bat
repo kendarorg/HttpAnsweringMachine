@@ -70,11 +70,6 @@ copy /y %SCRIPT_DIR%\templates\standalone\bedbham.application.properties %HAM_RE
 copy /y %CALENDAR_DIR%\be\target\be-*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
 
 copy /y %ROOT_DIR%\ham\libs\janus-driver*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
-copy /y %ROOT_DIR%\ham\libs\jackson-core*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
-copy /y %ROOT_DIR%\ham\libs\jackson-annotations*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
-copy /y %ROOT_DIR%\ham\libs\jackson-databind*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
-copy /y %ROOT_DIR%\ham\libs\jackson-datatype-jsr310*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
-copy /y %ROOT_DIR%\ham\libs\typeconverter*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
 
 echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.sh
