@@ -73,8 +73,10 @@ public class HttpReplayer implements ReplayerEngine {
         ReplayerRow founded = null;
         var staticRequests = new ArrayList<ReplayerRow>();
         sessionFactory.query(em -> {
-            var query = em.createQuery("SELECT e FROM ReplayerRow  e WHERE " +
-                    " e.staticRequest=:sr " +
+            var query = em.createQuery("SELECT e FROM ReplayerRow  e,CallIndex c WHERE " +
+                    " e.id=c.reference " +
+                    " AND c.stimulatorTest=false" +
+                    " AND e.staticRequest=:sr " +
                     " AND e.type='http' " +
                     " AND e.recordingId=:recordingId" +
                     " AND e.path=:path" +

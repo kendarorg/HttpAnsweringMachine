@@ -61,12 +61,21 @@ echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\fe\run.bat
 
 echo Setup be
 call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\be
+call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\be\libs
 cd %CALENDAR_DIR%\be\target\
 call %UTILS_LIB% get_jar_name JAR_NAME
 copy /y %SCRIPT_DIR%\templates\standalone\be.application.properties %HAM_RELEASE_TARGET%\calendar\be\application.properties 1>NUL
 copy /y %SCRIPT_DIR%\templates\standalone\bedb.application.properties %HAM_RELEASE_TARGET%\calendar\be\bedb.application.properties 1>NUL
 copy /y %SCRIPT_DIR%\templates\standalone\bedbham.application.properties %HAM_RELEASE_TARGET%\calendar\be\bedbham.application.properties 1>NUL
 copy /y %CALENDAR_DIR%\be\target\be-*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
+
+copy /y %ROOT_DIR%\ham\libs\janus-driver*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
+copy /y %ROOT_DIR%\ham\libs\jackson-core*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
+copy /y %ROOT_DIR%\ham\libs\jackson-annotations*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
+copy /y %ROOT_DIR%\ham\libs\jackson-databind*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
+copy /y %ROOT_DIR%\ham\libs\jackson-datatype-jsr310*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
+copy /y %ROOT_DIR%\ham\libs\typeconverter*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
+
 echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.bat

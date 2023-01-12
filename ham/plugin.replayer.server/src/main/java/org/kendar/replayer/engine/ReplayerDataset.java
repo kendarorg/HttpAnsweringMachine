@@ -14,6 +14,7 @@ import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.InternalRequester;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.proxy.ProxyConfigChanged;
 import org.kendar.servers.proxy.SimpleProxyHandler;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.Sleeper;
@@ -123,6 +124,8 @@ public class ReplayerDataset implements BaseDataset{
       Response expectedResponse = null;
       boolean onIndex = false;
       long currentIndex = 0;
+      eventQueue.execute(new ProxyConfigChanged(),Void.TYPE);
+      Thread.sleep(1000);
       try {
         for (var toCall : indexes) {
           int maxWait = 60*1000;
@@ -141,6 +144,10 @@ public class ReplayerDataset implements BaseDataset{
           });
           obtainedResponse = new Response();
           var request = reqResp.getRequest().copy();
+          logger.info("Stimulating "+
+                  request.getProtocol()+"://"+
+                  request.getHost()+
+                  request.getPath());
           expectedResponse = reqResp.getResponse().copy();
 
           var stringRequest = mapper.writeValueAsString(request);
