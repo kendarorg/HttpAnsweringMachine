@@ -91,7 +91,7 @@ public class ReplayerAPIActions implements FilteringClass {
         var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
-            Long runId = replayerStatus.startReplaying(id);
+            replayerStatus.startStimulator(id);
         }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_REPLAYING){
             replayerStatus.restartReplaying(id);
         }else if(action.equalsIgnoreCase("pause") && replayerStatus.getStatus()==ReplayerState.REPLAYING){
