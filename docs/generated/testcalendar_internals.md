@@ -97,11 +97,10 @@ is kept to avoid double calls
 
 #### The types
 
-Essentially the replayer has 3 ways to replay
+Essentially the replayer has 2 ways to replay
 
-* Replay: You should invoke the "front" service and HAM will respond to the invocations. You are responsible for running the "initiator calls"
-* Null Infrastructure: Define a Stimulator, the APIs that will guide the test, and (if present) the Stimulated, the APIs that will be invoked by the system under test. Everything is automatically run
-* PACT: Like null, but it invokes the real service and allow the verification of its data and schemas. Everything is automatically run
+* Play: You should invoke the "front" service and HAM will respond to the invocations. You are responsible for running the "initiator calls"
+* Play stimulator: Start to run the stimulator calls (and to respond if not already pressed the play)
 
 At the end of a test the result is shown in a specific page/API
 

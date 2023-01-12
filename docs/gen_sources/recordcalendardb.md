@@ -86,7 +86,7 @@ set the index 1 (the first to set JDBC prepared statement parameters)
   * Path: /int/
 * "Download" the recording as "DbOnly.json"
 * Now stop the H2 database and the BE application
-* Start replaying the recording
+* Start replaying the recording with "Play"
 * Restart the BE with the be.bat/sh
 * When the initialisation is complete go again of www.sample.test and redo all the steps (John Doe etc)
 * Everything will work :D

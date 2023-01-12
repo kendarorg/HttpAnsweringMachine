@@ -111,7 +111,7 @@ You can now check ham application going on http://www.local.test
 
 <img src="../images/stimulator_wwwsamplegateway.gif" width="500"/>
 
-* Run the test
+* Run the test with "Play Stimulator"
 * Check the results on the results tab!
 
 
@@ -132,7 +132,7 @@ You can now check ham application going on http://www.local.test
 
 <img src="../images/verify_structure_script.gif" height="300"/>
 
-* Replay And be happy
+* click "Play Stimulator" And be happy
 * Check the [results](http://www.local.test/plugins/recording/results.html)!
 * Download and save the script as NullAutoTestGateway.json
 
@@ -152,7 +152,7 @@ You can now check ham application going on http://www.local.test
 [{"id":1,"name":"John","role":"Doe","unexpected":"field"}]
 </pre>
 
-* Run the test again
+* Run the test again with "Play Stimulator"
 * Check the FAILED results! Notice that the field "unexpected" is the one we added!
 
 <img src="../images/unexpected_field.gif" width="500"/>
