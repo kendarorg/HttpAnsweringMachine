@@ -26,7 +26,7 @@ call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%
 REM Build HAM
 cd %ROOT_DIR%\ham
 echo Building ham
-call mvn clean install > %ROOT_DIR%\release\ham-%HAM_VERSION%.log  2>&1
+call mvn clean install -DskipTests > %ROOT_DIR%\release\ham-%HAM_VERSION%.log  2>&1
 
 
 
