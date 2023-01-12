@@ -1,5 +1,6 @@
 package org.kendar.ham;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,6 +127,7 @@ public class HamStarter {
                     var ntpc = new ThreadAndProc();
                     var pb = new ProcessBuilder(command);
                     pb.directory(new File(jarDir));
+
                     ntpc.process = pb.start();//Runtime.getRuntime().exec(command);
                     ntpc.trace = new ArrayList<>(internalExpected);
                     ntpc.thread = new Thread(new Runnable() {
@@ -242,7 +244,11 @@ public class HamStarter {
         var libsPath  =Path.of(getRootPath(caller),"ham","libs").toString();
         commandLine.add("-Dloader.path="+libsPath);
         commandLine.add("-Dloader.main=org.kendar.Main");
-        commandLine.add("\"-javaagent:"+agentPath+"=destfile="+jacocoExecPath+",includes=org.kendar.**\"");
+        if(!SystemUtils.IS_OS_WINDOWS) {
+            commandLine.add("-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**");
+        }else{
+            commandLine.add("\"-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**\"");
+        }
         //commandLine.add("\"-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5025\"");
         //commandLine.add("\"-javaagent:"+agentPath+"=destfile="+jacocoExecPath+"\"");
 
