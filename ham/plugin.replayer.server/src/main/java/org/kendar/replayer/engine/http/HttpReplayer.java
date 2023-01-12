@@ -1,7 +1,7 @@
-package org.kendar.replayer.storage.http;
+package org.kendar.replayer.engine.http;
 
 import org.kendar.replayer.storage.CallIndex;
-import org.kendar.replayer.storage.ReplayerEngine;
+import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
