@@ -1,6 +1,7 @@
-package org.kendar.replayer.engine.db;
+package org.kendar.replayer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kendar.janus.JdbcResultSet;
 import org.kendar.janus.JdbcStatement;
@@ -13,11 +14,11 @@ import org.kendar.janus.results.ObjectResult;
 import org.kendar.janus.results.RemainingResultSetResult;
 import org.kendar.janus.results.StatementResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
+import org.kendar.replayer.engine.db.DbReplayer;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.engine.ReplayerResult;
 import org.kendar.replayer.storage.ReplayerRow;
-import org.kendar.replayer.engine.db.utils.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -85,7 +86,7 @@ public class DbReplayerTest {
             dser.deserialize(res.getResponseText());
             item = dser.read("result");
         }
-        assertEquals(resultClass, item.getClass());
+        Assertions.assertEquals(resultClass, item.getClass());
         return (T)item;
     }
 
@@ -101,7 +102,7 @@ public class DbReplayerTest {
         var ads = String.join("\n",Arrays.stream(actualData.split("\n"))
                 .filter(d->d.trim().length()>0)
                 .sequential().map(d->d.stripTrailing()).collect(Collectors.toList()));
-        assertEquals(eds,ads);
+        Assertions.assertEquals(eds,ads);
     }
 
 
@@ -137,13 +138,13 @@ public class DbReplayerTest {
         var connectionResult = verifyStep(target,result,0,ObjectResult.class,null);
         var connectionId = connectionResult.getResult().toString();
         var statementResult = verifyStep(target,result,1,StatementResult.class,connectionId);
-        assertNotNull(statementResult);
+        Assertions.assertNotNull(statementResult);
         var jdbcResultSet = verifyStep(target,result,2, JdbcResultSet.class,connectionId);
-        assertNotNull(jdbcResultSet);
+        Assertions.assertNotNull(jdbcResultSet);
         var retrieveRemaining = verifyStep(target,result,3, RemainingResultSetResult.class,connectionId);
-        assertNotNull(retrieveRemaining);
+        Assertions.assertNotNull(retrieveRemaining);
         var close = verifyStep(target,result,4, ObjectResult.class,connectionId);
-        assertNotNull(close);
+        Assertions.assertNotNull(close);
     }
 
     @Test
@@ -159,7 +160,7 @@ public class DbReplayerTest {
         var connectionResult = verifyStep(target,result,0,ObjectResult.class,null);
         var connectionId = connectionResult.getResult().toString();
         var statementResult = verifyStep(target,result,1,StatementResult.class,connectionId);
-        assertNotNull(statementResult);
+        Assertions.assertNotNull(statementResult);
         var jdbcResultSet = verifyStep(target,result,2, JdbcResultSet.class,connectionId);
         validateResultSetSize(jdbcResultSet, 3);
         var remainingResult = verifyStep(target,result,3, RemainingResultSetResult.class,connectionId);
@@ -169,7 +170,7 @@ public class DbReplayerTest {
         connectionResult = verifyStep(target,result,5,ObjectResult.class,null);
         connectionId = connectionResult.getResult().toString();
         statementResult = verifyStep(target,result,6,StatementResult.class,connectionId);
-        assertNotNull(statementResult);
+        Assertions.assertNotNull(statementResult);
         jdbcResultSet = verifyStep(target,result,7, JdbcResultSet.class,connectionId);
         validateResultSetSize(jdbcResultSet, 1);
         remainingResult = verifyStep(target,result,8, RemainingResultSetResult.class,connectionId);
@@ -180,7 +181,7 @@ public class DbReplayerTest {
         connectionResult = verifyStep(target,result,10,ObjectResult.class,null);
         connectionId = connectionResult.getResult().toString();
         statementResult = verifyStep(target,result,11,StatementResult.class,connectionId);
-        assertNotNull(statementResult);
+        Assertions.assertNotNull(statementResult);
         jdbcResultSet = verifyStep(target,result,12, JdbcResultSet.class,connectionId);
         validateResultSetSize(jdbcResultSet, 3);
         remainingResult = verifyStep(target,result,13, RemainingResultSetResult.class,connectionId);
@@ -203,7 +204,7 @@ public class DbReplayerTest {
         var connectionResult = verifyStep(target,result,0,ObjectResult.class,null);
         var connectionId = connectionResult.getResult().toString();
         var statementResult = verifyStep(target,result,1,StatementResult.class,connectionId);
-        assertNotNull(statementResult);
+        Assertions.assertNotNull(statementResult);
         var jdbcResultSet = verifyStep(target,result,2, JdbcResultSet.class,connectionId);
         validateResultSetSize(jdbcResultSet, 3);
         var remainingResult = verifyStep(target,result,3, RemainingResultSetResult.class,connectionId);
@@ -214,7 +215,7 @@ public class DbReplayerTest {
         connectionResult = verifyStep(target,result,10,ObjectResult.class,null);
         connectionId = connectionResult.getResult().toString();
         statementResult = verifyStep(target,result,11,StatementResult.class,connectionId);
-        assertNotNull(statementResult);
+        Assertions.assertNotNull(statementResult);
         jdbcResultSet = verifyStep(target,result,12, JdbcResultSet.class,connectionId);
         validateResultSetSize(jdbcResultSet, 3);
         remainingResult = verifyStep(target,result,13, RemainingResultSetResult.class,connectionId);
@@ -225,7 +226,7 @@ public class DbReplayerTest {
         connectionResult = verifyStep(target,result,5,ObjectResult.class,null);
         connectionId = connectionResult.getResult().toString();
         statementResult = verifyStep(target,result,6,StatementResult.class,connectionId);
-        assertNotNull(statementResult);
+        Assertions.assertNotNull(statementResult);
         jdbcResultSet = verifyStep(target,result,7, JdbcResultSet.class,connectionId);
         validateResultSetSize(jdbcResultSet, 1);
         remainingResult = verifyStep(target,result,8, RemainingResultSetResult.class,connectionId);
@@ -236,12 +237,12 @@ public class DbReplayerTest {
     }
 
     private void validateResultSetSize(JdbcResultSet jdbcResultSet, int expected) throws SQLException {
-        assertNotNull(jdbcResultSet);
+        Assertions.assertNotNull(jdbcResultSet);
         jdbcResultSet.setEngine(new NullEngine());
         jdbcResultSet.setConnection(new NullConnection());
         while(jdbcResultSet.next()){
             expected--;
         }
-        assertEquals(0, expected);
+        Assertions.assertEquals(0, expected);
     }
 }

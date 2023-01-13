@@ -1,4 +1,4 @@
-package org.kendar.replayer.engine.db.utils;
+package org.kendar.replayer;
 
 import ch.qos.logback.classic.Level;
 import org.kendar.replayer.storage.CallIndex;

@@ -96,6 +96,8 @@
         <module>api.js.builder</module>
         <module>api.test</module>
         <module>jacoco</module>
+        <module>plugin.replayer.commons</module>
+        <module>plugin.replayer.jdbc</module>
     </modules>
     <build>
         <extensions>

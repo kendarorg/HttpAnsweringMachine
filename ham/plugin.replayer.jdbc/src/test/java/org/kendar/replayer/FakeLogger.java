@@ -1,4 +1,4 @@
-package org.kendar.replayer.engine.db.utils;
+package org.kendar.replayer;
 
 import org.slf4j.Logger;
 import org.slf4j.Marker;
