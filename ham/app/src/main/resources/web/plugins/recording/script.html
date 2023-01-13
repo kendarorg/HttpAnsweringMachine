@@ -15,6 +15,7 @@
 <body>
 
 <div class="container" id="app">
+    <spinner :active="loaderActive" message="Please wait" ></spinner>
     <div class="row">
         <div class="col-md-8">
             <br>
@@ -115,12 +116,11 @@
         components: {
             'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
             'recording-list': httpVueLoader('/plugins/recording/vcomponents/vlist.vue'),
-            //'current-line': httpVueLoader('/plugins/recording/vcomponents/vcurrent.vue'),
+            'spinner': httpVueLoader('/vcomponents/spinner.vue'),
             'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
             'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
         },
         mounted: async function(){
-            this.reloadForm();
             var th=this;
             window.addEventListener("message", (event) => {
                 if(event.data.type=="iframesizechanged") {
@@ -131,9 +131,11 @@
                     th.changeRow(event.data.id)
                 }
             });
+            this.reloadForm();
         },
         data: function () {
             return {
+                loaderActive:false,
                 iframeHeight:"1000px",
                 recordVoidDbCalls:false,
                 recordDbCalls:false,
@@ -213,6 +215,7 @@
             },
             executeAct:function(what,onWhat){
                 var th = this;
+                this.loaderActive=true;
                 var id = getUrlParameter("id");
                 if(!isUndefined(onWhat)){
                     var extra = "";
@@ -225,7 +228,9 @@
                     axios.get(url)
                         .then(function (result) {
                             th.updateButtons();
-                        });
+                            th.loaderActive=false;
+                        }).catch(
+                        function (error) {th.loaderActive=false;});
                 }else {
                     axios.get("/api/plugins/replayer/status")
                         .then(function (result) {
@@ -239,7 +244,8 @@
                                 if (data.status == "REPLAYING")th.executeAct(what,'replay');
                                 if (data.status == "PAUSED_REPLAYING")th.executeAct(what,'replay');
                             }
-                        })
+                        }).catch(
+                        function (error) {th.loaderActive=false;});
                 }
             },
             rowSelected:function(rowId,type){
