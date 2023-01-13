@@ -32,7 +32,8 @@
 module.exports = {
   name: "global-script",
   props:{
-    data:Object
+    data:Object,
+    recordingid:String
   },
   methods:{
     hasData:function(){
@@ -48,7 +49,7 @@ module.exports = {
         post:this.data.post
       };
       const headers = {'Content-Type': 'application/json'};
-      axios.put('/api/plugins/replayer/recording/'+getUrlParameter("id")+'/script/'+this.data.id,
+      axios.put('/api/plugins/replayer/recording/'+this.recordingid+'/script/'+this.data.id,
           data, {headers}).then((res) => {
 
       });
