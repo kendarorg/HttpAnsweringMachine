@@ -14,6 +14,8 @@ The AnsweringMachine is built to overcome this troubles
 * [Automatic Null test with db!](docs/generated/autodbtest.md) :zap: NO DB REQUIRED TO REPLAY!
 
 
+
+
 * [Contribute](CONTRIBUTING.md) it's easy :)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
 * Maven repos
