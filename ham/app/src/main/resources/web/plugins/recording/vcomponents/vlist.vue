@@ -83,7 +83,7 @@ module.exports = {
       var row = this.$refs.grid.getById(evt.index);
       var th = this;
       if (evt.buttonid == "_edit") {
-        th.$emit("selectrow",row['id']);
+        th.$emit("selectrow",row['id'],row['type']);
         //location.href = "line.html?line="+row['id']+"&id="+getUrlParameter("id");
       } else if (evt.buttonid == "_delete") {
         await axios.delete("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/lineindex/" + row['id'])

@@ -76,12 +76,20 @@
                 </vtab>
                 <vtab name="SELECTED" :title="selectedRowTitle">
                     <br>
-                    <current-line
-                            @rowchanged="changeRow"
-                            :current-row="selectedRow"
-                            ref="currentLine">
+                    <iframe :src="iframeAddress"
 
-                    </current-line>
+                            ref="selectedIframe"
+                            width="1000"
+                            :height="iframeHeightComputed"
+                            frameborder="0" >
+
+                    </iframe>
+<!--                    <current-line-->
+<!--                            @rowchanged="changeRow"-->
+<!--                            :current-row="selectedRow"-->
+<!--                            ref="currentLine">-->
+
+<!--                    </current-line>-->
                 </vtab>
                 <vtab name="RESULTS">
                     <button v-on:click="reloadResult()" class="bi bi-arrow-clockwise" title="Reload"></button>
@@ -107,15 +115,26 @@
         components: {
             'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
             'recording-list': httpVueLoader('/plugins/recording/vcomponents/vlist.vue'),
-            'current-line': httpVueLoader('/plugins/recording/vcomponents/vcurrent.vue'),
+            //'current-line': httpVueLoader('/plugins/recording/vcomponents/vcurrent.vue'),
             'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
             'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
         },
         mounted: async function(){
             this.reloadForm();
+            var th=this;
+            window.addEventListener("message", (event) => {
+                if(event.data.type=="iframesizechanged") {
+                    if (th.iframeHeight != event.data.height && event.data.height>1000) {
+                        th.iframeHeight = event.data.height;
+                    }
+                }else if(event.data.type=="changerow") {
+                    th.changeRow(event.data.id)
+                }
+            });
         },
         data: function () {
             return {
+                iframeHeight:"1000px",
                 recordVoidDbCalls:false,
                 recordDbCalls:false,
                 columnsResult: [
@@ -138,6 +157,7 @@
                     }
                 ],
                 selectedRow:-1,
+                selectedType:'none',
                 data:{},
                 buttons:{
                     save:false,
@@ -151,6 +171,14 @@
             }
         },
         computed:{
+            iframeHeightComputed:function(){
+              return this.iframeHeight;
+            },
+          iframeAddress:function(){
+
+            return "/plugins/recording/current"+this.selectedType+".html?selectedRow="+this.selectedRow+
+                "&recordingId="+getUrlParameter('id');
+          },
           selectedRowTitle:function(){
               if(isUndefined(this.selectedRow) || this.selectedRow<0){
                   return "NONE";
@@ -214,12 +242,14 @@
                         })
                 }
             },
-            rowSelected:function(rowId){
+            rowSelected:function(rowId,type){
                 console.log("SELECTED "+rowId)
                 this.selectedRow=rowId;
+                this.selectedType = type;
                 //this.selectedRow=rowId;
                 sessionStorage.setItem("recordingCurrentLine", rowId);
                 sessionStorage.setItem("recordingId", getUrlParameter("id"));
+                sessionStorage.setItem("selectedType", type);
             },
             updateButtons:function(){
                 var th=this;
@@ -297,8 +327,9 @@
                             recording = recording+"";
                             if(recording==getUrlParameter("id")){
                                 var current = sessionStorage.getItem("recordingCurrentLine");
+                                var selectedType = sessionStorage.getItem("selectedType");
                                 if(null!=current){
-                                    th.rowSelected(parseInt(current));
+                                    th.rowSelected(parseInt(current),selectedType);
                                 }
                             }
                         }

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+    <script src="/libs/vue.js"></script>
+    <script src="/libs/httpVueLoader.js"></script>
+    <script src="/libs/axios.min.js"></script>
+    <script src="/libs/utils.js"></script>
+    <script src="/plugins/recording/vcomponents/utils.js"></script>
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+</head>
+<body>
+<div class="container" id="app">
+    <div width="800px" ref="container" >
+        <button type="button" :disabled="data.id ==-1"  class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
+        <button type="button" :disabled="prev<0"  class="bi bi-floppy" v-on:click="prevRow()" title="Save changes">Prev</button>
+        <button type="button" :disabled="next<0"  class="bi bi-floppy" v-on:click="nextRow()" title="Save changes">Next</button>
+        <br>
+        <br>
+        <vtabs width="800px" >
+            <vtab name="GLOBAL">
+                <br>
+                <global-line :data="data" width="800px">
+
+                </global-line>
+            </vtab>
+            <vtab name="REQUEST">
+                <br>
+                <request-line :data="data.request" ref="drq" width="800px">
+
+                </request-line>
+            </vtab>
+            <vtab name="REQDATA">
+                <br>
+                <request-data :data="data" width="800px">
+
+                </request-data>
+            </vtab>
+            <vtab name="RESPONSE">
+                <br>
+                <response-line   :data="data.response" ref="drs"  width="800px">
+
+                </response-line>
+            </vtab>
+            <vtab name="RESDATA">
+                <br>
+                <response-data :data="data" width="800px">
+
+                </response-data>
+            </vtab>
+            <vtab name="SCRIPT">
+                <br>
+                <global-script :data="script" :recordingid="recordingId" ref="scr" width="800px">
+
+                </global-script>
+            </vtab>
+        </vtabs>
+    </div>
+</div>
+<script>
+new Vue({
+    el: '#app',
+    components: {
+        'global-line': httpVueLoader('/plugins/recording/vcomponents/line/vglobal.vue'),
+        'global-script': httpVueLoader('/plugins/recording/vcomponents/line/vscript.vue'),
+        'request-line': httpVueLoader('/plugins/recording/vcomponents/line/vrequest.vue'),
+        'response-line': httpVueLoader('/plugins/recording/vcomponents/line/vresponse.vue'),
+        'request-data': httpVueLoader('/plugins/recording/vcomponents/line/vrequestdata.vue'),
+        'response-data': httpVueLoader('/plugins/recording/vcomponents/line/vresponsedata.vue'),
+        'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
+        'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
+    },
+    data: function(){
+        return {
+            windowSize:0,
+            next:-1,
+            prev:-1,
+            data:{
+                type:'none',
+                id:-1,
+                request:{path:'',requestText:'{}'},
+                response:{responseText:'{}'}
+            },
+            script:{},
+            recordingId:-1,
+            selectedRow:-1
+
+        }
+    },
+    mounted: async function(){
+        this.timer = setInterval(this.iframeHeightNotify,300)
+        var th=this;
+        th.recordingId = getUrlParameter('recordingId');
+        th.selectedRow = getUrlParameter('selectedRow');
+        axios.get("/api/plugins/replayer/recording/" + th.recordingId + "/line/" + th.selectedRow)
+            .then(function (result) {
+
+                th.next = parseInt(result.headers.get("X-NEXT"));
+                th.prev = parseInt(result.headers.get("X-PREV"));
+                th.$set(th,"data", result.data);
+
+                axios.get("/api/plugins/replayer/recording/" + th.recordingId + "/script/" + th.selectedRow)
+                    .then(function (results) {
+                        th.script = results.data;
+
+                    })
+            })
+    },
+    methods:{
+        iframeHeightNotify(){
+            if(this.windowSize!=window.outerHeight) {
+                this.windowSize=window.outerHeight
+                var msg = {
+                    type:"iframesizechanged",
+                    height: window.outerHeight//this.$refs.container.scrollHeight
+                }
+                window.parent.postMessage(msg, '*')
+            }
+        },
+        prevRow:function(newRow){
+            var msg = {
+                type:"changerow",
+                id: this.prev//this.$refs.container.scrollHeight
+            }
+            window.parent.postMessage(msg, '*')
+        },
+        nextRow:function(newRow){
+            var msg = {
+                type:"changerow",
+                id: this.next//this.$refs.container.scrollHeight
+            }
+            window.parent.postMessage(msg, '*')
+        },
+        updateContent:function (){
+            axios.put("/api/plugins/replayer/recording/"+this.recordingId+"/line/" + this.selectedRow,this.data)
+                .then(function(result){
+                    //th.data=result.data;
+                });
+        }
+    }
+});
+</script>
+</body>
+</html>
