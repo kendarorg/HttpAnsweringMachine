@@ -30,6 +30,11 @@ public class DbReplayer implements ReplayerEngine {
         return new DbReplayer(sessionFactory,loggerBuilder);
     }
 
+    @Override
+    public boolean isValidPath(String path) {
+        return path.startsWith("/api/db/");
+    }
+
     public DbReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder) {
         this.sessionFactory = sessionFactory;
         this.logger = loggerBuilder.build(DbReplayer.class);

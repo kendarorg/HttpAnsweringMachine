@@ -9,4 +9,6 @@ public interface ReplayerEngine {
     void loadDb(Long recordingId) throws Exception;
     Response findRequestMatch(Request req, String contentHash) throws Exception;
     ReplayerEngine create(LoggerBuilder logger);
+
+    boolean isValidPath(String path);
 }

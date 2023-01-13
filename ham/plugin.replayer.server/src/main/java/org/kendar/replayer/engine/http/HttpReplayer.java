@@ -28,6 +28,11 @@ public class HttpReplayer implements ReplayerEngine {
         return new HttpReplayer(sessionFactory,loggerBuilder);
     }
 
+    @Override
+    public boolean isValidPath(String path) {
+        return path.startsWith("/int/");
+    }
+
     public HttpReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder) {
         this.sessionFactory = sessionFactory;
         this.logger = loggerBuilder.build(HttpReplayer.class);

@@ -5,6 +5,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.replayer.ReplayerState;
+import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.engine.ReplayerStatus;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
@@ -14,17 +15,22 @@ import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @HttpTypeFilter(hostAddress = "*")
 public class ReplayFilter implements FilteringClass {
   private final ReplayerStatus replayerStatus;
   private final String localAddress;
   private final Logger logger;
+  private List<ReplayerEngine> replayerEngines;
 
-  public ReplayFilter(ReplayerStatus replayerStatus, JsonConfiguration configuration, LoggerBuilder loggerBuilder) {
+  public ReplayFilter(ReplayerStatus replayerStatus, JsonConfiguration configuration, LoggerBuilder loggerBuilder,
+                      List<ReplayerEngine> replayerEngines) {
     this.replayerStatus = replayerStatus;
     this.localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
     this.logger = loggerBuilder.build(ReplayFilter.class);
+    this.replayerEngines = replayerEngines;
   }
 
   @Override
@@ -37,10 +43,13 @@ public class ReplayFilter implements FilteringClass {
       pathAddress = "*",
       method = "*")
   public boolean replay(Request req, Response res) {
-    if (req.getHost().equalsIgnoreCase(localAddress)&&
-            !req.getPath().startsWith("/int/")&&
-            !req.getPath().startsWith("/api/db/")) return false;
     if (replayerStatus.getStatus() != ReplayerState.REPLAYING ) return false;
+
+    var validAddress = false;
+    for(var i=0;i<replayerEngines.size();i++){
+      validAddress = replayerEngines.get(i).isValidPath(req.getPath())||validAddress;
+    }
+    if (req.getHost().equalsIgnoreCase(localAddress)&&!validAddress) return false;
     logger.info("Replaying "+
             req.getProtocol()+"://"+
             req.getHost()+
