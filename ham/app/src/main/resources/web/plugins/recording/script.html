@@ -135,6 +135,7 @@
         },
         data: function () {
             return {
+                currentState:"UNDEFINED",
                 loaderActive:false,
                 iframeHeight:"1000px",
                 recordVoidDbCalls:false,
@@ -258,15 +259,30 @@
                 sessionStorage.setItem("selectedType", type);
             },
             updateButtons:function(){
+                console.log("UPDATE")
                 var th=this;
                 axios.get("/api/plugins/replayer/status")
                     .then(function(result){
                         var data = result.data;
                         data.status=data.status.toUpperCase();
                         data.running=data.running.toUpperCase();
+                        if(this.currentState==data.status){
+                            return;
+                        }
+                        this.currentState==data.status
                         var thisScript =getUrlParameter("id");
                         if(data.status!="NONE" && thisScript!=data.running ){
                             data.status="OTHER_RUNNING";
+                            if(typeof th.timer != "undefined"){
+                                clearTimeout(th.timer);
+                                th.timer=undefined;
+                            }
+                        }
+                        if(data.status=="NONE"  ){
+                            if(typeof th.timer != "undefined"){
+                                clearTimeout(th.timer);
+                                th.timer=undefined;
+                            }
                         }
 
                         if(th.data.lines.length==0 && data.status=="NONE"){
@@ -285,6 +301,9 @@
                             th.buttons.play=true;
                             if(data.status=="REPLAYING") {
                                 th.buttons.auto = false;
+                                if(typeof th.timer == "undefined"){
+                                    th.timer=setInterval(th.updateButtons,2000)
+                                }
                             }
                         }else if(data.status=="PAUSED_RECORDING"){
                             th.buttons.record=false;
