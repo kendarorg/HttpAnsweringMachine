@@ -6,6 +6,7 @@
     "staticPages": [
     ]
   },
+  "#include:external/dbproxy.json",
   "#include:external/proxy.json",
   "#include:external/ssl.json",
   "#include:external/http.json",

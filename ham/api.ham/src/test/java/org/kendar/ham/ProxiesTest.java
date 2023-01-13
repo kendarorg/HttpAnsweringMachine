@@ -3,8 +3,7 @@ package org.kendar.ham;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ProxiesTest {
     @BeforeAll
@@ -20,5 +19,17 @@ public class ProxiesTest {
 
         assertNotNull(proxyId);
         hamBuilder.proxies().removeProxy(proxyId);
+    }
+
+    @Test
+    public void testAddingDbProxy() throws HamException, InterruptedException {
+        var connectionString = hamBuilder
+                .proxies()
+                .addRemoteDbProxy("jdbc:test","login","password","org.test.JdbcDriver")
+                .asInactive()
+                .asLocal("exposed","login","password");
+
+        assertEquals("jdbc:janus:http://www.local.test/api/db/exposed",connectionString);
+        hamBuilder.proxies().removeDbProxy("exposed");
     }
 }

@@ -14,6 +14,9 @@ import java.nio.charset.StandardCharsets;
 public class HamRequestBuilder {
 
 
+    public String getHost(){
+        return this.request.getHost();
+    }
     public HamRequestBuilder withHost(String host) {
         this.request.setHost(host);
         return this;
