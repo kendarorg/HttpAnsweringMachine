@@ -1,11 +1,20 @@
 package org.kendar.ham;
 
+import org.kendar.servers.dbproxy.DbProxy;
+
 import java.util.List;
 
 /**
  * Builder for the proxy functions
  */
 public interface ProxyBuilder {
+
+    /**
+     * Remove a local db proxy
+     * @param exposed the exposed dbname
+     */
+    void removeDbProxy(String exposed) throws HamException;
+
     public class Proxy{
         private String id;
         private String when;
@@ -56,6 +65,17 @@ public interface ProxyBuilder {
     String addProxy(String when,String where, String test) throws HamException;
 
     /**
+     * Add a db proxy, specify the db to be proxied
+     * @param dbName
+     * @param login
+     * @param password
+     * @param dbDriver
+     * @return
+     * @throws HamException
+     */
+    DbProxyBuilder addRemoteDbProxy(String dbName, String login, String password,String dbDriver) throws HamException;
+
+    /**
      * Remove proxy by id
      * @param id
      * @throws HamException
@@ -68,6 +88,13 @@ public interface ProxyBuilder {
      * @throws HamException
      */
     List<Proxy> retrieveProxies() throws HamException;
+
+    /**
+     * List all current db proxyes
+     * @return
+     * @throws HamException
+     */
+    List<DbProxy> retrieveDbProxies() throws HamException;
 
     /**
      * Refresh proxy
