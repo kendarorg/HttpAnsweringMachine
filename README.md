@@ -10,7 +10,9 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
-[Record/replay db calls in integration tests!](docs/generated/dbtest.md) :zap: NO DB REQUIRED TO REPLAY!
+* [Record/replay db calls in integration tests!](docs/generated/dbtest.md) :zap: NO DB REQUIRED TO REPLAY!
+* [Automatic Null test with db!](docs/generated/autodbtest.md) :zap: NO DB REQUIRED TO REPLAY!
+
 
 * [Contribute](CONTRIBUTING.md) it's easy :)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
@@ -44,6 +46,10 @@ The AnsweringMachine is built to overcome this troubles
   * Record the db interactions
   * Shut down the real db
   * Run the application without db!
+* [Fast Automatic NullInfrastructure Test With DB](docs/generated/autodbtest.md) 20 minutes
+  * Record the db interactions
+  * Shut down the real db and all environment but the application to test
+  * Automagically test the application without db!
 * **Dockerize any application** 20 minutes
   * Build a custom docker cage for your Java/.NET/Node/... wathever application
   * Access via Proxy or via VPN to experience the full environment

@@ -80,14 +80,5 @@ set the index 1 (the first to set JDBC prepared statement parameters)
 }
 </pre>
 
-* "Download" the recording as "FullDb.json"
-* You can now delete all the request with at least one of the following, leavin only db calls
-  * Host: www.sample.test
-  * Path: /int/
-* "Download" the recording as "DbOnly.json"
-* Now stop the H2 database and the BE application
-* Start replaying the recording with "Play"
-* Restart the BE with the be.bat/sh
-* When the initialisation is complete go again of www.sample.test and redo all the steps (John Doe etc)
-* Everything will work :D
+
 
