@@ -20,7 +20,7 @@
 
 ### Verify the content structure
 
-* Select all the "Stimulator" calls (use "true" as filter on the "Stimulator" column)
+* Select all the "Stimulator" calls (use "true" as filter on the "Stimulator" column) (and save!)
 * Use the global Edit JS and set for all call the verification script in the "post" part
 
 <pre>
