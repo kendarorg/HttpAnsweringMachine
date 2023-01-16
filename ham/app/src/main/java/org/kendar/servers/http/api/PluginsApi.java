@@ -47,6 +47,7 @@ public class PluginsApi implements FilteringClass {
     public void getStatus(Request req, Response res) throws JsonProcessingException {
         var result = new ArrayList<PluginDescriptor>();
         for(var item : pluginsInitializer.getPluginAddresses().entrySet()){
+            if(item.getValue()==null || item.getValue().isEmpty()) continue;
             result.add(new PluginDescriptor(item.getKey(),item.getValue()));
         }
 
