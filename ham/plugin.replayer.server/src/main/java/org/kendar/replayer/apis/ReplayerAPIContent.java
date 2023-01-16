@@ -36,7 +36,6 @@ public class ReplayerAPIContent implements FilteringClass {
   private final LoggerBuilder loggerBuilder;
   private final Md5Tester md5Tester;
   private HibernateSessionFactory sessionFactory;
-  private final String replayerData;
   ObjectMapper mapper = new ObjectMapper();
 
   public ReplayerAPIContent(
@@ -46,7 +45,6 @@ public class ReplayerAPIContent implements FilteringClass {
           JsonConfiguration configuration,
           HibernateSessionFactory sessionFactory) {
 
-    this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
     this.fileResourcesUtils = fileResourcesUtils;
     this.loggerBuilder = loggerBuilder;
     this.md5Tester = md5Tester;

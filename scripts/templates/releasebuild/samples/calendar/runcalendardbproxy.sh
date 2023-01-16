@@ -70,6 +70,6 @@ cd $CALENDAR_PATH/fe
 ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 rm tmp_txt || true
-java -cp "be-4.1.2.jar;../janus-driver-1.1.0.jar" org.springframework.boot.loader.JarLauncher --spring.config.location=file://$(pwd)/application.properties &
+java -cp "be-4.1.3-SNAPSHOT.jar;../janus-driver-1.1.0.jar" org.springframework.boot.loader.JarLauncher --spring.config.location=file://$(pwd)/application.properties &
 cd $START_LOCATION
 

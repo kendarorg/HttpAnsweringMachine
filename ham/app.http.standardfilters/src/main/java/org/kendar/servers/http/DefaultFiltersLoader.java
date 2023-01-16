@@ -49,7 +49,9 @@ public class DefaultFiltersLoader implements CustomFiltersLoader {
             if(methodFilter==null) continue;
             if(cl instanceof StaticWebFilter){
                 var swf =(StaticWebFilter)cl;
-                pluginsInitializer.addPluginAddress(swf.getAddress(),swf.getDescription());
+                if(swf.getAddress()!=null) {
+                    pluginsInitializer.addPluginAddress(swf.getAddress(), swf.getDescription());
+                }
             }
             var hamDoc = m.getAnnotation(HamDoc.class);
             result.add(new FilterDescriptor(this,typeFilter,methodFilter,m,cl,environment,jsonConfiguration,hamDoc));

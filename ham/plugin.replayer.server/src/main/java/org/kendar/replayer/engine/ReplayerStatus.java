@@ -33,8 +33,6 @@ public class ReplayerStatus {
     private static final String MAIN_FILE = "runall.json";
     private final LoggerBuilder loggerBuilder;
     private final FileResourcesUtils fileResourcesUtils;
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final String replayerData;
     private final Md5Tester md5Tester;
     private final EventQueue eventQueue;
     private final Logger logger;
@@ -59,7 +57,6 @@ public class ReplayerStatus {
             HibernateSessionFactory sessionFactory,
             List<ReplayerEngine> replayerEngines) {
 
-        this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.loggerBuilder = loggerBuilder;
         this.logger= loggerBuilder.build(ReplayerStatus.class);
         this.fileResourcesUtils = fileResourcesUtils;
@@ -81,7 +78,6 @@ public class ReplayerStatus {
     public void startRecording(Long id, String description, boolean recordDbCalls, boolean recordVoidDbCalls) throws Exception {
         this.recordDbCalls = recordDbCalls;
         this.recordVoidDbCalls = recordVoidDbCalls;
-        Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) return;
         logger.info("RECORDING START");
         state = ReplayerState.RECORDING;
@@ -89,7 +85,7 @@ public class ReplayerStatus {
                 new RecordingDataset( loggerBuilder, md5Tester,sessionFactory);
         dataset.setRecordDbCalls(recordDbCalls);
         dataset.setRecordVoidDbCalls(recordVoidDbCalls);
-        dataset.load(id, rootPath.toString(), description);
+        dataset.load(id, description);
     }
 
     public void addRequest(Request req, Response res) throws Exception {
@@ -180,13 +176,12 @@ public class ReplayerStatus {
     }
 
     public Long startReplaying(Long id) throws Exception {
-        Path rootPath = getRootPath();
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         logger.info("REPLAY START");
         dataset = new ReplayerDataset(loggerBuilder,md5Tester,eventQueue,
                 internalRequester, new Cache(),simpleProxyHandler,sessionFactory,
                 replayerEngines);
-        dataset.load(id, rootPath.toString(),null);
+        dataset.load(id, null);
         var runId = ((ReplayerDataset)dataset).start();
         state = ReplayerState.REPLAYING;
         return runId;
@@ -198,14 +193,6 @@ public class ReplayerStatus {
         }
         logger.info("AUTO TEST START");
         ((ReplayerDataset)dataset).startStimulator();
-    }
-
-    private Path getRootPath() throws IOException {
-        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData));
-        if (!Files.isDirectory(rootPath)) {
-            Files.createDirectory(rootPath);
-        }
-        return rootPath;
     }
 
     public void stopReplaying(Long id) throws Exception {
