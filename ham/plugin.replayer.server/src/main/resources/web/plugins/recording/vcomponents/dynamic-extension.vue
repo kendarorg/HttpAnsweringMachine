@@ -38,7 +38,6 @@ module.exports = {
           })
     },
     onComponentEvent:function(evt){
-      console.log("DYNCOMP2")
       this.$emit("componentevent",evt);
     }
   },

@@ -31,7 +31,6 @@ module.exports = {
         value:this.recordVoidDbCalls,
         id:"recordVoidDbCalls"
       }
-      console.log("DYNCOMP0")
       this.$emit("componentevent",evt);
     },
     changeRecordDbCalls:function(){
@@ -39,7 +38,6 @@ module.exports = {
         value:this.recordDbCalls,
         id:"recordDbCalls"
       }
-      console.log("DYNCOMP1")
       this.$emit("componentevent",evt);
     }
   }
