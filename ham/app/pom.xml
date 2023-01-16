@@ -188,7 +188,7 @@
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>lib.schema.checker</artifactId>
-            <version>4.1.2</version>
+            <version>${ham.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

@@ -15,20 +15,17 @@
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>app.commons</artifactId>
-            <version>4.1.2</version>
-
+            <version>${ham.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>api.ham</artifactId>
-            <version>4.1.2</version>
-
+            <version>${ham.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>api.test</artifactId>
-            <version>4.1.2</version>
-
+            <version>${ham.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

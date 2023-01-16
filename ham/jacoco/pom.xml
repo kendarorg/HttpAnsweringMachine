@@ -21,52 +21,67 @@
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>api.ham</artifactId>
-            <version>4.1.2</version>
+            <version>${ham.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>api.test</artifactId>
-            <version>4.1.2</version>
+            <version>${ham.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>api.js.builder</artifactId>
-            <version>4.1.2</version>
+            <version>${ham.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>api.replayer</artifactId>
-            <version>4.1.2</version>
+            <version>${ham.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>app</artifactId>
-            <version>4.1.2</version>
+            <version>${ham.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>lib.schema.checker</artifactId>
-            <version>4.1.2</version>
+            <version>${ham.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>plugin.js.filters</artifactId>
-            <version>4.1.2</version>
+            <version>${ham.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>plugin.oidc.server</artifactId>
-            <version>4.1.2</version>
+            <version>${ham.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>plugin.replayer.server</artifactId>
-            <version>4.1.2</version>
+            <version>${ham.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>plugin.replayer.commons</artifactId>
+            <version>${ham.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>plugin.replayer.jdbc</artifactId>
+            <version>${ham.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>plugin.replayer.http</artifactId>
+            <version>${ham.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>plugin.socks5.server</artifactId>
-            <version>4.1.2</version>
+            <version>${ham.version}</version>
         </dependency>
     </dependencies>
 
