@@ -29,7 +29,6 @@ public class RecordingDataset implements BaseDataset{
     private final Logger logger;
     private HibernateSessionFactory sessionFactory;
     private Long name;
-    private String replayerDataDir;
     private String description;
     private final ObjectMapper mapper = new ObjectMapper();
     private boolean recordDbCalls;
@@ -40,10 +39,9 @@ public class RecordingDataset implements BaseDataset{
     }
 
     @Override
-    public void load(Long name, String replayerDataDir, String description) {
+    public void load(Long name, String description) {
         this.description = description;
         this.name = name;
-        this.replayerDataDir = replayerDataDir;
     }
 
     @Override

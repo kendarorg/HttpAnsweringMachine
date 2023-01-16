@@ -37,7 +37,6 @@ public class TODOReplayerAPIGenerator implements FilteringClass {
     private final FileResourcesUtils fileResourcesUtils;
     final ObjectMapper mapper = new ObjectMapper();
     private final SingleRequestGenerator singleRequestGenerator;
-    private final String replayerData;
 
     public TODOReplayerAPIGenerator(
             SingleRequestGenerator singleRequestGenerator,
@@ -47,7 +46,6 @@ public class TODOReplayerAPIGenerator implements FilteringClass {
             JsonConfiguration configuration) {
         this.singleRequestGenerator = singleRequestGenerator;
 
-        this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
 
         this.fileResourcesUtils = fileResourcesUtils;
     }
@@ -73,7 +71,7 @@ public class TODOReplayerAPIGenerator implements FilteringClass {
         var pack = req.getQuery("package");
 
         Map<String, byte[]> result;
-        var rootPath = Path.of(fileResourcesUtils.buildPath(replayerData, id + ".json"));
+        var rootPath = Path.of(fileResourcesUtils.buildPath("replayerData", id + ".json"));
         if (Files.exists(rootPath)) {
             var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
             var replayer = mapper.readValue(fileContent, ReplayerResult.class);

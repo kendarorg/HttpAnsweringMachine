@@ -46,7 +46,6 @@ public class ReplayerAPICrud implements FilteringClass {
   private final ReplayerStatus replayerStatus;
   private final Md5Tester md5Tester;
   private HibernateSessionFactory sessionFactory;
-  private final String replayerData;
 
   private final FileResourcesUtils fileResourcesUtils;
   private final LoggerBuilder loggerBuilder;
@@ -59,7 +58,6 @@ public class ReplayerAPICrud implements FilteringClass {
           JsonConfiguration configuration,
           HibernateSessionFactory sessionFactory) {
 
-    this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
 
     this.fileResourcesUtils = fileResourcesUtils;
 

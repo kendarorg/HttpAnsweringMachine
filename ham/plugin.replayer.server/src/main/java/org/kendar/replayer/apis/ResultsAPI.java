@@ -31,11 +31,9 @@ import java.util.Map;
 public class ResultsAPI  implements FilteringClass {
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final String replayerData;
     private HibernateSessionFactory sessionFactory;
 
     public ResultsAPI(JsonConfiguration configuration, HibernateSessionFactory sessionFactory){
-        this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
         this.sessionFactory = sessionFactory;
     }
 
