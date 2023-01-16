@@ -36,7 +36,7 @@ public class FakeDbReplayer extends DbReplayer {
             public Logger build(Class<?> toLogClass) {
                 return new FakeLogger();
             }
-        });
+        },null);
     }
 
     protected boolean hasDbRows(Long recordingId) throws Exception{

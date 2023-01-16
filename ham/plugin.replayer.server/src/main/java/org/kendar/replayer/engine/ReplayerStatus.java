@@ -7,6 +7,7 @@ import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.events.ReplayCompleted;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.servers.http.ExternalRequester;
@@ -35,6 +36,7 @@ public class ReplayerStatus {
     private final ExternalRequester externalRequester;
     private final InternalRequester internalRequester;
     private final SimpleProxyHandler simpleProxyHandler;
+    private final String localAddress;
     private HibernateSessionFactory sessionFactory;
     private List<ReplayerEngine> replayerEngines;
     private BaseDataset dataset;
@@ -54,6 +56,7 @@ public class ReplayerStatus {
             List<ReplayerEngine> replayerEngines) {
 
         this.loggerBuilder = loggerBuilder;
+        this.localAddress=configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
         this.logger= loggerBuilder.build(ReplayerStatus.class);
         this.fileResourcesUtils = fileResourcesUtils;
         this.md5Tester = md5Tester;
@@ -74,7 +77,7 @@ public class ReplayerStatus {
     public void startRecording(Long id, String description, Map<String, String> query) throws Exception {
 
         if (state != ReplayerState.NONE) return;
-        logger.info("RECORDING START");
+        logger.info("RECORDING START "+id);
         state = ReplayerState.RECORDING;
         dataset =
                 new RecordingDataset( loggerBuilder, md5Tester,sessionFactory,replayerEngines);
@@ -162,7 +165,7 @@ public class ReplayerStatus {
     public Long startReplaying(Long id) throws Exception {
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         logger.info("REPLAY START");
-        dataset = new ReplayerDataset(loggerBuilder,md5Tester,eventQueue,
+        dataset = new ReplayerDataset(loggerBuilder,localAddress,md5Tester,eventQueue,
                 internalRequester, new Cache(),simpleProxyHandler,sessionFactory,
                 replayerEngines);
         dataset.load(id, null);

@@ -78,6 +78,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>plugin.replayer.commons</artifactId>
+            <version>${ham.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>plugin.replayer.server</artifactId>
+            <version>${ham.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>

@@ -281,8 +281,6 @@ public class HamStarter {
         //processBuilder.directory(new File("src"));
         runJar(commandLine,jarDir,()-> {
             deleteDirectory(Path.of(getRootPath(caller),"jsplugins").toFile());
-            deleteDirectory(Path.of(getRootPath(caller),"calllogs").toFile());
-            deleteDirectory(Path.of(getRootPath(caller),"replayerdata").toFile());
             return true;
         },()-> {
             try {

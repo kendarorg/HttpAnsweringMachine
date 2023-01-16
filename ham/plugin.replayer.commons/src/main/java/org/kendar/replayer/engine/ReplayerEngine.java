@@ -1,5 +1,6 @@
 package org.kendar.replayer.engine;
 
+import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
@@ -12,7 +13,9 @@ public interface ReplayerEngine {
     Response findRequestMatch(Request req, String contentHash) throws Exception;
     ReplayerEngine create(LoggerBuilder logger);
 
-    boolean isValidPath(String path);
+    boolean isValidPath(Request path);
 
     boolean isValidRoundTrip(Request req, Response res, Map<String, String> specialParams);
+
+    boolean noStaticsAllowed();
 }
