@@ -94,16 +94,23 @@ public class RecordingDataset implements BaseDataset{
             var newId = req.getId();
             var replayerRow = new ReplayerRow();
 
+            ReplayerEngine engine = null;
             for (int i = 0; i < replayerEngines.size(); i++) {
-                ReplayerEngine engine = replayerEngines.get(i);
-                if (engine.isValidPath(req.getPath())) {
+                engine = replayerEngines.get(i);
+                if (engine.isValidPath(req)) {
                     replayerRow.setType(engine.getId());
                     if(!engine.isValidRoundTrip(req,res,specialParams)){
-                        return;
+                        engine=null;
+                        continue;
                     }
                     break;
+                }else{
+                    engine=null;
                 }
+            }
 
+            if(engine==null){
+                return;
             }
 
             if (res.isBinaryResponse()) {
@@ -131,9 +138,10 @@ public class RecordingDataset implements BaseDataset{
             callIndex.setReference(newId);
             callIndex.setRecordingId(recording.getId());
 
+            final ReplayerEngine constEngine = engine;
             sessionFactory.transactional(em-> {
                 var isRowStatic = MimeChecker.isStatic(res.getHeader(ConstantsHeader.CONTENT_TYPE), req.getPath());
-                if(replayerRow.getType().equalsIgnoreCase("db")){
+                if(constEngine.noStaticsAllowed()){
                     isRowStatic=false;
                 }
                 var saveRow = true;

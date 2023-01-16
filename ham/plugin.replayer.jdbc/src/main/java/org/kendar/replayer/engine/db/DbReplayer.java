@@ -11,6 +11,7 @@ import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.storage.ReplayerRow;
+import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -26,13 +27,16 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class DbReplayer implements ReplayerEngine {
-    public ReplayerEngine create(LoggerBuilder loggerBuilder){
-        return new DbReplayer(sessionFactory,loggerBuilder);
+
+
+    @Override
+    public ReplayerEngine create(LoggerBuilder loggerBuilder) {
+        return new DbReplayer(sessionFactory,loggerBuilder,null);
     }
 
     @Override
-    public boolean isValidPath(String path) {
-        return path.startsWith("/api/db/");
+    public boolean isValidPath(Request req) {
+        return req.getPath().startsWith("/api/db/");
     }
 
     @Override
@@ -47,7 +51,12 @@ public class DbReplayer implements ReplayerEngine {
         return true;
     }
 
-    public DbReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder) {
+    @Override
+    public boolean noStaticsAllowed() {
+        return true;
+    }
+
+    public DbReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder,JsonConfiguration configuration) {
         this.sessionFactory = sessionFactory;
         this.logger = loggerBuilder.build(DbReplayer.class);
     }

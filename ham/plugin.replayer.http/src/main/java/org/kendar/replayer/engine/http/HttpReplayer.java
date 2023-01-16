@@ -3,6 +3,8 @@ package org.kendar.replayer.engine.http;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.storage.ReplayerRow;
+import org.kendar.servers.JsonConfiguration;
+import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -22,15 +24,24 @@ public class HttpReplayer implements ReplayerEngine {
 
     private final HibernateSessionFactory sessionFactory;
     private final Logger logger;
+    private String localAddress;
+    private JsonConfiguration configuration;
     private long name;
 
     public ReplayerEngine create(LoggerBuilder loggerBuilder){
-        return new HttpReplayer(sessionFactory,loggerBuilder);
+        var es= new HttpReplayer(sessionFactory,loggerBuilder,configuration);
+        return es;
     }
 
     @Override
-    public boolean isValidPath(String path) {
-        return path.startsWith("/int/");
+    public boolean isValidPath(Request req) {
+        var isValid = (!isLocalhost(req)) ||
+                (req.getPath().startsWith("/int/") && isLocalhost(req));
+        return isValid;
+    }
+
+    private boolean isLocalhost(Request req) {
+        return req.getHost().equalsIgnoreCase(localAddress) || req.getHost().equalsIgnoreCase("127.0.0.1") || req.getHost().equalsIgnoreCase("localhost");
     }
 
     @Override
@@ -38,9 +49,16 @@ public class HttpReplayer implements ReplayerEngine {
         return true;
     }
 
-    public HttpReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder) {
+    @Override
+    public boolean noStaticsAllowed() {
+        return false;
+    }
+
+    public HttpReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder,JsonConfiguration configuration) {
         this.sessionFactory = sessionFactory;
         this.logger = loggerBuilder.build(HttpReplayer.class);
+        this.localAddress =configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
+        this.configuration = configuration;
     }
 
     @Override
@@ -69,6 +87,7 @@ public class HttpReplayer implements ReplayerEngine {
 
     @Override
     public Response findRequestMatch(Request req,String contentHash) throws Exception {
+
         if(!hasRows) return null;
         Response founded = findRequestMatch(req, contentHash,true);
         if(founded==null){
@@ -82,6 +101,7 @@ public class HttpReplayer implements ReplayerEngine {
         var matchingQuery = -1;
         ReplayerRow founded = null;
         var staticRequests = new ArrayList<ReplayerRow>();
+
         sessionFactory.query(em -> {
             var query = em.createQuery("SELECT e FROM ReplayerRow  e,CallIndex c WHERE " +
                     " e.id=c.reference " +
@@ -102,13 +122,13 @@ public class HttpReplayer implements ReplayerEngine {
         var indexesIds = staticRequests.stream().map(r->r.getIndex().toString()).collect(Collectors.toList());
         var indexes = " e.reference="+String.join(" OR e.reference=",indexesIds);
         var callIndexes = new ArrayList<CallIndex>();
-        var queryString = "SELECT e FROM CallIndex  e WHERE " +
+        var baseQueryString = "SELECT e FROM CallIndex  e WHERE " +
                 "  (" + indexes + ")" +
                 " AND e.recordingId=:recordingId" +
                 " ORDER BY e.reference ASC";
         if(indexesIds.size()>0) {
             sessionFactory.query(em -> {
-                var query = em.createQuery(queryString);
+                var query = em.createQuery(baseQueryString);
                 query.setParameter("recordingId", name);
                 //query.setParameter("reqs",indexes);
                 callIndexes.addAll(query.getResultList());
@@ -139,6 +159,7 @@ public class HttpReplayer implements ReplayerEngine {
                 founded = row;
             }
         }
+
         if(founded!=null){
             states.put(founded.getId(),"");
         }else{

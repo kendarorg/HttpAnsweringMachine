@@ -51,6 +51,7 @@ public class ReplayerDataset implements BaseDataset{
 
   public ReplayerDataset(
           LoggerBuilder loggerBuilder,
+          String localAddress,
           Md5Tester md5Tester, EventQueue eventQueue, InternalRequester internalRequester, Cache cache,
           SimpleProxyHandler simpleProxyHandler, HibernateSessionFactory sessionFactory,
           List<ReplayerEngine> replayerEngines) {

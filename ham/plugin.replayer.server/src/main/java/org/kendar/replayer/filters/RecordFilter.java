@@ -44,9 +44,9 @@ public class RecordFilter  implements FilteringClass {
         if(req.getPath().contains("api/dns/lookup"))return false;
         var validAddress = false;
         for(var i=0;i<replayerEngines.size();i++){
-            validAddress = replayerEngines.get(i).isValidPath(req.getPath())||validAddress;
+            validAddress = replayerEngines.get(i).isValidPath(req)||validAddress;
         }
-        if(req.getHost().equalsIgnoreCase(localAddress) && !validAddress)return false;
+        if(!validAddress)return false;
         if(replayerStatus.getStatus()!= ReplayerState.RECORDING)return false;
         try {
             logger.info("Recording: "+
