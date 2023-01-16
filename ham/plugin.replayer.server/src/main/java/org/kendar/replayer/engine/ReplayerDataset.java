@@ -27,7 +27,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class ReplayerDataset implements BaseDataset{
-  protected static final String MAIN_FILE = "runall.json";
   protected Logger logger;
   protected Md5Tester md5Tester;
   protected HibernateSessionFactory sessionFactory;
@@ -44,7 +43,6 @@ public class ReplayerDataset implements BaseDataset{
   protected final ObjectMapper mapper = new ObjectMapper();
 
   protected Long name;
-  protected String replayerDataDir;
   protected String description;
   protected final ConcurrentHashMap<Long, Object> states = new ConcurrentHashMap<>();
 
@@ -71,9 +69,8 @@ public class ReplayerDataset implements BaseDataset{
   }
 
   @Override
-  public void load(Long name, String replayerDataDir, String description) throws Exception {
+  public void load(Long name, String description) throws Exception {
     this.name = name;
-    this.replayerDataDir = replayerDataDir;
     this.description = description;
     for(var engine :replayerEngines){
       engine.loadDb(name);
