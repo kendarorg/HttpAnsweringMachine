@@ -37,9 +37,6 @@ public class ReplayerAPIActions implements FilteringClass {
                     @PathParameter(key="action", description = "start/pause/stop")
             },
             query = {
-                    @QueryString(key = "recordDbCalls",type = "boolean",description = "True when recording db calls"),
-                    @QueryString(key = "recordVoidDbCalls",type = "boolean",description = "True when recording even " +
-                            "db calls that do not return values")
             }
     )
     public void recording(Request req, Response res) throws Exception {
@@ -48,9 +45,9 @@ public class ReplayerAPIActions implements FilteringClass {
 
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
             var description = req.getQuery("description");
-            var recordVoidDbCalls=Boolean.parseBoolean(req.getQuery("recordVoidDbCalls"));
-            var recordDbCalls=Boolean.parseBoolean(req.getQuery("recordDbCalls"));
-            replayerStatus.startRecording(id,description,recordDbCalls,recordVoidDbCalls);
+//            var recordVoidDbCalls=Boolean.parseBoolean(req.getQuery("recordVoidDbCalls"));
+//            var recordDbCalls=Boolean.parseBoolean(req.getQuery("recordDbCalls"));
+            replayerStatus.startRecording(id,description,req.getQuery());
         }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_RECORDING){
             replayerStatus.restartRecording();
         }else if(action.equalsIgnoreCase("pause") && replayerStatus.getStatus()==ReplayerState.RECORDING){

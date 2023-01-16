@@ -51,16 +51,12 @@
 
             <button v-on:click="updateButtons()" class="btn btn-primary btn-sm">Reload status</button>
             <div>
-                <input :disabled="buttons.record" class="form-check-input" type="checkbox" value="" id="recordVoidDbCalls" name="recordVoidDbCalls"
-                       v-model="recordVoidDbCalls">
-                <label class="form-check-label" for="recordVoidDbCalls" >
-                    Record void db calls
-                </label>
-                <input :disabled="buttons.record" class="form-check-input" type="checkbox" value="" id="recordDbCalls" name="recordDbCalls"
-                       v-model="recordDbCalls">
-                <label class="form-check-label" for="recordDbCalls" >
-                    Record db calls
-                </label>
+                    <dynamic-extension v-for="key in extensions"
+                                       :path="'/plugins/recording/vcomponents'"
+                                       :template="key"
+                                       :default="'none'"
+                                       @componentevent="onExtensionChange"/>
+
             </div>
             <br>
             <br>
@@ -116,6 +112,7 @@
         components: {
             'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
             'recording-list': httpVueLoader('/plugins/recording/vcomponents/vlist.vue'),
+            'dynamic-extension': httpVueLoader('/plugins/recording/vcomponents/dynamic-extension.vue'),
             'spinner': httpVueLoader('/vcomponents/spinner.vue'),
             'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
             'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
@@ -135,11 +132,11 @@
         },
         data: function () {
             return {
+                extensionsData:{},
+                extensions:[],
                 currentState:"UNDEFINED",
                 loaderActive:false,
                 iframeHeight:"1000px",
-                recordVoidDbCalls:false,
-                recordDbCalls:false,
                 columnsResult: [
                     {id: "fileId", template: "long", index: true},
                     {id: "date", template: "string"},
@@ -192,6 +189,10 @@
           }
         },
         methods: {
+            onExtensionChange:function(evt){
+                console.log("DYNCOMP3")
+                this.extensionsData[evt.id]=evt.value
+            },
             changeRow:function(newRow){
                this.selectedRow = newRow;
             },
@@ -220,9 +221,18 @@
                 var id = getUrlParameter("id");
                 if(!isUndefined(onWhat)){
                     var extra = "";
+                    debugger;
                     if(onWhat=="record"){
-                        extra="?recordVoidDbCalls="+this.recordVoidDbCalls+
-                            "&recordDbCalls="+this.recordDbCalls;
+                        var arrayKeys = Object.getOwnPropertyNames(this.extensionsData);
+                        extra="";
+                        for (let i = 0; i < arrayKeys.length; i++){
+                            var key = arrayKeys[i];
+                            if(key.startsWith("_"))continue;
+                            var value=this.extensionsData[key];
+                            if(i==0)extra+="?";
+                            else extra+="&";
+                            extra+=key+"="+value;
+                        }
                     }
                     var id = getUrlParameter("id");
                     var url = "/api/plugins/replayer/recording/"+id+"/"+onWhat+"/"+what+extra;
@@ -339,6 +349,12 @@
             },
             reloadForm: function(){
                 var th=this;
+                axios.get("/api/plugins/replayer/extension")
+                    .then(function(result){
+                        result.data.forEach(function (fe){
+                            th.extensions.push(fe);
+                        });
+                    });
                 axios.get("/api/plugins/replayer/v2/recording/" + getUrlParameter("id"))
                     .then(function (result){
                         th.data=result.data;

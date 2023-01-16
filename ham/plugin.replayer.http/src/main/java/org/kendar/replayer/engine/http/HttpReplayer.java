@@ -33,6 +33,11 @@ public class HttpReplayer implements ReplayerEngine {
         return path.startsWith("/int/");
     }
 
+    @Override
+    public boolean isValidRoundTrip(Request req, Response res, Map<String, String> specialParams) {
+        return true;
+    }
+
     public HttpReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder) {
         this.sessionFactory = sessionFactory;
         this.logger = loggerBuilder.build(HttpReplayer.class);
