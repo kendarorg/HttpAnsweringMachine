@@ -10,6 +10,7 @@ import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.Scripts;
+import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
@@ -24,6 +25,7 @@ import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,19 +36,36 @@ public class ReplayerAPIScripts implements FilteringClass {
     private final LoggerBuilder loggerBuilder;
     final ObjectMapper mapper = new ObjectMapper();
     private final Md5Tester md5Tester;
+    private List<ReplayerEngine> engineList;
     private HibernateSessionFactory sessionFactory;
 
     public ReplayerAPIScripts(
             FileResourcesUtils fileResourcesUtils,
             LoggerBuilder loggerBuilder,
             Md5Tester md5Tester,
-            JsonConfiguration configuration,
+            List<ReplayerEngine> engineList,
             HibernateSessionFactory sessionFactory) {
 
         this.fileResourcesUtils = fileResourcesUtils;
         this.loggerBuilder = loggerBuilder;
         this.md5Tester = md5Tester;
+        this.engineList = engineList;
         this.sessionFactory = sessionFactory;
+    }
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/plugins/replayer/extension",
+            method = "GET")
+    @HamDoc(description = "retrieves the extensions",tags = {"plugin/replayer"},
+            responses = @HamResponse(
+                    body = String[].class
+            )
+    )
+    public void retrieveExtensions(Request req, Response res) throws Exception {
+        var result = engineList.stream().map(e->e.getId()).collect(Collectors.toList());
+        res.setStatusCode(200);
+        res.setResponseText(mapper.writeValueAsString(result));
     }
 
     @HttpMethodFilter(

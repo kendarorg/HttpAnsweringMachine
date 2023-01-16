@@ -84,14 +84,10 @@ public class ReplayerDataset implements BaseDataset{
   }
 
   @Override
-  public void setRecordDbCalls(boolean recordDbCalls) {
+  public void setSpecialParams(Map<String, String> query) {
 
   }
 
-  @Override
-  public void setRecordVoidDbCalls(boolean recordVoidDbCalls) {
-
-  }
 
   public Long start() throws Exception {
     var result = new TestResults();

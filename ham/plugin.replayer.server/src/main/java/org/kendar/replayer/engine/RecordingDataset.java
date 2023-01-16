@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
@@ -28,11 +29,10 @@ public class RecordingDataset implements BaseDataset{
     private final Md5Tester md5Tester;
     private final Logger logger;
     private HibernateSessionFactory sessionFactory;
+    private List<ReplayerEngine> replayerEngines;
     private Long name;
     private String description;
-    private final ObjectMapper mapper = new ObjectMapper();
-    private boolean recordDbCalls;
-    private boolean recordVoidDbCalls;
+    private Map<String, String> specialParams;
 
     public Long getName(){
         return this.name;
@@ -50,21 +50,18 @@ public class RecordingDataset implements BaseDataset{
     }
 
     @Override
-    public void setRecordDbCalls(boolean recordDbCalls) {
-        this.recordDbCalls = recordDbCalls;
-    }
-
-    @Override
-    public void setRecordVoidDbCalls(boolean recordVoidDbCalls) {
-        this.recordVoidDbCalls = recordVoidDbCalls;
+    public void setSpecialParams(Map<String, String> query) {
+        this.specialParams = query;
     }
 
     public RecordingDataset(
             LoggerBuilder loggerBuilder,
-            Md5Tester md5Tester, HibernateSessionFactory sessionFactory) {
+            Md5Tester md5Tester, HibernateSessionFactory sessionFactory,
+            List<ReplayerEngine> replayerEngines) {
         this.md5Tester = md5Tester;
         this.logger = loggerBuilder.build(RecordingDataset.class);
         this.sessionFactory = sessionFactory;
+        this.replayerEngines = replayerEngines;
     }
 
     public void save() throws IOException {
@@ -96,15 +93,19 @@ public class RecordingDataset implements BaseDataset{
             String responseHash;
             var newId = req.getId();
             var replayerRow = new ReplayerRow();
-            replayerRow.setType("http");
-            if(req.getPath().startsWith("/api/db/")){
-                replayerRow.setType("db");
-                if(!recordDbCalls)return;
-                if(!recordVoidDbCalls){
-                    if(res.getResponseText()==null)return;
-                    if(res.getResponseText().contains("VoidResult"))return;
+
+            for (int i = 0; i < replayerEngines.size(); i++) {
+                ReplayerEngine engine = replayerEngines.get(i);
+                if (engine.isValidPath(req.getPath())) {
+                    replayerRow.setType(engine.getId());
+                    if(!engine.isValidRoundTrip(req,res,specialParams)){
+                        return;
+                    }
+                    break;
                 }
+
             }
+
             if (res.isBinaryResponse()) {
                 responseHash = md5Tester.calculateMd5(res.getResponseBytes());
             } else {

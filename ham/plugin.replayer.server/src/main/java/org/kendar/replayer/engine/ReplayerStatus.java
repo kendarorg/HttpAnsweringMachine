@@ -1,11 +1,8 @@
 package org.kendar.replayer.engine;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
-import org.kendar.janus.results.VoidResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.replayer.Cache;
-import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.events.ReplayCompleted;
 import org.kendar.replayer.utils.Md5Tester;
@@ -23,9 +20,8 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class ReplayerStatus {
@@ -43,8 +39,8 @@ public class ReplayerStatus {
     private List<ReplayerEngine> replayerEngines;
     private BaseDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
-    private boolean recordDbCalls;
-    private boolean recordVoidDbCalls;
+//    private boolean recordDbCalls;
+//    private boolean recordVoidDbCalls;
 
     public ReplayerStatus(
             LoggerBuilder loggerBuilder,
@@ -75,16 +71,14 @@ public class ReplayerStatus {
         state = ReplayerState.NONE;
     }
 
-    public void startRecording(Long id, String description, boolean recordDbCalls, boolean recordVoidDbCalls) throws Exception {
-        this.recordDbCalls = recordDbCalls;
-        this.recordVoidDbCalls = recordVoidDbCalls;
+    public void startRecording(Long id, String description, Map<String, String> query) throws Exception {
+
         if (state != ReplayerState.NONE) return;
         logger.info("RECORDING START");
         state = ReplayerState.RECORDING;
         dataset =
-                new RecordingDataset( loggerBuilder, md5Tester,sessionFactory);
-        dataset.setRecordDbCalls(recordDbCalls);
-        dataset.setRecordVoidDbCalls(recordVoidDbCalls);
+                new RecordingDataset( loggerBuilder, md5Tester,sessionFactory,replayerEngines);
+        dataset.setSpecialParams(query);
         dataset.load(id, description);
     }
 
@@ -109,17 +103,7 @@ public class ReplayerStatus {
             res.setStatusCode(response.getStatusCode());
             return true;
         }
-        //When void calls are made to db
-        if(req.getPath().startsWith("/api/db")){
-            if(req.getPathParameter("targetType")!=null) {
-                var ser = serializer.newInstance();
-                ser.write("result", new VoidResult());
-                res.getHeaders().put("content-type", "application/json");
-                res.setResponseText((String) ser.getSerialized());
-                res.setStatusCode(200);
-                return true;
-            }
-        }
+
         return false;
     }
 

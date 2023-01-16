@@ -2,12 +2,12 @@ package org.kendar.replayer.engine;
 
 import org.kendar.replayer.ReplayerState;
 
+import java.util.Map;
+
 public interface BaseDataset {
     Long getName();
     void load(Long name, String description) throws Exception;
     ReplayerState getType();
 
-    void setRecordDbCalls(boolean recordDbCalls);
-
-    void setRecordVoidDbCalls(boolean recordVoidDbCalls);
+    void setSpecialParams(Map<String, String> query);
 }

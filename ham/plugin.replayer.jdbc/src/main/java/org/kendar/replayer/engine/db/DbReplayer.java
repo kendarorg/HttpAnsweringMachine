@@ -35,6 +35,18 @@ public class DbReplayer implements ReplayerEngine {
         return path.startsWith("/api/db/");
     }
 
+    @Override
+    public boolean isValidRoundTrip(Request req, Response res, Map<String, String> specialParams) {
+        var recordDbCalls = specialParams.get("recordDbCalls")==null?false:Boolean.parseBoolean(specialParams.get("recordDbCalls"));
+        var recordVoidDbCalls = specialParams.get("recordDbCalls")==null?false:Boolean.parseBoolean(specialParams.get("recordVoidDbCalls"));
+        if(!recordDbCalls)return false;
+        if(!recordVoidDbCalls){
+            if(res.getResponseText()==null)return false;
+            if(res.getResponseText().contains("VoidResult"))return false;
+        }
+        return true;
+    }
+
     public DbReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder) {
         this.sessionFactory = sessionFactory;
         this.logger = loggerBuilder.build(DbReplayer.class);
@@ -256,6 +268,8 @@ public class DbReplayer implements ReplayerEngine {
                     }
                 }
             }
+        }else{
+            return null;
         }
         if(req.getPathParameter("dbName")==null)return null;
         if(!req.getPath().startsWith("/api/db/"))return null;
@@ -301,7 +315,7 @@ public class DbReplayer implements ReplayerEngine {
                 return serialize(target.getResponse());
             }
         }
-        return null;
+        return serialize(new VoidResult());
     }
 
     private Response getTreeMatch(Request req, JdbcCommand command, String dbName) {
