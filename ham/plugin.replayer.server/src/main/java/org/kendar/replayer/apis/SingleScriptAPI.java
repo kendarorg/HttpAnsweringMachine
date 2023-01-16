@@ -35,7 +35,6 @@ import java.util.List;
 public class SingleScriptAPI implements FilteringClass {
     final ObjectMapper mapper = new ObjectMapper();
 
-    private final String replayerData;
     private final FileResourcesUtils fileResourcesUtils;
     private final LoggerBuilder loggerBuilder;
     private final Md5Tester md5Tester;
@@ -48,7 +47,6 @@ public class SingleScriptAPI implements FilteringClass {
             JsonConfiguration configuration,
             HibernateSessionFactory sessionFactory) {
 
-        this.replayerData = configuration.getConfiguration(ReplayerConfig.class).getPath();
 
         this.fileResourcesUtils = fileResourcesUtils;
         this.loggerBuilder = loggerBuilder;
