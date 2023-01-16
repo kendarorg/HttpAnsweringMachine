@@ -6,7 +6,6 @@
 
     <groupId>org.example</groupId>
     <artifactId>testgen</artifactId>
-    <version>4.1.2</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
