@@ -10,6 +10,7 @@ public class RestFilter {
     private int priority;
     private String name;
     private String source;
+    private String type;
     private HashMap<String, String> matchers;
     private List<RestFilterRequire> require;
 
@@ -69,5 +70,13 @@ public class RestFilter {
 
     public List<RestFilterRequire> getRequire() {
         return require;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

@@ -118,6 +118,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
 
       var action = new JsHttpAction();
       action.setSource(src);
+      action.setType(dbFilter.getType());
 
       filterDescriptor.setAction(action);
       filterDescriptor.setPhase(dbFilter.getPhase());

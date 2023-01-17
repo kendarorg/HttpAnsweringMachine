@@ -118,6 +118,7 @@ public class JsFilterAPI implements FilteringClass {
     rf.setPriority(dbFilter.getPriority());
     rf.setName(dbFilter.getName());
     rf.setSource(dbFilter.getSource());
+    rf.setType(dbFilter.getType());
     rf.setMatchers(mapper.readValue(dbFilter.getMatcher(),typeRef));
     rf.setRequire(new ArrayList<>());
     List<DbFilterRequire> rq = sessionFactory.queryResult(em->
@@ -164,6 +165,7 @@ public class JsFilterAPI implements FilteringClass {
     dbFilter.setPhase(jsonFileData.getPhase());
     dbFilter.setPriority(jsonFileData.getPriority());
     dbFilter.setSource(jsonFileData.getSource());
+    dbFilter.setType(jsonFileData.getType());
 
     var dbFinal = dbFilter;
     sessionFactory.transactional(em->{
@@ -216,6 +218,7 @@ public class JsFilterAPI implements FilteringClass {
     dbFilter.setPhase(jsonFileData.getPhase());
     dbFilter.setPriority(jsonFileData.getPriority());
     dbFilter.setSource(jsonFileData.getSource());
+    dbFilter.setType(jsonFileData.getType());
 
     sessionFactory.transactional(em->{
       em.persist(dbFilter);

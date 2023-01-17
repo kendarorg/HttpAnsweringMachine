@@ -59,6 +59,13 @@
       </select>
     </div>
     <div class="form-group">
+      <label htmlFor="type">Script type</label>
+      <select class="form-control" name="type" id="type" v-model="data.type" >
+        <option>script</option>
+        <option>body</option>
+      </select>
+    </div>
+    <div class="form-group">
       <label htmlFor="priority">priority (number)</label>
       <input class="form-control" readOnly type="text" name="priority" id="priority" v-model="data.priority"/>
     </div>

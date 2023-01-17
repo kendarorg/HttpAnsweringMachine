@@ -29,6 +29,9 @@ public class DbFilter implements DbTable {
     @Column(name = "priority")
     private int priority;
 
+    @Column(name = "type")
+    private String type;
+
     public String getName() {
         return name;
     }
@@ -75,5 +78,13 @@ public class DbFilter implements DbTable {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

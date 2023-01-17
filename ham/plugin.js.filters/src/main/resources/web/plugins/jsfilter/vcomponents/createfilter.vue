@@ -69,12 +69,13 @@ module.exports = {
       var data = {
             name: this.scriptName,
             phase: "NONE",
+            type:"script",
             matchers:{
               apimatcher:JSON.stringify({
                 hostAddress: "www.change.me",
-                pathAddress: "changeme",
+                pathAddress: "/changeme",
                 method: "GET",
-              })
+              }),
           },
         source:
           "//Here you can examine the request and produce a response\n"+

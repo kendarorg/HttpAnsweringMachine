@@ -34,6 +34,10 @@ public class JsFilterExecutor extends GenericFilterExecutor {
 
     @Override
     public boolean run(Request request, Response response) {
+        if(filterDescriptor.getAction().getType().equalsIgnoreCase("body")){
+            response.setResponseText(filterDescriptor.getAction().getSource());
+            return true;
+        }
         Context cx = Context.enter();
         cx.setOptimizationLevel(9);
         cx.setLanguageVersion(Context.VERSION_1_8);
