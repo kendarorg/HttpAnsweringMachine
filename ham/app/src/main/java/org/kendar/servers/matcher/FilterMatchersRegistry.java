@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class FilterMatchersRegistry implements MatchersRegistry {
@@ -27,5 +28,10 @@ public class FilterMatchersRegistry implements MatchersRegistry {
     @Override
     public Class<?> get(String key) {
         return matcherList.get(key.toLowerCase(Locale.ROOT));
+    }
+
+    @Override
+    public List<String> getAll() {
+        return matcherList.keySet().stream().collect(Collectors.toList());
     }
 }
