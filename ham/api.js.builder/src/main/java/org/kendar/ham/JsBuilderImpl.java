@@ -21,7 +21,7 @@ class JsBuilderImpl implements JsBuilder {
     }
 
     @Override
-    public FilterDescriptor filterById(String id) throws HamException {
+    public FilterDescriptor filterById(Long id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withPath("/api/plugins/jsfilter/filters/"+id);
         return hamBuilder.callJson(request.build(), FilterDescriptor.class);
@@ -34,7 +34,7 @@ class JsBuilderImpl implements JsBuilder {
     }
 
     @Override
-    public void deleteFilter(String id) throws HamException {
+    public void deleteFilter(Long id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withDelete()
                 .withPath("/api/plugins/jsfilter/filters/"+id);
