@@ -119,7 +119,7 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
     }
 
     @Override
-    public String create() throws HamException {
+    public Long create() throws HamException {
         var data = new JsBuilder.FilterDescriptor();
         var matchers = new HashMap<String,String>();
         var matcher = new JsBuilder.ApiMatcher();
@@ -145,8 +145,8 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
                 .withPost()
                 .withPath("/api/plugins/jsfilter/filters")
                 .withJsonBody(data);
-         hamBuilder.call(request.build());
+        var res= hamBuilder.call(request.build());
         Sleeper.sleep(500);
-        return this.name;
+        return Long.parseLong(res.getResponseText());
     }
 }

@@ -10,7 +10,7 @@ public interface JsFilterBuilder {
     JsFilterBuilder withPathRegexp(String host);
     JsFilterBuilder setBlocking();
     JsSourceBuilder withSource();
-    String create() throws HamException;
+    Long create() throws HamException;
     JsFilterBuilder verifyHostRegexp(String host);
     JsFilterBuilder verifPathRegexp(String host);
 }

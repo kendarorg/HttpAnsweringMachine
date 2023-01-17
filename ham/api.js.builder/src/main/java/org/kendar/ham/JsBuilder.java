@@ -135,9 +135,9 @@ public interface JsBuilder {
      * @return
      */
     List<String> filterIds() throws HamException;
-    FilterDescriptor filterById(String id) throws HamException;
-    JsFilterBuilder addFilter(String id);
-    void deleteFilter(String id) throws HamException;
+    FilterDescriptor filterById(Long id) throws HamException;
+    JsFilterBuilder addFilter(String name);
+    void deleteFilter(Long id) throws HamException;
 
     JsBuilderImpl init();
 }

@@ -6,7 +6,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.kendar.events.EventQueue;
 import org.kendar.http.CustomFiltersLoader;
 import org.kendar.http.FilterDescriptor;
-import org.kendar.servers.http.matchers.ApiMatcher;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.matchers.FilterMatcher;
@@ -15,6 +14,7 @@ import org.kendar.servers.http.storage.DbFilter;
 import org.kendar.servers.http.storage.DbFilterRequire;
 import org.kendar.servers.http.types.http.JsHttpAction;
 import org.kendar.servers.http.types.http.JsHttpFilterDescriptor;
+import org.kendar.servers.http.types.http.ScriptMatcher;
 import org.kendar.utils.LoggerBuilder;
 import org.mozilla.javascript.ClassShutter;
 import org.mozilla.javascript.Context;
@@ -104,7 +104,11 @@ public class JsFilterLoader implements CustomFiltersLoader {
       var serializedMatchers = mapper.readValue(dbFilter.getMatcher(), typeRef);
       List<FilterMatcher> matchers = new ArrayList<>();
       for(var serialized:serializedMatchers.entrySet()){
-        matchers.add((FilterMatcher) mapper.readValue(serialized.getValue(),matchersRegistry.get(serialized.getKey())));
+        var fm = (FilterMatcher) mapper.readValue(serialized.getValue(),matchersRegistry.get(serialized.getKey()));
+        if(fm instanceof ScriptMatcher){
+          initializeScriptMatcher((ScriptMatcher)fm);
+        }
+        matchers.add(fm);
       }
 
       sessionFactory.query(em -> {
@@ -210,6 +214,37 @@ public class JsFilterLoader implements CustomFiltersLoader {
     while ((read = zis.read(buffer, 0, buffer.length)) > 0)
       baos.write(buffer, 0, read);
     return baos.toByteArray();
+  }
+
+
+
+  private void initializeScriptMatcher(ScriptMatcher fm) throws Exception {
+    StringBuilder scriptSrc =
+            new StringBuilder(
+                    "var globalFilterResult=runFilter(REQUESTJSON,utils);\n"
+                            + "globalResult.put('continue', globalFilterResult);\n");
+    scriptSrc.append("\r\nfunction runFilter(request,response,utils){");
+    if(fm.getScript()!=null) {
+      scriptSrc
+              .append("\r\n")
+              .append(fm.getScript());
+    }
+    scriptSrc.append("\r\n}");
+    Context cx = Context.enter();
+    cx.setOptimizationLevel(9);
+    cx.setLanguageVersion(Context.VERSION_1_8);
+    //cx.setClassShutter(sandboxClassShutter);
+    fm.initializeUtils(new JsUtils(this.sessionFactory,eventQueue,externalRequester));
+    try {
+      Scriptable currentScope = getNewScope(cx);
+      fm.intializeScript(cx.compileString(scriptSrc.toString(), "my_script_id", 1, null));
+    } catch (Exception ex) {
+      logger.error("Error compiling script");
+      logger.error(scriptSrc.toString());
+      throw new Exception(ex);
+    } finally {
+      Context.exit();
+    }
   }
 
   private void precompileFilter(JsHttpFilterDescriptor filterDescriptor) throws Exception {
