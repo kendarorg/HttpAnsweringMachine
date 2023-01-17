@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
 import org.kendar.events.EventQueue;
+import org.kendar.events.ServiceStarted;
 import org.kendar.events.events.SSLChangedEvent;
 import org.kendar.servers.certificates.CertificatesManager;
 import org.kendar.servers.certificates.GeneratedCert;
@@ -41,6 +42,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
   public static final String PASSPHRASE = "passphrase";
   public static final String PRIVATE_CERT = "privateCert";
   private final JsonConfiguration configuration;
+  private EventQueue eventQueue;
   private final Logger logger;
   private final AnsweringHandler handler;
   private final CertificatesManager certificatesManager;
@@ -57,6 +59,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
     this.handler = handler;
     this.certificatesManager = certificatesManager;
     this.configuration = configuration;
+    this.eventQueue = eventQueue;
     eventQueue.register(this::handleCertificateChange, SSLChangedEvent.class);
   }
 
@@ -87,6 +90,8 @@ public class AnsweringHttpsServer implements AnsweringServer {
         var httpsServer = setupHttpsServer(config, address,port);
 
         httpsServer.start();
+
+        eventQueue.handle(new ServiceStarted().withTye("https"));
         logger.info("Https server LOADED, port: {}",port);
       }
       var localConfig = configuration.getConfiguration(HttpsWebServerConfig.class);

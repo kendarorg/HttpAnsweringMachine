@@ -1,8 +1,10 @@
 package org.kendar.servers.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.servers.http.matchers.FilterMatcher;
 import org.kendar.http.GenericFilterExecutor;
 import org.kendar.http.HttpFilterType;
+import org.kendar.servers.http.types.http.JsHttpFilterDescriptor;
 import org.kendar.utils.LoggerBuilder;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
@@ -13,17 +15,15 @@ import java.util.Map;
 
 public class JsFilterExecutor extends GenericFilterExecutor {
     private final Logger logger;
-    private final JsFilterDescriptor filterDescriptor;
+    private final JsHttpFilterDescriptor filterDescriptor;
     private final JsFilterLoader jsFilterLoader;
 
-    public JsFilterExecutor(JsFilterDescriptor filterDescriptor, JsFilterLoader jsFilterLoader, LoggerBuilder loggerBuilder,String id) {
+    public JsFilterExecutor(JsHttpFilterDescriptor filterDescriptor, JsFilterLoader jsFilterLoader, LoggerBuilder loggerBuilder,
+                            String id,FilterMatcher ... matchers) {
         super(filterDescriptor.getPriority(),
-                filterDescriptor.getMethod(),
                 filterDescriptor.isBlocking(),filterDescriptor.isBlocking(),
-                filterDescriptor.getHostAddress(),filterDescriptor.getPathAddress(),
-                filterDescriptor.getHostRegexp(),filterDescriptor.getPathRegexp(),
 
-                HttpFilterType.valueOf(filterDescriptor.getPhase()),null,null);
+                HttpFilterType.valueOf(filterDescriptor.getPhase()),null,null,matchers);
         setId(id);
         this.logger = loggerBuilder.build(JsFilterExecutor.class);
         this.filterDescriptor = filterDescriptor;

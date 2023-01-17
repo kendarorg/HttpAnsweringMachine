@@ -67,21 +67,25 @@ module.exports = {
     },
     create:function(){
       var data = {
-        id:this.scriptName,
-        method:"GET",
-        phase:"NONE",
-        hostAddress:"www.change.me",
-        pathAddress:"changeme",
-        source:[
-          "//Here you can examine the request and produce a response",
-          "response.setResponseText('To implement');",
-          "response.setStatusCode(404);",
-          "//If return is false and blocking is false the response will be sent immediatly",
+            name: this.scriptName,
+            phase: "NONE",
+            matchers:{
+              apimatcher:JSON.stringify({
+                hostAddress: "www.change.me",
+                pathAddress: "changeme",
+                method: "GET",
+              })
+          },
+        source:
+          "//Here you can examine the request and produce a response\n"+
+          "response.setResponseText('To implement');\n"+
+          "response.setStatusCode(404);\n"+
+          "//If return is false and blocking is false the response will be sent immediatly\n"+
           "return false;"
-        ]
+
       }
       const headers = {'Content-Type': 'application/json'};
-      axios.post('/api/plugins/jsfilter/filters/'+this.scriptName, JSON.stringify(data), {headers}).then((res) => {
+      axios.post('/api/plugins/jsfilter/filters', JSON.stringify(data), {headers}).then((res) => {
         location.href = "script.html?id="+name;
       });
     }

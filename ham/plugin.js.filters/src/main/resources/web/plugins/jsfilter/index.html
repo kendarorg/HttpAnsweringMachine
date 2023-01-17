@@ -69,7 +69,10 @@
                 modalData: null,
                 modalShow: false,
                 columns: [
-                    {id: "id", template: "string", index: true}
+                    {id: "id", template: "long", index: true},
+                    {id: "name", template: "string"},
+                    {id: "phase", template: "string"},
+                    {id: "priority", template: "long"}
                 ],
                 extraColumns: [
                     {
@@ -88,15 +91,7 @@
         methods: {
             retrieveData: async function () {
                 var result = await axios.get("/api/plugins/jsfilter/filters");
-                var data = [];
-                result.data.forEach(function(line){
-                    data.push({
-                        id:line
-                    })
-                });
-                return {
-                    data:data
-                };
+                return result;
             },
             gridClicked: async function (evt) {
                 var row = this.$refs.grid.getById(evt.index);

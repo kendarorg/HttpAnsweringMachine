@@ -1,6 +1,8 @@
 package org.kendar.servers;
 
 import com.sun.net.httpserver.HttpServer;
+import org.kendar.events.EventQueue;
+import org.kendar.events.ServiceStarted;
 import org.kendar.servers.config.HttpWebServerConfig;
 import org.kendar.servers.http.AnsweringHandler;
 import org.kendar.utils.LoggerBuilder;
@@ -18,14 +20,16 @@ public class AnsweringHttpServer implements AnsweringServer {
   private final Logger logger;
   private final AnsweringHandler handler;
   private final JsonConfiguration configuration;
+  private EventQueue eventQueue;
   private boolean running = false;
   private final HashMap<String,HttpServer> httpServers = new HashMap<>();
 
   public AnsweringHttpServer(
-      LoggerBuilder loggerBuilder, AnsweringHandler handler, JsonConfiguration configuration) {
+          LoggerBuilder loggerBuilder, AnsweringHandler handler, JsonConfiguration configuration, EventQueue eventQueue) {
     this.logger = loggerBuilder.build(AnsweringHttpServer.class);
     this.handler = handler;
     this.configuration = configuration;
+    this.eventQueue = eventQueue;
   }
 
   public void isSystem() {
@@ -58,6 +62,7 @@ public class AnsweringHttpServer implements AnsweringServer {
 
         httpServer.start();
         httpServers.put(port,httpServer);
+        eventQueue.handle(new ServiceStarted().withTye("http"));
         logger.info("Http server LOADED, port: {}",port);
       }
 

@@ -7,6 +7,8 @@ import org.kendar.servers.db.EntityManagerFunction;
 import org.kendar.servers.db.EntityManagerFunctionResult;
 import org.kendar.servers.db.HibernateSessionFactory;
 
+import java.util.Optional;
+
 public class FakeSessionFactory implements HibernateSessionFactory {
     @Override
     public SessionFactory createSession() throws HibernateException {
@@ -21,6 +23,11 @@ public class FakeSessionFactory implements HibernateSessionFactory {
     @Override
     public <T> T queryResult(EntityManagerFunctionResult function) throws Exception {
         return null;
+    }
+
+    @Override
+    public <T> Optional<T> querySingle(EntityManagerFunctionResult function) throws Exception {
+        return Optional.empty();
     }
 
     @Override
