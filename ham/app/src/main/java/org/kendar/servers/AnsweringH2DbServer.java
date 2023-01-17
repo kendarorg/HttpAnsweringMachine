@@ -3,6 +3,8 @@ package org.kendar.servers;
 import org.h2.tools.Server;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.cfg.Configuration;
+import org.kendar.events.EventQueue;
+import org.kendar.events.ServiceStarted;
 import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.config.GlobalConfigDb;
 import org.kendar.servers.db.DbTable;
@@ -26,6 +28,7 @@ public class AnsweringH2DbServer  implements AnsweringServer{
     private final JsonConfiguration configuration;
     private List<DbTable> dbTableList;
     private HibernateSessionFactory sessionFactory;
+    private EventQueue eventQueue;
 
     private boolean running = false;
     private boolean initialized = false;
@@ -33,12 +36,13 @@ public class AnsweringH2DbServer  implements AnsweringServer{
 
     public AnsweringH2DbServer(
             LoggerBuilder loggerBuilder, AnsweringHandler handler, JsonConfiguration configuration,
-            List<DbTable> dbTableList, HibernateSessionFactory sessionFactory) {
+            List<DbTable> dbTableList, HibernateSessionFactory sessionFactory, EventQueue eventQueue) {
         this.logger = loggerBuilder.build(AnsweringH2DbServer.class);
         this.handler = handler;
         this.configuration = configuration;
         this.dbTableList = dbTableList;
         this.sessionFactory = sessionFactory;
+        this.eventQueue = eventQueue;
     }
 
     public void isSystem() {
@@ -68,6 +72,7 @@ public class AnsweringH2DbServer  implements AnsweringServer{
             /**/
             logger.info("H2 DB server LOADED, port: {}",server.getPort());
 
+
             while(running){
                 Sleeper.sleep(60*1000);
             }
@@ -96,6 +101,7 @@ public class AnsweringH2DbServer  implements AnsweringServer{
                 hibernateConfig.addAnnotatedClass(table.getClass());
             }
             this.sessionFactory.setConfiguration(hibernateConfig);
+            eventQueue.handle(new ServiceStarted().withTye("db"));
 
         }catch (Exception ex){
             logger.error("Error building tables"+ex);

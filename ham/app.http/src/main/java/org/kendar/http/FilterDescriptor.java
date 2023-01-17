@@ -3,16 +3,15 @@ package org.kendar.http;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.kendar.http.annotations.*;
 import org.kendar.http.annotations.concrete.HamDocConcrete;
-import org.kendar.http.annotations.concrete.HamMatcherConcrete;
 import org.kendar.http.annotations.concrete.HttpMethodFilterConcrete;
 import org.kendar.http.annotations.concrete.HttpTypeFilterConcrete;
-import org.kendar.http.annotations.multi.*;
+import org.kendar.servers.http.matchers.ApiMatcher;
+import org.kendar.servers.http.matchers.FilterMatcher;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.core.env.Environment;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.IncompleteAnnotationException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -24,19 +23,20 @@ public class FilterDescriptor {
   private static final Pattern namedGroupsPattern =
       Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z\\d]*)>");
   private final int priority;
-  private final String method;
   private final boolean methodBlocking;
   private final boolean typeBlocking;
   private final Object filterClass;
   private final List<String> pathSimpleMatchers = new ArrayList<>();
   private final JsonConfiguration jsonConfiguration;
   private final CustomFiltersLoader loader;
+
+  public List<FilterMatcher> getMatchers() {
+    return matchers;
+  }
+
+  private List<FilterMatcher> matchers = new ArrayList<>();
   private HamMatcher[] extraMatches;
   private String description;
-  private String hostAddress;
-  private String pathAddress;
-  private Pattern hostPattern;
-  private Pattern pathPattern;
   private HttpFilterType phase;
   private HttpTypeFilter typeFilter;
   private HttpMethodFilter methodFilter;
@@ -67,25 +67,14 @@ public class FilterDescriptor {
     } catch (IncompleteAnnotationException ex) {
       throw new RuntimeException("Missing id", ex);
     }
-    if (typeFilter.hostPattern().length() > 0) {
-      var realHostPattern = getWithEnv(typeFilter.hostPattern(), environment);
-      hostPattern = Pattern.compile(realHostPattern);
-    } else {
-      hostAddress = getWithEnv(typeFilter.hostAddress(), environment);
-    }
+    var matcher = new ApiMatcher(typeFilter.hostAddress(),typeFilter.hostPattern(),
+            methodFilter.method(),methodFilter.pathPattern(),methodFilter.pathAddress());
+    matcher.initialize(in->getWithEnv(in,environment));
     priority = typeFilter.priority();
-    method = methodFilter.method();
     phase = methodFilter.phase();
     methodBlocking = methodFilter.blocking();
     typeBlocking = typeFilter.blocking();
-    if (methodFilter.pathPattern().length() > 0) {
-      var realPathPattern = getWithEnv(methodFilter.pathPattern(), environment);
-      pathPattern = Pattern.compile(realPathPattern);
-      pathMatchers = getNamedGroupCandidates(realPathPattern);
-    } else {
-      pathAddress = getWithEnv(methodFilter.pathAddress(), environment);
-      setupPathSimpleMatchers();
-    }
+    matchers.add(matcher);
     this.extraMatches = methodFilter.matcher();
     this.typeFilter = buildTypeFilter();
     this.methodFilter = buildMethodFilter();
@@ -107,26 +96,16 @@ public class FilterDescriptor {
     }
     this.filterClass = executor;
     this.id = executor.getId();
-    if (null != executor.getHostPattern() && executor.getHostPattern().length() > 0) {
-      var realHostPattern = getWithEnv(executor.getHostPattern(), environment);
-      hostPattern = Pattern.compile(realHostPattern);
-    } else {
-      hostAddress = getWithEnv(executor.getHostAddress(), environment);
+    for(var matcher:executor.getMatchers()){
+      matcher.initialize(in->getWithEnv(in,environment));
     }
+    matchers= executor.getMatchers();
+
     priority = executor.getPriority();
-    method = executor.getMethod();
     phase = executor.getPhase();
     methodBlocking = executor.isMethodBlocking();
     typeBlocking = executor.isTypeBlocking();
-    if (null != executor.getPathPattern() && executor.getPathPattern().length() > 0) {
-      var realPathPattern = getWithEnv(executor.getPathPattern(), environment);
-      pathPattern = Pattern.compile(realPathPattern);
-      pathMatchers = getNamedGroupCandidates(realPathPattern);
-    } else {
-      pathAddress = getWithEnv(executor.getPathAddress(), environment);
-      setupPathSimpleMatchers();
-    }
-            this.typeFilter = buildTypeFilter();
+    this.typeFilter = buildTypeFilter();
     this.methodFilter = buildMethodFilter();
   }
 
@@ -153,37 +132,21 @@ public class FilterDescriptor {
 
   private HttpMethodFilter buildMethodFilter() {
     var loc = this;
+    var matcher = (ApiMatcher)matchers.get(0);
     return new HttpMethodFilterConcrete(phase, methodBlocking,
-    pathAddress, pathPattern,
-            method, description,
+            matcher.getPathAddress(),matcher.getPathPatternReal(),matcher.getMethod(),
+            description,
             id, extraMatches);
   }
 
   private HttpTypeFilter buildTypeFilter() {
     var loc = this;
-    return new HttpTypeFilterConcrete(hostAddress,typeBlocking,priority,hostPattern);
-  }
-
-  private void setupPathSimpleMatchers() {
-    if (pathAddress.contains("{")) {
-      var explTemplate = pathAddress.split("/");
-      for (var i = 0; i < explTemplate.length; i++) {
-        var partTemplate = explTemplate[i];
-        if (partTemplate.startsWith("{")) {
-          partTemplate = partTemplate.substring(1);
-          partTemplate = "*" + partTemplate.substring(0, partTemplate.length() - 1);
-        }
-        pathSimpleMatchers.add(partTemplate);
-      }
-    }
+    var matcher = (ApiMatcher)matchers.get(0);
+    return new HttpTypeFilterConcrete(matcher.getHostAddress(),typeBlocking,priority,matcher.getPathPatternReal());
   }
 
   public int getPriority() {
     return priority;
-  }
-
-  public String getMethod() {
-    return method;
   }
 
   public String getWithEnv(String data, Environment env) {
@@ -201,51 +164,11 @@ public class FilterDescriptor {
     return data;
   }
 
-  public boolean matchesHost(String host, Environment env) {
-    if (hostAddress != null && hostAddress.equalsIgnoreCase("*")) return true;
-    if (hostPattern != null) {
-      return hostPattern.matcher(host).matches();
+  public boolean matches(Request req){
+    for(var match:matchers){
+      if(!match.matches(req))return false;
     }
-    return host.equalsIgnoreCase(hostAddress);
-  }
-
-  public boolean matchesPath(String path, Environment env, Request request,boolean exact) {
-    if(exact){
-      if(pathAddress==null ||pathAddress.length()==0 ||pathAddress.indexOf('*')>=0){
-        return false;
-      }
-      return path.equalsIgnoreCase(pathAddress);
-    }
-    if (pathAddress != null && pathAddress.equalsIgnoreCase("*")) return true;
-    if (pathPattern != null) {
-      var matcher = pathPattern.matcher(path);
-      if (matcher.matches()) {
-        for (int i = 0; i < pathMatchers.size(); i++) {
-          var group = matcher.group(pathMatchers.get(i));
-          if (group != null) {
-            request.addPathParameter(pathMatchers.get(i), group);
-          }
-        }
-        return true;
-      }
-    }
-
-    if (pathSimpleMatchers.size() > 0) {
-      var explPath = path.split("/");
-      if (pathSimpleMatchers.size() != explPath.length) return false;
-      for (var i = 0; i < pathSimpleMatchers.size(); i++) {
-        var partTemplate = pathSimpleMatchers.get(i);
-        var partPath = explPath[i];
-        if (partTemplate.startsWith("*")) {
-          partTemplate = partTemplate.substring(1);
-          request.addPathParameter(partTemplate, partPath);
-        } else if (!partTemplate.equalsIgnoreCase(partPath)) {
-          return false;
-        }
-      }
-      return true;
-    }
-    return path.equalsIgnoreCase(pathAddress);
+    return true;
   }
 
   public boolean execute(

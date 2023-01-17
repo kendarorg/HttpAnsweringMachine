@@ -6,6 +6,7 @@ public interface JsFilterBuilder {
     JsFilterBuilder withHost(String host);
     JsFilterBuilder withHostRegexp(String host);
     JsFilterBuilder withPath(String host);
+    JsFilterBuilder withType(ScriptType type);
     JsFilterBuilder withPathRegexp(String host);
     JsFilterBuilder setBlocking();
     JsSourceBuilder withSource();
