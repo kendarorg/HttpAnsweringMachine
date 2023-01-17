@@ -96,6 +96,7 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
       HttpClientConnectionManager connectionManager)
       throws InvocationTargetException, IllegalAccessException {
     var config = filtersConfiguration.get();
+    if(config==null)return false;
     if (!config.filters.containsKey(filterType)) return false;
     var possibleMatches = new ArrayList<FilterDescriptor>();
     for (var filterEntry : config.filters.get(filterType)) {

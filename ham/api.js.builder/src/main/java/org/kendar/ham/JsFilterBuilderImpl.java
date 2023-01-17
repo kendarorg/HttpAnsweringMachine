@@ -1,9 +1,11 @@
 package org.kendar.ham;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.utils.Sleeper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -12,6 +14,7 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
 
     private HamInternalBuilder hamBuilder;
     private String id;
+    private String type;
 
     JsFilterBuilderImpl(HamInternalBuilder hamBuilder, String name){
 
@@ -25,7 +28,7 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
     private String pathRegexp;
     private FilterPhase phase;
     private boolean blocking = false;
-    private List<String> source = new ArrayList<>();
+    private String source;
 
     @Override
     public JsFilterBuilder withMethod(Methods method) {
@@ -67,6 +70,12 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
     }
 
     @Override
+    public JsFilterBuilder withType(ScriptType type) {
+        this.type = type.toString();
+        return this;
+    }
+
+    @Override
     public JsFilterBuilder withPathRegexp(String host) {
         this.pathRegexp = host;
         return this;
@@ -89,13 +98,12 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
 
     @Override
     public JsSourceBuilder withSource() {
-        this.source = new ArrayList<>();
         return this;
     }
 
     @Override
     public JsSourceBuilder addLine(String line) {
-        source.add(line);
+        source+=line+"\n";
         return this;
     }
 
@@ -113,13 +121,21 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
     @Override
     public String create() throws HamException {
         var data = new JsBuilder.FilterDescriptor();
-        data.setMethod(this.method);
+        var matchers = new HashMap<String,String>();
+        var matcher = new JsBuilder.ApiMatcher();
+        matcher.setMethod(this.method);
+        matcher.setHostAddress(this.hostAddress);
+        matcher.setHostRegexp(this.hostRegexp);
+        matcher.setPathAddress(this.pathAddress);
+        matcher.setPathRegexp(this.pathRegexp);
+        try {
+            matchers.put("apimatcher",mapper.writeValueAsString(matcher));
+        } catch (JsonProcessingException e) {
+            throw new HamException(e);
+        }
         data.setBlocking(this.blocking);
-        data.setHostAddress(this.hostAddress);
-        data.setHostRegexp(this.hostRegexp);
-        data.setPathAddress(this.pathAddress);
-        data.setPathRegexp(this.pathRegexp);
         data.setPhase(this.phase);
+        data.setType(this.type);
         data.setPriority(0);
         data.setRequires(new ArrayList<>());
         data.setSource(this.source);

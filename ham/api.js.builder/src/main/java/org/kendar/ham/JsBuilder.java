@@ -5,19 +5,12 @@ import java.util.List;
 
 public interface JsBuilder {
 
-    public class FilterDescriptor{
+    public class ApiMatcher{
         private Methods method;
         private String hostAddress;
         private String hostRegexp;
         private String pathAddress;
         private String pathRegexp;
-        private FilterPhase phase;
-        private String root;
-        private List<String> requires;
-        private int priority;
-        private boolean blocking;
-        private List<String> source = new ArrayList<>();
-        private String id;
 
         public Methods getMethod() {
             return method;
@@ -58,6 +51,17 @@ public interface JsBuilder {
         public void setPathRegexp(String pathRegexp) {
             this.pathRegexp = pathRegexp;
         }
+    }
+    public class FilterDescriptor{
+
+        private FilterPhase phase;
+        private String root;
+        private List<String> requires;
+        private int priority;
+        private boolean blocking;
+        private String source;
+        private String id;
+        private String type;
 
         public FilterPhase getPhase() {
             return phase;
@@ -99,11 +103,11 @@ public interface JsBuilder {
             this.blocking = blocking;
         }
 
-        public List<String> getSource() {
+        public String getSource() {
             return source;
         }
 
-        public void setSource(List<String> source) {
+        public void setSource(String source) {
             this.source = source;
         }
 
@@ -113,6 +117,14 @@ public interface JsBuilder {
 
         public void setId(String id) {
             this.id = id;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getType() {
+            return type;
         }
     }
 
