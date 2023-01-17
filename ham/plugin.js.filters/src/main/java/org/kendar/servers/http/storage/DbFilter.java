@@ -14,6 +14,16 @@ public class DbFilter implements DbTable {
     @Column(name = "id")
     private Long id;
 
+    public boolean isBlocking() {
+        return blocking;
+    }
+
+    public void setBlocking(boolean blocking) {
+        this.blocking = blocking;
+    }
+
+    @Column(name = "blocking")
+    private boolean blocking;
     @Column(name = "name")
     private String name;
 

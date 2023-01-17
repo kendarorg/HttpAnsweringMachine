@@ -116,6 +116,7 @@ public class JsFilterAPI implements FilteringClass {
     rf.setId(dbFilter.getId());
     rf.setPhase(dbFilter.getPhase());
     rf.setPriority(dbFilter.getPriority());
+    rf.setBlocking(dbFilter.isBlocking());
     rf.setName(dbFilter.getName());
     rf.setSource(dbFilter.getSource());
     rf.setType(dbFilter.getType());
@@ -166,6 +167,7 @@ public class JsFilterAPI implements FilteringClass {
     dbFilter.setPriority(jsonFileData.getPriority());
     dbFilter.setSource(jsonFileData.getSource());
     dbFilter.setType(jsonFileData.getType());
+    dbFilter.setBlocking(jsonFileData.isBlocking());
 
     var dbFinal = dbFilter;
     sessionFactory.transactional(em->{
@@ -175,6 +177,7 @@ public class JsFilterAPI implements FilteringClass {
         em.persist(dbFinal);
       }
     });
+    res.setResponseText(dbFinal.getId().toString());
     res.setStatusCode(200);
     eventQueue.handle(new ScriptsModified());
   }
@@ -219,6 +222,7 @@ public class JsFilterAPI implements FilteringClass {
     dbFilter.setPriority(jsonFileData.getPriority());
     dbFilter.setSource(jsonFileData.getSource());
     dbFilter.setType(jsonFileData.getType());
+    dbFilter.setBlocking(jsonFileData.isBlocking());
 
     sessionFactory.transactional(em->{
       em.persist(dbFilter);

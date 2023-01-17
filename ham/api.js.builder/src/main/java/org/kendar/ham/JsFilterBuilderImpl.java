@@ -6,20 +6,19 @@ import org.kendar.utils.Sleeper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.regex.Pattern;
 
 public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
     private ObjectMapper mapper = new ObjectMapper();
 
     private HamInternalBuilder hamBuilder;
-    private String id;
-    private String type;
+    private String name;
+    private String type = "body";
 
     JsFilterBuilderImpl(HamInternalBuilder hamBuilder, String name){
 
         this.hamBuilder = hamBuilder;
-        id = name;
+        this.name = name;
     }
     private Methods method;
     private String hostAddress;
@@ -98,6 +97,7 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
 
     @Override
     public JsSourceBuilder withSource() {
+        source="";
         return this;
     }
 
@@ -125,27 +125,28 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
         var matcher = new JsBuilder.ApiMatcher();
         matcher.setMethod(this.method);
         matcher.setHostAddress(this.hostAddress);
-        matcher.setHostRegexp(this.hostRegexp);
+        matcher.setHostPattern(this.hostRegexp);
         matcher.setPathAddress(this.pathAddress);
-        matcher.setPathRegexp(this.pathRegexp);
+        matcher.setPathPattern(this.pathRegexp);
         try {
             matchers.put("apimatcher",mapper.writeValueAsString(matcher));
         } catch (JsonProcessingException e) {
             throw new HamException(e);
         }
+        data.setMatchers(matchers);
         data.setBlocking(this.blocking);
         data.setPhase(this.phase);
         data.setType(this.type);
         data.setPriority(0);
-        data.setRequires(new ArrayList<>());
+        data.setRequire(new ArrayList<>());
         data.setSource(this.source);
-        data.setId(this.id);
+        data.setName(this.name);
         var request = hamBuilder.newRequest()
                 .withPost()
-                .withPath("/api/plugins/jsfilter/filters/"+id)
+                .withPath("/api/plugins/jsfilter/filters")
                 .withJsonBody(data);
          hamBuilder.call(request.build());
         Sleeper.sleep(500);
-        return this.id;
+        return this.name;
     }
 }

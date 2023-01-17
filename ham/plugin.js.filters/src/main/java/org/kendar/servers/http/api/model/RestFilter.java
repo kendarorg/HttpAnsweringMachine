@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class RestFilter {
+    private boolean blocking;
     private Long id;
     private String phase;
     private int priority;
@@ -78,5 +79,13 @@ public class RestFilter {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isBlocking() {
+        return blocking;
+    }
+
+    public void setBlocking(boolean blocking) {
+        this.blocking = blocking;
     }
 }

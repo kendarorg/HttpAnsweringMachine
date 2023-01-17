@@ -70,6 +70,7 @@ module.exports = {
             name: this.scriptName,
             phase: "NONE",
             type:"script",
+            blocking:false,
             matchers:{
               apimatcher:JSON.stringify({
                 hostAddress: "www.change.me",
