@@ -25,8 +25,8 @@ import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.SwaggerEnricher;
 import org.kendar.http.annotations.multi.HamRequest;
 import org.kendar.http.annotations.multi.HamResponse;
-import org.kendar.http.annotations.multi.HamSecurity;
 import org.kendar.http.annotations.multi.Header;
+import org.kendar.servers.http.matchers.ApiMatcher;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -132,7 +132,10 @@ public class SwaggerApi  implements FilteringClass {
     }
   }
 
-  private void setupTodoApi(OpenAPI swagger, FilterDescriptor filter, HamDoc doc, PathItem expectedPath) {
+  private void setupTodoApi(OpenAPI swagger, FilterDescriptor descriptor, HamDoc doc, PathItem expectedPath) {
+    var matcher = descriptor.getMatchers().stream().filter(m->m instanceof ApiMatcher).findFirst();
+    if(matcher.isEmpty())return;
+    var filter = (ApiMatcher)matcher.get();
     var meth = filter.getMethod();
     var operation = new Operation();
     operation.description("TODO");
@@ -152,7 +155,7 @@ public class SwaggerApi  implements FilteringClass {
       operation.tags(Arrays.asList(doc.tags()));
     }
     setupMethod(expectedPath, operation, meth);
-    swagger.path(filter.getMethodFilter().pathAddress(), expectedPath);
+    swagger.path(descriptor.getMethodFilter().pathAddress(), expectedPath);
 
 
     swagger
@@ -301,7 +304,10 @@ public class SwaggerApi  implements FilteringClass {
     }
   }
 
-  private void setupRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor filter, HamDoc doc, PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses, Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples, String resAccept) {
+  private void setupRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor descriptor, HamDoc doc, PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses, Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples, String resAccept) {
+    var matcher = descriptor.getMatchers().stream().filter(m->m instanceof ApiMatcher).findFirst();
+    if(matcher.isEmpty())return;
+    var filter = (ApiMatcher)matcher.get();
     var hasBody = extractSchemasForMethod(schemas, resBody);
 
     var operation = new Operation();
@@ -324,7 +330,7 @@ public class SwaggerApi  implements FilteringClass {
     }
     setupMethod(expectedPath, operation, meth);
 
-    swagger.path(filter.getMethodFilter().pathAddress(), expectedPath);
+    swagger.path(descriptor.getMethodFilter().pathAddress(), expectedPath);
   }
 
   private void setupRequestBody(Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples, String resAccept, Operation operation) {

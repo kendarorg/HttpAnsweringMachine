@@ -16,8 +16,12 @@
       <input class="form-control" readOnly type="text" name="id" id="id" v-model="data.id"/>
     </div>
     <div class="form-group">
+      <label htmlFor="name">name</label>
+      <input class="form-control" type="text" name="name" id="name" v-model="data.name"/>
+    </div>
+    <div class="form-group">
       <label htmlFor="method">method</label>
-      <select class="form-control" name="method" id="method"v-model="data.method" >
+      <select class="form-control" name="method" id="method"v-model="matcher.method" >
         <option>GET</option>
         <option>POST</option>
         <option>PUT</option>
@@ -28,19 +32,19 @@
     </div>
     <div class="form-group">
       <label htmlFor="hostAddress">hostAddress</label>
-      <input class="form-control" type="text" name="hostAddress" id="hostAddress" v-model="data.hostAddress"/>
+      <input class="form-control" type="text" name="hostAddress" id="hostAddress" v-model="matcher.hostAddress"/>
     </div>
     <div class="form-group">
       <label htmlFor="hostRegexp">hostRegexp</label>
-      <input class="form-control" type="text" name="hostRegexp" id="hostRegexp" v-model="data.hostRegexp"/>
+      <input class="form-control" type="text" name="hostRegexp" id="hostRegexp" v-model="matcher.hostRegexp"/>
     </div>
     <div class="form-group">
       <label htmlFor="pathAddress">pathAddress</label>
-      <input class="form-control" type="text" name="pathAddress" id="pathAddress" v-model="data.pathAddress"/>
+      <input class="form-control" type="text" name="pathAddress" id="pathAddress" v-model="matcher.pathAddress"/>
     </div>
     <div class="form-group">
       <label htmlFor="pathRegexp">pathRegexp</label>
-      <input class="form-control" type="text" name="pathRegexp" id="pathRegexp"  v-model="data.pathRegexp"/>
+      <input class="form-control" type="text" name="pathRegexp" id="pathRegexp"  v-model="matcher.pathRegexp"/>
     </div>
     <div class="form-group">
       <label htmlFor="phase">phase</label>
@@ -52,6 +56,13 @@
         <option>PRE_CALL</option>
         <option>POST_CALL</option>
         <option>POST_RENDER</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label htmlFor="type">Script type</label>
+      <select class="form-control" name="type" id="type" v-model="data.type" >
+        <option>script</option>
+        <option>body</option>
       </select>
     </div>
     <div class="form-group">
@@ -96,11 +107,12 @@
 module.exports = {
   name: "edit-js",
   props:{
-    selectedRow:String
+    selectedRow:Number
   },
   data:function(){
     return {
       data:{},
+      matcher:{},
       source:"",
       columns: [
         {id: "id", template: "string", index: true},
@@ -130,8 +142,9 @@ module.exports = {
       var th=this;
       axios.get("/api/plugins/jsfilter/filters/"+val)
           .then(function(result){
+            th.matcher = JSON.parse(result.data.matchers['apimatcher']);
             th.data=result.data;
-            th.source = th.fromArray(th.data.source);
+            th.source = th.data.source;
           });
     },
     data:function(val,old){
@@ -159,8 +172,9 @@ module.exports = {
       return result;
     },
     updateContent:function (){
-      this.data.source = this.source.split(/\r?\n/)
-      axios.post("/api/plugins/jsfilter/filters/"+this.data.id,this.data)
+      this.data.source = this.source
+      this.data.matchers['apimatcher']=JSON.stringify(this.matcher);
+      axios.put("/api/plugins/jsfilter/filters/"+this.data.id,this.data)
           .then(function(result){
             //th.data=result.data;
           });

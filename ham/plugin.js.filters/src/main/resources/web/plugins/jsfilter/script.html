@@ -141,15 +141,17 @@
         type: 'GET',
         success: function (res) {
             $("#id").val(res['id']);
-            $("#method").val(res['method']).change();
-            $("#hostAddress").val(res['hostAddress']);
-            $("#hostRegexp").val(res['hostRegexp']);
-            $("#pathAddress").val(res['pathAddress']);
-            $("#pathRegexp").val(res['pathRegexp']);
             $("#phase").val(res['phase']);
             $("#priority").val(res['priority']);
             setChecked($("#blocking"),res['blocking']);
             $("#source").text(fromArray(res['source']));
+
+            var matcher = JSON.parse(res['matchers']['org.kendar.http.matchers.ApiMatcher']);
+            $("#method").val(matcher['method']).change();
+            $("#hostAddress").val(res['hostAddress']);
+            $("#hostRegexp").val(res['hostRegexp']);
+            $("#pathAddress").val(res['pathAddress']);
+            $("#pathRegexp").val(res['pathRegexp']);
 
 
 

@@ -1,23 +1,16 @@
 package org.kendar.ham;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public interface JsBuilder {
 
-    public class FilterDescriptor{
+    public class ApiMatcher{
         private Methods method;
         private String hostAddress;
-        private String hostRegexp;
+        private String hostPattern;
         private String pathAddress;
-        private String pathRegexp;
-        private FilterPhase phase;
-        private String root;
-        private List<String> requires;
-        private int priority;
-        private boolean blocking;
-        private List<String> source = new ArrayList<>();
-        private String id;
+        private String pathPattern;
 
         public Methods getMethod() {
             return method;
@@ -35,12 +28,12 @@ public interface JsBuilder {
             this.hostAddress = hostAddress;
         }
 
-        public String getHostRegexp() {
-            return hostRegexp;
+        public String getHostPattern() {
+            return hostPattern;
         }
 
-        public void setHostRegexp(String hostRegexp) {
-            this.hostRegexp = hostRegexp;
+        public void setHostPattern(String hostPattern) {
+            this.hostPattern = hostPattern;
         }
 
         public String getPathAddress() {
@@ -51,13 +44,24 @@ public interface JsBuilder {
             this.pathAddress = pathAddress;
         }
 
-        public String getPathRegexp() {
-            return pathRegexp;
+        public String getPathPattern() {
+            return pathPattern;
         }
 
-        public void setPathRegexp(String pathRegexp) {
-            this.pathRegexp = pathRegexp;
+        public void setPathPattern(String pathPattern) {
+            this.pathPattern = pathPattern;
         }
+    }
+    public class FilterDescriptor{
+
+        private FilterPhase phase;
+        private List<String> require;
+        private int priority;
+        private boolean blocking;
+        private String source;
+        private String type;
+        private HashMap<String, String> matchers;
+        private String name;
 
         public FilterPhase getPhase() {
             return phase;
@@ -67,20 +71,13 @@ public interface JsBuilder {
             this.phase = phase;
         }
 
-        public String getRoot() {
-            return root;
+
+        public List<String> getRequire() {
+            return require;
         }
 
-        public void setRoot(String root) {
-            this.root = root;
-        }
-
-        public List<String> getRequires() {
-            return requires;
-        }
-
-        public void setRequires(List<String> requires) {
-            this.requires = requires;
+        public void setRequire(List<String> require) {
+            this.require = require;
         }
 
         public int getPriority() {
@@ -99,20 +96,37 @@ public interface JsBuilder {
             this.blocking = blocking;
         }
 
-        public List<String> getSource() {
+        public String getSource() {
             return source;
         }
 
-        public void setSource(List<String> source) {
+        public void setSource(String source) {
             this.source = source;
         }
 
-        public String getId() {
-            return id;
+
+        public void setType(String type) {
+            this.type = type;
         }
 
-        public void setId(String id) {
-            this.id = id;
+        public String getType() {
+            return type;
+        }
+
+        public void setMatchers(HashMap<String, String> matchers) {
+            this.matchers = matchers;
+        }
+
+        public HashMap<String, String> getMatchers() {
+            return matchers;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 

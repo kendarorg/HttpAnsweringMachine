@@ -1,22 +1,24 @@
 package org.kendar.ham;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.utils.Sleeper;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
     private ObjectMapper mapper = new ObjectMapper();
 
     private HamInternalBuilder hamBuilder;
-    private String id;
+    private String name;
+    private String type = "body";
 
     JsFilterBuilderImpl(HamInternalBuilder hamBuilder, String name){
 
         this.hamBuilder = hamBuilder;
-        id = name;
+        this.name = name;
     }
     private Methods method;
     private String hostAddress;
@@ -25,7 +27,7 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
     private String pathRegexp;
     private FilterPhase phase;
     private boolean blocking = false;
-    private List<String> source = new ArrayList<>();
+    private String source;
 
     @Override
     public JsFilterBuilder withMethod(Methods method) {
@@ -67,6 +69,12 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
     }
 
     @Override
+    public JsFilterBuilder withType(ScriptType type) {
+        this.type = type.toString();
+        return this;
+    }
+
+    @Override
     public JsFilterBuilder withPathRegexp(String host) {
         this.pathRegexp = host;
         return this;
@@ -89,13 +97,13 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
 
     @Override
     public JsSourceBuilder withSource() {
-        this.source = new ArrayList<>();
+        source="";
         return this;
     }
 
     @Override
     public JsSourceBuilder addLine(String line) {
-        source.add(line);
+        source+=line+"\n";
         return this;
     }
 
@@ -113,23 +121,32 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
     @Override
     public String create() throws HamException {
         var data = new JsBuilder.FilterDescriptor();
-        data.setMethod(this.method);
+        var matchers = new HashMap<String,String>();
+        var matcher = new JsBuilder.ApiMatcher();
+        matcher.setMethod(this.method);
+        matcher.setHostAddress(this.hostAddress);
+        matcher.setHostPattern(this.hostRegexp);
+        matcher.setPathAddress(this.pathAddress);
+        matcher.setPathPattern(this.pathRegexp);
+        try {
+            matchers.put("apimatcher",mapper.writeValueAsString(matcher));
+        } catch (JsonProcessingException e) {
+            throw new HamException(e);
+        }
+        data.setMatchers(matchers);
         data.setBlocking(this.blocking);
-        data.setHostAddress(this.hostAddress);
-        data.setHostRegexp(this.hostRegexp);
-        data.setPathAddress(this.pathAddress);
-        data.setPathRegexp(this.pathRegexp);
         data.setPhase(this.phase);
+        data.setType(this.type);
         data.setPriority(0);
-        data.setRequires(new ArrayList<>());
+        data.setRequire(new ArrayList<>());
         data.setSource(this.source);
-        data.setId(this.id);
+        data.setName(this.name);
         var request = hamBuilder.newRequest()
                 .withPost()
-                .withPath("/api/plugins/jsfilter/filters/"+id)
+                .withPath("/api/plugins/jsfilter/filters")
                 .withJsonBody(data);
          hamBuilder.call(request.build());
         Sleeper.sleep(500);
-        return this.id;
+        return this.name;
     }
 }

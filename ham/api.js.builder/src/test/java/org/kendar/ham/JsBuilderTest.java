@@ -47,15 +47,15 @@ public class JsBuilderTest {
     @Test
     public void testFilterWithoutRegexp() throws HamException, IOException, InterruptedException {
         var hamBuilder = (HamBuilder) GlobalSettings.builder();
-        var filterId = UUID.randomUUID().toString();
         //Add dns
         var dnsNameId = hamBuilder.dns().addDnsName("127.0.0.1","simple.test");
         var jsBuilder = hamBuilder.pluginBuilder(JsBuilder.class);
-        var realid = jsBuilder.addFilter(filterId)
+        var realid = jsBuilder.addFilter("test")
                 .inPhase(FilterPhase.API)
                 .withMethod(Methods.GET)
                 .withHost("simple.test")
                 .withPath("/test/thing")
+                .withType(ScriptType.SCRIPT)
                 .setBlocking()
                 .withSource()
                 .addLine("var today = new Date().toISOString();")
@@ -73,7 +73,7 @@ public class JsBuilderTest {
         assertNotEquals(result.getDate(),result2.getDate());
 
         hamBuilder.dns().removeDnsName(dnsNameId);
-        jsBuilder.deleteFilter(filterId);
+        jsBuilder.deleteFilter(realid);
     }
 
     private ValueDate requestJsApiTestThing(HamBuilder hamBuilder,String url) throws HamException, IOException {
@@ -88,17 +88,18 @@ public class JsBuilderTest {
     @Test
     public void testFilterWithRegexp() throws HamException, IOException, InterruptedException {
         var hamBuilder = (HamBuilder) GlobalSettings.builder();
-        var filterId = UUID.randomUUID().toString();
+
         //Add dns
         var dnsNameId = hamBuilder.dns().addDnsName("127.0.0.1","simple.test");
         var dnsNameId2 = hamBuilder.dns().addDnsName("127.0.0.1","simple.toast");
         var jsBuilder = hamBuilder.pluginBuilder(JsBuilder.class);
 
-        var builder = jsBuilder.addFilter(filterId)
+        var builder = jsBuilder.addFilter("test2")
                 .inPhase(FilterPhase.API)
                 .withMethod(Methods.GET)
                 .withHostRegexp("simple.([a-z]+)")
                 .withPathRegexp("/test/([a-z]+)")
+                .withType(ScriptType.SCRIPT)
                 .setBlocking()
                 .withSource()
                 .addLine("var today = new Date().toISOString();")
@@ -110,7 +111,7 @@ public class JsBuilderTest {
         builder.verifyHostRegexp("simple.thrust");
         builder.verifPathRegexp("/test/wetheaver");
 
-        builder.create();
+        var filterId = builder.create();
 
         ValueDate result = requestJsApiTestThing(hamBuilder, HTTP_SIMPLE_TEST_TEST_THING);
         assertEquals(result.getValue(),"A value");

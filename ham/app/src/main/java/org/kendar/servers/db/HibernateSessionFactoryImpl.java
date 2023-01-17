@@ -5,6 +5,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.Query;
+import java.util.List;
+import java.util.Optional;
+
 @Component
 public class HibernateSessionFactoryImpl implements HibernateSessionFactory{
     private Configuration configuration;
@@ -40,6 +44,23 @@ public class HibernateSessionFactoryImpl implements HibernateSessionFactory{
         var em = sessionFactory.createEntityManager();
         T result = (T)function.apply(em);
         em.close();
+        return result;
+    }
+
+    @Override
+    public <T> Optional<T> querySingle(EntityManagerFunctionResult function) throws Exception {
+        var sessionFactory = configuration.buildSessionFactory();
+        var em = sessionFactory.createEntityManager();
+        var query = (Query)function.apply(em);
+        Optional result;
+        var list = (List<T>)query.getResultList();
+        if(list.size()==0){
+            em.close();
+            result = Optional.empty();
+        }else{
+            result = Optional.of(list.get(0));
+            em.close();
+        }
         return result;
     }
 

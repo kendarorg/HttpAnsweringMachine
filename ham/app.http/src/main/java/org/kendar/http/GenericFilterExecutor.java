@@ -1,20 +1,21 @@
 package org.kendar.http;
 
+import org.kendar.servers.http.matchers.FilterMatcher;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class GenericFilterExecutor {
     private final int priority;
-    private final String method;
     private final boolean methodBlocking;
     private final boolean typeBlocking;
-    private final String hostAddress;
-    private final String pathAddress;
-    private final String hostPattern;
-    private final String pathPattern;
+
     private final HttpFilterType phase;
+
+    private List<FilterMatcher> matchers = new ArrayList<>();
     private final Method callback;
     private final FilteringClass filterClass;
     public abstract boolean run(Request request, Response response);
@@ -28,22 +29,18 @@ public abstract class GenericFilterExecutor {
         this.id = id;
     }
 
-    public GenericFilterExecutor(int priority, String method, boolean methodBlocking,
-                                 boolean typeBlocking,
-                                 String hostAddress,String pathAddress,
-                                 String hostPattern,String pathPattern, HttpFilterType phase,
-                                 Method callback, FilteringClass filterClass) {
+    public GenericFilterExecutor(int priority, boolean methodBlocking,
+                                 boolean typeBlocking, HttpFilterType phase,
+                                 Method callback, FilteringClass filterClass,FilterMatcher ... matcher) {
+        for(var match:matcher){
+            this.matchers.add(match);
+        }
         if(filterClass!=null) {
             this.id = filterClass.getId();
         }
         this.priority = priority;
-        this.method = method;
         this.methodBlocking = methodBlocking;
         this.typeBlocking = typeBlocking;
-        this.hostAddress = hostAddress;
-        this.pathAddress = pathAddress;
-        this.hostPattern = hostPattern;
-        this.pathPattern = pathPattern;
         this.phase = phase;
         this.callback = callback;
         this.filterClass = filterClass;
@@ -53,32 +50,12 @@ public abstract class GenericFilterExecutor {
         return priority;
     }
 
-    public String getMethod() {
-        return method;
-    }
-
     public boolean isMethodBlocking() {
         return methodBlocking;
     }
 
     public boolean isTypeBlocking() {
         return typeBlocking;
-    }
-
-    public String getHostAddress() {
-        return hostAddress;
-    }
-
-    public String getPathAddress() {
-        return pathAddress;
-    }
-
-    public String getHostPattern() {
-        return hostPattern;
-    }
-
-    public String getPathPattern() {
-        return pathPattern;
     }
 
     public HttpFilterType getPhase() {
@@ -91,5 +68,13 @@ public abstract class GenericFilterExecutor {
 
     public FilteringClass getFilterClass() {
         return filterClass;
+    }
+
+    public List<FilterMatcher> getMatchers() {
+        return matchers;
+    }
+
+    public void setMatcher(List<FilterMatcher> matcher) {
+        this.matchers = matcher;
     }
 }

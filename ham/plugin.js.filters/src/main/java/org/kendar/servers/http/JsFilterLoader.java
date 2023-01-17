@@ -1,12 +1,20 @@
 package org.kendar.servers.http;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.binary.Base64;
 import org.kendar.events.EventQueue;
 import org.kendar.http.CustomFiltersLoader;
-import org.kendar.http.FilterConfig;
 import org.kendar.http.FilterDescriptor;
+import org.kendar.servers.http.matchers.ApiMatcher;
 import org.kendar.servers.JsonConfiguration;
-import org.kendar.utils.FileResourcesUtils;
+import org.kendar.servers.db.HibernateSessionFactory;
+import org.kendar.servers.http.matchers.FilterMatcher;
+import org.kendar.servers.http.matchers.MatchersRegistry;
+import org.kendar.servers.http.storage.DbFilter;
+import org.kendar.servers.http.storage.DbFilterRequire;
+import org.kendar.servers.http.types.http.JsHttpAction;
+import org.kendar.servers.http.types.http.JsHttpFilterDescriptor;
 import org.kendar.utils.LoggerBuilder;
 import org.mozilla.javascript.ClassShutter;
 import org.mozilla.javascript.Context;
@@ -17,59 +25,45 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public class JsFilterLoader implements CustomFiltersLoader {
   private static final ObjectMapper mapper = new ObjectMapper();
   private static final SandboxClassShutter sandboxClassShutter = new SandboxClassShutter();
   private final JsonConfiguration configuration;
-  private final String jsFilterPath;
   private final EventQueue eventQueue;
   private final ExternalRequester externalRequester;
+  private HibernateSessionFactory sessionFactory;
+  private MatchersRegistry matchersRegistry;
   private final Environment environment;
   private final Logger logger;
   private final LoggerBuilder loggerBuilder;
-  private final FileResourcesUtils fileResourcesUtils;
   private ScriptableObject globalScope;
 
   public JsFilterLoader(
           Environment environment,
           LoggerBuilder loggerBuilder,
-          FileResourcesUtils fileResourcesUtils,
           JsonConfiguration configuration,
           EventQueue eventQueue,
           ExternalRequester externalRequester,
-          FilterConfig filtersConfiguration) {
+          HibernateSessionFactory sessionFactory,
+          MatchersRegistry matchersRegistry) {
 
     this.environment = environment;
     this.logger = loggerBuilder.build(JsFilterLoader.class);
     this.loggerBuilder = loggerBuilder;
-    this.fileResourcesUtils = fileResourcesUtils;
-    jsFilterPath = configuration.getConfiguration(JsFilterConfig.class).getPath();
     this.eventQueue = eventQueue;
     this.externalRequester = externalRequester;
+    this.sessionFactory = sessionFactory;
+    this.matchersRegistry = matchersRegistry;
     logger.info("JsFilter LOADED");
     this.configuration = configuration;
-  }
-
-
-
-  public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-    File destFile = new File(destinationDir, zipEntry.getName());
-
-    String destDirPath = destinationDir.getCanonicalPath();
-    String destFilePath = destFile.getCanonicalPath();
-
-    if (!destFilePath.startsWith(destDirPath + File.separator)) {
-      throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-    }
-
-    return destFile;
   }
 
   protected Scriptable getNewScope(Context cx) {
@@ -84,95 +78,110 @@ public class JsFilterLoader implements CustomFiltersLoader {
 
   public List<FilterDescriptor> loadFilters() {
     var result = new ArrayList<FilterDescriptor>();
-    String currentPath = "";
+    List<DbFilter> dbFilters = new ArrayList<>();
     // https://parsiya.net/blog/2019-12-22-using-mozilla-rhino-to-run-javascript-in-java/
     try {
-      File f;
-      var realPath = fileResourcesUtils.buildPath(jsFilterPath);
-      f = new File(realPath);
-      if (f.exists()) {
-        var pathnames = f.list();
-        if (pathnames != null) {
-          // For each pathname in the pathnames array
-          for (String pathname : pathnames) {
-            var fullPath = fileResourcesUtils.buildPath(jsFilterPath, pathname);
-            currentPath = fullPath;
-            loadSinglePlugin(result, realPath, fullPath);
-          }
-        }
+      sessionFactory.query(em -> {
+        var query = em.createQuery("SELECT e FROM DbFilter e " +
+                " ORDER BY e.priority DESC");
+        dbFilters.addAll(query.getResultList());
+      });
+      for(var dbFilter:dbFilters) {
+        loadSinglePlugin(result, dbFilter);
       }
     } catch (Exception e) {
-      logger.error("Error compiling js filter " + currentPath, e);
+      logger.error("Error compiling js filter ", e);
     }
     return result;
   }
 
-  private void loadSinglePlugin(
-      ArrayList<FilterDescriptor> result, String realPath, String fullPath) throws Exception {
-    var newFile = new File(fullPath);
-    if (newFile.isFile() && fullPath.toLowerCase(Locale.ROOT).endsWith(".json")) {
-      var data = Files.readString(Path.of(fullPath));
-      var filterDescriptor = mapper.readValue(data, JsFilterDescriptor.class);
+  private static TypeReference<HashMap<String, String>> typeRef
+          = new TypeReference<HashMap<String, String>>() {};
 
-      filterDescriptor.setRoot(realPath+File.separator+filterDescriptor.getId());
+  private void loadSinglePlugin(ArrayList<FilterDescriptor> result, DbFilter dbFilter) throws Exception {
+    //if(dbFilter.getMatcherType().equalsIgnoreCase("http")){
+      var filterDescriptor = new JsHttpFilterDescriptor();
+      var serializedMatchers = mapper.readValue(dbFilter.getMatcher(), typeRef);
+      List<FilterMatcher> matchers = new ArrayList<>();
+      for(var serialized:serializedMatchers.entrySet()){
+        matchers.add((FilterMatcher) mapper.readValue(serialized.getValue(),matchersRegistry.get(serialized.getKey())));
+      }
+
+      sessionFactory.query(em -> {
+        var query = em.createQuery("SELECT e.content FROM DbFilterRequire e WHERE" +
+                " e.binary=false" +
+                " AND e.scriptId=" +dbFilter.getId()+
+                " ORDER BY e.id DESC");
+        filterDescriptor.getRequires().addAll(query.getResultList());
+      });
+      var src = dbFilter.getSource();
+
+      var action = new JsHttpAction();
+      action.setSource(src);
+      action.setType(dbFilter.getType());
+
+      filterDescriptor.setAction(action);
+      filterDescriptor.setPhase(dbFilter.getPhase());
       precompileFilter(filterDescriptor);
       var executor =
-          new JsFilterExecutor(filterDescriptor, this, loggerBuilder, filterDescriptor.getId());
+              new JsFilterExecutor(filterDescriptor, this, loggerBuilder, filterDescriptor.getId(),
+                      matchers.toArray(new FilterMatcher[]{}));
       var fd = new FilterDescriptor(this, executor, environment, configuration);
       result.add(fd);
-    }
+    //}
   }
 
   @Override
   public FilterDescriptor loadFilterFile(String fileName, byte[] fileData, boolean overwrite) {
     try {
-      String jsonDescriptor = null;
-      var fullStringPath = fileResourcesUtils.buildPath(jsFilterPath);
-      var realPath = new File(fullStringPath);
-      byte[] buffer = new byte[1024];
+      DbFilter jsonDbFilter = null;
+      List<DbFilterRequire> requires =  new ArrayList<>();
       var input = new ByteArrayInputStream(fileData);
       ZipInputStream zis = new ZipInputStream(input);
       ZipEntry zipEntry = zis.getNextEntry();
       while (zipEntry != null) {
-        File newFile = newFile(realPath, zipEntry);
         var path = Path.of(zipEntry.toString());
+        var name=zipEntry.toString().toLowerCase();
         if (path.getParent() == null
             && !zipEntry.isDirectory()
-            && zipEntry.toString().toLowerCase().endsWith(".json")) {
-          jsonDescriptor = zipEntry.toString();
-        }
-        if (zipEntry.isDirectory()) {
-          if (!newFile.isDirectory() && !newFile.mkdirs()) {
-            throw new IOException("Failed to create directory " + newFile);
+            && name.endsWith("main.json")) {
+          jsonDbFilter = mapper.readValue(toString(zis),DbFilter.class);
+          if(jsonDbFilter.getName()==null||jsonDbFilter.getName().isEmpty()){
+            jsonDbFilter.setName(fileName);
           }
-        } else {
-          // fix for Windows-created archives
-          File parent = newFile.getParentFile();
-          if (!parent.isDirectory() && !parent.mkdirs()) {
-            throw new IOException("Failed to create directory " + parent);
-          }
-
-          // write file content
-          if (newFile.exists() && !overwrite) {
-            throw new IOException("Already existing!!");
-          }
-          FileOutputStream fos = new FileOutputStream(newFile);
-          int len;
-          while ((len = zis.read(buffer)) > 0) {
-            fos.write(buffer, 0, len);
-          }
-          fos.close();
+        } else if(path.getParent()!=null && path.getParent().toString().endsWith("bin")){
+          var binFileName = path.getFileName().toString();
+          var dbFilterRequire = new DbFilterRequire();
+          dbFilterRequire.setContent(Base64.encodeBase64String(toBytes(zis)));
+          dbFilterRequire.setBinary(true);
+          dbFilterRequire.setName(binFileName);
+          requires.add(dbFilterRequire);
+        } else if(path.getParent()!=null && path.getParent().toString().endsWith("txt")){
+          var binFileName = path.getFileName().toString();
+          var dbFilterRequire = new DbFilterRequire();
+          dbFilterRequire.setContent(toString(zis));
+          dbFilterRequire.setBinary(false);
+          dbFilterRequire.setName(binFileName);
+          requires.add(dbFilterRequire);
         }
         zipEntry = zis.getNextEntry();
       }
       zis.closeEntry();
       zis.close();
 
-      if (jsonDescriptor != null) {
-        var fullPath = fileResourcesUtils.buildPath(jsFilterPath, jsonDescriptor);
+      final DbFilter forTrans = jsonDbFilter;
+      sessionFactory.transactional(em -> {
+        em.persist(forTrans);
+        var id = forTrans.getId();
+        for(var require:requires){
+          require.setScriptId(id);
+          em.persist(require);
+        }
+      });
+
+      if (jsonDbFilter != null) {
         var result = new ArrayList<FilterDescriptor>();
-        var localRealPath = fileResourcesUtils.buildPath(jsFilterPath);
-        loadSinglePlugin(result, localRealPath, fullPath);
+        loadSinglePlugin(result, forTrans);
         return result.get(0);
       }
     } catch (IOException ex) {
@@ -183,7 +192,27 @@ public class JsFilterLoader implements CustomFiltersLoader {
     return null;
   }
 
-  private void precompileFilter(JsFilterDescriptor filterDescriptor) throws Exception {
+  private String toString(ZipInputStream zis) throws IOException {
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    byte[] buffer = new byte[1024];
+    int read;
+    while ((read = zis.read(buffer, 0, buffer.length)) > 0)
+        baos.write(buffer, 0, read);
+    return baos.toString(UTF_8.name());
+  }
+
+  private byte[] toBytes(ZipInputStream zis) throws IOException {
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    byte[] buffer = new byte[1024];
+    int read;
+    while ((read = zis.read(buffer, 0, buffer.length)) > 0)
+      baos.write(buffer, 0, read);
+    return baos.toByteArray();
+  }
+
+  private void precompileFilter(JsHttpFilterDescriptor filterDescriptor) throws Exception {
     StringBuilder scriptSrc =
         new StringBuilder(
             "var globalFilterResult=runFilter(REQUESTJSON,RESPONSEJSON,utils);\n"
@@ -193,17 +222,14 @@ public class JsFilterLoader implements CustomFiltersLoader {
       for (var file : filterDescriptor.getRequires()) {
         scriptSrc
                 .append("\r\n")
-                .append(Files.readString(Path.of(filterDescriptor.getRoot() + File.separator + file)));
+                .append(file);
       }
     }
     scriptSrc.append("\r\nfunction runFilter(request,response,utils){");
-    if(filterDescriptor.getSource()!=null) {
-      for (var sourceLine :
-              filterDescriptor.getSource()) {
-        scriptSrc
-                .append("\r\n")
-                .append(sourceLine);
-      }
+    if(filterDescriptor.getAction().getSource()!=null) {
+      scriptSrc
+              .append("\r\n")
+              .append(filterDescriptor.getAction().getSource());
     }
     scriptSrc.append("\r\n}");
 
@@ -211,8 +237,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
     cx.setOptimizationLevel(9);
     cx.setLanguageVersion(Context.VERSION_1_8);
     //cx.setClassShutter(sandboxClassShutter);
-    var realPath = fileResourcesUtils.buildPath(jsFilterPath);
-    filterDescriptor.initializeQueue(new JsUtils(eventQueue,realPath,externalRequester));
+    filterDescriptor.initializeQueue(new JsUtils(this.sessionFactory,eventQueue,externalRequester));
     try {
       Scriptable currentScope = getNewScope(cx);
       filterDescriptor.setScript(cx.compileString(scriptSrc.toString(), "my_script_id", 1, null));
