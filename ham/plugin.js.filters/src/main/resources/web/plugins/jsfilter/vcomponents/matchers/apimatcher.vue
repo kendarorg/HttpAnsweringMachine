@@ -1,5 +1,7 @@
 <template>
   <div>
+    <h3>API Matcher</h3><br>
+    <p>At least one between path/host address/regexp must be set</p>
     <div class="form-group">
       <label htmlFor="method">method</label>
       <select class="form-control" name="method" id="method" v-model="matcher.method">

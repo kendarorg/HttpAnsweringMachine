@@ -1,6 +1,7 @@
 <template>
   <div>
-    TODO
+    <h3>Script Matcher</h3><br>
+    <p>At least one between host address/regexp must be set, with the script</p>
     <div class="form-group">
       <label htmlFor="hostAddress">hostAddress</label>
       <input class="form-control" type="text" required name="hostAddress" id="hostAddress" v-model="matcher.hostAddress"/>

@@ -59,14 +59,15 @@
         </label>
       </div>
     </div>
-    <br>
     <div class="boxed col-md-8">
+      <br>
       <dynamic-matcher ref="dynmatch" width="1000px"
                          :path="'/plugins/jsfilter/vcomponents/matchers'"
                          :default="'apimatcher'"
                          :template="matchersSelected"
                          :value="matcher"
                          @componentevent="onMatcherEvent"/>
+      <br>
     </div>
     <!--<div>
 
