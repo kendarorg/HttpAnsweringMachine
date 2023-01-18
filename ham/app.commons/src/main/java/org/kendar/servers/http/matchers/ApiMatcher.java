@@ -9,20 +9,19 @@ import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-public class ApiMatcher implements FilterMatcher{
+public class ApiMatcher implements FilterMatcher,PathMatcher,HostMatcher{
 
     public ApiMatcher(){
 
     }
-    private static final Pattern namedGroupsPattern =
-            Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z\\d]*)>");
+
     private String hostAddress;
     private String hostPattern;
     private String method;
     private Pattern hostPatternReal;
 
-    private List<String> pathSimpleMatchers = new ArrayList<>();
-    private List<String> pathMatchers;
+    private PathSimpleMatcher pathSimpleMatchers = new PathSimpleMatcher();
+    private PathRegexpMatcher pathMatchers = new PathRegexpMatcher();
 
     public Pattern getHostPatternReal() {
         return hostPatternReal;
@@ -85,66 +84,34 @@ public class ApiMatcher implements FilterMatcher{
         this.pathAddress = pathAddress;
     }
 
-    private List<String> getNamedGroupCandidates() {
-        Set<String> matchedGroups = new TreeSet<>();
-        var m = namedGroupsPattern.matcher(pathPattern);
-        while (m.find()) {
-            matchedGroups.add(m.group(1));
-        }
-        return new ArrayList<>(matchedGroups);
-    }
+
 
     @Override
     public boolean matches(Request req) {
-        if(notMatch(req.getMethod(),this.method)){
+        if(pathSimpleMatchers.notMatch(req.getMethod(),this.method)){
             return false;
         }
         if(this.hostPatternReal!=null && !hostPatternReal.matcher(req.getHost()).matches()) {
             return false;
-        }else if(notMatch(req.getHost(),this.hostAddress)){
+        }else if(pathSimpleMatchers.notMatch(req.getHost(),this.hostAddress)){
             return false;
         }
 
-        if (pathPatternReal != null) {
-            var matcher = pathPatternReal.matcher(req.getPath());
-            if (matcher.matches()) {
-                for (int i = 0; i < pathMatchers.size(); i++) {
-                    var group = matcher.group(pathMatchers.get(i));
-                    if (group != null) {
-                        req.addPathParameter(pathMatchers.get(i), group);
-                    }
-                }
-                return true;
-            }
-        }
-        if (pathSimpleMatchers!=null && pathSimpleMatchers.size() > 0) {
-            var explPath = req.getPath().split("/");
-            if (pathSimpleMatchers.size() != explPath.length) return false;
-            for (var i = 0; i < pathSimpleMatchers.size(); i++) {
-                var partTemplate = pathSimpleMatchers.get(i);
-                var partPath = explPath[i];
-                if (partTemplate.startsWith("*")) {
-                    partTemplate = partTemplate.substring(1);
-                    req.addPathParameter(partTemplate, partPath);
-                } else if (!partTemplate.equalsIgnoreCase(partPath)) {
-                    return false;
-                }
-            }
+        if(pathMatchers.matches(req,pathPatternReal)){
             return true;
         }
-        if(notMatch(req.getPath(),this.pathAddress)){
+
+        if(pathSimpleMatchers.matches(req)){
+            return true;
+        }
+        if(pathSimpleMatchers.notMatch(req.getPath(),this.pathAddress)){
             return false;
         }
 
         return true;
     }
 
-    private boolean notMatch(String real, String provided) {
-        if(provided==null)return false;
-        if(provided.equalsIgnoreCase("*"))return false;
-        if(real.equalsIgnoreCase(provided))return false;
-        return true;
-    }
+
 
     @Override
     public void initialize(Function<String, String> apply) {
@@ -152,7 +119,7 @@ public class ApiMatcher implements FilterMatcher{
         if(hostPattern!=null)hostPattern = apply.apply(hostPattern);
         if(pathAddress!=null){
             pathAddress = apply.apply(pathAddress);
-            pathSimpleMatchers = setupPathSimpleMatchers();
+            pathSimpleMatchers.setupPathSimpleMatchers(pathAddress);
         }
         if(pathPattern!=null)pathPattern = apply.apply(pathPattern);
         if(hostPattern!=null && !hostPattern.isEmpty()){
@@ -160,23 +127,16 @@ public class ApiMatcher implements FilterMatcher{
         }
         if(pathPattern!=null && !pathPattern.isEmpty()){
             pathPatternReal = Pattern.compile(pathPattern);
-            pathMatchers = getNamedGroupCandidates();
+            pathMatchers.getNamedGroupCandidates(pathPattern);
         }
     }
 
-    private List<String> setupPathSimpleMatchers() {
-        var result = new ArrayList<String>();
-        if (pathAddress!=null && pathAddress.contains("{")) {
-            var explTemplate = pathAddress.split("/");
-            for (var i = 0; i < explTemplate.length; i++) {
-                var partTemplate = explTemplate[i];
-                if (partTemplate.startsWith("{")) {
-                    partTemplate = partTemplate.substring(1);
-                    partTemplate = "*" + partTemplate.substring(0, partTemplate.length() - 1);
-                }
-                result.add(partTemplate);
-            }
-        }
-        return result;
+    @Override
+    public boolean validate() {
+        return (isValid(pathAddress)||isValid(pathPattern)||isValid(hostAddress)||isValid(hostPattern))&& isValid(method);
+    }
+
+    private boolean isValid(String val) {
+        return val!=null&&val.length()>0;
     }
 }

@@ -32,6 +32,10 @@ public class WaitForServiceImple implements WaitForService {
 
     @Override
     public void waitForService(String name, Runnable runnable) {
+        if(services.containsKey(name.toLowerCase(Locale.ROOT))){
+            runnable.run();
+            return;
+        }
         var th = new Thread(()->{
             while(!services.containsKey(name.toLowerCase(Locale.ROOT))){
                 Sleeper.sleep(1000);

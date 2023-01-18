@@ -27,6 +27,15 @@
           <option>body</option>
         </select>
       </div>
+
+      <div class="form-group">
+        <label htmlFor="matcher">matcher</label>
+        <select class="form-control" name="matcher" id="matcher" v-model="matchersSelected" @change="onChangeMatcher()">
+          <option v-for="item in matchers"
+                  v-bind:value="item"
+          >{{ item }}</option>
+        </select>
+      </div>
       <div class="form-group">
         <label htmlFor="phase">phase</label>
         <select class="form-control" name="phase" id="phase" v-model="data.phase">
@@ -50,7 +59,16 @@
         </label>
       </div>
     </div>
-    <div>
+    <br>
+    <div class="boxed col-md-8">
+      <dynamic-matcher ref="dynmatch" width="1000px"
+                         :path="'/plugins/jsfilter/vcomponents/matchers'"
+                         :default="'apimatcher'"
+                         :template="matchersSelected"
+                         :value="matcher"
+                         @componentevent="onMatcherEvent"/>
+    </div>
+    <!--<div>
 
       <div class="form-group">
         <label htmlFor="method">method</label>
@@ -80,7 +98,7 @@
         <input class="form-control" type="text" name="pathRegexp" id="pathRegexp" v-model="matcher.pathRegexp"/>
       </div>
 
-    </div>
+    </div>-->
     <div class="form-group">
       <label for="source">source</label><br>
       <!--prism-live language-javascript-->
@@ -114,10 +132,14 @@ module.exports = {
   props: {
     selectedRow: Number
   },
+  watch:{
+  },
   data: function () {
     return {
       data: {},
       matcher: {},
+      matchersSelected:"apimatcher",
+      matchers: [],
       source: "",
       columns: [
         {id: "id", template: "string", index: true},
@@ -140,17 +162,35 @@ module.exports = {
   components: {
     'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
     'simple-modal': httpVueLoader('/vcomponents/tmodal.vue'),
+    'dynamic-matcher': httpVueLoader('/plugins/jsfilter/vcomponents/dynamic-matcher.vue'),
+  },
+  computed:{
+
   },
   watch: {
     selectedRow: function (val, oldVal) {
       if (isUndefined(val)) return;
       var th = this;
-      axios.get("/api/plugins/jsfilter/filters/" + val)
-          .then(function (result) {
-            th.matcher = JSON.parse(result.data.matchers['apimatcher']);
-            th.data = result.data;
-            th.source = th.data.source;
+      axios.get("/api/matchers")
+          .then(function (matchers){
+            matchers.data.forEach(function (f){
+              console.log(f);
+              th.matchers.push(f);
+            });
+            axios.get("/api/plugins/jsfilter/filters/" + val)
+                .then(function (result) {
+                  var matcherIndex = "apimatcher";
+                  for (const [key, value] of Object.entries(result.data.matchers)) {
+                    matcherIndex=key;
+                  }
+                  console.log("MATCHER SELECTED")
+                  th.matchersSelected = matcherIndex;
+                  th.matcher = JSON.parse(result.data.matchers[matcherIndex]);
+                  th.data = result.data;
+                  th.source = th.data.source;
+                });
           });
+
     },
     data: function (val, old) {
       // var th=this;
@@ -169,6 +209,12 @@ module.exports = {
     }
   },
   methods: {
+    onChangeMatcher:function(){
+      this.matcher={};
+    },
+    onMatcherEvent: function (evt){
+
+    },
     fromArray: function (arlist) {
       var result = "";
       for (var i = 0; i < arlist.length; i++) {
@@ -177,8 +223,13 @@ module.exports = {
       return result;
     },
     updateContent: function () {
+      if(!this.$refs.dynmatch.isValid()){
+        alert("Fill required fields!");
+        return;
+      }
       this.data.source = this.source
-      this.data.matchers['apimatcher'] = JSON.stringify(this.matcher);
+      this.data.matchers={};
+      this.data.matchers[this.matchersSelected] = JSON.stringify(this.matcher);
       axios.put("/api/plugins/jsfilter/filters/" + this.data.id, this.data)
           .then(function (result) {
             //th.data=result.data;
