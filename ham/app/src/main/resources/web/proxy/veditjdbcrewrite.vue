@@ -15,7 +15,7 @@
     <br><br>
     <div class="card">
       <b>LOCAL</b>
-      <br><b>Connection String: </b> jdbc:janus:http://THISHOST/api/db/{{data.exposed.connectionString}}
+      <br><b>Connection String: </b> jdbc:janus:http://THISHOST/api/db/{{data.exposed.connectionString}}?loadRsOnExec=true
       <br><b>Driver: </b> org.kendar.janus.JdbcDriver
       <br>
       <label for="connectionString">Name</label>

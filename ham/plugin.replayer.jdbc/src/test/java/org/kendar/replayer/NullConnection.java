@@ -5,9 +5,9 @@ import org.kendar.janus.engine.Engine;
 
 public class NullConnection extends JdbcConnection {
     public NullConnection(){
-        super(1,new NullEngine());
+        super(1,new NullEngine(),false);
     }
     public NullConnection(long traceId, Engine engine) {
-        super(traceId, engine);
+        super(traceId, engine,false);
     }
 }
