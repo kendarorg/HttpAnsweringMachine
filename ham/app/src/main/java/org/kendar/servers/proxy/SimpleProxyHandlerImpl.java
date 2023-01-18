@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Component
@@ -69,40 +70,49 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
 
     private ConcurrentHashMap<String,ProxyPollTiming> pollTiming = new ConcurrentHashMap<>();
 
+    private AtomicBoolean running=new AtomicBoolean(false);
     private void verifyProxyConfiguration() {
-        var config = configuration.getConfiguration(SimpleProxyConfig.class).copy();
+        if(running.get())return;
+        running.set(true);
+        try {
+            var config = configuration.getConfiguration(SimpleProxyConfig.class).copy();
 
-        var changed = false;
+            var changed = false;
 
 
-        for (int i = 0; i < config.getProxies().size(); i++) {
-            var now = Calendar.getInstance().getTimeInMillis();
-            var currentProxy = config.getProxies().get(i);
-            if(!pollTiming.containsKey(currentProxy.getId())){
-                var pt = new ProxyPollTiming();
-                pt.lastStatus = false;
-                pt.lastTimeCheck=-1L;
-                pollTiming.put(currentProxy.getId(),pt);
-            }
-            var pt = pollTiming.get(currentProxy.getId());
-            if(pt.lastTimeCheck < (now-1000) && pt.lastStatus==false) {
-                changed = checkRemoteMachines(currentProxy) || changed;
-                if(pt.lastStatus!=currentProxy.isRunning()){
-                    logger.info("Proxy {} now active",currentProxy.getWhen());
+            for (int i = 0; i < config.getProxies().size(); i++) {
+                var now = Calendar.getInstance().getTimeInMillis();
+                var currentProxy = config.getProxies().get(i);
+                if (!pollTiming.containsKey(currentProxy.getId())) {
+                    var pt = new ProxyPollTiming();
+                    pt.lastStatus = false;
+                    pt.lastTimeCheck = -1L;
+                    pollTiming.put(currentProxy.getId(), pt);
                 }
-                pt.lastStatus=currentProxy.isRunning();
-                pt.lastTimeCheck = now;
-            }else if(pt.lastTimeCheck < (now-60000) && pt.lastStatus==true) {
-                changed = checkRemoteMachines(currentProxy) || changed;
-                pt.lastStatus=currentProxy.isRunning();
-                if(pt.lastStatus!=currentProxy.isRunning()){
-                    logger.info("Proxy {} now inactive",currentProxy.getWhen());
+                var pt = pollTiming.get(currentProxy.getId());
+                if (pt.lastTimeCheck < (now - 1000) && currentProxy.isRunning() == false) {
+                    changed = checkRemoteMachines(currentProxy) || changed;
+                    if (pt.lastStatus != currentProxy.isRunning()) {
+                        logger.info("Proxy {} now active", currentProxy.getWhen());
+                    }
+                    pt.lastStatus = currentProxy.isRunning();
+                    pt.lastTimeCheck = now;
+                } else if (pt.lastTimeCheck < (now - 60000) && currentProxy.isRunning() == true) {
+                    changed = checkRemoteMachines(currentProxy) || changed;
+
+                    if (pt.lastStatus != currentProxy.isRunning()) {
+                        logger.info("Proxy {} now inactive", currentProxy.getWhen());
+                    }
+                    pt.lastStatus = currentProxy.isRunning();
+                    pt.lastTimeCheck = now;
                 }
-                pt.lastTimeCheck = now;
             }
-        }
-        if (changed) {
-            configuration.setConfiguration(config);
+            if (changed) {
+                configuration.setConfiguration(config);
+            }
+            running.set(false);
+        }catch (Exception ex){
+            running.set(false);
         }
     }
 
