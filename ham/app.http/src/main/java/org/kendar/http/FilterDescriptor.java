@@ -1,5 +1,6 @@
 package org.kendar.http;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.kendar.http.annotations.*;
 import org.kendar.http.annotations.concrete.HamDocConcrete;
@@ -98,6 +99,9 @@ public class FilterDescriptor {
     this.id = executor.getId();
     for(var matcher:executor.getMatchers()){
       matcher.initialize(in->getWithEnv(in,environment));
+      if(!matcher.validate()){
+        throw new RuntimeException("Invalid filter");
+      }
     }
     matchers= executor.getMatchers();
 
@@ -131,18 +135,29 @@ public class FilterDescriptor {
   }
 
   private HttpMethodFilter buildMethodFilter() {
-    var loc = this;
-    var matcher = (ApiMatcher)matchers.get(0);
-    return new HttpMethodFilterConcrete(phase, methodBlocking,
-            matcher.getPathAddress(),matcher.getPathPatternReal(),matcher.getMethod(),
-            description,
-            id, extraMatches);
+    var matcherUnknown =matchers.get(0);
+    if(ClassUtils.isAssignable(matcherUnknown.getClass(),ApiMatcher.class)){
+      var matcher = (ApiMatcher)matcherUnknown;
+      return new HttpMethodFilterConcrete(phase, methodBlocking,
+              matcher.getPathAddress(),matcher.getPathPatternReal(),matcher.getMethod(),
+              description,
+              id, extraMatches);
+    }else{
+      return new HttpMethodFilterConcrete(phase, methodBlocking,
+              "*",null,"*",
+              description,
+              id, extraMatches);
+    }
   }
 
   private HttpTypeFilter buildTypeFilter() {
-    var loc = this;
-    var matcher = (ApiMatcher)matchers.get(0);
-    return new HttpTypeFilterConcrete(matcher.getHostAddress(),typeBlocking,priority,matcher.getPathPatternReal());
+    var matcherUnknown =matchers.get(0);
+    if(ClassUtils.isAssignable(matcherUnknown.getClass(),ApiMatcher.class)){
+      var matcher = (ApiMatcher)matcherUnknown;
+      return new HttpTypeFilterConcrete(matcher.getHostAddress(),typeBlocking,priority,matcher.getHostPatternReal());
+    }else{
+      return new HttpTypeFilterConcrete("*",typeBlocking,priority,null);
+    }
   }
 
   public int getPriority() {

@@ -49,3 +49,9 @@ https://unicode-table.com/en/1F5AB/
     font-size: 18px;
     content: "\1F5AB";
 }
+
+.boxed {
+    border: 1px solid black ;
+    border-radius: 25px;
+    padding: 10px;
+}
