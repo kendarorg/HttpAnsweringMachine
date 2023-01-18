@@ -1,0 +1,59 @@
+{
+  "rs": {
+    "traceid": 3,
+    ":traceid:": "java.lang.Long",
+    "type": "FORWARD_ONLY",
+    ":type:": "org.kendar.janus.enums.ResultSetType",
+    "concurrency": "CONCUR_READ_ONLY",
+    ":concurrency:": "org.kendar.janus.enums.ResultSetConcurrency",
+    "holdability": "HOLD_CURSORS_OVER_COMMIT",
+    ":holdability:": "org.kendar.janus.enums.ResultSetHoldability",
+    "maxrows": 100,
+    ":maxrows:": "java.lang.Integer",
+    "prefetchmetadata": false,
+    ":prefetchmetadata:": "java.lang.Boolean",
+    "charset": "UTF-8",
+    ":charset:": "java.lang.String",
+    "columndescriptors": [
+      {
+        "_": {
+          "type": -5,
+          ":type:": "java.lang.Integer",
+          "name": "ID",
+          ":name:": "java.lang.String",
+          "label": "ID",
+          ":label:": "java.lang.String"
+        },
+        ":_:": "org.kendar.janus.results.ColumnDescriptor"
+      },
+      {
+        "_": {
+          "type": 12,
+          ":type:": "java.lang.Integer",
+          "name": "NAME",
+          ":name:": "java.lang.String",
+          "label": "NAME",
+          ":label:": "java.lang.String"
+        },
+        ":_:": "org.kendar.janus.results.ColumnDescriptor"
+      },
+      {
+        "_": {
+          "type": 93,
+          ":type:": "java.lang.Integer",
+          "name": "TST",
+          ":name:": "java.lang.String",
+          "label": "TST",
+          ":label:": "java.lang.String"
+        },
+        ":_:": "org.kendar.janus.results.ColumnDescriptor"
+      }
+    ],
+    ":columndescriptors:": "java.util.ArrayList",
+    "lastrow": true,
+    ":lastrow:": "java.lang.Boolean",
+    "rows": [],
+    ":rows:": "java.util.ArrayList"
+  },
+  ":rs:": "org.kendar.janus.JdbcResultSet"
+}
