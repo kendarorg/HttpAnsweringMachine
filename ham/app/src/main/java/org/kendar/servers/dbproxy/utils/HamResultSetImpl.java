@@ -1,5 +1,6 @@
 package org.kendar.servers.dbproxy.utils;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.kendar.janus.JdbcConnection;
 import org.kendar.janus.JdbcResultsetMetaData;
 import org.kendar.janus.engine.Engine;
@@ -43,6 +44,84 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     public ResultSetConcurrency concurrency;
 
     public List<List<Object>> rows;
+
+    public List<List<Object>> toSerializable() throws SQLException {
+        var result = new ArrayList<List<Object>>();
+        for(var row:rows){
+            var newRow = new ArrayList<Object>();
+            for(var field:row){
+                if(field==null){
+                    newRow.add(null);
+                    continue;
+                }
+                if(ClassUtils.isPrimitiveOrWrapper(field.getClass())){
+                    newRow.add(null);
+                    continue;
+                }
+                if(field instanceof String){
+                    newRow.add(field);
+                    continue;
+                }
+                if(ClassUtils.isAssignable(field.getClass(),Clob.class)){
+                    newRow.add(toString((Clob)field));
+                    continue;
+                }
+                if(ClassUtils.isAssignable(field.getClass(),SQLXML.class)){
+                    newRow.add(toString((SQLXML)field));
+                    continue;
+                }
+                if(ClassUtils.isAssignable(field.getClass(),RowId.class)){
+                    newRow.add(toBytes((RowId)field));
+                    continue;
+                }
+                if(ClassUtils.isAssignable(field.getClass(),Blob.class)){
+                    try {
+                        newRow.add(((Blob) field).getBinaryStream().readAllBytes());
+                        continue;
+                    }catch (Exception ex){
+                        throw new SQLException(ex);
+                    }
+                }
+                newRow.add("UNKNOWN");
+            }
+        }
+
+        return result;
+    }
+
+    private byte[] toBytes(RowId field) {
+        return field.getBytes();
+    }
+
+    private String toString(Clob clob) throws SQLException {
+        try {
+            int j = 0;
+            Reader r = clob.getCharacterStream();
+            StringBuffer buffer = new StringBuffer();
+            int ch;
+            while ((ch = r.read()) != -1) {
+                buffer.append("" + (char) ch);
+            }
+            return buffer.toString();
+        }catch (Exception ex){
+            throw new SQLException(ex);
+        }
+    }
+
+    private String toString(SQLXML clob) throws SQLException {
+        try {
+            int j = 0;
+            Reader r = clob.getCharacterStream();
+            StringBuffer buffer = new StringBuffer();
+            int ch;
+            while ((ch = r.read()) != -1) {
+                buffer.append("" + (char) ch);
+            }
+            return buffer.toString();
+        }catch (Exception ex){
+            throw new SQLException(ex);
+        }
+    }
 
     public void serialize(TypedSerializer builder) {
         builder.write("traceId",traceId);
