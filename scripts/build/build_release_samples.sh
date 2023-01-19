@@ -66,6 +66,7 @@ export JAR_NAME=$(head -1 tmp_txt)
 cp -f $SCRIPT_DIR/templates/standalone/be.application.properties $HAM_RELEASE_TARGET/calendar/be/application.properties
 cp -f $SCRIPT_DIR/templates/standalone/bedb.application.properties $HAM_RELEASE_TARGET/calendar/be/bedb.application.properties
 cp -f $SCRIPT_DIR/templates/standalone/bedbham.application.properties $HAM_RELEASE_TARGET/calendar/be/bedbham.application.properties
+cp -f $SCRIPT_DIR/templates/standalone/bedbhamnogen.application.properties $HAM_RELEASE_TARGET/calendar/be/bedbhamnogen.application.properties
 cp -f $CALENDAR_DIR/be/target/be-*.jar $HAM_RELEASE_TARGET/calendar/be/
 echo "#!/bin/bash" > $HAM_RELEASE_TARGET/calendar/be/run.sh
 echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/be/run.sh

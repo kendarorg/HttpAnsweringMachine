@@ -98,10 +98,12 @@ module.exports = {
     onComponentEvent: function (evt) {
       if (evt.id == "changed") {
         this.visualization = JSON.stringify(convertToStructure([this.treeData]))
+        this.$emit("changed",this.visualization)
       }else if(evt.id=="reloadcallback"){
         var th = this;
         evt.callback(this.visualization,function(toupdate){
           th.visualization=toupdate;
+          th.$emit("changed",th.visualization)
         })
       }
     },

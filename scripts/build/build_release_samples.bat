@@ -67,6 +67,7 @@ call %UTILS_LIB% get_jar_name JAR_NAME
 copy /y %SCRIPT_DIR%\templates\standalone\be.application.properties %HAM_RELEASE_TARGET%\calendar\be\application.properties 1>NUL
 copy /y %SCRIPT_DIR%\templates\standalone\bedb.application.properties %HAM_RELEASE_TARGET%\calendar\be\bedb.application.properties 1>NUL
 copy /y %SCRIPT_DIR%\templates\standalone\bedbham.application.properties %HAM_RELEASE_TARGET%\calendar\be\bedbham.application.properties 1>NUL
+copy /y %SCRIPT_DIR%\templates\standalone\bedbhamnogen.application.properties %HAM_RELEASE_TARGET%\calendar\be\bedbhamnogen.application.properties 1>NUL
 copy /y %CALENDAR_DIR%\be\target\be-*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
 
 copy /y %ROOT_DIR%\ham\libs\janus-driver*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL

@@ -57,12 +57,15 @@ public class DbReplayer implements ReplayerEngine {
             if(res.getResponseText().contains("VoidResult"))return false;
         }
         if(doUseSimEngine){
+            var connectionId = req.getHeader("X-Connection-Id")==null?-1L:
+                    Long.parseLong(req.getHeader("X-Connection-Id"));
             var deser = serializer.newInstance();
             deser.deserialize(req.getRequestText());
-            var simResponse = simulator.handle(deser.read("command"));
+            var simResponse = simulator.handle(deser.read("command"), connectionId);
             if(simResponse==null || !simResponse.isHasResponse()){
-                return false;
+                return true;
             }
+            return false;
         }
         return true;
     }
@@ -217,6 +220,8 @@ public class DbReplayer implements ReplayerEngine {
     }
 
     private Response getStraightMatch(Request req, JdbcCommand command, String dbName) {
+        var connectionId = req.getHeader("X-Connection-Id")==null?-1L:
+                Long.parseLong(req.getHeader("X-Connection-Id"));
         if(command instanceof Close) {
             var ser = serializer.newInstance();
             var response = new Response();
@@ -250,7 +255,7 @@ public class DbReplayer implements ReplayerEngine {
             }
         }
         if(useSimEngine){
-            var simResponse = simulator.handle(command);
+            var simResponse = simulator.handle(command,connectionId);
             if(simResponse!=null && simResponse.isHasResponse()){
                 return serialize(simResponse.getResponse());
             }

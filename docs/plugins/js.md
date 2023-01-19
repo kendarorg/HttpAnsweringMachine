@@ -1,55 +1,31 @@
 It is possible to add javascript plugins to intercept and/or modify the requests and responses
 
-First should be defined a directory where to store the js plugins, relative to the jar
-
-    jsfilter.path=jsplugins
 
 ## Filter descriptor
 
-The myFilter.json is the descriptor of the plugin. The various parts are
+The filter contains various parts
 
-* method: the http method
-* hostAddress: the exact host dns name (or * for any)
-* hostRegexp: the Java regexp to match the host
-* pathAddress: the exact path, started with "/" (or * for any)
-* pathRegexp: the Java regexp to match the path
+* matcher: the type of matcher(s) that will be applied to filter
+  * apimatcher: to match paths/addresses/methods
+  * scriptmatcher: to match with a js script
+  * querymatcher: to match db queries
 * phase: the [phase](../docs/lifecyvle.md) for the filter
 * id: myFilter, aka the name of the file with the filter
+* type: what if the request matches
+  * script: execute the script
+  * body: directly return the body
 * enabled: true/false
 * blocking: true/false. When blocking the filter result will be sent directly to 
 the output, when false all the subsequent filters will be executed
 * priority: the priority of the filter
-* method: the http method (or * for any)
-* source: an array containing the filter source. This source will receive the parameters ''request'' and ''response''
-This filter will intercept all the requests to
-
-    GET js.test.org/test
+* source: for body type will be the data returned, for script the script executed
 
 ...and run the runFilter function on it. Obviously you should follow the
 instruction on [Https hijacking module](../https.md) to se tup the dns
 
-<pre>
-{
-    "method" : "GET",
-    "hostAddress" : "js.test.org",
-    "hostRegexp" : "",
-    "pathAddress": "/test",
-    "pathRegexp": "",
-    "phase": "PRE_RENDER",
-    "id": "uniqueIdentifier",
-    "enabled": true,
-    "blocking": true,
-    "priority": 100,
-    "source":[
-        "if(request.getHeader('Host')=="www.test.com")response.setStatusCode(404);",
-        "return false;"
-    ]
-}
-</pre>
-
 ## Filter implementation
 
-The source will be always wrapped automatically with this declaration
+The source (for script type) will be always wrapped automatically with this declaration
 
     function runFilter(request,response,utils){
     }
@@ -73,6 +49,31 @@ This filter will return a specific response test with the current data
         "request.putHeader('Host','test.com');",
         "return false;"
 </pre>
+
+## Matchers
+
+### apimatcher
+
+Contains
+
+* method: the http method
+* hostAddress: the exact host dns name (or * for any)
+* hostRegexp: the Java regexp to match the host
+* pathAddress: the exact path, started with "/" (or * for any)
+* pathRegexp: the Java regexp to match the path
+
+###  scriptmatcher
+
+* Use a script to match the request, as per the script types the function wrapping the script is the following, 
+
+     function runFilter(request,utils){ }
+
+* When your script returns true, the matcher is successful
+
+### querymatcher
+
+* Allow to set the SQL query that will be matched
+* The data can be retrieved by a db recording
 
 ## Utils
 
@@ -125,3 +126,5 @@ when something unexpected happens
         throw "Expected status code "+expectedresponse.getStatusCode()+" but received "+response.getStatusCode();
     }
 </pre>
+
+

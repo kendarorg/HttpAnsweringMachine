@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 /**
  * Statement/execute
@@ -29,8 +29,8 @@ import java.util.function.Function;
  * PreparedStatement/executeUpdate
  */
 public class SqlSimulator {
-    private static HashMap<Class<?>, Function<Object, Object>> fakes;
-    private static HashMap<String, Function<Exec, Object>> fakeExecs;
+    private static HashMap<Class<?>, BiFunction<Object,Long, Object>> fakes;
+    private static HashMap<String, BiFunction<Exec,Long, Object>> fakeExecs;
     private static AtomicLong indexes = new AtomicLong();
     private static Engine engine;
 
@@ -38,51 +38,50 @@ public class SqlSimulator {
         engine = new SimEngine();
         fakes = new HashMap<>();
         fakeExecs = new HashMap<>();
-        fakes.put(ConnectionConnect.class, (a) -> new ObjectResult(indexes.incrementAndGet()));
-        fakes.put(Close.class, (a) -> new ObjectResult());
+        fakes.put(ConnectionConnect.class, (a,c) -> new ObjectResult(indexes.incrementAndGet()));
+        fakes.put(Close.class, (a,c) -> new ObjectResult());
         fakes.put(Exec.class, SqlSimulator::exec);
-        addFakeExecs("Connection/getNetworkTimeout", (a) -> new ObjectResult(0));
-        addFakeExecs("Connection/isReadOnly", (a) -> new ObjectResult(false));
-        addFakeExecs("Connection/isValid", (a) -> new ObjectResult(true));
-        addFakeExecs("Connection/getTransactionIsolation", (a) -> new ObjectResult(2));
-        addFakeExecs("DatabaseMetaData/supportsResultSetType", (a) -> new ObjectResult(true));
-        addFakeExecs("DatabaseMetaData/supportsResultSetType", (a) -> new ObjectResult(true));
-        addFakeExecs("commit", (a) -> new ObjectResult());
-        addFakeExecs("rollback", (a) -> new ObjectResult());
+        addFakeExecs("Connection/getNetworkTimeout", (a,c) -> new ObjectResult(0));
+        addFakeExecs("Connection/isReadOnly", (a,c) -> new ObjectResult(false));
+        addFakeExecs("Connection/isValid", (a,c) -> new ObjectResult(true));
+        addFakeExecs("Connection/getTransactionIsolation", (a,c) -> new ObjectResult(2));
+        addFakeExecs("DatabaseMetaData/supportsResultSetType", (a,c) -> new ObjectResult(true));
+        addFakeExecs("DatabaseMetaData/supportsResultSetType", (a,c) -> new ObjectResult(true));
+        addFakeExecs("commit", (a,c) -> new ObjectResult());
+        addFakeExecs("rollback", (a,c) -> new ObjectResult());
         addFakeExecs("setSavepoint", SqlSimulator::setSavepoint);
-        fakes.put(ConnectionCreateStatement.class, (a) -> new StatementResult(indexes.incrementAndGet(), 100, 0));
-        fakes.put(RetrieveRemainingResultSet.class, (a) -> new RemainingResultSetResult(true, new ArrayList<>()));
-        fakes.put(ConnectionPrepareStatement.class, SqlSimulator::prepareStatement);
-        fakes.put(ConnectionReleaseSavepoint.class, (a) -> new ObjectResult());
-        fakes.put(ConnectionRollbackSavepoint.class, (a) -> new ObjectResult());
-        fakes.put(StatementSetQueryTimeout.class, (a) -> new ObjectResult());
-        fakes.put(StatementSetMaxRows.class, (a) -> new ObjectResult());
-        fakes.put(UpdateSpecialObject.class, (a) -> new ObjectResult());
-        fakes.put(ConnectionPrepareCall.class, SqlSimulator::prepareCall);
-
-
+        addFakeExecs("setAutoCommit", (a,c) -> new ObjectResult());
+        addFakeExecs("getAutoCommit", (a,c) -> new ObjectResult(true));
+        addFakeExecs("setReadOnly", (a,c) -> new ObjectResult());
+        fakes.put(ConnectionCreateStatement.class, (a,c) -> new StatementResult(indexes.incrementAndGet(), 100, 0));
+        fakes.put(RetrieveRemainingResultSet.class, (a,c) -> new RemainingResultSetResult(true, new ArrayList<>()));
+        fakes.put(ConnectionPrepareStatement.class,(a,c) -> new StatementResult(indexes.incrementAndGet(), 100, 0));
+        fakes.put(ConnectionReleaseSavepoint.class, (a,c) -> new ObjectResult());
+        fakes.put(ConnectionRollbackSavepoint.class, (a,c) -> new ObjectResult());
+        fakes.put(StatementSetQueryTimeout.class, (a,c) -> new ObjectResult());
+        fakes.put(StatementSetMaxRows.class, (a,c) -> new ObjectResult());
+        fakes.put(UpdateSpecialObject.class, (a,c) -> new ObjectResult());
+        fakes.put(ConnectionPrepareCall.class, (a,c) -> new StatementResult(indexes.incrementAndGet(), 100, 0));
     }
 
-    private static Object prepareCall(Object o) {
+    private static Object prepareCall(Object o,Long connectionId) {
         var ps = (ConnectionPrepareCall) o;
-        return new JdbcCallableStatement(newConnection(), engine, indexes.incrementAndGet(),
+        return new JdbcCallableStatement(newConnection(connectionId), engine, indexes.incrementAndGet(),
                 100, 0, ps.getType(), ps.getConcurrency(),
                 ps.getHoldability()).
                 withSql(ps.getSql());
     }
 
-    private static JdbcConnection newConnection() {
-        return new JdbcConnection(indexes.incrementAndGet(), engine, true);
+    private static JdbcConnection newConnection(Long connectionId) {
+        return new JdbcConnection(connectionId, engine, true);
     }
 
-    private static Object prepareStatement(Object o) {
+    private static Object prepareStatement(Object o,Long connectionId) {
         var ps = (ConnectionPrepareStatement) o;
-        return new JdbcPreparedStatement(newConnection(), engine, indexes.incrementAndGet(),
-                100, 0, ps.getType(), ps.getConcurrency(),
-                ps.getHoldability()).withSql(ps.getSql());
+        return new StatementResult(indexes.incrementAndGet(),100,0);
     }
 
-    private static Object setSavepoint(Exec exec) {
+    private static Object setSavepoint(Exec exec,Long connectionId) {
         var s = new JdbcSavepoint();
         s.setTraceId(indexes.incrementAndGet());
         s.setSavePointId(1);
@@ -91,40 +90,44 @@ public class SqlSimulator {
     }
 
 
-    private static void addFakeExecs(String key, Function<Exec, Object> function) {
+    private static void addFakeExecs(String key, BiFunction<Exec,Long, Object> function) {
         key = key.toLowerCase(Locale.ROOT);
         fakeExecs.put(key, function);
     }
 
-    private static Object exec(Object request) {
+    private static Object exec(Object request,Long connectionId) {
         var exec = (Exec) request;
-        var key = (exec.getInitiator() + "/" + exec.getName()).toLowerCase(Locale.ROOT);
-        Function<Exec, Object> founded;
+        var name = exec.getName().toLowerCase(Locale.ROOT);
+        var key = (exec.getInitiator() + "/" + name).toLowerCase(Locale.ROOT);
+        BiFunction<Exec,Long, Object> founded;
         if (fakeExecs.containsKey(key)) {
             founded = fakeExecs.get(key);
-        } else if (fakeExecs.containsKey(exec.getName().toLowerCase(Locale.ROOT))) {
+        } else if (fakeExecs.containsKey(name)) {
             key = exec.getName().toLowerCase(Locale.ROOT);
-            founded = fakeExecs.get(key);
+            founded = fakeExecs.get(name);
         } else {
             return new SqlSimResponse();
         }
-        var resultCall = founded.apply(exec);
+        var resultCall = founded.apply(exec,connectionId);
         var result = new SqlSimResponse();
         result.setResponse(resultCall);
         result.setHasResponse(true);
         return result;
     }
 
-    public SqlSimResponse handle(Object request) {
+    public SqlSimResponse handle(Object request, long connectionId) {
         if (request == null || !fakes.containsKey(request.getClass())) return new SqlSimResponse();
-        var resultCall = fakes.get(request.getClass()).apply(request);
+        var resultCall = fakes.get(request.getClass()).apply(request,connectionId);
+        if(resultCall.getClass()==SqlSimResponse.class){
+            return (SqlSimResponse)resultCall;
+        }
         var result = new SqlSimResponse();
         result.setResponse(resultCall);
         result.setHasResponse(true);
         return result;
     }
 
-    static Object handleInternal(Object request){
-        return fakes.get(request.getClass()).apply(request);
+    static Object handleInternal(Object request,Long connectionId){
+        return fakes.get(request.getClass()).apply(request,connectionId);
     }
 }

@@ -67,3 +67,16 @@ Please note that if you start the application -before- starting the recording, y
 the real database when doing the test. If you instead start the recording -before- the
 application under test you will record even all the initialisations and you will not need
 <B>ANY DATABASE AT ALL</b>
+
+### Simpler recording 
+
+You can choose to simulate the "non data" related calls it's enough to check the flag during recording (AND REPLAYING)
+
+<img alt="Create recording" src="../../images/dbmod_01.gif" width="500"/>
+
+### Editing data
+
+You can edit the resultsets adding/removing columns! The engine will handle the datatypes conversions for you
+
+<img alt="Create recording" src="../../images/dbmod_plugin.gif" width="500"/>
+
