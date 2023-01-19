@@ -74,7 +74,12 @@ module.exports = {
   },
   methods:{
     reload(externalData){
-      this.$refs.grid.reload(externalData);
+      if(typeof externalData=="undefined"){
+
+        this.$emit("reload","");
+      }else {
+        this.$refs.grid.reload(externalData);
+      }
     },
     download:function(){
       this.$emit("download");
