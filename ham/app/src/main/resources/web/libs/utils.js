@@ -167,3 +167,10 @@ const b_crc32 =function (str) {
     }
     return (crc ^ (-1)) >>> 0;
 };
+
+
+const clearArray = function(array) {
+    while (array.length > 0) {
+        array.pop();
+    }
+}

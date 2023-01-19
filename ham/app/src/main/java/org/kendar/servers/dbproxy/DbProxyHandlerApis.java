@@ -39,7 +39,7 @@ public class DbProxyHandlerApis implements FilteringClass {
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
-            pathAddress = "/api/jdbcproxyes",
+            pathAddress = "/api/jdbcproxies/proxies",
             method = "GET")
     @HamDoc(
             tags = {"base/proxy"},
@@ -48,14 +48,14 @@ public class DbProxyHandlerApis implements FilteringClass {
                     body = DbProxy[].class
             ))
     public void getProxies(Request req, Response res) throws JsonProcessingException {
-        var proxyes = configuration.getConfiguration(DbProxyConfig.class).getProxies();
+        var proxies = configuration.getConfiguration(DbProxyConfig.class).getProxies();
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-        res.setResponseText(mapper.writeValueAsString(proxyes));
+        res.setResponseText(mapper.writeValueAsString(proxies));
     }
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
-            pathAddress = "/api/jdbcproxyes/{id}",
+            pathAddress = "/api/jdbcproxies/proxies/{id}",
             method = "GET")
     @HamDoc(
             tags = {"base/proxy"},
@@ -66,9 +66,9 @@ public class DbProxyHandlerApis implements FilteringClass {
             ))
     public void getProxy(Request req, Response res) throws JsonProcessingException {
         var clone = configuration.getConfiguration(DbProxyConfig.class);
-        var proxyes = clone.getProxies();
+        var proxies = clone.getProxies();
         var id = req.getPathParameter("id");
-        for (var item : proxyes) {
+        for (var item : proxies) {
             if (item.getId().equalsIgnoreCase(id)) {
                 res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
                 res.setResponseText(mapper.writeValueAsString(item));
@@ -80,7 +80,7 @@ public class DbProxyHandlerApis implements FilteringClass {
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
-            pathAddress = "/api/jdbcproxyes/{id}",
+            pathAddress = "/api/jdbcproxies/proxies/{id}",
             method = "DELETE")
     @HamDoc(
             tags = {"base/proxy"},
@@ -89,10 +89,10 @@ public class DbProxyHandlerApis implements FilteringClass {
     )
     public void removeProxy(Request req, Response res) {
         var clone = configuration.getConfiguration(DbProxyConfig.class).copy();
-        var proxyes = clone.getProxies();
+        var proxies = clone.getProxies();
         var id = req.getPathParameter("id");
         var newList = new ArrayList<DbProxy>();
-        for (var item : proxyes) {
+        for (var item : proxies) {
             if (item.getId().equalsIgnoreCase(id)) {
                 continue;
             }
@@ -106,7 +106,7 @@ public class DbProxyHandlerApis implements FilteringClass {
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
-            pathAddress = "/api/jdbcproxyes/{id}",
+            pathAddress = "/api/jdbcproxies/proxies/{id}",
             method = "PUT")
     @HamDoc(
             tags = {"base/proxy"},
@@ -117,12 +117,12 @@ public class DbProxyHandlerApis implements FilteringClass {
             ))
     public void updateProxy(Request req, Response res) throws JsonProcessingException {
         var cloneConf = configuration.getConfiguration(DbProxyConfig.class).copy();
-        var proxyes = cloneConf.getProxies();
+        var proxies = cloneConf.getProxies();
         var id = req.getPathParameter("id");
         var newList = new ArrayList<DbProxy>();
         var newData = mapper.readValue(req.getRequestText(), DbProxy.class);
 
-        for (var item : proxyes) {
+        for (var item : proxies) {
             var clone = item.copy();
             if (!clone.getId().equalsIgnoreCase(id)) {
                 newList.add(clone);
@@ -142,7 +142,7 @@ public class DbProxyHandlerApis implements FilteringClass {
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
-            pathAddress = "/api/jdbcproxyes",
+            pathAddress = "/api/jdbcproxies/proxies",
             method = "POST")
     @HamDoc(
             tags = {"base/proxy"},
@@ -152,10 +152,10 @@ public class DbProxyHandlerApis implements FilteringClass {
             ))
     public void addProxy(Request req, Response res) throws JsonProcessingException {
         var cloneConf = configuration.getConfiguration(DbProxyConfig.class).copy();
-        var proxyes = cloneConf.getProxies();
+        var proxies = cloneConf.getProxies();
         if (req.getRequestText() != null && !req.getRequestText().isEmpty()) {
             var newData = mapper.readValue(req.getRequestText(), DbProxy.class);
-            proxyes.add(newData);
+            proxies.add(newData);
             configuration.setConfiguration(cloneConf);
         }
         eventQueue.handle(new DbProxyConfigChanged());

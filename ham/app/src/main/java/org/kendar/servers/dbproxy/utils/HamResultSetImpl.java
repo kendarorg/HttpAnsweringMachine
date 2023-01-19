@@ -11,6 +11,8 @@ import org.kendar.janus.results.ColumnDescriptor;
 import org.kendar.janus.serialization.TypedSerializable;
 import org.kendar.janus.serialization.TypedSerializer;
 import org.kendar.servers.dbproxy.HamResultSet;
+import org.kendar.util.convert.TypeConverter;
+import org.kendar.util.convert.TypeConverterException;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -44,6 +46,98 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     public ResultSetConcurrency concurrency;
 
     public List<List<Object>> rows;
+
+    public static Class<?> getTypeFromSqlType( int type) throws Exception {
+            Class<?> value=null;
+            if (type == java.sql.Types.ARRAY) {
+                value = java.sql.Array.class;
+            } else if (type == java.sql.Types.BIGINT) {
+                value = Long.class;
+            } else if (type == java.sql.Types.BINARY) {
+                value = byte[].class;
+            } else if (type == java.sql.Types.BIT) {
+                value = boolean.class;
+            } else if (type == java.sql.Types.BLOB) {
+                value = byte[].class;
+            } else if (type == java.sql.Types.BOOLEAN) {
+                value = boolean.class;
+            } else if (type == java.sql.Types.CHAR) {
+                value = String.class;
+            } else if (type == java.sql.Types.CLOB) {
+                value = String.class;
+            } else if (type == java.sql.Types.DATALINK) {
+                //value = resultSet.getBinaryStream(column);
+                throw new Exception("DATALINK NOT SUPPORTED");
+            } else if (type == java.sql.Types.DATE) {
+                value = java.sql.Date.class;
+            } else if (type == java.sql.Types.DECIMAL) {
+                value = BigDecimal.class;
+            } else if (type == java.sql.Types.DOUBLE) {
+                value = double.class;
+            } else if (type == java.sql.Types.FLOAT) {
+                value = float.class;
+            } else if (type == java.sql.Types.INTEGER) {
+                value = int.class;
+            } else if (type == java.sql.Types.JAVA_OBJECT) {
+                throw new Exception("JAVA_OBJECT NOT SUPPORTED");
+            } else if (type == java.sql.Types.LONGVARBINARY) {
+                value = byte[].class;
+            } else if (type == java.sql.Types.LONGVARCHAR) {
+                value = String.class;
+            } else if (type == java.sql.Types.NULL) {
+                value = null;
+            } else if (type == java.sql.Types.NUMERIC) {
+                value = BigDecimal.class;
+            } else if (type == java.sql.Types.OTHER) {
+                throw new Exception("OTHER NOT SUPPORTED");
+            } else if (type == java.sql.Types.REAL) {
+                value = double.class;
+            } else if (type == java.sql.Types.REF) {
+                throw new Exception("REF NOT SUPPORTED");
+            } else if (type == java.sql.Types.SMALLINT) {
+                value = int.class;
+            } else if (type == java.sql.Types.TIME) {
+                value = java.sql.Time.class;
+            } else if (type == java.sql.Types.TIMESTAMP) {
+                value = java.sql.Timestamp.class;
+            } else if (type == java.sql.Types.TINYINT) {
+                value = int.class;
+            } else if (type == java.sql.Types.VARBINARY) {
+                value = byte[].class;
+            } else if (type == java.sql.Types.VARCHAR) {
+                value = String.class;
+            }else if (type == 100) {
+                // oracle specific
+                value = float.class;
+            } else if (type == 101) {
+                // oracle specific
+                value = double.class;
+            }else {
+                throw new Exception("Could not get value for result set using type ["
+                        + type + "]");
+            }
+
+        return value;
+    }
+
+    public void fromSerializable(List<List<Object>> source) throws Exception {
+        rows = new ArrayList<>();
+        for(var row:source){
+            var newRow = new ArrayList<Object>();
+            for (int i = 0; i < row.size(); i++) {
+                var cd = columnDescriptors.get(i);
+                var realType = getTypeFromSqlType(cd.getType());
+                Object field = row.get(i);
+                if (field == null || field.getClass()==realType) {
+                    newRow.add(field);
+                    continue;
+                }
+                var converted = TypeConverter.convert(realType,field);
+                newRow.add(converted);
+            }
+            rows.add(newRow);
+        }
+    }
 
     public List<List<Object>> toSerializable() throws SQLException {
         var result = new ArrayList<List<Object>>();

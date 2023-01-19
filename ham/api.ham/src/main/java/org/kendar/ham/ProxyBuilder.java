@@ -83,14 +83,14 @@ public interface ProxyBuilder {
     void removeProxy(String id) throws HamException;
 
     /**
-     * List all current proxyes with their states
+     * List all current proxies with their states
      * @return
      * @throws HamException
      */
     List<Proxy> retrieveProxies() throws HamException;
 
     /**
-     * List all current db proxyes
+     * List all current db proxies
      * @return
      * @throws HamException
      */

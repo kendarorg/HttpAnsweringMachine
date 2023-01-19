@@ -30,7 +30,7 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
         var request = hamBuilder.newRequest()
                 .withMethod(updateMethod(alreadyExisting))
                 .withPath(pathId(
-                        "/api/proxyes",
+                        "/api/proxies",
                         alreadyExisting,
                         ()-> alreadyExisting.get().getId()))
                 .withJsonBody(proxy);
@@ -63,14 +63,14 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
     public void removeProxy(String id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withDelete()
-                .withPath("/api/proxyes/"+id);
+                .withPath("/api/proxies/"+id);
         hamBuilder.call(request.build());
     }
 
     @Override
     public List<Proxy> retrieveProxies() throws HamException {
         var request = hamBuilder.newRequest()
-                .withPath("/api/proxyes");
+                .withPath("/api/proxies");
         return hamBuilder.callJsonList(request.build(), Proxy.class);
     }
 
@@ -78,7 +78,7 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
     public void refresh() throws HamException {
         var request = hamBuilder.newRequest()
                 .withPost()
-                .withPath("/api/proxyes");
+                .withPath("/api/proxies");
         hamBuilder.call(request.build());
     }
 
@@ -96,7 +96,7 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
         var request = hamBuilder.newRequest()
                 .withMethod(updateMethod(alreadyExisting))
                 .withPath(pathId(
-                        "/api/jdbcproxyes",
+                        "/api/jdbcproxies/proxies",
                         alreadyExisting,
                         ()-> alreadyExisting.get().getId()))
                 .withJsonBody(dbProxy);
@@ -120,7 +120,7 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
     public void removeDbProxy(String dbName) throws HamException {
         var request = hamBuilder.newRequest()
                 .withDelete()
-                .withPath("/api/jdbcproxyes/"+dbName);
+                .withPath("/api/jdbcproxies/proxies/"+dbName);
         hamBuilder.call(request.build());
     }
 
@@ -128,7 +128,7 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
     @Override
     public List<DbProxy> retrieveDbProxies() throws HamException {
         var request = hamBuilder.newRequest()
-                .withPath("/api/jdbcproxyes");
+                .withPath("/api/jdbcproxies/proxies");
         return hamBuilder.callJsonList(request.build(), DbProxy.class);
     }
 }
