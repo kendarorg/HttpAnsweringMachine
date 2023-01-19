@@ -41,6 +41,7 @@ public class ReplayerStatus {
     private List<ReplayerEngine> replayerEngines;
     private BaseDataset dataset;
     private ReplayerState state = ReplayerState.NONE;
+    private Map<String, String> query;
 //    private boolean recordDbCalls;
 //    private boolean recordVoidDbCalls;
 
@@ -142,8 +143,9 @@ public class ReplayerStatus {
         dataset = null;
     }
 
-    public void restartReplaying(Long id) {
+    public void restartReplaying(Long id, Map<String, String> query) {
         if (state != ReplayerState.PAUSED_REPLAYING) return;
+        this.query=query;
         logger.info("REPLAYING RE-START");
         ((ReplayerDataset)dataset).restart();
         state = ReplayerState.REPLAYING;
@@ -162,21 +164,23 @@ public class ReplayerStatus {
         dataset = null;
     }
 
-    public Long startReplaying(Long id) throws Exception {
+    public Long startReplaying(Long id, Map<String, String> query) throws Exception {
         if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
+        this.query=query;
         logger.info("REPLAY START");
         dataset = new ReplayerDataset(loggerBuilder,localAddress,md5Tester,eventQueue,
                 internalRequester, new Cache(),simpleProxyHandler,sessionFactory,
                 replayerEngines);
+        dataset.setParams(query);
         dataset.load(id, null);
         var runId = ((ReplayerDataset)dataset).start();
         state = ReplayerState.REPLAYING;
         return runId;
     }
 
-    public void startStimulator(Long id) throws Exception {
+    public void startStimulator(Long id, Map<String, String> query) throws Exception {
         if (state == ReplayerState.NONE){
-            startReplaying(id);
+            startReplaying(id, query);
         }
         logger.info("AUTO TEST START");
         ((ReplayerDataset)dataset).startStimulator();

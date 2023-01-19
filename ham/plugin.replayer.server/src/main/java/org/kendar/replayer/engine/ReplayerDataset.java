@@ -48,6 +48,7 @@ public class ReplayerDataset implements BaseDataset{
 
   protected ReplayerResult replayerResult;
   private Thread thread;
+  private Map<String, String> params;
 
   public ReplayerDataset(
           LoggerBuilder loggerBuilder,
@@ -75,6 +76,7 @@ public class ReplayerDataset implements BaseDataset{
     this.description = description;
     for(var engine :replayerEngines){
       engine.loadDb(name);
+      engine.setParams(params);
     }
 
   }
@@ -87,6 +89,11 @@ public class ReplayerDataset implements BaseDataset{
   @Override
   public void setSpecialParams(Map<String, String> query) {
 
+  }
+
+  @Override
+  public void setParams(Map<String, String> query) {
+    this.params=query;
   }
 
 

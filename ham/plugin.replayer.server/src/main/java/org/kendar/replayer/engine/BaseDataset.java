@@ -10,4 +10,6 @@ public interface BaseDataset {
     ReplayerState getType();
 
     void setSpecialParams(Map<String, String> query);
+
+    void setParams(Map<String, String> query);
 }

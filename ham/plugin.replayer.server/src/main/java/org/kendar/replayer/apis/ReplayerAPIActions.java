@@ -6,7 +6,6 @@ import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.PathParameter;
-import org.kendar.http.annotations.multi.QueryString;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.engine.ReplayerStatus;
 import org.kendar.servers.http.Request;
@@ -68,9 +67,9 @@ public class ReplayerAPIActions implements FilteringClass {
         var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
-            Long runId = replayerStatus.startReplaying(id);
+            Long runId = replayerStatus.startReplaying(id,req.getQuery());
         }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_REPLAYING){
-            replayerStatus.restartReplaying(id);
+            replayerStatus.restartReplaying(id,req.getQuery());
         }else if(action.equalsIgnoreCase("pause") && replayerStatus.getStatus()==ReplayerState.REPLAYING){
             replayerStatus.pauseReplaying(id);
         }else if(action.equalsIgnoreCase("stop") &&
@@ -88,13 +87,13 @@ public class ReplayerAPIActions implements FilteringClass {
         var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
-            replayerStatus.startStimulator(id);
+            replayerStatus.startStimulator(id,req.getQuery());
         }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_REPLAYING){
-            replayerStatus.restartReplaying(id);
+            replayerStatus.restartReplaying(id, req.getQuery());
         }else if(action.equalsIgnoreCase("pause") && replayerStatus.getStatus()==ReplayerState.REPLAYING){
             replayerStatus.pauseReplaying(id);
         }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.REPLAYING){
-            replayerStatus.startStimulator(id);
+            replayerStatus.startStimulator(id,req.getQuery());
         }else if(action.equalsIgnoreCase("stop") &&
                 replayerStatus.getStatus()==ReplayerState.REPLAYING){
             replayerStatus.stopReplaying(id);

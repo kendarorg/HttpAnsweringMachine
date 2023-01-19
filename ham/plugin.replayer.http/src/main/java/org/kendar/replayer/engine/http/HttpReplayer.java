@@ -54,6 +54,11 @@ public class HttpReplayer implements ReplayerEngine {
         return false;
     }
 
+    @Override
+    public void setParams(Map<String, String> params) {
+
+    }
+
     public HttpReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder,JsonConfiguration configuration) {
         this.sessionFactory = sessionFactory;
         this.logger = loggerBuilder.build(HttpReplayer.class);

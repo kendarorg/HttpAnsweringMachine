@@ -54,6 +54,11 @@ public class RecordingDataset implements BaseDataset{
         this.specialParams = query;
     }
 
+    @Override
+    public void setParams(Map<String, String> query) {
+
+    }
+
     public RecordingDataset(
             LoggerBuilder loggerBuilder,
             Md5Tester md5Tester, HibernateSessionFactory sessionFactory,
