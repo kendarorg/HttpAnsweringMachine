@@ -141,7 +141,7 @@ public class DbProxyApi implements FilteringClass {
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/jdbcproxies/utils/modifyresultset",
-            method = "GET", blocking = true)
+            method = "POST", blocking = true)
     @HamDoc(
             tags = {"base/proxydb"},
             description = "Fill a janus resultset with data. The data field is a list[list] with the data to set. The jsonResultSet is " +

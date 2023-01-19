@@ -1,6 +1,9 @@
 <template>
   <div>
     RESULTSET
+    <button type="button" class="bi bi-floppy" v-on:click="saveChanges()"
+             title="Save changes"></button>
+
     <div class="form-group">
       <label htmlFor="val">Cols count</label>
       <input class="form-control" readonly type="text" name="val" id="val" v-model="columndescriptorslength"/>
@@ -30,7 +33,7 @@
         </td>
       </tr>
 
-      <tr v-for="(row,index) in rows">
+      <tr v-for="(row,index) in shownRows">
         <td>
           <button v-if="rowstatus!=index" v-on:click="deleteRow(index)" class="bi bi-trash" title="Delete"></button>
         </td>
@@ -66,6 +69,8 @@ module.exports = {
   },
   data:function(){
     return {
+      blockChange:false,
+      rowsChanged:false,
       newRow:[],
       newitemrow:false,
       rows:[],
@@ -73,23 +78,29 @@ module.exports = {
     }
   },
   mounted: function () {
-    clearArray(this.rows);
-    var th = this;
-    var rows = findChildItemWithType(this.value,'rows').children;
-    rows.forEach(function(row){
-      var realRow =[];
-      row.children.forEach(function(col){
-        var value = col.value;
-        realRow.push(value);
-      })
-      th.rows.push(realRow);
-    })
+    //this.reloadDataRows();
   },
   computed:{
     columndescriptorslength:{
       get: function() {
         console.log("columndescriptorslength")
         return findChildItemWithType(this.value,'columndescriptors').children.length;
+      }
+    },
+    shownRows:{
+      get:function (){
+        console.log("retrieve 2")
+        var rows = findChildItemWithType(this.value,'columndescriptors').children;
+        if(this.rowsChanged){
+          this.rowsChanged=false;
+          return this.rows;
+        }else {
+          if(this.blockChange){
+            return this.rows;
+          }
+          this.value;
+          return this.retrievePassedRows();
+        }
       }
     },
     cols:{
@@ -100,11 +111,54 @@ module.exports = {
         rows.forEach(function(row){
           realRows.push(findChildItemWithType(row,'name').value)
         })
+
         return realRows;
       }
     }
   },
   methods:{
+    retrievePassedRows:function(){
+      var result=[];
+      var th = this;
+      var rows = findChildItemWithType(this.value,'rows').children;
+      rows.forEach(function(row){
+        var realRow =[];
+        row.children.forEach(function(col){
+          var value = col.value;
+          realRow.push(value);
+        })
+        result.push(realRow);
+      })
+      this.rows=result;
+      return result;
+    },
+    // reloadDataRows:function(){
+    //
+    //   var foundedRows = this.retrievePassedRows();
+    //   clearArray(this.rows);
+    //   var th = this;
+    //   foundedRows.forEach(function(row){
+    //     th.rows.push(row);
+    //   })
+    // },
+    reloadObject:function(originalResultset,setitem){
+      console.log("reloadobject")
+      var data ={
+        jsonResultSet:originalResultset,
+        data:JSON.stringify(this.rows)
+      }
+      axios.post('/api/jdbcproxies/utils/modifyresultset', data).then((result) => {
+        setitem(JSON.stringify(result.data));
+      }).catch(function (error) {
+        alert("Invalid data");
+      });
+    },
+    saveChanges:function(){
+      this.$emit("componentevent",{
+        id:"reloadcallback",
+        callback:this.reloadObject,
+      })
+    },
     getWidth:function(index,fieldindex){
       if(isUndefined(this.rows[index][fieldindex]))return 2;
       return (this.rows[index][fieldindex]+"").length;
@@ -114,6 +168,8 @@ module.exports = {
       return (this.newRow[fieldindex]+"").length;
     },
     confirmRow:function(index){
+      this.rowsChanged=true;
+      this.blockChange=false;
       if(this.newitemrow==true){
         this.newitemrow=false;
         var newInserted = [];
@@ -125,9 +181,11 @@ module.exports = {
       this.rowstatus=-1;
     },
     modifyRow:function(index){
+      this.blockChange=true;
       this.rowstatus=index;
     },
     deleteRow:function(index){
+      this.rowsChanged=true;
       if(this.newitemrow==true){
         this.newitemrow=false;
         return;
