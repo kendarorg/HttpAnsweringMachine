@@ -12,6 +12,8 @@ The AnsweringMachine is built to overcome this troubles
 
 * <b>[Record/replay db calls in integration tests!](docs/generated/dbtest.md) :zap: NO DB REQUIRED TO REPLAY!</b>
 * <b>[Automatic Null test with db!](docs/generated/autodbtest.md) :zap: NO DB REQUIRED TO REPLAY!</b>
+* <b>[Modify recorded db calls!](docs/generated/moddb.md) :zap: NO DB REQUIRED TO REPLAY!</b>
+* <b>Js Filters now on db :zap:</b>
 
 <br>
 <br>
@@ -53,6 +55,11 @@ The AnsweringMachine is built to overcome this troubles
   * Record the db interactions
   * Shut down the real db and all environment but the application to test
   * Automagically test the application without db!
+* [Modify recorded db calls!](docs/generated/moddb.md) 15 minutes
+  * Record the db interactions
+  * Shut down the real db
+  * Modify directly the fake data returned by the db!
+  * And use it in your tests!
 * **Dockerize any application** 20 minutes
   * Build a custom docker cage for your Java/.NET/Node/... wathever application
   * Access via Proxy or via VPN to experience the full environment

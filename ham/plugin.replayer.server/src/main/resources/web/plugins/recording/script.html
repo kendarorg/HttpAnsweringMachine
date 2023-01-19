@@ -220,19 +220,17 @@
                 var id = getUrlParameter("id");
                 if(!isUndefined(onWhat)){
                     var extra = "";
-                    if(onWhat=="record"){
-                        var arrayKeys = Object.getOwnPropertyNames(this.extensionsData);
-                        extra="";
-                        var count =0;
-                        for (let i = 0; i < arrayKeys.length; i++){
-                            var key = arrayKeys[i];
-                            if(key.startsWith("_"))continue;
-                            var value=this.extensionsData[key];
-                            if(count==0)extra+="?";
-                            else extra+="&";
-                            extra+=key+"="+value;
-                            count++;
-                        }
+
+                    var arrayKeys = Object.getOwnPropertyNames(this.extensionsData);
+                    var count =0;
+                    for (let i = 0; i < arrayKeys.length; i++){
+                        var key = arrayKeys[i];
+                        if(key.startsWith("_"))continue;
+                        var value=this.extensionsData[key];
+                        if(count==0)extra+="?";
+                        else extra+="&";
+                        extra+=key+"="+value;
+                        count++;
                     }
                     var id = getUrlParameter("id");
                     var url = "/api/plugins/replayer/recording/"+id+"/"+onWhat+"/"+what+extra;

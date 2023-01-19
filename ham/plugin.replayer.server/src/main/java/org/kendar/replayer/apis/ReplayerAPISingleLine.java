@@ -111,8 +111,11 @@ public class ReplayerAPISingleLine implements FilteringClass {
     try{
     sessionFactory.transactional(em -> {
 
-      var destination = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+      var ci = (CallIndex) em.createQuery("SELECT e FROM CallIndex e WHERE" +
               " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
+
+      var destination = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+              " e.recordingId=" + recordingId + " AND e.id=" + ci.getReference()).getResultList().get(0);
       cloneToRow(destination, source);
       em.merge(destination);
       return;
@@ -224,7 +227,8 @@ public class ReplayerAPISingleLine implements FilteringClass {
     res.setBinaryResponse(source.getResponse().isBinaryResponse());
     res.setHeaders(source.getResponse().getHeaders());
     res.setStatusCode(source.getResponse().getStatusCode());
-    destination.setResponse(res);
+    res.setResponseBytes(source.getResponse().getResponseBytes());
+    res.setResponseText(source.getResponse().getResponseText());
 
     req.setBinaryRequest(source.getRequest().isBinaryRequest());
     req.setHeaders(source.getRequest().getHeaders());
@@ -237,6 +241,8 @@ public class ReplayerAPISingleLine implements FilteringClass {
     req.setPostParameters(source.getRequest().getPostParameters());
     req.setStaticRequest(source.getRequest().isStaticRequest());
     req.setSoapRequest(source.getRequest().isSoapRequest());
+    req.setRequestBytes(source.getRequest().getRequestBytes());
+    req.setRequestText(source.getRequest().getRequestText());
 
     destination.setRequest(req);
     destination.setResponse(res);
