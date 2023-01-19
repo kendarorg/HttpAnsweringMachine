@@ -8,6 +8,7 @@ import org.kendar.janus.results.JdbcResult;
 import org.kendar.janus.results.ObjectResult;
 import org.kendar.janus.results.VoidResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
+import org.kendar.replayer.engine.db.sqlsim.SqlSimulator;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.storage.ReplayerRow;
@@ -29,6 +30,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public class DbReplayer implements ReplayerEngine {
 
 
+    private SqlSimulator simulator =new SqlSimulator();
+    private boolean useSimEngine;
+
     @Override
     public ReplayerEngine create(LoggerBuilder loggerBuilder) {
         return new DbReplayer(sessionFactory,loggerBuilder,null);
@@ -41,12 +45,24 @@ public class DbReplayer implements ReplayerEngine {
 
     @Override
     public boolean isValidRoundTrip(Request req, Response res, Map<String, String> specialParams) {
-        var recordDbCalls = specialParams.get("recordDbCalls")==null?false:Boolean.parseBoolean(specialParams.get("recordDbCalls"));
-        var recordVoidDbCalls = specialParams.get("recordDbCalls")==null?false:Boolean.parseBoolean(specialParams.get("recordVoidDbCalls"));
+        var recordDbCalls = specialParams.get("recordDbCalls")==null?false:
+                Boolean.parseBoolean(specialParams.get("recordDbCalls"));
+        var recordVoidDbCalls = specialParams.get("recordDbCalls")==null?false:
+                Boolean.parseBoolean(specialParams.get("recordVoidDbCalls"));
+        var doUseSimEngine = specialParams.get("useSimEngine")==null?false:
+                Boolean.parseBoolean(specialParams.get("useSimEngine"));
         if(!recordDbCalls)return false;
         if(!recordVoidDbCalls){
             if(res.getResponseText()==null)return false;
             if(res.getResponseText().contains("VoidResult"))return false;
+        }
+        if(doUseSimEngine){
+            var deser = serializer.newInstance();
+            deser.deserialize(req.getRequestText());
+            var simResponse = simulator.handle(deser.read("command"));
+            if(simResponse==null || !simResponse.isHasResponse()){
+                return false;
+            }
         }
         return true;
     }
@@ -54,6 +70,12 @@ public class DbReplayer implements ReplayerEngine {
     @Override
     public boolean noStaticsAllowed() {
         return true;
+    }
+
+    @Override
+    public void setParams(Map<String, String> specialParams) {
+        useSimEngine = specialParams.get("useSimEngine")==null?false:
+                Boolean.parseBoolean(specialParams.get("useSimEngine"));
     }
 
     public DbReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder,JsonConfiguration configuration) {
@@ -123,75 +145,6 @@ public class DbReplayer implements ReplayerEngine {
         }
     }
 
-    private void loadDbTree(Long recordingId, ArrayList<CallIndex> indexes) throws Exception {
-        Map<String,Map<Long,List<DbRow>>> rows = new HashMap<>();
-        loadRowsByConnection(recordingId, indexes, rows);
-
-        for(var db: rows.entrySet()){
-            if(!treeDatabase.containsKey(db.getKey())){
-                treeDatabase.put(db.getKey(),new DbTreeItem());
-            }
-            for(var connection:db.getValue().entrySet()){
-                for(var dbRow:connection.getValue()){
-                    var dbParent = treeDatabase.get(db.getKey());
-                    //var targetItemId = db.getKey()+"-"+dbRow.getConnectionId()+"-"+dbRow.getTraceId();
-                    if(dbRow.getRequest() instanceof ConnectionConnect){
-                        dbParent.addTarget(dbRow);
-                        //cache.put(targetItemId,dbRow);
-                    }else{
-                        var realParent = getLastWithConnectionId(dbParent,dbRow.getConnectionId());
-
-                        var addedAsTarget = false;
-                        for (var target : realParent.getTargets()) {
-                            //If the request content is the same
-                            if (matchesContent(target,dbRow)) {
-                                realParent.addTarget(dbRow);
-                                addedAsTarget=true;
-                                break;
-                            }
-                        }
-                        if(!addedAsTarget){
-                            DbTreeItem dbTreeItem = findDbTreeItem(realParent,dbRow);
-
-                            if(dbTreeItem==null) {
-                                //Is a nex step into the life of the connection
-                                dbTreeItem = new DbTreeItem();
-                                dbTreeItem.setParent(realParent);
-                                dbTreeItem.addTarget(dbRow);
-                                realParent.addChild(dbTreeItem);
-                            }else{
-                                dbTreeItem.addTarget(dbRow);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-
-    private DbTreeItem findDbTreeItem(DbTreeItem realParent,DbRow dbRow) {
-        for(var child:realParent.getChildren()){
-            for(var target:child.getTargets()){
-                if (matchesContent(target,dbRow)) {
-                    return child;
-                }
-            }
-        }
-        return null;
-    }
-
-    private boolean matchesContent(DbRow target, DbRow dbRow) {
-        return target.getRow().getRequest().getRequestText().equalsIgnoreCase(
-                dbRow.getRow().getRequest().getRequestText());
-    }
-
-    private boolean matchesContent(DbRow target, Request request) {
-        return target.getRow().getRequest().getRequestText().equalsIgnoreCase(
-                request.getRequestText());
-    }
-
     protected boolean hasRows = false;
 
     protected boolean hasDbRows(Long recordingId) throws Exception {
@@ -206,34 +159,6 @@ public class DbReplayer implements ReplayerEngine {
     }
 
     private final Logger logger;
-
-    private void loadRowsByConnection(Long recordingId, ArrayList<CallIndex> indexes, Map<String, Map<Long, List<DbRow>>> rows) throws Exception {
-
-        for(var index : indexes){
-            sessionFactory.query(e -> {
-                ReplayerRow row = getReplayerRow(recordingId, index, e);
-                var reqDeser = serializer.newInstance();
-                reqDeser.deserialize(row.getRequest().getRequestText());
-                var resDeser = serializer.newInstance();
-                resDeser.deserialize(row.getResponse().getResponseText());
-
-
-                var dbRowName = row.getRequest().getPathParameter("dbName").toLowerCase(Locale.ROOT);
-                var dbRow = new DbRow(row,
-                        (JdbcCommand) reqDeser.read("command"),
-                        (JdbcResult) resDeser.read("result"));
-                var dbRowConnectionId = dbRow.getConnectionId();
-                if(!rows.containsKey(dbRowName)){
-                    rows.put(dbRowName,new HashMap<>());
-                }
-
-                if(!rows.get(dbRowName).containsKey(dbRowConnectionId)){
-                    rows.get(dbRowName).put(dbRowConnectionId,new ArrayList<>());
-                }
-                rows.get(dbRowName).get(dbRowConnectionId).add(dbRow);
-            });
-        }
-    }
 
     protected ReplayerRow getReplayerRow(Long recordingId, CallIndex index, EntityManager e) {
         var row =(ReplayerRow) e.createQuery("SELECT e FROM ReplayerRow e " +
@@ -322,6 +247,12 @@ public class DbReplayer implements ReplayerEngine {
                     target.setVisited(true);
                 }
                 return serialize(target.getResponse());
+            }
+        }
+        if(useSimEngine){
+            var simResponse = simulator.handle(command);
+            if(simResponse!=null && simResponse.isHasResponse()){
+                return serialize(simResponse.getResponse());
             }
         }
         return serialize(new VoidResult());

@@ -10,6 +10,11 @@
     <label class="form-check-label" for="recordDbCalls" >
       Record db calls
     </label>
+    <input class="form-check-input" type="checkbox" value="" id="useSimEngine" name="useSimEngine"
+           v-model="useSimEngine" @change="changeUseSimEngine">
+    <label class="form-check-label" for="useSimEngine" >
+      Use simulated engine (not suitable for metadata)
+    </label>
     <br>
   </div>
 </template>
@@ -22,10 +27,18 @@ module.exports = {
   data:function(){
     return {
       recordDbCalls:false,
-      recordVoidDbCalls:false
+      recordVoidDbCalls:false,
+      useSimEngine:false
     }
   },
   methods:{
+    changeUseSimEngine:function (){
+      var evt = {
+        value:this.useSimEngine,
+        id:"useSimEngine"
+      }
+      this.$emit("componentevent",evt);
+    },
     changeRecordVoidDbCalls:function (){
       var evt = {
         value:this.recordVoidDbCalls,
