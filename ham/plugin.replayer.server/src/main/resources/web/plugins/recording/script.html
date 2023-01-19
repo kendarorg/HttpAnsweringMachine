@@ -351,6 +351,7 @@
                 var th=this;
                 axios.get("/api/plugins/replayer/extension")
                     .then(function(result){
+                        clearArray(th.extensions)
                         result.data.forEach(function (fe){
                             th.extensions.push(fe);
                         });
