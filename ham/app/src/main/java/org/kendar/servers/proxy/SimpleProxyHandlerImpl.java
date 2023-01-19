@@ -59,7 +59,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
                 1000L,
                 TimeUnit.MILLISECONDS);
 
-        logger.info("Simple proxyes LOADED");
+        logger.info("Simple proxies LOADED");
     }
 
     private class ProxyPollTiming{
@@ -119,7 +119,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     private void doLog() {
         if (!startedOnce) {
             startedOnce = true;
-            logger.info("Simple proxyes CHECKED");
+            logger.info("Simple proxies CHECKED");
         }
     }
 

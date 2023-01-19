@@ -64,7 +64,7 @@ module.exports = {
   },
   methods: {
     retrieveData: async function () {
-      var result = await axios.get("/api/jdbcproxyes");
+      var result = await axios.get("/api/jdbcproxies/proxies");
       return result;
     },
     gridClicked: async function (evt) {
@@ -73,7 +73,7 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axios.delete("/api/jdbcproxyes/" + row['id'])
+        await axios.delete("/api/jdbcproxies/proxies/" + row['id'])
         this.reload();
       }
     },
@@ -100,12 +100,12 @@ module.exports = {
     },
     save: async function () {
       if (this.modalData.edit) {
-        await axios.put('/api/jdbcproxyes/' + this.modalData.data.id, this.modalData.data).then(() => {
+        await axios.put('/api/jdbcproxies/proxies/' + this.modalData.data.id, this.modalData.data).then(() => {
           this.modalShow = false;
           this.reload();
         });
       } else {
-        await axios.post('/api/jdbcproxyes', this.modalData.data).then(() => {
+        await axios.post('/api/jdbcproxies/proxies/', this.modalData.data).then(() => {
           this.modalShow = false;
           this.reload();
         });
