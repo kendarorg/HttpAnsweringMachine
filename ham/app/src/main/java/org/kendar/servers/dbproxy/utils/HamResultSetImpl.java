@@ -267,18 +267,9 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     }
 
     public void fill(List<List<Object>> sourceData) throws Exception {
+        fromSerializable(sourceData);
         lastRow = true;
-        rows = new ArrayList<>();
-        for (var source : sourceData) {
-            if (source.size() != columnCount) {
-                throw new Exception("Invalid rows count!");
-            }
-            var row = new ArrayList<>();
-            for (var singleData : source) {
-                row.add(singleData);
-            }
-            rows.add(row);
-        }
+
     }
 
     @Override

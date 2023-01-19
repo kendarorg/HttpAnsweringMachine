@@ -293,6 +293,9 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
       if (!requestResponseBuilder.hasBody(response)) {
         response.setResponseText(ex.getMessage());
         response.setBinaryResponse(false);
+      }else{
+        response.setResponseText(mapper.writeValueAsString(ex.getMessage()));
+        response.setBinaryResponse(false);
       }
       sendResponse(response, httpExchange);
     } catch (Exception xx) {
