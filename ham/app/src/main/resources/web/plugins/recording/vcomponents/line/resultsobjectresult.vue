@@ -2,11 +2,11 @@
   <div v-if="value.type=='org.kendar.janus.results.ObjectResult'">
 
     <h3>{{value.type}}</h3><br>
-    <div class="form-group">
+    <div class="form-group" v-if="otype!=null">
       <label htmlFor="typ">Result Type</label>
       <input class="form-control" type="text" name="typ" id="typ" v-model="otype"/>
     </div>
-    <div class="form-group">
+    <div class="form-group" v-if="ovalue!=null">
       <label htmlFor="val">Value</label>
       <input class="form-control" type="text" name="val" id="val" v-model="ovalue"/>
     </div>
@@ -24,7 +24,7 @@ module.exports = {
         try {
           return this.value.children[0].type;
         }catch(e){
-          return {};
+          return null;
         }
       },
       // setter
@@ -40,7 +40,7 @@ module.exports = {
         try{
           return this.value.children[0].value;
         }catch(e){
-          return {};
+          return null;
         }
       },
       // setter

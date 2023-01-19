@@ -1,6 +1,6 @@
 <template>
   <div>
-    RESULTSET
+    <h3>{{value.type}}</h3><br>
     <button type="button" class="bi bi-floppy" v-on:click="saveChanges()"
              title="Save changes"></button>
 
