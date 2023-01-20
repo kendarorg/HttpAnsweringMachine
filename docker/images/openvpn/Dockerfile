@@ -1,7 +1,7 @@
 FROM ham.base
 
 
-RUN echo 4.1.3-SNAPSHOT
+RUN echo 4.1.4
 
 # Testing: pamtester
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && \

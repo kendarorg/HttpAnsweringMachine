@@ -1,13 +1,11 @@
 * version.txt: the current version
 * build: Build scripts
     * build_docs: Regenerate the "puzzle" documentation
-    * build_docker: Create local docker images for HAM
-    * build_docker_samples: Create local docker images for Samples
+    * build_docker: Create local docker images for HAM and deploy
+    * build_docker_samples: Create local docker images for Samples and deploy
     * build_release: Create the release tar.gz into "release" dir for HAM
     * build_release_samples: Create the release tar.gz into "release" dir for Samples
     * clean: Clean all projects
-    * deploy_docker: Deploy and tag local HAM docker images
-    * deploy_docker_samples: Deploy and tag local Samples docker images
     * deploy_jar: Deploy on Kendar maven repo
     * init: Utility to initialize all scripts
     * libs
