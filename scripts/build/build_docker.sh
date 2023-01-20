@@ -7,12 +7,20 @@ START_LOCATION=$(pwd)
 # Includes
 . $SCRIPT_DIR/libs/version.sh
 . $SCRIPT_DIR/libs/utils.sh
+. $SCRIPT_DIR/libs/docker.sh
 
 echo This will build the docker images for the application
 echo and publish them on local docker. Ctrl+C to exit
 echo Target version: $HAM_VERSION
 
 pause
+
+LOGIN=kendarorg
+ORG=kendarorg
+echo Enter $LOGIN password for $ORG
+PASSWORD=$(read_password)
+docker_login "$LOGIN" "$PASSWORD" "$ORG"
+PASSWORD=none
 
 # Extra initializations
 ROOT_DIR=$( cd -- "$( dirname -- "$SCRIPT_DIR" )" &> /dev/null && pwd )
@@ -32,6 +40,7 @@ mvn clean install -DskipTests
 
 cd $DOCKER_ROOT/base
 docker build --rm -t ham.base .
+docker_push "ham.base" "$HAM_VERSION"
 
 cd $DOCKER_ROOT/client
 mkdir -p data/app || true
@@ -43,6 +52,7 @@ rm -f data/simpledns*.jar
 
 cd $DOCKER_ROOT/openvpn
 docker build --rm -t ham.openvpn .
+docker_push "ham.openvpn" "$HAM_VERSION"
 
 cd $DOCKER_ROOT/master
 mkdir -p data/app
@@ -52,19 +62,24 @@ rm -rf data/app/libs/*.*
 cp -f "$HAM_DIR"/app/target/app*.jar data/app/
 cp -f "$HAM_LIBS_DIR"/*.jar data/app/libs/
 docker build --rm -t ham.master .
+docker_push "ham.master" "$HAM_VERSION"
 rm -rf data/app
 
 cd $DOCKER_ROOT/singlemaster
 docker build --rm -t ham.singlemaster .
+docker_push "ham.singlemaster" "$HAM_VERSION"
 
 cd $DOCKER_ROOT/apache
 docker build --rm -t ham.apache .
+docker_push "ham.apache" "$HAM_VERSION"
 
 cd $DOCKER_ROOT/apache-php8
 docker build --rm -t ham.apache.php8 .
+docker_push "ham.apache.php8" "$HAM_VERSION"
 
 cd $DOCKER_ROOT/mysql
 docker build --rm -t ham.mysql .
+docker_push "ham.mysql" "$HAM_VERSION"
 
 echo Cleanup
 cd $HAM_DIR
