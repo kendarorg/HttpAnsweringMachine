@@ -1,6 +1,11 @@
 
 ## Configure proxy<a id="proxy_01"></a>
 
+Should set the proxy to 127.0.0.1 And port 1080 for socks5 or 1081 for http/https
+
+<details>
+  <summary>Click me for more explanations</summary>
+
 * Chrome:
     * Install [Proxy Switch Omega](https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif)
     * Go to options
@@ -25,3 +30,6 @@
     * Clean the settings when needed
   
       <img alt="Ham Proxyes" src="../images/firefox_proxy.gif" width="500"/>
+    
+</details>
+

@@ -28,3 +28,8 @@ The test tries
 * TCP Connection on port 7
 * TCP Connection on specified port
 * TCP Connection on 80 and 443
+
+## Setup
+
+* To enable on browsers [here](gen_sources/proxy.md)
+* To enable on phones [here](gen_sources/proxy_android.md)
