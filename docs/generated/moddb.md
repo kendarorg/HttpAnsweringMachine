@@ -101,7 +101,7 @@ You can now check the configuration
 
 <img alt="Create recording" src="../images/dbmod_01.gif" width="500"/>
 
-* Once you create the recording you can start recording! <b>CHECKING THE "Record db calls"</b>
+* Once you create the recording you can start recording! <b>CHECKING THE "Record db calls" and the "Use simulated engine"</b>
 
 <img alt="Start recording" src="../images/dbproxy_sample03_recorddb.gif" width="700"/>
 
@@ -126,7 +126,7 @@ You can now check the configuration
   * Forwarded to the be
   * Then the be opens the connections and run the query
 
-<img alt="Start recording" src="../images/dbproxy_sample05_insertemployee.gif" width="500"/>
+<img alt="Start recording" src="../images/dbmod_03.gif.gif" width="500"/>
 
 * You can even see the details of the queries there are many visualisations available
   * JSON: the native format of Janus-Jdbc (editable)
