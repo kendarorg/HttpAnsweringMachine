@@ -51,11 +51,24 @@ public class DbReplayer implements ReplayerEngine {
                 Boolean.parseBoolean(specialParams.get("recordVoidDbCalls"));
         var doUseSimEngine = specialParams.get("useSimEngine")==null?false:
                 Boolean.parseBoolean(specialParams.get("useSimEngine"));
+        var dbNames = specialParams.get("dbNames")==null?new String[]{"*"}:
+                specialParams.get("dbNames").trim().split(",");
         if(!recordDbCalls)return false;
         if(!recordVoidDbCalls){
             if(res.getResponseText()==null)return false;
             if(res.getResponseText().contains("VoidResult"))return false;
         }
+        var dbNameAllowed = false;
+        for(var dbName:dbNames){
+            if(dbName.equalsIgnoreCase("*")){
+                dbNameAllowed=true;
+                break;
+            }else if(dbName.equalsIgnoreCase(req.getPathParameter("dbName"))){
+                dbNameAllowed=true;
+                break;
+            }
+        }
+        if(!dbNameAllowed)return false;
         if(doUseSimEngine){
             var connectionId = req.getHeader("X-Connection-Id")==null?-1L:
                     Long.parseLong(req.getHeader("X-Connection-Id"));
