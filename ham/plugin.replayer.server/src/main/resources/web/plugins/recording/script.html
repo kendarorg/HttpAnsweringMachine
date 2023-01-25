@@ -13,9 +13,11 @@
     <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
 </head>
 <body>
-
+<div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
+    <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
+    <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
+</div>
 <div class="container" id="app">
-    <spinner :active="loaderActive" message="Please wait" ></spinner>
     <div class="row">
         <div class="col-md-8">
             <br>
@@ -113,7 +115,6 @@
             'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
             'recording-list': httpVueLoader('/plugins/recording/vcomponents/vlist.vue'),
             'dynamic-extension': httpVueLoader('/plugins/recording/vcomponents/dynamic-extension.vue'),
-            'spinner': httpVueLoader('/vcomponents/spinner.vue'),
             'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
             'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
         },
@@ -135,7 +136,6 @@
                 extensionsData:{},
                 extensions:[],
                 currentState:"UNDEFINED",
-                loaderActive:false,
                 iframeHeight:"1000px",
                 columnsResult: [
                     {id: "fileId", template: "long", index: true},
@@ -216,7 +216,7 @@
             },
             executeAct:function(what,onWhat){
                 var th = this;
-                this.loaderActive=true;
+                showSpinner(true);
                 var id = getUrlParameter("id");
                 if(!isUndefined(onWhat)){
                     var extra = "";
@@ -237,9 +237,9 @@
                     axios.get(url)
                         .then(function (result) {
                             th.updateButtons();
-                            th.loaderActive=false;
+                            showSpinner(false);
                         }).catch(
-                        function (error) {th.loaderActive=false;});
+                        function (error) {showSpinner(false);});
                 }else {
                     axios.get("/api/plugins/replayer/status")
                         .then(function (result) {
@@ -254,7 +254,7 @@
                                 if (data.status == "PAUSED_REPLAYING")th.executeAct(what,'replay');
                             }
                         }).catch(
-                        function (error) {th.loaderActive=false;});
+                        function (error) {showSpinner(false);});
                 }
             },
             rowSelected:function(rowId,type){
@@ -346,6 +346,7 @@
                     })
             },
             reloadForm: function(){
+                showSpinner(true);
                 var th=this;
                 axios.get("/api/plugins/replayer/extension")
                     .then(function(result){
@@ -373,6 +374,7 @@
                                 }
                             }
                         }
+                        showSpinner(false);
 
                     });
             },
@@ -383,7 +385,6 @@
                 var id = getUrlParameter("id");
 
                 var stimulatorTest = [];
-                console.log("AAAAAAAAAAAA")
                 this.data.lines.forEach(function (row, i) {
 
                     if(row['stimulatorTest']==true){
@@ -403,10 +404,11 @@
                     stimulatorTest:stimulatorTest
                 };
 
+                showSpinner(true);
                 const headers = {'Content-Type': 'application/json'};
                 axios.put('/api/plugins/replayer/recording/'+id,
                     data, {headers}).then((res) => {
-
+                    showSpinner(false);
                 });
             }
         }

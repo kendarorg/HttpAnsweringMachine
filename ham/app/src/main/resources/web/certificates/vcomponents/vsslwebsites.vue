@@ -84,14 +84,17 @@ module.exports = {
       this.modalShow = true;
     },
     save: async function () {
+      showSpinner(true);
       if (this.modalData.edit) {
         await axios.put('/api/ssl/' + this.modalData.data.id, this.modalData.data).then(() => {
           this.modalShow = false;
+          showSpinner(false);
           this.reload();
         });
       } else {
         await axios.post('/api/ssl', this.modalData.data).then(() => {
           this.modalShow = false;
+          showSpinner(false);
           this.reload();
         });
       }

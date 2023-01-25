@@ -174,3 +174,18 @@ const clearArray = function(array) {
         array.pop();
     }
 }
+
+const showSpinner=function(toggle,text){
+    var x = document.getElementById("spinnerObject");
+    if (x.style.display === "none" && toggle) {
+        x.style.display = "block";
+        if(!isUndefined(text)){
+            x.childNodes[3].innerText = text;
+        }else{
+            x.childNodes[3].innerText = "";
+        }
+    } else if(!toggle){
+        x.style.display = "none";
+        x.childNodes[3].innerText = "";
+    }
+}
