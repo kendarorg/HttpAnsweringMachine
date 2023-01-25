@@ -31,7 +31,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -170,12 +172,13 @@ public class OidcController implements FilteringClass {
     var auth = req.getRequestParameter("Authorization");
     var followRedirect = req.getQuery("redirect")==null;
 
+
     var returnCode = followRedirect?STATUS_FOUND:OK;
     log.info(
             "called "
                     + AUTHORIZATION_ENDPOINT
                     + " from {}, scope={} response_type={} client_id={} redirect_uri={}",
-            req.getRemoteHost(),
+            req.extractRemoteHostName(),
             scope,
             response_type,
             client_id,
@@ -262,7 +265,7 @@ public class OidcController implements FilteringClass {
                   )
           ))
   public void metadata(/*UriComponentsBuilder uriBuilder,*/ Request req, Response res) {
-    log.info("called " + METADATA_ENDPOINT + " from {}", req.getRemoteHost());
+    log.info("called " + METADATA_ENDPOINT + " from {}", req.extractRemoteHostName());
     String urlPrefix = "https://" + serverAddress + "/api/plugins/oidc";
     Map<String, Object> m = new LinkedHashMap<>();
     // https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
@@ -304,7 +307,7 @@ public class OidcController implements FilteringClass {
                   )
           ))
   public void jwks(Request req, Response res) {
-    log.info("called " + JWKS_ENDPOINT + " from {}", req.getRemoteHost());
+    log.info("called " + JWKS_ENDPOINT + " from {}", req.extractRemoteHostName());
     res.setResponseText(publicJWKSet.toString());
     res.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.JSON);
   }
@@ -336,7 +339,7 @@ public class OidcController implements FilteringClass {
   public void userinfo(Request req, Response res) {
     var auth = req.getRequestParameter("Authorization");
     var access_token = req.getRequestParameter("access_token");
-    log.info("called " + USERINFO_ENDPOINT + " from {}", req.getRemoteHost());
+    log.info("called " + USERINFO_ENDPOINT + " from {}", req.extractRemoteHostName());
     if (!auth.startsWith("Bearer ")) {
       if (access_token == null) {
         res.setStatusCode(STATUS_UNAUTHORIZED);
@@ -385,7 +388,7 @@ public class OidcController implements FilteringClass {
   public void introspection(Request req, Response res) {
     var auth = req.getRequestParameter("Authorization");
     var token = req.getRequestParameter("token");
-    log.info("called " + INTROSPECTION_ENDPOINT + " from {}", req.getRemoteHost());
+    log.info("called " + INTROSPECTION_ENDPOINT + " from {}", req.extractRemoteHostName());
     Map<String, Object> m = new LinkedHashMap<>();
     AccessTokenInfo accessTokenInfo = accessTokens.get(token);
     if (accessTokenInfo == null) {
@@ -434,7 +437,7 @@ public class OidcController implements FilteringClass {
     var code_verifier = req.getRequestParameter("code_verifier");
     log.info(
             "called " + TOKEN_ENDPOINT + " from {}, grant_type={} code={} redirect_uri={} client_id={}",
-            req.getRemoteHost(),
+            req.extractRemoteHostName(),
             grant_type,
             code,
             redirect_uri,

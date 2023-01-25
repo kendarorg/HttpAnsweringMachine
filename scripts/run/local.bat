@@ -25,8 +25,11 @@ del /s /f /q .temp.txt 2>&1 1>NUL
 
 IF "%JSON_CONFIG%"=="" set JSON_CONFIG=%ROOT_DIR%\ham\external.json
 
+set DEBUG_AGENT=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025
+IF "%DO_DEBUG%"=="" set DEBUG_AGENT=
+
 REM Start the application
 java "-Dloader.path=%HAM_LIBS_DIR%"  -Dloader.main=org.kendar.Main  ^
-	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
+	  	%DEBUG_AGENT% ^
 	  	"-Djsonconfig=%JSON_CONFIG%" ^
 		-jar %HAM_DIR%\%JAR_NAME% org.springframework.boot.loader.PropertiesLauncher

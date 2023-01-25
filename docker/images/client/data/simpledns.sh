@@ -15,7 +15,6 @@ ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 
 java -Dother.dns=${dnsServer} \
-  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5015 \
   -jar /etc/app/simpledns/"$JAR_NAME"
 
 #java -Dother.dns=127.0.0.11,${DNS_HIJACK_SERVER} \

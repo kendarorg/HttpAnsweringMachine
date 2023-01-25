@@ -9,6 +9,12 @@ ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 rm tmp_txt || true
 
+
+function is_set() { [[ $(eval echo "\${${1}+x}") ]]; }
+
+export DEBUG_AGENT=
+is_set DO_DEBUG ; export DEBUG_AGENT=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025
+# "$DEBUG_AGENT"
+
 # Start the application
-java  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
-		  -jar "$JAR_NAME"
+java  "DEBUG_AGENT" -jar "$JAR_NAME"
