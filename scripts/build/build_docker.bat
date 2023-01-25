@@ -43,7 +43,7 @@ docker build --rm -t ham.base .
 call %DOCKER_LIB% docker_push "ham.base" "%HAM_VERSION%"
 
 cd %DOCKER_ROOT%\client
-mkdir -p data\app || true
+mkdir data\app || true
 del /S /Q data\app\*.*
 copy /y %HAM_DIR%\simpledns\target\simpledns*.jar data\
 docker build --rm -t ham.client .
@@ -55,9 +55,9 @@ docker build --rm -t ham.openvpn .
 call %DOCKER_LIB% docker_push "ham.openvpn" "%HAM_VERSION%"
 
 cd %DOCKER_ROOT%\master
-mkdir -p data\app
+mkdir data\app
 del /S /Q data\app\*.*  2>&1 1>NUL
-mkdir -p data\app\libs
+mkdir data\app\libs
 del /S /Q data\app\libs\*.*  2>&1 1>NUL
 copy /y %HAM_DIR%\app\target\app*.jar data\app\
 copy /y %HAM_LIBS_DIR%\*.jar data\app\libs\
