@@ -46,6 +46,32 @@ public class HttpReplayer implements ReplayerEngine {
 
     @Override
     public boolean isValidRoundTrip(Request req, Response res, Map<String, String> specialParams) {
+        var hosts = specialParams.get("hosts")==null?new String[]{"*"}:
+                specialParams.get("hosts").trim().split(",");
+        var hostsAllowed = false;
+        var reqHost = req.getHost();
+        for(var host:hosts){
+            if(host.equalsIgnoreCase("*")){
+                hostsAllowed=true;
+                break;
+            }else if(host.equalsIgnoreCase(reqHost)){
+                hostsAllowed=true;
+                break;
+            }else if(host.contains("*")){
+                var splHost = host.split("\\*");
+                var lastIndex=0;
+                hostsAllowed=true;
+                for(var spl:splHost){
+                    var foundIndex = reqHost.indexOf(spl,lastIndex);
+                    if(foundIndex<0){
+                        hostsAllowed=false;
+                        break;
+                    }
+                }
+                if(hostsAllowed)break;
+            }
+        }
+        if(!hostsAllowed)return false;
         return true;
     }
 
