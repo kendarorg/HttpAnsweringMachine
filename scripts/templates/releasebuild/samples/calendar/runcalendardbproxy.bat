@@ -33,9 +33,13 @@ Rem start ham
 cd %ROOT_PATH%\ham
 dir /b app*.jar > .temp.txt
 set /p JAR_NAME=<.temp.txt
+
+set DEBUG_AGENT=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025
+IF "%DO_DEBUG%"=="" set DEBUG_AGENT=
+
 REM Start the application
 start java "-Dloader.path=%ROOT_PATH%\ham\libs"  -Dloader.main=org.kendar.Main  ^
-	  	-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 ^
+	  	%DEBUG_AGENT% ^
 	  	"-Djsonconfig=%CALENDAR_PATH%\calendar.external.json" ^
 		-jar %JAR_NAME% org.springframework.boot.loader.PropertiesLauncher
 REM Wait for startup
@@ -67,10 +71,13 @@ cd %ROOT_PATH%
 echo Start it only when recording/replaying is started
 pause
 
+set DEBUG_AGENT=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5026
+IF "%DO_DEBUG%"=="" set DEBUG_AGENT=
+
 cd %CALENDAR_PATH%\be
 dir /b be*.jar > .temp.txt
 set /p JAR_NAME=<.temp.txt
-start java -cp "be-4.1.4.jar;janus-driver-1.1.5.jar" org.springframework.boot.loader.JarLauncher --spring.config.location=file:///%cd%\bedbham.application.properties
+start java %DEBUG_AGENT% -cp "be-4.1.4.jar;janus-driver-1.1.5.jar" org.springframework.boot.loader.JarLauncher --spring.config.location=file:///%cd%\bedbham.application.properties
 REM start java -jar %JAR_NAME%  --spring.config.location=file:///%cd%\bedbham.application.properties
 REM Wait for startup
 timeout /t 10 /nobreak

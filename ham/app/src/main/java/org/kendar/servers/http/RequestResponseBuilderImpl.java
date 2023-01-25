@@ -7,6 +7,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.brotli.dec.BrotliInputStream;
 import org.kendar.utils.*;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -18,6 +19,12 @@ import java.util.regex.Pattern;
 
 @Component
 public class RequestResponseBuilderImpl implements RequestResponseBuilder {
+
+  private final Logger logger;
+
+  public RequestResponseBuilderImpl(LoggerBuilder loggerBuilder){
+    this.logger = loggerBuilder.build(RequestResponseBuilderImpl.class);
+  }
   private static final String H_SOAP_ACTION = "SOAPAction";
   private static final String H_AUTHORIZATION = "Authorization";
   private static final String BASIC_AUTH_MARKER = "basic";
@@ -101,9 +108,12 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
   public Request fromExchange(HttpExchange exchange, String protocol)
       throws IOException, FileUploadException {
     var result = new Request();
-    result.setRemoteHost(exchange.getRemoteAddress().getHostName());
+    result.setRemoteHost(exchange.getRemoteAddress().getAddress().getHostAddress());
     result.setProtocol(protocol.toLowerCase(Locale.ROOT));
+
     result.setQuery(RequestUtils.queryToMap(exchange.getRequestURI().getRawQuery()));
+
+
     setupRequestHost(exchange, result);
     setupRequestPort(exchange, result);
     result.setPath(exchange.getRequestURI().getRawPath());

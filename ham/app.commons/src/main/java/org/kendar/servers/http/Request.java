@@ -1,5 +1,7 @@
 package org.kendar.servers.http;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -209,6 +211,14 @@ public class Request {
 
     public String getRemoteHost() {
         return remoteHost;
+    }
+
+    public String extractRemoteHostName() {
+        try{
+            return InetAddress.getByName(remoteHost).getHostName();
+        } catch (UnknownHostException e) {
+            return remoteHost;
+        }
     }
 
     public long getMs() {

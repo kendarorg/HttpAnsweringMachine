@@ -13,8 +13,7 @@ ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 
 java "-Dloader.path=/etc/app/ham/app/libs/"  -Dloader.main=org.kendar.Main  \
-  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025 \
-	-jar "$JAR_NAME" org.springframework.boot.loader.PropertiesLauncher
+  -jar "$JAR_NAME" org.springframework.boot.loader.PropertiesLauncher
 	
 #-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005 \
 
