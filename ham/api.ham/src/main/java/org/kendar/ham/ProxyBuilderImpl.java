@@ -117,10 +117,10 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
     }
 
     @Override
-    public void removeDbProxy(String dbName) throws HamException {
+    public void removeDbProxy(String dbId) throws HamException {
         var request = hamBuilder.newRequest()
                 .withDelete()
-                .withPath("/api/jdbcproxies/proxies/"+dbName);
+                .withPath("/api/jdbcproxies/proxies/"+dbId);
         hamBuilder.call(request.build());
     }
 

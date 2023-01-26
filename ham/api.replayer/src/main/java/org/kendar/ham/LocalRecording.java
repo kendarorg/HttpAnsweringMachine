@@ -116,6 +116,7 @@ public class LocalRecording implements HamReplayerRecorderStop, HamReplayerWait 
     private LocalRecording executeAct(String action, String usedType) throws HamException {
         lastUsedType = usedType;
         lastUsedId = id;
+
         var extra = String.join("&", parametersMap.entrySet()
                 .stream().map(LocalRecording::toQuery).collect(Collectors.toList()));
        if(extra.length()>0){

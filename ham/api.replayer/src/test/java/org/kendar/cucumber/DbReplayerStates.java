@@ -17,15 +17,22 @@ public class DbReplayerStates extends BaseStates {
     private int recordsCount;
 
     @Given("I add a db proxy from {string} to localH2Databse")
-    public void i_add_a_db_proxy_from_to_local_h2databse(String string) throws HamException {
+    public void i_add_a_db_proxy_from_to_local_h2databse(String dbName) throws HamException {
+        var proxy = hamBuilder.proxies().retrieveDbProxies().stream().filter(a->
+                        a.getExposed().getConnectionString().equalsIgnoreCase(dbName))
+                .findFirst();
+        if(proxy.isPresent()) {
+            hamBuilder.proxies().removeDbProxy(proxy.get().getId());
+        }
+
         var connectionString = hamBuilder
                 .proxies()
                 .addRemoteDbProxy("jdbc:h2:tcp://localhost/ham;MODE=MYSQL;",
                         "sa","sa","org.h2.Driver")
-                .asLocal(string,"login","password");
+                .asLocal(dbName,"login","password");
 
-        assertEquals("jdbc:janus:http://www.local.test/api/db/"+string,connectionString);
-        hamBuilder.proxies().removeDbProxy("exposed");
+        assertEquals("jdbc:janus:http://www.local.test/api/db/"+dbName,connectionString);
+
     }
     @Given("user set parameter {string} to {string}")
     public void user_set_parameter_to(String id, String value) {

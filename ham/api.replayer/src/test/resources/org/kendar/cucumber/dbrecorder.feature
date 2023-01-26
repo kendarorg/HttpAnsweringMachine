@@ -10,11 +10,11 @@ Feature: Testing db recorder
     And user set parameter 'DB_RECORD_CALLS' to 'true'
     And user set parameter 'DB_USE_SIMULATED_ENGINE' to 'true'
 
-    And user execute update query on 'testDb' with 'DROP TABLE IF EXISTS TEST'
+    And user execute update query on 'testDb' with 'DROP TABLE IF EXISTS TEST1'
     And user start recording
-    And user execute update query on 'testDb' with 'CREATE TABLE TEST(ID BIGINT NOT NULL PRIMARY KEY, NAME VARCHAR(255))'
-    And user execute update query on 'testDb' with 'INSERT INTO TEST VALUES (1,\'TestName\')'
-    And user execute query on 'testDb' with 'SELECT * FROM TEST'
+    And user execute update query on 'testDb' with 'CREATE TABLE TEST1(ID BIGINT NOT NULL PRIMARY KEY, NAME VARCHAR(255))'
+    And user execute update query on 'testDb' with 'INSERT INTO TEST1 VALUES (1,\'TestName\')'
+    And user execute query on 'testDb' with 'SELECT * FROM TEST1'
     And should find '1' record
     And user stop recording
     Then user can download as 'testdbs.json'
@@ -27,11 +27,11 @@ Feature: Testing db recorder
   Scenario: Recording and storing normal
     Given user create a recording 'TestDb'
     And user set parameter 'DB_RECORD_CALLS' to 'true'
-    And user execute update query on 'testDb' with 'DROP TABLE IF EXISTS TEST'
+    And user execute update query on 'testDb' with 'DROP TABLE IF EXISTS TEST2'
     And user start recording
-    And user execute update query on 'testDb' with 'CREATE TABLE TEST(ID BIGINT NOT NULL PRIMARY KEY, NAME VARCHAR(255))'
-    And user execute update query on 'testDb' with 'INSERT INTO TEST VALUES (1,\'TestName\')'
-    And user execute query on 'testDb' with 'SELECT * FROM TEST'
+    And user execute update query on 'testDb' with 'CREATE TABLE TEST2(ID BIGINT NOT NULL PRIMARY KEY, NAME VARCHAR(255))'
+    And user execute update query on 'testDb' with 'INSERT INTO TEST2 VALUES (1,\'TestName\')'
+    And user execute query on 'testDb' with 'SELECT * FROM TEST2'
     And should find '1' record
     And user stop recording
     Then user can download as 'testdbn.json'
@@ -43,11 +43,11 @@ Feature: Testing db recorder
     Given user create a recording 'TestDb'
     And user set parameter 'DB_RECORD_CALLS' to 'true'
     And user set parameter 'DB_RECORD_VOID_CALLS' to 'true'
-    And user execute update query on 'testDb' with 'DROP TABLE IF EXISTS TEST'
+    And user execute update query on 'testDb' with 'DROP TABLE IF EXISTS TEST3'
     And user start recording
-    And user execute update query on 'testDb' with 'CREATE TABLE TEST(ID BIGINT NOT NULL PRIMARY KEY, NAME VARCHAR(255))'
-    And user execute update query on 'testDb' with 'INSERT INTO TEST VALUES (1,\'TestName\')'
-    And user execute query on 'testDb' with 'SELECT * FROM TEST'
+    And user execute update query on 'testDb' with 'CREATE TABLE TEST3(ID BIGINT NOT NULL PRIMARY KEY, NAME VARCHAR(255))'
+    And user execute update query on 'testDb' with 'INSERT INTO TEST3 VALUES (1,\'TestName\')'
+    And user execute query on 'testDb' with 'SELECT * FROM TEST3'
     And should find '1' record
     And user stop recording
     Then user can download as 'testdbv.json'

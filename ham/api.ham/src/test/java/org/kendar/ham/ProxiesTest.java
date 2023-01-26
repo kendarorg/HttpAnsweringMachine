@@ -30,6 +30,9 @@ public class ProxiesTest {
                 .asLocal("exposed","login","password");
 
         assertEquals("jdbc:janus:http://www.local.test/api/db/exposed",connectionString);
-        hamBuilder.proxies().removeDbProxy("exposed");
+        var proxy = hamBuilder.proxies().retrieveDbProxies().stream().filter(a->
+                a.getExposed().getConnectionString().equalsIgnoreCase("exposed"))
+                        .findFirst().get();
+        hamBuilder.proxies().removeDbProxy(proxy.getId());
     }
 }

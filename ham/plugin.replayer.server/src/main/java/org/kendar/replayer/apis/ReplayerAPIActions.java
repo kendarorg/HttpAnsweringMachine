@@ -10,6 +10,8 @@ import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.engine.ReplayerStatus;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,14 +19,17 @@ import org.springframework.stereotype.Component;
         blocking = true)
 public class ReplayerAPIActions implements FilteringClass {
 
+    private final Logger logger;
+
     @Override
     public String getId() {
         return "org.kendar.replayer.apis.ReplayerAPIActions";
     }
     private final ReplayerStatus replayerStatus;
 
-    public ReplayerAPIActions(ReplayerStatus replayerStatus){
+    public ReplayerAPIActions(ReplayerStatus replayerStatus, LoggerBuilder loggerBuilder){
         this.replayerStatus = replayerStatus;
+        this.logger = loggerBuilder.build(ReplayerAPIActions.class);
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
@@ -42,7 +47,6 @@ public class ReplayerAPIActions implements FilteringClass {
         var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
 
-        System.out.println(id+" "+action);
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
             var description = req.getQuery("description");
 //            var recordVoidDbCalls=Boolean.parseBoolean(req.getQuery("recordVoidDbCalls"));
@@ -55,6 +59,8 @@ public class ReplayerAPIActions implements FilteringClass {
         }else if(action.equalsIgnoreCase("stop") &&
                 (replayerStatus.getStatus()==ReplayerState.RECORDING||replayerStatus.getStatus()==ReplayerState.PAUSED_RECORDING)){
             replayerStatus.stopAndSave();
+        }else{
+            logger.error("Unable to start "+id+":record:"+action);
         }
     }
 
@@ -76,6 +82,8 @@ public class ReplayerAPIActions implements FilteringClass {
         }else if(action.equalsIgnoreCase("stop") &&
                 replayerStatus.getStatus()==ReplayerState.REPLAYING){
             replayerStatus.stopReplaying(id);
+        }else{
+            logger.error("Unable to start "+id+":replay:"+action);
         }
     }
     @HttpMethodFilter(phase = HttpFilterType.API,
@@ -98,6 +106,8 @@ public class ReplayerAPIActions implements FilteringClass {
         }else if(action.equalsIgnoreCase("stop") &&
                 replayerStatus.getStatus()==ReplayerState.REPLAYING){
             replayerStatus.stopReplaying(id);
+        }else{
+            logger.error("Unable to start "+id+":auto:"+action);
         }
     }
 }
