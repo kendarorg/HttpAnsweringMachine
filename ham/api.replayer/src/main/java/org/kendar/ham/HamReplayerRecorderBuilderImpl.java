@@ -3,11 +3,19 @@ package org.kendar.ham;
 import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.Sleeper;
 
-class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerRecorderStop,HamReplayerWait {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-    private HamInternalBuilder hamBuilder;
+class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder,HamReplayerRecordingBuilder {
+
+    HamInternalBuilder hamBuilder;
     private String lastUsedType;
     private long lastUsedId;
+
+    private Map<String,String> parameters  = new HashMap<>();
+    private String name;
 
     public HamReplayerRecorderBuilderImpl(HamInternalBuilder hamBuilder){
         this.hamBuilder = hamBuilder;
@@ -17,55 +25,46 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
     public HamReplayerRecorderBuilderImpl init() { return null; }
 
     @Override
-    public long createRecording(String id) throws HamException {
-        var request = hamBuilder.newRequest()
-                .withPath("/api/plugins/replayer/recording")
-                .withHamFile(id+".json","{}", ConstantsMime.JSON);
-        var response = hamBuilder.call(request.build());
-        return Long.parseLong(response.getResponseText());
-    }
-
-    @Override
-    public long uploadRecording(String id, String jsonContent) throws HamException {
-        var request = hamBuilder.newRequest()
-                .withPost()
-                .withPath("/api/plugins/replayer/recording")
-                .withHamFile(id+".json",jsonContent,ConstantsMime.JSON);
-        var response = hamBuilder.call(request.build());
-        return Long.parseLong(response.getResponseText());
-    }
-
-    @Override
-    public void deleteRecording(long id) throws HamException {
-        var request = hamBuilder.newRequest()
-                .withDelete()
-                .withPath("/api/plugins/replayer/recording/"+id);
-        hamBuilder.call(request.build());
-    }
-
-    @Override
-    public HamReplayerRecorderStop startRecording(long id) throws HamException {
-        return executeAct("start","record", id);
-    }
-
-    private HamReplayerRecorderBuilderImpl executeAct(String action, String usedType, long id) throws HamException {
-        lastUsedType = usedType;
-        lastUsedId = id;
-        var request = hamBuilder.newRequest()
-                .withPath("/api/plugins/replayer/recording/"+ id +"/"+usedType+"/"+action);
-        hamBuilder.call(request.build());
+    public HamReplayerRecordingBuilder withParameter(String paramName, Object parameter){
+        parameters.put(paramName,parameter.toString());
         return this;
     }
 
     @Override
-    public HamReplayerWait startReplaying(long id) throws HamException {
-        return (HamReplayerWait)executeAct("start","replay", id);
+    public HamReplayerRecordingBuilder withName(String name){
+        this.name = name;
+        return this;
+    }
+    @Override
+    public HamReplayerRecordingBuilder setupRecording() throws HamException {
+        return this;
     }
 
     @Override
-    public HamReplayerWait startAutoTest(long id) throws HamException {
-        return (HamReplayerWait)executeAct("start","auto", id);
+    public LocalRecording createRecording() throws HamException {
+        var request = hamBuilder.newRequest()
+                .withPath("/api/plugins/replayer/recording")
+                .withHamFile(name+".json","{}", ConstantsMime.JSON);
+        var response = hamBuilder.call(request.build());
+        var id= Long.parseLong(response.getResponseText());
+        return retrieveRecording(id);
     }
+
+    @Override
+    public LocalRecording uploadRecording(String name, String jsonContent) throws HamException {
+        var request = hamBuilder.newRequest()
+                .withPost()
+                .withPath("/api/plugins/replayer/recording")
+                .withHamFile(name+".json",jsonContent,ConstantsMime.JSON);
+        var response = hamBuilder.call(request.build());
+        var id= Long.parseLong(response.getResponseText());
+        return retrieveRecording(id);
+    }
+
+
+
+
+
 
     @Override
     public String downloadRecording(long id) throws HamException {
@@ -76,11 +75,34 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
     }
 
     @Override
-    public String stop() throws HamException {
-         executeAct("stop",lastUsedType, lastUsedId);
-         Sleeper.sleep(1000);
-         return null;
+    public List<LocalRecording> retrieveRecordings() throws HamException {
+        var request = hamBuilder.newRequest()
+                .withPath("/api/plugins/replayer/recording");
+        return hamBuilder.callJsonList(request.build(),LocalRecording.class).stream()
+                .map(r-> {
+                    try {
+                        return r.init(this);
+                    } catch (HamException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).collect(Collectors.toList());
     }
+
+    @Override
+    public List<LocalRecording> retrieveRecordings(String name) throws HamException {
+        return retrieveRecordings().stream().filter(a->a.getName().startsWith(name))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public LocalRecording retrieveRecording(long id) throws HamException {
+        var res= retrieveRecordings().stream().filter(a->a.getId()==id)
+                .findFirst();
+        if(res.isPresent())return res.get();
+        return null;
+    }
+
+
 
     public static class ReplayerStatus{
         private String status;
@@ -103,12 +125,5 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
         }
     }
 
-    @Override
-    public boolean isCompleted() throws HamException {
-        Sleeper.sleep(500);
-        var request = hamBuilder.newRequest()
-                .withPath("/api/plugins/replayer/status");
-        var status = hamBuilder.callJson(request.build(),ReplayerStatus.class);
-        return status.status.equalsIgnoreCase("none");
-    }
+
 }

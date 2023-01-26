@@ -1,13 +1,17 @@
 package org.kendar.ham;
 
+import java.util.List;
+
 public interface HamReplayerBuilder {
     HamReplayerRecorderBuilderImpl init();
-    long createRecording(String id) throws HamException;
-    long uploadRecording(String id, String content) throws HamException;
-    void deleteRecording(long id) throws HamException;
-    HamReplayerRecorderStop startRecording(long id) throws HamException;
-    HamReplayerWait startReplaying(long id) throws HamException;
-    HamReplayerWait startAutoTest(long id) throws HamException;
+
+    HamReplayerRecordingBuilder setupRecording() throws HamException;
+    LocalRecording uploadRecording(String name, String content) throws HamException;
+
 
     String downloadRecording(long id) throws HamException;
+
+    List<LocalRecording> retrieveRecordings() throws HamException;
+    List<LocalRecording> retrieveRecordings(String name) throws HamException;
+    LocalRecording retrieveRecording(long id) throws HamException;
 }

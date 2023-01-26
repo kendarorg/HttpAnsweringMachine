@@ -3,9 +3,7 @@ package org.kendar.cucumber;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.kendar.ham.HamException;
-import org.kendar.ham.HamReplayerBuilder;
-import org.kendar.ham.HamReplayerRecorderStop;
+import org.kendar.ham.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,44 +21,41 @@ public class ReplayerStates   extends BaseStates{
 
     @Given("^user start replaying$")
     public void user_start_replaying() throws HamException {
-        replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
-        replayerBuilder.startReplaying(recordingId);
+       recordingId.startReplaying();
         // Write code here that turns the phrase above into concrete actions\
     }
-    public long recordingId;
+    public LocalRecording recordingId;
     @When("^user create a recording '(.+)'$")
     public void userCreateRecording(String name) throws HamException {
         var builder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
-        recordingId = builder.createRecording(name);
+        recordingId = builder.setupRecording().withName(name).createRecording();
     }
 
     @When("^user start recording$")
     public void userStartsRecording() throws HamException {
-        replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
-        replayerBuilder.startRecording(recordingId);
+        recordingId.startRecording();
     }
 
     @Given("^user stop replaying$")
     public void user_stop_replaying() throws HamException {
-        ((HamReplayerRecorderStop)replayerBuilder).stop();
+        ((HamReplayerRecorderStop)recordingId).stop();
     }
 
     @When("^user stop recording$")
     public void userStopRecording() throws HamException {
-        ((HamReplayerRecorderStop)replayerBuilder).stop();
+        ((HamReplayerRecorderStop)recordingId).stop();
     }
 
 
     @When("^user delete recording$")
     public void userDeleteRecording() throws HamException {
-        var replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
-        replayerBuilder.deleteRecording(recordingId);
+        recordingId.delete();
     }
 
     @When("^user can download as '(.+)'$")
     public void userCanDownload(String destinationFile) throws HamException, IOException {
         var replayerBuilder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
-        var content = replayerBuilder.downloadRecording(recordingId);
+        var content = replayerBuilder.downloadRecording(recordingId.getId());
         Files.writeString(Path.of(destinationFile),content);
 
     }
