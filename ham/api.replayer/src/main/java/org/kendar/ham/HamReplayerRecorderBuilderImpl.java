@@ -11,10 +11,6 @@ import java.util.stream.Collectors;
 class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder,HamReplayerRecordingBuilder {
 
     HamInternalBuilder hamBuilder;
-    private String lastUsedType;
-    private long lastUsedId;
-
-    private Map<String,String> parameters  = new HashMap<>();
     private String name;
 
     public HamReplayerRecorderBuilderImpl(HamInternalBuilder hamBuilder){
@@ -24,11 +20,6 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder,HamReplayerRe
     @Override
     public HamReplayerRecorderBuilderImpl init() { return null; }
 
-    @Override
-    public HamReplayerRecordingBuilder withParameter(String paramName, Object parameter){
-        parameters.put(paramName,parameter.toString());
-        return this;
-    }
 
     @Override
     public HamReplayerRecordingBuilder withName(String name){
@@ -60,12 +51,6 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder,HamReplayerRe
         var id= Long.parseLong(response.getResponseText());
         return retrieveRecording(id);
     }
-
-
-
-
-
-
     @Override
     public String downloadRecording(long id) throws HamException {
         var request = hamBuilder.newRequest()

@@ -73,7 +73,7 @@ public interface ProxyBuilder {
      * @return
      * @throws HamException
      */
-    DbProxyBuilder addRemoteDbProxy(String dbName, String login, String password,String dbDriver) throws HamException;
+    DbProxyBuilder addRemoteDbProxy(String connectionString, String login, String password,String dbDriver) throws HamException;
 
     /**
      * Remove proxy by id

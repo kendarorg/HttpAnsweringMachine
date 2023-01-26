@@ -42,6 +42,7 @@ public class ReplayerAPIActions implements FilteringClass {
         var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
 
+        System.out.println(id+" "+action);
         if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
             var description = req.getQuery("description");
 //            var recordVoidDbCalls=Boolean.parseBoolean(req.getQuery("recordVoidDbCalls"));

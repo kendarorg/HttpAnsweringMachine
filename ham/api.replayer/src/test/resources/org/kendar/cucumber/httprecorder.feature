@@ -1,5 +1,5 @@
-Feature: Testing recorder
-  user should be able to record replay stuffs and so on
+Feature: Testing http recorder
+  user should be able to record replay http and so on
   Background:
     Given I have a server listening on port '9091'
     And I have a running HAM instance

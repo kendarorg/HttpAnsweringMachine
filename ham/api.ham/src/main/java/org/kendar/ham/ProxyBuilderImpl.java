@@ -84,8 +84,8 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
 
     @Override
     public String asLocal(String dbName, String login, String password) throws HamException {
-        var alreadyExisting = retrieveProxies()
-                .stream().filter(d-> d.getWhen().equalsIgnoreCase(dbName)).findAny();
+        var alreadyExisting = retrieveDbProxies()
+                .stream().filter(d-> d.getExposed().getConnectionString().equalsIgnoreCase(dbName)).findAny();
         dbProxy.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() : UUID.randomUUID().toString());
         var dbd = new DbDescriptor();
         dbd.setConnectionString(dbName);

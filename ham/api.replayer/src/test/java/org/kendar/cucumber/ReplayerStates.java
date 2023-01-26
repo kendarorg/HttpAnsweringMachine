@@ -4,18 +4,19 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.kendar.ham.*;
+import org.kendar.utils.Sleeper;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReplayerStates   extends BaseStates{
 
 
-    private static HamReplayerBuilder replayerBuilder;
 
 
 
@@ -24,7 +25,6 @@ public class ReplayerStates   extends BaseStates{
        recordingId.startReplaying();
         // Write code here that turns the phrase above into concrete actions\
     }
-    public LocalRecording recordingId;
     @When("^user create a recording '(.+)'$")
     public void userCreateRecording(String name) throws HamException {
         var builder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
@@ -34,6 +34,7 @@ public class ReplayerStates   extends BaseStates{
     @When("^user start recording$")
     public void userStartsRecording() throws HamException {
         recordingId.startRecording();
+        Sleeper.sleep(2000);
     }
 
     @Given("^user stop replaying$")
@@ -64,6 +65,12 @@ public class ReplayerStates   extends BaseStates{
     public void fileContains(String file,String content) throws HamException, IOException {
         var data = Files.readString(Path.of(file)).toLowerCase(Locale.ROOT);
         assertTrue(data.indexOf(content.toLowerCase(Locale.ROOT))>=0);
+    }
+
+    @Then("^file '(.+)' does not contains '(.+)'$")
+    public void fileNotContains(String file,String content) throws HamException, IOException {
+        var data = Files.readString(Path.of(file)).toLowerCase(Locale.ROOT);
+        assertFalse(data.indexOf(content.toLowerCase(Locale.ROOT))>=0);
     }
 
     @Then("^file '(.+)' replace '(.+)' with '(.+)'$")
