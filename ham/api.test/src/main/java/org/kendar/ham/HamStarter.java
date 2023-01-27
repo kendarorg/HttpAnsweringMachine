@@ -243,6 +243,7 @@ public class HamStarter {
         commandLine.add("-Djsonconfig="+externalJsonPath);
         var libsPath  =Path.of(getRootPath(caller),"ham","libs").toString();
         commandLine.add("-Dloader.path="+libsPath);
+        commandLine.add("-Dham.tempdb=data/tmp");
         commandLine.add("-Dloader.main=org.kendar.Main");
         if(!SystemUtils.IS_OS_WINDOWS) {
             commandLine.add("-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**");

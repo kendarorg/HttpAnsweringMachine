@@ -33,6 +33,13 @@ public class ReplayerStates   extends BaseStates{
 
     @When("^user start recording$")
     public void userStartsRecording() throws HamException {
+        var builder = hamBuilder.pluginBuilder(HamReplayerBuilder.class);
+        var running = builder.retrieveRecordings().stream()
+                        .filter(a->a.getState()!=ReplayerState.NONE)
+                                .findFirst();
+        if(running.isPresent()){
+            running.get().stop();
+        }
         recordingId.startRecording();
         Sleeper.sleep(2000);
     }

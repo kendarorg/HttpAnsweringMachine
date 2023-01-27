@@ -39,6 +39,13 @@ public class DbReplayerStates extends BaseStates {
         // Write code here that turns the phrase above into concrete actions
         recordingId.withParameter(ExtraParam.fromString(id),value);
     }
+
+    @Given("user clear parameters")
+    public void user_clear_parameter_to() {
+        // Write code here that turns the phrase above into concrete actions
+        recordingId.withoutParameters();
+    }
+
     @Given("user execute query on {string} with {string}")
     public void user_execute_query_on_with(String dbName, String query) throws SQLException {
         DriverManager.registerDriver(new JdbcDriver());

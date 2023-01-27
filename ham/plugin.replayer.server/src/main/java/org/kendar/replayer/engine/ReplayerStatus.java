@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class ReplayerStatus {
@@ -40,7 +41,7 @@ public class ReplayerStatus {
     private HibernateSessionFactory sessionFactory;
     private List<ReplayerEngine> replayerEngines;
     private BaseDataset dataset;
-    private ReplayerState state = ReplayerState.NONE;
+    private AtomicReference<ReplayerState> state = new AtomicReference<>(ReplayerState.NONE);
     private Map<String, String> query;
 //    private boolean recordDbCalls;
 //    private boolean recordVoidDbCalls;
@@ -72,14 +73,14 @@ public class ReplayerStatus {
 
     private void testCompleted() {
         dataset = null;
-        state = ReplayerState.NONE;
+        state.getAndSet(ReplayerState.NONE);
     }
 
     public void startRecording(Long id, String description, Map<String, String> query) throws Exception {
 
-        if (state != ReplayerState.NONE) return;
+        if (state.get() != ReplayerState.NONE) return;
         logger.info("RECORDING START "+id);
-        state = ReplayerState.RECORDING;
+        state.getAndSet(ReplayerState.RECORDING);
         dataset =
                 new RecordingDataset( loggerBuilder, md5Tester,sessionFactory,replayerEngines);
         dataset.setSpecialParams(query);
@@ -87,14 +88,14 @@ public class ReplayerStatus {
     }
 
     public void addRequest(Request req, Response res) throws Exception {
-        if (state != ReplayerState.RECORDING) return;
+        if (state.get() != ReplayerState.RECORDING) return;
         ((RecordingDataset)dataset).add(req, res);
     }
 
     private final JsonTypedSerializer serializer = new JsonTypedSerializer();
 
     public boolean replay(Request req, Response res) {
-        if (state != ReplayerState.REPLAYING ) return false;
+        if (state.get() != ReplayerState.REPLAYING ) return false;
         Response response = ((ReplayerDataset)dataset).findResponse(req);
         if (response != null) {
             res.setBinaryResponse(response.isBinaryResponse());
@@ -113,7 +114,7 @@ public class ReplayerStatus {
 
     public ReplayerState getStatus() {
         if (state == null) return ReplayerState.NONE;
-        return state;
+        return state.get();
     }
 
     public Long getCurrentScript() {
@@ -122,50 +123,50 @@ public class ReplayerStatus {
     }
 
     public void restartRecording() {
-        if (state != ReplayerState.PAUSED_RECORDING) return;
+        if (state.get() != ReplayerState.PAUSED_RECORDING) return;
         logger.info("RECORDING RESTART");
-        state = ReplayerState.RECORDING;
+        state.getAndSet( ReplayerState.RECORDING);
     }
 
     public void pauseRecording() {
-        if (state != ReplayerState.RECORDING) return;
+        if (state.get() != ReplayerState.RECORDING) return;
         logger.info("RECORDING PAUSE");
-        state = ReplayerState.PAUSED_RECORDING;
+        state.getAndSet(ReplayerState.PAUSED_RECORDING);
     }
 
     public void stopAndSave() throws IOException {
 
-        if (state != ReplayerState.PAUSED_RECORDING && state != ReplayerState.RECORDING) return;
+        if (state.get() != ReplayerState.PAUSED_RECORDING && state.get() != ReplayerState.RECORDING) return;
 
         logger.info("RECORDING STOP-AND-SAVE");
-        state = ReplayerState.NONE;
         ((RecordingDataset)dataset).save();
+        state.getAndSet(ReplayerState.NONE);
         dataset = null;
     }
 
     public void restartReplaying(Long id, Map<String, String> query) {
-        if (state != ReplayerState.PAUSED_REPLAYING) return;
+        if (state.get() != ReplayerState.PAUSED_REPLAYING) return;
         this.query=query;
         logger.info("REPLAYING RE-START");
         ((ReplayerDataset)dataset).restart();
-        state = ReplayerState.REPLAYING;
+        state.getAndSet(ReplayerState.REPLAYING);
     }
 
     public void pauseReplaying(Long id) {
-        if (state != ReplayerState.REPLAYING) return;
+        if (state.get() != ReplayerState.REPLAYING) return;
         logger.info("REPLAYING PAUSE");
         ((ReplayerDataset)dataset).pause();
-        state = ReplayerState.PAUSED_REPLAYING;
+        state.getAndSet(ReplayerState.PAUSED_REPLAYING);
     }
 
     public void stopReplaying() {
         logger.info("REPLAYING STOP");
-        state = ReplayerState.NONE;
+        state.getAndSet(ReplayerState.NONE);
         dataset = null;
     }
 
     public Long startReplaying(Long id, Map<String, String> query) throws Exception {
-        if (state != ReplayerState.NONE) throw new RuntimeException("State not allowed");
+        if (state.get() != ReplayerState.NONE) throw new RuntimeException("State not allowed");
         this.query=query;
         logger.info("REPLAY START");
         dataset = new ReplayerDataset(loggerBuilder,localAddress,md5Tester,eventQueue,
@@ -174,12 +175,12 @@ public class ReplayerStatus {
         dataset.setParams(query);
         dataset.load(id, null);
         var runId = ((ReplayerDataset)dataset).start();
-        state = ReplayerState.REPLAYING;
+        state.getAndSet(ReplayerState.REPLAYING);
         return runId;
     }
 
     public void startStimulator(Long id, Map<String, String> query) throws Exception {
-        if (state == ReplayerState.NONE){
+        if (state.get() == ReplayerState.NONE){
             startReplaying(id, query);
         }
         logger.info("AUTO TEST START");
@@ -187,8 +188,12 @@ public class ReplayerStatus {
     }
 
     public void stopReplaying(Long id) throws Exception {
-        if (state != ReplayerState.REPLAYING) throw new RuntimeException("State not allowed");
+        if (state.get() != ReplayerState.REPLAYING) throw new RuntimeException("State not allowed");
         logger.info("REPLAY STOP");
         ((ReplayerDataset)dataset).stop();
+    }
+
+    public void kill() {
+        state.set(ReplayerState.NONE);
     }
 }
