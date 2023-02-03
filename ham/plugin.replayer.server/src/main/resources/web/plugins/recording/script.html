@@ -57,6 +57,7 @@
                                        :path="'/plugins/recording/vcomponents'"
                                        :template="key"
                                        :default="'none'"
+                                       :value="extensionData"
                                        @componentevent="onExtensionChange"/>
 
             </div>
@@ -355,9 +356,10 @@
                             th.extensions.push(fe);
                         });
                     });
-                axios.get("/api/plugins/replayer/v2/recording/" + getUrlParameter("id"))
+                axios.get("/api/plugins/replayer/recording/" + getUrlParameter("id"))
                     .then(function (result){
                         th.data=result.data;
+                        th.extensionData=th.data.filter;
                         th.$refs.recordingList.reload(th.data.lines);
                         //if(th.data.linse.length>0){
                         th.updateButtons();
@@ -396,11 +398,7 @@
                     id:id,
                     description: this.data.description,
                     name:this.data.name,
-                    filter:{
-                        dst:"",
-                        src:"",
-                        test:""
-                    },
+                    filter:this.extensionsData,
                     stimulatorTest:stimulatorTest
                 };
 

@@ -1,5 +1,6 @@
 package org.kendar.replayer.apis;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
 import org.kendar.http.FilteringClass;
@@ -13,10 +14,8 @@ import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.ReplayerState;
+import org.kendar.replayer.apis.models.*;
 import org.kendar.replayer.engine.ReplayerStatus;
-import org.kendar.replayer.apis.models.ListAllRecordList;
-import org.kendar.replayer.apis.models.LocalRecording;
-import org.kendar.replayer.apis.models.ScriptData;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DbRecording;
 import org.kendar.replayer.engine.ReplayerResult;
@@ -25,6 +24,7 @@ import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
+import org.kendar.servers.http.RequestUtils;
 import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
 import org.kendar.utils.ConstantsHeader;
@@ -49,6 +49,10 @@ public class ReplayerAPICrud implements FilteringClass {
 
   private final FileResourcesUtils fileResourcesUtils;
   private final LoggerBuilder loggerBuilder;
+
+  private static TypeReference<HashMap<String, String>> typeRef
+          = new TypeReference<>() {
+  };
 
   public ReplayerAPICrud(
           FileResourcesUtils fileResourcesUtils,
@@ -101,20 +105,86 @@ public class ReplayerAPICrud implements FilteringClass {
   }
 
   @HttpMethodFilter(
-      phase = HttpFilterType.API,
-      pathAddress = "/api/plugins/replayer/recording/{id}",
-      method = "GET")
-  @HamDoc(description = "Retrieve the content of a single recording",tags = {"plugin/replayer"},
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/replayer/recording/{id}",
+          method = "GET")
+  @HamDoc(description = "Retrieve all the content of a script",tags = {"plugin/replayer"},
           path = @PathParameter(key = "id"),
-          responses = @HamResponse(body =ListAllRecordList.class)
+          responses = @HamResponse(
+                  body = SingleScript.class
+          )
   )
   public void listAllRecordingSteps(Request req, Response res) throws Exception {
     var id = Long.parseLong(req.getPathParameter("id"));
-    ListAllRecordList result = new ListAllRecordList(sessionFactory, id,true);
-    result.getLines().sort(Comparator.comparingLong(ReplayerRow::getId));
-    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-    res.setResponseText(mapper.writeValueAsString(result));
+    var result = new SingleScript();
+    var isEmpty = true;
+    sessionFactory.query(em-> {
+      var rslist = em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id).getResultList();
+      if(rslist.size()==0){
+        result.setLines(null);
+        return;
+      }
+      DbRecording recording = (DbRecording)rslist.get(0);
+      if(recording.getFilter()!=null && !recording.getFilter().isEmpty()){
+        result.setFilter(mapper.readValue(recording.getFilter(),typeRef));
+      }else{
+        result.setFilter(new HashMap<>());
+      }
+      List<CallIndex> indexLines = em
+              .createQuery("SELECT e FROM CallIndex e WHERE e.recordingId=" + id)
+              .getResultList();
+      HashMap<Long, ReplayerRow> rows = new HashMap<>();
+      em
+              .createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId=" + id)
+              .getResultList()
+              .stream()
+              .forEach((a)->{
+                var idr = ((ReplayerRow)a).getId();
+                if(!rows.containsKey(idr)) {
+                  rows.put(idr, (ReplayerRow) a);
+                }
+              });
+
+      result.setName(recording.getName());
+      result.setId(recording.getId());
+      result.setDescription(recording.getDescription());
+      for(var index: indexLines){
+
+        var line = rows.get(index.getReference());
+        if(line == null) continue;
+        var newLine = new SingleScriptLine();
+        newLine.setId(index.getId());
+        newLine.setRequestMethod(line.getRequest().getMethod());
+        newLine.setRequestPath(line.getRequest().getPath());
+        newLine.setRequestHost(line.getRequest().getHost());
+        newLine.setReference(index.getReference());
+        newLine.setStimulatorTest(index.isStimulatorTest());
+        newLine.setType(line.getType());
+        newLine.setQueryCalc(RequestUtils.buildFullQuery(line.getRequest()));
+        newLine.setPreScript(index.getPreScript()!=null);
+        newLine.setScript(index.getPostScript()!=null);
+        newLine.setRequestHashCalc(isHashPresent(line.getRequestHash()));
+        newLine.setResponseHashCalc(isHashPresent(line.getResponseHash()));
+        newLine.setResponseStatusCode(line.getResponse().getStatusCode());
+        result.getLines().add(newLine);
+      }
+
+    });
+
+    if(result.getLines()==null){
+      res.setStatusCode(404);
+      res.setResponseText("MISSING RECORDING WITH ID "+id);
+    }else {
+      result.getLines().sort(Comparator.comparingLong(SingleScriptLine::getId));
+      res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
+      res.setResponseText(mapper.writeValueAsString(result));
+    }
   }
+
+  private boolean isHashPresent(String hash) {
+    return hash!=null && !hash.isEmpty() && !hash.equalsIgnoreCase("0");
+  }
+
 
   @HttpMethodFilter(
       phase = HttpFilterType.API,
@@ -152,6 +222,7 @@ public class ReplayerAPICrud implements FilteringClass {
 
       recording.setDescription(scriptData.getDescription());
       recording.setName(scriptData.getName());
+      recording.setFilter(mapper.writeValueAsString(scriptData.getFilter()));
       em.merge(recording);
       for(var ci:indexLines){
         ci.setStimulatorTest(scriptData.getStimulatorTest().stream().anyMatch(a->a.intValue()==ci.getId()));

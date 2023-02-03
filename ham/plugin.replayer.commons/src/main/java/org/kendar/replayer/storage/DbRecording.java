@@ -5,7 +5,6 @@ import org.kendar.servers.db.DbTable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.util.HashMap;
 
 @Component
 
@@ -19,6 +18,20 @@ public class DbRecording implements DbTable {
     private Long id;
     @Column(name="name")
     private String name;
+
+    @Column(name="filter")
+    private String filter;
+
+    @Column(name="description")
+    private String description;
+    
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
 
 
     public Long getId() {
@@ -37,8 +50,6 @@ public class DbRecording implements DbTable {
         this.description = description;
     }
 
-    @Column(name="description")
-    private String description;
 
     public void setName(String name) {
         this.name = name;

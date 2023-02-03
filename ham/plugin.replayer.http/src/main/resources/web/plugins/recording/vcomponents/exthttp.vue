@@ -19,6 +19,15 @@ module.exports = {
       hosts:"*"
     }
   },
+  watch:{
+    $props: {
+      handler(val,oldVal) {
+        if(val.value.hosts)this.hosts=val.value.hosts;
+      },
+      deep: true,
+      immediate: true,
+    }
+  },
   methods: {
     changeHosts: function () {
       var evt = {
