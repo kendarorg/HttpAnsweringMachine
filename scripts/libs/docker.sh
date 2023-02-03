@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 export DOCKER_USERNAME=none
 export DOCKER_LOGIN=none

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 echo Generate simpledns relase dirs
 mkdir -p $HAM_RELEASE_TARGET/simpledns

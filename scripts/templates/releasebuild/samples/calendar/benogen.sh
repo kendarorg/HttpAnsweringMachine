@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 HAM_JAR=janus-driver-1.1.5.jar
 CALENDAR_PATH=$(pwd)
@@ -12,7 +12,7 @@ function pause{
  echo ""
 }
 
-function is_set { [[ $var ]]; echo $? }
+function is_set { [[ $var ]]; echo $?; }
 
 export DEBUG_AGENT=
 is_set DO_DEBUG ; export DEBUG_AGENT=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5026

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 HAM_JAR=janus-driver-1.1.5.jar
 CALENDAR_PATH=$(pwd)
@@ -7,7 +7,7 @@ cd $CALENDAR_PATH
 cd ..
 ROOT_PATH=$(pwd)
 
-function is_set { [[ $var ]]; echo $? }
+function is_set { [[ $var ]]; echo $?; }
 function pause{
  read -s -n 1 -p "Press any key to continue . . ."
  echo ""

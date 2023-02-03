@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 CALENDAR_PATH=$(pwd)
 cd $CALENDAR_PATH
@@ -7,7 +7,7 @@ cd ..
 ROOT_PATH=$(pwd)
 
 
-function is_set { [[ $var ]]; echo $? }
+function is_set { [[ $var ]]; echo $?; }
 function pause{
  read -s -n 1 -p "Press any key to continue . . ."
  echo ""

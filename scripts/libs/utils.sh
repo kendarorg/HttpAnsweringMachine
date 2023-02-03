@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 function pause{
  read -s -n 1 -p "Press any key to continue . . ."
@@ -19,4 +19,4 @@ function set_parent_dir{
   echo $INIT_START_DIR
 }
 
-function is_set { [[ $var ]]; echo $? }
+function is_set { [[ $var ]]; echo $?; }
