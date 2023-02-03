@@ -2,6 +2,7 @@ package org.kendar.servers.proxy.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FilenameUtils;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
@@ -14,6 +15,7 @@ import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.models.JsonFileData;
 import org.kendar.servers.proxy.ProxyConfigChanged;
 import org.kendar.servers.proxy.RemoteServerStatus;
 import org.kendar.servers.proxy.SimpleProxyConfig;
@@ -38,6 +40,29 @@ public class ProxyHandlerApis implements FilteringClass {
     @Override
     public String getId() {
         return this.getClass().getName();
+    }
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/utils/proxiesapply",
+            method = "POST")
+    @HamDoc(description = "Apply proxy to API",tags = {"base/proxy"},
+            requests = @HamRequest(body= JsonFileData.class))
+    public void applyRecording(Request req, Response res) throws Exception {
+        JsonFileData jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
+        String realFileName = FilenameUtils.removeExtension(jsonFileData.getName());
+        var content = jsonFileData.readAsString();
+
+        var clone = configuration.getConfiguration(SimpleProxyConfig.class);
+        var proxies = clone.getProxies();
+        var id = req.getPathParameter("id");
+        for (var item : proxies) {
+            content = content.replace(item.getWhen(),item.getWhere());
+        }
+
+        res.setResponseText(content);
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.TEXT);
+        res.setStatusCode(200);
     }
 
     @HttpMethodFilter(

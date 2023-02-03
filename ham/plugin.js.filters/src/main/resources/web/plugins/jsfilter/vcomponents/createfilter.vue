@@ -60,7 +60,7 @@ module.exports = {
   },
   methods:{
     onSuccess:function(data){
-      location.href = "script.html?id="+data.response.data;
+      //location.href = "script.html?id="+data.response.data;
     },
     onError:function(data){
       alert(data.error);
