@@ -9,8 +9,8 @@ ROOT_PATH=$(pwd)
 echo You should configure the http and https proxy to
 echo localhost:1081 to appreciate the example
 
-function is_set() { [[ $(eval echo "\${${1}+x}") ]]; }
-function pause(){
+function is_set { [[ $var ]]; echo $? }
+function pause{
  read -s -n 1 -p "Press any key to continue . . ."
  echo ""
 }

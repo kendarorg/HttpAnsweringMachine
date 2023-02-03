@@ -7,12 +7,12 @@ cd $CALENDAR_PATH
 cd ..
 ROOT_PATH=$(pwd)
 
-function pause(){
+function pause{
  read -s -n 1 -p "Press any key to continue . . ."
  echo ""
 }
 
-function is_set() { [[ $(eval echo "\${${1}+x}") ]]; }
+function is_set { [[ $var ]]; echo $? }
 export DEBUG_AGENT=
 is_set DO_DEBUG ; export DEBUG_AGENT=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5026
 # "$DEBUG_AGENT"
