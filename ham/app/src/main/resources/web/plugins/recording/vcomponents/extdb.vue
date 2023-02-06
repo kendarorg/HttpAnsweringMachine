@@ -48,6 +48,11 @@ module.exports = {
         if(val.value.recordVoidDbCalls)this.recordVoidDbCalls=val.value.recordVoidDbCalls=="true";
         if(val.value.useSimEngine)this.useSimEngine=val.value.useSimEngine=="true";
         if(val.value.dbNames)this.dbNames=val.value.dbNames;
+        this.changeDbName();
+        this.changeUseSimEngine();
+        this.changeRecordVoidDbCalls();
+        this.changeRecordDbCalls();
+        console.log("CHAAAAAAAAAAAAAAAAA");
       },
       deep: true,
       immediate: true,

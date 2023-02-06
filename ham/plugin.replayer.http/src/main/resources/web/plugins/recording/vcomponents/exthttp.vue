@@ -23,6 +23,7 @@ module.exports = {
     $props: {
       handler(val,oldVal) {
         if(val.value.hosts)this.hosts=val.value.hosts;
+        this.changeHosts();
       },
       deep: true,
       immediate: true,
