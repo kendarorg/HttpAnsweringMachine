@@ -5,7 +5,7 @@ export DOCKER_LOGIN=none
 export DOCKER_TOKEN=none
 export DOCKER_ORG=none
 
-function docker_login{
+function docker_login {
   DOCKER_USERNAME=$1
   DOCKER_PASSWORD=$2
   DOCKER_ORG=$3
@@ -15,12 +15,12 @@ function docker_login{
   DOCKER_PASSWORD=none
 }
 
-function docker_logout{
+function docker_logout {
     DOCKER_PASSWORD=none
     DOCKER_TOKEN=none
 }
 
-function _docker_login_data{
+function _docker_login_data {
 cat <<EOF
 {
   "username": "$DOCKER_USERNAME",
@@ -29,7 +29,7 @@ cat <<EOF
 EOF
 }
 
-function docker_remove_tag{
+function docker_remove_tag {
   # IMAGE_NAME=$1
   # TAG=$2
   # curl "https://hub.docker.com/v2/repositories/${DOCKER_ORG}/${IMAGE_NAME}/tags/${TAG}/" \
@@ -37,7 +37,7 @@ function docker_remove_tag{
   #   -H "Authorization: JWT ${DOCKER_TOKEN}"
 }
 
-function docker_push{
+function docker_push {
   IMAGE_NAME=$1
   VERSION_NUMBER=$2
   

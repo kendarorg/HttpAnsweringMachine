@@ -25,7 +25,7 @@ mkdir -p $HAM_RELEASE_TARGET
 # Build HAM
 cd $ROOT_DIR/ham
 echo Building ham
-mvn clean install > "$ROOT_DIR"/release/ham-"$HAM_VERSION".log 2>1
+mvn clean install -DskipTests > "$ROOT_DIR"/release/ham-"$HAM_VERSION".log 2>1
 
 
 

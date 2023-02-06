@@ -8,7 +8,7 @@ ROOT_PATH=$(pwd)
 
 
 function is_set { [[ $var ]]; echo $?; }
-function pause{
+function pause {
  read -s -n 1 -p "Press any key to continue . . ."
  echo ""
 }
@@ -38,7 +38,7 @@ is_set DO_DEBUG ; export DEBUG_AGENT=-agentlib:jdwp=transport=dt_socket,server=y
 # "$DEBUG_AGENT"
 
 # Start the application
-cd $CALENDAR_PATH/be/target
+cd $ROOT_PATH/ham
 ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 rm tmp_txt || true

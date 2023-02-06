@@ -23,6 +23,7 @@ rm -rf $HAM_RELEASE_TARGET || true
 
 QUOTES_DIR=$ROOT_DIR/samples/quotes
 mkdir -p $HAM_RELEASE_TARGET/quotes
+mkdir -p $HAM_RELEASE_TARGET/calendar
 cp -R $QUOTES_DIR/core $HAM_RELEASE_TARGET/quotes/
 
 CALENDAR_DIR=$ROOT_DIR/samples/calendar
@@ -33,8 +34,8 @@ echo Setup runner
 cp -f $SCRIPT_DIR/templates/releasebuild/samples/*.* $HAM_RELEASE_TARGET/ 1>NUL
 
 
-copy /y $SCRIPT_DIR/templates/releasebuild/samples/calendar/*.* $HAM_RELEASE_TARGET/calendar 1>NUL
-copy /y $SCRIPT_DIR/templates/standalone/calendar.external.json $HAM_RELEASE_TARGET/calendar 1>NUL
+cp -f $SCRIPT_DIR/templates/releasebuild/samples/calendar/*.* $HAM_RELEASE_TARGET/calendar/ 1>NUL
+cp -f $SCRIPT_DIR/templates/standalone/calendar.external.json $HAM_RELEASE_TARGET/calendar/ 1>NUL
 
 echo Setup gateway
 mkdir -p $HAM_RELEASE_TARGET/calendar/gateway

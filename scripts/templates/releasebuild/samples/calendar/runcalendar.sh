@@ -10,7 +10,7 @@ echo You should configure the http and https proxy to
 echo localhost:1081 to appreciate the example
 
 function is_set { [[ $var ]]; echo $?; }
-function pause{
+function pause {
  read -s -n 1 -p "Press any key to continue . . ."
  echo ""
 }
@@ -24,7 +24,6 @@ pause
 cd $ROOT_PATH/ham
 
 # Start the application
-cd $CALENDAR_PATH/be/target
 ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 rm tmp_txt || true

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-function pause{
+function pause {
  read -s -n 1 -p "Press any key to continue . . ."
  echo ""
 }
 
-function read_password{
+function read_password {
   stty_orig=$(stty -g) # save original terminal setting.
   stty -echo           # turn-off echoing.
   IFS= read -r passwd  # read the password
@@ -13,7 +13,7 @@ function read_password{
   echo $passwd
 }
 
-function set_parent_dir{
+function set_parent_dir {
   INIT_START_DIR=$1
   INIT_START_DIR=$( cd -- "$( dirname -- "$INIT_START_DIR" )" &> /dev/null && pwd )
   echo $INIT_START_DIR
