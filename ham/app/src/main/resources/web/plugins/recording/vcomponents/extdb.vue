@@ -41,6 +41,23 @@ module.exports = {
       dbNames:"*"
     }
   },
+  watch:{
+    $props: {
+      handler(val,oldVal) {
+        if(val.value.recordDbCalls)this.recordDbCalls=val.value.recordDbCalls=="true";
+        if(val.value.recordVoidDbCalls)this.recordVoidDbCalls=val.value.recordVoidDbCalls=="true";
+        if(val.value.useSimEngine)this.useSimEngine=val.value.useSimEngine=="true";
+        if(val.value.dbNames)this.dbNames=val.value.dbNames;
+        this.changeDbName();
+        this.changeUseSimEngine();
+        this.changeRecordVoidDbCalls();
+        this.changeRecordDbCalls();
+        console.log("CHAAAAAAAAAAAAAAAAA");
+      },
+      deep: true,
+      immediate: true,
+    }
+  },
   methods: {
     changeDbName: function () {
       var evt = {

@@ -1,5 +1,6 @@
 package org.kendar.servers;
 
+import org.apache.commons.io.FileUtils;
 import org.h2.tools.Server;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.cfg.Configuration;
@@ -16,6 +17,9 @@ import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.List;
@@ -62,8 +66,19 @@ public class AnsweringH2DbServer  implements AnsweringServer{
             }
             running = true;
 
-            final String userDir = System.getProperty("user.dir");
-            server = Server.createTcpServer("-baseDir", userDir + "/data","-tcpAllowOthers","-ifNotExists");
+            String userDir = System.getProperty("user.dir")+ "/data";
+            if(System.getProperty("ham.tempdb")!=null){
+                userDir=System.getProperty("ham.tempdb");
+                if(!Paths.get(userDir).isAbsolute()){
+                    userDir=Paths.get(System.getProperty("user.dir"),userDir).toAbsolutePath().toString();
+                }
+                if(!Files.exists(Paths.get(userDir))) {
+                    Files.createDirectories(Paths.get(userDir));
+                }
+                FileUtils.cleanDirectory(new File(userDir));
+            }
+
+            server = Server.createTcpServer("-baseDir", userDir ,"-tcpAllowOthers","-ifNotExists");
             server.start();
 
             if(!initialized){

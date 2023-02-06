@@ -2,6 +2,7 @@ package org.kendar.remote;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.bouncycastle.cert.ocsp.Req;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
@@ -15,6 +16,12 @@ import org.kendar.servers.config.SSLDomain;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
+
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
@@ -48,11 +55,20 @@ public class RemoteAPI implements FilteringClass {
     public void executeOnHam(Request req, Response res) throws Exception {
         var realRequest = mapper.readValue(req.getRequestText(), Request.class);
         var event = new ExecuteRemoteRequest();
+        var uri = new URI("http://"+realRequest.getPath());
+        realRequest.setPath(uri.getPath());
+        var query = new HashMap<String,String>();
+        for(var par : URLEncodedUtils.parse(uri,
+                Charset.forName("UTF-8"))){
+            query.put(par.getName(),par.getValue());
+        }
+        realRequest.setQuery(query);
         event.setRequest(realRequest);
         var result = eventQueue.execute(event,Response.class);
         res.setResponseText(mapper.writeValueAsString(result));
         res.setStatusCode(200);
     }
+
 
 
     @HttpMethodFilter(

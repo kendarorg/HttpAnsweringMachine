@@ -83,6 +83,9 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
             for (int i = 0; i < config.getProxies().size(); i++) {
                 var now = Calendar.getInstance().getTimeInMillis();
                 var currentProxy = config.getProxies().get(i);
+                if(currentProxy.isForce()){
+                    continue;
+                }
                 if (!pollTiming.containsKey(currentProxy.getId())) {
                     var pt = new ProxyPollTiming();
                     pt.lastStatus = false;

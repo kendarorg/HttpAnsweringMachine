@@ -10,6 +10,13 @@
     <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
     <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
     <br><br>
+    Apply Proxy to file
+    <ham-upload
+        path="/api/utils/proxiesapply"
+        @success="onSuccessApply"
+        @error="onErrorApply"
+    ></ham-upload>
+    <br><br>
     <simple-grid
         v-on:gridclicked="gridClicked"
         ref="grid"
@@ -26,7 +33,8 @@ module.exports = {
   components: {
     'change-url-rewrite': httpVueLoader('/proxy/vediturlrewrite.vue'),
     'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
-    'simple-modal': httpVueLoader('/vcomponents/tmodal.vue')
+    'simple-modal': httpVueLoader('/vcomponents/tmodal.vue'),
+    'ham-upload': httpVueLoader('/vcomponents/tupload.vue')
   },
   data: function () {
     return {
@@ -64,6 +72,25 @@ module.exports = {
     }
   },
   methods: {
+    onSuccessApply:function(data){
+      const filename = "applied.txt";
+      const blob = new Blob([data.response.data], {type: 'text/plain'});
+      if(window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveBlob(blob, filename);
+      }
+      else{
+        const elem = window.document.createElement('a');
+        elem.href = window.URL.createObjectURL(blob);
+        elem.download = filename;
+        document.body.appendChild(elem);
+        elem.click();
+        document.body.removeChild(elem);
+      }
+      //location.href = "script.html?id="+data.response.data;
+    },
+    onErrorApply:function(data){
+      alert(data.error);
+    },
     retrieveData: async function () {
       var result = await axios.get("/api/proxies");
       return result;

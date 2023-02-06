@@ -47,16 +47,17 @@ public class DbReplayer implements ReplayerEngine {
     public boolean isValidRoundTrip(Request req, Response res, Map<String, String> specialParams) {
         var recordDbCalls = specialParams.get("recordDbCalls")==null?false:
                 Boolean.parseBoolean(specialParams.get("recordDbCalls"));
-        var recordVoidDbCalls = specialParams.get("recordDbCalls")==null?false:
+        var recordVoidDbCalls = specialParams.get("recordVoidDbCalls")==null?false:
                 Boolean.parseBoolean(specialParams.get("recordVoidDbCalls"));
         var doUseSimEngine = specialParams.get("useSimEngine")==null?false:
                 Boolean.parseBoolean(specialParams.get("useSimEngine"));
         var dbNames = specialParams.get("dbNames")==null?new String[]{"*"}:
                 specialParams.get("dbNames").trim().split(",");
-        if(!recordDbCalls)return false;
+        var result = true;
+        if(!recordDbCalls)result= false;
         if(!recordVoidDbCalls){
-            if(res.getResponseText()==null)return false;
-            if(res.getResponseText().contains("VoidResult"))return false;
+            if(res.getResponseText()==null)result= false;
+            if(res.getResponseText().contains("VoidResult"))result= false;
         }
         var dbNameAllowed = false;
         for(var dbName:dbNames){
@@ -68,19 +69,20 @@ public class DbReplayer implements ReplayerEngine {
                 break;
             }
         }
-        if(!dbNameAllowed)return false;
-        if(doUseSimEngine){
+        if(!dbNameAllowed)result = false;
+        if(doUseSimEngine && result){
             var connectionId = req.getHeader("X-Connection-Id")==null?-1L:
                     Long.parseLong(req.getHeader("X-Connection-Id"));
             var deser = serializer.newInstance();
             deser.deserialize(req.getRequestText());
             var simResponse = simulator.handle(deser.read("command"), connectionId);
             if(simResponse==null || !simResponse.isHasResponse()){
-                return true;
+                result= true;
+            }else{
+                result=false;
             }
-            return false;
         }
-        return true;
+        return result;
     }
 
     @Override

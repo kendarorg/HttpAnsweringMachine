@@ -1,14 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 
-HAM_JAR=janus-driver-1.1.5.jar
+HAM_JAR=janus-driver-1.1.10-SNAPSHOT.jar
 CALENDAR_PATH=$(pwd)
 cd $CALENDAR_PATH
 # Go to main path
 cd ..
 ROOT_PATH=$(pwd)
 
-function is_set() { [[ $(eval echo "\${${1}+x}") ]]; }
-function pause(){
+function is_set { [[ $var ]]; echo $?; }
+function pause {
  read -s -n 1 -p "Press any key to continue . . ."
  echo ""
 }
@@ -39,7 +39,7 @@ is_set DO_DEBUG ; export DEBUG_AGENT=-agentlib:jdwp=transport=dt_socket,server=y
 # "$DEBUG_AGENT"
 
 # Start the application
-cd $CALENDAR_PATH/be/target
+cd $ROOT_PATH/ham
 ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 rm tmp_txt || true
@@ -80,6 +80,6 @@ cd $CALENDAR_PATH/fe
 ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
 export JAR_NAME=$(head -1 tmp_txt)
 rm tmp_txt || true
-java -cp "be-4.1.4.jar;../janus-driver-1.1.5.jar" org.springframework.boot.loader.JarLauncher --spring.config.location=file://$(pwd)/application.properties &
+java -cp "be-4.1.4.jar;../janus-driver-1.1.10-SNAPSHOT.jar" org.springframework.boot.loader.JarLauncher --spring.config.location=file://$(pwd)/application.properties &
 cd $START_LOCATION
 

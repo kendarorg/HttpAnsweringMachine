@@ -105,7 +105,7 @@ module.exports = {
           this.reload();
         });
       } else {
-        await axios.post('/api/jdbcproxies/proxies/', this.modalData.data).then(() => {
+        await axios.post('/api/jdbcproxies/proxies', this.modalData.data).then(() => {
           this.modalShow = false;
           this.reload();
         });

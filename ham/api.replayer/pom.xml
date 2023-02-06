@@ -127,5 +127,12 @@
             <version>${jackson.version}</version>
 
         </dependency>
+
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>janus-driver</artifactId>
+            <version>${janus.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -1,5 +1,7 @@
 package org.kendar.replayer.apis.models;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DbRecording;
 import org.kendar.replayer.storage.ReplayerRow;
@@ -16,11 +18,15 @@ public class ListAllRecordList {
     private String description;
     private List<ReplayerRow> lines = new ArrayList<>();
     private List<CallIndex> indexes = new ArrayList<>();
-    private HashMap<String,String> variables;
-    private HashMap<String,String> preScript;
-    private HashMap<String,String> postScript;
+    private HashMap<String,String> filters;
 
     private DbRecording recording;
+
+    private static TypeReference<HashMap<String, String>> typeRef
+            = new TypeReference<>() {
+    };
+
+    private static ObjectMapper mapper = new ObjectMapper();
 
     public ListAllRecordList(HibernateSessionFactory sessionFactory, Long id, boolean cleanJs) throws Exception {
 
@@ -41,12 +47,12 @@ public class ListAllRecordList {
             res.setResponseBytes(null);
             row.setResponse(res);
         }
-  /*
-  FIXME
-        variables = recording.getVariables();
-        preScript = recording.getPreScript();
-        postScript= recording.getPostScript();
-*/
+        if(recording.getFilter()!=null && !recording.getFilter().isEmpty()){
+            filters=mapper.readValue(recording.getFilter(),typeRef);
+        }else{
+            filters = new HashMap<>();
+        }
+
         for(var index: callIndex){
             getIndexes().add(index);
         }
@@ -86,27 +92,11 @@ public class ListAllRecordList {
         this.indexes = indexes;
     }
 
-    public HashMap<String, String> getVariables() {
-        return variables;
+    public HashMap<String, String> getFilters() {
+        return filters;
     }
 
-    public void setVariables(HashMap<String, String> variables) {
-        this.variables = variables;
-    }
-
-    public HashMap<String, String> getPreScript() {
-        return preScript;
-    }
-
-    public void setPreScript(HashMap<String, String> preScript) {
-        this.preScript = preScript;
-    }
-
-    public HashMap<String, String> getPostScript() {
-        return postScript;
-    }
-
-    public void setPostScript(HashMap<String, String> postScript) {
-        this.postScript = postScript;
+    public void setFilters(HashMap<String, String> filters) {
+        this.filters = filters;
     }
 }

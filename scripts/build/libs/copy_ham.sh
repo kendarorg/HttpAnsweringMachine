@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 echo Generate ham relase dirs
 mkdir -p $HAM_RELEASE_TARGET/ham

@@ -21,6 +21,8 @@ public interface ProxyBuilder {
         private String where;
         private String test;
 
+        private boolean force;
+
         public String getId() {
             return id;
         }
@@ -52,6 +54,14 @@ public interface ProxyBuilder {
         public void setTest(String test) {
             this.test = test;
         }
+
+        public boolean isForce() {
+            return force;
+        }
+
+        public void setForce(boolean force) {
+            this.force = force;
+        }
     }
 
     /**
@@ -73,7 +83,7 @@ public interface ProxyBuilder {
      * @return
      * @throws HamException
      */
-    DbProxyBuilder addRemoteDbProxy(String dbName, String login, String password,String dbDriver) throws HamException;
+    DbProxyBuilder addRemoteDbProxy(String connectionString, String login, String password,String dbDriver) throws HamException;
 
     /**
      * Remove proxy by id

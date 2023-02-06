@@ -1,11 +1,12 @@
 package org.kendar.replayer.apis.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class SingleScript {
     private List<SingleScriptLine> lines = new ArrayList<>();
-    private SingleScriptFilter filter;
+    private HashMap<String,String> filter;
     private Long id;
     private String description;
     private String name;
@@ -34,11 +35,11 @@ public class SingleScript {
         this.lines = lines;
     }
 
-    public SingleScriptFilter getFilter() {
+    public HashMap<String,String> getFilter() {
         return filter;
     }
 
-    public void setFilter(SingleScriptFilter filter) {
+    public void setFilter(HashMap<String,String> filter) {
         this.filter = filter;
     }
 
