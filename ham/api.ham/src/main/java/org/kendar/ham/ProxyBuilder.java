@@ -21,6 +21,8 @@ public interface ProxyBuilder {
         private String where;
         private String test;
 
+        private boolean force;
+
         public String getId() {
             return id;
         }
@@ -51,6 +53,14 @@ public interface ProxyBuilder {
 
         public void setTest(String test) {
             this.test = test;
+        }
+
+        public boolean isForce() {
+            return force;
+        }
+
+        public void setForce(boolean force) {
+            this.force = force;
         }
     }
 

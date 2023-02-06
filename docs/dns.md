@@ -140,3 +140,25 @@ You can even add extra servers through the JVM arguments with the "other.dns" pr
     java ... -Dother.dns=127.0.0.11,main.local.self ...
 
 This is used (by me) mainly inside docker containers
+
+## Warnings
+
+The systemd-resolve occupies the port 53
+
+<pre>
+sudo lsof -i :53
+
+#Will returns if occupied
+
+systemd-r 629 systemd-resolve   13u  IPv4  12952      0t0  UDP 127.0.0.53:domain 
+systemd-r 629 systemd-resolve   14u  IPv4  12953      0t0  TCP 127.0.0.53:domain (LISTEN)
+
+#iptables -t nat -A PREROUTING -d 172.16.22.22 -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.1:8053
+#NP iptables -t nat -A PREROUTING -i eth0 -d 192.168.1.2 -p udp --dport 1003 -j REDIRECT --to-ports 1004
+
+sudo iptables -t nat -A PREROUTING -d 172.16.22.22 -p udp --dport 53 -j REDIRECT --to-ports 8053
+
+# You can list them with 
+
+sudo iptables -t nat -L -n -v
+</pre>

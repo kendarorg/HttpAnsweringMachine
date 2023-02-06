@@ -5,6 +5,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.entity.GzipCompressingEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -26,6 +27,7 @@ import org.slf4j.Logger;
 import javax.net.ssl.SSLContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BaseRequesterImpl implements BaseRequester{
@@ -55,7 +57,14 @@ public abstract class BaseRequesterImpl implements BaseRequester{
     public void callSite(Request request, Response response)
             throws Exception {
 
+        var contentEncoding="";
+        if (null != request.getHeader("content-encoding")) {
+            contentEncoding = request.getHeader("content-encoding").toLowerCase(Locale.ROOT);
+        }
+        if(contentEncoding==null)contentEncoding="";
 
+        var brotli = contentEncoding.equalsIgnoreCase("br");
+        var gzip = contentEncoding.equalsIgnoreCase("gzip");
 
         if(request.getHeader(BLOCK_RECURSION)!=null){
             response.setStatusCode(500);
@@ -101,7 +110,12 @@ public abstract class BaseRequesterImpl implements BaseRequester{
                     form.add(new BasicNameValuePair(par.getKey(), par.getValue()));
                 }
                 UrlEncodedFormEntity entity = new UrlEncodedFormEntity(form, Consts.UTF_8);
-                ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
+
+                if(gzip){
+                    ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(new GzipCompressingEntity(entity));
+                }else {
+                    ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
+                }
             } else if (requestResponseBuilder.isMultipart(request)) {
                 MultipartEntityBuilder builder = MultipartEntityBuilder.create();
                 builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -121,8 +135,14 @@ public abstract class BaseRequesterImpl implements BaseRequester{
                                 part.getFieldName(), part.getStringData(), ContentType.create(type));
                     }
                 }
+
                 HttpEntity entity = builder.build();
-                ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
+
+                if(gzip){
+                    ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(new GzipCompressingEntity(entity));
+                }else {
+                    ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
+                }
             } else if (requestResponseBuilder.hasBody(request)) {
                 HttpEntity entity;
                 try {
@@ -151,11 +171,17 @@ public abstract class BaseRequesterImpl implements BaseRequester{
                             new StringEntity(
                                     request.getRequestText(), ContentType.create("application/octet-stream"));
                 }
-                ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
+                if(gzip){
+                    ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(new GzipCompressingEntity(entity));
+                }else {
+                    ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(entity);
+                }
             }
 
             HttpResponse httpResponse = null;
             try {
+
+
                 httpResponse = httpClient.execute(fullRequest);
                 requestResponseBuilder.fromHttpResponse(httpResponse, response);
             } catch (Exception ex) {

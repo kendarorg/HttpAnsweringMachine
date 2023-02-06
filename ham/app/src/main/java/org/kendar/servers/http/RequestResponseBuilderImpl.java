@@ -1,5 +1,6 @@
 package org.kendar.servers.http;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.sun.net.httpserver.HttpExchange;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.io.IOUtils;
@@ -10,17 +11,21 @@ import org.kendar.utils.*;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 
 @Component
 public class RequestResponseBuilderImpl implements RequestResponseBuilder {
 
-  private final Logger logger;
+  private static Logger logger;
 
   public RequestResponseBuilderImpl(LoggerBuilder loggerBuilder){
     this.logger = loggerBuilder.build(RequestResponseBuilderImpl.class);
@@ -61,30 +66,47 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
   private static void setupOptionalBody(HttpExchange exchange, Request result)
       throws IOException, FileUploadException {
     var headerContentType = result.getHeader(ConstantsHeader.CONTENT_TYPE);
+
     if (RequestUtils.isMethodWithBody(result)) {
+
+      var data = IOUtils.toByteArray(exchange.getRequestBody());
+      var contentEncoding="";
+      if (null != result.getHeader("content-encoding")) {
+        contentEncoding = result.getHeader("content-encoding").toLowerCase(Locale.ROOT);
+      }
+      if(contentEncoding==null)contentEncoding="";
+
+      var brotli = contentEncoding.equalsIgnoreCase("br");
+      var gzip = contentEncoding.equalsIgnoreCase("gzip");
+      if(gzip){
+        InputStream bodyStream = new GZIPInputStream(new ByteArrayInputStream(data));
+        data = IOUtils.toByteArray(bodyStream);
+      }else if(brotli){
+        InputStream bodyStream = new BrotliInputStream(new ByteArrayInputStream(data));
+        data = IOUtils.toByteArray(bodyStream);
+      }
+
       // Calculate body
       if (headerContentType.toLowerCase(Locale.ROOT).startsWith("multipart")) {
         Pattern rp = Pattern.compile("boundary", Pattern.CASE_INSENSITIVE);
         var boundary = SimpleStringUtils.splitByString("boundary=", headerContentType)[1];
-        var data = IOUtils.toByteArray(exchange.getRequestBody());
         result.setMultipartData(
             RequestUtils.buildMultipart(data, boundary, result.getHeader(ConstantsHeader.CONTENT_TYPE)));
       } else if (headerContentType
               .toLowerCase(Locale.ROOT)
               .startsWith("application/x-www-form-urlencoded")) {
-        var requestText = IOUtils.toString(exchange.getRequestBody(), StandardCharsets.UTF_8);
+        var requestText = new String(data, StandardCharsets.UTF_8);
         result.setPostParameters(RequestUtils.queryToMap(requestText));
       } else if (headerContentType
               .toLowerCase(Locale.ROOT)
               .startsWith(ConstantsMime.JSON_SMILE)) {
-        var requestText = JsonSmile.smileToJSON(IOUtils.toByteArray(exchange.getRequestBody())).toPrettyString();
+        var requestText = JsonSmile.smileToJSON(data).toPrettyString();
         result.setRequestText(requestText);
       } else {
         if (result.isBinaryRequest()) {
-          result.setRequestBytes(IOUtils.toByteArray(exchange.getRequestBody()));
+          result.setRequestBytes(data);
         } else {
-          result.setRequestText(
-              IOUtils.toString(exchange.getRequestBody(), StandardCharsets.UTF_8));
+          result.setRequestText(new String(data, StandardCharsets.UTF_8));
         }
       }
     }
