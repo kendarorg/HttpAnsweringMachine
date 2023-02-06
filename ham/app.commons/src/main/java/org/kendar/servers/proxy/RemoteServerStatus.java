@@ -6,6 +6,7 @@ public class RemoteServerStatus {
     private String where;
     private String test;
     private boolean running = false;
+    private boolean force = false;
 
     public RemoteServerStatus(){
 
@@ -43,7 +44,7 @@ public class RemoteServerStatus {
     }
 
     public boolean isRunning() {
-        return running;
+        return running||force;
     }
 
     public void setRunning(boolean running) {
@@ -59,6 +60,16 @@ public class RemoteServerStatus {
     }
 
     public RemoteServerStatus copy(){
-        return new RemoteServerStatus(this.id,this.when,this.where,this.test);
+        var res = new RemoteServerStatus(this.id,this.when,this.where,this.test);
+        res.setForce(this.force);
+        return res;
+    }
+
+    public boolean isForce() {
+        return force;
+    }
+
+    public void setForce(boolean force) {
+        this.force = force;
     }
 }

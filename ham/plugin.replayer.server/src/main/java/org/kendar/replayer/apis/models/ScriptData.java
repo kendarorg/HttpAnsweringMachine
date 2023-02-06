@@ -1,13 +1,14 @@
 package org.kendar.replayer.apis.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ScriptData {
     private String description;
     private String name;
     private String id;
-    private RedirectFilter filter;
+    private HashMap<String,String> filter;
     private List<Integer> stimulatorTest = new ArrayList<>();
 
     public String getDescription() {
@@ -26,11 +27,11 @@ public class ScriptData {
         this.id = id;
     }
 
-    public RedirectFilter getFilter() {
+    public HashMap<String,String> getFilter() {
         return filter;
     }
 
-    public void setFilter(RedirectFilter filter) {
+    public void setFilter(HashMap<String,String> filter) {
         this.filter = filter;
     }
 

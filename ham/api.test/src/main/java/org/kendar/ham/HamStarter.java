@@ -243,13 +243,14 @@ public class HamStarter {
         commandLine.add("-Djsonconfig="+externalJsonPath);
         var libsPath  =Path.of(getRootPath(caller),"ham","libs").toString();
         commandLine.add("-Dloader.path="+libsPath);
+        commandLine.add("-Dham.tempdb=data/tmp");
         commandLine.add("-Dloader.main=org.kendar.Main");
         if(!SystemUtils.IS_OS_WINDOWS) {
             commandLine.add("-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**");
-            //commandLine.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:9863");
+            commandLine.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:9863");
         }else{
             commandLine.add("\"-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**\"");
-            //commandLine.add("\"-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:9863\"");
+            commandLine.add("\"-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:9863\"");
         }
 
         //commandLine.add("\"-javaagent:"+agentPath+"=destfile="+jacocoExecPath+"\"");
