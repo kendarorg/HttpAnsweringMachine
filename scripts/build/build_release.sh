@@ -11,7 +11,6 @@ START_LOCATION=$(pwd)
 echo This will build a tar.gz to run the application. Ctrl+C to exit
 echo Target version: $HAM_VERSION
 
-pause
 
 # Extra initializations
 ROOT_DIR=$( cd -- "$( dirname -- "$SCRIPT_DIR" )" &> /dev/null && pwd )

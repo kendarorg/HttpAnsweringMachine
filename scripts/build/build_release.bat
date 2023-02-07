@@ -11,7 +11,6 @@ set UTILS_LIB=%SCRIPT_DIR%\libs\utils.bat
 echo This will build a tar.gz to run the application. Ctrl+C to exit
 echo Target version: %HAM_VERSION%
 
-pause
 
 REM Extra initializations
 call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR

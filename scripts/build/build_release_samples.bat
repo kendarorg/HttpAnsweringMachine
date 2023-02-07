@@ -11,7 +11,6 @@ set UTILS_LIB=%SCRIPT_DIR%\libs\utils.bat
 echo This will build a tar.gz with the sample applications. Ctrl+C to exit
 echo Target version: %HAM_VERSION%
 
-pause
 
 REM Extra initializations
 call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR
@@ -28,7 +27,7 @@ call %UTILS_LIB% cp_r %QUOTES_DIR%\core %HAM_RELEASE_TARGET%\quotes\
 set CALENDAR_DIR=%ROOT_DIR%\samples\calendar
 call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar
 cd %CALENDAR_DIR%
-call mvn clean install
+call mvn clean install > %ROOT_DIR%\release\ham-%HAM_VERSION%-samples.log  2>&1
 
 echo Setup runner
 copy /y %SCRIPT_DIR%\templates\releasebuild\samples\calendar\*.* %HAM_RELEASE_TARGET%\calendar 1>NUL
