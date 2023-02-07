@@ -11,7 +11,6 @@ START_LOCATION=$(pwd)
 echo This will build a tar.gz with the sample applications. Ctrl+C to exit
 echo Target version: $HAM_VERSION
 
-pause
 
 # Extra initializations
 ROOT_DIR=$( cd -- "$( dirname -- "$SCRIPT_DIR" )" &> /dev/null && pwd )
@@ -28,10 +27,9 @@ cp -R $QUOTES_DIR/core $HAM_RELEASE_TARGET/quotes/
 
 CALENDAR_DIR=$ROOT_DIR/samples/calendar
 cd $CALENDAR_DIR
-mvn clean install
+mvn clean install > "$ROOT_DIR"/release/ham-"$HAM_VERSION"-samples.log 2>1
 
 echo Setup runner
-cp -f $SCRIPT_DIR/templates/releasebuild/samples/*.* $HAM_RELEASE_TARGET/ 1>NUL
 
 
 cp -f $SCRIPT_DIR/templates/releasebuild/samples/calendar/*.* $HAM_RELEASE_TARGET/calendar/ 1>NUL
