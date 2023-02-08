@@ -23,4 +23,4 @@ Upload on github the releases on release dir
 
 ## CLeanup
 
-docker rmi $(docker images | grep "<none>" | awk "{print $3}")
+docker rmi $(docker images | grep "<none>"|grep -v "kendar" | awk "{print $3}")
