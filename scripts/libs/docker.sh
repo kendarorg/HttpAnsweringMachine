@@ -46,24 +46,31 @@ function docker_push {
     VERSION_NUMBER=$2
 
     if [[ "$VERSION_NUMBER" == *"snapshot"* ]] ;then
-      echo Removing tag $IMAGE_NAME
-      docker_remove_tag "$IMAGE_NAME" snapshot
-      docker_remove_tag "$IMAGE_NAME" "$VERSION_NUMBER"
-      echo Pushing image tag $IMAGE_NAME
-      docker push $DOCKER_ORG/%IMAGE_NAME%:v%VERSION_NUMBER%
-      docker push $DOCKER_ORG/%IMAGE_NAME%:snapshot
-      echo Tagging image $IMAGE_NAME
-      docker tag %IMAGE_NAME% $DOCKER_ORG/%IMAGE_NAME%:v%VERSION_NUMBER%
-      docker tag $DOCKER_ORG/%IMAGE_NAME%:v%VERSION_NUMBER% $DOCKER_ORG/%IMAGE_NAME%:snapshot
+      
+            echo Pushing snapshot base image tag $IMAGE_NAME
+            docker push $DOCKER_ORG/$IMAGE_NAME
+
+            echo Tagging image $IMAGE_NAME
+            docker tag $DOCKER_ORG/$IMAGE_NAME $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER
+            docker push $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER
+
+            docker tag $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER $DOCKER_ORG/$IMAGE_NAME:snapshot
+            docker push $DOCKER_ORG/$IMAGE_NAME:snapshot
+      
+      docker tag $DOCKER_ORG/$IMAGE_NAME $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER
     else
-      echo Pushing image tag $IMAGE_NAME
-      docker push $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER
-      docker push $DOCKER_ORG/$IMAGE_NAME:latest
-      docker push $DOCKER_ORG/$IMAGE_NAME:snapshot
-      echo Tagging image $IMAGE_NAME
-      docker tag $IMAGE_NAME $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER
-      docker tag $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER $DOCKER_ORG/$IMAGE_NAME:latest
-      docker tag $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER $DOCKER_ORG/$IMAGE_NAME:snapshot
+             echo Pushing base image tag $IMAGE_NAME
+            docker push $DOCKER_ORG/$IMAGE_NAME
+
+            echo Tagging image $IMAGE_NAME
+            docker tag $DOCKER_ORG/$IMAGE_NAME $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER
+            docker push $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER
+
+            docker tag $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER $DOCKER_ORG/$IMAGE_NAME:latest
+            docker push $DOCKER_ORG/$IMAGE_NAME:latest
+
+            docker tag $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER $DOCKER_ORG/$IMAGE_NAME:snapshot
+            docker push $DOCKER_ORG/$IMAGE_NAME:snapshot
     fi
   fi
 }

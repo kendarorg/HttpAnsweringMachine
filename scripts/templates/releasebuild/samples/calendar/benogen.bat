@@ -13,9 +13,6 @@ echo localhost:1081 to appreciate the example
 echo Start it only when recording/replaying is started
 pause
 
-
-
-
 cd %CALENDAR_PATH%\calendar\scripts
 benogen.bat
 timeout /t 10 /nobreak
