@@ -6,8 +6,8 @@ call %~dp0\init.bat
 set UTILS_LIB=%SCRIPT_DIR%\libs\utils.bat
 call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR
 
-echo You should configure the http and https proxy to
-echo localhost:1081 to appreciate the example
+echo [INFO] You should configure the http and https proxy to
+echo [INFO] localhost:1081 to appreciate the example
 
 pause
 
