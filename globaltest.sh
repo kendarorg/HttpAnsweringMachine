@@ -4,6 +4,7 @@ export LANG=en_US.UTF-8
 export LC_ALL=$LANG
 
 
+
 . $HAM_MAIN_DIR/scripts/libs/version.sh
 . $HAM_MAIN_DIR/scripts/libs/runner.sh
 
@@ -108,6 +109,21 @@ if true; then
   echo [INFO] END calendar/scripts/bedb.sh
   rm -rf $HAM_MAIN_DIR/release/calendar/data
 fi
+
+cd $HAM_MAIN_DIR/scripts/build
+./build_docker.sh
+./build_docker_samples.sh
+cd $HAM_MAIN_DIR/samples/calendar/hub_composer
+nohup docker-compose -f docker-compose-local.yml up 2>&1 > /dev/null &
+
+export http_proxy=http://$DOCKER_IP:1081
+wait_till_start 60 http://www.local.test/api/health
+wait_till_start 60 http://www.sample.test/api/v1/health
+wait_till_start 60 http://gateway.sample.test/api/v1/health
+wait_till_start 60 http://be.sample.test/api/v1/health
+unset http_proxy
+
+docker-compose -f docker-compose-local.yml down 2>&1 > /dev/null &
 
 
 

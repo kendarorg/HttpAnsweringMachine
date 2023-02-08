@@ -85,7 +85,7 @@ tar -zcvf %ROOT_DIR%\release\ham-samples-%HAM_VERSION%.tar.gz . >> %ROOT_DIR%\re
 
 REM Cleanup
 echo Cleanup
-call %UTILS_LIB% rm_rf %HAM_RELEASE_TARGET%  > NUL 2>&1
+REM call %UTILS_LIB% rm_rf %HAM_RELEASE_TARGET%  > NUL 2>&1
 
 REM Restore previous dir
 cd %START_LOCATION%

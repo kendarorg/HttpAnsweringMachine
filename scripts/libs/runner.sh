@@ -56,3 +56,39 @@ function run_till_start {
     echo ""
   fi
 }
+
+function wait_till_start {
+  seconds=$1
+  get_req=$2
+  runtime=$(date +%s)
+  endtime=`expr $runtime + $seconds`
+
+
+  #./$sh_file &
+
+  seconds=60
+  runtime=$(date +%s)
+  endtime=`expr $runtime + $seconds`
+
+  echo -n "[INFO] Testing $get_req: "
+  while [[ $(date +%s) -le $endtime ]]
+  do
+      sleep 10
+      export IS_RUNNING=$(curl -m 2 -s -o /dev/null -w "%{http_code}" $get_req)
+      if [ "$IS_RUNNING" -eq "200" ]
+      then
+        echo -n " OK"
+        break
+      else
+        echo -n .
+      fi
+  done
+  if [[ "$IS_RUNNING" != "200" ]]
+  then
+    echo
+    echo "UNABLE TO START $sh_file"
+    exit 1
+  else
+    echo ""
+  fi
+}

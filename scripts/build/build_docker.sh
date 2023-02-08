@@ -13,14 +13,17 @@ echo [INFO] This will build the docker images for the application
 echo [INFO] and publish them on local docker. Ctrl+C to exit
 echo [INFO] Target version: $HAM_VERSION
 
-pause
-
 LOGIN=kendarorg
 ORG=kendarorg
-echo Enter $LOGIN password for $ORG
-PASSWORD=$(read_password)
-docker_login "$LOGIN" "$PASSWORD" "$ORG"
 PASSWORD=none
+
+if [ "$DOCKER_DEPLOY" == "true" ]; then
+  pause
+  echo Enter $LOGIN password for $ORG
+  PASSWORD=$(read_password)
+  docker_login "$LOGIN" "$PASSWORD" "$ORG"
+  PASSWORD=none
+fi
 
 # Extra initializations
 ROOT_DIR=$( cd -- "$( dirname -- "$SCRIPT_DIR" )" &> /dev/null && pwd )
