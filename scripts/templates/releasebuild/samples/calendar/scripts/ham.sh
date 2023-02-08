@@ -22,6 +22,6 @@ export JAR_NAME=$(head -1 tmp_txt)
 rm tmp_txt || true
 java "-Dloader.path=$ROOT_PATH/ham/libs"  -Dloader.main=org.kendar.Main  \
 	  	"-Djsonconfig=$CALENDAR_PATH/calendar.external.json" \
-		  -jar "$ROOT_PATH/ham/$JAR_NAME" org.springframework.boot.loader.PropertiesLauncher
+		  -jar "$ROOT_PATH/ham/$JAR_NAME" org.springframework.boot.loader.PropertiesLauncher &
 cd $ROOT_PATH
 

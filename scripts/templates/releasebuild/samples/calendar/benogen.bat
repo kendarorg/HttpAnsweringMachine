@@ -16,7 +16,7 @@ pause
 
 
 
-cd %CALENDAR_PATH%\scripts
+cd %CALENDAR_PATH%\calendar\scripts
 benogen.bat
 timeout /t 10 /nobreak
 cd %ROOT_PATH%

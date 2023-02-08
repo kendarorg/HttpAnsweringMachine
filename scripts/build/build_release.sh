@@ -41,7 +41,7 @@ tar -zcvf "$ROOT_DIR"/release/ham-"$HAM_VERSION".tar.gz . >> "$ROOT_DIR"/release
 
 # Cleanup
 echo [INFO] Cleanup
-rm -rf $HAM_RELEASE_TARGET || true
+#rm -rf $HAM_RELEASE_TARGET || true
 
 # Restore previous dir
 cd $START_LOCATION
