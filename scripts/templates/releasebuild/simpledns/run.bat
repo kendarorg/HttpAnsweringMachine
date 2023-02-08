@@ -9,8 +9,8 @@ dir /b %SCRIPT_DIR%\*.jar > .temp.txt
 set /p JAR_NAME=<.temp.txt
 del /s /f /q .temp.txt 2>&1 1>NUL
 
-set DEBUG_AGENT=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025
-IF "%DO_DEBUG%"=="" set DEBUG_AGENT=
+
+
 
 REM Start the application
-java  %DEBUG_AGENT% -jar %JAR_NAME%
+java   -jar %JAR_NAME%
