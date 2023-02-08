@@ -29,7 +29,10 @@ call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar
 cd %CALENDAR_DIR%
 call mvn clean install > %ROOT_DIR%\release\ham-%HAM_VERSION%-samples.log  2>&1
 
-echo Setup runner
+echo [INFO] Setup runner
+call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\scripts
+call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\be
+copy /y %SCRIPT_DIR%\templates\releasebuild\samples\calendar\scripts\*.* %HAM_RELEASE_TARGET%\calendar\scripts 1>NUL
 copy /y %SCRIPT_DIR%\templates\releasebuild\samples\calendar\*.* %HAM_RELEASE_TARGET%\calendar 1>NUL
 copy /y %SCRIPT_DIR%\templates\standalone\calendar.external.json %HAM_RELEASE_TARGET%\calendar 1>NUL
 
@@ -43,10 +46,10 @@ echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
 echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\gateway\run.bat
 
-echo Setup Db
+echo [INFO] Setup Db
 echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\rundb.sh
+echo call java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa > %HAM_RELEASE_TARGET%\calendar\rundb.bat
 echo java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa >> %HAM_RELEASE_TARGET%\calendar\rundb.sh
-echo call java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa >> %HAM_RELEASE_TARGET%\calendar\rundb.bat
 
 echo Setup fe
 call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\fe

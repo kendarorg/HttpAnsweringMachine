@@ -1,13 +1,14 @@
 #!/bin/bash
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd $SCRIPT_DIR
+
 CALENDAR_PATH=$(pwd)
 cd $CALENDAR_PATH
 # Go to main path
 cd ..
 ROOT_PATH=$(pwd)
 
-
-function is_set { [[ $var ]]; echo $?; }
 function pause {
  read -s -n 1 -p "Press any key to continue . . ."
  echo ""
@@ -26,56 +27,12 @@ fi
 
 pause
 
-cd $ROOT_PATH/ham
+cd $ROOT_PATH/scripts
 
-# start db
-cd $CALENDAR_PATH/
-rundb.sh &
-cd $START_LOCATION
+./ham.sh
+./bedb.sh
+./gateway.sh
+./fe.sh
 
-export DEBUG_AGENT=
-is_set DO_DEBUG ; export DEBUG_AGENT=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025
-# "$DEBUG_AGENT"
-
-# Start the application
-cd $ROOT_PATH/ham
-ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
-export JAR_NAME=$(head -1 tmp_txt)
-rm tmp_txt || true
-java "-Dloader.path=$ROOT_PATH/ham/libs"  -Dloader.main=org.kendar.Main  \
-	  	"$DEBUG_AGENT" \
-	  	"-Djsonconfig=$CALENDAR_PATH/calendar.external.json" \
-		  -jar "$HAM_DIR/$JAR_NAME" org.springframework.boot.loader.PropertiesLauncher
-
-cd $ROOT_PATH
-
-
-# start be
-
-export DEBUG_AGENT=
-is_set DO_DEBUG ; export DEBUG_AGENT=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5026
-# "$DEBUG_AGENT"
-
-cd $CALENDAR_PATH/be
-ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
-export JAR_NAME=$(head -1 tmp_txt)
-rm tmp_txt || true
-java "$DEBUG_AGENT" -jar $JAR_NAME  --spring.config.location=file://$(pwd)/bedb.application.properties &
-cd $START_LOCATION
-
-# start gateway
-cd $CALENDAR_PATH/gateway
-ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
-export JAR_NAME=$(head -1 tmp_txt)
-rm tmp_txt || true
-java -jar $JAR_NAME --spring.config.location=file://$(pwd)/application.properties &
-cd $START_LOCATION
-
-# start fe
-cd $CALENDAR_PATH/fe
-ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
-export JAR_NAME=$(head -1 tmp_txt)
-rm tmp_txt || true
-java -jar $JAR_NAME --spring.config.location=file://$(pwd)/application.properties &
 cd $START_LOCATION
 

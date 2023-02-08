@@ -9,9 +9,9 @@ START_LOCATION=$(pwd)
 . $SCRIPT_DIR/libs/utils.sh
 . $SCRIPT_DIR/libs/docker.sh
 
-echo This will build the docker images for the samples
-echo and publish them on local docker. Ctrl+C to exit
-echo Target version: $HAM_VERSION
+echo [INFO] This will build the docker images for the samples
+echo [INFO] and publish them on local docker. Ctrl+C to exit
+echo [INFO] Target version: $HAM_VERSION
 
 pause
 
@@ -25,7 +25,7 @@ PASSWORD=none
 # Extra initializations
 ROOT_DIR=$( cd -- "$( dirname -- "$SCRIPT_DIR" )" &> /dev/null && pwd )
 
-echo Build calendar sample images
+echo [INFO] Build calendar sample images
 cd $ROOT_DIR/samples/calendar/docker/multi
 docker build  --rm -t ham.sampleapp.multi -f multimaster.Dockerfile ../../
 docker_push "ham.sampleapp.multi" "$HAM_VERSION"
@@ -40,7 +40,7 @@ cd $ROOT_DIR/samples/calendar/docker/single
 docker build -t ham.sampleapp.single -f Dockerfile ../../
 docker_push "ham.sampleapp.single" "$HAM_VERSION"
 
-echo Build quotes sample images
+echo [INFO] Build quotes sample images
 cd $ROOT_DIR/samples/quotes/docker/multi
 docker build  --rm -t ham.quotes.master -f multimaster.Dockerfile ../../
 docker_push "ham.quotes.master" "$HAM_VERSION"

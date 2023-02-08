@@ -25,12 +25,9 @@ rm tmp_txt || true
 
 if [ -z ${JSON_CONFIG+x} ]; export JSON_CONFIG=$ROOT_DIR/ham/external.json;
 
-export DEBUG_AGENT=
-is_set DO_DEBUG ; export DEBUG_AGENT=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5025
-# "$DEBUG_AGENT"
+
 
 # Start the application
 java "-Dloader.path=$HAM_LIBS_DIR"  -Dloader.main=org.kendar.Main  \
-	  	"$DEBUG_AGENT" \
 	  	"-Djsonconfig=$JSON_CONFIG" \
 		  -jar "$HAM_DIR/$JAR_NAME" org.springframework.boot.loader.PropertiesLauncher

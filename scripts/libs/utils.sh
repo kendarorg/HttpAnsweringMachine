@@ -18,5 +18,3 @@ function set_parent_dir {
   INIT_START_DIR=$( cd -- "$( dirname -- "$INIT_START_DIR" )" &> /dev/null && pwd )
   echo $INIT_START_DIR
 }
-
-function is_set { [[ $var ]]; echo $?; }

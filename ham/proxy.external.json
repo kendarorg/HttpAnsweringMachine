@@ -6,15 +6,14 @@
     "staticPages": [
     ]
   },
-  "#include:external/dbproxy.json",
   "#include:external/proxy.json",
+  "#include:external/dbproxy.json",
   "#include:external/ssl.json",
   "#include:external/http.json",
   "#include:external/https.json",
   {
     "id": "global",
     "system": true,
-    "localAddress": "www.local.test",
     "db": {
       "url": "jdbc:h2:tcp://localhost/ham;MODE=MYSQL;",
       "login": "sa",
@@ -23,6 +22,7 @@
       "driver": "org.h2.Driver",
       "hibernateDialect":"org.hibernate.dialect.MySQLDialect"
     },
+    "localAddress": "www.local.test",
     "logging": {
 
       "logLevel": "INFO",

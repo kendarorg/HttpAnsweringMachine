@@ -9,9 +9,9 @@ START_LOCATION=$(pwd)
 . $SCRIPT_DIR/libs/utils.sh
 . $SCRIPT_DIR/libs/docker.sh
 
-echo This will build the docker images for the application
-echo and publish them on local docker. Ctrl+C to exit
-echo Target version: $HAM_VERSION
+echo [INFO] This will build the docker images for the application
+echo [INFO] and publish them on local docker. Ctrl+C to exit
+echo [INFO] Target version: $HAM_VERSION
 
 pause
 
@@ -35,7 +35,7 @@ DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 
 cd $HAM_DIR
 
-echo Building project
+echo [INFO] Building project
 mvn clean install -DskipTests
 
 cd $DOCKER_ROOT/base
@@ -81,9 +81,9 @@ cd $DOCKER_ROOT/mysql
 docker build --rm -t ham.mysql .
 docker_push "ham.mysql" "$HAM_VERSION"
 
-echo Cleanup
+echo [INFO] Cleanup
 cd $HAM_DIR
-mvn clean -DskipTests > /dev/null 2>1
+mvn clean -DskipTests > /dev/null 2>&1
 
 # Restore previous dir
 cd $START_LOCATION
