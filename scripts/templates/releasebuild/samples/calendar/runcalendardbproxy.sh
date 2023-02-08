@@ -36,7 +36,7 @@ cd $CALENDAR_PATH/
 rundb.sh &
 cd $START_LOCATION
 
-cd $ROOT_PATH/scripts
+cd $ROOT_PATH/calendar/scripts
 
 ./ham.sh
 ./gateway.sh
