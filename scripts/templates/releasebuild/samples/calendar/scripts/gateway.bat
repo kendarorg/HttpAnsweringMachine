@@ -14,7 +14,7 @@ set ROOT_PATH=%cd%
 cd %CALENDAR_PATH%\gateway
 dir /b be*.jar > .temp.txt
 set /p JAR_NAME=<.temp.txt
-start java -jar gateway-4.1.4.jar --spring.config.location=file:///%cd%\application.properties
+start java -jar gateway-4.1.5.jar --spring.config.location=file:///%cd%\application.properties
 REM Wait for startup
 timeout /t 10 /nobreak
 cd %ROOT_PATH%

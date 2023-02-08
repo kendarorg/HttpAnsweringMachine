@@ -5,10 +5,11 @@ export DOCKER_DEPLOY=true
 export DOCKER_HOST=tcp://192.168.1.40:23750
 ./scripts/build/build_release.sh
 ./scripts/build/build_release_samples.sh
-./scripts/build/build_docker.sh
-./scripts/build/build_docker_samples.sh
+./scripts/build/build_docker.sh  TWICE....
+./scripts/build/build_docker_samples.sh  TWICE....
 ./scripts/build/deploy_jar.sh
 Upload on github the releases on release dir
+
 
 ## TEST
 
@@ -18,3 +19,8 @@ export DOCKER_IP=192.168.1.40
 export DOCKER_HOST=tcp://$DOCKER_IP:23750
 ./globaltest.sh
 Upload on github the releases on release dir
+
+
+## CLeanup
+
+docker rmi $(docker images | grep "<none>" | awk "{print $3}")
