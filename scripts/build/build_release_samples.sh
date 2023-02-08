@@ -40,7 +40,7 @@ cp -f $SCRIPT_DIR/templates/standalone/calendar.external.json $HAM_RELEASE_TARGE
 cp -f $ROOT_DIR/ham/libs/janus-driver*.jar $HAM_RELEASE_TARGET/calendar/be/ 2>&1 > /dev/null
 
 echo [INFO] Setup db
-echo '#!\bin\bash' > $HAM_RELEASE_TARGET/calendar/rundb.sh
+echo '#!/bin/bash' > $HAM_RELEASE_TARGET/calendar/rundb.sh
 echo "call java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa" > $HAM_RELEASE_TARGET/calendar/rundb.bat
 echo "java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa" >> $HAM_RELEASE_TARGET/calendar/rundb.sh
 

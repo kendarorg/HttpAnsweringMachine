@@ -35,9 +35,6 @@ set DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 
 cd %HAM_DIR%
 
-#echo Building project %HAM_DIR%
-#call mvn install -DskipTests
-
 cd %DOCKER_ROOT%\base
 docker build --rm -t ham.base .
 call %DOCKER_LIB% docker_push "ham.base" "%HAM_VERSION%"

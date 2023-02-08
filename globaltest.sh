@@ -3,6 +3,7 @@ HAM_MAIN_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd 
 export LANG=en_US.UTF-8
 export LC_ALL=$LANG
 
+
 . $HAM_MAIN_DIR/scripts/libs/version.sh
 . $HAM_MAIN_DIR/scripts/libs/runner.sh
 
@@ -87,15 +88,30 @@ if true; then
   run_till_start 60 gateway.sh http://127.0.0.1:8090/api/v1/health
   terminate_app gateway.sh java HttpAnswering
   echo [INFO] END calendar/scripts/gateway.sh
+
+  echo [INFO] BEG calendar/scripts/ham.sh
+  cd $HAM_MAIN_DIR/release/calendar/scripts
+  export http_proxy=http://127.0.0.1:1081
+  run_till_start 60 ham.sh http://www.local.test/api/health
+  terminate_app ham.sh java HttpAnswering
+  unset http_proxy
+  echo [INFO] END calendar/scripts/ham.sh
+
+  echo [INFO] BEG calendar/scripts/bedb.sh
+  cd $HAM_MAIN_DIR/release/calendar
+  run_till_start 60 rundb.sh  http://localhost:8082
+  sleep 5
+  cd $HAM_MAIN_DIR/release/calendar/scripts
+  run_till_start 60 bedb.sh http://127.0.0.1:8100/api/v1/health
+  terminate_app bedb.sh java HttpAnswering
+  terminate_app bedb.sh java org.h2.tools.Server
+  echo [INFO] END calendar/scripts/bedb.sh
+  rm -rf $HAM_MAIN_DIR/release/calendar/data
 fi
 
-echo [INFO] BEG calendar/scripts/ham.sh
-cd $HAM_MAIN_DIR/release/calendar/scripts
-export http_proxy=http://127.0.0.1:1081
-run_till_start 60 ham.sh http://www.local.test/api/health
-terminate_app ham.sh java HttpAnswering
-unset http_proxy
-echo [INFO] END calendar/scripts/ham.sh
+
+
+
 
 
 

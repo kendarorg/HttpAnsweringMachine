@@ -42,12 +42,12 @@ cd %CALENDAR_DIR%\gateway\target\
 call %UTILS_LIB% get_jar_name JAR_NAME
 copy /y %SCRIPT_DIR%\templates\standalone\gateway.application.properties %HAM_RELEASE_TARGET%\calendar\gateway\application.properties 1>NUL
 copy /y %CALENDAR_DIR%\gateway\target\gateway-*.jar %HAM_RELEASE_TARGET%\calendar\gateway\ 1>NUL
-echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
+echo #!/bin/bash > %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
 echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\gateway\run.bat
 
 echo [INFO] Setup Db
-echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\rundb.sh
+echo #!/bin/bash > %HAM_RELEASE_TARGET%\calendar\rundb.sh
 echo call java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa > %HAM_RELEASE_TARGET%\calendar\rundb.bat
 echo java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa >> %HAM_RELEASE_TARGET%\calendar\rundb.sh
 
@@ -57,7 +57,7 @@ cd %CALENDAR_DIR%\fe\target\
 call %UTILS_LIB% get_jar_name JAR_NAME
 copy /y %SCRIPT_DIR%\templates\standalone\fe.application.properties %HAM_RELEASE_TARGET%\calendar\fe\application.properties 1>NUL
 copy /y %CALENDAR_DIR%\fe\target\fe-*.jar %HAM_RELEASE_TARGET%\calendar\fe\ 1>NUL
-echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\fe\run.sh
+echo #!/bin/bash > %HAM_RELEASE_TARGET%\calendar\fe\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\fe\run.sh
 echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\fe\run.bat
 
@@ -74,7 +74,7 @@ copy /y %CALENDAR_DIR%\be\target\be-*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>N
 
 copy /y %ROOT_DIR%\ham\libs\janus-driver*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
 
-echo #!\bin\bash > %HAM_RELEASE_TARGET%\calendar\be\run.sh
+echo #!/bin/bash > %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.bat
 
