@@ -30,6 +30,7 @@ EOF
 }
 
 function docker_remove_tag {
+  echo -n ""
   # IMAGE_NAME=$1
   # TAG=$2
   # curl "https://hub.docker.com/v2/repositories/${DOCKER_ORG}/${IMAGE_NAME}/tags/${TAG}/" \

@@ -35,8 +35,8 @@ set DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 
 cd %HAM_DIR%
 
-echo Building project %HAM_DIR%
-call mvn install -DskipTests
+#echo Building project %HAM_DIR%
+#call mvn install -DskipTests
 
 cd %DOCKER_ROOT%\base
 docker build --rm -t ham.base .
@@ -47,6 +47,7 @@ mkdir data\app || true
 del /S /Q data\app\*.*
 copy /y %HAM_DIR%\simpledns\target\simpledns*.jar data\
 docker build --rm -t ham.client .
+call %DOCKER_LIB% docker_push "ham.client" "%HAM_VERSION%"
 call %UTILS_LIB% rm_rf data\app
 del /S /Q data\simpledns*.jar
 

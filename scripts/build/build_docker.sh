@@ -35,8 +35,8 @@ DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 
 cd $HAM_DIR
 
-echo [INFO] Building project
-mvn clean install -DskipTests
+#echo [INFO] Building project
+#mvn clean install -DskipTests
 
 cd $DOCKER_ROOT/base
 docker build --rm -t ham.base .
@@ -47,6 +47,7 @@ mkdir -p data/app || true
 rm -f data/app/*.*
 cp -f "$HAM_DIR"/simpledns/target/simpledns*.jar data/
 docker build --rm -t ham.client .
+docker_push "ham.client" "$HAM_VERSION"
 rm -rf data/app
 rm -f data/simpledns*.jar
 
