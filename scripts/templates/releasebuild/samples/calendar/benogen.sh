@@ -24,7 +24,7 @@ echo Start it only when recording/replaying is started
 pause
 
 # start fe
-cd $CALENDAR_PATH/scripts
+cd $CALENDAR_PATH/calendar/scripts
 ./benogen.sh
 cd $START_LOCATION
 

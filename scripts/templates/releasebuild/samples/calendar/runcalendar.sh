@@ -21,7 +21,7 @@ function pause {
 
 pause
 
-cd $ROOT_PATH/scripts
+cd $ROOT_PATH/calendar/scripts
 
 ./ham.sh
 ./be.sh

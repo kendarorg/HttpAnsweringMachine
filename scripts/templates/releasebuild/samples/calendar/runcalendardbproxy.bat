@@ -36,7 +36,7 @@ set /p JAR_NAME=<.temp.txt
 
 
 
-cd %ROOT_PATH%\scripts
+cd %ROOT_PATH%\calendar\scripts
 ham.bat
 timeout /t 10 /nobreak
 gateway.bat

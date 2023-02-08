@@ -30,7 +30,7 @@ cd %ROOT_PATH%
 Rem start ham
 
 Rem start ham
-cd %ROOT_PATH%\scripts
+cd %ROOT_PATH%\calendar\scripts
 ham.bat
 timeout /t 10 /nobreak
 bedb.bat

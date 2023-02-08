@@ -12,7 +12,7 @@ echo localhost:1081 to appreciate the example
 pause
 
 Rem start ham
-cd %ROOT_PATH%\scripts
+cd %ROOT_PATH%\calenda\scripts
 ham.bat
 timeout /t 10 /nobreak
 be.bat

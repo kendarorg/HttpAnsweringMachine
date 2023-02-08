@@ -13,7 +13,7 @@ echo localhost:1081 to appreciate the example
 echo Start it only when recording/replaying is started
 pause
 
-cd %CALENDAR_PATH%\scripts
+cd %CALENDAR_PATH%\calendar\scripts
 be.bat
 timeout /t 10 /nobreak
 cd %ROOT_PATH%
