@@ -7,7 +7,14 @@ REM terminate sh_file java 4.0.1-SNAPSHOT
   sh_file=%~1
   first_grep=%~2
   second_grep=%~3
-  ps aux  |  grep -i "%first_grep%" | grep -i "%second_grep%"| awk '{print %~2goto :eof'|  xargs kill -9
+BY COMMAND FOR /F "delims=," %i IN (results.txt) DO @echo %i
+stica.txt: VM-WIN10-JAVA,"C:\Program Files\Google\Chrome\Application\chrome.exe" ,VM-WIN10-JAVA,chrome.exe,C:\Program Files\Google\Chrome\Application\chrome.exe,,2008,1436,,28750000,1380,200,chrome.exe,Microsoft Windows 10 Pro|C:\Windows|\Device\Harddisk0\Partition2,33458,1052748,82153,66288,4920,80760,2255837044736,150172,8,67878912,2008,54,960,63,1020,19232,56762063,1,,,35,23125000,2255672991744,10.0.19042,149360640,15334,15967270
+set /p STICA=<stica.txt
+set STICA=%STICA:|=%
+FOR /F "tokens=25 delims=\," %i IN ("%STICA%") DO @echo %i
+  FOR /F "delims=;" %%i IN (csv_exports\account.csv) DO @echo %%i
+
+  wmic process list /format:csv | grep -i "%first_grep%" | grep -i "%second_grep%"| awk '{print %~2goto :eof'|  xargs kill -9
 goto :eof
 
 :terminate_ham
