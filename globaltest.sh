@@ -16,7 +16,7 @@ terminate_ham proxy.run.sh java HttpAnswering
 cd $HAM_MAIN_DIR
 cd scripts/build
 
-if false; then
+if true; then
   rm -rf $HAM_MAIN_DIR/release/
 
 
@@ -121,6 +121,15 @@ echo [INFO] END calendar/scripts/ham.sh
   unset http_proxy
   docker-compose -f docker-compose-local.yml down
 
+  cd $HAM_MAIN_DIR/samples/quotes/hub_composer
+  nohup docker-compose -f docker-compose-local.yml up 2>&1 > /dev/null &
+
+  export http_proxy=http://$DOCKER_IP:1081
+  wait_till_start 60 http://www.local.test/api/health
+  wait_till_start 60 http://www.quotes.test/api/health/index.php
+  unset http_proxy
+  docker-compose -f docker-compose-local.yml down
+
 
   echo [INFO] BEG calendar/runcalendar.sh
   cd $HAM_MAIN_DIR/release/calendar
@@ -133,26 +142,6 @@ echo [INFO] END calendar/scripts/ham.sh
   unset http_proxy
   echo [INFO] END calendar/runcalendar.sh
 fi
-
-
-  cd $HAM_MAIN_DIR/samples/quotes/hub_composer
-  nohup docker-compose -f docker-compose-local.yml up 2>&1 > /dev/null &
-
-  export http_proxy=http://$DOCKER_IP:1081
-  wait_till_start 60 http://www.local.test/api/health
-  wait_till_start 60 http://www.quotes.test/api/health/index.php
-  unset http_proxy
-  docker-compose -f docker-compose-local.yml down
-
-
-
-
-
-
-
-
-
-
 
 
 
