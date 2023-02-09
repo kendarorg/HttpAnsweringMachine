@@ -1,4 +1,5 @@
 @echo off
+set HAM_VERSION=4.1.5
 set START_LOCATION=%cd%
 set SCRIPT_DIR=%~dp0
 cd %SCRIPT_DIR%
@@ -6,6 +7,6 @@ cd ..
 set CALENDAR_PATH=%cd%
 
 cd %CALENDAR_PATH%\gateway
-start java -jar gateway-4.1.5.jar --spring.config.location=file:///%cd%\application.properties
+start java -jar gateway-%HAM_VERSION%.jar --spring.config.location=file:///%cd%\application.properties
 timeout /t 10 /nobreak
 cd %START_LOCATION%

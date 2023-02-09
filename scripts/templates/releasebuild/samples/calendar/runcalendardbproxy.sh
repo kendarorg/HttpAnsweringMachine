@@ -10,8 +10,6 @@ function pause {
 }
 
 
-echo You should configure the http and https proxy to
-echo localhost:1081 to appreciate the example
 
 read -p "Do you want to cleanup the database? " -n 1 -r
 echo    # (optional) move to a new line
@@ -21,11 +19,15 @@ then
   rm $CALENDAR_PATH/data/*.db || true
 fi
 
+echo You should configure the http and https proxy to
+echo localhost:1081 to appreciate the example
+
+
 pause
 
 # start db
 cd $CALENDAR_PATH/
-rundb.sh &
+./rundb.sh &
 
 cd $CALENDAR_PATH/scripts
 

@@ -35,9 +35,6 @@ set DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 
 cd %HAM_DIR%
 
-echo Building project %HAM_DIR%
-call mvn install -DskipTests
-
 cd %DOCKER_ROOT%\base
 docker build --rm -t ham.base .
 call %DOCKER_LIB% docker_push "ham.base" "%HAM_VERSION%"
@@ -47,6 +44,7 @@ mkdir data\app || true
 del /S /Q data\app\*.*
 copy /y %HAM_DIR%\simpledns\target\simpledns*.jar data\
 docker build --rm -t ham.client .
+call %DOCKER_LIB% docker_push "ham.client" "%HAM_VERSION%"
 call %UTILS_LIB% rm_rf data\app
 del /S /Q data\simpledns*.jar
 
@@ -80,10 +78,6 @@ call %DOCKER_LIB% docker_push "ham.apache.php8" "%HAM_VERSION%"
 cd %DOCKER_ROOT%\mysql
 docker build --rm -t ham.mysql .
 call %DOCKER_LIB% docker_push "ham.mysql" "%HAM_VERSION%"
-
-echo Cleanup
-cd %HAM_DIR%
-call mvn clean -DskipTests > \dev\null 2>1
 
 REM Restore previous dir
 cd %START_LOCATION%

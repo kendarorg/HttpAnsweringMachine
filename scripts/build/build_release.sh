@@ -39,10 +39,6 @@ echo [INFO] Compress release file
 cd $ROOT_DIR/release/$HAM_VERSION
 tar -zcvf "$ROOT_DIR"/release/ham-"$HAM_VERSION".tar.gz . >> "$ROOT_DIR"/release/ham-"$HAM_VERSION".log 2>&1
 
-# Cleanup
-echo [INFO] Cleanup
-rm -rf $HAM_RELEASE_TARGET || true
-
 # Restore previous dir
 cd $START_LOCATION
 

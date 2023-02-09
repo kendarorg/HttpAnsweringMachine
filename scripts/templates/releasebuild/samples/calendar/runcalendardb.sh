@@ -9,9 +9,6 @@ function pause {
  echo ""
 }
 
-echo You should configure the http and https proxy to
-echo localhost:1081 to appreciate the example
-
 read -p "Do you want to cleanup the database? " -n 1 -r
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
@@ -19,6 +16,10 @@ then
   mkdir -p $CALENDAR_PATH/data
   rm $CALENDAR_PATH/data/*.db || true
 fi
+
+echo You should configure the http and https proxy to
+echo localhost:1081 to appreciate the example
+
 
 pause
 # start db
