@@ -20,6 +20,12 @@ goto :eof
     set "%~2=%UTILS_RETURN_DIR%"
 goto :eof
 
+:get_time
+    set STARTTIME=%TIME%
+    set /A STARTTIME=(1%STARTTIME:~0,2%-100)*3600 + (1%STARTTIME:~3,2%-100)*60 + (1%STARTTIME:~6,2%-100)
+    set "%~1=%STARTTIME%"
+goto :eof
+
 :rm_rf
     set UTILS_TODEL_DIR=%~1
     IF exist %UTILS_TODEL_DIR% (
