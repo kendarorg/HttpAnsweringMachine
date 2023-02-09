@@ -106,22 +106,32 @@ echo [INFO] END calendar/scripts/ham.sh
   terminate_app bedb.sh java org.h2.tools.Server
   echo [INFO] END calendar/scripts/bedb.sh
   rm -rf $HAM_MAIN_DIR/release/calendar/data
+
+  cd $HAM_MAIN_DIR/scripts/build
+  ./build_docker.sh
+  ./build_docker_samples.sh
+  cd $HAM_MAIN_DIR/samples/calendar/hub_composer
+  nohup docker-compose -f docker-compose-local.yml up 2>&1 > /dev/null &
+
+  export http_proxy=http://$DOCKER_IP:1081
+  wait_till_start 60 http://www.local.test/api/health
+  wait_till_start 60 http://www.sample.test/api/v1/health
+  wait_till_start 60 http://gateway.sample.test/api/v1/health
+  wait_till_start 60 http://be.sample.test/api/v1/health
+  unset http_proxy
+  docker-compose -f docker-compose-local.yml down
 fi
 
-cd $HAM_MAIN_DIR/scripts/build
-./build_docker.sh
-./build_docker_samples.sh
-cd $HAM_MAIN_DIR/samples/calendar/hub_composer
-nohup docker-compose -f docker-compose-local.yml up 2>&1 > /dev/null &
-
-export http_proxy=http://$DOCKER_IP:1081
-wait_till_start 60 http://www.local.test/api/health
+echo [INFO] BEG calendar/runcalendar.sh
+cd $HAM_MAIN_DIR/release/calendar
+export http_proxy=http://127.0.0.1:1081
+run_till_start 60 runcalendar.sh http://www.local.test/api/health
 wait_till_start 60 http://www.sample.test/api/v1/health
-wait_till_start 60 http://gateway.sample.test/api/v1/health
-wait_till_start 60 http://be.sample.test/api/v1/health
+wait_till_start 60 http://localhost/int/gateway.sample.test/api/v1/health
+wait_till_start 60 http://localhost/int/be.sample.test/api/v1/health
+terminate_app runcalendar.sh java HttpAnswering
 unset http_proxy
-
-docker-compose -f docker-compose-local.yml down 2>&1 > /dev/null &
+echo [INFO] END calendar/runcalendar.sh
 
 
 
