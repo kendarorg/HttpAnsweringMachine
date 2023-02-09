@@ -1,13 +1,8 @@
 #!/bin/bash
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $SCRIPT_DIR
-
-CALENDAR_PATH=$(pwd)
-cd $CALENDAR_PATH
-# Go to main path
-cd ..
 ROOT_PATH=$(pwd)
+CALENDAR_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd $CALENDAR_PATH
 
 function pause {
  read -s -n 1 -p "Press any key to continue . . ."
@@ -26,13 +21,16 @@ then
 fi
 
 pause
+# start db
+cd $CALENDAR_PATH/
+./rundb.sh &
 
-cd $ROOT_PATH/scripts
+cd $CALENDAR_PATH/scripts
 
 ./ham.sh
 ./bedb.sh
 ./gateway.sh
 ./fe.sh
 
-cd $START_LOCATION
+cd $ROOT_PATH
 

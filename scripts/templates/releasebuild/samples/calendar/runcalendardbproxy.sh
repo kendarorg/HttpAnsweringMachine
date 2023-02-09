@@ -1,14 +1,8 @@
 #!/bin/bash
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $SCRIPT_DIR
-
-HAM_JAR=janus-driver-1.1.10-SNAPSHOT.jar
-CALENDAR_PATH=$(pwd)
-cd $CALENDAR_PATH
-# Go to main path
-cd ..
 ROOT_PATH=$(pwd)
+CALENDAR_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd $CALENDAR_PATH
 
 function pause {
  read -s -n 1 -p "Press any key to continue . . ."
@@ -29,14 +23,11 @@ fi
 
 pause
 
-cd $ROOT_PATH/ham
-
 # start db
 cd $CALENDAR_PATH/
 rundb.sh &
-cd $START_LOCATION
 
-cd $ROOT_PATH/scripts
+cd $CALENDAR_PATH/scripts
 
 ./ham.sh
 ./gateway.sh
@@ -48,5 +39,5 @@ pause
 
 ./bedbham.sh
 
-cd $START_LOCATION
+cd $ROOT_PATH
 
