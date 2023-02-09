@@ -23,6 +23,12 @@ public class ProcessRunner {
         this.command = command;
         return this;
     }
+
+    public ProcessRunner withNoOutput(){
+        errorConsumer=(a)->{};
+        outConsumer=(a)->{};
+        return this;
+    }
     public ProcessRunner withParameter(String parameter){
         if(!SystemUtils.IS_OS_WINDOWS) {
             this.parameters.add(parameter);
