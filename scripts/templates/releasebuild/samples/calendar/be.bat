@@ -10,6 +10,5 @@ echo Start it only when recording/replaying is started
 pause
 
 cd %CALENDAR_PATH%\scripts
-be.bat
-timeout /t 10 /nobreak
+start be.bat
 cd %ROOT_PATH%

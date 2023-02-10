@@ -38,7 +38,7 @@ goto :eof
 
 :mkdir_p
     setlocal enableextensions
-    md %~1
+    if not exist %~1 md %~1
     endlocal
 goto :eof
 

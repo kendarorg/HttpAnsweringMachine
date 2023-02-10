@@ -10,7 +10,6 @@ echo Start it only when recording/replaying is started
 pause
 
 
-cd %CALENDAR_PATH%\scripts
-benogen.bat
-timeout /t 10 /nobreak
+cd %CALENDAR_PATH%scripts
+start benogen.bat
 cd %ROOT_PATH%

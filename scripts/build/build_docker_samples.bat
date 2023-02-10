@@ -9,9 +9,9 @@ call %SCRIPT_DIR%\libs\version.bat
 set UTILS_LIB=%SCRIPT_DIR%\libs\utils.bat
 set DOCKER_LIB=%SCRIPT_DIR%\libs\docker.bat
 
-echo This will build the docker images for the samples
-echo and publish them on local docker. Ctrl+C to exit
-echo Target version: %HAM_VERSION%
+echo [INFO] This will build the docker images for the samples
+echo [INFO] and publish them on local docker. Ctrl+C to exit
+echo [INFO] Target version: %HAM_VERSION%
 
 pause
 
@@ -25,7 +25,7 @@ set PASSWORD=none
 REM Extra initializations
 call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR
 
-echo Build calendar sample images
+echo [INFO] Build calendar sample images
 cd %ROOT_DIR%\samples\calendar\docker\multi
 docker build --rm -t ham.sampleapp.multi -f multimaster.Dockerfile ..\..\
 call %DOCKER_LIB% docker_push "ham.sampleapp.multi" "%HAM_VERSION%"

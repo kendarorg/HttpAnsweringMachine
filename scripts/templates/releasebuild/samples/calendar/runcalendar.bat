@@ -9,13 +9,13 @@ echo localhost:1081 to appreciate the example
 
 Rem start ham
 cd %CALENDAR_PATH%\scripts
-ham.bat
-timeout /t 10 /nobreak
-be.bat
-timeout /t 10 /nobreak
-gateway.bat
-timeout /t 10 /nobreak
-fe.bat
-timeout /t 10 /nobreak
+call ham.bat
+ping 127.0.0.1 -n 10 > nul
+call be.bat
+ping 127.0.0.1 -n 10 > nul
+call gateway.bat
+ping 127.0.0.1 -n 10 > nul
+call fe.bat
+ping 127.0.0.1 -n 10 > nul
 cd %ROOT_PATH%
 

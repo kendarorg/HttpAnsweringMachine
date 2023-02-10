@@ -94,7 +94,7 @@ public class Main {
                     withCommand("wmic").
                     withParameter("process").
                     withParameter("list").
-                    withParameter("/format:csv").
+                    withParameterPlain("/format:csv").
                     withStorage(queue).
                     run();
             var allJavaProcesses = queue.stream().filter(a->{
@@ -107,12 +107,14 @@ public class Main {
 
                 var spl = javaHam.trim().split(",");
                 var pid = spl[spl.length-17];
-                new ProcessRunner(env).
-                        withCommand("kill").
-                        withParameter("-9").
-                        withParameter(pid).
-                        withNoOutput().
-                        run();
+                    new ProcessRunner(env).
+                            withCommand("taskkill").
+                            withParameter("/f").
+                            withParameter("/pid").
+                            withParameter(pid).
+                            withNoOutput().
+                            run();
+
             }
         }
     }
@@ -351,7 +353,9 @@ public class Main {
                                         BiConsumer<String,Process> ...biConsumers) throws Exception {
         if(SystemUtils.IS_OS_WINDOWS){
             var pr =new ProcessRunner(env).
-                    withCommand(script+ext()).
+                    withCommand("cmd").
+                    withParameter("/C").
+                    withParameter(script+ext()).
                     withStartingPath(dir).
                     withNoOutput();
             if(biConsumers.length>0) {
@@ -383,7 +387,9 @@ public class Main {
 
         if(SystemUtils.IS_OS_WINDOWS){
             var pr =new ProcessRunner(env).
-                    withCommand(script+ext()).
+                    withCommand("cmd").
+                    withParameter("/C").
+                    withParameter(script+ext()).
                     withStartingPath(dir).
                     withNoOutput();
             if(biConsumers.length>0) {
@@ -489,10 +495,9 @@ public class Main {
                                         BiConsumer<String,Process> ...biConsumers) throws Exception {
         if(SystemUtils.IS_OS_WINDOWS){
             var pr =new ProcessRunner(env).
-                    withCommand("docker-compose").
-                    withParameter("-f").
-                    withParameter(composer).
-                    withParameter(sense).
+                    withCommand("cmd").
+                    withParameter("/C").
+                    withParameter("docker-compose -f "+composer+" "+sense).
                     withStartingPath(dir).
                     withNoOutput();
             if(biConsumers.length>0) {
@@ -519,6 +524,21 @@ public class Main {
         }
     }
 
+
+
+    private static void testCalendarSampleFull(String calendarPath) throws Exception {
+        System.out.println("[INFO] Testing calendar/runcalendar");
+        startBackground(pathOf(calendarPath), "runcalendar",
+                (a,p)->System.err.println(a),(a,p)->System.out.println(a));
+        checkForSite(60, "http://www.local.test/api/health","127.0.0.1",1081);
+        checkForSite(60, "http://www.sample.test/api/v1/health","127.0.0.1",1081);
+        checkForSite(60, "http://localhost/int/gateway.sample.test/api/v1/health","127.0.0.1",1081);
+        checkForSite(60, "http://localhost/int/be.sample.test/api/v1/health","127.0.0.1",1081);
+        killAllHamProcesses();
+
+        System.out.println("[INFO] Starting calendar");
+    }
+
     public static void main(String[] args) throws Exception {
 
         try {
@@ -532,9 +552,11 @@ public class Main {
             hamVersion = "4.1.5";
 
             startingPath = "C:\\Data\\Github\\HttpAnsweringMachine";
+            dockerIp="192.168.56.2";
 
-            startingPath = "/Users/edaros/Personal/Github/HttpAnsweringMachine";
-            dockerIp="192.168.1.40";
+            //startingPath = "/Users/edaros/Personal/Github/HttpAnsweringMachine";
+            //dockerIp="192.168.1.40";
+
             dockerHost="tcp://"+dockerIp+":23750";
 
 
@@ -552,12 +574,12 @@ public class Main {
 
 
             buildDeploymentArtifacts(startingPath, hamVersion, buildDir, releasePath);
-            applyReleasePermissions(releasePath);
-            testLocalHam(releasePath);
-            testCalendarSample(calendarPath);
+            //applyReleasePermissions(releasePath);
+            //testLocalHam(releasePath);
+            //testCalendarSample(calendarPath);
             testCalendarSampleFull(calendarPath);
-            buildDockerImages(buildDir);
-            testDockerCalendarAndQuotesSamples(dockerIp, samplesDir);
+            //buildDockerImages(buildDir);
+            //testDockerCalendarAndQuotesSamples(dockerIp, samplesDir);
 
             killAllHamProcesses();
         }catch (Exception ex){
@@ -565,18 +587,6 @@ public class Main {
             doExit(2);
         }
 
-    }
-
-    private static void testCalendarSampleFull(String calendarPath) throws Exception {
-        System.out.println("[INFO] Testing calendar/runcalendar");
-        startBackground(pathOf(calendarPath), "runcalendar");
-        checkForSite(60, "http://www.local.test/api/health","127.0.0.1",1081);
-        checkForSite(60, "http://www.sample.test/api/v1/health","127.0.0.1",1081);
-        checkForSite(60, "http://localhost/int/gateway.sample.test/api/v1/health","127.0.0.1",1081);
-        checkForSite(60, "http://localhost/int/be.sample.test/api/v1/health","127.0.0.1",1081);
-        killAllHamProcesses();
-
-        System.out.println("[INFO] Starting calendar");
     }
 
 

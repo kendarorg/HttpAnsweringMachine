@@ -21,17 +21,17 @@ Rem start db
 cd %CALENDAR_PATH%
 start rundb.bat
 REM Wait for startup
-timeout /t 10 /nobreak
+ping 127.0.0.1 -n 10 > nul
 
 Rem start ham
-cd %CALENDAR_PATH%\scripts
-ham.bat
-timeout /t 10 /nobreak
-bedb.bat
-timeout /t 10 /nobreak
-gateway.bat
-timeout /t 10 /nobreak
-fe.bat
-timeout /t 10 /nobreak
+cd %CALENDAR_PATH%scripts
+call ham.bat
+ping 127.0.0.1 -n 10 > nul
+call bedb.bat
+ping 127.0.0.1 -n 10 > nul
+call gateway.bat
+ping 127.0.0.1 -n 10 > nul
+call fe.bat
+ping 127.0.0.1 -n 10 > nul
 cd %ROOT_PATH%
 

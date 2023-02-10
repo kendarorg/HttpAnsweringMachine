@@ -49,20 +49,20 @@ goto :eof
 
   if NOT "%VERSION_NUMBER%"=="%VERSION_NUMBER:SNAPSHOT=%" (
     REM if [[ "%VERSION_NUMBER%" == *"snapshot"* ]] ;then
-    echo Pushing snapshot base image tag %IMAGE_NAME%
+    echo [INFO] Pushing snapshot base image tag %IMAGE_NAME%
     call docker push %DOCKER_ORG%/%IMAGE_NAME%
 
-    echo Tagging image %IMAGE_NAME%
+    echo [INFO] Tagging image %IMAGE_NAME%
     call docker tag %DOCKER_ORG%/%IMAGE_NAME% %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
     call docker push %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
 
     call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:snapshot
     call docker push %DOCKER_ORG%/%IMAGE_NAME%:snapshot
   ) else (
-    echo Pushing base image tag %IMAGE_NAME%
+    echo [INFO] Pushing base image tag %IMAGE_NAME%
     call docker push %DOCKER_ORG%/%IMAGE_NAME%
 
-    echo Tagging image %IMAGE_NAME%
+    echo [INFO] Tagging image %IMAGE_NAME%
     call docker tag %DOCKER_ORG%/%IMAGE_NAME% %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
     call docker push %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
 

@@ -8,5 +8,4 @@ set CALENDAR_PATH=%cd%
 
 cd %CALENDAR_PATH%\fe
 start java -jar fe-%HAM_VERSION%.jar --spring.config.location=file:///%cd%\application.properties
-timeout /t 10 /nobreak
 cd %START_LOCATION%

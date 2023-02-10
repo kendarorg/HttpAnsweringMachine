@@ -50,6 +50,11 @@ public class ProcessRunner {
         }
         return this;
     }
+
+    public ProcessRunner withParameterPlain(String parameter){
+        this.parameters.add(parameter);
+        return this;
+    }
     public ProcessRunner withStartingPath(String startingPath){
         this.startingPath = startingPath;
         return this;
