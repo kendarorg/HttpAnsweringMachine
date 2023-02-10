@@ -528,8 +528,7 @@ public class Main {
 
     private static void testCalendarSampleFull(String calendarPath) throws Exception {
         System.out.println("[INFO] Testing calendar/runcalendar");
-        startBackground(pathOf(calendarPath), "runcalendar",
-                (a,p)->System.err.println(a),(a,p)->System.out.println(a));
+        startBackground(pathOf(calendarPath), "runcalendar");
         checkForSite(60, "http://www.local.test/api/health","127.0.0.1",1081);
         checkForSite(60, "http://www.sample.test/api/v1/health","127.0.0.1",1081);
         checkForSite(60, "http://localhost/int/gateway.sample.test/api/v1/health","127.0.0.1",1081);
@@ -574,12 +573,12 @@ public class Main {
 
 
             buildDeploymentArtifacts(startingPath, hamVersion, buildDir, releasePath);
-            //applyReleasePermissions(releasePath);
-            //testLocalHam(releasePath);
-            //testCalendarSample(calendarPath);
+            applyReleasePermissions(releasePath);
+            testLocalHam(releasePath);
+            testCalendarSample(calendarPath);
             testCalendarSampleFull(calendarPath);
-            //buildDockerImages(buildDir);
-            //testDockerCalendarAndQuotesSamples(dockerIp, samplesDir);
+            buildDockerImages(buildDir);
+            testDockerCalendarAndQuotesSamples(dockerIp, samplesDir);
 
             killAllHamProcesses();
         }catch (Exception ex){
