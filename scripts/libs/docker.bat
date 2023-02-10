@@ -11,6 +11,7 @@ set DOCKER_TOKEN=none
 set DOCKER_ORG=none
 
 :docker_login
+if "%DOCKER_DEPLOY%" == "true" (
   set DOCKER_USERNAME=%~1
   set DOCKER_PASSWORD=%~2
   set DOCKER_ORG=%~3
@@ -25,6 +26,7 @@ set DOCKER_ORG=none
   del /S /Q .tmp.txt 2>&1 1>NUL
   del /S /Q .tmp2.txt 2>&1 1>NUL
   set DOCKER_PASSWORD=none
+  )
 goto :eof
 
 :docker_logout
@@ -42,6 +44,7 @@ goto :eof
 
 
 :docker_push
+    if "%DOCKER_DEPLOY%" == "true" (
   set IMAGE_NAME=%~1
   set VERSION_NUMBER=%~2
 
@@ -71,6 +74,7 @@ goto :eof
 
     call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:snapshot
     call docker push %DOCKER_ORG%/%IMAGE_NAME%:snapshot
+  )
   )
 goto :eof
 

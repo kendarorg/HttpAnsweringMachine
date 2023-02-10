@@ -497,9 +497,12 @@ public class Main {
             var pr =new ProcessRunner(env).
                     withCommand("cmd").
                     withParameter("/C").
-                    withParameter("docker-compose -f "+composer+" "+sense).
-                    withStartingPath(dir).
-                    withNoOutput();
+                    withParameter("docker-compose").
+                    withParameter("-f").
+                    withParameter(composer).
+                    withParameter(sense).
+                    withStartingPath(dir)
+                    .withNoOutput();
             if(biConsumers.length>0) {
                 pr.withErr(biConsumers[0]);
             }
@@ -511,7 +514,10 @@ public class Main {
             var pr = new ProcessRunner(env).
                     withCommand("bash").
                     withParameter("-c").
-                    withParameter("docker-compose -f "+composer+" "+sense).
+                    withParameter("docker-compose").
+                    withParameter("-f").
+                    withParameter(composer).
+                    withParameter(sense).
                     withStartingPath(dir).
                     withNoOutput();
             if(biConsumers.length>0) {
@@ -548,15 +554,15 @@ public class Main {
             var dockerIp = System.getenv("DOCKER_IP");
             var dockerHost = System.getenv("DOCKER_HOST");
 
-            hamVersion = "4.1.5";
+            //hamVersion = "4.1.5";
 
-            startingPath = "C:\\Data\\Github\\HttpAnsweringMachine";
-            dockerIp="192.168.56.2";
+            //startingPath = "C:\\Data\\Github\\HttpAnsweringMachine";
+            //dockerIp="192.168.56.2";
 
             //startingPath = "/Users/edaros/Personal/Github/HttpAnsweringMachine";
             //dockerIp="192.168.1.40";
 
-            dockerHost="tcp://"+dockerIp+":23750";
+            //dockerHost="tcp://"+dockerIp+":23750";
 
 
             env = new HashMap<String,String>();

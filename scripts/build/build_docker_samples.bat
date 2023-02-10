@@ -13,13 +13,16 @@ echo [INFO] This will build the docker images for the samples
 echo [INFO] and publish them on local docker. Ctrl+C to exit
 echo [INFO] Target version: %HAM_VERSION%
 
-pause
 
 set LOGIN=kendarorg
 set ORG=kendarorg
-echo Enter %LOGIN% password for %ORG%
-call %UTILS_LIB% read_password PASSWORD
-call %DOCKER_LIB% docker_login "%LOGIN%" "%PASSWORD%" "%ORG%"
+set PASSWORD=none
+if "%DOCKER_DEPLOY%" == "true" (
+pause
+    echo Enter %LOGIN% password for %ORG%
+    call %UTILS_LIB% read_password PASSWORD
+    call %DOCKER_LIB% docker_login "%LOGIN%" "%PASSWORD%" "%ORG%"
+)
 set PASSWORD=none
 
 REM Extra initializations
