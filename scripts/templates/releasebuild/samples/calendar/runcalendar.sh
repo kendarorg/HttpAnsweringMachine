@@ -13,8 +13,6 @@ echo You should configure the http and https proxy to
 echo localhost:1081 to appreciate the example
 
 
-pause
-
 cd $CALENDAR_PATH/scripts
 
 ./ham.sh
