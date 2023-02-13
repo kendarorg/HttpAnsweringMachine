@@ -19,10 +19,10 @@ PASSWORD=none
 
 if [ "$DOCKER_DEPLOY" == "true" ]; then
   pause
-  echo Enter $LOGIN password for $ORG
-  PASSWORD=$(read_password)
-  docker_login "$LOGIN" "$PASSWORD" "$ORG"
-  PASSWORD=none
+echo Enter $LOGIN password for $ORG
+PASSWORD=$(read_password)
+docker_login "$LOGIN" "$PASSWORD" "$ORG"
+PASSWORD=none
 fi
 
 # Extra initializations
@@ -81,10 +81,6 @@ docker_push "ham.apache.php8" "$HAM_VERSION"
 cd $DOCKER_ROOT/mysql
 docker build --rm -t ham.mysql .
 docker_push "ham.mysql" "$HAM_VERSION"
-
-echo [INFO] Cleanup
-cd $HAM_DIR
-mvn clean -DskipTests > /dev/null 2>&1
 
 # Restore previous dir
 cd $START_LOCATION

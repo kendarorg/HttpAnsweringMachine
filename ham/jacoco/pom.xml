@@ -197,6 +197,12 @@
                                         <fileset dir="${basedir}/../plugin.replayer.server/target">
                                             <include name="jacoco*.exec" />
                                         </fileset>
+                                        <fileset dir="${basedir}/../plugin.replayer.http/target">
+                                            <include name="jacoco*.exec" />
+                                        </fileset>
+                                        <fileset dir="${basedir}/../plugin.replayer.jdbc/target">
+                                            <include name="jacoco*.exec" />
+                                        </fileset>
                                         <fileset dir="${basedir}/../plugin.socks5.server/target">
                                             <include name="jacoco*.exec" />
                                         </fileset>

@@ -51,7 +51,8 @@ public class HamConverterTest {
         assertTrue(newRs.next());
         assertEquals("first",newRs.getString(2));
         assertEquals(1L,newRs.getLong("id"));
-        assertEquals("2010-01-01 01:01:01.000000001",newRs.getTimestamp("tst").toString());
+        var tst = newRs.getTimestamp("tst");
+        assertEquals("2010-01-01 01:01:01.000000001",tst.toString());
 
         assertTrue(newRs.next());
         assertEquals("second",newRs.getString(2));

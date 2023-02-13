@@ -11,22 +11,22 @@ set DOCKER_TOKEN=none
 set DOCKER_ORG=none
 
 :docker_login
-    if "%DOCKER_DEPLOY%"=="true" (
-      set DOCKER_USERNAME=%~1
-      set DOCKER_PASSWORD=%~2
-      set DOCKER_ORG=%~3
-      docker login -u "%DOCKER_USERNAME%" -p "%DOCKER_PASSWORD%"
-      set DOCKER_TOKEN=none
+if "%DOCKER_DEPLOY%" == "true" (
+  set DOCKER_USERNAME=%~1
+  set DOCKER_PASSWORD=%~2
+  set DOCKER_ORG=%~3
+  docker login -u "%DOCKER_USERNAME%" -p "%DOCKER_PASSWORD%"
+  set DOCKER_TOKEN=none
 
-      call %LIB_SCRIPT_DIR%curl -s -H "Content-Type: application/json" ^
-        -X POST -d "{\"username\":\"%DOCKER_USERNAME%\",\"password\":\"%DOCKER_PASSWORD%\"}" "https://hub.docker.com/v2/users/login/" ^
-        -o .tmp.txt
-      call %LIB_SCRIPT_DIR%jq-win64 -r .token .tmp.txt > .tmp2.txt
-      set /p DOCKER_TOKEN=<.tmp2.txt
-      del /S /Q .tmp.txt 2>&1 1>NUL
-      del /S /Q .tmp2.txt 2>&1 1>NUL
-      set DOCKER_PASSWORD=none
-    )
+  call %LIB_SCRIPT_DIR%curl -s -H "Content-Type: application/json" ^
+    -X POST -d "{\"username\":\"%DOCKER_USERNAME%\",\"password\":\"%DOCKER_PASSWORD%\"}" "https://hub.docker.com/v2/users/login/" ^
+    -o .tmp.txt
+  call %LIB_SCRIPT_DIR%jq-win64 -r .token .tmp.txt > .tmp2.txt
+  set /p DOCKER_TOKEN=<.tmp2.txt
+  del /S /Q .tmp.txt 2>&1 1>NUL
+  del /S /Q .tmp2.txt 2>&1 1>NUL
+  set DOCKER_PASSWORD=none
+  )
 goto :eof
 
 :docker_logout
@@ -44,37 +44,38 @@ goto :eof
 
 
 :docker_push
-    if "%DOCKER_DEPLOY%"=="true" (
-          set IMAGE_NAME=%~1
-          set VERSION_NUMBER=%~2
+    if "%DOCKER_DEPLOY%" == "true" (
+  set IMAGE_NAME=%~1
+  set VERSION_NUMBER=%~2
 
-          docker tag %IMAGE_NAME% %LOGIN%/%IMAGE_NAME%
+  docker tag %IMAGE_NAME% %LOGIN%/%IMAGE_NAME%
 
-          if NOT "%VERSION_NUMBER%"=="%VERSION_NUMBER:SNAPSHOT=%" (
-            echo Pushing snapshot base image tag %IMAGE_NAME%
-            call docker push %DOCKER_ORG%/%IMAGE_NAME%
+  if NOT "%VERSION_NUMBER%"=="%VERSION_NUMBER:SNAPSHOT=%" (
+    REM if [[ "%VERSION_NUMBER%" == *"snapshot"* ]] ;then
+    echo [INFO] Pushing snapshot base image tag %IMAGE_NAME%
+    call docker push %DOCKER_ORG%/%IMAGE_NAME%
 
-            echo Tagging image %IMAGE_NAME%
-            call docker tag %DOCKER_ORG%/%IMAGE_NAME% %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
-            call docker push %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
+    echo [INFO] Tagging image %IMAGE_NAME%
+    call docker tag %DOCKER_ORG%/%IMAGE_NAME% %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
+    call docker push %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
 
-            call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:snapshot
-            call docker push %DOCKER_ORG%/%IMAGE_NAME%:snapshot
-          ) else (
-             echo Pushing base image tag %IMAGE_NAME%
-            call docker push %DOCKER_ORG%/%IMAGE_NAME%
+    call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:snapshot
+    call docker push %DOCKER_ORG%/%IMAGE_NAME%:snapshot
+  ) else (
+    echo [INFO] Pushing base image tag %IMAGE_NAME%
+    call docker push %DOCKER_ORG%/%IMAGE_NAME%
 
-            echo Tagging image %IMAGE_NAME%
-            call docker tag %DOCKER_ORG%/%IMAGE_NAME% %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
-            call docker push %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
+    echo [INFO] Tagging image %IMAGE_NAME%
+    call docker tag %DOCKER_ORG%/%IMAGE_NAME% %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
+    call docker push %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
 
-            call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:latest
-            call docker push %DOCKER_ORG%/%IMAGE_NAME%:latest
+    call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:latest
+    call docker push %DOCKER_ORG%/%IMAGE_NAME%:latest
 
-            call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:snapshot
-            call docker push %DOCKER_ORG%/%IMAGE_NAME%:snapshot
-          )
-    )
+    call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:snapshot
+    call docker push %DOCKER_ORG%/%IMAGE_NAME%:snapshot
+  )
+  )
 goto :eof
 
 

@@ -1,4 +1,26 @@
+## VErsion
+
+### Main
+
+The version is like 4.1.1 or 5.1.1-SNAPSHOT
+
+* Seek if there are occurrencies of <version>OLD</version> for other than kendar packages
+* Seek if there are occurrencies of <version>NEW</version> .. jump the version if it's the case
+* Replace <version>OLD</version>  with <version>NEW</version>
+* Replace <ham.version>OLD</ham.version> with <ham.version>NEW</ham.version>
+* Replace HAM_VERSION=OLD with HAM_VERSION=NEW
+* Replace version-OLD with version-NEW
+* Change the content of "scripts/version.txt" with the new version (NO LINE FEEDS!!)
+
+### Janus
+
+The version is like 4.1.1 or 5.1.1-SNAPSHOT
+
+* Replace JANUS_DRIVER_VERSION=OLD to JANUS_DRIVER_VERSION=NEW
+* Replace <janus.version>OLD</janus.version> with <janus.version>NEW</janus.version>
+
 ## DEPLOY
+
 
 export DOCKER_DEPLOY=true
 # The docker on which should firstly deploy
