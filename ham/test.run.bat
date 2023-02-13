@@ -12,7 +12,7 @@ set AGENT_PATH=%SCRIPT_DIR%/api.test/org.jacoco.agent-0.8.8-runtime.jar
 set EXEC_PATH=%SCRIPT_DIR%/api.test/target/test_run_starter.exec
 
 
-
+REM https://www.jacoco.org/jacoco/trunk/doc/cli.html
 
 
 REM Start the application

@@ -10,7 +10,7 @@ HAM_VERSION=4.1.5
 AGENT_PATH=$SCRIPT_DIR/api.test/org.jacoco.agent-0.8.8-runtime.jar
 EXEC_PATH=$SCRIPT_DIR/api.test/target/test_run_starter.exec
 
-
+#  https://www.jacoco.org/jacoco/trunk/doc/cli.html
 
 # Start the application
 java "-Dloader.path=$SCRIPT_DIR/libs"  -Dloader.main=org.kendar.Main  \
