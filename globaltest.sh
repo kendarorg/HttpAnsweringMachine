@@ -8,7 +8,7 @@ export STARTING_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null
 
 echo "[INFO] Compiliing global test runner"
 cd $STARTING_PATH/globaltest
-mvn clean install package
+mvn clean install package > /dev/null 2>&1
 
 cd $STARTING_PATH/globaltest/target
 

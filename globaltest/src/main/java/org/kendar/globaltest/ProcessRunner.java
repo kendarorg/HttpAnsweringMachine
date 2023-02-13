@@ -2,14 +2,13 @@ package org.kendar.globaltest;
 
 import org.apache.commons.lang3.SystemUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -21,6 +20,7 @@ public class ProcessRunner {
     private BiConsumer<String,Process> outConsumer;
     private ConcurrentLinkedQueue<String> queue;
     private Map<String, String> env = new HashMap<>();
+
 
     public ProcessRunner(){}
     public ProcessRunner(Map<String,String> env){
@@ -36,6 +36,8 @@ public class ProcessRunner {
         this.env = env;
         return this;
     }
+
+
 
     public ProcessRunner withNoOutput(){
         errorConsumer=(a,p)->{};
@@ -72,8 +74,8 @@ public class ProcessRunner {
 
     public ProcessRunner withStorage(ConcurrentLinkedQueue<String> queue){
         this.queue = queue;
-        this.outConsumer = (a,p)->this.queue.add(a);
-        this.errorConsumer = (a,p)->this.queue.add(a);
+        this.outConsumer = (a,p)->{queue.add(a);};
+        this.errorConsumer = (a,p)->{queue.add(a);};
         return this;
     }
 
@@ -98,19 +100,31 @@ public class ProcessRunner {
             processBuilder.directory(new File(startingPath));
         }
         if(errorConsumer==null){
-            errorConsumer = (a,p)->System.err.println(a);
+            errorConsumer = (a,p)->{System.err.println(a);};
         }
         if(outConsumer==null){
-            outConsumer = (a,p)->System.out.println(a);
+            outConsumer = (a,p)->{System.out.println(a);};
         }
-
         var process = processBuilder.start();
 
 
+        var rc = String.join(" ",realCommand);
+        if(startingPath!=null){
+            if(!rc.startsWith(startingPath)){
+                rc = startingPath+File.separatorChar+realCommand;
+            }
+        }
+        LogWriter.writeProcess("[INFO] Running "+rc);
         StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(),
-                (a)->outConsumer.accept(a,process));
+                (a)->{
+                    LogWriter.writeProcess(a);
+            outConsumer.accept(a,process);
+                });
         StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(),
-                (a)->errorConsumer.accept(a,process));
+                (a)->{
+                    LogWriter.writeProcess(a);
+                        errorConsumer.accept(a,process);
+    });
 
         new Thread(outputGobbler).start();
         new Thread(errorGobbler).start();
@@ -141,11 +155,17 @@ public class ProcessRunner {
         var process = processBuilder.start();
 
 
-        //System.out.println(process.info().commandLine());
+        var rc = String.join(" ",realCommand);
+        if(startingPath!=null){
+            if(!rc.startsWith(startingPath)){
+                rc = startingPath+File.separatorChar+realCommand;
+            }
+        }
+        LogWriter.writeProcess("[INFO] Running "+rc);
         StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(),
-                (a)->outConsumer.accept(a,process));
+                (a)->{LogWriter.writeProcess(a);outConsumer.accept(a,process);});
         StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(),
-                (a)->errorConsumer.accept(a,process));
+                (a)->{LogWriter.writeProcess(a);errorConsumer.accept(a,process);});
 
         new Thread(outputGobbler).start();
         new Thread(errorGobbler).start();

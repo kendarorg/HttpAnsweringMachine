@@ -194,6 +194,7 @@ public class Main {
                 withCommand("bash").
                 withParameter("-c").
                 withParameter("chmod +x *.sh").
+                withStartingPath(dir).
                 withNoOutput().
                 run();
     }
@@ -514,10 +515,7 @@ public class Main {
             var pr = new ProcessRunner(env).
                     withCommand("bash").
                     withParameter("-c").
-                    withParameter("docker-compose").
-                    withParameter("-f").
-                    withParameter(composer).
-                    withParameter(sense).
+                    withParameter("docker-compose -f "+composer+" "+ sense).
                     withStartingPath(dir).
                     withNoOutput();
             if(biConsumers.length>0) {
@@ -587,6 +585,7 @@ public class Main {
             testDockerCalendarAndQuotesSamples(dockerIp, samplesDir);
 
             killAllHamProcesses();
+            exit(0);
         }catch (Exception ex){
             System.err.println(ex);
             doExit(2);
