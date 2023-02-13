@@ -53,6 +53,13 @@ public class ProcessRunner {
         return this;
     }
 
+    public ProcessRunner withParameters(List<String> parameter){
+        for(var p:parameter){
+            withParameter(p);
+        }
+        return this;
+    }
+
     public ProcessRunner withParameterPlain(String parameter){
         this.parameters.add(parameter);
         return this;
@@ -111,7 +118,7 @@ public class ProcessRunner {
         var rc = String.join(" ",realCommand);
         if(startingPath!=null){
             if(!rc.startsWith(startingPath)){
-                rc = startingPath+File.separatorChar+realCommand;
+                rc = startingPath+File.separatorChar+rc;
             }
         }
         LogWriter.writeProcess("[INFO] Running "+rc);
@@ -158,7 +165,7 @@ public class ProcessRunner {
         var rc = String.join(" ",realCommand);
         if(startingPath!=null){
             if(!rc.startsWith(startingPath)){
-                rc = startingPath+File.separatorChar+realCommand;
+                rc = startingPath+File.separatorChar+rc;
             }
         }
         LogWriter.writeProcess("[INFO] Running "+rc);

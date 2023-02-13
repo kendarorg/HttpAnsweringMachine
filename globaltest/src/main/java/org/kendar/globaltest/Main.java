@@ -15,6 +15,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Scanner;
@@ -577,6 +578,7 @@ public class Main {
 
 
             buildDeploymentArtifacts(startingPath, hamVersion, buildDir, releasePath);
+            testAndGenerateJacoco(startingPath, hamVersion, buildDir, releasePath);
             applyReleasePermissions(releasePath);
             testLocalHam(releasePath);
             testCalendarSample(calendarPath);
@@ -591,6 +593,12 @@ public class Main {
             doExit(2);
         }
 
+    }
+
+    private static void testAndGenerateJacoco(String startingPath, String hamVersion, String buildDir, String releasePath) throws Exception {
+        System.out.println("[INFO] Unit test ham & report");
+        startWait(pathOf(startingPath, "ham"), "test.run",Main::handleRunErrors);
+        killAllHamProcesses();
     }
 
 
