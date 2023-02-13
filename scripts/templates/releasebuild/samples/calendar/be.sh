@@ -16,7 +16,7 @@ echo Start it only when recording/replaying is started
 pause
 
 # start fe
-cd $CALENDAR_PATH/scripts
+cd $CALENDAR_PATH/calendar/scripts
 ./be.sh
 cd $ROOT_PATH
 
