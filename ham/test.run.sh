@@ -23,8 +23,8 @@ sleep 15
 
 mvn test
 
-cd $SCRIPT_DIR/api.test/
-https://groups.google.com/g/jacoco/c/vLiZkw8kq9c
-java -jar jacococli.jar report $EXEC_PATH $OTHER_PATH \
-  --classfiles $SCRIPT_DIR/app/target  --classfiles $SCRIPT_DIR/libs
---classfiles <path> [--csv <file>] [--encoding <charset>] [--help] [--html <dir>] [--name <name>] [--quiet] [--sourcefiles <path>] [--tabwith <n>] [--xml <file>]
+#cd $SCRIPT_DIR/api.test/
+#https://groups.google.com/g/jacoco/c/vLiZkw8kq9c
+#java -jar jacococli.jar report $EXEC_PATH $OTHER_PATH \
+#  --classfiles $SCRIPT_DIR/app/target  --classfiles $SCRIPT_DIR/libs
+#--classfiles <path> [--csv <file>] [--encoding <charset>] [--help] [--html <dir>] [--name <name>] [--quiet] [--sourcefiles <path>] [--tabwith <n>] [--xml <file>]
