@@ -35,7 +35,7 @@
       {
         "id": "3",
         "dns": "www.quotes.test",
-        "ip": "\twww.quotes.test"
+        "ip": "ham.quotes.core"
       }
     ]
   },

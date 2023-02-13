@@ -10,21 +10,21 @@ set UTILS_LIB=%SCRIPT_DIR%\libs\utils.bat
 set DOCKER_LIB=%SCRIPT_DIR%\libs\docker.bat
 
 echo [INFO] This will build the docker images for the application
-echo [INFO] [INFO] and publish them on local docker. Ctrl+C to exit
+echo [INFO] and publish them on local docker. Ctrl+C to exit
 echo [INFO] Target version: %HAM_VERSION%
+
 
 set LOGIN=kendarorg
 set ORG=kendarorg
 set PASSWORD=none
 
-if "%DOCKER_DEPLOY%"=="true" (
-    pause
+if "%DOCKER_DEPLOY%" == "true" (
+pause
     echo Enter %LOGIN% password for %ORG%
     call %UTILS_LIB% read_password PASSWORD
     call %DOCKER_LIB% docker_login "%LOGIN%" "%PASSWORD%" "%ORG%"
-    set PASSWORD=none
 )
-
+set PASSWORD=none
 
 REM Extra initializations
 call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR
@@ -82,9 +82,6 @@ call %DOCKER_LIB% docker_push "ham.apache.php8" "%HAM_VERSION%"
 cd %DOCKER_ROOT%\mysql
 docker build --rm -t ham.mysql .
 call %DOCKER_LIB% docker_push "ham.mysql" "%HAM_VERSION%"
-
-echo [INFO] Cleanup
-cd %HAM_DIR%
 
 REM Restore previous dir
 cd %START_LOCATION%

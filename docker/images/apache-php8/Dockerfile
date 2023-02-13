@@ -1,6 +1,6 @@
 FROM ham.apache
 
-RUN echo ham.apache 4.1.5
+RUN echo ham.apache-php8 version-4.1.5
 
 # Setup apache and php
 RUN apk add --no-cache \
@@ -27,9 +27,9 @@ RUN apk add --no-cache \
     php8-pear \
     php8-xdebug  \
     && mkdir -p docker/php/conf.d
-
-# WAS ON --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
     
+# WAS ON --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
+
 RUN pear8 config-set php_ini /etc/php8/php.ini
 
 COPY config/setupphp8.sh /etc/setupphp8.sh

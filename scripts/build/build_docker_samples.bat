@@ -17,14 +17,13 @@ echo [INFO] Target version: %HAM_VERSION%
 set LOGIN=kendarorg
 set ORG=kendarorg
 set PASSWORD=none
-
-if "%DOCKER_DEPLOY%"=="true" (
-    pause
+if "%DOCKER_DEPLOY%" == "true" (
+pause
     echo Enter %LOGIN% password for %ORG%
     call %UTILS_LIB% read_password PASSWORD
     call %DOCKER_LIB% docker_login "%LOGIN%" "%PASSWORD%" "%ORG%"
-    set PASSWORD=none
 )
+set PASSWORD=none
 
 REM Extra initializations
 call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR
@@ -44,7 +43,7 @@ cd %ROOT_DIR%\samples\calendar\docker\single
 docker build -t ham.sampleapp.single -f Dockerfile ..\..\
 call %DOCKER_LIB% docker_push "ham.sampleapp.single" "%HAM_VERSION%"
 
-echo [INFO] Build quotes sample images
+echo Build quotes sample images
 cd %ROOT_DIR%\samples\quotes\docker\multi
 docker build  --rm -t ham.quotes.master -f multimaster.Dockerfile ..\..\
 call %DOCKER_LIB% docker_push "ham.quotes.master" "%HAM_VERSION%"

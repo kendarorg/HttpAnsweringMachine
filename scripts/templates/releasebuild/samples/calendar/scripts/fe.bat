@@ -1,19 +1,11 @@
 @echo off
-
-set HAM_JAR=janus-driver-1.1.10-SNAPSHOT.jar
-set CALENDAR_PATH=%~dp0
+set HAM_VERSION=4.1.5
+set START_LOCATION=%cd%
+set SCRIPT_DIR=%~dp0
+cd %SCRIPT_DIR%
 cd ..
 set CALENDAR_PATH=%cd%
-cd %CALENDAR_PATH%
-REM Go to main path
-cd ..
-set ROOT_PATH=%cd%
-
 
 cd %CALENDAR_PATH%\fe
-dir /b be*.jar > .temp.txt
-set /p JAR_NAME=<.temp.txt
-start java -jar fe-4.1.5.jar --spring.config.location=file:///%cd%\application.properties
-REM Wait for startup
-timeout /t 10 /nobreak
-cd %ROOT_PATH%
+start java -jar fe-%HAM_VERSION%.jar --spring.config.location=file:///%cd%\application.properties
+cd %START_LOCATION%

@@ -36,7 +36,7 @@ copy /y %SCRIPT_DIR%\templates\releasebuild\samples\calendar\scripts\*.* %HAM_RE
 copy /y %SCRIPT_DIR%\templates\releasebuild\samples\calendar\*.* %HAM_RELEASE_TARGET%\calendar 1>NUL
 copy /y %SCRIPT_DIR%\templates\standalone\calendar.external.json %HAM_RELEASE_TARGET%\calendar 1>NUL
 
-echo [INFO]  Setup gateway
+echo [INFO] Setup gateway
 call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\gateway
 cd %CALENDAR_DIR%\gateway\target\
 call %UTILS_LIB% get_jar_name JAR_NAME
@@ -45,11 +45,6 @@ copy /y %CALENDAR_DIR%\gateway\target\gateway-*.jar %HAM_RELEASE_TARGET%\calenda
 echo #!/bin/bash > %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\gateway\run.sh
 echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\gateway\run.bat
-
-echo [INFO] Setup Db
-echo #!/bin/bash > %HAM_RELEASE_TARGET%\calendar\rundb.sh
-echo call java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa > %HAM_RELEASE_TARGET%\calendar\rundb.bat
-echo java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa >> %HAM_RELEASE_TARGET%\calendar\rundb.sh
 
 echo [INFO] Setup fe
 call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\fe
@@ -82,10 +77,6 @@ REM Prepare the compressed file
 echo [INFO] Compress release file
 cd %ROOT_DIR%\release\%HAM_VERSION%
 tar -zcvf %ROOT_DIR%\release\ham-samples-%HAM_VERSION%.tar.gz . >> %ROOT_DIR%\release\ham-%HAM_VERSION%.log  2>&1
-
-REM Cleanup
-echo [INFO] Cleanup
-REM call %UTILS_LIB% rm_rf %HAM_RELEASE_TARGET%  > NUL 2>&1
 
 REM Restore previous dir
 cd %START_LOCATION%

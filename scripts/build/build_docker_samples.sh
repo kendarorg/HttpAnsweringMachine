@@ -20,10 +20,10 @@ PASSWORD=none
 
 if [ "$DOCKER_DEPLOY" == "true" ]; then
   pause
-  echo Enter $LOGIN password for $ORG
-  PASSWORD=$(read_password)
-  docker_login "$LOGIN" "$PASSWORD" "$ORG"
-  PASSWORD=none
+echo Enter $LOGIN password for $ORG
+PASSWORD=$(read_password)
+docker_login "$LOGIN" "$PASSWORD" "$ORG"
+PASSWORD=none
 fi
 
 # Extra initializations

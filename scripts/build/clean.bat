@@ -17,7 +17,7 @@ REM Extra initializations
 call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR
 
 REM Setup the target directory
-echo Setup target dir
+echo [INFO] Setup target dir
 set HAM_RELEASE_TARGET=%ROOT_DIR%\release\%HAM_VERSION%
 call %UTILS_LIB% rm_rf %HAM_RELEASE_TARGET%   2>&1 1>NUL
 call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%
