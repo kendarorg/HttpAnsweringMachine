@@ -8,7 +8,7 @@ HAM_VERSION=4.1.5
 # Retrieve the jar name
 
 AGENT_PATH=$SCRIPT_DIR/api.test/org.jacoco.agent-0.8.8-runtime.jar
-EXEC_PATH=$SCRIPT_DIR/api.test/target/test_run_starter.exec
+EXEC_PATH=$SCRIPT_DIR/api.test/target/jacoco_run_starter.exec
 OTHER_PATH=$SCRIPT_DIR/api.test/target/jacoco_starter.exec
 
 #  https://www.jacoco.org/jacoco/trunk/doc/cli.html

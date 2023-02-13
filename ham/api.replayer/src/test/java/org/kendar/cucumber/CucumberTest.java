@@ -12,6 +12,6 @@ import static io.cucumber.core.options.Constants.GLUE_PROPERTY_NAME;
 /*@SelectClasspathResource("org/kendar/ham")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "org.kendar.ham")*/
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "org.kendar.cucumber")
-public class CucumberIT {
+public class CucumberTest {
 
 }
