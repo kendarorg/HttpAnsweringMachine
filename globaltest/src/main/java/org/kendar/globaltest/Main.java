@@ -487,11 +487,15 @@ public class Main {
                 "docker-compose-local.yml",
                 "up",
                 Main::handleDockerErrors);
+
+        Thread.sleep(3000);
         checkForSite(60, "http://www.local.test/api/health", dockerIp, 1081);
         checkForSite(60, "http://www.quotes.test/api/health/index.php", dockerIp, 1081);
         startComposer(pathOf(samplesDir,"quotes","hub_composer"),
                 "docker-compose-local.yml",
                 "down");
+
+        Thread.sleep(3000);
     }
 
     private static void handleRunErrors(String a, Process process) {
