@@ -159,6 +159,7 @@ public class ProxyHandlerApis implements FilteringClass {
             clone.setTest(newData.getTest());
             clone.setWhen(newData.getWhen());
             clone.setWhere(newData.getWhere());
+            clone.setForce(newData.isForce());
             newList.add(clone);
         }
         cloneConf.setProxies(newList);
