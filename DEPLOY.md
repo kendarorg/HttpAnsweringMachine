@@ -21,6 +21,13 @@ The version is like 4.1.1 or 5.1.1-SNAPSHOT
 
 ## DEPLOY
 
+set DOCKER_IP=192.168.56.2
+set DOCKER_HOST=tcp://%DOCKER_IP%:23750
+set DOCKER_DEPLOY=true
+
+Set-Variable -Name "DOCKER_IP" -Value "192.168.56.2" -Scope global
+Set-Variable -Name "DOCKER_HOST" -Value "tcp://192.168.56.2:32750" -Scope global
+Set-Variable -Name "DOCKER_DEPLY" -Value "true" -Scope global
 
 export DOCKER_DEPLOY=true
 # The docker on which should firstly deploy
