@@ -18,7 +18,7 @@ REM https://www.jacoco.org/jacoco/trunk/doc/cli.html
 
 
 REM Start the application
-call java "-Dloader.path=%SCRIPT_DIR%/libs"  -Dloader.main=org.kendar.Main  ^
+start /b java "-Dloader.path=%SCRIPT_DIR%/libs"  -Dloader.main=org.kendar.Main  ^
 	  	"-Djsonconfig=%SCRIPT_DIR%\test.external.json" -Dham.tempdb=data\tmp^
 	  	"-javaagent:%AGENT_PATH%=destfile=%EXEC_PATH%,includes=org.kendar.**,dumponexit=true" ^
 		-jar "%SCRIPT_DIR%/app/target/app-%HAM_VERSION%.jar" org.springframework.boot.loader.PropertiesLauncher
