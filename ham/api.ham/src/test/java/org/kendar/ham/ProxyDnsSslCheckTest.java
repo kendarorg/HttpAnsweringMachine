@@ -5,6 +5,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.tkendar.ham.HamStarter;
+import org.tkendar.ham.HamTestException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

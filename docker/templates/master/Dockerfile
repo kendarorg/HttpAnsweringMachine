@@ -1,5 +1,5 @@
 FROM ham.singlemaster:latest
-RUN echo 4.1.4
+RUN echo ham.template version-4.1.5
 
 COPY ./config/*.json /etc/app/ham/app/
 RUN mkdir -p /etc/app/app

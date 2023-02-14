@@ -1,8 +1,13 @@
 * version.txt: the current version
+
+To deploy docker stuffs should set the docker host. For me is
+
+        export DOCKER_HOST=tcp://192.168.1.40:23750
+
 * build: Build scripts
     * build_docs: Regenerate the "puzzle" documentation
-    * build_docker: Create local docker images for HAM and deploy
-    * build_docker_samples: Create local docker images for Samples and deploy
+    * build_docker: Create local docker images for HAM and if set DOCKER_DEPLOY=true deploy
+    * build_docker_samples: Create local docker images for Samples and if set DOCKER_DEPLOY=true deploy
     * build_release: Create the release tar.gz into "release" dir for HAM
     * build_release_samples: Create the release tar.gz into "release" dir for Samples
     * clean: Clean all projects

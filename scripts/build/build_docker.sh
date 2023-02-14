@@ -13,14 +13,17 @@ echo [INFO] This will build the docker images for the application
 echo [INFO] and publish them on local docker. Ctrl+C to exit
 echo [INFO] Target version: $HAM_VERSION
 
-pause
-
 LOGIN=kendarorg
 ORG=kendarorg
+PASSWORD=none
+
+if [ "$DOCKER_DEPLOY" == "true" ]; then
+  pause
 echo Enter $LOGIN password for $ORG
 PASSWORD=$(read_password)
 docker_login "$LOGIN" "$PASSWORD" "$ORG"
 PASSWORD=none
+fi
 
 # Extra initializations
 ROOT_DIR=$( cd -- "$( dirname -- "$SCRIPT_DIR" )" &> /dev/null && pwd )
@@ -35,9 +38,6 @@ DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 
 cd $HAM_DIR
 
-echo [INFO] Building project
-mvn clean install -DskipTests
-
 cd $DOCKER_ROOT/base
 docker build --rm -t ham.base .
 docker_push "ham.base" "$HAM_VERSION"
@@ -47,6 +47,7 @@ mkdir -p data/app || true
 rm -f data/app/*.*
 cp -f "$HAM_DIR"/simpledns/target/simpledns*.jar data/
 docker build --rm -t ham.client .
+docker_push "ham.client" "$HAM_VERSION"
 rm -rf data/app
 rm -f data/simpledns*.jar
 
@@ -80,10 +81,6 @@ docker_push "ham.apache.php8" "$HAM_VERSION"
 cd $DOCKER_ROOT/mysql
 docker build --rm -t ham.mysql .
 docker_push "ham.mysql" "$HAM_VERSION"
-
-echo [INFO] Cleanup
-cd $HAM_DIR
-mvn clean -DskipTests > /dev/null 2>&1
 
 # Restore previous dir
 cd $START_LOCATION

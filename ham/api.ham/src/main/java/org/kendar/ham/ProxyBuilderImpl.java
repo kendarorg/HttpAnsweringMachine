@@ -41,6 +41,12 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
         if(inserted.isPresent()){
             return inserted.get().getId();
         }
+        inserted = retrieveProxies()
+                .stream().filter(d-> d.getWhere().equalsIgnoreCase(where)).findAny();
+        if(inserted.isPresent()){
+
+            return inserted.get().getId();
+        }
         throw new HamException("Missing id");
     }
 

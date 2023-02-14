@@ -6,6 +6,7 @@ export DOCKER_TOKEN=none
 export DOCKER_ORG=none
 
 function docker_login {
+  if [ "$DOCKER_DEPLOY" == "true" ]; then
   DOCKER_USERNAME=$1
   DOCKER_PASSWORD=$2
   DOCKER_ORG=$3
@@ -13,6 +14,7 @@ function docker_login {
   DOCKER_TOKEN=`curl -s -H "Content-Type: application/json" \
     -X POST -d "$(_docker_login_data)" "https://hub.docker.com/v2/users/login/" | jq -r .token`
   DOCKER_PASSWORD=none
+  fi
 }
 
 function docker_logout {
@@ -30,6 +32,7 @@ EOF
 }
 
 function docker_remove_tag {
+  echo -n ""
   # IMAGE_NAME=$1
   # TAG=$2
   # curl "https://hub.docker.com/v2/repositories/${DOCKER_ORG}/${IMAGE_NAME}/tags/${TAG}/" \
@@ -38,6 +41,7 @@ function docker_remove_tag {
 }
 
 function docker_push {
+  if [ "$DOCKER_DEPLOY" == "true" ]; then
   IMAGE_NAME=$1
   VERSION_NUMBER=$2
   
@@ -60,5 +64,6 @@ function docker_push {
     docker tag $IMAGE_NAME $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER
     docker tag $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER $DOCKER_ORG/$IMAGE_NAME:latest
     docker tag $DOCKER_ORG/$IMAGE_NAME:v$VERSION_NUMBER $DOCKER_ORG/$IMAGE_NAME:snapshot
+  fi
   fi
 }

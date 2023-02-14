@@ -2,6 +2,8 @@ package org.kendar.ham;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.tkendar.ham.HamStarter;
+import org.tkendar.ham.HamTestException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

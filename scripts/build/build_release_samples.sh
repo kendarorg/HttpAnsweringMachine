@@ -39,11 +39,6 @@ cp -f $SCRIPT_DIR/templates/standalone/calendar.external.json $HAM_RELEASE_TARGE
 
 cp -f $ROOT_DIR/ham/libs/janus-driver*.jar $HAM_RELEASE_TARGET/calendar/be/ 2>&1 > /dev/null
 
-echo [INFO] Setup db
-echo '#!\bin\bash' > $HAM_RELEASE_TARGET/calendar/rundb.sh
-echo "call java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa" > $HAM_RELEASE_TARGET/calendar/rundb.bat
-echo "java -cp h2-2.1.214.jar org.h2.tools.Server -web -ifNotExists -tcpPort 9123 -tcp -webAllowOthers -tcpAllowOthers -tcpPassword sa" >> $HAM_RELEASE_TARGET/calendar/rundb.sh
-
 
 echo [INFO] Setup gateway
 mkdir -p $HAM_RELEASE_TARGET/calendar/gateway
@@ -85,10 +80,6 @@ echo "call java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/be/run.bat
 echo [INFO] Compress release file
 cd $ROOT_DIR/release/$HAM_VERSION
 tar -zcvf "$ROOT_DIR"/release/ham-samples-"$HAM_VERSION".tar.gz . >> "$ROOT_DIR"/release/ham-samples-"$HAM_VERSION".log 2>&1
-
-# Cleanup
-echo [INFO] Cleanup
-rm -rf $HAM_RELEASE_TARGET || true
 
 # Restore previous dir
 cd $START_LOCATION

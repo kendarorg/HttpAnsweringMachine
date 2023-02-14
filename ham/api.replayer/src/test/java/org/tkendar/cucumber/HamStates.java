@@ -1,13 +1,13 @@
-package org.kendar.cucumber;
+package org.tkendar.cucumber;
 
 import com.sun.net.httpserver.HttpServer;
 import io.cucumber.java.en.Given;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.kendar.ham.HamException;
-import org.kendar.ham.HamStarter;
-import org.kendar.ham.HamTestException;
-import org.kendar.ham.LocalHttpServer;
+import org.tkendar.ham.HamStarter;
+import org.tkendar.ham.HamTestException;
+import org.tkendar.ham.LocalHttpServer;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +23,7 @@ public class HamStates  extends BaseStates{
     }
 
     @Given("^I add a dns mapping from '(.+)' to '(.+)'$")
-    public void iAddDnsMapping(String ip,String name) throws HamTestException, HamException {
+    public void iAddDnsMapping(String ip,String name) throws HamTestException,HamException {
         var dnsId =hamBuilder.dns().addDnsName(ip,name);
         hamBuilder.certificates().addAltName(name);
         dnses.add(dnsId);
