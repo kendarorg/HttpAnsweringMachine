@@ -468,7 +468,7 @@ public class Main {
         startComposer(pathOf(samplesDir,"calendar","hub_composer"),
                 "docker-compose-local.yml",
                 "up",
-                Main::handleRunErrors);
+                Main::handleDockerErrors);
         checkForSite(60, "http://www.local.test/api/health", dockerIp, 1081);
         checkForSite(60, "http://www.sample.test/api/v1/health", dockerIp, 1081);
         checkForSite(60, "http://gateway.sample.test/api/v1/health", dockerIp, 1081);
@@ -486,7 +486,7 @@ public class Main {
         startComposer(pathOf(samplesDir,"quotes","hub_composer"),
                 "docker-compose-local.yml",
                 "up",
-                Main::handleRunErrors);
+                Main::handleDockerErrors);
         checkForSite(60, "http://www.local.test/api/health", dockerIp, 1081);
         checkForSite(60, "http://www.quotes.test/api/health/index.php", dockerIp, 1081);
         startComposer(pathOf(samplesDir,"quotes","hub_composer"),
