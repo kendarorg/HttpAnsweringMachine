@@ -118,9 +118,9 @@ public class Main {
                 var pid = spl[spl.length-17];
                     var pr =new ProcessRunner(env).
                             withCommand("taskkill");
-                    if(!sigTerm) {
+                    //if(!sigTerm) {
                         pr.withParameter("/f");
-                    }
+                    //}
                             pr.withParameter("/pid").
                             withParameter(pid).
                             withNoOutput().

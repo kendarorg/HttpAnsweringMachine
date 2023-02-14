@@ -10,6 +10,7 @@ import org.tkendar.ham.HamTestException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import org.kendar.utils.Sleeper;
 
 import static org.junit.jupiter.api.Assertions.*;
 
