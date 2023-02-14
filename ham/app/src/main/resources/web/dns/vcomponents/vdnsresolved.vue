@@ -2,7 +2,7 @@
   <div>
 
     <button v-on:click="selectAll()" class="btn btn-default" title="Check All">Check all</button>
-    <button v-on:click="toogleSelect()" class="btn btn-default" title="Toggle">Toggle Selected</button>
+    <button v-on:click="toggleSelect()" class="btn btn-default" title="Toggle">Toggle Selected</button>
     <button v-on:click="generateSSLMappings()" class="btn btn-default" title="Generate SSL Mappings">Generate SSL
       Mappings
     </button>

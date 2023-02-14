@@ -45,7 +45,8 @@ module.exports = {
         {id: "when", template: "string"},
         {id: "where", template: "string"},
         {id: "test", template: "string"},
-        {id: "running", template: "bool"}
+        {id: "running", template: "bool"},
+        {id: "force", template: "bool"}
       ],
       extraColumns: [
         {
