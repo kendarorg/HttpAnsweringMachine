@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Main Windows" type="Application" factoryName="Application">
+    <envs>
+      <env name="STARTING_PATH" value="$PROJECT_DIR$/.." />
+      <env name="HAM_VERSION" value="4.1.5" />
+      <env name="DOCKER_IP" value="192.168.56.2" />
+      <env name="DOCKER_HOST" value="tcp://192.168.56.2:23750" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="org.kendar.globaltest.Main" />
+    <module name="globaltest" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.kendar.globaltest.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

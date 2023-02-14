@@ -5,7 +5,7 @@
     <parent>
         <artifactId>HttpAnsweringMachine</artifactId>
         <groupId>org.kendar</groupId>
-        <version>4.1.4</version>
+        <version>4.1.5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -169,6 +169,7 @@
 
                                         <fileset dir="${basedir}/../api.test/target">
                                             <include name="jacoco*.exec" />
+                                            <include name="test*.exec" />
                                         </fileset>
                                         <fileset dir="${basedir}/../app/target">
                                             <include name="jacoco*.exec" />
@@ -195,6 +196,12 @@
                                             <include name="jacoco*.exec" />
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.replayer.server/target">
+                                            <include name="jacoco*.exec" />
+                                        </fileset>
+                                        <fileset dir="${basedir}/../plugin.replayer.http/target">
+                                            <include name="jacoco*.exec" />
+                                        </fileset>
+                                        <fileset dir="${basedir}/../plugin.replayer.jdbc/target">
                                             <include name="jacoco*.exec" />
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.socks5.server/target">

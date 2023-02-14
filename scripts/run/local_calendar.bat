@@ -6,8 +6,8 @@ call %~dp0\init.bat
 set UTILS_LIB=%SCRIPT_DIR%\libs\utils.bat
 call %UTILS_LIB% set_parent_dir %SCRIPT_DIR% ROOT_DIR
 
-echo You should configure the http and https proxy to
-echo localhost:1081 to appreciate the example
+echo [INFO] You should configure the http and https proxy to
+echo [INFO] localhost:1081 to appreciate the example
 
 pause
 
@@ -17,7 +17,7 @@ set JSON_CONFIG=%TEMPLATES_LOCATION%\calendar.external.json
 REM Start ham
 start %SCRIPT_DIR%\run\local.bat
 REM Wait for startup
-timeout /t 10 /nobreak
+ping 127.0.0.1 -n 10 > nul
 
 set CALENDAR_PATH=%ROOT_DIR%\samples\calendar
 
@@ -28,7 +28,7 @@ dir /b fe*.jar > .temp.txt
 set /p JAR_NAME=<.temp.txt
 start java -jar %JAR_NAME% --spring.config.location=file:///%TEMPLATES_LOCATION%\fe.application.properties
 REM Wait for startup
-timeout /t 10 /nobreak
+ping 127.0.0.1 -n 10 > nul
 cd %START_LOCATION%
 
 Rem start be
@@ -37,7 +37,7 @@ dir /b be*.jar > .temp.txt
 set /p JAR_NAME=<.temp.txt
 start java -jar %JAR_NAME% --spring.config.location=file:///%TEMPLATES_LOCATION%\be.application.properties
 REM Wait for startup
-timeout /t 10 /nobreak
+ping 127.0.0.1 -n 10 > nul
 cd %START_LOCATION%
 
 Rem start gateway
@@ -46,7 +46,7 @@ dir /b gateway*.jar > .temp.txt
 set /p JAR_NAME=<.temp.txt
 start java -jar %JAR_NAME% --spring.config.location=file:///%TEMPLATES_LOCATION%\gateway.application.properties
 REM Wait for startup
-timeout /t 10 /nobreak
+ping 127.0.0.1 -n 10 > nul
 cd %START_LOCATION%
 
 

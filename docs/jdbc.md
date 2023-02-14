@@ -55,7 +55,7 @@ classpath! The resulting command line will be
 
 The final command line (for HAM calendar/be sample) will be (on windows)
 
-    java -cp "be-4.1.4.jar;../janus-driver-1.1.10-SNAPSHOT.jar" ^
+    java -cp "be-[version].jar;janus-driver-[version].jar" ^
         org.springframework.boot.loader.JarLauncher ^
         --spring.config.location=file:///%cd%\bedbham.application.properties
 

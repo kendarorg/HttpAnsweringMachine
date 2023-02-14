@@ -1,4 +1,4 @@
-package org.kendar.cucumber;
+package org.tkendar.cucumber;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;

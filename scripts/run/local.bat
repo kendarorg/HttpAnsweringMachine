@@ -8,8 +8,8 @@ REM Includes
 call %SCRIPT_DIR%\libs\version.bat
 set UTILS_LIB=%SCRIPT_DIR%\libs\utils.bat
 
-echo This will run the local ham
-echo Target version: %HAM_VERSION%
+echo [INFO] This will run the local ham
+echo [INFO] Target version: %HAM_VERSION%
 
 IF "%JSON_CONFIG%"=="" pause
 

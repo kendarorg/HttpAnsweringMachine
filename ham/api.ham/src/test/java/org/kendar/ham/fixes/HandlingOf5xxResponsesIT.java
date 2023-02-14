@@ -7,6 +7,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kendar.ham.*;
+import org.tkendar.ham.HamStarter;
+import org.tkendar.ham.HamTestException;
+import org.tkendar.ham.LocalHttpServer;
 
 import java.util.HashMap;
 import java.util.Map;
