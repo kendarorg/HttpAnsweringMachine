@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,7 +80,7 @@ public class DbReplayerTest {
         if(connectionId!=null) {
             req.getHeaders().put("x-connection-id", connectionId);
         }
-        var res = target.findRequestMatch(req,"XXX");
+        var res = target.findRequestMatch(req,"XXX", new HashMap<>());
         Object item = new ObjectResult();
         if(res.getResponseText()!=null) {
             var dser = serializer.newInstance();

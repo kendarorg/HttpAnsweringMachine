@@ -79,8 +79,7 @@ public class ReplayerRow implements DbTable {
         this.requestSerialized = requestSerialized;
     }
 
-    @Column(name="requestSerialized")
-    @Lob
+    @Column(name="requestSerialized",columnDefinition = "CLOB")
     @JsonIgnore
     private String requestSerialized;
 
@@ -92,7 +91,7 @@ public class ReplayerRow implements DbTable {
         this.responsSerialized = responsSerialized;
     }
 
-    @Column(name="responsSerialized")
+    @Column(name="responsSerialized",columnDefinition = "CLOB")
     @Lob
     @JsonIgnore
     private String responsSerialized;

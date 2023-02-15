@@ -117,7 +117,7 @@ public class HttpReplayer implements ReplayerEngine {
     }
 
     @Override
-    public Response findRequestMatch(Request req,String contentHash) throws Exception {
+    public Response findRequestMatch(Request req, String contentHash, Map<String, String> params) throws Exception {
 
         if(!hasRows) return null;
         Response founded = findRequestMatch(req, contentHash,true);

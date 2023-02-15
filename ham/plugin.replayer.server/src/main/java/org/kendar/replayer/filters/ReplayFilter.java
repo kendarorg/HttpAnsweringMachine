@@ -50,10 +50,14 @@ public class ReplayFilter implements FilteringClass {
       validAddress = replayerEngines.get(i).isValidPath(req)||validAddress;
     }
     if(!validAddress) return false;
-    logger.info("Replaying "+
+    var toReplay ="Replaying "+
             req.getProtocol()+"://"+
             req.getHost()+
-            req.getPath());
-    return replayerStatus.replay(req, res);
+            req.getPath();
+    var result = replayerStatus.replay(req, res);
+    if(result){
+        logger.info(toReplay);
+    }
+    return result;
   }
 }

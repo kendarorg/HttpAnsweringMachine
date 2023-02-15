@@ -238,7 +238,7 @@ public class ReplayerDataset implements BaseDataset{
         contentHash = md5Tester.calculateMd5(req.getRequestText());
       }
       for(var engine:replayerEngines){
-        var mayBeMatch= engine.findRequestMatch(req,contentHash);
+        var mayBeMatch= engine.findRequestMatch(req,contentHash,params);
         if(mayBeMatch!=null){
           return mayBeMatch;
         }
