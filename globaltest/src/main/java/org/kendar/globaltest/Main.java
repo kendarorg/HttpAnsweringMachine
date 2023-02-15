@@ -431,7 +431,8 @@ public class Main {
 
 
     private static void handleDockerErrors(String a, Process p) {
-        if(a.toLowerCase(Locale.ROOT).startsWith("error")){
+        if(a.toLowerCase(Locale.ROOT).startsWith("error") ||
+                a.toLowerCase(Locale.ROOT).startsWith("couldn't connect")){
             System.err.println("");
             System.err.println("[ERROR] "+ a);
             p.destroy();
