@@ -57,7 +57,7 @@
                                        :path="'/plugins/recording/vcomponents'"
                                        :template="key"
                                        :default="'none'"
-                                       :value="extensionData"
+                                       :value="extensionsData"
                                        @componentevent="onExtensionChange"/>
 
             </div>
@@ -359,7 +359,7 @@
                 axios.get("/api/plugins/replayer/recording/" + getUrlParameter("id"))
                     .then(function (result){
                         th.data=result.data;
-                        th.extensionData=th.data.filter;
+                        th.extensionsData=th.data.filter;
                         th.$refs.recordingList.reload(th.data.lines);
                         //if(th.data.linse.length>0){
                         th.updateButtons();
