@@ -1,6 +1,6 @@
 FROM ham.apache
 
-RUN echo ham.apache-php8 version-4.1.5
+RUN echo ham.apache-php8 version-4.1.6
 
 # Setup apache and php
 RUN apk add --no-cache \
