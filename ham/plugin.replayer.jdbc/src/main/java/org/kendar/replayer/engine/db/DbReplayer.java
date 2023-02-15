@@ -56,8 +56,9 @@ public class DbReplayer implements ReplayerEngine {
         var result = true;
         if(!recordDbCalls)result= false;
         if(!recordVoidDbCalls){
-            if(res.getResponseText()==null)result= false;
-            if(res.getResponseText().contains("VoidResult"))result= false;
+            if(res.getResponseText()==null || res.getResponseText().contains("VoidResult")){
+                result= false;
+            }
         }
         var dbNameAllowed = false;
         for(var dbName:dbNames){
@@ -69,7 +70,9 @@ public class DbReplayer implements ReplayerEngine {
                 break;
             }
         }
-        if(!dbNameAllowed)result = false;
+        if(!dbNameAllowed){
+            result = false;
+        }
         if(doUseSimEngine && result){
             var connectionId = req.getHeader("X-Connection-Id")==null?-1L:
                     Long.parseLong(req.getHeader("X-Connection-Id"));
