@@ -85,7 +85,7 @@ public class DbProxyApi implements FilteringClass {
             result.setLocal(local);
             if(result.isActive()) {
                 var serverEngine = new ServerEngine(remote.getConnectionString(), remote.getLogin(), remote.getPassword());
-                serverEngine.setMaxRows(100);
+                serverEngine.setMaxRows(500);
                 result.setServerEngine(serverEngine);
             }
             logger.info("Db Proxy LOADED, from: " + local.getConnectionString()+" to "+remote.getConnectionString());
