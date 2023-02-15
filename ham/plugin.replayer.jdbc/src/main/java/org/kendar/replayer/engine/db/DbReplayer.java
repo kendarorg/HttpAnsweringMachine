@@ -197,11 +197,15 @@ public class DbReplayer implements ReplayerEngine {
     }
 
     protected void addAllIndexes(Long recordingId, ArrayList<CallIndex> indexes, EntityManager e) {
-        indexes.addAll(e.createQuery("SELECT e FROM CallIndex e LEFT JOIN ReplayerRow f " +
+        var rs = e.createQuery("SELECT e FROM CallIndex e LEFT JOIN ReplayerRow f " +
                 " ON e.reference = f.id"+
                 " WHERE " +
                 " f.type='db' AND e.recordingId=" + recordingId +
-                " AND e.stimulatorTest=false ORDER BY e.id ASC").getResultList());
+                " AND e.stimulatorTest=false ORDER BY e.id ASC").getResultList();
+        for(var rss:rs){
+            e.detach(rss);
+        }
+        indexes.addAll(rs);
     }
 
     private Map<Long,Long> connectionShadow = new HashMap<>();
