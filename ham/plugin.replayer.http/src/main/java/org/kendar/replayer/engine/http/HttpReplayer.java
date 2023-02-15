@@ -147,7 +147,11 @@ public class HttpReplayer implements ReplayerEngine {
             query.setParameter("recordingId", name);
             query.setParameter("path", sreq.getPath());
             query.setParameter("host", sreq.getHost());
-            staticRequests.addAll(query.getResultList());
+            var res = query.getResultList();
+            for(var rr:res){
+                em.detach(rr);
+            }
+            staticRequests.addAll(res);
         });
 
         var indexesIds = staticRequests.stream().map(r->r.getIndex().toString()).collect(Collectors.toList());
