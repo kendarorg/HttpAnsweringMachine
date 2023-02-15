@@ -38,4 +38,20 @@ public class HealthController implements FilteringClass {
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.TEXT);
         res.setResponseText("OK");
     }
+
+    @HttpMethodFilter(phase = HttpFilterType.API,
+            pathAddress = "/api/shutdown",
+            method = "GET")
+    @HamDoc(
+            tags = {"base/utils"},
+            description = "Shutdown the application",
+            responses = @HamResponse(
+                    body = String.class,
+                    examples = @Example(example = "OK")
+            ))
+    public void doShutdown(Request req, Response res) {
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.TEXT);
+        res.setResponseText("OK");
+        Main.shutdown();
+    }
 }
