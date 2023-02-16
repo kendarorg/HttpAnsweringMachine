@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
 </head>
 <body>
-<div class="container" id="app">
+<div class="container-fluid" id="app">
     <div width="800px" ref="container" >
         <button type="button" :disabled="data.id ==-1"  class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
         <button type="button" :disabled="prev<0"  class="bi bi-floppy" v-on:click="prevRow()" title="Save changes">Prev</button>
