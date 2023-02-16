@@ -384,9 +384,9 @@ public class ReplayerAPICrud implements FilteringClass {
           phase = HttpFilterType.API,
           pathAddress = "/api/plugins/replayer/recording/{id}",
           method = "POST")
-  @HamDoc(description = "Search on recording req/res bodies for specific strings",tags = {"plugin/replayer"},
+  @HamDoc(description = "Search on recording req/res bodies for specific strings (if not specifed just get everything)",tags = {"plugin/replayer"},
           path = @PathParameter(key = "id"),
-          requests = @HamRequest(body = String[].class)
+          requests = @HamRequest(body = String[].class,optional = true)
   )
   public void searchRecords(Request req, Response res) throws Exception {
     var id = Long.parseLong(req.getPathParameter("id"));
