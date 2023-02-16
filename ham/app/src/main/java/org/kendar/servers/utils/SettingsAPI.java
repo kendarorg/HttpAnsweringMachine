@@ -1,5 +1,6 @@
 package org.kendar.servers.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
@@ -10,6 +11,7 @@ import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.models.JsonFileData;
 import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.ConstantsMime;
 import org.springframework.stereotype.Component;
@@ -47,6 +49,8 @@ public class SettingsAPI implements FilteringClass {
         res.setStatusCode(200);
     }
 
+    static ObjectMapper mapper = new ObjectMapper();
+
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/utils/settings",
@@ -60,7 +64,8 @@ public class SettingsAPI implements FilteringClass {
             tags = {"base/utils"}
     )
     public void setNewSettings(Request req, Response res) throws Exception {
-        var body = req.getRequestText();
+        JsonFileData jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
+        var body = jsonFileData.readAsString();
         configuration.setConfigurationAsString(body);
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setStatusCode(200);
