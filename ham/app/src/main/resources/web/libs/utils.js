@@ -211,3 +211,65 @@ const showSpinner=function(toggle,text){
         x.childNodes[3].innerText = "";
     }
 }
+
+const generateUUID = function () { // Public Domain/MIT
+    var d = new Date().getTime();//Timestamp
+    var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+    return 'IDxxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16;//random number between 0 and 16
+        if(d > 0){//Use timestamp until depleted
+            r = (d + r)%16 | 0;
+            d = Math.floor(d/16);
+        } else {//Use microseconds since page-load if supported
+            r = (d2 + r)%16 | 0;
+            d2 = Math.floor(d2/16);
+        }
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+}
+
+const addMessage=function(message,type){
+
+    var color = "#b3e5a1";
+    var border = "#6cee3a";
+    var to = 15;
+    console.log("["+type+"] "+message);
+    if(isUndefined(type)||type=="ok"){
+        color = "#b3e5a1";
+        border = "#6cee3a";
+        to = 15;
+    }else if(type=="warn"){
+        color = "#deec73";
+        border = "#e3d119";
+        to = 30;
+    }else if(type=="error"){
+        color = "#e85e6d";
+        border = "#a41725";
+        to = 60;
+    }else{
+        return;
+    }
+
+    var x = document.getElementById("messageObject");
+    var newdiv = document.createElement('div');
+    newdiv.id=generateUUID();
+    newdiv.innerHTML="<p style='margin:2px 2px 2px 2px '><b>"+message+"</b></p>";
+
+    newdiv.style.background = color;
+    newdiv.style.border = "1px solid "+border;
+    newdiv.style.borderRadius= "5px";
+    newdiv.style.width="80%";
+    newdiv.style.marginLeft="5px";
+    newdiv.style.marginTop="5px";
+    newdiv.style.marginBottom="5px";
+    newdiv.style.marginRight="5px";
+    //newdiv.style.height="200px";
+    //newdiv.style.position="fixed";
+    newdiv.style.top="20px";
+    x.appendChild(newdiv);
+
+    setTimeout(function () {
+        var d = document.getElementById(newdiv.id);
+        d.parentNode.removeChild(d);
+    }, to*1000);
+}
