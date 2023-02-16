@@ -1,0 +1,228 @@
+<html>
+<head>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/libs/bootstrap.min.js"></script>
+    <link href="/app/app.css" rel="stylesheet"/>
+    <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
+    <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
+    <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <button type="button"  class="btn btn-default" onClick="location.href='../../index.html'">Main</button>
+            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Scripts</button>
+            <button type="button"  class="btn btn-default" id="backToSingle"  name="backToSingle" >???</button>
+        </div>
+        <div class="col-md-8">
+            <h3>LINE</h3>
+        </div>
+        <div class="col-md-8">
+            <br>
+            <button id="save" name="save" type="button"  class="btn btn-default" onClick="save();">Save</button>
+
+        </div>
+
+        <div class="col-md-8">
+            <div class="form-group">
+                <label htmlFor="id">Id</label>
+                <input class="form-control" readOnly type="text" name="id" id="id"/>
+            </div>
+            <div class="form-group">
+                <label htmlFor="method">method</label>
+                <select class="form-control" name="method" id="method" >
+                    <option>GET</option>
+                    <option>POST</option>
+                    <option>PUT</option>
+                    <option>DELETE</option>
+                    <option>OPTIONS</option>
+                    <option>PATCH</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label htmlFor="hostAddress">hostAddress</label>
+                <input class="form-control" type="text" name="hostAddress" id="hostAddress"/>
+            </div>
+            <div class="form-group">
+                <label htmlFor="hostRegexp">hostRegexp</label>
+                <input class="form-control" type="text" name="hostRegexp" id="hostRegexp"/>
+            </div>
+            <div class="form-group">
+                <label htmlFor="pathAddress">pathAddress</label>
+                <input class="form-control" type="text" name="pathAddress" id="pathAddress"/>
+            </div>
+            <div class="form-group">
+                <label htmlFor="pathRegexp">pathRegexp</label>
+                <input class="form-control" type="text" name="pathRegexp" id="pathRegexp"/>
+            </div>
+            <div class="form-group">
+                <label htmlFor="phase">phase</label>
+                <select class="form-control" name="phase" id="phase" >
+                    <option>NONE</option>
+                    <option>PRE_RENDER</option>
+                    <option>API</option>
+                    <option>STATIC</option>
+                    <option>PRE_CALL</option>
+                    <option>POST_CALL</option>
+                    <option>POST_RENDER</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label htmlFor="priority">priority (number)</label>
+                <input class="form-control" readOnly type="text" name="priority" id="priority"/>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="blocking" name="blocking">
+                <label class="form-check-label" for="blocking">
+                    blocking
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="source">source</label><br>
+            <!--prism-live language-javascript-->
+            <textarea spellcheck="false"
+                      class="form-control"
+                      rows="6" cols="50"  name="source" id="source"></textarea>
+        </div>
+
+        <div class="col-md-8">
+            <h4>REQUIRES</h4>
+        </div>
+        <div class="col-md-8">
+            <table class="table table-striped" id="requires_list">
+                <tr>
+                    <th>Id</th>
+                    <th colspan="2">
+                        <button class="btn btn-danger form-control"
+                                onClick="addRequires();">Add</button>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="/app/app.js"></script>
+<script>
+    var defaultSaveAction = "put";
+
+    var requires_list = new SimpleGrid("Query","requires_list","id",["id","value"],
+        null,
+        function (table,id) {
+            table.data.forEach(function (value, i) {
+                if (value["id"] == id) {
+                    location.href="text.html?id="+getUrlParameter("id")+
+                        "&file="+value["value"]+"&action=edit";
+                }
+            });
+
+        },
+        function (table,id) {
+            alert("DELETE TO BE IMPLEMENTED");
+        },
+        function (table,id,saveOrUpdate) {
+
+        });
+    var fromArray = function(arlist){
+        var result = "";
+        for(var i = 0;i<arlist.length;i++){
+            result+=arlist[i]+"\r\n";
+        }
+        return result;
+    }
+
+    $("#method").val("GET").change();
+    $("#phase").val("NONE").change();
+    $.ajax({
+        url: "/api/plugins/jsfilter/filters/" + getUrlParameter("id"),
+        type: 'GET',
+        success: function (res) {
+            $("#id").val(res['id']);
+            $("#phase").val(res['phase']);
+            $("#priority").val(res['priority']);
+            setChecked($("#blocking"),res['blocking']);
+            $("#source").text(fromArray(res['source']));
+
+            var matcher = JSON.parse(res['matchers']['org.kendar.http.matchers.ApiMatcher']);
+            $("#method").val(matcher['method']).change();
+            $("#hostAddress").val(res['hostAddress']);
+            $("#hostRegexp").val(res['hostRegexp']);
+            $("#pathAddress").val(res['pathAddress']);
+            $("#pathRegexp").val(res['pathRegexp']);
+
+
+
+            $.each(res["requires"], function (i,v) {
+                var line = {id:v.replaceAll(".","_"),value:v};
+                requires_list.appendToTable(line);
+            });
+
+        },
+        error: function( xhr, textStatus, errorThrown ){
+            /*if(xhr.status==404) {
+                $("#timestamp").val(Math.floor(Date.now() / 1000));
+                $("#id").val(getUrlParameter("line"));
+                $("#request_content").hide();
+                $("#response_content").hide();
+                $("#request_content_download").hide();
+                $("#response_content_download").hide();
+                defaultSaveAction="post";
+            }*/
+        }
+    });
+
+
+
+    $("#backToSingle").click(function(){
+        location.href="script.html?id="+getUrlParameter("id"); })
+        .html(getUrlParameter("id"));
+
+
+
+    function save(){
+        var id = getUrlParameter("id");
+
+        var requires = [];
+        for (var i = 0; i < requires_list.data.length; i++) {
+            requires.push(requires_list.data[i]["value"]);
+        }
+
+
+        var data = {
+            id:$("#id").val(),
+            method: $("#method").val(),
+            hostAddress: $("#hostAddress").val(),
+            hostRegexp: $("#hostRegexp").val(),
+            pathAddress: $("#pathAddress").val(),
+            pathRegexp: $("#pathRegexp").val(),
+            phase: $("#phase").val(),
+            priority: $("#priority").val(),
+            blocking: $("#blocking").prop("checked"),
+            source: $.trim($("#source").val()).split(/\r?\n/),
+            requires:requires
+        };
+        console.log(data);
+
+        $.ajax({
+            url: "/api/plugins/jsfilter/filters/" + getUrlParameter("id"),
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(response){
+                location.reload();
+            }
+        });
+    }
+
+    function addRequires(){
+        location.href="text.html?id="+getUrlParameter("id")+
+            "&action=new";
+    }
+</script>
+</body>
+</html>
