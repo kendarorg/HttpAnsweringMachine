@@ -69,12 +69,18 @@
                 <vtab name="RECORDINGS">
                     <br>
                     <recording-list
+                            :selectedindex="currentRowSelectedIndex"
                             v-on:selectrow="rowSelected"
                             v-on:download="download"
                             v-on:reload="reloadForm"
+                            v-on:gridrowclicked="recordingListClicked"
                             ref="recordingList" ></recording-list>
                 </vtab>
                 <vtab name="SELECTED" :title="selectedRowTitle">
+                    <div width="800px" ref="container">
+                        <button type="button" :disabled="currentRowFromFilter.prev==null"  class="bi bi-floppy" v-on:click="extprevRow()" title="Save changes">Prev</button>
+                        <button type="button" :disabled="currentRowFromFilter.next==null"  class="bi bi-floppy" v-on:click="extnextRow()" title="Save changes">Next</button>
+                    </div>
                     <br>
                     <iframe :src="iframeAddress"
 
@@ -134,6 +140,8 @@
         },
         data: function () {
             return {
+                currentRowSelectedIndex:null,
+                currentRowFromFilter:{current:null,prev:null,next:null},
                 extensionsData:{},
                 extensions:[],
                 currentState:"UNDEFINED",
@@ -213,6 +221,8 @@
                 }
             },
             reloadResult: function () {
+                this.currentRowSelectedIndex=null;
+                this.currentRowFromFilter=null;
                 this.$refs.results.reload();
             },
             executeAct:function(what,onWhat){
@@ -259,6 +269,7 @@
                 }
             },
             rowSelected:function(rowId,type){
+                //th.$emit("selectrow",row['id'],row['type']);
                 console.log("SELECTED "+rowId)
                 this.selectedRow=rowId;
                 this.selectedType = type;
@@ -408,7 +419,51 @@
                     data, {headers}).then((res) => {
                     showSpinner(false);
                 });
-            }
+            },
+            recordingListClicked:function(evt){
+                this.currentRowFromFilter= evt;
+                if(this.currentRowFromFilter.current!=null) {
+                    var rowId = this.currentRowFromFilter.current['id'];
+                    var type = this.currentRowFromFilter.current['type'];
+                    console.log("SELECTED " + rowId)
+                    this.selectedRow = rowId;
+                    this.selectedType = type;
+                    //this.selectedRow=rowId;
+                    sessionStorage.setItem("recordingCurrentLine", rowId);
+                    sessionStorage.setItem("recordingId", getUrlParameter("id"));
+                    sessionStorage.setItem("selectedType", type);
+                }
+            },
+            extprevRow:function(){
+                if(this.currentRowFromFilter!=null && this.currentRowFromFilter.prev!=null){
+                    this.currentRowSelectedIndex = this.currentRowFromFilter.index-1;
+                    //th.$emit("selectrow",row['id'],row['type']);
+                    var rowId=this.currentRowFromFilter.current['id'];
+                    var type=this.currentRowFromFilter.current['type'];
+                    console.log("SELECTED "+rowId)
+                    this.selectedRow=rowId;
+                    this.selectedType = type;
+                    //this.selectedRow=rowId;
+                    sessionStorage.setItem("recordingCurrentLine", rowId);
+                    sessionStorage.setItem("recordingId", getUrlParameter("id"));
+                    sessionStorage.setItem("selectedType", type);
+                }
+            },
+            extnextRow:function(){
+                if(this.currentRowFromFilter!=null && this.currentRowFromFilter.next!=null){
+                    this.currentRowSelectedIndex = this.currentRowFromFilter.index+1;
+                    //th.$emit("selectrow",row['id'],row['type']);
+                    var rowId=this.currentRowFromFilter.current['id'];
+                    var type=this.currentRowFromFilter.current['type'];
+                    console.log("SELECTED "+rowId)
+                    this.selectedRow=rowId;
+                    this.selectedType = type;
+                    //this.selectedRow=rowId;
+                    sessionStorage.setItem("recordingCurrentLine", rowId);
+                    sessionStorage.setItem("recordingId", getUrlParameter("id"));
+                    sessionStorage.setItem("selectedType", type);
+                }
+            },
         }
     });
 </script>

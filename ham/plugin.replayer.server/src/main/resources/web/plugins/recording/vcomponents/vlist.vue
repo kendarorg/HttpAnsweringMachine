@@ -22,8 +22,10 @@
   <button v-on:click="download()" class="bi bi-download" title="Download Hosts File"></button>
   <br><br>
   <simple-grid
+      v-on:gridrowclicked="recordingListClicked"
       v-on:gridclicked="gridClicked"
       ref="grid"
+      :selectedindex="selectedindex"
       :columns="columns"
       :extra="extraColumns"
   >
@@ -33,6 +35,13 @@
 <script>
 module.exports = {
   name: "recording-list",
+  props: {
+    selectedindex: {
+      type:Number,
+      optional:true,
+      default:-1
+    }
+  },
   components: {
     'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
     'global-script': httpVueLoader('/plugins/recording/vcomponents/line/vscript.vue'),
@@ -73,6 +82,9 @@ module.exports = {
     }
   },
   methods:{
+    recordingListClicked(evt){
+      this.$emit("gridrowclicked",evt);
+    },
     reload(externalData){
       if(typeof externalData=="undefined"){
 
