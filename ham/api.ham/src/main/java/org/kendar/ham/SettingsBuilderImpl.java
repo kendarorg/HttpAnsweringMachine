@@ -14,7 +14,7 @@ public class SettingsBuilderImpl implements SettingsBuilder{
         var request = hamBuilder.newRequest()
                 .withMethod("POST")
                 .withPath("/api/utils/settings/")
-                .withHamFile("newsettings.json","{}", ConstantsMime.JSON);
+                .withHamFile("newsettings.json",value, ConstantsMime.JSON);
         hamBuilder.call(request.build());
     }
 
