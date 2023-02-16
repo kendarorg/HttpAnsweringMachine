@@ -2,7 +2,7 @@
   <div>
     <h3>{{value.type}}</h3><br>
     <button type="button" class="bi bi-floppy" v-on:click="saveChanges()"
-             title="Save changes"></button>
+             title="Save changes">Apply Changes</button>
 
     <div class="form-group">
       <label htmlFor="val">Cols count</label>
@@ -42,7 +42,7 @@
             <button v-on:click="modifyRow(index)" class="bi bi-pen-fill" title="Edit"></button>
           </div>
           <div v-else>
-            <button v-on:click="confirmRow(index)" class="bi bi-pen-fill" title="Confirm"></button>
+            <button v-on:click="confirmRow(index)" class="bi bi-floppy" title="Confirm"></button>
           </div>
         </td>
         <td v-for="(field,fieldindex) in row">
@@ -180,6 +180,7 @@ module.exports = {
         this.rows.push(newInserted);
       }
       this.rowstatus=-1;
+      this.saveChanges();
     },
     modifyRow:function(index){
       this.blockChange=true;

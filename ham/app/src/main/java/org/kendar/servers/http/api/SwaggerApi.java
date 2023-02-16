@@ -246,16 +246,18 @@ public class SwaggerApi  implements FilteringClass {
     var resBody = res.body();
     var resExamples = res.examples();
     var resAccept = res.accept();
+    var resOptional = res.optional();
 
-    setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept);
+    setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept,resOptional);
   }
 
-  private void buildEmptyRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor filter, HamDoc doc, PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses) {
+  private void buildEmptyRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor filter, HamDoc doc,
+                                 PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses) {
     Class<?> resBody = Object.class;
     org.kendar.http.annotations.multi.Example[] resExamples = null;
     String resAccept = null;
 
-    setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept);
+    setupRequest(swagger, schemas, filter, doc, expectedPath, parameters, apiResponses, resBody, resExamples, resAccept,true);
   }
 
   private void buildEmptyResponse(ApiResponses apiResponses) {
@@ -304,7 +306,8 @@ public class SwaggerApi  implements FilteringClass {
     }
   }
 
-  private void setupRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor descriptor, HamDoc doc, PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses, Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples, String resAccept) {
+  private void setupRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor descriptor, HamDoc doc, PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses, Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples,
+                            String resAccept,boolean optionalBody) {
     var matcher = descriptor.getMatchers().stream().filter(m->m instanceof ApiMatcher).findFirst();
     if(matcher.isEmpty())return;
     var filter = (ApiMatcher)matcher.get();
@@ -312,7 +315,7 @@ public class SwaggerApi  implements FilteringClass {
 
     var operation = new Operation();
     if (hasBody) {
-      setupRequestBody(resBody, resExamples, resAccept, operation);
+      setupRequestBody(resBody, resExamples, resAccept, operation,optionalBody);
     }
     operation.description(doc.description());
     operation.responses(apiResponses);
@@ -333,7 +336,8 @@ public class SwaggerApi  implements FilteringClass {
     swagger.path(descriptor.getMethodFilter().pathAddress(), expectedPath);
   }
 
-  private void setupRequestBody(Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples, String resAccept, Operation operation) {
+  private void setupRequestBody(Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples,
+                                String resAccept, Operation operation,boolean optionalBody) {
     var schema = getSchemaHam(resBody);
     var mediaType  = new MediaType().schema(schema);
     if(resExamples !=null){
@@ -345,7 +349,7 @@ public class SwaggerApi  implements FilteringClass {
             .addMediaType(resAccept,
                     mediaType);
 
-    RequestBody requestBody = new RequestBody().content(content);
+    RequestBody requestBody = new RequestBody().content(content).required(!optionalBody);
     operation.requestBody(requestBody);
   }
 

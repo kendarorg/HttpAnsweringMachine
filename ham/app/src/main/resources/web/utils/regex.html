@@ -1,9 +1,13 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
     <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
-    <script src="/libs/jquery-3.2.1.min.js"></script>
-    <script src="/libs/bootstrap.min.js"></script>
-    <script src="/libs/lodash.js"></script>
+    <script src="/libs/vue.js"></script>
+    <script src="/libs/httpVueLoader.js"></script>
+    <script src="/libs/axios.min.js"></script>
+    <script src="/libs/utils.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
 </head>
@@ -12,7 +16,7 @@
     <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
-<div class="container">
+<div class="container-fluid" id="app">
     <div class="row">
         <div class="col-md-8">
             <br>
@@ -23,80 +27,91 @@
             <h3>REGEXP TESTER</h3>
             <div class="form-group">
                 <label htmlFor="regexp">Regexp</label> Do not escape like in Java Strings (e.g. don't write '\"' but '"')
-                <input class="form-control" type="text" name="regexp" id="regexp"/>
+                <input class="form-control" type="text" name="regexp" id="regexp" v-model="regexp"/>
             </div>
             <div class="form-group">
                 <label for="matcherString">ToMatch</label>
-                <textarea class="form-control" rows="6" cols="50" name="matcherString" id="matcherString"></textarea>
+                <textarea class="form-control" rows="6" cols="50" name="matcherString" id="matcherString" v-model="matcherString"></textarea>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="multiline" name="multiline">
+                <input class="form-check-input" type="checkbox" value="" id="multiline" name="multiline" v-model="multiline">
                 <label class="form-check-label" for="multiline">
                     multiline
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="caseInsensitive" name="caseInsensitive">
+                <input class="form-check-input" type="checkbox" value="" id="caseInsensitive" name="caseInsensitive" v-model="caseInsensitive">
                 <label class="form-check-label" for="caseInsensitive">
                     caseInsensitive
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="literal" name="literal">
+                <input class="form-check-input" type="checkbox" value="" id="literal" name="literal" v-model="literal">
                 <label class="form-check-label" for="literal">
                     literal
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="unicodeCase" name="unicodeCase">
+                <input class="form-check-input" type="checkbox" value="" id="unicodeCase" name="unicodeCase" v-model="unicodeCase">
                 <label class="form-check-label" for="unicodeCase">
                     unicodeCase
                 </label>
             </div>
             <div class="form-group">
-                <button type="button" id="test" name="test" class="btn btn-default">Go</button>
+                <button type="button" id="test" name="test" @click="test()" class="btn btn-default">Go</button>
             </div>
             <div class="form-group">
                 <label for="results">Results</label>
-                <textarea class="form-control" rows="6" cols="50" name="results" id="results"></textarea>
+                <textarea class="form-control" rows="6" cols="50" name="results" id="results" v-model="results"></textarea>
             </div>
         </div>
     </div>
 </div>
-<script src="/app/app.js"></script>
-<script>
-    $("#test").click(function(){
-        var data={
-            regexp: $('#regexp').val(),
-            matcherString: $('#matcherString').val(),
-            caseInsensitive:$("#caseInsensitive").prop("checked"),
-            literal:$("#literal").prop("checked"),
-            unicodeCase:$("#unicodeCase").prop("checked"),
-            multiline:$("#multiline").prop("checked")
-        };
-        $.ajax({
-            url: '/api/utils/regexp',
-            type: 'post',
-            data: JSON.stringify(data),
-            contentType: false,
-            processData: false,
-            success: function(result){
-                if(result['failed']){
-                    $('#results').text("Error:\r\n"+result['error']);
-                }else {
-                    if (!result['matchFound']) {
-                        $('#results').text("No matches found");
-                    } else {
-                        var toput = "Found "+result['matches'].length+" matches:\r\n";
-                        for (var i = 0; i < result['matches'].length;i++){
-                            toput+=result['matches'][i]+"\r\n";
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        components: {
+
+        },
+        data: {
+            regexp:"test ([a-z]+)",
+            matcherString:"test value",
+            multiline:false,
+            caseInsensitive:true,
+            literal:false,
+            unicodeCase:false,
+            results:""
+        },
+        methods: {
+            test:function (){
+                var th = this;
+                var data={
+                    regexp: this.regexp,
+                    matcherString: this.matcherString,
+                    caseInsensitive:this.caseInsensitive,
+                    literal:this.literal,
+                    unicodeCase:this.unicodeCase,
+                    multiline:this.multiline
+                };
+                axios.post('/api/utils/regexp', data).then((resultall) => {
+                    var result = resultall.data;
+                    if(result.failed){
+                        th.results="Error:\r\n"+result.error;
+                    }else {
+                        if (!result.matchFound) {
+                            th.results="No matches found";
+                        } else {
+                            var toput = "Found "+result.matches.length+" matches:\r\n";
+                            for (var i = 0; i < result.matches.length;i++){
+                                toput+=result.matches[i]+"\r\n";
+                            }
+                            toput+="END OF RESULTS";
+                            th.results=toput;
                         }
-                        toput+="END OF RESULTS";
-                        $('#results').text(toput);
                     }
-                }
+                });
             }
-        });
+        }
     });
 </script>
 </body>

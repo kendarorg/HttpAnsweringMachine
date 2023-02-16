@@ -17,7 +17,7 @@
     <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
-<div class="container" id="app">
+<div class="container-fluid" id="app">
     <div class="row">
         <div class="col-md-8">
             <br>
@@ -44,12 +44,12 @@
                           v-model="data.description"></textarea>
             </div>
             <br>
-            <button type="button" :disabled="buttons.save" class="bi bi-floppy" @click="saveRecordingData" title="Save">Save</button>&nbsp;
-            <button type="button" :disabled="buttons.record"  class="bi bi-record-btn" @click="executeAct('start','record')" title="Save">Record</button>&nbsp;
-            <button type="button" :disabled="buttons.stop"  class="bi bi-stop-btn" @click="executeAct('stop')" title="Save">Stop</button>&nbsp;
-            <button type="button" :disabled="buttons.play"  class="bi bi-play-btn" @click="executeAct('start','replay')" title="Save">Play</button>&nbsp;
-            <button type="button" :disabled="buttons.pause"  class="bi bi-pause-btn" @click="executeAct('pause')" title="Save">Pause</button>
-            <button type="button" :disabled="buttons.auto"  class="bi bi-play-btn" @click="executeAct('start','auto')" title="Save">Play Stimulator</button>&nbsp;
+            <button type="button" :disabled="buttons.save" class="bi bi-floppy" @click="saveRecordingData" title="Save">Save global script data</button>&nbsp;
+            <button type="button" :disabled="buttons.record"  class="bi bi-record-btn" @click="executeAct('start','record')" title="Record">Record</button>&nbsp;
+            <button type="button" :disabled="buttons.stop"  class="bi bi-stop-btn" @click="executeAct('stop')" title="Stop">Stop</button>&nbsp;
+            <button type="button" :disabled="buttons.play"  class="bi bi-play-btn" @click="executeAct('start','replay')" title="Play">Play</button>&nbsp;
+            <button type="button" :disabled="buttons.pause"  class="bi bi-pause-btn" @click="executeAct('pause')" title="Pause">Pause</button>
+            <button type="button" :disabled="buttons.auto"  class="bi bi-play-btn" @click="executeAct('start','auto')" title="Play stim">Play Stimulator</button>&nbsp;
 
             <button v-on:click="updateButtons()" class="btn btn-primary btn-sm">Reload status</button>
             <div>
@@ -67,14 +67,22 @@
         <div width="800px">
             <vtabs ref="tab">
                 <vtab name="RECORDINGS">
+
                     <br>
                     <recording-list
+                            :selectedindex="currentRowSelectedIndex"
                             v-on:selectrow="rowSelected"
                             v-on:download="download"
                             v-on:reload="reloadForm"
+                            v-on:gridrowclicked="recordingListClicked"
                             ref="recordingList" ></recording-list>
                 </vtab>
                 <vtab name="SELECTED" :title="selectedRowTitle">
+                    <br>
+                    <div width="800px" ref="container">
+                        <button type="button" :disabled="currentRowFromFilter.prev==null"  class="bi bi-floppy" v-on:click="extprevRow()" title="Prev">Prev</button>
+                        <button type="button" :disabled="currentRowFromFilter.next==null"  class="bi bi-floppy" v-on:click="extnextRow()" title="Next">Next</button>
+                    </div>
                     <br>
                     <iframe :src="iframeAddress"
 
@@ -134,6 +142,8 @@
         },
         data: function () {
             return {
+                currentRowSelectedIndex:null,
+                currentRowFromFilter:{current:null,prev:null,next:null},
                 extensionsData:{},
                 extensions:[],
                 currentState:"UNDEFINED",
@@ -213,6 +223,8 @@
                 }
             },
             reloadResult: function () {
+                this.currentRowSelectedIndex=null;
+                this.currentRowFromFilter=null;
                 this.$refs.results.reload();
             },
             executeAct:function(what,onWhat){
@@ -259,6 +271,7 @@
                 }
             },
             rowSelected:function(rowId,type){
+                //th.$emit("selectrow",row['id'],row['type']);
                 console.log("SELECTED "+rowId)
                 this.selectedRow=rowId;
                 this.selectedType = type;
@@ -346,7 +359,7 @@
 
                     })
             },
-            reloadForm: function(){
+            reloadForm: function(searchStr){
                 showSpinner(true);
                 var th=this;
                 axios.get("/api/plugins/replayer/extension")
@@ -356,29 +369,38 @@
                             th.extensions.push(fe);
                         });
                     });
-                axios.get("/api/plugins/replayer/recording/" + getUrlParameter("id"))
-                    .then(function (result){
-                        th.data=result.data;
-                        th.extensionsData=th.data.filter;
-                        th.$refs.recordingList.reload(th.data.lines);
-                        //if(th.data.linse.length>0){
-                        th.updateButtons();
-                        //}
+                if(isUndefined(searchStr)) {
+                    axios.get("/api/plugins/replayer/recording/" + getUrlParameter("id"))
+                        .then(function (result) {
+                            th.putDataOnGrid(result, th);
+                        });
+                }else{
+                    axios.post("/api/plugins/replayer/recording/" + getUrlParameter("id"),[searchStr])
+                        .then(function (result) {
+                            th.putDataOnGrid(result, th);
+                        });
+                }
+            },
+            putDataOnGrid:function(result,th){
+                th.data=result.data;
+                th.extensionsData=th.data.filter;
+                th.$refs.recordingList.reload(th.data.lines);
+                //if(th.data.linse.length>0){
+                th.updateButtons();
+                //}
 
-                        var recording = sessionStorage.getItem("recordingId");
-                        if(null!=recording){
-                            recording = recording+"";
-                            if(recording==getUrlParameter("id")){
-                                var current = sessionStorage.getItem("recordingCurrentLine");
-                                var selectedType = sessionStorage.getItem("selectedType");
-                                if(null!=current){
-                                    th.rowSelected(parseInt(current),selectedType);
-                                }
-                            }
+                var recording = sessionStorage.getItem("recordingId");
+                if(null!=recording){
+                    recording = recording+"";
+                    if(recording==getUrlParameter("id")){
+                        var current = sessionStorage.getItem("recordingCurrentLine");
+                        var selectedType = sessionStorage.getItem("selectedType");
+                        if(null!=current){
+                            th.rowSelected(parseInt(current),selectedType);
                         }
-                        showSpinner(false);
-
-                    });
+                    }
+                }
+                showSpinner(false);
             },
             download:function(){
                 downloadFile("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/full",this.data.name);
@@ -408,7 +430,51 @@
                     data, {headers}).then((res) => {
                     showSpinner(false);
                 });
-            }
+            },
+            recordingListClicked:function(evt){
+                this.currentRowFromFilter= evt;
+                if(this.currentRowFromFilter.current!=null) {
+                    var rowId = this.currentRowFromFilter.current['id'];
+                    var type = this.currentRowFromFilter.current['type'];
+                    console.log("SELECTED " + rowId)
+                    this.selectedRow = rowId;
+                    this.selectedType = type;
+                    //this.selectedRow=rowId;
+                    sessionStorage.setItem("recordingCurrentLine", rowId);
+                    sessionStorage.setItem("recordingId", getUrlParameter("id"));
+                    sessionStorage.setItem("selectedType", type);
+                }
+            },
+            extprevRow:function(){
+                if(this.currentRowFromFilter!=null && this.currentRowFromFilter.prev!=null){
+                    this.currentRowSelectedIndex = this.currentRowFromFilter.index-1;
+                    //th.$emit("selectrow",row['id'],row['type']);
+                    var rowId=this.currentRowFromFilter.current['id'];
+                    var type=this.currentRowFromFilter.current['type'];
+                    console.log("SELECTED "+rowId)
+                    this.selectedRow=rowId;
+                    this.selectedType = type;
+                    //this.selectedRow=rowId;
+                    sessionStorage.setItem("recordingCurrentLine", rowId);
+                    sessionStorage.setItem("recordingId", getUrlParameter("id"));
+                    sessionStorage.setItem("selectedType", type);
+                }
+            },
+            extnextRow:function(){
+                if(this.currentRowFromFilter!=null && this.currentRowFromFilter.next!=null){
+                    this.currentRowSelectedIndex = this.currentRowFromFilter.index+1;
+                    //th.$emit("selectrow",row['id'],row['type']);
+                    var rowId=this.currentRowFromFilter.current['id'];
+                    var type=this.currentRowFromFilter.current['type'];
+                    console.log("SELECTED "+rowId)
+                    this.selectedRow=rowId;
+                    this.selectedType = type;
+                    //this.selectedRow=rowId;
+                    sessionStorage.setItem("recordingCurrentLine", rowId);
+                    sessionStorage.setItem("recordingId", getUrlParameter("id"));
+                    sessionStorage.setItem("selectedType", type);
+                }
+            },
         }
     });
 </script>

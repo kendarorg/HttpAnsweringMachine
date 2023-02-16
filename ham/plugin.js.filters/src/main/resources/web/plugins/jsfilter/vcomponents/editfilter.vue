@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="col-md-8">
+    <div class="col-md-12">
       <br>
 
       <button type="button" class="bi bi-floppy" v-on:click="updateContent()"
@@ -10,7 +10,7 @@
 
     </div>
 
-    <div class="col-md-8">
+    <div class="col-md-12">
       <div class="form-group">
         <label htmlFor="id">Id</label>
         <input class="form-control" readOnly type="text" name="id" id="id" v-model="data.id"/>
@@ -59,7 +59,7 @@
         </label>
       </div>
     </div>
-    <div class="boxed col-md-8">
+    <div class="boxed col-md-12">
       <br>
       <dynamic-matcher ref="dynmatch" width="1000px"
                          :path="'/plugins/jsfilter/vcomponents/matchers'"
@@ -100,18 +100,21 @@
       </div>
 
     </div>-->
-    <div class="form-group">
-      <label for="source">source</label><br>
-      <!--prism-live language-javascript-->
-      <textarea spellcheck="false"
-                class="form-control"
-                rows="6" cols="50" name="source" id="source" v-model="source"></textarea>
+    <br>
+    <div class="boxed col-md-12">
+      <div class="form-group">
+        <label for="source">source</label><br>
+        <!--prism-live language-javascript-->
+        <textarea spellcheck="false"
+                  class="form-control"
+                  rows="6" cols="50" name="source" id="source" v-model="source"></textarea>
+      </div>
     </div>
 
-    <!--<div class="col-md-8">
+    <!--<div class="col-md-12">
       <h4>REQUIRES</h4>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-12">
       <br>
       <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
       <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
