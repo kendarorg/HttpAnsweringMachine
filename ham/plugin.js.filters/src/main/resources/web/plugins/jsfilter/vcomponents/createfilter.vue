@@ -88,7 +88,7 @@ module.exports = {
       }
       const headers = {'Content-Type': 'application/json'};
       axios.post('/api/plugins/jsfilter/filters', JSON.stringify(data), {headers}).then((res) => {
-        location.href = "script.html?id="+name;
+        location.href = "index.html?id="+name;
       });
     }
   }

@@ -39,6 +39,7 @@
                 <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
                 <br><br>
                 <simple-grid
+                        v-on:gridrowclicked="jsListClicked"
                         v-on:gridclicked="gridClicked"
                         ref="grid"
                         :columns="columns"
@@ -68,6 +69,7 @@
         },
         data: function () {
             return {
+                currentRowFromFilter:{current:null,prev:null,next:null},
                 selectedRow:null,
                 modalData: null,
                 modalShow: false,
@@ -137,7 +139,14 @@
                         this.reload();
                     });
                 }
-            }
+            },
+            jsListClicked:function(evt){
+                this.currentRowFromFilter= evt;
+                if(this.currentRowFromFilter.current!=null) {
+                    var rowId = this.currentRowFromFilter.current['id'];
+                    this.selectedRow=rowId;
+                }
+            },
         }
     });
 </script>

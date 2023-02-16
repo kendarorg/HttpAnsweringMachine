@@ -77,6 +77,7 @@
                             ref="recordingList" ></recording-list>
                 </vtab>
                 <vtab name="SELECTED" :title="selectedRowTitle">
+                    <br>
                     <div width="800px" ref="container">
                         <button type="button" :disabled="currentRowFromFilter.prev==null"  class="bi bi-floppy" v-on:click="extprevRow()" title="Save changes">Prev</button>
                         <button type="button" :disabled="currentRowFromFilter.next==null"  class="bi bi-floppy" v-on:click="extnextRow()" title="Save changes">Next</button>
