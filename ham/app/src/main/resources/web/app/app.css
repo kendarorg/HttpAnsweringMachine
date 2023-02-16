@@ -78,5 +78,6 @@ a.unlinked:active {
 }
 
 .container {
+    width:100%;
     margin-left: 4px;
 }

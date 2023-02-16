@@ -105,23 +105,6 @@
                             </resources>
                         </configuration>
                     </execution>
-
-                    <execution>
-                        <id>copy-jsplugins-to-global-jsplugins</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>../jsplugins</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>js</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>copy-jar-dependencies-to-target</id>
                         <phase>package</phase>

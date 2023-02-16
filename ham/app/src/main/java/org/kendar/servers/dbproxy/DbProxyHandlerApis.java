@@ -11,6 +11,7 @@ import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.HamRequest;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
+import org.kendar.http.annotations.multi.QueryString;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -18,6 +19,8 @@ import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.ConstantsMime;
 import org.springframework.stereotype.Component;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 @Component
@@ -60,22 +63,45 @@ public class DbProxyHandlerApis implements FilteringClass {
     @HamDoc(
             tags = {"base/proxy"},
             path = @PathParameter(key = "id"),
+            query = @QueryString(key="test",description = "Optional, if specified with true check the connection"),
             description = "Retrieve specific proxy data",
             responses = @HamResponse(
                     body = DbProxy.class
             ))
-    public void getProxy(Request req, Response res) throws JsonProcessingException {
+    public void getProxy(Request req, Response res) throws JsonProcessingException, ClassNotFoundException, SQLException {
         var clone = configuration.getConfiguration(DbProxyConfig.class);
         var proxies = clone.getProxies();
         var id = req.getPathParameter("id");
         for (var item : proxies) {
             if (item.getId().equalsIgnoreCase(id)) {
+                var test = req.getQuery("test");
                 res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-                res.setResponseText(mapper.writeValueAsString(item));
+                if(test!=null && test.equalsIgnoreCase("true")){
+                    try {
+                        testConnection(item);
+                        res.setResponseText("{}");
+                    }catch (SQLException ex){
+                        res.setResponseText(mapper.writeValueAsString(ex.getMessage()));
+                        res.setStatusCode(500);
+                    }
+                }else {
+                    res.setResponseText(mapper.writeValueAsString(item));
+                }
                 return;
             }
         }
         res.setStatusCode(404);
+    }
+
+    private void testConnection(DbProxy item) throws ClassNotFoundException, SQLException {
+        Class.forName(item.getDriver());
+        var con = DriverManager.getConnection(
+                item.getRemote().getConnectionString(),
+                item.getRemote().getLogin(),
+                item.getRemote().getPassword());
+        var st = con.createStatement();
+        st.executeQuery("SELECT 1=1");
+        con.close();
     }
 
     @HttpMethodFilter(

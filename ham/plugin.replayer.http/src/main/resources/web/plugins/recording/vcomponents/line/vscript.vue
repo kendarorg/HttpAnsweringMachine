@@ -1,6 +1,7 @@
 <template>
   <div  v-if="typeof this.data!='undefined'" width="800px">
-    <button type="button" class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
+    <button type="button" class="bi bi-floppy" v-on:click="updateContent()"
+            title="Save changes">Save script changes</button>
     <br><br>
     <div class="form-group">
       <label htmlFor="request_id">Id</label>

@@ -46,7 +46,7 @@
                           :descriptor="key"/>
         </td>
       </tr>
-      <tr v-for="entry in filteredData">
+      <tr v-for="(entry,index) in filteredData" @click="onClicked(entry,index)">
         <td v-for="key in extra">
           <component :is="'c'+key.template" :descriptor="key"
                           :value="entry"
@@ -82,6 +82,11 @@ module.exports = {
       optional:true,
       default:null
     },
+    selectedindex: {
+      type:Number,
+      optional:true,
+      default:-1
+    },
     pageSize:Number,
     serverPagination:Boolean,
     isObject:{
@@ -95,12 +100,38 @@ module.exports = {
   async mounted() {
     await this.reload();
   },
+  watch:{
+    selectedindex:function(index,oldVal){
+
+      if(index!=null && index<this.localFilteredData.length && index>=0){
+        var prev=null;
+        var next=null;
+        if(index<0) index=0;
+        var entry =this.localFilteredData[index]
+        if(index>0){
+          prev = this.localFilteredData[index-1];
+        }
+        if(index<(this.localFilteredData.length-1)){
+          next = this.localFilteredData[index+1];
+        }
+        var evt = {
+          index:index,
+          prev:prev,
+          current:entry,
+          next:next,
+          data:this.localFilteredData
+        }
+        this.$emit("gridrowclicked",evt);
+      }
+    }
+  },
   data: function () {
     var sortOrders = {};
     this.columns.forEach(function (key) {
       sortOrders[key.id] = 1;
     });
     return {
+      localFilteredData:[],
       index:0,
       columnsKeyMap:null,
       filterKeys:{},
@@ -131,6 +162,7 @@ module.exports = {
   computed: {
     filteredData: function () {
       if(this.data == null || typeof this.data =="undefined"){
+        this.localFilteredData=[];
         return [];
       }
 
@@ -171,6 +203,7 @@ module.exports = {
           return (a === b ? 0 : a > b ? 1 : -1) * order;
         });
       }
+      this.localFilteredData=data;
       return data;
 
     }
@@ -612,6 +645,24 @@ module.exports = {
         }
         this.data = newArray;
       }
+    },
+    onClicked:function(entry,index){
+      var prev=null;
+      var next=null;
+      if(index>0){
+        prev = this.localFilteredData[index-1];
+      }
+      if(index<(this.localFilteredData.length-1)){
+        next = this.localFilteredData[index+1];
+      }
+      var evt = {
+        index:index,
+        prev:prev,
+        current:entry,
+        next:next,
+        data:this.localFilteredData
+      }
+      this.$emit("gridrowclicked",evt);
     }
   }
 }

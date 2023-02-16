@@ -29,7 +29,7 @@ public class ShutdownController implements FilteringClass {
             method = "GET")
     @HamDoc(
             tags = {"base/utils"},
-            description = "Retrieve the application status",
+            description = "Kills gracefully the application",
             responses = @HamResponse(
                     body = String.class,
                     examples = @Example(example = "OK")
