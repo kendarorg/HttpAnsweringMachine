@@ -1,15 +1,6 @@
 <template>
   <div v-if="typeof this.data!='undefined'" width="1000px">
     <vtabs width="1000px">
-      <vtab name="JSON" width="1000px">
-        <br>
-        <div class="form-group" width="1000px">
-          <label for="free_content">Value</label>
-          <textarea style="width:1000px" class="form-control" rows="12" cols="100"
-                    name="free_content" id="free_content"
-                    v-model="shown"></textarea>
-        </div>
-      </vtab>
       <vtab name="COMPONENT" width="1000px">
         <br>
         <dynamic-component width="1000px" v-if="selectedComponentItem!=null"
@@ -28,6 +19,15 @@
                        @show-content="showContent"
           ></simple-tree>
         </ul>
+      </vtab>
+      <vtab name="JSON" width="1000px">
+        <br>
+        <div class="form-group" width="1000px">
+          <label for="free_content">Value</label>
+          <textarea style="width:1000px" class="form-control" rows="12" cols="100"
+                    name="free_content" id="free_content"
+                    v-model="shown"></textarea>
+        </div>
       </vtab>
     </vtabs>
   </div>

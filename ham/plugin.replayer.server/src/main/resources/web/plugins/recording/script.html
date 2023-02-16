@@ -44,12 +44,12 @@
                           v-model="data.description"></textarea>
             </div>
             <br>
-            <button type="button" :disabled="buttons.save" class="bi bi-floppy" @click="saveRecordingData" title="Save">Save</button>&nbsp;
-            <button type="button" :disabled="buttons.record"  class="bi bi-record-btn" @click="executeAct('start','record')" title="Save">Record</button>&nbsp;
-            <button type="button" :disabled="buttons.stop"  class="bi bi-stop-btn" @click="executeAct('stop')" title="Save">Stop</button>&nbsp;
-            <button type="button" :disabled="buttons.play"  class="bi bi-play-btn" @click="executeAct('start','replay')" title="Save">Play</button>&nbsp;
-            <button type="button" :disabled="buttons.pause"  class="bi bi-pause-btn" @click="executeAct('pause')" title="Save">Pause</button>
-            <button type="button" :disabled="buttons.auto"  class="bi bi-play-btn" @click="executeAct('start','auto')" title="Save">Play Stimulator</button>&nbsp;
+            <button type="button" :disabled="buttons.save" class="bi bi-floppy" @click="saveRecordingData" title="Save">Save global script data</button>&nbsp;
+            <button type="button" :disabled="buttons.record"  class="bi bi-record-btn" @click="executeAct('start','record')" title="Record">Record</button>&nbsp;
+            <button type="button" :disabled="buttons.stop"  class="bi bi-stop-btn" @click="executeAct('stop')" title="Stop">Stop</button>&nbsp;
+            <button type="button" :disabled="buttons.play"  class="bi bi-play-btn" @click="executeAct('start','replay')" title="Play">Play</button>&nbsp;
+            <button type="button" :disabled="buttons.pause"  class="bi bi-pause-btn" @click="executeAct('pause')" title="Pause">Pause</button>
+            <button type="button" :disabled="buttons.auto"  class="bi bi-play-btn" @click="executeAct('start','auto')" title="Play stim">Play Stimulator</button>&nbsp;
 
             <button v-on:click="updateButtons()" class="btn btn-primary btn-sm">Reload status</button>
             <div>
@@ -80,8 +80,8 @@
                 <vtab name="SELECTED" :title="selectedRowTitle">
                     <br>
                     <div width="800px" ref="container">
-                        <button type="button" :disabled="currentRowFromFilter.prev==null"  class="bi bi-floppy" v-on:click="extprevRow()" title="Save changes">Prev</button>
-                        <button type="button" :disabled="currentRowFromFilter.next==null"  class="bi bi-floppy" v-on:click="extnextRow()" title="Save changes">Next</button>
+                        <button type="button" :disabled="currentRowFromFilter.prev==null"  class="bi bi-floppy" v-on:click="extprevRow()" title="Prev">Prev</button>
+                        <button type="button" :disabled="currentRowFromFilter.next==null"  class="bi bi-floppy" v-on:click="extnextRow()" title="Next">Next</button>
                     </div>
                     <br>
                     <iframe :src="iframeAddress"
