@@ -431,7 +431,8 @@ public class Main {
 
 
     private static void handleDockerErrors(String a, Process p) {
-        if(a.toLowerCase(Locale.ROOT).startsWith("error")){
+        if(a.toLowerCase(Locale.ROOT).startsWith("error") ||
+                a.toLowerCase(Locale.ROOT).startsWith("couldn't connect")){
             System.err.println("");
             System.err.println("[ERROR] "+ a);
             p.destroy();
@@ -612,21 +613,28 @@ public class Main {
     private static void testAndGenerateJacoco(String startingPath, String hamVersion, String buildDir, String releasePath) throws Exception {
         System.out.println("[INFO] Unit test ham & report");
         startWait(pathOf(startingPath, "scripts","globaltest"), "test.run",Main::handleRunErrors);
-        sigtermAllHamProcesses();
+        if(SystemUtils.IS_OS_WINDOWS) {
+            checkForSite(60, "http://127.0.0.1/api/shutdown");
+        }else{
+            sigtermAllHamProcesses();
+        }
         var path = Path.of(startingPath,"ham","api.test","target","test_run_starter.exec");
-        System.out.print("[INFO] Waiting for coverage data");
         var now =System.currentTimeMillis();
         var end = now+5*60*1000;
-        while(!Files.exists(path) && end>System.currentTimeMillis()){
+
+        System.out.print("[INFO] Waiting for coverage data");
+        while((!Files.exists(path)||Files.size(path)==0) && end>System.currentTimeMillis()){
             System.out.print(".");
             Thread.sleep(1000);
         }
-        if(!Files.exists(path)) {
+        if(!Files.exists(path)|| Files.size(path)==0) {
             System.err.println("[ERROR] Error loading jacoco reports "+path);
             doExit(1);
         }else{
             System.out.println("OK");
         }
+
+        sigtermAllHamProcesses();
         startWait(pathOf(startingPath, "scripts","globaltest"), "test.jacoco",Main::handleRunErrors);
     }
 

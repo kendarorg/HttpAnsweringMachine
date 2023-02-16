@@ -117,7 +117,7 @@ public class HttpReplayer implements ReplayerEngine {
     }
 
     @Override
-    public Response findRequestMatch(Request req,String contentHash) throws Exception {
+    public Response findRequestMatch(Request req, String contentHash, Map<String, String> params) throws Exception {
 
         if(!hasRows) return null;
         Response founded = findRequestMatch(req, contentHash,true);
@@ -147,7 +147,11 @@ public class HttpReplayer implements ReplayerEngine {
             query.setParameter("recordingId", name);
             query.setParameter("path", sreq.getPath());
             query.setParameter("host", sreq.getHost());
-            staticRequests.addAll(query.getResultList());
+            var res = query.getResultList();
+            for(var rr:res){
+                em.detach(rr);
+            }
+            staticRequests.addAll(res);
         });
 
         var indexesIds = staticRequests.stream().map(r->r.getIndex().toString()).collect(Collectors.toList());

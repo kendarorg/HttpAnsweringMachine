@@ -9,7 +9,7 @@ cd ham
 SCRIPT_DIR=$(pwd)
 
 
-HAM_VERSION=4.1.5
+HAM_VERSION=4.1.6
 # Retrieve the jar name
 
 AGENT_PATH=$SCRIPT_DIR/api.test/org.jacoco.agent-0.8.8-runtime.jar

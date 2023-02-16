@@ -87,9 +87,9 @@ public class ReplayerStatus {
         dataset.load(id, description);
     }
 
-    public void addRequest(Request req, Response res) throws Exception {
-        if (state.get() != ReplayerState.RECORDING) return;
-        ((RecordingDataset)dataset).add(req, res);
+    public boolean addRequest(Request req, Response res) throws Exception {
+        if (state.get() != ReplayerState.RECORDING) return false;
+        return ((RecordingDataset)dataset).add(req, res);
     }
 
     private final JsonTypedSerializer serializer = new JsonTypedSerializer();

@@ -56,8 +56,9 @@ public class DbReplayer implements ReplayerEngine {
         var result = true;
         if(!recordDbCalls)result= false;
         if(!recordVoidDbCalls){
-            if(res.getResponseText()==null)result= false;
-            if(res.getResponseText().contains("VoidResult"))result= false;
+            if(res.getResponseText()==null || res.getResponseText().contains("VoidResult")){
+                result= false;
+            }
         }
         var dbNameAllowed = false;
         for(var dbName:dbNames){
@@ -69,7 +70,9 @@ public class DbReplayer implements ReplayerEngine {
                 break;
             }
         }
-        if(!dbNameAllowed)result = false;
+        if(!dbNameAllowed){
+            result = false;
+        }
         if(doUseSimEngine && result){
             var connectionId = req.getHeader("X-Connection-Id")==null?-1L:
                     Long.parseLong(req.getHeader("X-Connection-Id"));
@@ -194,11 +197,15 @@ public class DbReplayer implements ReplayerEngine {
     }
 
     protected void addAllIndexes(Long recordingId, ArrayList<CallIndex> indexes, EntityManager e) {
-        indexes.addAll(e.createQuery("SELECT e FROM CallIndex e LEFT JOIN ReplayerRow f " +
+        var rs = e.createQuery("SELECT e FROM CallIndex e LEFT JOIN ReplayerRow f " +
                 " ON e.reference = f.id"+
                 " WHERE " +
                 " f.type='db' AND e.recordingId=" + recordingId +
-                " AND e.stimulatorTest=false ORDER BY e.id ASC").getResultList());
+                " AND e.stimulatorTest=false ORDER BY e.id ASC").getResultList();
+        for(var rss:rs){
+            e.detach(rss);
+        }
+        indexes.addAll(rs);
     }
 
     private Map<Long,Long> connectionShadow = new HashMap<>();
@@ -206,7 +213,7 @@ public class DbReplayer implements ReplayerEngine {
     private AtomicLong atomicLong = new AtomicLong(Long.MAX_VALUE);
 
     @Override
-    public Response findRequestMatch(Request req, String contentHash) throws Exception {
+    public Response findRequestMatch(Request req, String contentHash, Map<String, String> specialParams) throws Exception {
         if(!hasRows)return null;
         var fullPath = req.getPath().substring(1).split("/");
         if(req.getPath().startsWith("/api/db")){
@@ -225,6 +232,23 @@ public class DbReplayer implements ReplayerEngine {
         }
         if(req.getPathParameter("dbName")==null)return null;
         if(!req.getPath().startsWith("/api/db/"))return null;
+
+        var dbNames = specialParams.get("dbNames")==null?new String[]{"*"}:
+                specialParams.get("dbNames").trim().split(",");
+
+        var dbNameAllowed = false;
+        for(var dbName:dbNames){
+            if(dbName.equalsIgnoreCase("*")){
+                dbNameAllowed=true;
+                break;
+            }else if(dbName.equalsIgnoreCase(req.getPathParameter("dbName"))){
+                dbNameAllowed=true;
+                break;
+            }
+        }
+        if(!dbNameAllowed){
+            return null;
+        }
         var reqDeser = serializer.newInstance();
         reqDeser.deserialize(req.getRequestText());
         var command = (JdbcCommand) reqDeser.read("command");
@@ -268,6 +292,7 @@ public class DbReplayer implements ReplayerEngine {
                 }
                 return serialize(target.getResponse());
             }
+
         }
         if(useSimEngine){
             var simResponse = simulator.handle(command,connectionId);
@@ -275,71 +300,9 @@ public class DbReplayer implements ReplayerEngine {
                 return serialize(simResponse.getResponse());
             }
         }
+
+        logger.error("NO MATCH FOR "+command.toString());
         return serialize(new VoidResult());
-    }
-
-    private Response getTreeMatch(Request req, JdbcCommand command, String dbName) {
-        var db = treeDatabase.get(dbName);
-        if(command instanceof Close) {
-            var ser = serializer.newInstance();
-            var response= new Response();
-            ser.write("result", new VoidResult());
-            response.getHeaders().put("content-type", "application/json");
-            response.setResponseText((String) ser.getSerialized());
-            response.setStatusCode(200);
-            return response;
-        }else if(command instanceof ConnectionConnect){
-            var newConnectionId = atomicLong.decrementAndGet();
-            if(db.getTargets().stream().anyMatch(t->!t.isVisited())){
-                var firstNotVisited = db.getTargets().stream().filter(t->!t.isVisited())
-                        .findFirst();
-                if(firstNotVisited.isEmpty()) return null;
-                firstNotVisited.get().setVisited(true);
-                connectionRealPath.put(newConnectionId,new ArrayList<>());
-                connectionRealPath.get(newConnectionId).add(db);
-                var result = new ObjectResult();
-                result.setResult(newConnectionId);
-                return serialize(result);
-            }else{
-                return null;
-            }
-        }else{
-            var connectionId = Long.parseLong(req.getHeader("x-connection-id"));
-            var path = connectionRealPath.get(connectionId);
-            var last = path.get(path.size()-1);
-            for(var child:last.getChildren()){
-                for(var target:child.getTargets()){
-                    if(matchesContentForReplaying(target, command)>0 && !target.isVisited()){
-                        var result = target.getResponse();
-                        if(child.getChildren().size()==0){
-                            if(target.getRow().isStaticRequest()){
-                                //Clean the path for static requests
-                                for(var i=0;i<path.size();i++){
-                                    for(var j=0;j<path.get(i).getTargets().size();j++){
-                                        var tth = path.get(i).getTargets().get(j);
-                                        if(tth.isVisited()){
-                                            tth.setVisited(false);
-                                            break;
-                                        }
-                                    }
-                                }
-                            }else{
-                                target.setVisited(true);
-                                connectionRealPath.get(connectionId).clear();
-                            }
-                        }else{
-                            target.setVisited(true);
-                            connectionRealPath.get(connectionId).add(child);
-                        }
-                        //path.add(child);
-                        return serialize(result);
-                    }
-                }
-            }
-
-            //No matches
-        }
-        return null;
     }
 
     private int matchesContentForReplaying(DbRow target, JdbcCommand command) {
