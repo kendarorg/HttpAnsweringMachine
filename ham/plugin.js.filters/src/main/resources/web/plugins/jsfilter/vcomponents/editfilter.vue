@@ -228,7 +228,7 @@ module.exports = {
     },
     updateContent: function () {
       if(!this.$refs.dynmatch.isValid()){
-        alert("Fill required fields!");
+        addMessage("Fill required fields!","error");
         return;
       }
       this.data.source = this.source

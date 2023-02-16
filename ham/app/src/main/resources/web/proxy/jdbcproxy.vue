@@ -86,10 +86,10 @@ module.exports = {
         this.reload();
       }else if (evt.buttonid == "_test") {
         await axios.get("/api/jdbcproxies/proxies/" + row['id']+"?test=true").then(function (data) {
-          if(data.status==200)alert("OK");
-          else alert("ERROR CONNECTING!")
+          if(data.status==200)addMessage("OK");
+          else addMessage("ERROR CONNECTING!","error")
         }).catch(function (error) {
-          alert(error.response.data);
+          addMessage(error.response.data,"error");
         });
       }
     },

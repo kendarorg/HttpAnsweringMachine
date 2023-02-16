@@ -58,7 +58,7 @@ module.exports = {
       location.href = "script.html?id="+data.response.data;
     },
     onError:function(data){
-      alert(data.error);
+      addMessage(data.error,"error");
     },
     create:function(){
       var data = {

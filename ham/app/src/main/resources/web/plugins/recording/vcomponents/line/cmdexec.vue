@@ -80,7 +80,7 @@ module.exports = {
       this.modalShow = true;
     },
     doDelete: function (item, index) {
-      alert("doDelete")
+      addMessage("doDelete","error")
     },
     save: function () {
       var item = this.modalData.data;

@@ -90,7 +90,7 @@ module.exports = {
       //location.href = "script.html?id="+data.response.data;
     },
     onErrorApply:function(data){
-      alert(data.error);
+      addMessage(data.error,error);
     },
     retrieveData: async function () {
       var result = await axios.get("/api/proxies");
