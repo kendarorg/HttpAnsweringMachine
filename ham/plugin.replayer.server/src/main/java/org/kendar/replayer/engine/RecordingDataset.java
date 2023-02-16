@@ -78,7 +78,7 @@ public class RecordingDataset implements BaseDataset{
     private static Map<String,Long> staticRequests = new HashMap<>();
     private static DbRecording recording;
 
-    public void add(Request req, Response res) throws Exception {
+    public boolean add(Request req, Response res) throws Exception {
         if(name==null){
             sessionFactory.transactional((em)->{
                 recording = new DbRecording();
@@ -115,7 +115,7 @@ public class RecordingDataset implements BaseDataset{
             }
 
             if(engine==null){
-                return;
+                return false;
             }
 
             if (res.isBinaryResponse()) {
@@ -170,9 +170,11 @@ public class RecordingDataset implements BaseDataset{
                 }
                 em.persist(callIndex);
             });
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("Error recording request " + path, e);
+            return false;
         }
     }
 }

@@ -49,11 +49,13 @@ public class RecordFilter  implements FilteringClass {
         if(!validAddress)return false;
         if(replayerStatus.getStatus()!= ReplayerState.RECORDING)return false;
         try {
-            logger.info("Recording: "+
-                    req.getProtocol()+"://"+
-                    req.getHost()+
-                    req.getPath());
-            replayerStatus.addRequest(req,res);
+
+            if(replayerStatus.addRequest(req,res)){
+                logger.info("Recording: "+
+                        req.getProtocol()+"://"+
+                        req.getHost()+
+                        req.getPath());
+            }
         } catch (Exception e) {
             logger.error("Error recording data",e);
         }

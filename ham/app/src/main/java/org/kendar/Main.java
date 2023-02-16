@@ -8,10 +8,12 @@ import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import static java.lang.System.exit;
 
@@ -34,10 +37,19 @@ public class Main implements CommandLineRunner {
             (hostname, sslSession) -> true);
     SpringApplication app = new SpringApplication(Main.class);
     app.setLazyInitialization(true);
-    app.run(args);
+    var ctx = app.run(args);
+    int exitCode = SpringApplication.exit(ctx, () -> 0);
+    exit(exitCode);
   }
 
+
+
   public static AtomicBoolean doRun = new AtomicBoolean(true);
+  private static Runnable shutdownHook;
+
+  public static void shutdown(){
+    shutdownHook.run();
+  }
 
   @Override
   public void run(String... args) {
@@ -50,6 +62,11 @@ public class Main implements CommandLineRunner {
 
     var answeringServers = applicationContext.getBeansOfType(AnsweringServer.class);
 
+    shutdownHook=()->{
+      doRun.set(false);
+      //SpringApplication.exit(applicationContext, () -> 0);
+    };
+
     //Create fake futures (terminated futures)
     Map<AnsweringServer, Future<?>> futures = setupFakeFutures(answeringServers);
 
@@ -60,7 +77,8 @@ public class Main implements CommandLineRunner {
       runRunners(executor, futures);
       Sleeper.sleep(1000);
     }
-    exit(0);
+    executor.shutdownNow();
+    //exit(0);
   }
 
   public void stop(){

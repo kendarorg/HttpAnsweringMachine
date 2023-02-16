@@ -74,6 +74,7 @@ new Vue({
                 th.prev = parseInt(result.headers.get("X-PREV"));
                 th.$set(th,"data", result.data);
 
+
                 axios.get("/api/plugins/replayer/recording/" + th.recordingId + "/script/" + th.selectedRow)
                     .then(function (results) {
                         th.script = results.data;

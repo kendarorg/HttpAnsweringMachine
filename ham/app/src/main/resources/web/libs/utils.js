@@ -93,6 +93,28 @@ const isUndefined=function(variable){
     return false;
 }
 
+function getTag(value) {
+    if (value == null) {
+        return value === undefined ? '[object Undefined]' : '[object Null]'
+    }
+    return toString.call(value)
+}
+
+function isObjectLike(value) {
+    return typeof value === 'object' && value !== null
+}
+
+function isBoolean(value) {
+    return value === true || value === false ||
+        (isObjectLike(value) && getTag(value) == '[object Boolean]')
+}
+
+const isTrue=function(variable){
+    if (variable.constructor === String && variable.toUpperCase()=="TRUE")return true;
+    else if(isBoolean(variable))return variable;
+    return false;
+}
+
 const waitForAvailableVariableTimes=function(variable,timeout,func,times){
     times--;
     if(times<0)return;

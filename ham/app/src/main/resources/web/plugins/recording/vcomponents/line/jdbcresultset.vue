@@ -83,13 +83,11 @@ module.exports = {
   computed:{
     columndescriptorslength:{
       get: function() {
-        console.log("columndescriptorslength")
         return findChildItemWithType(this.value,'columndescriptors').children.length;
       }
     },
     shownRows:{
       get:function (){
-        console.log("retrieve 2")
         var rows = findChildItemWithType(this.value,'columndescriptors').children;
         if(this.rowsChanged){
           this.rowsChanged=false;
@@ -105,7 +103,6 @@ module.exports = {
     },
     cols:{
       get: function() {
-        console.log("cols")
         var rows = findChildItemWithType(this.value,'columndescriptors').children;
         var realRows=[];
         rows.forEach(function(row){
@@ -121,13 +118,18 @@ module.exports = {
       var result=[];
       var th = this;
       var rows = findChildItemWithType(this.value,'rows').children;
+
       rows.forEach(function(row){
         var realRow =[];
         row.children.forEach(function(col){
-          var value = col.value;
-          realRow.push(value);
-        })
-        result.push(realRow);
+          if(!isUndefined(col)) {
+            var value = col.value;
+            realRow.push(value);
+          }
+        });
+        if(realRow.length>0) {
+          result.push(realRow);
+        }
       })
       this.rows=result;
       return result;
@@ -142,7 +144,6 @@ module.exports = {
     //   })
     // },
     reloadObject:function(originalResultset,setitem){
-      console.log("reloadobject")
       var data ={
         jsonResultSet:originalResultset,
         data:JSON.stringify(this.rows)

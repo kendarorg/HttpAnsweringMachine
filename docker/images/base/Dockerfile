@@ -2,7 +2,7 @@ FROM alpine:latest
 RUN apk update
 RUN apk upgrade
 
-RUN echo ham.base version-4.1.5
+RUN echo ham.base version-4.1.6
 
 ENV JAVA11_HOME /usr/lib/jvm/java-11-openjdk
 

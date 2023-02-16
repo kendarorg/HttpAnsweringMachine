@@ -50,8 +50,8 @@ public class SqlSimulator {
         addFakeExecs("commit", (a,c) -> new ObjectResult());
         addFakeExecs("rollback", (a,c) -> new ObjectResult());
         addFakeExecs("setSavepoint", SqlSimulator::setSavepoint);
-        addFakeExecs("setAutoCommit", (a,c) -> new ObjectResult());
-        addFakeExecs("getAutoCommit", (a,c) -> new ObjectResult(true));
+        //addFakeExecs("setAutoCommit", (a,c) -> new ObjectResult());
+        //addFakeExecs("getAutoCommit", (a,c) -> new ObjectResult(true));
         addFakeExecs("setReadOnly", (a,c) -> new ObjectResult());
         fakes.put(ConnectionCreateStatement.class, (a,c) -> new StatementResult(indexes.incrementAndGet(), 100, 0));
         fakes.put(RetrieveRemainingResultSet.class, (a,c) -> new RemainingResultSetResult(true, new ArrayList<>()));
