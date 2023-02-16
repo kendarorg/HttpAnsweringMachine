@@ -21,6 +21,11 @@
   <!--<button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>-->
   <button v-on:click="download()" class="bi bi-download" title="Download Hosts File"></button>
   <br><br>
+  <div class="form-group">
+    <label for="searchStr">Search content</label>
+    <button v-on:click="searchForStr()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <input class="form-control" type="text" name="searchStr" id="searchStr" v-model="searchStr"/>
+  </div>
   <simple-grid
       v-on:gridrowclicked="recordingListClicked"
       v-on:gridclicked="gridClicked"
@@ -49,6 +54,7 @@ module.exports = {
   },
   data:function (){
     return {
+      searchStr:"",
       modalData: null,
       modalShow: false,
       data:[],
@@ -84,6 +90,9 @@ module.exports = {
   methods:{
     recordingListClicked(evt){
       this.$emit("gridrowclicked",evt);
+    },
+    searchForStr(){
+      this.$emit("reload",this.searchStr);
     },
     reload(externalData){
       if(typeof externalData=="undefined"){

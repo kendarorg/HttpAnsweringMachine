@@ -67,6 +67,7 @@
         <div width="800px">
             <vtabs ref="tab">
                 <vtab name="RECORDINGS">
+
                     <br>
                     <recording-list
                             :selectedindex="currentRowSelectedIndex"
@@ -358,7 +359,7 @@
 
                     })
             },
-            reloadForm: function(){
+            reloadForm: function(searchStr){
                 showSpinner(true);
                 var th=this;
                 axios.get("/api/plugins/replayer/extension")
@@ -368,29 +369,38 @@
                             th.extensions.push(fe);
                         });
                     });
-                axios.get("/api/plugins/replayer/recording/" + getUrlParameter("id"))
-                    .then(function (result){
-                        th.data=result.data;
-                        th.extensionsData=th.data.filter;
-                        th.$refs.recordingList.reload(th.data.lines);
-                        //if(th.data.linse.length>0){
-                        th.updateButtons();
-                        //}
+                if(isUndefined(searchStr)) {
+                    axios.get("/api/plugins/replayer/recording/" + getUrlParameter("id"))
+                        .then(function (result) {
+                            th.putDataOnGrid(result, th);
+                        });
+                }else{
+                    axios.post("/api/plugins/replayer/recording/" + getUrlParameter("id"),[searchStr])
+                        .then(function (result) {
+                            th.putDataOnGrid(result, th);
+                        });
+                }
+            },
+            putDataOnGrid:function(result,th){
+                th.data=result.data;
+                th.extensionsData=th.data.filter;
+                th.$refs.recordingList.reload(th.data.lines);
+                //if(th.data.linse.length>0){
+                th.updateButtons();
+                //}
 
-                        var recording = sessionStorage.getItem("recordingId");
-                        if(null!=recording){
-                            recording = recording+"";
-                            if(recording==getUrlParameter("id")){
-                                var current = sessionStorage.getItem("recordingCurrentLine");
-                                var selectedType = sessionStorage.getItem("selectedType");
-                                if(null!=current){
-                                    th.rowSelected(parseInt(current),selectedType);
-                                }
-                            }
+                var recording = sessionStorage.getItem("recordingId");
+                if(null!=recording){
+                    recording = recording+"";
+                    if(recording==getUrlParameter("id")){
+                        var current = sessionStorage.getItem("recordingCurrentLine");
+                        var selectedType = sessionStorage.getItem("selectedType");
+                        if(null!=current){
+                            th.rowSelected(parseInt(current),selectedType);
                         }
-                        showSpinner(false);
-
-                    });
+                    }
+                }
+                showSpinner(false);
             },
             download:function(){
                 downloadFile("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/full",this.data.name);

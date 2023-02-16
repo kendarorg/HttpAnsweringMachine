@@ -379,4 +379,99 @@ public class ReplayerAPICrud implements FilteringClass {
     res.setResponseText(String.valueOf(recordingId.get()));
     res.setStatusCode(200);
   }
+
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/replayer/recording/{id}",
+          method = "POST")
+  @HamDoc(description = "Search on recording req/res bodies for specific strings",tags = {"plugin/replayer"},
+          path = @PathParameter(key = "id"),
+          requests = @HamRequest(body = String[].class)
+  )
+  public void searchRecords(Request req, Response res) throws Exception {
+    var id = Long.parseLong(req.getPathParameter("id"));
+    var queryParams =  Arrays.stream(mapper.readValue(req.getRequestText(), String[].class)).collect(Collectors.toList());
+    var result = new SingleScript();
+    var isEmpty = true;
+    sessionFactory.query(em-> {
+      var rslist = em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id).getResultList();
+      if(rslist.size()==0){
+        result.setLines(null);
+        return;
+      }
+      DbRecording recording = (DbRecording)rslist.get(0);
+      if(recording.getFilter()!=null && !recording.getFilter().isEmpty()){
+        result.setFilter(mapper.readValue(recording.getFilter(),typeRef));
+      }else{
+        result.setFilter(new HashMap<>());
+      }
+      List<CallIndex> indexLines = em
+              .createQuery("SELECT e FROM CallIndex e WHERE e.recordingId=" + id)
+              .getResultList();
+      HashMap<Long, ReplayerRow> rows = new HashMap<>();
+      em
+              .createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId=" + id)
+              .getResultList()
+              .stream()
+              .forEach((a)->{
+                var idr = ((ReplayerRow)a).getId();
+                if(!rows.containsKey(idr)) {
+                  var add = false;
+                  if (queryParams.size() == 0) {
+                    add = true;
+                  } else {
+                    var rs = ((ReplayerRow) a).getResponse();
+                    var rq = ((ReplayerRow) a).getRequest();
+                    if (rq.getRequestText()!=null){
+                        if(queryParams.stream().anyMatch((v) -> rq.getRequestText().contains(v))){
+                          add =true;
+                        }
+                    }
+                    if (add == false && rs.getResponseText()!=null){
+                      if(queryParams.stream().anyMatch((v) -> rs.getResponseText().contains(v))){
+                        add =true;
+                      }
+                    }
+                  }
+                  if(add){
+                    rows.put(idr, (ReplayerRow) a);
+                  }
+                }
+              });
+
+      result.setName(recording.getName());
+      result.setId(recording.getId());
+      result.setDescription(recording.getDescription());
+      for(var index: indexLines){
+
+        var line = rows.get(index.getReference());
+        if(line == null) continue;
+        var newLine = new SingleScriptLine();
+        newLine.setId(index.getId());
+        newLine.setRequestMethod(line.getRequest().getMethod());
+        newLine.setRequestPath(line.getRequest().getPath());
+        newLine.setRequestHost(line.getRequest().getHost());
+        newLine.setReference(index.getReference());
+        newLine.setStimulatorTest(index.isStimulatorTest());
+        newLine.setType(line.getType());
+        newLine.setQueryCalc(RequestUtils.buildFullQuery(line.getRequest()));
+        newLine.setPreScript(index.getPreScript()!=null);
+        newLine.setScript(index.getPostScript()!=null);
+        newLine.setRequestHashCalc(isHashPresent(line.getRequestHash()));
+        newLine.setResponseHashCalc(isHashPresent(line.getResponseHash()));
+        newLine.setResponseStatusCode(line.getResponse().getStatusCode());
+        result.getLines().add(newLine);
+      }
+
+    });
+
+    if(result.getLines()==null){
+      res.setStatusCode(404);
+      res.setResponseText("MISSING RECORDING WITH ID "+id);
+    }else {
+      result.getLines().sort(Comparator.comparingLong(SingleScriptLine::getId));
+      res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
+      res.setResponseText(mapper.writeValueAsString(result));
+    }
+  }
 }
