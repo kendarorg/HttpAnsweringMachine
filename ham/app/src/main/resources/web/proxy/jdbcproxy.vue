@@ -48,6 +48,15 @@ module.exports = {
           properties: {
             name: "Edit", style: "bi bi-pen-fill"
           }
+        },{
+          id: "_test",
+          template: "iconbutton",
+          default: false,
+          searchable: false,
+          sortable: false,
+          properties: {
+            name: "Edit", style: "bi bi-file-check"
+          }
         },
         {
           id: "_delete",
@@ -75,6 +84,13 @@ module.exports = {
       } else if (evt.buttonid == "_delete") {
         await axios.delete("/api/jdbcproxies/proxies/" + row['id'])
         this.reload();
+      }else if (evt.buttonid == "_test") {
+        await axios.get("/api/jdbcproxies/proxies/" + row['id']+"?test=true").then(function (data) {
+          if(data.status==200)alert("OK");
+          else alert("ERROR CONNECTING!")
+        }).catch(function (error) {
+          alert(error.response.data);
+        });
       }
     },
     reload: function () {
