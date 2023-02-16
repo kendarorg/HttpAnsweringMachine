@@ -1,9 +1,13 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
     <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
-    <script src="/libs/jquery-3.2.1.min.js"></script>
-    <script src="/libs/bootstrap.min.js"></script>
-    <script src="/libs/lodash.js"></script>
+    <script src="/libs/vue.js"></script>
+    <script src="/libs/httpVueLoader.js"></script>
+    <script src="/libs/axios.min.js"></script>
+    <script src="/libs/utils.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
 </head>
@@ -12,7 +16,7 @@
     <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
-<div class="container-fluid">
+<div class="container-fluid" id="app">
     <div class="row">
         <div class="col-md-8">
             <br>
@@ -25,32 +29,40 @@
 
             <div class="form-group">
                 <label for="source">source</label>
-                <textarea class="form-control" rows="6" cols="50" name="source" id="source"></textarea>
+                <textarea class="form-control" rows="6" cols="50" name="source" id="source" v-model="source"></textarea>
             </div>
             <div class="form-group">
-                <button type="button" id="execute" name="execute" class="btn btn-default">execute</button>
+                <button type="button" id="execute" name="execute" @click="doexecute()" class="btn btn-default">execute</button>
             </div>
             <div class="form-group">
                 <label for="result">result</label>
-                <textarea class="form-control" rows="6" cols="50" name="result" id="result"></textarea>
+                <textarea class="form-control" rows="6" cols="50" name="result" id="result" v-model="result"></textarea>
             </div>
         </div>
     </div>
 </div>
-<script src="/app/app.js"></script>
-<script>
-    $("#execute").click(function(){
-        var data= $('#source').val();
-        $.ajax({
-            url: '/api/remote/restclient',
-            type: 'post',
-            data: data,
-            contentType: "text/plain",
-            processData: false,
-            success: function(result){
-                $('#result').text(result);
+
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        components: {
+
+        },
+        data: {
+            source:"GET https://www.kendar.org",
+            result:""
+        },
+        methods: {
+            doexecute:function (){
+                var th = this;
+                const options = {
+                    headers: {"content-type": "text/plain"}
+                }
+                axios.post('/api/remote/restclient', this.source,options).then((resultall) => {
+                    th.result = resultall.data;
+                });
             }
-        });
+        }
     });
 </script>
 </body>
