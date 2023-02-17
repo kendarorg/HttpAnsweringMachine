@@ -22,4 +22,6 @@ public interface ReplayerEngine {
     void setParams(Map<String, String> params);
 
     void setupStaticCalls(DbRecording recording) throws Exception;
+
+    void updateReqRes(Request req, Response res, Map<String, String> specialParams);
 }
