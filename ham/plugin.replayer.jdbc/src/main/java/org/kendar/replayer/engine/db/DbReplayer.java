@@ -443,28 +443,28 @@ public class DbReplayer implements ReplayerEngine {
 
     @Override
     public void updateReqRes(Request req, Response res, Map<String, String> specialParams) {
-        var reqDeser = serializer.newInstance();
-        reqDeser.deserialize(req.getRequestText());
-        var cmd = reqDeser.read("command");
-        if(ClassUtils.isAssignable(cmd.getClass(), TraceAwareType.class)){
-            var oriTraceId = ((TraceAwareType)cmd).getTraceId();
-            req.getHeaders().put("X-ORI-TRACE-ID",String.valueOf(oriTraceId));
-            ((TraceAwareType)cmd).setTraceId(0);
-            var reqSer = serializer.newInstance();
-            reqSer.write("command",cmd);
-            req.setRequestText((String)reqSer.getSerialized());
-        }
 
-        var resDeser = serializer.newInstance();
-        resDeser.deserialize(res.getResponseText());
-        var result = resDeser.read("result");
-        if(ClassUtils.isAssignable(result.getClass(), TraceAwareType.class)){
-            var oriTraceId = ((TraceAwareType)result).getTraceId();
-            res.getHeaders().put("X-ORI-TRACE-ID",String.valueOf(oriTraceId));
-            ((TraceAwareType)result).setTraceId(0);
-            var resSer = serializer.newInstance();
-            resSer.write("result",result);
-            req.setRequestText((String)resSer.getSerialized());
-        }
+            var reqDeser = serializer.newInstance();
+            reqDeser.deserialize(req.getRequestText());
+            var cmd = reqDeser.read("command");
+            if (ClassUtils.isAssignable(cmd.getClass(), TraceAwareType.class)) {
+                var oriTraceId = ((TraceAwareType) cmd).getTraceId();
+                req.getHeaders().put("X-ORI-TRACE-ID", String.valueOf(oriTraceId));
+                ((TraceAwareType) cmd).setTraceId(0);
+                var reqSer = serializer.newInstance();
+                reqSer.write("command", cmd);
+                req.setRequestText((String) reqSer.getSerialized());
+            }
+            var resDeser = serializer.newInstance();
+            resDeser.deserialize(res.getResponseText());
+            var result = resDeser.read("result");
+            if (ClassUtils.isAssignable(result.getClass(), TraceAwareType.class)) {
+                var oriTraceId = ((TraceAwareType) result).getTraceId();
+                res.getHeaders().put("X-ORI-TRACE-ID", String.valueOf(oriTraceId));
+                ((TraceAwareType) result).setTraceId(0);
+                var resSer = serializer.newInstance();
+                resSer.write("result", result);
+                res.setResponseText((String) resSer.getSerialized());
+            }
     }
 }
