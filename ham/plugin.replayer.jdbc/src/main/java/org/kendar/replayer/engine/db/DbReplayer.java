@@ -457,14 +457,14 @@ public class DbReplayer implements ReplayerEngine {
 
         var resDeser = serializer.newInstance();
         resDeser.deserialize(res.getResponseText());
-        var result = reqDeser.read("result");
+        var result = resDeser.read("result");
         if(ClassUtils.isAssignable(result.getClass(), TraceAwareType.class)){
             var oriTraceId = ((TraceAwareType)result).getTraceId();
             res.getHeaders().put("X-ORI-TRACE-ID",String.valueOf(oriTraceId));
             ((TraceAwareType)result).setTraceId(0);
-            var reqSer = serializer.newInstance();
-            reqSer.write("result",result);
-            req.setRequestText((String)reqSer.getSerialized());
+            var resSer = serializer.newInstance();
+            resSer.write("result",result);
+            req.setRequestText((String)resSer.getSerialized());
         }
     }
 }
