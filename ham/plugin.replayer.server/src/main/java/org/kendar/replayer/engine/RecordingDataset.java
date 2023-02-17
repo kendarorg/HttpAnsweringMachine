@@ -111,6 +111,7 @@ public class RecordingDataset implements BaseDataset{
                         engine=null;
                         continue;
                     }
+                    engine.updateReqRes(req,res,specialParams);
                     break;
                 }else{
                     engine=null;

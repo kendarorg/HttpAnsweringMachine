@@ -91,6 +91,11 @@ public class HttpReplayer implements ReplayerEngine {
         //NOOP
     }
 
+    @Override
+    public void updateReqRes(Request req, Response res, Map<String, String> specialParams) {
+
+    }
+
     public HttpReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder,JsonConfiguration configuration) {
         this.sessionFactory = sessionFactory;
         this.logger = loggerBuilder.build(HttpReplayer.class);
