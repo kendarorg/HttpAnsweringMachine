@@ -1,0 +1,456 @@
+{
+  "rs": {
+    "traceid": 5,
+    ":traceid:": "java.lang.Long",
+    "type": "FORWARD_ONLY",
+    ":type:": "org.kendar.janus.enums.ResultSetType",
+    "concurrency": "CONCUR_READ_ONLY",
+    ":concurrency:": "org.kendar.janus.enums.ResultSetConcurrency",
+    "holdability": "DEFAULT",
+    ":holdability:": "org.kendar.janus.enums.ResultSetHoldability",
+    "maxrows": 500,
+    ":maxrows:": "java.lang.Integer",
+    "prefetchmetadata": false,
+    ":prefetchmetadata:": "java.lang.Boolean",
+    "charset": "UTF-8",
+    ":charset:": "java.lang.String",
+    "columndescriptors": [
+      {
+        "_": {
+          "type": -5,
+          ":type:": "java.lang.Integer",
+          "name": "ID",
+          ":name:": "java.lang.String",
+          "label": "id1_1_",
+          ":label:": "java.lang.String"
+        },
+        ":_:": "org.kendar.janus.results.ColumnDescriptor"
+      },
+      {
+        "_": {
+          "type": 12,
+          ":type:": "java.lang.Integer",
+          "name": "ACCOUNT_HASH",
+          ":name:": "java.lang.String",
+          "label": "account_2_1_",
+          ":label:": "java.lang.String"
+        },
+        ":_:": "org.kendar.janus.results.ColumnDescriptor"
+      },
+      {
+        "_": {
+          "type": 12,
+          ":type:": "java.lang.Integer",
+          "name": "CART_ID",
+          ":name:": "java.lang.String",
+          "label": "cart_id3_1_",
+          ":label:": "java.lang.String"
+        },
+        ":_:": "org.kendar.janus.results.ColumnDescriptor"
+      },
+      {
+        "_": {
+          "type": -1,
+          ":type:": "java.lang.Integer",
+          "name": "CONTENT",
+          ":name:": "java.lang.String",
+          "label": "content4_1_",
+          ":label:": "java.lang.String"
+        },
+        ":_:": "org.kendar.janus.results.ColumnDescriptor"
+      },
+      {
+        "_": {
+          "type": 93,
+          ":type:": "java.lang.Integer",
+          "name": "CREATION_DATE",
+          ":name:": "java.lang.String",
+          "label": "creation5_1_",
+          ":label:": "java.lang.String"
+        },
+        ":_:": "org.kendar.janus.results.ColumnDescriptor"
+      },
+      {
+        "_": {
+          "type": 12,
+          ":type:": "java.lang.Integer",
+          "name": "EVENT_TYPE",
+          ":name:": "java.lang.String",
+          "label": "event_ty6_1_",
+          ":label:": "java.lang.String"
+        },
+        ":_:": "org.kendar.janus.results.ColumnDescriptor"
+      },
+      {
+        "_": {
+          "type": 12,
+          ":type:": "java.lang.Integer",
+          "name": "USER_ID",
+          ":name:": "java.lang.String",
+          "label": "user_id7_1_",
+          ":label:": "java.lang.String"
+        },
+        ":_:": "org.kendar.janus.results.ColumnDescriptor"
+      },
+      {
+        "_": {
+          "type": -7,
+          ":type:": "java.lang.Integer",
+          "name": "VERSION",
+          ":name:": "java.lang.String",
+          "label": "version8_1_",
+          ":label:": "java.lang.String"
+        },
+        ":_:": "org.kendar.janus.results.ColumnDescriptor"
+      }
+    ],
+    ":columndescriptors:": "java.util.ArrayList",
+    "lastrow": true,
+    ":lastrow:": "java.lang.Boolean",
+    "rows": [
+      {
+        "_": [
+          {
+            "_": 2082593770,
+            ":_:": "java.math.BigInteger"
+          },
+          {},
+          {
+            "_": "8E861CF978BD6944A1DBB5D9C01F016A807F14BE",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "{\"idBusinessProfile\":\"LASTMINUTECOUK\",\"brandName\":\"LASTMINUTE\",\"merchantGroupId\":\"MERCHANT_GROUP_BRAVOFLY\",\"categoryLevelCode\":\"TDTD\",\"locale\":\"en_GB\",\"userCurrency\":\"GBP\",\"baseProductsCost\":{\"currency\":\"GBP\",\"value\":\"0\"},\"shoppingPrice\":{\"currency\":\"GBP\",\"value\":\"26.99\"},\"currencyConversionRate\":0.882810,\"paymentMethodSelected\":\"\",\"contact\":\"e8c1e3b1a280a6f2a60e91b43a87cc05efd723b9b77c211bd85a5a368c93f98e\",\"travellersInfo\":[{\"id\":1,\"passengerType\":\"ADULT\",\"document\":{}}],\"agencyCommission\":{\"currency\":\"EUR\",\"value\":\"0\"},\"agencyDiscount\":{\"currency\":\"EUR\",\"value\":\"0\"},\"creationDate\":\"2023-02-15T13:09:36\",\"creationDateUTC\":\"2023-02-15T12:09:36Z\",\"shoppingUserId\":\"d20d33bd-a74a-4b5a-8e60-fa9f034c149e\",\"shoppingUrl\":\"https://qa-flights.lastminute.com/s/flights/search/v2/search?cncr_s=U2FsdGVkX19ZQ7rD6YUPTq5RgkZj9d0g1AMqbPtwTXRhJxM5woOyzO%2B9cofAFpQtchC1ZVTsafkMILPGMUCNb%2FZxRc2XMmdkL%2FwSM1rgbxwBWcQ0fJo8QbEAMdjLp4C05%2FOq6yIxjGtCFcM7ayCIkeWRQ4PLYDg4PP44UEbPE8rCMwjEFjy32Hp7dKC6PpJ4N5kk5QKrkFlGKeMW1%2FXho%2BrIfKsLXn%2Fyy7oQBmfOyqQuzm8RNdZSEA1BwW7BbR4DU7xpFJ8v1yTuVwoT3EihHjw7IWgNdSVrQ85Z0kfI%2B7g6QgQAp7V9oC%2Fwb8EF%2BgujySR50nAwzS7vcJqtkXN3O%2FoBf7fUaZscSlGn3sEsBjRgaqFzRcwTw0ZRdWG1LsnqTJjyrxluFqfV8jkovDM6CQ5T0ckK9uPr4hH3HR%2B5hM%2F8nTWMvfqWb2KsLakvKlZF1J4Mp72TDmfaCoGi5YIk98wNqJfzAAmRdesxqeommr0hkznLetwZD4adh2t2KjzQNh1Spz4tsIOAf8IgskJopyNv6HFGUDUAFghmgMxJnngBqDoTBMrDxdV9wtHry6cs\",\"shoppingSearchId\":\"1hf7wh0v8hr7k\",\"requestNumber\":345176725440804864,\"roles\":[\"UNPRIVILEGED\"],\"membershipTravellerChangeEnabled\":true}",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "2023-02-15T13:10:50",
+            ":_:": "java.time.LocalDateTime"
+          },
+          {
+            "_": "CART_CREATED",
+            ":_:": "java.lang.String"
+          },
+          {},
+          {
+            "_": true,
+            ":_:": "java.lang.Boolean"
+          }
+        ],
+        ":_:": "java.util.ArrayList"
+      },
+      {
+        "_": [
+          {
+            "_": 2082593771,
+            ":_:": "java.math.BigInteger"
+          },
+          {},
+          {
+            "_": "8E861CF978BD6944A1DBB5D9C01F016A807F14BE",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "{\"orderId\":\"2188375490\",\"travellerRefs\":[{\"travellerId\":1,\"passengerId\":1}],\"currencyConversionRate\":0.882810}",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "2023-02-15T13:10:50",
+            ":_:": "java.time.LocalDateTime"
+          },
+          {
+            "_": "ORDER_ASSOCIATED",
+            ":_:": "java.lang.String"
+          },
+          {},
+          {
+            "_": true,
+            ":_:": "java.lang.Boolean"
+          }
+        ],
+        ":_:": "java.util.ArrayList"
+      },
+      {
+        "_": [
+          {
+            "_": 2082593772,
+            ":_:": "java.math.BigInteger"
+          },
+          {},
+          {
+            "_": "8E861CF978BD6944A1DBB5D9C01F016A807F14BE",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "{\"id\":42,\"touchpointId\":\"SHOPPING_CONCORDE\",\"enableHeader\":null,\"enableFooter\":null}",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "2023-02-15T13:10:51",
+            ":_:": "java.time.LocalDateTime"
+          },
+          {
+            "_": "TOUCHPOINT_INFO_ADDED",
+            ":_:": "java.lang.String"
+          },
+          {},
+          {
+            "_": true,
+            ":_:": "java.lang.Boolean"
+          }
+        ],
+        ":_:": "java.util.ArrayList"
+      },
+      {
+        "_": [
+          {
+            "_": 2082593773,
+            ":_:": "java.math.BigInteger"
+          },
+          {},
+          {
+            "_": "8E861CF978BD6944A1DBB5D9C01F016A807F14BE",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "{\"janineId\":{\"id\":\"345176725440804864SCHv01142989421\"},\"tripResponse\":{\"outboundLeg\":{\"fareType\":\"STD\",\"stops\":0,\"duration\":\"120\",\"hops\":[{\"departureAirport\":\"MXP\",\"departureDate\":{\"year\":2023,\"month\":1,\"day\":22,\"hour\":6,\"minute\":55},\"arrivalAirport\":\"LGW\",\"arrivalDate\":{\"year\":2023,\"month\":1,\"day\":22,\"hour\":7,\"minute\":55},\"idAirline\":\"W6\",\"idAirlineOperator\":\"W6\",\"flightNumber\":\"5788\",\"classAvailability\":\"Y\",\"baggageAllowance\":{\"value\":\"0\",\"unitOfMeasure\":\"N\",\"included\":false},\"fareBasis\":\"\",\"childFareBasis\":\"\",\"infantFareBasis\":\"\",\"classToBook\":\"\",\"technicalStops\":0,\"departureTerminal\":\"\",\"arrivalTerminal\":\"\",\"technicalStopList\":[]}],\"type\":\"FLIGHT\",\"flightType\":\"LC\",\"price\":{\"adult\":{\"fare\":{\"amount\":7.21000,\"currency\":\"EUR\"},\"tax\":{\"amount\":8.00,\"currency\":\"EUR\"}},\"child\":{\"fare\":{\"amount\":7.21000,\"currency\":\"EUR\"},\"tax\":{\"amount\":8.00,\"currency\":\"EUR\"}},\"infant\":{\"fare\":{\"amount\":0,\"currency\":\"EUR\"},\"tax\":{\"amount\":0,\"currency\":\"EUR\"}},\"discount\":{\"amount\":0.00,\"currency\":\"EUR\"},\"agencyCommission\":{\"amount\":2.02,\"currency\":\"EUR\"},\"paymentMethodCommissions\":[{\"code\":\"01\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"02\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"03\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"05\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"06\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"08\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"09\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"10\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"11\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"17\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"18\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"22\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"23\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"24\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"25\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"43\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"53\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"61\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"95\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"TR\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false}]}},\"inboundLeg\":{\"fareType\":\"STD\",\"stops\":0,\"duration\":\"115\",\"hops\":[{\"departureAirport\":\"STN\",\"departureDate\":{\"year\":2023,\"month\":2,\"day\":1,\"hour\":20,\"minute\":40},\"arrivalAirport\":\"MXP\",\"arrivalDate\":{\"year\":2023,\"month\":2,\"day\":1,\"hour\":23,\"minute\":35},\"idAirline\":\"FR\",\"idAirlineOperator\":\"FR\",\"flightNumber\":\"8740\",\"classAvailability\":\"Y\",\"baggageAllowance\":{\"value\":\"0\",\"unitOfMeasure\":\"N\",\"included\":false},\"fareBasis\":\"\",\"childFareBasis\":\"\",\"infantFareBasis\":\"\",\"classToBook\":\"N\",\"technicalStops\":0,\"departureTerminal\":\"\",\"arrivalTerminal\":\"\",\"technicalStopList\":[]}],\"type\":\"FLIGHT\",\"flightType\":\"LC\",\"price\":{\"adult\":{\"fare\":{\"amount\":11.32000,\"currency\":\"EUR\"},\"tax\":{\"amount\":0,\"currency\":\"EUR\"}},\"child\":{\"fare\":{\"amount\":11.32000,\"currency\":\"EUR\"},\"tax\":{\"amount\":0,\"currency\":\"EUR\"}},\"infant\":{\"fare\":{\"amount\":0,\"currency\":\"EUR\"},\"tax\":{\"amount\":0,\"currency\":\"EUR\"}},\"discount\":{\"amount\":0.00,\"currency\":\"EUR\"},\"agencyCommission\":{\"amount\":2.02,\"currency\":\"EUR\"},\"paymentMethodCommissions\":[{\"code\":\"01\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"02\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"03\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"05\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"06\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"08\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"09\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"10\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"11\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"17\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"18\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"22\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"23\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"24\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"25\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"43\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"53\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"61\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"95\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false},{\"code\":\"TR\",\"amount\":0.00,\"currency\":\"EUR\",\"magic\":false}]}},\"roundTrip\":true,\"currency\":\"EUR\",\"userCurrency\":\"GBP\",\"amount\":26.99,\"baseAmount\":23.42,\"mac\":\"345176725440804864SCHv01142989421\",\"electronicTicket\":true,\"residential\":false,\"booking\":true,\"idTrip\":28,\"paymentMethodCommissions\":[{\"code\":\"01\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"02\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"03\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"05\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"06\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"08\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"09\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"10\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"11\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"17\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"18\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"22\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"23\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"24\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"25\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"43\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"53\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"61\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"95\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false},{\"code\":\"TR\",\"amount\":0.00,\"currency\":\"GBP\",\"magic\":false}],\"multiFlight\":true,\"discount\":0.00,\"agencyCommission\":3.57,\"tripId\":\"345176725440804864SCHv01142989421\"}}",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "2023-02-15T13:10:51",
+            ":_:": "java.time.LocalDateTime"
+          },
+          {
+            "_": "TRANSPORT_ADDED",
+            ":_:": "java.lang.String"
+          },
+          {},
+          {
+            "_": true,
+            ":_:": "java.lang.Boolean"
+          }
+        ],
+        ":_:": "java.util.ArrayList"
+      },
+      {
+        "_": [
+          {
+            "_": 2082593774,
+            ":_:": "java.math.BigInteger"
+          },
+          {},
+          {
+            "_": "8E861CF978BD6944A1DBB5D9C01F016A807F14BE",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "{\"flightCatalogId\":{\"id\":1968279783},\"quotationResponse\":{\"quotation\":{\"sellableFlight\":{\"itinerary\":{\"originAndDestinations\":[{\"id\":1,\"segments\":[{\"operative\":{\"departureDate\":{\"year\":2023,\"month\":2,\"day\":22,\"hour\":6,\"minute\":55},\"arrivalDate\":{\"year\":2023,\"month\":2,\"day\":22,\"hour\":7,\"minute\":55},\"route\":{\"departureAirport\":{\"code\":\"MXP\",\"terminal\":\"\"},\"arrivalAirport\":{\"code\":\"LGW\",\"terminal\":\"\"}},\"flightIdentifier\":{\"airline\":{\"code\":\"W6\"},\"flightNumber\":\"5788\",\"operator\":{\"code\":\"W6\"}},\"availability\":{\"classToBook\":\"\",\"cabinClass\":\"Y\"},\"technicalStops\":[]},\"adultFareBasis\":{\"code\":\"\",\"baggageAllowance\":{\"value\":\"0\",\"unitOfMeasure\":\"N\"}},\"childFareBasis\":{\"code\":\"\"},\"infantFareBasis\":{\"code\":\"\"}}],\"adultPrice\":{\"fareAmount\":6.37,\"fareAmountMarkedUp\":6.37,\"taxAmount\":7.06,\"taxAmountMarkedUp\":7.06,\"currency\":\"GBP\"},\"childPrice\":{\"fareAmount\":6.37,\"fareAmountMarkedUp\":6.37,\"taxAmount\":7.06,\"taxAmountMarkedUp\":7.06,\"currency\":\"GBP\"},\"infantPrice\":{\"fareAmount\":0,\"fareAmountMarkedUp\":0,\"taxAmount\":0,\"taxAmountMarkedUp\":0,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"currency\":\"GBP\",\"adult\":{\"fareAmount\":6.37,\"fareAmountMarkedUp\":6.37,\"taxAmount\":7.06,\"taxAmountMarkedUp\":7.06},\"child\":{\"fareAmount\":6.37,\"fareAmountMarkedUp\":6.37,\"taxAmount\":7.06,\"taxAmountMarkedUp\":7.06},\"infant\":{\"fareAmount\":0,\"fareAmountMarkedUp\":0,\"taxAmount\":0,\"taxAmountMarkedUp\":0}}],\"idAncillaries\":1,\"fareTypes\":[\"STD\"],\"flightType\":\"LC\",\"idFareRules\":1,\"allowances\":{\"adult\":{\"message\":\"\",\"code\":\"0N\"},\"child\":{\"message\":\"\",\"code\":\"\"},\"infant\":{\"message\":\"\",\"code\":\"\"}}},{\"id\":2,\"segments\":[{\"operative\":{\"departureDate\":{\"year\":2023,\"month\":3,\"day\":1,\"hour\":20,\"minute\":40},\"arrivalDate\":{\"year\":2023,\"month\":3,\"day\":1,\"hour\":23,\"minute\":35},\"route\":{\"departureAirport\":{\"code\":\"STN\",\"terminal\":\"\"},\"arrivalAirport\":{\"code\":\"MXP\",\"terminal\":\"\"}},\"flightIdentifier\":{\"airline\":{\"code\":\"FR\"},\"flightNumber\":\"8740\",\"operator\":{\"code\":\"FR\"}},\"availability\":{\"classToBook\":\"N\",\"cabinClass\":\"Y\"},\"technicalStops\":[]},\"adultFareBasis\":{\"code\":\"\",\"baggageAllowance\":{\"value\":\"0\",\"unitOfMeasure\":\"N\"}},\"childFareBasis\":{\"code\":\"\"},\"infantFareBasis\":{\"code\":\"\"}}],\"adultPrice\":{\"fareAmount\":9.99,\"fareAmountMarkedUp\":9.99,\"taxAmount\":0,\"taxAmountMarkedUp\":0,\"currency\":\"GBP\"},\"childPrice\":{\"fareAmount\":9.99,\"fareAmountMarkedUp\":9.99,\"taxAmount\":0,\"taxAmountMarkedUp\":0,\"currency\":\"GBP\"},\"infantPrice\":{\"fareAmount\":0,\"fareAmountMarkedUp\":0,\"taxAmount\":0,\"taxAmountMarkedUp\":0,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"currency\":\"GBP\",\"adult\":{\"fareAmount\":9.99,\"fareAmountMarkedUp\":9.99,\"taxAmount\":0,\"taxAmountMarkedUp\":0},\"child\":{\"fareAmount\":9.99,\"fareAmountMarkedUp\":9.99,\"taxAmount\":0,\"taxAmountMarkedUp\":0},\"infant\":{\"fareAmount\":0,\"fareAmountMarkedUp\":0,\"taxAmount\":0,\"taxAmountMarkedUp\":0}}],\"idAncillaries\":2,\"fareTypes\":[\"STD\"],\"flightType\":\"LC\",\"idFareRules\":2,\"allowances\":{\"adult\":{\"message\":\"\",\"code\":\"0N\"},\"child\":{\"message\":\"\",\"code\":\"\"},\"infant\":{\"message\":\"\",\"code\":\"\"}}}],\"ancillaries\":[{\"id\":1,\"ancillariesForPassengerType\":[{\"passengerType\":\"ADT\",\"ancillaries\":[{\"code\":\"BAG_0\",\"type\":\"BAGGAGE\",\"label\":\"0 - No checked luggage\",\"price\":{\"amount\":0,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":0,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"numberOfPieces\":\"0\"}},{\"code\":\"BAG_1_10KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"1 piece of checked luggage, max 10 kg\",\"price\":{\"amount\":36.37,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":13.14,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":36.37,\"markup\":13.14,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":23.24,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"10\",\"numberOfPieces\":\"1\",\"weightUnitOfMeasure\":\"KG\"}},{\"code\":\"BAG_1_20KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"1 piece of checked luggage, max 20 kg\",\"price\":{\"amount\":39.93,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":13.14,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":39.93,\"markup\":13.14,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":26.79,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"20\",\"numberOfPieces\":\"1\",\"weightUnitOfMeasure\":\"KG\"}},{\"code\":\"BAG_1_26KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"1 piece of checked luggage, max 26 kg\",\"price\":{\"amount\":47.04,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":13.14,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":47.04,\"markup\":13.14,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":33.91,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"26\",\"numberOfPieces\":\"1\",\"weightUnitOfMeasure\":\"KG\"}},{\"code\":\"BAG_1_32KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"1 piece of checked luggage, max 32 kg\",\"price\":{\"amount\":54.16,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":13.14,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":54.16,\"markup\":13.14,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":41.02,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"32\",\"numberOfPieces\":\"1\",\"weightUnitOfMeasure\":\"KG\"}},{\"code\":\"BAG_2_20KG_40KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"2 pieces of checked luggage, max 20 kg each, up to 40 kg in total\",\"price\":{\"amount\":73.29,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":73.29,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":53.59,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"40\",\"numberOfPieces\":\"2\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"BAG_2_26KG_52KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"2 pieces of checked luggage, max 26 kg each, up to 52 kg in total\",\"price\":{\"amount\":87.52,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":87.52,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":67.82,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"52\",\"numberOfPieces\":\"2\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"26\"}},{\"code\":\"BAG_2_32KG_64KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"2 pieces of checked luggage, max 32 kg each, up to 64 kg in total\",\"price\":{\"amount\":101.74,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":101.74,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":82.04,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"64\",\"numberOfPieces\":\"2\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"32\"}},{\"code\":\"BAG_3_20KG_60KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"3 pieces of checked luggage, max 20 kg each, up to 60 kg in total\",\"price\":{\"amount\":100.08,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":100.08,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":80.38,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"60\",\"numberOfPieces\":\"3\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"BAG_3_26KG_78KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"3 pieces of checked luggage, max 26 kg each, up to 78 kg in total\",\"price\":{\"amount\":121.42,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":121.42,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":101.72,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"78\",\"numberOfPieces\":\"3\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"26\"}},{\"code\":\"BAG_3_32KG_96KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"3 pieces of checked luggage, max 32 kg each, up to 96 kg in total\",\"price\":{\"amount\":142.77,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":142.77,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":123.06,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"96\",\"numberOfPieces\":\"3\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"32\"}},{\"code\":\"BAG_4_20KG_80KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"4 pieces of checked luggage, max 20 kg each, up to 80 kg in total\",\"price\":{\"amount\":126.87,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":126.87,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":107.16,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"80\",\"numberOfPieces\":\"4\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"BAG_4_26KG_104KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"4 pieces of checked luggage, max 26 kg each, up to 104 kg in total\",\"price\":{\"amount\":155.33,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":155.33,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":135.63,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"104\",\"numberOfPieces\":\"4\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"26\"}},{\"code\":\"BAG_5_20KG_100KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"5 pieces of checked luggage, max 20 kg each, up to 100 kg in total\",\"price\":{\"amount\":153.66,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":153.66,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":133.96,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"100\",\"numberOfPieces\":\"5\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"BAG_4_32KG_128KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"4 pieces of checked luggage, max 32 kg each, up to 128 kg in total\",\"price\":{\"amount\":183.79,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":183.79,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":164.09,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"128\",\"numberOfPieces\":\"4\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"32\"}},{\"code\":\"BAG_5_26KG_130KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"5 pieces of checked luggage, max 26 kg each, up to 130 kg in total\",\"price\":{\"amount\":189.24,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":189.24,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":169.53,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"130\",\"numberOfPieces\":\"5\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"26\"}},{\"code\":\"BAG_6_20KG_120KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"6 pieces of checked luggage, max 20 kg each, up to 120 kg in total\",\"price\":{\"amount\":180.46,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":180.46,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":160.75,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"120\",\"numberOfPieces\":\"6\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"BAG_5_32KG_160KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"5 pieces of checked luggage, max 32 kg each, up to 160 kg in total\",\"price\":{\"amount\":224.81,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":224.81,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":205.1,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"160\",\"numberOfPieces\":\"5\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"32\"}},{\"code\":\"BAG_6_26KG_156KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"6 pieces of checked luggage, max 26 kg each, up to 156 kg in total\",\"price\":{\"amount\":223.15,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":223.15,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":203.44,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"156\",\"numberOfPieces\":\"6\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"26\"}},{\"code\":\"BAG_6_32KG_192KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"6 pieces of checked luggage, max 32 kg each, up to 192 kg in total\",\"price\":{\"amount\":265.83,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":265.83,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":246.13,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"192\",\"numberOfPieces\":\"6\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"32\"}},{\"code\":\"PB_0\",\"type\":\"PRIORITY_BOARDING\",\"label\":\"Not purchased\",\"price\":{\"amount\":0,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":0,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"numberOfPieces\":\"0\"}},{\"code\":\"PB_1\",\"type\":\"PRIORITY_BOARDING\",\"label\":\"Purchased\",\"price\":{\"amount\":31.81,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":5.07,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":31.81,\"markup\":5.07,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":26.74,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"numberOfPieces\":\"1\"}}]},{\"passengerType\":\"CHD\",\"ancillaries\":[{\"code\":\"BAG_0\",\"type\":\"BAGGAGE\",\"label\":\"0 - No checked luggage\",\"price\":{\"amount\":0,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":0,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"numberOfPieces\":\"0\"}},{\"code\":\"BAG_1_10KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"1 piece of checked luggage, max 10 kg\",\"price\":{\"amount\":36.37,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":13.14,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":36.37,\"markup\":13.14,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":23.24,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"10\",\"numberOfPieces\":\"1\",\"weightUnitOfMeasure\":\"KG\"}},{\"code\":\"BAG_1_20KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"1 piece of checked luggage, max 20 kg\",\"price\":{\"amount\":39.93,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":13.14,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":39.93,\"markup\":13.14,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":26.79,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"20\",\"numberOfPieces\":\"1\",\"weightUnitOfMeasure\":\"KG\"}},{\"code\":\"BAG_1_26KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"1 piece of checked luggage, max 26 kg\",\"price\":{\"amount\":47.04,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":13.14,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":47.04,\"markup\":13.14,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":33.91,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"26\",\"numberOfPieces\":\"1\",\"weightUnitOfMeasure\":\"KG\"}},{\"code\":\"BAG_1_32KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"1 piece of checked luggage, max 32 kg\",\"price\":{\"amount\":54.16,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":13.14,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":54.16,\"markup\":13.14,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":41.02,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"32\",\"numberOfPieces\":\"1\",\"weightUnitOfMeasure\":\"KG\"}},{\"code\":\"BAG_2_20KG_40KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"2 pieces of checked luggage, max 20 kg each, up to 40 kg in total\",\"price\":{\"amount\":73.29,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":73.29,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":53.59,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"40\",\"numberOfPieces\":\"2\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"BAG_2_26KG_52KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"2 pieces of checked luggage, max 26 kg each, up to 52 kg in total\",\"price\":{\"amount\":87.52,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":87.52,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":67.82,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"52\",\"numberOfPieces\":\"2\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"26\"}},{\"code\":\"BAG_2_32KG_64KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"2 pieces of checked luggage, max 32 kg each, up to 64 kg in total\",\"price\":{\"amount\":101.74,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":101.74,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":82.04,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"64\",\"numberOfPieces\":\"2\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"32\"}},{\"code\":\"BAG_3_20KG_60KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"3 pieces of checked luggage, max 20 kg each, up to 60 kg in total\",\"price\":{\"amount\":100.08,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":100.08,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":80.38,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"60\",\"numberOfPieces\":\"3\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"BAG_3_26KG_78KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"3 pieces of checked luggage, max 26 kg each, up to 78 kg in total\",\"price\":{\"amount\":121.42,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":121.42,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":101.72,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"78\",\"numberOfPieces\":\"3\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"26\"}},{\"code\":\"BAG_3_32KG_96KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"3 pieces of checked luggage, max 32 kg each, up to 96 kg in total\",\"price\":{\"amount\":142.77,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":142.77,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":123.06,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"96\",\"numberOfPieces\":\"3\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"32\"}},{\"code\":\"BAG_4_20KG_80KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"4 pieces of checked luggage, max 20 kg each, up to 80 kg in total\",\"price\":{\"amount\":126.87,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":126.87,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":107.16,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"80\",\"numberOfPieces\":\"4\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"BAG_4_26KG_104KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"4 pieces of checked luggage, max 26 kg each, up to 104 kg in total\",\"price\":{\"amount\":155.33,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":155.33,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":135.63,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"104\",\"numberOfPieces\":\"4\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"26\"}},{\"code\":\"BAG_5_20KG_100KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"5 pieces of checked luggage, max 20 kg each, up to 100 kg in total\",\"price\":{\"amount\":153.66,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":153.66,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":133.96,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"100\",\"numberOfPieces\":\"5\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"BAG_4_32KG_128KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"4 pieces of checked luggage, max 32 kg each, up to 128 kg in total\",\"price\":{\"amount\":183.79,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":183.79,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":164.09,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"128\",\"numberOfPieces\":\"4\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"32\"}},{\"code\":\"BAG_5_26KG_130KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"5 pieces of checked luggage, max 26 kg each, up to 130 kg in total\",\"price\":{\"amount\":189.24,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":189.24,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":169.53,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"130\",\"numberOfPieces\":\"5\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"26\"}},{\"code\":\"BAG_6_20KG_120KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"6 pieces of checked luggage, max 20 kg each, up to 120 kg in total\",\"price\":{\"amount\":180.46,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":180.46,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":160.75,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"120\",\"numberOfPieces\":\"6\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"BAG_5_32KG_160KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"5 pieces of checked luggage, max 32 kg each, up to 160 kg in total\",\"price\":{\"amount\":224.81,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":224.81,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":205.1,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"160\",\"numberOfPieces\":\"5\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"32\"}},{\"code\":\"BAG_6_26KG_156KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"6 pieces of checked luggage, max 26 kg each, up to 156 kg in total\",\"price\":{\"amount\":223.15,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":223.15,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":203.44,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"156\",\"numberOfPieces\":\"6\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"26\"}},{\"code\":\"BAG_6_32KG_192KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"6 pieces of checked luggage, max 32 kg each, up to 192 kg in total\",\"price\":{\"amount\":265.83,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":265.83,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":246.13,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"192\",\"numberOfPieces\":\"6\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"32\"}},{\"code\":\"PB_0\",\"type\":\"PRIORITY_BOARDING\",\"label\":\"Not purchased\",\"price\":{\"amount\":0,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":0,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"numberOfPieces\":\"0\"}},{\"code\":\"PB_1\",\"type\":\"PRIORITY_BOARDING\",\"label\":\"Purchased\",\"price\":{\"amount\":31.81,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":5.07,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":31.81,\"markup\":5.07,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":26.74,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"numberOfPieces\":\"1\"}}]}]},{\"id\":2,\"ancillariesForPassengerType\":[{\"passengerType\":\"ADT\",\"ancillaries\":[{\"code\":\"BAG_0\",\"type\":\"BAGGAGE\",\"label\":\"0 - No checked luggage\",\"price\":{\"amount\":0,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":0,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"numberOfPieces\":\"0\"}},{\"code\":\"BAG_1_10KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"1 piece of checked luggage, max 10 kg\",\"price\":{\"amount\":27.13,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":13.14,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":27.13,\"markup\":13.14,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":13.99,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"10\",\"numberOfPieces\":\"1\",\"weightUnitOfMeasure\":\"KG\"}},{\"code\":\"BAG_1_20KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"1 piece of checked luggage, max 20 kg\",\"price\":{\"amount\":36.12,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":13.14,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":36.12,\"markup\":13.14,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":22.99,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"20\",\"numberOfPieces\":\"1\",\"weightUnitOfMeasure\":\"KG\"}},{\"code\":\"BAG_2_20KG_40KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"2 pieces of checked luggage, max 20 kg each, up to 40 kg in total\",\"price\":{\"amount\":65.68,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":65.68,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":45.98,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"40\",\"numberOfPieces\":\"2\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"BAG_3_20KG_60KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"3 pieces of checked luggage, max 20 kg each, up to 60 kg in total\",\"price\":{\"amount\":88.68,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":88.68,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":68.97,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"60\",\"numberOfPieces\":\"3\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"PB_0\",\"type\":\"PRIORITY_BOARDING\",\"label\":\"Not purchased\",\"price\":{\"amount\":0,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":0,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"numberOfPieces\":\"0\"}},{\"code\":\"PB_1\",\"type\":\"PRIORITY_BOARDING\",\"label\":\"Purchased\",\"price\":{\"amount\":17.57,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":5.07,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":17.57,\"markup\":5.07,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":12.5,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"numberOfPieces\":\"1\"}}]},{\"passengerType\":\"CHD\",\"ancillaries\":[{\"code\":\"BAG_0\",\"type\":\"BAGGAGE\",\"label\":\"0 - No checked luggage\",\"price\":{\"amount\":0,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":0,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"numberOfPieces\":\"0\"}},{\"code\":\"BAG_1_10KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"1 piece of checked luggage, max 10 kg\",\"price\":{\"amount\":27.13,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":13.14,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":27.13,\"markup\":13.14,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":13.99,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"10\",\"numberOfPieces\":\"1\",\"weightUnitOfMeasure\":\"KG\"}},{\"code\":\"BAG_1_20KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"1 piece of checked luggage, max 20 kg\",\"price\":{\"amount\":36.12,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":13.14,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":36.12,\"markup\":13.14,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":22.99,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"20\",\"numberOfPieces\":\"1\",\"weightUnitOfMeasure\":\"KG\"}},{\"code\":\"BAG_2_20KG_40KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"2 pieces of checked luggage, max 20 kg each, up to 40 kg in total\",\"price\":{\"amount\":65.68,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":65.68,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":45.98,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"40\",\"numberOfPieces\":\"2\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"BAG_3_20KG_60KG_TOTAL\",\"type\":\"BAGGAGE\",\"label\":\"3 pieces of checked luggage, max 20 kg each, up to 60 kg in total\",\"price\":{\"amount\":88.68,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":19.7,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":88.68,\"markup\":19.7,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":68.97,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"totalWeight\":\"60\",\"numberOfPieces\":\"3\",\"weightUnitOfMeasure\":\"KG\",\"weightForPiece\":\"20\"}},{\"code\":\"PB_0\",\"type\":\"PRIORITY_BOARDING\",\"label\":\"Not purchased\",\"price\":{\"amount\":0,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":0,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":0,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"numberOfPieces\":\"0\"}},{\"code\":\"PB_1\",\"type\":\"PRIORITY_BOARDING\",\"label\":\"Purchased\",\"price\":{\"amount\":17.57,\"currency\":\"GBP\"},\"ancillaryPrice\":{\"markup\":5.07,\"currency\":\"GBP\"},\"prices\":[{\"code\":\"STD\",\"totalPrice\":17.57,\"markup\":5.07,\"currency\":\"GBP\"},{\"code\":\"PINK_PEOPLE\",\"totalPrice\":12.5,\"markup\":0,\"currency\":\"GBP\"}],\"additionalInfo\":{\"numberOfPieces\":\"1\"}}]}]}],\"fareRules\":[{\"idFareRules\":1,\"fareRules\":[{\"title\":\"Change of time/date - cost per route\",\"description\":\"From 18,50 £ up to 65,00 £ \",\"currency\":\"EUR\",\"key\":\"CHANGE_OF_TIME_DATE\",\"amount\":0,\"status\":\"NO_INFO\",\"passengerType\":\"ALL\",\"outboundFareRule\":true,\"inboundFareRule\":true},{\"title\":\"Change of passenger - cost per person\",\"description\":\"41,5£ cost per person and route.\",\"currency\":\"EUR\",\"key\":\"CHANGE_OF_PASSENGER\",\"amount\":0,\"status\":\"NO_INFO\",\"passengerType\":\"ALL\",\"outboundFareRule\":true,\"inboundFareRule\":true},{\"title\":\"Change of route - cost per route\",\"description\":\"From 18,50 £ up to 65,00 £ \",\"currency\":\"EUR\",\"key\":\"CHANGE_OF_ROUTE\",\"amount\":0,\"status\":\"NO_INFO\",\"passengerType\":\"ALL\",\"outboundFareRule\":true,\"inboundFareRule\":true},{\"title\":\"Refund in case of cancellation.\",\"description\":\"According to the conditions provided by the airline\",\"currency\":\"EUR\",\"key\":\"REFUND_IN_CASE_OF_CANCELLATION\",\"amount\":0,\"status\":\"NO_INFO\",\"passengerType\":\"ALL\",\"outboundFareRule\":true,\"inboundFareRule\":true}]},{\"idFareRules\":2,\"fareRules\":[{\"title\":\"Change of time/date - cost per route\",\"description\":\"From 30 GBP depending on the route and date of trip. For domestic routes within the same nation a cost increase is foreseen.\",\"currency\":\"EUR\",\"key\":\"CHANGE_OF_TIME_DATE\",\"amount\":0,\"status\":\"NO_INFO\",\"passengerType\":\"ALL\",\"outboundFareRule\":true,\"inboundFareRule\":true},{\"title\":\"Change of passenger - cost per person\",\"description\":\"110 GBP international (Fixed fee). For domestic routes within the same nation a cost increase is foreseen.\",\"currency\":\"EUR\",\"key\":\"CHANGE_OF_PASSENGER\",\"amount\":0,\"status\":\"NO_INFO\",\"passengerType\":\"ALL\",\"outboundFareRule\":true,\"inboundFareRule\":true},{\"title\":\"Change of route - cost per route\",\"description\":\"From 30 GBP depending on the route and date of trip. For domestic routes within the same nation a cost increase is foreseen.\",\"currency\":\"EUR\",\"key\":\"CHANGE_OF_ROUTE\",\"amount\":0,\"status\":\"NO_INFO\",\"passengerType\":\"ALL\",\"outboundFareRule\":true,\"inboundFareRule\":true},{\"title\":\"Refund in case of cancellation.\",\"description\":\"No refund\",\"currency\":\"EUR\",\"key\":\"REFUND_IN_CASE_OF_CANCELLATION\",\"amount\":0,\"status\":\"NO_INFO\",\"passengerType\":\"ALL\",\"outboundFareRule\":true,\"inboundFareRule\":true}]}],\"reservationStrategy\":{\"value\":\"SINGLE\",\"coupled\":false}},\"total\":{\"currency\":\"GBP\",\"customerCost\":26.99,\"margin\":3.57,\"discount\":0,\"taxMarkedUp\":7.06,\"supplyEconomics\":0},\"totalPrices\":{\"currency\":\"GBP\",\"prices\":[{\"code\":\"STD\",\"customerCost\":26.99,\"margin\":3.57,\"discount\":0,\"taxMarkedUp\":7.06,\"supplyEconomics\":0}]},\"specialRequirements\":{\"passengerDocumentList\":{\"passengerDocuments\":[{\"type\":\"ADT\",\"airlineRequirementList\":{\"airlineRequirements\":[{\"code\":\"ID_NAME_PREFIX\"},{\"code\":\"BIRTH_DATE\"}]}},{\"type\":\"CHD\",\"airlineRequirementList\":{\"airlineRequirements\":[{\"code\":\"BIRTH_DATE\"}]}},{\"type\":\"INF\",\"airlineRequirementList\":{\"airlineRequirements\":[{\"code\":\"BIRTH_DATE\"}]}}]}},\"messages\":[{\"text\":\"<b>MINORS</b> travelling unaccompanied? Contact us before booking\",\"category\":\"MINOR\"},{\"text\":\"Please remember that it is your responsibility to have in your possession all the necessary travel documents:\\n<ul>\\n<li>Valid travel ID (passport)</li>\\n<li>Visa for your final destination (if required)</li>\\n<li>Transit visa (if required)</li>\\n</ul>\\nWe strongly recommend that you contact the Embassy or Consulate of the country you are travelling to as your final destination or transiting through in order to comply with their most recent entry requirements.\",\"category\":\"VISA\"}]}},\"idQuotation\":1968279783,\"paymentMethods\":[{\"code\":\"01\",\"name\":\"VISA\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"02\",\"name\":\"MASTERCARD\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"03\",\"name\":\"VISA_ELECTRON\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"05\",\"name\":\"MASTERCARD_PREPAID\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"06\",\"name\":\"AMEX\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"08\",\"name\":\"CARTEBLEUE\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"09\",\"name\":\"VISADEBIT\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"10\",\"name\":\"MAESTRO\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"11\",\"name\":\"MASTERCARD_DEBIT\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"17\",\"name\":\"JCB\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"18\",\"name\":\"AGOS\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"22\",\"name\":\"MASTERCARD_VIABUY\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"23\",\"name\":\"N26\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"24\",\"name\":\"LASTMINUTE\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"25\",\"name\":\"CHINA_UNION_PAY\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"CREDIT_CARD\"},{\"code\":\"43\",\"name\":\"VCO\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\"},{\"code\":\"53\",\"name\":\"MASTERPASS\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\"},{\"code\":\"61\",\"name\":\"AMAZON_PAY\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"AMAZON_PAY\"},{\"code\":\"95\",\"name\":\"PAYPAL\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"PAYPAL_BRAINTREE\"},{\"code\":\"TR\",\"name\":\"TRUSTLY\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"GBP\",\"type\":\"TRUSTLY\"}],\"equivPaymentMethods\":[{\"code\":\"01\",\"name\":\"VISA\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"02\",\"name\":\"MASTERCARD\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"03\",\"name\":\"VISA_ELECTRON\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"05\",\"name\":\"MASTERCARD_PREPAID\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"06\",\"name\":\"AMEX\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"08\",\"name\":\"CARTEBLEUE\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"09\",\"name\":\"VISADEBIT\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"10\",\"name\":\"MAESTRO\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"11\",\"name\":\"MASTERCARD_DEBIT\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"17\",\"name\":\"JCB\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"18\",\"name\":\"AGOS\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"22\",\"name\":\"MASTERCARD_VIABUY\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"23\",\"name\":\"N26\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"24\",\"name\":\"LASTMINUTE\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"25\",\"name\":\"CHINA_UNION_PAY\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"CREDIT_CARD\"},{\"code\":\"43\",\"name\":\"VCO\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\"},{\"code\":\"53\",\"name\":\"MASTERPASS\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\"},{\"code\":\"61\",\"name\":\"AMAZON_PAY\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"AMAZON_PAY\"},{\"code\":\"95\",\"name\":\"PAYPAL\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"PAYPAL_BRAINTREE\"},{\"code\":\"TR\",\"name\":\"TRUSTLY\",\"fees\":0,\"feesList\":[{\"code\":\"STD\",\"fee\":0}],\"preselected\":false,\"currency\":\"EUR\",\"type\":\"TRUSTLY\"}]}}",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "2023-02-15T13:11:27",
+            ":_:": "java.time.LocalDateTime"
+          },
+          {
+            "_": "TRANSPORT_QUOTED",
+            ":_:": "java.lang.String"
+          },
+          {},
+          {
+            "_": true,
+            ":_:": "java.lang.Boolean"
+          }
+        ],
+        ":_:": "java.util.ArrayList"
+      },
+      {
+        "_": [
+          {
+            "_": 2082593775,
+            ":_:": "java.math.BigInteger"
+          },
+          {},
+          {
+            "_": "8E861CF978BD6944A1DBB5D9C01F016A807F14BE",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "{\"baseProductsCost\":{\"currency\":\"GBP\",\"value\":\"26.99\"},\"shoppingPrice\":{\"currency\":\"GBP\",\"value\":\"26.99\"},\"membershipTravellerChangeEnabled\":false}",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "2023-02-15T13:11:27",
+            ":_:": "java.time.LocalDateTime"
+          },
+          {
+            "_": "CART_QUOTED",
+            ":_:": "java.lang.String"
+          },
+          {},
+          {
+            "_": true,
+            ":_:": "java.lang.Boolean"
+          }
+        ],
+        ":_:": "java.util.ArrayList"
+      },
+      {
+        "_": [
+          {
+            "_": 2082593776,
+            ":_:": "java.math.BigInteger"
+          },
+          {},
+          {
+            "_": "8E861CF978BD6944A1DBB5D9C01F016A807F14BE",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "{\"id\":42,\"availableOptions\":[]}",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "2023-02-15T13:11:29",
+            ":_:": "java.time.LocalDateTime"
+          },
+          {
+            "_": "DEPOSIT_OPTIONS_ADDED",
+            ":_:": "java.lang.String"
+          },
+          {},
+          {
+            "_": true,
+            ":_:": "java.lang.Boolean"
+          }
+        ],
+        ":_:": "java.util.ArrayList"
+      },
+      {
+        "_": [
+          {
+            "_": 2082593777,
+            ":_:": "java.math.BigInteger"
+          },
+          {},
+          {
+            "_": "8E861CF978BD6944A1DBB5D9C01F016A807F14BE",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "{\"jacksonRequiredParameter\":42,\"paymentMethodsAvailable\":[{\"name\":\"CREDIT_CARD\",\"options\":[{\"name\":\"VISA\"},{\"name\":\"MASTERCARD\"},{\"name\":\"MAESTRO\"},{\"name\":\"JCB\"},{\"name\":\"DINERS\"}]},{\"name\":\"PAYPAL\",\"options\":[]},{\"name\":\"TRUSTLY\",\"options\":[]},{\"name\":\"VCO\",\"options\":[]},{\"name\":\"APPLE_PAY\",\"options\":[]}]}",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "2023-02-15T13:11:29",
+            ":_:": "java.time.LocalDateTime"
+          },
+          {
+            "_": "PAYMENT_METHODS_AVAILABLE_ADDED",
+            ":_:": "java.lang.String"
+          },
+          {},
+          {
+            "_": true,
+            ":_:": "java.lang.Boolean"
+          }
+        ],
+        ":_:": "java.util.ArrayList"
+      },
+      {
+        "_": [
+          {
+            "_": 2082593778,
+            ":_:": "java.math.BigInteger"
+          },
+          {},
+          {
+            "_": "8E861CF978BD6944A1DBB5D9C01F016A807F14BE",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "{\"id\":42,\"identifier\":\"dGPigKBMQVNUTUlOVVRF4oCgZW7igKBnYuKAoDAuMC41LDAuNy45NuKAoGNoZWNrb3V0LWZsaWdodOKAoHRjX2ZsaWdodOKAoEJSQVZPTkVYVOKAoEZ+TVhQfkxHV8KnRn5TVE5+TVhQ\"}",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "2023-02-15T13:11:30",
+            ":_:": "java.time.LocalDateTime"
+          },
+          {
+            "_": "TC_IDENTIFIER_ADDED",
+            ":_:": "java.lang.String"
+          },
+          {},
+          {
+            "_": true,
+            ":_:": "java.lang.Boolean"
+          }
+        ],
+        ":_:": "java.util.ArrayList"
+      },
+      {
+        "_": [
+          {
+            "_": 2082593779,
+            ":_:": "java.math.BigInteger"
+          },
+          {},
+          {
+            "_": "8E861CF978BD6944A1DBB5D9C01F016A807F14BE",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "{\"iovationBlackBox\":\"0400nyhffR+vPCUNf94lis1ztu7lycOpG4SK/dUKd/4kzpkU3wPV/pkCmgMoMHSoTsH8Iv7YNmR3/UShxRIrX2rmCeks8ON7Yf9chWesZMDu078nCdcpNfjs5GZSFgbGxiVh/fHcwv7E1eAumQxGd6EYgded+trm4ecPAj5jvcfYvY51SymuXlKryeXc4KIy3xRrsW3b02b0TTBi8vF6RzScsWc1RqMvD2UVz40kAOJn62d7HVMsBHJtSko2rHozEQ/ukvpeYEYecTO86CpXFCzRsBZkFqaUZegb+KaePAdj0dC1DOkZ9ybRxHxfYV3WeA0UYsMZmVY5fSMfOhfbDFBB/DfPafZJpaoVoOXUWxljyPBhr+EUEFUSupVPfVKB9sZJVwJxm8Oo1O2SgqLhR6Kpy2u/TbQ61K+B3GaYeAjEsjrW67xJwDTwlYSPbZtiPjpcX6t2xsBNqMBvvo0IZ7SWNmC9/MFIqLFIdpLBWppZ1Q3D4TWhv78VEIne56x7fyVRFqHfv6lgZq+NNE4xK4FhMTBnxg3zCYy9DQCspUS5QnLQRRboSIzw4WnfyKMn4VQ+uZmcL034xXvAyHo1EJ8Mq1xr7WyAWp4xFtcGCiH0WdQNfyJw5Y9lzLhejolH6jy42HYF5oyZHJfoV9ciE7R1bCngqEPYBM4f+snP9+SWhwzjNcQH2RdomYRxivmDbmVOnFJjUN1WkR/ml2S7h1TSuVvxRdAWLQrL5GwMchIozX0JdmNWP4mnL+SM6bkvOnTBl+0QxsBO08qEcYr5g25lTuTQHjy7H5XhLHCHAGY3J0jpLqVrSVzsI1LB6M5fl2EoMEAoEitEttFUo1DRkUtPGFQgTsjQADgekTvlqBdC12PmY1XpDGBtyWF8hRwW7Jsss29L0sFkQPnkjHloApNDPJIEFaG7TsuZ6JwT5Q8a4WjQbeF2dy5VeL9MOnRTMthLOye0as6uM6GJKSIdwO9O5Z/8KrD4hgXHxKZFk5ZzIuZC31uyK4wyHElKRgk1OUYQ4fMX9sjUzNc23e0SjcWtnBrm9DRgEDdjH/l3imp0STxylt4zETwPn53+MD8xMkSdJ3wLMgpAS1beuygIQTIKhh+gL4kT/9vVZK41Fl6ORulMcDaVptovbdciPTQaFQzm7ooP8CnjNfBmlBHKop6a4mpNScFK9Riw3BOJ2d5nlZ52+ncQ4qJLHu4cY6Mt9WpRZpQRyqKemuJqTUnBSvUYsNwTidneZ5Wedvp3EOKiSx7uHGOjLfVqUWaUEcqinpri6UZcguSUMhUEMv5tsr1ng5n0Te3lBn8l9lCaRtjEDOJWpcCPXfznIcYZoN2tNcwJzqRrm5Y1BSlFQnLgM2I5gStWPJd0l5QqUNseBIrbgL32lOUgJDOrAMoLBr5XKm6zG+q/jaybGzV3TgE74w1MdnuhnX7dRdMClU99UoH2xklXAnGbw6jU7ZKCouFHoqnLa79NtDrUr4HcZph4CMSyOtbrvEnANPCVI3HTPa6URCc=\",\"totalCost\":2699,\"transactionCost\":2699,\"cartId\":\"8E861CF978BD6944A1DBB5D9C01F016A807F14BE\",\"stepCounter\":0,\"ancillaries\":{\"LM_FARES\":{\"type\":\"FLEXIFARE\"}},\"transportAncillaries\":{},\"browserInfo\":{\"colorDepth\":\"24\",\"javaEnabled\":false,\"javascriptEnabled\":true,\"language\":\"en-GB\",\"screenHeight\":\"988\",\"screenWidth\":\"1920\",\"timeZoneOffset\":\"-60\"}}",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "2023-02-15T13:11:42",
+            ":_:": "java.time.LocalDateTime"
+          },
+          {
+            "_": "SUBMIT",
+            ":_:": "java.lang.String"
+          },
+          {},
+          {
+            "_": true,
+            ":_:": "java.lang.Boolean"
+          }
+        ],
+        ":_:": "java.util.ArrayList"
+      },
+      {
+        "_": [
+          {
+            "_": 2082593780,
+            ":_:": "java.math.BigInteger"
+          },
+          {},
+          {
+            "_": "8E861CF978BD6944A1DBB5D9C01F016A807F14BE",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "{\"iovationBlackBox\":\"0400nyhffR+vPCUNf94lis1ztu7lycOpG4SK/dUKd/4kzpkU3wPV/pkCmgMoMHSoTsH8Iv7YNmR3/UShxRIrX2rmCeks8ON7Yf9chWesZMDu078nCdcpNfjs5GZSFgbGxiVh/fHcwv7E1eAumQxGd6EYgded+trm4ecPAj5jvcfYvY51SymuXlKryeXc4KIy3xRrsW3b02b0TTBi8vF6RzScsWc1RqMvD2UVz40kAOJn62d7HVMsBHJtSko2rHozEQ/ukvpeYEYecTO86CpXFCzRsBZkFqaUZegb+KaePAdj0dC1DOkZ9ybRxHxfYV3WeA0UYsMZmVY5fSMfOhfbDFBB/DfPafZJpaoVoOXUWxljyPBhr+EUEFUSupVPfVKB9sZJVwJxm8Oo1O2SgqLhR6Kpy2u/TbQ61K+B3GaYeAjEsjrW67xJwDTwlYSPbZtiPjpcX6t2xsBNqMBvvo0IZ7SWNmC9/MFIqLFIdpLBWppZ1Q3D4TWhv78VEIne56x7fyVRFqHfv6lgZq+NNE4xK4FhMTBnxg3zCYy9DQCspUS5QnLQRRboSIzw4WnfyKMn4VQ+uZmcL034xXvAyHo1EJ8Mq1xr7WyAWp4xFtcGCiH0WdQNfyJw5Y9lzLhejolH6jy42HYF5oyZHJfoV9ciE7R1bCngqEPYBM4f+snP9+SWhwzjNcQH2RdomYRxivmDbmVOnFJjUN1WkR/ml2S7h1TSuVvxRdAWLQrL5GwMchIozX0JdmNWP4mnL+SM6bkvOnTBl+0QxsBO08qEcYr5g25lTuTQHjy7H5XhLHCHAGY3J0jpLqVrSVzsI1LB6M5fl2EoMEAoEitEttFUo1DRkUtPGFQgTsjQADgekTvlqBdC12PmY1XpDGBtyWF8hRwW7Jsss29L0sFkQPnkjHloApNDPJIEFaG7TsuZ6JwT5Q8a4WjQbeF2dy5VeL9MOnRTMthLOye0as6uM6GJKSIdwO9O5Z/8KrD4hgXHxKZFk5ZzIuZC31uyK4wyHElKRgk1OUYQ4fMX9sjUzNc23e0SjcWtnBrm9DRgEDdjH/l3imp0STxylt4zETwPn53+MD8xMkSdJ3wLMgpAS1beuygIQTIKhh+gL4kT/9vVZK41Fl6ORulMcDaVptovbdciPTQaFQzm7ooP8CnjNfBmlBHKop6a4mpNScFK9Riw3BOJ2d5nlZ52+ncQ4qJLHu4cY6Mt9WpRZpQRyqKemuJqTUnBSvUYsNwTidneZ5Wedvp3EOKiSx7uHGOjLfVqUWaUEcqinpri6UZcguSUMhUEMv5tsr1ng5n0Te3lBn8l9lCaRtjEDOJWpcCPXfznIcYZoN2tNcwJzqRrm5Y1BSlFQnLgM2I5gStWPJd0l5QqUNseBIrbgL32lOUgJDOrAMoLBr5XKm6zG+q/jaybGzV3TgE74w1MdnuhnX7dRdMClU99UoH2xklXAnGbw6jU7ZKCouFHoqnLa79NtDrUr4HcZph4CMSyOtbrvEnANPCVI3HTPa6URCc=\",\"totalCost\":2699,\"transactionCost\":2699,\"cartId\":\"8E861CF978BD6944A1DBB5D9C01F016A807F14BE\",\"stepCounter\":1,\"ancillaries\":{\"LM_FARES\":{\"type\":\"FLEXIFARE\"},\"BLUE_RIBBON_BAG\":{}},\"transportAncillaries\":{},\"CONTACT\":\"58573eaae7e10012f8c019c14eb2cab1acca4a8f6eb73ee01807e0c4694ced5a\",\"TRAVELLER_INFO\":\"c5776738aa6496fca5b9c1b6cc1048bf47461d0798cd079b483e654a3eb0fa0c\",\"LUGGAGE\":{\"selections\":[{\"traveller\":\"1\",\"ways\":[{\"id\":\"1\",\"choices\":[{\"id\":\"ADT_1\",\"value\":\"BAG_0\"}]},{\"id\":\"2\",\"choices\":[{\"id\":\"ADT_2\",\"value\":\"BAG_0\"}]}]}]},\"SPECIAL_REQUESTS_STRUCTURED\":{},\"browserInfo\":{\"colorDepth\":\"24\",\"javaEnabled\":false,\"javascriptEnabled\":true,\"language\":\"en-GB\",\"screenHeight\":\"988\",\"screenWidth\":\"1920\",\"timeZoneOffset\":\"-60\"}}",
+            ":_:": "java.lang.String"
+          },
+          {
+            "_": "2023-02-15T13:12:15",
+            ":_:": "java.time.LocalDateTime"
+          },
+          {
+            "_": "SUBMIT",
+            ":_:": "java.lang.String"
+          },
+          {},
+          {
+            "_": true,
+            ":_:": "java.lang.Boolean"
+          }
+        ],
+        ":_:": "java.util.ArrayList"
+      }
+    ],
+    ":rows:": "java.util.ArrayList"
+  },
+  ":rs:": "org.kendar.janus.JdbcResultSet"
+}

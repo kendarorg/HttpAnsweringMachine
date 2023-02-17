@@ -132,8 +132,9 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
                     newRow.add(field);
                     continue;
                 }
-                var converted = TypeConverter.convert(realType,field);
+                var converted = TypeConverter.convert(realType, field);
                 newRow.add(converted);
+
             }
             rows.add(newRow);
         }
@@ -149,7 +150,7 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
                     continue;
                 }
                 if(ClassUtils.isPrimitiveOrWrapper(field.getClass())){
-                    newRow.add(null);
+                    newRow.add(field);
                     continue;
                 }
                 if(field instanceof String){

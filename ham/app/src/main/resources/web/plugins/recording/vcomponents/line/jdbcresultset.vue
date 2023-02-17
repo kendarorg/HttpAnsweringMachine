@@ -124,7 +124,11 @@ module.exports = {
         row.children.forEach(function(col){
           if(!isUndefined(col)) {
             var value = col.value;
+            if(typeof value =="undefined")value=null;
             realRow.push(value);
+          }else{
+            realRow.push(null);
+
           }
         });
         if(realRow.length>0) {

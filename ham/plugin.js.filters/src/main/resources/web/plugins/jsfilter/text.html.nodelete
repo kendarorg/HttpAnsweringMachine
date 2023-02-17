@@ -59,7 +59,7 @@
             $("#free_content").text(atob(data[0].data));
             $("#file").val(data[0].name);
         },function(exception){
-            alert(exception);
+            (exception);
         });
     });
     var urlData = "/api/plugins/jsfilter/filters/"+getUrlParameter("id")+'/'+getUrlParameter("file");

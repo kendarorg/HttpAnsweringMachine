@@ -246,7 +246,7 @@ module.exports = {
     //     location.href="text.html?id="+getUrlParameter("id")+
     //         "&file="+value["value"]+"&action=edit";
     //   } else if (evt.buttonid == "_delete") {
-    //     alert("DELETE TO BE IMPLEMENTED"); //TODO
+    //     ("DELETE TO BE IMPLEMENTED"); //TODO
     //     this.$refs.grid.delete(evt.index);
     //   }
     // },
