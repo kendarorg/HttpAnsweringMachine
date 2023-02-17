@@ -42,7 +42,7 @@ module.exports = {
   },
   methods: {
     retrieveData: async function () {
-      var result = await axios.get("/api/dns/list");
+      var result = await axiosHandle(axios.get("/api/dns/list"));
       return result;
     },
     reload: function () {
@@ -61,9 +61,7 @@ module.exports = {
       });
       var toUpload = JSON.stringify(data);
       const headers = {'Content-Type': 'application/json'};
-      axios.post('/api/ssl', toUpload, {headers}).then((res) => {
-
-      });
+      axiosHandle(axios.post('/api/ssl', toUpload, {headers}),()=>addMessage("Certificates genrated"));
     },
     generateDNSMappings: async function () {
       var data = [];

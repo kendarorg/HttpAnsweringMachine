@@ -42,12 +42,12 @@ module.exports = {
         extraDomains: this.extraDomains.split(/\r?\n/)
       };
 
-      axios({
+      axiosHandle(axios({
         url: '/api/sslgen', //your url
         method: 'POST',
         responseType: 'blob', // important
         data: data
-      }).then((response) => {
+      }),(response) => {
         // create file link in browser's memory
         const href = URL.createObjectURL(response.data);
 

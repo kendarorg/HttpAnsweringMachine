@@ -62,8 +62,10 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axiosHandle(axios.delete("/api/dns/mappings/" + row['id']),()=>this.reload());
-        this.reload();
+        await axiosHandle(axios.delete("/api/dns/mappings/" + row['id']),()=>{
+          this.reload()
+          addMessage("Deleted")
+        });
       }
     },
     reload: function () {
@@ -89,11 +91,13 @@ module.exports = {
     save: async function () {
       if (this.modalData.edit) {
         await axiosHandle(axios.put('/api/dns/mappings/' + this.modalData.data.id, this.modalData.data),() => {
+          addMessage("Modified")
           this.modalShow = false;
           this.reload();
         });
       } else {
         await axiosHandle(axios.post('/api/dns/mappings', this.modalData.data),() => {
+          addMessage("Added")
           this.modalShow = false;
           this.reload();
         });
