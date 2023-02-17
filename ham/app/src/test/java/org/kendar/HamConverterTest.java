@@ -36,6 +36,15 @@ public class HamConverterTest {
         return  deser.read("rs");
     }
 
+    private ResultSet getJdbcFlawedResultset() throws IOException {
+        var data = new String(getClass()
+                .getClassLoader()
+                .getResourceAsStream("./org/kendar/server/utils/json/nulledjanusresultset.json").readAllBytes());
+        var deser = serializer.newInstance();
+        deser.deserialize(data);
+        return  deser.read("rs");
+    }
+
     @Test
     public void test() throws Exception {
         ResultSet  result = getJdbcResultset();
@@ -92,5 +101,15 @@ public class HamConverterTest {
 
 
         assertFalse(newRs.next());
+    }
+
+    @Test
+    public void testNullContent() throws Exception {
+        ResultSet  result = getJdbcFlawedResultset();
+        ResultSetConverter target = new ResultSetConverterImpl();
+
+        HamResultSet hamResultSet = target.toHam(result);
+
+        ResultSet newRs = target.fromHam(hamResultSet);
     }
 }

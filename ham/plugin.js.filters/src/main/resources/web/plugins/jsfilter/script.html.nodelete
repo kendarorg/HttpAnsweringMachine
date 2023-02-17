@@ -121,7 +121,7 @@
 
         },
         function (table,id) {
-            alert("DELETE TO BE IMPLEMENTED");
+            ("DELETE TO BE IMPLEMENTED");
         },
         function (table,id,saveOrUpdate) {
 

@@ -68,7 +68,7 @@
             success: function(response){
                 window.uploadScript=[];
 
-                alert("File Uploaded, restarting application");
+                ("File Uploaded, restarting application");
             }
         });
     });
@@ -81,12 +81,12 @@
             window.uploadScript = data;
             document.getElementById("uploadScriptShow").value = data[0].name;
         },function(exception){
-            alert(exception);
+            (exception);
         });
     });
     $("#btUploadScript").click(function(){
         if(window.uploadScript === undefined || window.uploadScript.length==0){
-            alert("NO FILES SELECTED");
+            ("NO FILES SELECTED");
             return;
         }
         var toUpload = window.uploadScript[0];
