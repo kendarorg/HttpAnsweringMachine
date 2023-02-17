@@ -134,7 +134,7 @@ public class ReplayerStatus {
         state.getAndSet(ReplayerState.PAUSED_RECORDING);
     }
 
-    public void stopAndSave() throws IOException {
+    public void stopAndSave() throws Exception {
 
         if (state.get() != ReplayerState.PAUSED_RECORDING && state.get() != ReplayerState.RECORDING) return;
 

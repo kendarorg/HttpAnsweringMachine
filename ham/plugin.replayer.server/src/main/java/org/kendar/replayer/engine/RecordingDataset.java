@@ -69,8 +69,11 @@ public class RecordingDataset implements BaseDataset{
         this.replayerEngines = replayerEngines;
     }
 
-    public void save() throws IOException {
-
+    public void save() throws Exception {
+        for (int i = 0; i < replayerEngines.size(); i++) {
+            var engine = replayerEngines.get(i);
+            engine.setupStaticCalls(recording);
+        }
         staticRequests.clear();
         recording =  null;
     }
