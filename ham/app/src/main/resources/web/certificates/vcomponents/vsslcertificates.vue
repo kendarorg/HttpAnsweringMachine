@@ -34,7 +34,7 @@ module.exports = {
   },
   methods: {
     retrieveData: async function () {
-      var result = await axios.get("/api/certificates");
+      var result = await axiosHandle(axios.get("/api/certificates"));
       var realData = [];
       for(var i=0;i<result.data.length;i++){
         var newRow={};

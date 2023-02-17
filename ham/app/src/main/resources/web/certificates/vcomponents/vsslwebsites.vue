@@ -51,7 +51,7 @@ module.exports = {
   },
   methods: {
     retrieveData: async function () {
-      var result = await axios.get("/api/ssl");
+      var result = await axiosHandle(axios.get("/api/ssl"));
       return result;
     },
     gridClicked: async function (evt) {
@@ -60,8 +60,10 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axios.delete("/api/ssl/" + row['id'])
-        this.reload();
+        await axiosHandle(axios.delete("/api/ssl/" + row['id']),()=>{
+          this.reload()
+          addMessage("Deleted")
+        });
       }
     },
     reload: function () {
@@ -86,15 +88,17 @@ module.exports = {
     save: async function () {
       showSpinner(true);
       if (this.modalData.edit) {
-        await axios.put('/api/ssl/' + this.modalData.data.id, this.modalData.data).then(() => {
+        await axiosHandle(axios.put('/api/ssl/' + this.modalData.data.id, this.modalData.data),() => {
           this.modalShow = false;
           showSpinner(false);
+          addMessage("Modified webiste")
           this.reload();
         });
       } else {
-        await axios.post('/api/ssl', this.modalData.data).then(() => {
+        await axiosHandle(axios.post('/api/ssl', this.modalData.data),() => {
           this.modalShow = false;
           showSpinner(false);
+          addMessage("Added webiste")
           this.reload();
         });
       }
