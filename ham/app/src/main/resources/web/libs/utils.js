@@ -228,6 +228,18 @@ const generateUUID = function () { // Public Domain/MIT
     });
 }
 
+
+const addError=function(message){
+    addMessage(message,"error")
+}
+/*
+.catch(function (error) {
+        addError("Invalid data");
+      });
+ */
+const addWarning=function(message){
+    addMessage(message,"warn")
+}
 const addMessage=function(message,type){
 
     var color = "#b3e5a1";
@@ -272,4 +284,25 @@ const addMessage=function(message,type){
         var d = document.getElementById(newdiv.id);
         d.parentNode.removeChild(d);
     }, to*1000);
+}
+
+const  axiosHandle=async function(axiosCall,thenFunc,errorFunc){
+    var part = axiosCall;
+    if(!isUndefined(thenFunc)){
+        part = part.then((r)=>{
+            thenFunc(r);
+        });
+    }
+    if(!isUndefined(errorFunc)){
+        part = part.catch((r)=>{
+            console.log("[error] "+r);
+            errorFunc(r);
+        });
+    }else{
+        part = part.catch((r)=>{
+            console.log("[error] "+r);
+            addError(r.message);
+        });
+    }
+    return part;
 }
