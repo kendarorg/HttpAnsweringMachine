@@ -190,6 +190,9 @@ module.exports = {
                   console.log("MATCHER SELECTED")
                   th.matchersSelected = matcherIndex;
                   th.matcher = JSON.parse(result.data.matchers[matcherIndex]);
+                  if(isUndefined(th.matcher)){
+                    th.matcher={};
+                  }
                   th.data = result.data;
                   th.source = th.data.source;
                 });
