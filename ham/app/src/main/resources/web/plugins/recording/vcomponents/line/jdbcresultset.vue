@@ -155,7 +155,7 @@ module.exports = {
       axios.post('/api/jdbcproxies/utils/modifyresultset', data).then((result) => {
         setitem(JSON.stringify(result.data));
       }).catch(function (error) {
-        addMessage("Invalid data","error");
+        addError("Invalid data");
       });
     },
     saveChanges:function(){

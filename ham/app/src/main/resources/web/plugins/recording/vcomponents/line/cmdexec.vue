@@ -80,7 +80,7 @@ module.exports = {
       this.modalShow = true;
     },
     doDelete: function (item, index) {
-      addMessage("doDelete","error")
+      addError("doDelete. NOT IMPLEMENTED")
     },
     save: function () {
       var item = this.modalData.data;

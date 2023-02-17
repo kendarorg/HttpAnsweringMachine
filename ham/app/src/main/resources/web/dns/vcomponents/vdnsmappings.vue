@@ -53,7 +53,7 @@ module.exports = {
   },
   methods: {
     retrieveData: async function () {
-      var result = await axios.get("/api/dns/mappings");
+      var result = await axiosHandle(axios.get("/api/dns/mappings"));
       return result;
     },
     gridClicked: async function (evt) {
@@ -62,7 +62,7 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axios.delete("/api/dns/mappings/" + row['id'])
+        await axiosHandle(axios.delete("/api/dns/mappings/" + row['id']),()=>this.reload());
         this.reload();
       }
     },
@@ -88,12 +88,12 @@ module.exports = {
     },
     save: async function () {
       if (this.modalData.edit) {
-        await axios.put('/api/dns/mappings/' + this.modalData.data.id, this.modalData.data).then(() => {
+        await axiosHandle(axios.put('/api/dns/mappings/' + this.modalData.data.id, this.modalData.data),() => {
           this.modalShow = false;
           this.reload();
         });
       } else {
-        await axios.post('/api/dns/mappings', this.modalData.data).then(() => {
+        await axiosHandle(axios.post('/api/dns/mappings', this.modalData.data),() => {
           this.modalShow = false;
           this.reload();
         });
