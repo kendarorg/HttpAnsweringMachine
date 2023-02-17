@@ -384,7 +384,7 @@ public class DbReplayer implements ReplayerEngine {
                 var requestHash = (String)crcPath[0];
                 var path = (String)crcPath[1];
                 var responseHash = (String)crcPath[2];
-                if(path.matches(".*/\\d")){
+                if(path.matches(".*/[0-9]+")){
                     var arr = path.split("/");
                     String[] subarray = new String[arr.length-1];
                     System.arraycopy(arr, 0, subarray, 0, subarray.length);
