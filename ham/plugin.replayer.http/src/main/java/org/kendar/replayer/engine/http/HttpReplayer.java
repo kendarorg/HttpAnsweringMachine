@@ -2,6 +2,7 @@ package org.kendar.replayer.engine.http;
 
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.engine.ReplayerEngine;
+import org.kendar.replayer.storage.DbRecording;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;
@@ -85,6 +86,11 @@ public class HttpReplayer implements ReplayerEngine {
 
     }
 
+    @Override
+    public void setupStaticCalls(DbRecording recording) {
+        //NOOP
+    }
+
     public HttpReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder,JsonConfiguration configuration) {
         this.sessionFactory = sessionFactory;
         this.logger = loggerBuilder.build(HttpReplayer.class);
@@ -166,7 +172,11 @@ public class HttpReplayer implements ReplayerEngine {
                 var query = em.createQuery(baseQueryString);
                 query.setParameter("recordingId", name);
                 //query.setParameter("reqs",indexes);
-                callIndexes.addAll(query.getResultList());
+                var ci = query.getResultList();
+                for(var c:ci){
+                    em.detach(c);
+                    callIndexes.add((CallIndex) c);
+                }
             });
         }
 

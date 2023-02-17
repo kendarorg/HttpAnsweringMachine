@@ -15,6 +15,7 @@ import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.apis.models.*;
+import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.engine.ReplayerStatus;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DbRecording;
@@ -46,6 +47,7 @@ public class ReplayerAPICrud implements FilteringClass {
   private final ReplayerStatus replayerStatus;
   private final Md5Tester md5Tester;
   private HibernateSessionFactory sessionFactory;
+  private List<ReplayerEngine> replayerEngines;
 
   private final FileResourcesUtils fileResourcesUtils;
   private final LoggerBuilder loggerBuilder;
@@ -60,7 +62,8 @@ public class ReplayerAPICrud implements FilteringClass {
           ReplayerStatus replayerStatus,
           Md5Tester md5Tester,
           JsonConfiguration configuration,
-          HibernateSessionFactory sessionFactory) {
+          HibernateSessionFactory sessionFactory,
+          List<ReplayerEngine> replayerEngines) {
 
 
     this.fileResourcesUtils = fileResourcesUtils;
@@ -70,6 +73,7 @@ public class ReplayerAPICrud implements FilteringClass {
     this.replayerStatus = replayerStatus;
     this.md5Tester = md5Tester;
     this.sessionFactory = sessionFactory;
+    this.replayerEngines = replayerEngines;
   }
 
   @Override
@@ -472,6 +476,24 @@ public class ReplayerAPICrud implements FilteringClass {
       result.getLines().sort(Comparator.comparingLong(SingleScriptLine::getId));
       res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
       res.setResponseText(mapper.writeValueAsString(result));
+    }
+  }
+
+  @HttpMethodFilter(
+          phase = HttpFilterType.API,
+          pathAddress = "/api/plugins/replayer/utils/staticize/{id}",
+          method = "GET")
+  @HamDoc(description = "Prepare static invocations by hand",tags = {"plugin/replayer"},
+          path = @PathParameter(key = "id")
+  )
+  public void staticize(Request req, Response res) throws Exception {
+
+    var id = Long.parseLong(req.getPathParameter("id"));
+    Optional<DbRecording> recording = sessionFactory.querySingle(em-> {
+      return em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id);});
+    var rec= recording.get();
+    for(var eng:replayerEngines){
+      eng.setupStaticCalls(rec);
     }
   }
 }
