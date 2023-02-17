@@ -371,16 +371,18 @@ public class DbReplayer implements ReplayerEngine {
     public void setupStaticCalls(DbRecording recording) throws Exception {
         ArrayList<CallIndex> indexes = new ArrayList<>();
         HashMap<String, List<Long>> mappingIndexes = new HashMap<>();
+        HashMap<String, Set<String>> mappingResponses = new HashMap<>();
         loadIndexes(recording.getId(), indexes);
         for (var index : indexes) {
             sessionFactory.query(e -> {
                 Object[] crcPath =  (Object[])e.createQuery("SELECT " +
-                        " c.requestHash,c.path " +
+                        " c.requestHash,c.path,c.responseHash " +
                         " FROM ReplayerRow c WHERE c.recordingId=" + recording.getId() + " AND " +
                         " c.id=" + index.getReference()).getResultList().get(0);
 
-                var crc = (String)crcPath[0];
+                var requestHash = (String)crcPath[0];
                 var path = (String)crcPath[1];
+                var responseHash = (String)crcPath[2];
                 if(path.matches(".*/\\d")){
                     var arr = path.split("/");
                     String[] subarray = new String[arr.length-1];
@@ -388,14 +390,16 @@ public class DbReplayer implements ReplayerEngine {
                     path = String.join("/",subarray);
                 }
                 //var crc = row.getRequestHash()+":"+row.getResponseHash();
-                if (!mappingIndexes.containsKey(crc+path)) {
-                    mappingIndexes.put(crc+path, new ArrayList<>());
+                if (!mappingIndexes.containsKey(requestHash+path)) {
+                    mappingIndexes.put(requestHash+path, new ArrayList<>());
+                    mappingResponses.put(requestHash+path, new HashSet<>());
                 }
-                mappingIndexes.get(crc+path).add(index.getId());
+                mappingIndexes.get(requestHash+path).add(index.getId());
+                mappingResponses.get(requestHash+path).add(responseHash);
             });
         }
         for (var mappingIndex : mappingIndexes.entrySet()) {
-            if (mappingIndex.getValue().size() > 1) {
+            if (mappingIndex.getValue().size() > 1 && mappingResponses.get(mappingIndex.getKey()).size()==1) {
 
                 sessionFactory.transactional(e -> {
                     var first = mappingIndex.getValue().get(0);
