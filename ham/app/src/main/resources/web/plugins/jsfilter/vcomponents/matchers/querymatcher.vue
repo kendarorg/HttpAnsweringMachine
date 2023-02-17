@@ -24,7 +24,7 @@ module.exports = {
   },
   methods:{
     isValid:function(){
-      return !isUndefined(matcher.dbName);
+      return !isUndefined(this.matcher.dbName);
     }
   }
 }

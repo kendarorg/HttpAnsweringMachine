@@ -27,8 +27,8 @@ module.exports = {
   },
   methods:{
     isValid:function(){
-      return ( !isUndefined(matcher.hostAddress)||!isUndefined(matcher.pathAddress) ) &&
-          !isUndefined(matcher.script);
+      return ( !isUndefined(this.matcher.hostAddress)||!isUndefined(this.matcher.pathAddress) ) &&
+          !isUndefined(this.matcher.script);
     }
   }
 }

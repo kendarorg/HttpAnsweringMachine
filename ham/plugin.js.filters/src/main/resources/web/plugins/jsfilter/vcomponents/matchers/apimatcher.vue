@@ -40,8 +40,8 @@ module.exports = {
   methods:{
     isValid:function(){
 
-      return !isUndefined(matcher.pathRegexp)||!isUndefined(matcher.pathAddress)||
-          !isUndefined(matcher.hostAddress)||!isUndefined(matcher.hostRegexp);
+      return !isUndefined(this.matcher.pathRegexp)||!isUndefined(this.matcher.pathAddress)||
+          !isUndefined(this.matcher.hostAddress)||!isUndefined(this.matcher.hostRegexp);
     }
   }
 }
