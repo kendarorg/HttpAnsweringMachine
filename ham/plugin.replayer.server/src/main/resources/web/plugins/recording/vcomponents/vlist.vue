@@ -145,8 +145,8 @@ module.exports = {
       });
     },
     deleteSelected:function(){
-      let confirmAction = confirm("Are you sure to delete the lines");
-      if (confirmAction) {
+      //let confirmAction = confirm("Are you sure to delete the lines");
+      //if (confirmAction) {
         var data = [];
         this.$refs.grid.onSelected(function(row){
           data.push(row['id']);
@@ -158,7 +158,7 @@ module.exports = {
         axios.post('/api/plugins/replayer/recording/'+id+'/deletelines', data, {headers}).then(function(){
           th.$emit("reload");
         })
-      }
+      //}
     },
     setScript:function (){
       var allHosts = [];
