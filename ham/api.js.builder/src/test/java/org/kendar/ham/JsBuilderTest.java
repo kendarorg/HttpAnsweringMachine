@@ -98,8 +98,8 @@ public class JsBuilderTest {
         var builder = jsBuilder.addFilter("test2")
                 .inPhase(FilterPhase.API)
                 .withMethod(Methods.GET)
-                .withHostRegexp("simple.([a-z]+)")
-                .withPathRegexp("/test/([a-z]+)")
+                .wihtHostPattern("simple.([a-z]+)")
+                .withPathPattern("/test/([a-z]+)")
                 .withType(ScriptType.SCRIPT)
                 .setBlocking()
                 .withSource()
@@ -109,8 +109,8 @@ public class JsBuilderTest {
                 .addLine("response.setStatusCode(200);")
                 .closeBlocking();
 
-        builder.verifyHostRegexp("simple.thrust");
-        builder.verifPathRegexp("/test/wetheaver");
+        builder.verifyHostPattern("simple.thrust");
+        builder.verifyPathPattern("/test/wetheaver");
 
         var filterId = builder.create();
 
