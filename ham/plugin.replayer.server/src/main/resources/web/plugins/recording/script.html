@@ -492,8 +492,9 @@
             makeStaticCalls:function(){
                 var id = getUrlParameter("id");
 
+                showSpinner(true);
                 axiosHandle(axios.get("/api/plugins/replayer/utils/staticize/"+id
-                    +"?type="+this.makestatic));
+                    +"?type="+this.makestatic),()=>showSpinner(false),()=>showSpinner(false));
             }
         }
     });

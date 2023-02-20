@@ -155,6 +155,7 @@ public class ReplayerAPICrud implements FilteringClass {
         if(line == null) continue;
         var newLine = new SingleScriptLine();
         newLine.setId(index.getId());
+        newLine.setCalls(index.getCalls());
         newLine.setRequestMethod(line.getRequest().getMethod());
         newLine.setRequestPath(line.getRequest().getPath());
         newLine.setRequestHost(line.getRequest().getHost());
