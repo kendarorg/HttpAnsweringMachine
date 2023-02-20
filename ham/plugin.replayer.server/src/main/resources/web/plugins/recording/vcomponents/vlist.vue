@@ -99,7 +99,9 @@ module.exports = {
 
         this.$emit("reload","");
       }else {
+        if(!isUndefined(this.$refs.grid) && !isUndefined(this.$refs.grid.reload)){
         this.$refs.grid.reload(externalData);
+        }
       }
     },
     download:function(){

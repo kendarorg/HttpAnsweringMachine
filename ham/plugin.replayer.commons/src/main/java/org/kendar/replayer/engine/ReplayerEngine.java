@@ -17,8 +17,6 @@ public interface ReplayerEngine {
 
     boolean isValidRoundTrip(Request req, Response res, Map<String, String> specialParams);
 
-    boolean noStaticsAllowed();
-
     void setParams(Map<String, String> params);
 
     void setupStaticCalls(DbRecording recording) throws Exception;

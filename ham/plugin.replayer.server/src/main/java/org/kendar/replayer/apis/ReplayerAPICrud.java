@@ -8,10 +8,7 @@ import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
-import org.kendar.http.annotations.multi.Example;
-import org.kendar.http.annotations.multi.HamRequest;
-import org.kendar.http.annotations.multi.HamResponse;
-import org.kendar.http.annotations.multi.PathParameter;
+import org.kendar.http.annotations.multi.*;
 import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.apis.models.*;
@@ -484,16 +481,20 @@ public class ReplayerAPICrud implements FilteringClass {
           pathAddress = "/api/plugins/replayer/utils/staticize/{id}",
           method = "GET")
   @HamDoc(description = "Prepare static invocations by hand",tags = {"plugin/replayer"},
-          path = @PathParameter(key = "id")
+          path = @PathParameter(key = "id"),
+          query = @QueryString(key="type",description = "If specified set on what kind of item should run the staticizer. Aka collapse common calls. Default *")
   )
   public void staticize(Request req, Response res) throws Exception {
 
     var id = Long.parseLong(req.getPathParameter("id"));
+    var type = req.getQuery("type")==null?"*":req.getQuery("type");
     Optional<DbRecording> recording = sessionFactory.querySingle(em-> {
       return em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id);});
     var rec= recording.get();
     for(var eng:replayerEngines){
-      eng.setupStaticCalls(rec);
+      if(type.equalsIgnoreCase("*")||type.equalsIgnoreCase(eng.getId())) {
+        eng.setupStaticCalls(rec);
+      }
     }
   }
 }

@@ -1,5 +1,7 @@
 package org.kendar.replayer.storage;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import org.kendar.servers.db.DbTable;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +34,10 @@ public class CallIndex implements DbTable {
 
     @Column(name = "reference")
     private long reference;
+
+    @Column(name = "calls")
+    @JsonSetter(nulls = Nulls.SKIP)
+    private long calls = 1;
 
     @Column(name = "description",length = 1024)
     private String description;
@@ -116,5 +122,13 @@ public class CallIndex implements DbTable {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public long getCalls() {
+        return calls;
+    }
+
+    public void setCalls(long calls) {
+        this.calls = calls;
     }
 }

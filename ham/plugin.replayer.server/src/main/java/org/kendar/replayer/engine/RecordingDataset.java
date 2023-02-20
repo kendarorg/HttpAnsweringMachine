@@ -70,10 +70,10 @@ public class RecordingDataset implements BaseDataset{
     }
 
     public void save() throws Exception {
-        for (int i = 0; i < replayerEngines.size(); i++) {
-            var engine = replayerEngines.get(i);
-            engine.setupStaticCalls(recording);
-        }
+//        for (int i = 0; i < replayerEngines.size(); i++) {
+//            var engine = replayerEngines.get(i);
+//            engine.setupStaticCalls(recording);
+//        }
         staticRequests.clear();
         recording =  null;
     }
@@ -145,34 +145,14 @@ public class RecordingDataset implements BaseDataset{
             callIndex.setTimestamp(req.getMs());
             callIndex.setId(newId);
             callIndex.setReference(newId);
+            callIndex.setCalls(1);
             callIndex.setRecordingId(recording.getId());
 
             final ReplayerEngine constEngine = engine;
             sessionFactory.transactional(em-> {
-                var isRowStatic = MimeChecker.isStatic(res.getHeader(ConstantsHeader.CONTENT_TYPE), req.getPath());
-                if(constEngine.noStaticsAllowed()){
-                    isRowStatic=false;
-                }
-                var saveRow = true;
-                if (isRowStatic && req.getMethod().equalsIgnoreCase("GET")) {
-                    replayerRow.setStaticRequest(true);
-                    if (staticRequests.containsKey(replayerRow.getResponseHash())) {
-                        saveRow = false;
-                    }
-                } else {
                     replayerRow.setStaticRequest(false);
-                }
-                if (!saveRow) {
-                    //Overwrite when duplicate
-                    //No save row only callIndex
-                    callIndex.setReference(staticRequests.get(replayerRow.getResponseHash()));
-                } else {
-                    if (isRowStatic && req.getMethod().equalsIgnoreCase("GET")) {
-                        staticRequests.put(replayerRow.getResponseHash(), replayerRow.getId());
-                    }
                     em.persist(replayerRow);
-                }
-                em.persist(callIndex);
+                    em.persist(callIndex);
             });
             return true;
         } catch (Exception e) {
