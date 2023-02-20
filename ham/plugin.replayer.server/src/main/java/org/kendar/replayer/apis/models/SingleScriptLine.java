@@ -14,6 +14,7 @@ public class SingleScriptLine {
     private int responseStatusCode;
     private long reference;
     private String type;
+    private long calls;
 
     public Long getId() {
         return id;
@@ -118,5 +119,13 @@ public class SingleScriptLine {
 
     public String getType() {
         return type;
+    }
+
+    public void setCalls(long calls) {
+        this.calls = calls;
+    }
+
+    public long getCalls() {
+        return calls;
     }
 }

@@ -71,6 +71,7 @@ module.exports = {
         {id: "responseHashCalc", template: "bool",label:"Res Body",sortable:true},
         {id: "preScript", template: "bool",label:"Pre",sortable:true},
         {id: "script", template: "bool",label:"Post",sortable:true},
+        {id: "calls", template: "long",label:"Calls",sortable:true},
       ],
       extraColumns: [
         {id:"select",template:"boolw",default:false},
@@ -99,7 +100,9 @@ module.exports = {
 
         this.$emit("reload","");
       }else {
+        if(!isUndefined(this.$refs.grid) && !isUndefined(this.$refs.grid.reload)){
         this.$refs.grid.reload(externalData);
+        }
       }
     },
     download:function(){

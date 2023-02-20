@@ -92,11 +92,6 @@ public class DbReplayer implements ReplayerEngine {
     }
 
     @Override
-    public boolean noStaticsAllowed() {
-        return true;
-    }
-
-    @Override
     public void setParams(Map<String, String> specialParams) {
         useSimEngine = specialParams.get("useSimEngine") == null ? false :
                 Boolean.parseBoolean(specialParams.get("useSimEngine"));
@@ -185,7 +180,7 @@ public class DbReplayer implements ReplayerEngine {
         var rs = e.createQuery("SELECT e FROM CallIndex e LEFT JOIN ReplayerRow f " +
                 " ON e.reference = f.id" +
                 " WHERE " +
-                " f.type='db' AND e.recordingId=" + recordingId +
+                " f.type='"+this.getId()+"' AND e.recordingId=" + recordingId +
                 " AND e.stimulatorTest=false ORDER BY e.id ASC").getResultList();
         var founded = new HashSet<Long>();
         for (var rss : rs) {
@@ -412,11 +407,13 @@ public class DbReplayer implements ReplayerEngine {
                             " WHERE " +
                             " e.recordingId=" + recording.getId() +
                             " AND e.id=" + first).getResultList().get(0);
+                    callIndex.setCalls(callIndexesToRemove.size()+1);
                     var row = (ReplayerRow) e.createQuery("SELECT e FROM ReplayerRow e " +
                             " WHERE " +
                             " e.recordingId=" + recording.getId() +
                             " AND e.id=" + callIndex.getReference()).getResultList().get(0);
                     row.setStaticRequest(true);
+                    e.merge(callIndex);
                     e.merge(row);
 
 
