@@ -157,6 +157,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
       callIndex.setRecordingId(recordingId);
       callIndex.setReference(source.getId());
       callIndex.setId(line);
+      callIndex.setCalls(1);
       em.persist(callIndex);
     });
 

@@ -87,16 +87,16 @@
         <input class="form-control" type="text" name="hostAddress" id="hostAddress" v-model="matcher.hostAddress"/>
       </div>
       <div class="form-group">
-        <label htmlFor="hostRegexp">hostRegexp</label>
-        <input class="form-control" type="text" name="hostRegexp" id="hostRegexp" v-model="matcher.hostRegexp"/>
+        <label htmlFor="hostPattern">hostPattern</label>
+        <input class="form-control" type="text" name="hostPattern" id="hostPattern" v-model="matcher.hostPattern"/>
       </div>
       <div class="form-group">
         <label htmlFor="pathAddress">pathAddress</label>
         <input class="form-control" type="text" name="pathAddress" id="pathAddress" v-model="matcher.pathAddress"/>
       </div>
       <div class="form-group">
-        <label htmlFor="pathRegexp">pathRegexp</label>
-        <input class="form-control" type="text" name="pathRegexp" id="pathRegexp" v-model="matcher.pathRegexp"/>
+        <label htmlFor="pathPattern">pathPattern</label>
+        <input class="form-control" type="text" name="pathPattern" id="pathPattern" v-model="matcher.pathPattern"/>
       </div>
 
     </div>-->

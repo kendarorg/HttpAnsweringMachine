@@ -89,6 +89,7 @@ public class ReqRespBuilder {
         result.setReference(id);
         result.setIndex(id);
         result.setId(id);
+        result.setCalls(1);
         result.setStimulatorTest(isstimulator);
         return result;
     }

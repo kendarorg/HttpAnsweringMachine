@@ -22,9 +22,9 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
     }
     private Methods method;
     private String hostAddress;
-    private String hostRegexp;
+    private String hostPattern;
     private String pathAddress;
-    private String pathRegexp;
+    private String pathPattern;
     private FilterPhase phase;
     private boolean blocking = false;
     private String source;
@@ -48,16 +48,16 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
     }
 
     @Override
-    public JsFilterBuilder withHostRegexp(String host) {
-        this.hostRegexp = host;
+    public JsFilterBuilder wihtHostPattern(String host) {
+        this.hostPattern = host;
         return this;
     }
     @Override
-    public JsFilterBuilder verifyHostRegexp(String host) {
-        var pattern = Pattern.compile(hostRegexp);
+    public JsFilterBuilder verifyHostPattern(String host) {
+        var pattern = Pattern.compile(hostPattern);
         var matcher = pattern.matcher(host);
         if(!matcher.matches()){
-            throw new RuntimeException(host+ " does not match "+hostRegexp);
+            throw new RuntimeException(host+ " does not match "+ hostPattern);
         }
         return this;
     }
@@ -75,16 +75,16 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
     }
 
     @Override
-    public JsFilterBuilder withPathRegexp(String host) {
-        this.pathRegexp = host;
+    public JsFilterBuilder withPathPattern(String host) {
+        this.pathPattern = host;
         return this;
     }
     @Override
-    public JsFilterBuilder verifPathRegexp(String host) {
-        var pattern = Pattern.compile(pathRegexp);
+    public JsFilterBuilder verifyPathPattern(String host) {
+        var pattern = Pattern.compile(pathPattern);
         var matcher = pattern.matcher(host);
         if(!matcher.matches()){
-            throw new RuntimeException(host+ " does not match "+hostRegexp);
+            throw new RuntimeException(host+ " does not match "+ hostPattern);
         }
         return this;
     }
@@ -125,9 +125,9 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
         var matcher = new JsBuilder.ApiMatcher();
         matcher.setMethod(this.method);
         matcher.setHostAddress(this.hostAddress);
-        matcher.setHostPattern(this.hostRegexp);
+        matcher.setHostPattern(this.hostPattern);
         matcher.setPathAddress(this.pathAddress);
-        matcher.setPathPattern(this.pathRegexp);
+        matcher.setPathPattern(this.pathPattern);
         try {
             matchers.put("apimatcher",mapper.writeValueAsString(matcher));
         } catch (JsonProcessingException e) {

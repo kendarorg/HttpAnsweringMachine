@@ -4,13 +4,13 @@ public interface JsFilterBuilder {
     JsFilterBuilder withMethod(Methods method);
     JsFilterBuilder inPhase(FilterPhase method);
     JsFilterBuilder withHost(String host);
-    JsFilterBuilder withHostRegexp(String host);
+    JsFilterBuilder wihtHostPattern(String host);
     JsFilterBuilder withPath(String host);
     JsFilterBuilder withType(ScriptType type);
-    JsFilterBuilder withPathRegexp(String host);
+    JsFilterBuilder withPathPattern(String host);
     JsFilterBuilder setBlocking();
     JsSourceBuilder withSource();
     Long create() throws HamException;
-    JsFilterBuilder verifyHostRegexp(String host);
-    JsFilterBuilder verifPathRegexp(String host);
+    JsFilterBuilder verifyHostPattern(String host);
+    JsFilterBuilder verifyPathPattern(String host);
 }

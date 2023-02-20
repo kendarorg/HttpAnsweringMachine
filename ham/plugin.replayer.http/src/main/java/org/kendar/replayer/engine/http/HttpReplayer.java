@@ -13,8 +13,8 @@ import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Map;
+import javax.persistence.EntityManager;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -77,18 +77,100 @@ public class HttpReplayer implements ReplayerEngine {
     }
 
     @Override
-    public boolean noStaticsAllowed() {
-        return false;
-    }
-
-    @Override
     public void setParams(Map<String, String> params) {
 
     }
 
+    protected void loadIndexes(Long recordingId, ArrayList<CallIndex> indexes) throws Exception {
+        sessionFactory.query(e -> {
+            addAllIndexes(recordingId, indexes, e);
+        });
+    }
+
+    protected void addAllIndexes(Long recordingId, ArrayList<CallIndex> indexes, EntityManager e) {
+        var rs = e.createQuery("SELECT e FROM CallIndex e LEFT JOIN ReplayerRow f " +
+                " ON e.reference = f.id" +
+                " WHERE " +
+                " f.type='"+this.getId()+"' AND e.recordingId=" + recordingId +
+                " AND e.stimulatorTest=false ORDER BY e.id ASC").getResultList();
+        var founded = new HashSet<Long>();
+        for (var rss : rs) {
+            e.detach(rss);
+            var index = (CallIndex) rss;
+            if (founded.contains(index.getIndex())) continue;
+            indexes.add(index);
+            founded.add(index.getIndex());
+        }
+    }
+
     @Override
-    public void setupStaticCalls(DbRecording recording) {
-        //NOOP
+    public void setupStaticCalls(DbRecording recording) throws Exception {
+        ArrayList<CallIndex> indexes = new ArrayList<>();
+        HashMap<String, List<Long>> mappingIndexes = new HashMap<>();
+        HashMap<String, Set<String>> mappingResponses = new HashMap<>();
+        loadIndexes(recording.getId(), indexes);
+        for (var index : indexes) {
+            sessionFactory.query(e -> {
+                Object[] crcPath =  (Object[])e.createQuery("SELECT " +
+                        " c.requestHash,c.path,c.responseHash " +
+                        " FROM ReplayerRow c WHERE c.recordingId=" + recording.getId() + " AND " +
+                        " c.id=" + index.getReference()).getResultList().get(0);
+
+                var requestHash = (String)crcPath[0];
+                var path = (String)crcPath[1];
+                var responseHash = (String)crcPath[2];
+
+                //var crc = row.getRequestHash()+":"+row.getResponseHash();
+                if (!mappingIndexes.containsKey(requestHash+path)) {
+                    mappingIndexes.put(requestHash+path, new ArrayList<>());
+                    mappingResponses.put(requestHash+path, new HashSet<>());
+                }
+                mappingIndexes.get(requestHash+path).add(index.getId());
+                mappingResponses.get(requestHash+path).add(responseHash);
+            });
+        }
+        for (var mappingIndex : mappingIndexes.entrySet()) {
+            if (mappingIndex.getValue().size() > 1 && mappingResponses.get(mappingIndex.getKey()).size()==1) {
+
+                sessionFactory.transactional(e -> {
+                    var first = mappingIndex.getValue().get(0);
+
+                    var callIndexesToRemove = mappingIndex.getValue().stream().skip(1)
+                            .map(a -> a.toString())
+                            .collect(Collectors.toList());
+                    var callIndex = (CallIndex) e.createQuery("SELECT e FROM CallIndex e " +
+                            " WHERE " +
+                            " e.recordingId=" + recording.getId() +
+                            " AND e.id=" + first).getResultList().get(0);
+                    callIndex.setCalls(callIndexesToRemove.size()+1);
+                    var row = (ReplayerRow) e.createQuery("SELECT e FROM ReplayerRow e " +
+                            " WHERE " +
+                            " e.recordingId=" + recording.getId() +
+                            " AND e.id=" + callIndex.getReference()).getResultList().get(0);
+                    row.setStaticRequest(true);
+                    e.merge(row);
+                    e.merge(callIndex);
+
+
+                    var referencesToRemove = ((List<Long>) e.createQuery("SELECT e.reference FROM CallIndex e " +
+                            " WHERE " +
+                            " e.recordingId=" + recording.getId() +
+                            " AND e.id IN (" + String.join(",", callIndexesToRemove) + ")").getResultList())
+                            .stream().map(a -> a.toString()).collect(Collectors.toList());
+                    e.createQuery("DELETE FROM  ReplayerRow e " +
+                            " WHERE " +
+                            " e.recordingId=" + recording.getId() +
+                            " AND e.id IN (" + String.join(",", referencesToRemove) + ")").executeUpdate();
+                    e.createQuery("DELETE FROM  CallIndex e " +
+                            " WHERE " +
+                            " e.recordingId=" + recording.getId() +
+                            " AND e.id IN (" + String.join(",", callIndexesToRemove) + ")").executeUpdate();
+
+
+                });
+            }
+        }
+
     }
 
     @Override
