@@ -27,10 +27,10 @@ public class DbFilter implements DbTable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "matcher")
+    @Column(name = "matcher",columnDefinition = "CLOB")
     private String matcher;
 
-    @Column(name = "source")
+    @Column(name = "source",columnDefinition = "CLOB")
     private String source;
 
     @Column(name = "phase")
