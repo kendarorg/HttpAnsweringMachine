@@ -29,7 +29,7 @@ module.exports = {
   },
   methods: {
     retrieveData: async function () {
-      var result = await axios.get("/api/log/special");
+      var result = await axiosHandle(axios.get("/api/log/special"));
       return result;
     },
     reload: function () {

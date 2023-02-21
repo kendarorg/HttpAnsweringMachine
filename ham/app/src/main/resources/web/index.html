@@ -57,7 +57,7 @@
         },
         methods:{
             pluginsRetrieveData: async function(){
-                var result = await axios.get("/api/plugins");
+                var result = await axiosHandle(axios.get("/api/plugins"));
                 return result;
             },
             mainRetrieveData: async function(){

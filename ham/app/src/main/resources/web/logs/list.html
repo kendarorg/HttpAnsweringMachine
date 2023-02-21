@@ -62,7 +62,7 @@
         },
         methods:{
             retrieveData: async function(index,pageSize){
-                var result = await axios.get("/api/log/files?index="+index+"&pageSize="+pageSize);
+                var result = await axiosHandle(axios.get("/api/log/files?index="+index+"&pageSize="+pageSize));
                 return result;
             },
             gridClicked: async function (evt) {

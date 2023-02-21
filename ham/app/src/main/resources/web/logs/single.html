@@ -82,7 +82,7 @@
             'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
         },
         async created() {
-            var response = await axios.get("/api/log/files/" + getUrlParameter("id"));
+            var response = await axiosHandle(axios.get("/api/log/files/" + getUrlParameter("id")));
             var next = response.headers.get("X-NEXT");
             if(next==null|| typeof next == "undefined")next="";
             var past = response.headers.get("X-PAST");

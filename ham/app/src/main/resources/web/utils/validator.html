@@ -77,7 +77,7 @@
                     template: this.template,
                     schema: this.schema
                 };
-                axios.post('/api/utils/schemavalidator/'+this.type, data).then((resultall) => {
+                axiosHandle(axios.post('/api/utils/schemavalidator/'+this.type, data),(resultall) => {
                     var result = resultall.data;
                     if(result.error){
                         var toput = "Found "+result.errors.length+" errors:\r\n";

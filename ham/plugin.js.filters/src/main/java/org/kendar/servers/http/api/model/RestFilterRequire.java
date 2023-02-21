@@ -3,6 +3,7 @@ package org.kendar.servers.http.api.model;
 public class RestFilterRequire {
     private String name;
     private boolean binary;
+    private String content;
 
     public boolean isBinary() {
         return binary;
@@ -18,5 +19,13 @@ public class RestFilterRequire {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
     }
 }

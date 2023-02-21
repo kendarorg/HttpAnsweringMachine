@@ -93,7 +93,7 @@ module.exports = {
       addMessage(data.error,error);
     },
     retrieveData: async function () {
-      var result = await axios.get("/api/proxies");
+      var result = await axiosHandle(axios.get("/api/proxies"));
       return result;
     },
     gridClicked: async function (evt) {
@@ -102,7 +102,7 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axios.delete("/api/proxies/" + row['id'])
+        await axiosHandle(axios.delete("/api/proxies/" + row['id']),axiosOk);
         this.reload();
       }
     },
@@ -127,14 +127,16 @@ module.exports = {
     },
     save: async function () {
       if (this.modalData.edit) {
-        await axios.put('/api/proxies/' + this.modalData.data.id, this.modalData.data).then(() => {
+        await axiosHandle(axios.put('/api/proxies/' + this.modalData.data.id, this.modalData.data),() => {
           this.modalShow = false;
           this.reload();
+          axiosOk()
         });
       } else {
-        await axios.post('/api/proxies', this.modalData.data).then(() => {
+        await axiosHandle(axios.post('/api/proxies', this.modalData.data),() => {
           this.modalShow = false;
           this.reload();
+          axiosOk()
         });
       }
     }

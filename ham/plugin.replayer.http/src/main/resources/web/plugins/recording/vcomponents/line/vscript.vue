@@ -50,10 +50,8 @@ module.exports = {
         post:this.data.post
       };
       const headers = {'Content-Type': 'application/json'};
-      axios.put('/api/plugins/replayer/recording/'+this.recordingid+'/script/'+this.data.id,
-          data, {headers}).then((res) => {
-
-      });
+      axiosHandle(axios.put('/api/plugins/replayer/recording/'+this.recordingid+'/script/'+this.data.id,
+          data, {headers}),axiosOk);
     }
   }
 

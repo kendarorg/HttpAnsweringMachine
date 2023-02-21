@@ -73,7 +73,7 @@ module.exports = {
   },
   methods: {
     retrieveData: async function () {
-      var result = await axios.get("/api/jdbcproxies/proxies");
+      var result = await axiosHandle(axios.get("/api/jdbcproxies/proxies"));
       return result;
     },
     gridClicked: async function (evt) {
@@ -82,13 +82,14 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axios.delete("/api/jdbcproxies/proxies/" + row['id'])
+        await axiosHandle(axios.delete("/api/jdbcproxies/proxies/" + row['id']),axiosOk);
         this.reload();
       }else if (evt.buttonid == "_test") {
-        await axios.get("/api/jdbcproxies/proxies/" + row['id']+"?test=true").then(function (data) {
+        await axiosHandle(
+            axios.get("/api/jdbcproxies/proxies/" + row['id']+"?test=true"),(data)=>{
           if(data.status==200)addMessage("OK");
           else addMessage("ERROR CONNECTING!","error")
-        }).catch(function (error) {
+        },(error)=>{
           addMessage(error.response.data,"error");
         });
       }
@@ -116,13 +117,16 @@ module.exports = {
     },
     save: async function () {
       if (this.modalData.edit) {
-        await axios.put('/api/jdbcproxies/proxies/' + this.modalData.data.id, this.modalData.data).then(() => {
+        await axiosHandle(axios.put('/api/jdbcproxies/proxies/' + this.modalData.data.id, this.modalData.data),
+            () => {
+          axiosOk();
           this.modalShow = false;
           this.reload();
         });
       } else {
-        await axios.post('/api/jdbcproxies/proxies', this.modalData.data).then(() => {
+        await axiosHandle(axios.post('/api/jdbcproxies/proxies', this.modalData.data),() => {
           this.modalShow = false;
+          axiosOk();
           this.reload();
         });
       }

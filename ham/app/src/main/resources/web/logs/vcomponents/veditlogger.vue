@@ -25,7 +25,7 @@ module.exports = {
   mounted: function () {
     var th = this;
 
-    axios.get("/api/log/special").then(function (data) {
+    axiosHandle(axios.get("/api/log/special"),(data)=>{
       var appdata = [];
       for (var i = 0; i < data.data.length; i++) {
         appdata.push(data.data[i]['path']);

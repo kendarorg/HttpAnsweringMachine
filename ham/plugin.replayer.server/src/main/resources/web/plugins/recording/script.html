@@ -222,7 +222,7 @@
             },
             retrieveDataResult: async function () {
                 var id = getUrlParameter("id");
-                var result = await axios.get("/api/plugins/replayer/results?id="+id);
+                var result = await axiosHandle(axios.get("/api/plugins/replayer/results?id="+id));
                 return result;
             },
             gridClickedResult: async function (evt) {
@@ -231,14 +231,13 @@
                 if (evt.buttonid == "_download") {
                     window.open("/api/plugins/replayer/results/"+row['fileId']);
                 } else if (evt.buttonid == "_delete") {
-                    await axios.delete("/api/plugins/replayer/results/" + row['fileId']);
-                    this.$refs.results.delete(evt.index)
+                    await axiosHandle(axios.delete("/api/plugins/replayer/results/" + row['fileId']),()=>
+                    this.$refs.results.delete(evt.index));
 
                 }
             },
             reloadResult: function () {
-                this.currentRowSelectedIndex=null;
-                this.currentRowFromFilter=null;
+
                 this.$refs.results.reload();
             },
             executeAct:function(what,onWhat){
@@ -261,15 +260,15 @@
                     }
                     var id = getUrlParameter("id");
                     var url = "/api/plugins/replayer/recording/"+id+"/"+onWhat+"/"+what+extra;
-                    axios.get(url)
-                        .then(function (result) {
+                    axiosHandle(axios.get(url),(result)=>{
                             th.updateButtons();
                             showSpinner(false);
-                        }).catch(
-                        function (error) {showSpinner(false);});
+                        },(r)=> {
+                        addError(r.message);
+                        showSpinner(false)
+                    });
                 }else {
-                    axios.get("/api/plugins/replayer/status")
-                        .then(function (result) {
+                    axiosHandle( axios.get("/api/plugins/replayer/status"),(result)=>{
                             var data = result.data;
                             data.status = data.status.toUpperCase();
                             data.running = data.running.toUpperCase();
@@ -280,8 +279,9 @@
                                 if (data.status == "REPLAYING")th.executeAct(what,'replay');
                                 if (data.status == "PAUSED_REPLAYING")th.executeAct(what,'replay');
                             }
-                        }).catch(
-                        function (error) {showSpinner(false);});
+                    },(r)=>{
+                        addError(r.message);
+                        showSpinner(false)});
                 }
             },
             rowSelected:function(rowId,type){
@@ -297,8 +297,7 @@
             updateButtons:function(){
                 console.log("UPDATE")
                 var th=this;
-                axios.get("/api/plugins/replayer/status")
-                    .then(function(result){
+                axiosHandle(axios.get("/api/plugins/replayer/status"),(result)=>{
                         var data = result.data;
                         data.status=data.status.toUpperCase();
                         data.running=data.running.toUpperCase();
@@ -376,21 +375,19 @@
             reloadForm: function(searchStr){
                 showSpinner(true);
                 var th=this;
-                axios.get("/api/plugins/replayer/extension")
-                    .then(function(result){
+                axiosHandle(axios.get("/api/plugins/replayer/extension"),(result)=>{
                         clearArray(th.extensions)
                         result.data.forEach(function (fe){
                             th.extensions.push(fe);
                         });
                     });
                 if(isUndefined(searchStr)) {
-                    axios.get("/api/plugins/replayer/recording/" + getUrlParameter("id"))
-                        .then(function (result) {
+                    axiosHandle(axios.get("/api/plugins/replayer/recording/" + getUrlParameter("id")),(result)=>{
                             th.putDataOnGrid(result, th);
                         });
                 }else{
-                    axios.post("/api/plugins/replayer/recording/" + getUrlParameter("id"),[searchStr])
-                        .then(function (result) {
+                    axiosHandle(axios.post("/api/plugins/replayer/recording/" + getUrlParameter("id"),[searchStr])
+                        ,(result)=>{
                             th.putDataOnGrid(result, th);
                         });
                 }
@@ -440,8 +437,8 @@
 
                 showSpinner(true);
                 const headers = {'Content-Type': 'application/json'};
-                axios.put('/api/plugins/replayer/recording/'+id,
-                    data, {headers}).then((res) => {
+                axiosHandle(axios.put('/api/plugins/replayer/recording/'+id,
+                    data, {headers}),(res) => {
                     showSpinner(false);
                 });
             },

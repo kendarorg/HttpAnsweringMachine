@@ -152,10 +152,8 @@ module.exports = {
         jsonResultSet:originalResultset,
         data:JSON.stringify(this.rows)
       }
-      axios.post('/api/jdbcproxies/utils/modifyresultset', data).then((result) => {
+      axiosHandle(axios.post('/api/jdbcproxies/utils/modifyresultset', data),(result) => {
         setitem(JSON.stringify(result.data));
-      }).catch(function (error) {
-        addError("Invalid data");
       });
     },
     saveChanges:function(){
