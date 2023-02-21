@@ -30,6 +30,7 @@ Set-Variable -Name "DOCKER_HOST" -Value "tcp://192.168.56.2:32750" -Scope global
 Set-Variable -Name "DOCKER_DEPLY" -Value "true" -Scope global
 
 export DOCKER_DEPLOY=true
+export DOCKER_IP=192.168.1.40
 # The docker on which should firstly deploy
 export DOCKER_HOST=tcp://192.168.1.40:23750
 ./scripts/build/build_release.sh
