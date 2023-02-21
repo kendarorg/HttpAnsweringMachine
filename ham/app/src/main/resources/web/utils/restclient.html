@@ -59,8 +59,9 @@
                 const options = {
                     headers: {"content-type": "text/plain"}
                 }
-                axios.post('/api/remote/restclient', this.source,options).then((resultall) => {
+                axiosHandle(axios.post('/api/remote/restclient', this.source,options),(resultall) => {
                     th.result = resultall.data;
+                    axiosOk()
                 });
             }
         }

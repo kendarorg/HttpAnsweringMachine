@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-@HttpTypeFilter(hostAddress = "*")
+@HttpTypeFilter(hostAddress = "*",priority = 200)
 public class RecordFilter  implements FilteringClass {
     private final String localAddress;
     @Override

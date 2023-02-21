@@ -103,11 +103,16 @@ public class JsFilterAPI implements FilteringClass {
   @HamDoc(tags = {"plugin/js"},
           description = "Get Single filter",
           path = @PathParameter(key = "filtername"),
+          query = @QueryString(key="full",example = "When set to true download the full filter descriptor"),
           responses = @HamResponse(
                   body = RestFilter.class
           ))
   public void getJsFilter(Request req, Response res) throws Exception {
     var jsFilterDescriptor = req.getPathParameter("filtername");
+    var full =
+            req.getQuery("full")==null?
+                    false:
+                    "true".equalsIgnoreCase(req.getQuery("full"));
 
     var dbFilter = (DbFilter)sessionFactory.querySingle(em->
             em.createQuery("SELECT e FROM DbFilter e WHERE e.id="+jsFilterDescriptor+" ORDER BY e.id ASC")).get();
@@ -128,6 +133,9 @@ public class JsFilterAPI implements FilteringClass {
       var dbf = new RestFilterRequire();
       dbf.setBinary(rqf.isBinary());
       dbf.setName(rqf.getName());
+      if(full) {
+        dbf.setContent(rqf.getContent());
+      }
       rf.getRequire().add(dbf);
     }
 

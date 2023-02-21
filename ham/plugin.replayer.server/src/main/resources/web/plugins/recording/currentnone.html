@@ -76,10 +76,8 @@
                 window.parent.postMessage(msg, '*')
             },
             updateContent:function (){
-                axios.put("/api/plugins/replayer/recording/"+this.recordingId+"/line/" + this.selectedRow,this.data)
-                    .then(function(result){
-                        //th.data=result.data;
-                    });
+                axiosHandle(axios.put("/api/plugins/replayer/recording/"+this.recordingId+"/line/" +
+                    this.selectedRow,this.data),axiosOk);
             }
         }
     });

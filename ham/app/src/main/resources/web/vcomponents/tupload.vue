@@ -54,20 +54,21 @@ module.exports = {
         var toUpload = JSON.stringify(this.fileContent);
         const headers = {'Content-Type': contentType};
         var th=this;
-        axios.post(this.path, toUpload, {headers}).then((res) => {
+        axiosHandle(axios.post(this.path, toUpload, {headers}),(res) => {
           var data = {
             response:res,
             name:th.uploadScriptShow,
             length:toUpload.length
           };
+          axiosOk();
           th.$emit('success',data)
         });
       }else {
         const formData = new FormData();
         formData.append('file', this.fileContent);
         const headers = { 'Content-Type': 'multipart/form-data' };
-        axios.post(this.path, formData, { headers }).
-        then((res) => {
+        axiosHandle(axios.post(this.path, formData, { headers }),(res) => {
+          axiosOk();
           th.$emit('success',{
             response:res,
             name:th.uploadScriptShow,

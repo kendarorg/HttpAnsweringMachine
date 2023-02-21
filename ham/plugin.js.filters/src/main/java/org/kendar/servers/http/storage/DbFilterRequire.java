@@ -24,7 +24,7 @@ public class DbFilterRequire implements DbTable {
     @Column(name = "name")
     private String name;
 
-    @Column(name="content")
+    @Column(name="content",columnDefinition = "CLOB")
     private String content;
 
 

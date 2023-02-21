@@ -67,7 +67,7 @@ module.exports = {
         type:"application/json"
       };
       const headers = {'Content-Type': this.contentType};
-      axios.post("/api/plugins/replayer/recording", data, {headers}).then((res) => {
+      axiosHandle(axios.post("/api/plugins/replayer/recording", data, {headers}),(res) => {
         location.href = "script.html?id=" + res.data;
       });
     }

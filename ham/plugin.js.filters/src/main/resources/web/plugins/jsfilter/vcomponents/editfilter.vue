@@ -1,12 +1,15 @@
 <template>
   <div>
     <div class="col-md-12">
-      <br>
+      <br/>
 
       <button type="button" class="bi bi-floppy" v-on:click="updateContent()"
-              :disabled="typeof data.id=='undefined'" title="Save changes"></button>
-      <br>
-      <br>
+               title="Save changes"></button>
+      &nbsp;
+      <button type="button" class="bi bi-download" v-on:click="download()"
+               title="Download"></button>
+      <br/>
+      <br/>
 
     </div>
 
@@ -50,7 +53,7 @@
       </div>
       <div class="form-group">
         <label htmlFor="priority">priority (number)</label>
-        <input class="form-control" readOnly type="text" name="priority" id="priority" v-model="data.priority"/>
+        <input class="form-control" type="text" name="priority" id="priority" v-model="data.priority"/>
       </div>
       <div class="form-check">
         <input class="form-check-input" type="checkbox" value="" id="blocking" name="blocking" v-model="data.blocking">
@@ -175,14 +178,14 @@ module.exports = {
     selectedRow: function (val, oldVal) {
       if (isUndefined(val)) return;
       var th = this;
-      axios.get("/api/matchers")
-          .then(function (matchers){
+      axiosHandle(axios.get("/api/matchers")
+          ,(matchers)=>{
             matchers.data.forEach(function (f){
               console.log(f);
               th.matchers.push(f);
             });
-            axios.get("/api/plugins/jsfilter/filters/" + val)
-                .then(function (result) {
+            axiosHandle(axios.get("/api/plugins/jsfilter/filters/" + val)
+                ,(result)=>{
                   var matcherIndex = "apimatcher";
                   for (const [key, value] of Object.entries(result.data.matchers)) {
                     matcherIndex=key;
@@ -195,6 +198,7 @@ module.exports = {
                   }
                   th.data = result.data;
                   th.source = th.data.source;
+                  axiosOk();
                 });
           });
 
@@ -216,6 +220,9 @@ module.exports = {
     }
   },
   methods: {
+    download:function(){
+      downloadFile("/api/plugins/jsfilter/filters/"+this.data.id+"?full=true","script_"+this.data.id);
+    },
     onChangeMatcher:function(){
       this.matcher={};
     },
@@ -237,10 +244,7 @@ module.exports = {
       this.data.source = this.source
       this.data.matchers={};
       this.data.matchers[this.matchersSelected] = JSON.stringify(this.matcher);
-      axios.put("/api/plugins/jsfilter/filters/" + this.data.id, this.data)
-          .then(function (result) {
-            //th.data=result.data;
-          });
+      axiosHandle(axios.put("/api/plugins/jsfilter/filters/" + this.data.id, this.data),axiosOk);
     },
     // gridClicked: async function (evt) {
     //   var row = this.$refs.grid.getById(evt.index);

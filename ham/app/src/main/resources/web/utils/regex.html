@@ -94,7 +94,7 @@
                     unicodeCase:this.unicodeCase,
                     multiline:this.multiline
                 };
-                axios.post('/api/utils/regexp', data).then((resultall) => {
+                axiosHandle(axios.post('/api/utils/regexp', data),(resultall) => {
                     var result = resultall.data;
                     if(result.failed){
                         th.results="Error:\r\n"+result.error;

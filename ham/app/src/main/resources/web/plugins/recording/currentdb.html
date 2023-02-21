@@ -66,16 +66,16 @@ new Vue({
         var th=this;
         th.recordingId = getUrlParameter('recordingId');
         th.selectedRow = getUrlParameter('selectedRow');
-        axios.get("/api/plugins/replayer/recording/" + th.recordingId + "/line/" + th.selectedRow)
-            .then(function (result) {
+        axiosHandle(axios.get("/api/plugins/replayer/recording/" + th.recordingId + "/line/" + th.selectedRow)
+            ,(result)=> {
 
                 th.next = parseInt(result.headers.get("X-NEXT"));
                 th.prev = parseInt(result.headers.get("X-PREV"));
                 th.$set(th,"data", result.data);
 
 
-                axios.get("/api/plugins/replayer/recording/" + th.recordingId + "/script/" + th.selectedRow)
-                    .then(function (results) {
+                axiosHandle(axios.get("/api/plugins/replayer/recording/" + th.recordingId + "/script/" + th.selectedRow)
+                    ,(results)=>{
                         th.script = results.data;
 
                     })
@@ -113,10 +113,8 @@ new Vue({
             window.parent.postMessage(msg, '*')
         },
         updateContent:function (){
-            axios.put("/api/plugins/replayer/recording/"+this.recordingId+"/line/" + this.selectedRow,this.data)
-                .then(function(result){
-                    //th.data=result.data;
-                });
+            axiosHandle(axios.put("/api/plugins/replayer/recording/"+this.recordingId+"/line/" +
+                this.selectedRow,this.data),axiosOk);
         }
     }
 });

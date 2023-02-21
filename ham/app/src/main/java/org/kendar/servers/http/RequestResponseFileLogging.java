@@ -24,7 +24,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 
 @Component
-@HttpTypeFilter(hostAddress = "*")
+@HttpTypeFilter(hostAddress = "*",priority = 1)
 public class RequestResponseFileLogging implements FilteringClass {
   private static final ObjectMapper mapper = new ObjectMapper();
   private final Logger responseLogger;

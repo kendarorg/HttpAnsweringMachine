@@ -14,7 +14,7 @@ No support had been given for array variables
 
 * hostAddress: the exact address (or * for any)
 * hostPattern: the Java regex for the host
-* priority: the priority between the other filters
+* priority: the priority between the other filters. Default is 100. The record/replay has a priority of 200. The higher the first
 * name: a name for the filter
 * blocking: true/false. When blocking the filter result will be sent directly to
   the output, when false all the subsequent filters will be executed

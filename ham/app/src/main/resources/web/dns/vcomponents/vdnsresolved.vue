@@ -70,9 +70,7 @@ module.exports = {
       });
       var toUpload = JSON.stringify(data);
       const headers = {'Content-Type': 'application/json'};
-      axios.post('/api/dns/mappings', toUpload, {headers}).then((res) => {
-
-      });
+      axiosHandle(axios.post('/api/dns/mappings', toUpload, {headers}),axiosOk);
     }
   }
 }

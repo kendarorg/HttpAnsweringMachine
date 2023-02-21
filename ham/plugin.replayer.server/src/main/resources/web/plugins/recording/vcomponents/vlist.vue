@@ -115,9 +115,11 @@ module.exports = {
         th.$emit("selectrow",row['id'],row['type']);
         //location.href = "line.html?line="+row['id']+"&id="+getUrlParameter("id");
       } else if (evt.buttonid == "_delete") {
-        await axios.delete("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/lineindex/" + row['id'])
-            .then(function(){
+        await axiosHandle(axios.delete("/api/plugins/replayer/recording/"+
+            getUrlParameter("id")+"/lineindex/" + row['id'])
+            ,()=>{
               th.$emit("reload");
+              axiosOk();
             })
       }
     },
@@ -143,9 +145,7 @@ module.exports = {
       })
       var toUpload = JSON.stringify(allHosts);
       const headers = {'Content-Type': 'application/json'};
-      axios.post('/api/dns/mappings', toUpload, {headers}).then((res) => {
-
-      });
+      axiosHandle(axios.post('/api/dns/mappings', toUpload, {headers}),axiosOk);
     },
     deleteSelected:function(){
       //let confirmAction = confirm("Are you sure to delete the lines");
@@ -158,8 +158,9 @@ module.exports = {
 
         var th=this;
         const headers = {'Content-Type': 'application/json'};
-        axios.post('/api/plugins/replayer/recording/'+id+'/deletelines', data, {headers}).then(function(){
+      axiosHandle(axios.post('/api/plugins/replayer/recording/'+id+'/deletelines', data, {headers}),()=>{
           th.$emit("reload");
+          axiosOk();
         })
       //}
     },
@@ -198,7 +199,8 @@ module.exports = {
 
       var toUpload = JSON.stringify(toPost);
       const headers = {'Content-Type': 'application/json'};
-      await axios.put('/api/plugins/replayer/recording/'+getUrlParameter("id")+'/script/'+pathId,toUpload, {headers}).then(() => {
+      await axiosHandle(axios.put('/api/plugins/replayer/recording/'+
+          getUrlParameter("id")+'/script/'+pathId,toUpload, {headers}),() => {
         this.modalShow = false;
         location.reload();
       });
@@ -210,9 +212,7 @@ module.exports = {
       })
       var toUpload = JSON.stringify(allHosts);
       const headers = {'Content-Type': 'application/json'};
-      axios.post('/api/ssl', toUpload, {headers}).then((res) => {
-
-      });
+      axiosHandle(axios.post('/api/ssl', toUpload, {headers}),axiosOk);
     }
   }
 }

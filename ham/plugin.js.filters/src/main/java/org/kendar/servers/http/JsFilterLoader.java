@@ -126,7 +126,9 @@ public class JsFilterLoader implements CustomFiltersLoader {
 
       filterDescriptor.setAction(action);
       filterDescriptor.setPhase(dbFilter.getPhase());
-      precompileFilter(filterDescriptor);
+      if(dbFilter.getType().equalsIgnoreCase("script")){
+        precompileFilter(filterDescriptor);
+      }
       var executor =
               new JsFilterExecutor(filterDescriptor, this, loggerBuilder, filterDescriptor.getId(),
                       matchers.toArray(new FilterMatcher[]{}));

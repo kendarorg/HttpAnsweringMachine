@@ -58,9 +58,7 @@ module.exports = {
       };
       var toUpload = JSON.stringify(fileContent);
       const headers = {'Content-Type': 'text/plain'};
-      axios.post(this.getAddress(), toUpload, {headers}).then((res) => {
-
-      });
+      axiosHandle(axios.post(this.getAddress(), toUpload, {headers}),axiosOk);
     },
     onSuccess:function(data){
       console.log("onSuccess")

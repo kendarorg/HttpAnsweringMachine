@@ -51,7 +51,7 @@ module.exports = {
   },
   methods: {
     retrieveData: async function () {
-      var result = await axios.get("/api/log/logger");
+      var result = await axiosHandle(axios.get("/api/log/logger"));
       return result;
     },
     gridClicked: async function (evt) {
@@ -60,7 +60,7 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axios.delete("/api/log/logger/" + row['key']+"?level="+row['value'])
+        await axiosHandle(axios.delete("/api/log/logger/" + row['key']+"?level="+row['value']),axiosOk)
         this.reload();
       }
     },
@@ -85,9 +85,12 @@ module.exports = {
       this.modalShow = true;
     },
     save: async function () {
-      await axios.post('/api/log/logger/' + this.modalData.data.key+"?level="+this.modalData.data.value, this.modalData.data).then(() => {
+      await axiosHandle(axios.post('/api/log/logger/' +
+          this.modalData.data.key+"?level="+
+          this.modalData.data.value, this.modalData.data),() => {
         this.modalShow = false;
         this.reload();
+        axiosOk()
       });
     }
   }

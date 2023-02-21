@@ -128,6 +128,7 @@ public class DbReplayer implements ReplayerEngine {
         for (var index : indexes) {
             sessionFactory.query(e -> {
                 ReplayerRow row = getReplayerRow(recordingId, index, e);
+                if(row==null)return;
                 var reqDeser = serializer.newInstance();
                 reqDeser.deserialize(row.getRequest().getRequestText());
                 var resDeser = serializer.newInstance();
@@ -162,12 +163,15 @@ public class DbReplayer implements ReplayerEngine {
     private final Logger logger;
 
     protected ReplayerRow getReplayerRow(Long recordingId, CallIndex index, EntityManager e) {
-        var row = (ReplayerRow) e.createQuery("SELECT e FROM ReplayerRow e " +
+        List<ReplayerRow> rs = e.createQuery("SELECT e FROM ReplayerRow e " +
                 " WHERE " +
                 " e.type='db'" +
                 " AND e.id =" + index.getReference() + " " +
-                "AND e.recordingId=" + recordingId).getResultList().get(0);
-        return row;
+                "AND e.recordingId=" + recordingId).getResultList();
+        if(rs.size()>0) {
+            return (ReplayerRow) rs.get(0);
+        }
+        return null;
     }
 
     protected void loadIndexes(Long recordingId, ArrayList<CallIndex> indexes) throws Exception {

@@ -286,6 +286,10 @@ const addMessage=function(message,type){
     }, to*1000);
 }
 
+const axiosOk=function(){
+    addMessage("Ok")
+}
+
 const  axiosHandle=async function(axiosCall,thenFunc,errorFunc){
     var part = axiosCall;
     if(!isUndefined(thenFunc)){

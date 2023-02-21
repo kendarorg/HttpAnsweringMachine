@@ -54,7 +54,7 @@ module.exports = {
   },
   methods: {
     retrieveData: async function () {
-      var result = await axios.get("/api/dns/servers");
+      var result = await axiosHandle(axios.get("/api/dns/servers"));
       return result;
     },
     gridClicked: async function (evt) {
@@ -63,8 +63,9 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axios.delete("/api/dns/servers/" + row['id'])
-        this.reload();
+        await axiosHandle(axios.delete("/api/dns/servers/" + row['id']),()=>{
+          axiosOk();
+          this.reload()});
       }
     },
     reload: function () {
@@ -88,13 +89,15 @@ module.exports = {
     },
     save: async function () {
       if (this.modalData.edit) {
-        await axios.put('/api/dns/servers/' + this.modalData.data.id, this.modalData.data).then(() => {
+        await axiosHandle(axios.put('/api/dns/servers/' + this.modalData.data.id, this.modalData.data),() => {
           this.modalShow = false;
+          axiosOk()
           this.reload();
         });
       } else {
-        await axios.post('/api/dns/servers', this.modalData.data).then(() => {
+        await axiosHandle(axios.post('/api/dns/servers', this.modalData.data),() => {
           this.modalShow = false;
+          axiosOk()
           this.reload();
         });
       }
