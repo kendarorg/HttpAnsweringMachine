@@ -80,3 +80,7 @@ You can edit the resultsets adding/removing columns! The engine will handle the 
 
 <img alt="Create recording" src="../../images/dbmod_plugin.gif" width="500"/>
 
+### Notes:
+
+The replayer and recorder filters has a priority of 200
+

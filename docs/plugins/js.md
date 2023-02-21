@@ -17,7 +17,7 @@ The filter contains various parts
 * enabled: true/false
 * blocking: true/false. When blocking the filter result will be sent directly to 
 the output, when false all the subsequent filters will be executed
-* priority: the priority of the filter
+* priority: the priority of the filter. Default is 100. The record/replay has a priority of 200. The higher the first
 * source: for body type will be the data returned, for script the script executed
 
 ...and run the runFilter function on it. Obviously you should follow the

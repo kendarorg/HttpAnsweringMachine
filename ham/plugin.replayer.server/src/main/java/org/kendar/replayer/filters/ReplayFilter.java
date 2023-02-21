@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-@HttpTypeFilter(hostAddress = "*")
+@HttpTypeFilter(hostAddress = "*",priority = 200)
 public class ReplayFilter implements FilteringClass {
   private final ReplayerStatus replayerStatus;
   private final String localAddress;
