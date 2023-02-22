@@ -4,6 +4,7 @@ import com.sun.net.httpserver.Headers;
 import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.portlet.PortletFileUpload;
+import org.kendar.utils.ConstantsMime;
 
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
@@ -95,7 +96,7 @@ public class RequestUtils {
     result.put("charset", cd.getCharset());
     result.put("filename", cd.getFilename() == null ? "file" : cd.getFilename());
     result.put("name", cd.getName() == null ? "file" : cd.getName());
-    result.put("type", cd.getType() == null ? "application/octet-stream" : cd.getType());
+    result.put("type", cd.getType() == null ? ConstantsMime.STREAM : cd.getType());
     return result;
   }
 

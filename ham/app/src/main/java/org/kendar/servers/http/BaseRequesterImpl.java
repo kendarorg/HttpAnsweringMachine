@@ -169,7 +169,7 @@ public abstract class BaseRequesterImpl implements BaseRequester{
                     logger.debug("Error "+request.getHeader(ConstantsHeader.CONTENT_TYPE),ex);
                     entity =
                             new StringEntity(
-                                    request.getRequestText(), ContentType.create("application/octet-stream"));
+                                    request.getRequestText(), ContentType.create(ConstantsMime.STREAM));
                 }
                 if(gzip){
                     ((HttpEntityEnclosingRequestBase) fullRequest).setEntity(new GzipCompressingEntity(entity));

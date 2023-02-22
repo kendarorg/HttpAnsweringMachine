@@ -143,8 +143,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
     result.setHeaders(RequestUtils.headersToMap(exchange.getRequestHeaders()));
     var headerContentType = result.getHeader(ConstantsHeader.CONTENT_TYPE);
     if (headerContentType == null) {
-      headerContentType = "application/octet-stream";
-      result.addHeader(ConstantsHeader.CONTENT_TYPE, headerContentType);
+      //result.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.STREAM);
     }
     result.setSoapRequest(result.getHeader(H_SOAP_ACTION) != null);
     setupAuthHeaders(result);

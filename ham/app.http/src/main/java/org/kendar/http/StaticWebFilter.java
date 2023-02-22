@@ -7,6 +7,7 @@ import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.MimeChecker;
 
@@ -119,11 +120,11 @@ public abstract class StaticWebFilter implements FilteringClass {
         } else if (stringPath.endsWith(".css")) {
           mimeType = "text/css";
         } else if (stringPath.endsWith(".htm") || stringPath.endsWith(".html")) {
-          mimeType = "text/html";
+          mimeType = ConstantsMime.HTML;
         } else if (stringPath.endsWith(".md")) {
-          mimeType = "text/html";
+          mimeType = ConstantsMime.HTML;
         } else {
-          mimeType = "application/octet-stream";
+          mimeType = ConstantsMime.STREAM;
         }
       }
       response.setBinaryResponse(MimeChecker.isBinary(mimeType, null));
