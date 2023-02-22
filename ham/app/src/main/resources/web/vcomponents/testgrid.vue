@@ -45,13 +45,16 @@
         <th v-for="key in columns"
             @click="sortBy(key.id)"
             >
-          <span v-if="getBoolVal(key.sortable,true)" class="btn btn-kendar btn-sm" :class="{ active: sortKey == key.id }">
+          <span v-if="getBoolVal(key.sortable,true) && getBoolVal(key.visible,true)" class="btn btn-kendar btn-sm" :class="{ active: sortKey == key.id }">
                 {{ buildLabel(key) | cleanUp }}
                 <span :class="(sortOrders[key] > 0 ? 'arrow asc' : 'arrow dsc')">
                 </span>
           </span>
-          <span v-else class="btn btn-kendar btn-sm">
+          <span class="btn btn-kendar btn-sm" v-else-if="getBoolVal(key.visible,true)">
                 {{ buildLabel(key) | cleanUp }}
+          </span>
+          <span v-else>
+
           </span>
         </th>
       </tr>
