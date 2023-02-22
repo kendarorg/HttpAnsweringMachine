@@ -14,6 +14,9 @@ public class MimeChecker {
     if (contentEncoding == null) {
       return true;
     }
+    if(mime==null||mime.isEmpty()){
+      return false;
+    }
     var mimeLow = mime.toLowerCase(Locale.ROOT);
     if (mimeLow.contains("text")) return false;
     if (mimeLow.contains("xml")) return false;
