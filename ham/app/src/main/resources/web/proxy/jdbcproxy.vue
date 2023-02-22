@@ -10,7 +10,7 @@
     <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
     <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
     <br><br>
-    <simple-grid
+    <simple-grid id="jdbc07"
         v-on:gridclicked="gridClicked"
         ref="grid"
         :columns="columns"

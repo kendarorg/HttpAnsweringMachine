@@ -10,7 +10,7 @@
   <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
   <button v-on:click="downloadHostFiles()" class="bi bi-download" title="Download Hosts File"></button>
   <br><br>
-  <simple-grid
+  <simple-grid id="dns09"
       v-on:gridclicked="gridClicked"
       ref="grid"
       :columns="columns"

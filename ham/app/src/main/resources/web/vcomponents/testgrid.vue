@@ -1,5 +1,24 @@
 <template>
   <div>
+    <simple-modal v-if="modalShow"
+                  :modal-data="modalData"
+                  @close="modalShow = false">
+      <span slot="header">Visible Columns</span>
+      <span slot="body">
+        <table>
+          <tr>
+            <th>Column</th>
+            <th>Visible</th>
+          </tr>
+          <tr v-for="key in columns">
+            <td>{{ key.id }}</td>
+            <td><input class="form-check-input" type="checkbox" value=""
+                       v-model="key.visible" ></td>
+          </tr>
+        </table>
+
+      </span>
+    </simple-modal>
     <div v-if="pageSize!=null">
       <br>
       <button v-bind:disabled="index<=0" class="bi bi bi-skip-backward" @click="goStart" title="Start"></button>
@@ -10,6 +29,10 @@
 
       <button v-if="serverPagination===true" class="bi bi-binoculars" @click="search()" title="Search"></button>-->
       <br><br>
+    </div>
+    <div>
+
+      <button  class="bi bi-eyeglasses" @click="showVisibility()" title="Columns visibility"></button>
     </div>
     <table class="rounded-top">
       <thead>
@@ -41,7 +64,7 @@
                           :descriptor="key"/>
         </td>
         <td v-for="key in columns">
-          <component :is="'s'+key.template" v-if="getBoolVal(key.searchable,true)"
+          <component :is="'s'+key.template" v-if="getBoolVal(key.searchable,true) && getBoolVal(key.visible,true)"
                           :ref="'search'+key.id"
                           :descriptor="key"/>
         </td>
@@ -54,7 +77,9 @@
                           :index="buildId(entry)" />
         </td>
         <td v-for="key in columns">
-          <component  :is="'c'+key.template" :descriptor="key"
+          <component
+                      v-if="getBoolVal(key.visible,true)"
+                      :is="'c'+key.template" :descriptor="key"
                       :value="entry"
                       :ref="buildIndexCrc(entry)+key.id"
                       :index="buildId(entry)"/>
@@ -131,6 +156,8 @@ module.exports = {
       sortOrders[key.id] = 1;
     });
     return {
+      modalData: null,
+      modalShow: false,
       localFilteredData:[],
       index:0,
       columnsKeyMap:null,
@@ -144,6 +171,7 @@ module.exports = {
     };
   },
   components:{
+    'simple-modal': httpVueLoader('/vcomponents/tmodal.vue'),
     'sbool': httpVueLoader('/vcomponents/grid/search/sbool.vue'),
     'sboolw': httpVueLoader('/vcomponents/grid/search/sboolw.vue'),
     'sbutton': httpVueLoader('/vcomponents/grid/search/sbutton.vue'),
@@ -165,7 +193,7 @@ module.exports = {
         this.localFilteredData=[];
         return [];
       }
-
+      //this.$attrs["id"]
       this.forceUpdate;
       var filterKeys = this.filterKeys;
 
@@ -663,6 +691,20 @@ module.exports = {
         data:this.localFilteredData
       }
       this.$emit("gridrowclicked",evt);
+    },
+    showVisibility:function(){
+      var th= this;
+      th.columns.forEach(function(col){
+        if(isUndefined(col.visible)){
+          col.visible=true;
+        }
+      })
+      this.modalData={
+        save:function(){
+          th.modalShow = false;
+        }
+      }
+      this.modalShow = true;
     }
   }
 }

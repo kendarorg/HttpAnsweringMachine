@@ -17,7 +17,7 @@
         @error="onErrorApply"
     ></ham-upload>
     <br><br>
-    <simple-grid
+    <simple-grid id="web15"
         v-on:gridclicked="gridClicked"
         ref="grid"
         :columns="columns"

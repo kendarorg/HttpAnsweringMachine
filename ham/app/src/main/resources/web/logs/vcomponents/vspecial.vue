@@ -2,7 +2,7 @@
   <div>
     <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
     <br><br>
-    <simple-grid
+    <simple-grid id="loggers12"
         ref="grid"
         :columns="columns"
         :retrieve-data="retrieveData"
