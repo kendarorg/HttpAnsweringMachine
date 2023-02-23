@@ -14,16 +14,19 @@ import org.kendar.servers.http.Response;
 import org.kendar.servers.models.JsonFileData;
 import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.ConstantsMime;
+import org.kendar.utils.FullDownloadUploadService;
 import org.springframework.stereotype.Component;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class SettingsAPI implements FilteringClass {
     private final JsonConfiguration configuration;
+    private final FullDownloadUploadService downloadUploadService;
 
-    public SettingsAPI(JsonConfiguration configuration) {
+    public SettingsAPI(JsonConfiguration configuration, FullDownloadUploadService downloadUploadService) {
 
         this.configuration = configuration;
+        this.downloadUploadService = downloadUploadService;
     }
 
     @Override
@@ -49,6 +52,24 @@ public class SettingsAPI implements FilteringClass {
         res.setStatusCode(200);
     }
 
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/utils/settings/full",
+            method = "GET")
+    @HamDoc(description = "Retrieve the current configuration,recordings etc",
+            responses = @HamResponse(
+                    body = String.class,
+                    description = "The json formatted configuration"
+            ),
+            tags = {"base/utils"}
+    )
+    public void downloadFull(Request req, Response res) throws Exception {
+        var data = downloadUploadService.retrieveItems();
+        res.setResponseBytes(data);
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.ZIP);
+        res.setStatusCode(200);
+    }
+
     static ObjectMapper mapper = new ObjectMapper();
 
     @HttpMethodFilter(
@@ -71,3 +92,4 @@ public class SettingsAPI implements FilteringClass {
         res.setStatusCode(200);
     }
 }
+
