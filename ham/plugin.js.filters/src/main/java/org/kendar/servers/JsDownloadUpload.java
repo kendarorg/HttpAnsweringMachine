@@ -2,6 +2,8 @@ package org.kendar.servers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kendar.events.EventQueue;
+import org.kendar.http.events.ScriptsModified;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.api.model.RestFilter;
 import org.kendar.servers.http.api.model.RestFilterRequire;
@@ -18,11 +20,15 @@ import java.util.Map;
 @Component
 public class JsDownloadUpload implements FullDownloadUpload {
     private final JsonConfiguration configuration;
+    private final EventQueue eventQueue;
     private final HibernateSessionFactory sessionFactory;
 
-    public JsDownloadUpload(JsonConfiguration configuration, HibernateSessionFactory sessionFactory){
+    public JsDownloadUpload(JsonConfiguration configuration,
+                            EventQueue eventQueue,
+                            HibernateSessionFactory sessionFactory){
 
         this.configuration = configuration;
+        this.eventQueue = eventQueue;
         this.sessionFactory = sessionFactory;
     }
     TypeReference<HashMap<String, String>> typeRef
@@ -67,7 +73,36 @@ public class JsDownloadUpload implements FullDownloadUpload {
     }
 
     @Override
-    public void uploadItems(HashMap<String, byte[]> data) {
+    public void uploadItems(HashMap<String, byte[]> data) throws Exception {
+        sessionFactory.transactional(em->{
+            em.createQuery("DELETE FROM DbFilterRequire").executeUpdate();
+                em.createQuery("DELETE FROM DbFilter").executeUpdate();
+        });
+        eventQueue.handle(new ScriptsModified());
+        for(var filter:data.entrySet()){
+            var json = new String(filter.getValue());
+            var jsonFileData = mapper.readValue(json,RestFilter.class);
+            sessionFactory.transactional(em->{
+                var dbFilter = new DbFilter();
+                dbFilter.setMatcher(mapper.writeValueAsString(jsonFileData.getMatchers()));
+                dbFilter.setName(jsonFileData.getName());
+                dbFilter.setPhase(jsonFileData.getPhase());
+                dbFilter.setPriority(jsonFileData.getPriority());
+                dbFilter.setSource(jsonFileData.getSource());
+                dbFilter.setType(jsonFileData.getType());
+                dbFilter.setBlocking(jsonFileData.isBlocking());
+                em.persist(dbFilter);
+                for(var rq:jsonFileData.getRequire()){
+                    var r = new DbFilterRequire();
+                    r.setName(rq.getName());
+                    r.setBinary(rq.isBinary());
+                    r.setContent(rq.getContent());
+                    r.setScriptId(dbFilter.getId());
+                    em.persist(r);
+                }
+            });
+        }
 
+        eventQueue.handle(new ScriptsModified());
     }
 }

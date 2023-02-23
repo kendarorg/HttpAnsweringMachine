@@ -8,5 +8,5 @@ public interface FullDownloadUpload {
 
     String getId();
 
-    void uploadItems(HashMap<String, byte[]> data);
+    void uploadItems(HashMap<String, byte[]> data) throws Exception;
 }

@@ -32,7 +32,7 @@ public class SettingsDownloadUpload implements FullDownloadUpload{
     public void uploadItems(HashMap<String, byte[]> data) {
         var settings = data.get("external.json");
         if(settings!=null){
-            configuration.setConfiguration(new String(settings));
+            configuration.setConfigurationAsString(new String(settings));
         }
     }
 }
