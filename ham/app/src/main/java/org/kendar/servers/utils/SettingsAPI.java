@@ -85,7 +85,7 @@ public class SettingsAPI implements FilteringClass {
         downloadUploadService.uploadItems(req.getRequestBytes());
         res.setStatusCode(200);
     }
-    //curl -H "Content-Type:application/octet-stream" --data-binary "@full (8).zip" http://localhost/api/utils/settings/full
+    //curl -H "Content-Type:application/octet-stream" --data-binary "@full.zip" http://localhost/api/utils/settings/full
 
     static ObjectMapper mapper = new ObjectMapper();
 
