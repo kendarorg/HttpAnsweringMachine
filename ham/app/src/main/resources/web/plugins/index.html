@@ -20,7 +20,7 @@
 <div class="container-fluid" id="app">
         <div class="row"><div class="col-md-8">
             <br>
-            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Main</button>
+            <a  href='../index.html'>Main</a>&gt;
         </div>
         <br>
         <div class="col-md-8">
@@ -45,8 +45,9 @@
         data:{
             extraColumns:[],
             gridColumns: [
-                {id:"description",template:"string",index:true},
-                {id:"address",template:"link",name:"Go",searchable:false,sortable:false}
+                {id:"address",template:"link",funcname:function(data){
+                        return data.description;
+                    },searchable:false,sortable:false,index:true}
             ]
         },
         methods:{

@@ -1,5 +1,5 @@
 <template>
-  <a :href="shown">{{descriptor.name}}</a>
+  <a :href="shown">{{name}}</a>
 </template>
 <script>
 module.exports = {
@@ -10,6 +10,11 @@ module.exports = {
   },
   name: 'cstring',
   computed:{
+    name: function() {
+      return (typeof this.descriptor.funcname =="function")?
+          this.descriptor.funcname(this.value):
+          this.descriptor.name;
+    },
     shown: function() {
         return (typeof this.descriptor.func =="function")?
             this.descriptor.func(this.value):
