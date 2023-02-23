@@ -12,7 +12,7 @@
     <br><br>
     <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
     <br><br>
-    <simple-grid
+    <simple-grid id="dns10"
         ref="grid"
         :columns="columns"
         :extra="extraColumns"

@@ -500,7 +500,8 @@ public class Main {
     }
 
     private static void handleRunErrors(String a, Process process) {
-        if(a.toLowerCase(Locale.ROOT).startsWith("[error]")){
+        if(a.toLowerCase(Locale.ROOT).startsWith("[error]")||
+                a.equalsIgnoreCase("Error starting applicationcontext")){
             System.err.println("");
             System.err.println( a);
             process.destroy();

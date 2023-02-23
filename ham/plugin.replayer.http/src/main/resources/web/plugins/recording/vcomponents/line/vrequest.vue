@@ -30,7 +30,7 @@
     </div>
     <div  width="800px">
       <button v-on:click="addNewQuery(false,[])" class="bi bi-plus-square" title="Add new"></button><br/><br/>
-      <simple-grid
+      <simple-grid id="rep18"
           :is-object="true"
           :extra="extraColumns"
           v-on:gridclicked="queryGridClicked"
@@ -42,7 +42,7 @@
     </div>
     <div  width="800px">
       <button v-on:click="addNewPost(false,[])" class="bi bi-plus-square" title="Add new"></button><br/><br/>
-      <simple-grid
+      <simple-grid id="rep19"
           :is-object="true"
           :extra="extraColumns"
           v-on:gridclicked="postGridClicked"
@@ -54,7 +54,7 @@
     </div>
     <div  width="800px">
       <button v-on:click="addNewHeader(false,[])" class="bi bi-plus-square" title="Add new"></button><br/><br/>
-      <simple-grid
+      <simple-grid id="rep20"
           :is-object="true"
           :extra="extraColumns"
           v-on:gridclicked="headersGridClicked"

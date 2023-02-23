@@ -21,7 +21,7 @@
     <div class="row">
         <div class="col-md-8">
             <h3>MAIN FUNCTIONS</h3>
-            <simple-grid
+            <simple-grid id="index04"
                     ref="pluginsGrid"
                     :columns="gridColumns"
                     :extra="extraColumns"
@@ -31,9 +31,8 @@
         </div>
         <div class="col-md-8">
             <h3>PLUGINS</h3>
-            <simple-grid
+            <simple-grid id="index05"
                     ref="pluginsGrid"
-                    :page-size="10"
                     :columns="gridColumns"
                     :extra="extraColumns"
                     :retrieve-data="pluginsRetrieveData"
@@ -51,8 +50,9 @@
         data:{
             extraColumns:[],
             gridColumns: [
-                {id:"description",template:"string",index:true},
-                {id:"address",template:"link",name:"Go",searchable:false,sortable:false}
+                {id:"address",template:"link",funcname:function(data){
+                    return data.description;
+                    },searchable:false,sortable:false,index:true}
             ]
         },
         methods:{

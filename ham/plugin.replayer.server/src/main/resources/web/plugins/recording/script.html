@@ -23,9 +23,9 @@
         <div class="col-md-8">
             <br>
 
-            <button type="button"  class="btn btn-default" onClick="location.href='../../index.html'">Main</button>
-            <button type="button"  class="btn btn-default" onClick="location.href='../index.html'">Plugins</button>
-            <button type="button"  class="btn btn-default" onClick="location.href='index.html'">Recordings</button>
+            <a href='../../index.html'>Main</a>&gt;
+            <a href='../index.html'>Plugins</a>&gt;
+            <a href='index.html'>Recordings</a>&gt;
         </div>
 
         <div class="col-md-8">
@@ -115,7 +115,7 @@
                 <vtab name="RESULTS">
                     <button v-on:click="reloadResult()" class="bi bi-arrow-clockwise" title="Reload"></button>
                     <br><br>
-                    <simple-grid
+                    <simple-grid id="res22"
                             v-on:gridclicked="gridClickedResult"
                             ref="results"
                             :columns="columnsResult"

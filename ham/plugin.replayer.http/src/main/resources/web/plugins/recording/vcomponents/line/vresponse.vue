@@ -16,7 +16,7 @@
     </div>
     <div  width="800px">
       <button v-on:click="addNewHeader(false,[])" class="bi bi-plus-square" title="Add new"></button><br/><br/>
-      <simple-grid
+      <simple-grid id="response01"
           :is-object="true"
           :extra="extraColumns"
           v-on:gridclicked="headersGridClicked"

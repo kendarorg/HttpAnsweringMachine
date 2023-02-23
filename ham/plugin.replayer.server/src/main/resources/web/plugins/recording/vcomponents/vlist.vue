@@ -26,7 +26,7 @@
     <button v-on:click="searchForStr()" class="bi bi-arrow-clockwise" title="Reload"></button>
     <input class="form-control" type="text" name="searchStr" id="searchStr" v-model="searchStr"/>
   </div>
-  <simple-grid
+  <simple-grid id="res23"
       v-on:gridrowclicked="recordingListClicked"
       v-on:gridclicked="gridClicked"
       ref="grid"
