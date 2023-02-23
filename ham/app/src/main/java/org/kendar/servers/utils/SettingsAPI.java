@@ -58,8 +58,8 @@ public class SettingsAPI implements FilteringClass {
             method = "GET")
     @HamDoc(description = "Retrieve the current configuration,recordings etc",
             responses = @HamResponse(
-                    body = String.class,
-                    description = "The json formatted configuration"
+                    bodyType = ConstantsMime.ZIP,
+                    description = "The zip with the settings"
             ),
             tags = {"base/utils"}
     )
@@ -70,6 +70,22 @@ public class SettingsAPI implements FilteringClass {
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.ZIP);
         res.setStatusCode(200);
     }
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/utils/settings/full",
+            method = "POST")
+    @HamDoc(description = "Upload the full configuration,recordings etc",
+            requests = @HamRequest(
+                     accept = ConstantsMime.ZIP
+            ),
+            tags = {"base/utils"}
+    )
+    public void uploadFull(Request req, Response res) throws Exception {
+        downloadUploadService.uploadItems(req.getRequestBytes());
+        res.setStatusCode(200);
+    }
+    //curl -H "Content-Type:application/octet-stream" --data-binary "@full (8).zip" http://localhost/api/utils/settings/full
 
     static ObjectMapper mapper = new ObjectMapper();
 

@@ -3,18 +3,14 @@ package org.kendar.utils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
-import java.util.zip.Deflater;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
+import java.util.Locale;
+import java.util.zip.*;
 
 @Component
 public class FullDownloadUploadService {
@@ -46,7 +42,31 @@ public class FullDownloadUploadService {
         return Files.readAllBytes(Path.of("append.zip"));
     }
 
-    public void uploadItems(InputStream input){
-        throw new NotImplementedException();
+    public void uploadItems(byte[] input) throws Exception {
+        var data = new HashMap<String,HashMap<String,byte[]>>();
+        try(var zi = new ZipInputStream(new ByteArrayInputStream(input))) {
+            byte[] b = new byte[8192];
+            int len;
+            ZipEntry zipEntry;
+            while ((zipEntry = zi.getNextEntry()) != null) {
+                if(!zipEntry.isDirectory()){
+                    var path = zipEntry.getName().toLowerCase(Locale.ROOT).split("/");
+                    if(!data.containsKey(path[0]))data.put(path[0],new HashMap<>());
+
+                    try(var out = new ByteArrayOutputStream()) {
+                        while ((len = zi.read(b)) > 0) {
+                            out.write(b, 0, len);
+                        }
+                        data.get(path[0]).put(path[1], out.toByteArray());
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new Exception(e);
+        }
+        for(var handler:downloadUploadList){
+            var subData = data.get(handler.getId().toLowerCase(Locale.ROOT));
+            handler.uploadItems(subData);
+        }
     }
 }

@@ -65,4 +65,9 @@ public class JsDownloadUpload implements FullDownloadUpload {
     public String getId() {
         return "js";
     }
+
+    @Override
+    public void uploadItems(HashMap<String, byte[]> data) {
+
+    }
 }
