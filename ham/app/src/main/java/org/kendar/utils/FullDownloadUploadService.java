@@ -26,11 +26,10 @@ public class FullDownloadUploadService {
     }
 
     public byte[] retrieveItems() throws Exception {
-        ZipFile war = new ZipFile("war.zip");
+        //ZipFile war = new ZipFile("war.zip");
         ZipOutputStream append = new ZipOutputStream(new FileOutputStream("append.zip"));
         append.setLevel(Deflater.BEST_COMPRESSION);
 
-        var items = new HashMap<String,byte[]>();
         for(var du:downloadUploadList){
             for(var su:du.retrieveItems().entrySet()){
                 var path = du.getId()+"/"+su.getKey();
@@ -43,7 +42,7 @@ public class FullDownloadUploadService {
             }
         }
         append.close();
-        war.close();
+        //war.close();
         return Files.readAllBytes(Path.of("append.zip"));
     }
 

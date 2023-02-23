@@ -66,6 +66,7 @@ public class SettingsAPI implements FilteringClass {
     public void downloadFull(Request req, Response res) throws Exception {
         var data = downloadUploadService.retrieveItems();
         res.setResponseBytes(data);
+        res.setBinaryResponse(true);
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.ZIP);
         res.setStatusCode(200);
     }
