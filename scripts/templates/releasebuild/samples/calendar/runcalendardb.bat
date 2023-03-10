@@ -24,7 +24,7 @@ REM Wait for startup
 ping 127.0.0.1 -n 10 > nul
 
 Rem start ham
-cd %CALENDAR_PATH%scripts
+cd %CALENDAR_PATH%\scripts
 call ham.bat
 ping 127.0.0.1 -n 10 > nul
 call bedb.bat

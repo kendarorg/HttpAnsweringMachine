@@ -24,7 +24,7 @@ REM Wait for startup
 ping 127.0.0.1 -n 10 > nul
 
 
-cd %ROOT_PATH%scripts
+cd %ROOT_PATH%\scripts
 call ham.bat
 ping 127.0.0.1 -n 10 > nul
 call gateway.bat
