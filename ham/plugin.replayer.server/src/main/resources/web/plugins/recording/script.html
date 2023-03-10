@@ -215,6 +215,9 @@
         },
         methods: {
             onExtensionChange:function(evt){
+                if(this.extensionsData==null){
+                    this.extensionsData={};
+                }
                 this.extensionsData[evt.id]=evt.value
             },
             changeRow:function(newRow){

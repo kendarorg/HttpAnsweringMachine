@@ -6,7 +6,7 @@ export STARTING_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null
 
 . $STARTING_PATH/scripts/libs/version.sh
 
-echo "[INFO] Compiliing global test runner"
+echo "[INFO] Compiling global test runner"
 cd $STARTING_PATH/globaltest
 mvn clean install package > /dev/null 2>&1
 

@@ -306,7 +306,8 @@ public class SwaggerApi  implements FilteringClass {
     }
   }
 
-  private void setupRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor descriptor, HamDoc doc, PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses, Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples,
+  private void setupRequest(OpenAPI swagger, Map<String, Schema> schemas, FilterDescriptor descriptor, HamDoc doc,
+                            PathItem expectedPath, List<Parameter> parameters, ApiResponses apiResponses, Class<?> resBody, org.kendar.http.annotations.multi.Example[] resExamples,
                             String resAccept,boolean optionalBody) {
     var matcher = descriptor.getMatchers().stream().filter(m->m instanceof ApiMatcher).findFirst();
     if(matcher.isEmpty())return;

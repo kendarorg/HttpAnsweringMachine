@@ -11,7 +11,7 @@
             <th>Visible</th>
           </tr>
           <tr v-for="key in columns">
-            <td>{{ key.id }}</td>
+            <td>{{ loadLabel(key) }}</td>
             <td><input class="form-check-input" type="checkbox" value=""
                        v-model="key.visible" ></td>
           </tr>
@@ -694,6 +694,12 @@ module.exports = {
         data:this.localFilteredData
       }
       this.$emit("gridrowclicked",evt);
+    },
+    loadLabel:function(key){
+      if(isUndefined(key.label)){
+        return key.id;
+      }
+      return key.label;
     },
     showVisibility:function(){
       var th= this;
