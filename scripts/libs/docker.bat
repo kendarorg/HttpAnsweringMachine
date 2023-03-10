@@ -45,37 +45,40 @@ goto :eof
 
 :docker_push
     if "%DOCKER_DEPLOY%" == "true" (
-  set IMAGE_NAME=%~1
-  set VERSION_NUMBER=%~2
+        echo "PUSHIIIIING"
+      set IMAGE_NAME=%~1
+      set VERSION_NUMBER=%~2
 
-  docker tag %IMAGE_NAME% %LOGIN%/%IMAGE_NAME%
+      docker tag %IMAGE_NAME% %LOGIN%/%IMAGE_NAME%
 
-  if NOT "%VERSION_NUMBER%"=="%VERSION_NUMBER:SNAPSHOT=%" (
-    REM if [[ "%VERSION_NUMBER%" == *"snapshot"* ]] ;then
-    echo [INFO] Pushing snapshot base image tag %IMAGE_NAME%
-    call docker push %DOCKER_ORG%/%IMAGE_NAME%
+      if NOT "%VERSION_NUMBER%"=="%VERSION_NUMBER:SNAPSHOT=%" (
+        REM if [[ "%VERSION_NUMBER%" == *"snapshot"* ]] ;then
+        echo [INFO] Pushing snapshot base image tag %IMAGE_NAME%
+        call docker push %DOCKER_ORG%/%IMAGE_NAME%
 
-    echo [INFO] Tagging image %IMAGE_NAME%
-    call docker tag %DOCKER_ORG%/%IMAGE_NAME% %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
-    call docker push %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
+        echo [INFO] Tagging image %IMAGE_NAME%
+        call docker tag %DOCKER_ORG%/%IMAGE_NAME% %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
+        call docker push %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
 
-    call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:snapshot
-    call docker push %DOCKER_ORG%/%IMAGE_NAME%:snapshot
-  ) else (
-    echo [INFO] Pushing base image tag %IMAGE_NAME%
-    call docker push %DOCKER_ORG%/%IMAGE_NAME%
+        call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:snapshot
+        call docker push %DOCKER_ORG%/%IMAGE_NAME%:snapshot
+      ) else (
+        echo [INFO] Pushing base image tag %IMAGE_NAME%
+        call docker push %DOCKER_ORG%/%IMAGE_NAME%
 
-    echo [INFO] Tagging image %IMAGE_NAME%
-    call docker tag %DOCKER_ORG%/%IMAGE_NAME% %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
-    call docker push %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
+        echo [INFO] Tagging image %IMAGE_NAME%
+        call docker tag %DOCKER_ORG%/%IMAGE_NAME% %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
+        call docker push %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER%
 
-    call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:latest
-    call docker push %DOCKER_ORG%/%IMAGE_NAME%:latest
+        call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:latest
+        call docker push %DOCKER_ORG%/%IMAGE_NAME%:latest
 
-    call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:snapshot
-    call docker push %DOCKER_ORG%/%IMAGE_NAME%:snapshot
-  )
-  )
+        call docker tag %DOCKER_ORG%/%IMAGE_NAME%:v%VERSION_NUMBER% %DOCKER_ORG%/%IMAGE_NAME%:snapshot
+        call docker push %DOCKER_ORG%/%IMAGE_NAME%:snapshot
+      )
+    ) else (
+        REM docker tag %IMAGE_NAME% %IMAGE_NAME%
+    )
 goto :eof
 
 

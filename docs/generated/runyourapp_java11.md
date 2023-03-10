@@ -35,7 +35,7 @@ COPY .external.json /etc/app/ham/app/external.json
 And create the image
 
 <pre>
-docker build --rm -t testapp.master .
+docker build  -t testapp.master .
 </pre>
 
 ## Prepare the application container<a id="preparehamcontainer"></a>
@@ -87,7 +87,7 @@ RUN chmod +x /etc/app/testapp/*.sh &&
 And create the image
 
 <pre>
-docker build --rm -t testapp.app .
+docker build  -t testapp.app .
 </pre>
 
 ## Docker compose for proxy access<a id="dockerproxy"></a>

@@ -25,8 +25,8 @@ COPY data/basesetup.sh /etc/basesetup.sh
 COPY data/DoSleep.java /etc/DoSleep.java
 
 # Prepare certificates, runit space, generate ssh keys, setup ssh service, force root password
-RUN chmod 777 /etc/basesetup.sh \
-    && /etc/basesetup.sh
+RUN chmod 777 /etc/basesetup.sh
+RUN  /etc/basesetup.sh
 
 # Start everything
 CMD ["runsvdir", "/etc/service"]

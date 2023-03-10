@@ -17,5 +17,5 @@ COPY core/ /htdocs/
 And create the image
 
 <pre>
-docker build --rm -t testapp.app .
+docker build  -t testapp.app .
 </pre>
