@@ -25,7 +25,7 @@ RUN apk add --no-cache \
     php8-session \
     php8-xml \
     php8-pear \
-    php8-xdebug  \
+    php8-xdebug --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
     && mkdir -p docker/php/conf.d
     
 # WAS ON --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing

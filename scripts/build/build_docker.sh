@@ -39,20 +39,20 @@ DNS_HIJACK_SERVER=THEDOCKERNAMEOFTHERUNNINGMASTER
 cd $HAM_DIR
 
 cd $DOCKER_ROOT/base
-docker build  -t ham.base .
+docker build --rm -t ham.base .
 docker_push "ham.base" "$HAM_VERSION"
 
 cd $DOCKER_ROOT/client
 mkdir -p data/app || true
 rm -f data/app/*.*
 cp -f "$HAM_DIR"/simpledns/target/simpledns*.jar data/
-docker build  -t ham.client .
+docker build --rm -t ham.client .
 docker_push "ham.client" "$HAM_VERSION"
 rm -rf data/app
 rm -f data/simpledns*.jar
 
 cd $DOCKER_ROOT/openvpn
-docker build  -t ham.openvpn .
+docker build --rm -t ham.openvpn .
 docker_push "ham.openvpn" "$HAM_VERSION"
 
 cd $DOCKER_ROOT/master
@@ -62,24 +62,24 @@ mkdir -p data/app/libs
 rm -rf data/app/libs/*.*
 cp -f "$HAM_DIR"/app/target/app*.jar data/app/
 cp -f "$HAM_LIBS_DIR"/*.jar data/app/libs/
-docker build  -t ham.master .
+docker build --rm -t ham.master .
 docker_push "ham.master" "$HAM_VERSION"
 rm -rf data/app
 
 cd $DOCKER_ROOT/singlemaster
-docker build  -t ham.singlemaster .
+docker build --rm -t ham.singlemaster .
 docker_push "ham.singlemaster" "$HAM_VERSION"
 
 cd $DOCKER_ROOT/apache
-docker build  -t ham.apache .
+docker build --rm -t ham.apache .
 docker_push "ham.apache" "$HAM_VERSION"
 
 cd $DOCKER_ROOT/apache-php8
-docker build  -t ham.apache.php8 .
+docker build --rm -t ham.apache.php8 .
 docker_push "ham.apache.php8" "$HAM_VERSION"
 
 cd $DOCKER_ROOT/mysql
-docker build  -t ham.mysql .
+docker build --rm -t ham.mysql .
 docker_push "ham.mysql" "$HAM_VERSION"
 
 # Restore previous dir

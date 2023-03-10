@@ -17,5 +17,5 @@ COPY .external.json /etc/app/ham/app/external.json
 And create the image
 
 <pre>
-docker build  -t testapp.master .
+docker build --rm -t testapp.master .
 </pre>

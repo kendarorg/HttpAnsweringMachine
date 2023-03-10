@@ -77,7 +77,7 @@ goto :eof
         call docker push %DOCKER_ORG%/%IMAGE_NAME%:snapshot
       )
     ) else (
-        REM docker tag %IMAGE_NAME% %IMAGE_NAME%
+        REM docker tag %IMAGE_NAME%:latest %IMAGE_NAME%:
     )
 goto :eof
 

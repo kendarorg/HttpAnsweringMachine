@@ -49,5 +49,5 @@ RUN chmod +x /etc/app/testapp/*.sh &&
 And create the image
 
 <pre>
-docker build  -t testapp.app .
+docker build --rm -t testapp.app .
 </pre>

@@ -19,7 +19,7 @@ builddocker=n
 :go
 
 if "%builddocker%"=="n" goto rundocker
-docker build -t app.%YOUR_APP_NAME% .
+docker build --rm -t app.%YOUR_APP_NAME% .
 
 :rundocker
 
