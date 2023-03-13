@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>{{value.type}}</h3><br>
-    <button type="button" class="bi bi-floppy" v-on:click="saveChanges()"
+    <button id="jdbcres-apply" type="button" class="bi bi-floppy" v-on:click="saveChanges()"
              title="Save changes">Apply Changes</button>
 
     <div class="form-group">
@@ -9,7 +9,7 @@
       <input class="form-control" readonly type="text" name="val" id="val" v-model="columndescriptorslength"/>
     </div>
 
-    <button v-on:click="addRow()" class="bi bi-plus-square" title="Add new"></button>
+    <button id="jdbcres-addrow"  v-on:click="addRow()" class="bi bi-plus-square" title="Add new"></button>
     <table class="rounded-top" >
       <tr>
         <th></th>
@@ -20,13 +20,13 @@
       </tr>
       <tr v-if="newitemrow">
         <td>
-          <button  v-on:click="deleteRow(-1)" class="bi bi-trash" title="Delete"></button>
+          <button id="jdbcres-delrow"  v-on:click="deleteRow(-1)" class="bi bi-trash" title="Delete"></button>
         </td>
         <td>
-          <button v-on:click="confirmRow(-1)" class="bi bi-pen-fill" title="Confirm"></button>
+          <button id="jdbcres-confirmrow" v-on:click="confirmRow(-1)" class="bi bi-pen-fill" title="Confirm"></button>
         </td>
         <td v-for="(col,index) in cols">
-          <input class="form-control"
+          <input :id="'jdbcres-col-'+index" class="form-control"
                  v-bind:size="getWidthNewRow(index)"
                  v-bind:style="'width:'+(getWidthNewRow(index)*10+40)+'px;'"
                  type="text" name="val" id="val" v-model="newRow[index]"/>
@@ -35,14 +35,14 @@
 
       <tr v-for="(row,index) in shownRows">
         <td>
-          <button v-if="rowstatus!=index" v-on:click="deleteRow(index)" class="bi bi-trash" title="Delete"></button>
+          <button :id="'jdbcres-row-delete-'+index" v-if="rowstatus!=index" v-on:click="deleteRow(index)" class="bi bi-trash" title="Delete"></button>
         </td>
         <td>
           <div v-if="rowstatus!=index">
-            <button v-on:click="modifyRow(index)" class="bi bi-pen-fill" title="Edit"></button>
+            <button :id="'jdbcres-row-modify-'+index" v-on:click="modifyRow(index)" class="bi bi-pen-fill" title="Edit"></button>
           </div>
           <div v-else>
-            <button v-on:click="confirmRow(index)" class="bi bi-floppy" title="Confirm"></button>
+            <button id="jdbcres-row-confirm-{{index}}" v-on:click="confirmRow(index)" class="bi bi-floppy" title="Confirm"></button>
           </div>
         </td>
         <td v-for="(field,fieldindex) in row">

@@ -3,6 +3,7 @@
     <tr>
       <th>
         <button
+            id="lop-doupdate"
             style="border:none;background-color: #4CAF50;"
             class="bi bi-plus-square" @click="doUpdate(-1)" title="Add"></button>
       </th>
@@ -13,8 +14,8 @@
     </tr>
     <tr v-for="(item,index) in parameters">
       <td>
-        <button class="bi bi-pen-fill" @click="doUpdate(index)" title="Edit"></button>
-        <button class="bi bi-trash" @click="doDelete(index)" title="Delete"></button>
+        <button :id="'lop-doupdate-'+index" class="bi bi-pen-fill" @click="doUpdate(index)" title="Edit"></button>
+        <button :id="'lop-dodelete-'+index" class="bi bi-trash" @click="doDelete(index)" title="Delete"></button>
       </td>
       <td>{{ item.columnIndex }}</td>
       <td>{{ item.columnName }}</td>

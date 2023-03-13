@@ -31,70 +31,27 @@
         </div>
         <div class="col-md-8">
             <h3>LOAD SETTINGS</h3>
-            <ham-upload
+            <ham-upload id="setts-upload"
                     path="/api/utils/settings"
                     @success="onSuccess"
                     @error="onError"
             ></ham-upload>
-           <!-- <form action="" id="addUser"  method="POST"  >
-                <div class="form-group">
-                    <button type="button" id="btLoadFile" name="btLoadFile" class="btn btn-default">Open file</button>
-                    <input type="file" style="width:0;height: 0;opacity:0;" id="uploadScript" name="uploadScript" >
-                </div>
-                <div class="form-group">
-                    <input class="form-control" type="text" name="uploadScriptShow" id="uploadScriptShow" />
-                </div>
-                <div class="form-group">
-                    <button type="button" id="btUploadScript" name="btUploadScript" class="btn btn-default">Load</button>
-                </div>
-            </form>
-            <div class="form-group">
-                <label for="newSettings">ToMatch</label>
-                <textarea class="form-control" rows="6" cols="50" name="newSettings" id="newSettings"></textarea>
-            </div>
-            <button type="button"  class="btn btn-default" name="uploadLoaded" id="uploadLoaded">Upload loaded settings</button>
--->
+        </div>
+        <div class="col-md-8">
+            <h3>DOWNLOAD FULL STATUS</h3>
+            <a href="../api/utils/settings/full" download>Download Full HAM status</a>
+
+        </div>
+        <div class="col-md-8">
+            <h3>LOAD FULL STATUS</h3> require restart
+            <ham-upload id="setts-full-upload"
+                    path="/api/utils/settings/full"
+                    @success="onSuccessFull"
+                    @error="onError"
+            ></ham-upload>
         </div>
     </div>
 </div>
-<!--<script>
-    $("#uploadLoaded").click(function(){
-        $.ajax({
-            url: '/api/utils/settings',
-            type: 'post',
-            data: document.getElementById("newSettings").value,
-            contentType: "application/json",
-            processData: false,
-            success: function(response){
-                window.uploadScript=[];
-
-                ("File Uploaded, restarting application");
-            }
-        });
-    });
-    $("#btLoadFile").click(function(){
-        document.getElementById("uploadScript").click();
-    });
-    $("#uploadScript").change(function(){
-        window.uploadScript = [];
-        uploadAsyncFile($('#uploadScript')[0].files,function(data){
-            window.uploadScript = data;
-            document.getElementById("uploadScriptShow").value = data[0].name;
-        },function(exception){
-            (exception);
-        });
-    });
-    $("#btUploadScript").click(function(){
-        if(window.uploadScript === undefined || window.uploadScript.length==0){
-            ("NO FILES SELECTED");
-            return;
-        }
-        var toUpload = window.uploadScript[0];
-        var realData = atob(toUpload["data"]);
-        document.getElementById("newSettings").value = realData;
-    });
-</script>-->
-
 <script type="text/javascript">
     new Vue({
         el: '#app',
@@ -106,6 +63,9 @@
         methods: {
             onSuccess:function(data){
                 addMessage("Success");
+            },
+            onSuccessFull:function(data){
+                addWarning("Please Restart HAM!");
             },
             onError:function(data){
                 addMessage(data.error,error);

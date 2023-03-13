@@ -1,6 +1,6 @@
 <template>
 <div>
-  <simple-grid id="ssl01"
+  <simple-grid id="ssl-certificates-grid"
       v-on:gridclicked="gridClicked"
       ref="grid"
       :columns="columns"

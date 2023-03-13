@@ -10,7 +10,7 @@
 
     <br>
     <b>Parameters</b>
-    <listofparams :value="value" field="parameters"/>
+    <listofparams id="parameters-list" :value="value" field="parameters"/>
   </div>
 </template>
 <script>

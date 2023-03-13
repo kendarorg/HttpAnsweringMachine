@@ -3,7 +3,7 @@
   <div class="row">
     <div class="col-md-8">
       <h3>UPLOAD SCRIPT</h3>
-        <ham-upload
+        <ham-upload id="upload-create-filter"
             path="/api/plugins/replayer/recording"
             @success="onSuccess"
             @error="onError"

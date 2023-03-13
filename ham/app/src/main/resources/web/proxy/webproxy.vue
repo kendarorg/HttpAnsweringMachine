@@ -7,17 +7,17 @@
       <span slot="body"><change-url-rewrite :data="modalData.data"/></span>
     </simple-modal>
 
-    <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
-    <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+    <button id="webprx-gird-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <button id="webprx-gird-add" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
     <br><br>
     Apply Proxy to file
-    <ham-upload
+    <ham-upload  id="webprx-upload"
         path="/api/utils/proxiesapply"
         @success="onSuccessApply"
         @error="onErrorApply"
     ></ham-upload>
     <br><br>
-    <simple-grid id="web15"
+    <simple-grid id="webprx-gird"
         v-on:gridclicked="gridClicked"
         ref="grid"
         :columns="columns"

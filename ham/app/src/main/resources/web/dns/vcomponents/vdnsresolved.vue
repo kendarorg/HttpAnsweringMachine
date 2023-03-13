@@ -1,18 +1,18 @@
 <template>
   <div>
 
-    <button v-on:click="selectAll()" class="btn btn-default" title="Check All">Check all</button>
-    <button v-on:click="toggleSelect()" class="btn btn-default" title="Toggle">Toggle Selected</button>
-    <button v-on:click="generateSSLMappings()" class="btn btn-default" title="Generate SSL Mappings">Generate SSL
+    <button id="dns-resolved-selectall"  v-on:click="selectAll()" class="btn btn-default" title="Check All">Check all</button>
+    <button id="dns-resolved-toggleselect"  v-on:click="toggleSelect()" class="btn btn-default" title="Toggle">Toggle Selected</button>
+    <button id="dns-resolved-generate-ssl"  v-on:click="generateSSLMappings()" class="btn btn-default" title="Generate SSL Mappings">Generate SSL
       Mappings
     </button>
-    <button v-on:click="generateDNSMappings()" class="btn btn-default" title="Generate DNS Mappings">Generate DNS
+    <button  id="dns-resolved-generate-dns"  v-on:click="generateDNSMappings()" class="btn btn-default" title="Generate DNS Mappings">Generate DNS
       Mappings
     </button>
     <br><br>
-    <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <button  id="dns-resolved-reload-grid"  v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
     <br><br>
-    <simple-grid id="dns10"
+    <simple-grid id="dns-resolved-grid"
         ref="grid"
         :columns="columns"
         :extra="extraColumns"

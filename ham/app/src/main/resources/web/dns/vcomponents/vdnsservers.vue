@@ -7,11 +7,11 @@
     <span slot="body"><change-dns-server :data="modalData.data"/></span>
   </simple-modal>
 
-  <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
-  <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button><br/>
+  <button  id="dns-servers-reload-grid" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+  <button id="dns-servers-add" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button><br/>
   <br><br>
-  <simple-grid id="dns11"
-      v-on:gridclicked="gridClicked"
+  <simple-grid  id="dns-servers-grid"
+                v-on:gridclicked="gridClicked"
       ref="grid"
       :columns="columns"
       :extra="extraColumns"

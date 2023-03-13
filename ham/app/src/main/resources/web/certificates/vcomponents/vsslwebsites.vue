@@ -6,10 +6,10 @@
     <span slot="header">SSL Website</span>
     <span slot="body"><change-ssl-website :data="modalData.data"/></span>
   </simple-modal>
-  <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
-  <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+  <button id="ssl-sites-grid-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+  <button id="ssl-sites-add" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
   <br><br>
-  <simple-grid id="ssl03"
+  <simple-grid id="ssl-sites-grid"
       v-on:gridclicked="gridClicked"
       ref="grid"
       :columns="columns"

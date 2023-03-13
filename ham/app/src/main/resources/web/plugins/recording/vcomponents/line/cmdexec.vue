@@ -32,7 +32,7 @@
     <table>
       <tr>
         <th>
-          <button
+          <button id="cmdexec-update"
               style="border:none;background-color: #4CAF50;"
               class="bi bi-plus-square" @click="doUpdate(-1)" title="Add"></button>
         </th>
@@ -41,8 +41,8 @@
       </tr>
       <tr v-for="(item,index) in gridData">
         <td>
-          <button class="bi bi-pen-fill" @click="doUpdate(index)" title="Edit"></button>
-          <button class="bi bi-trash" @click="doDelete(index)" title="Delete"></button>
+          <button :id="'cmdexec-update-'+index" class="bi bi-pen-fill" @click="doUpdate(index)" title="Edit"></button>
+          <button :id="'cmdexec-delete-'+index" class="bi bi-trash" @click="doDelete(index)" title="Delete"></button>
         </td>
         <td>{{ item.value }}</td>
         <td>{{ value.children[2].children[index].value }}</td>

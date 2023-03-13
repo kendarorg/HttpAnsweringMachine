@@ -3,7 +3,7 @@
     <vtabs width="1000px">
       <vtab name="COMPONENT" width="1000px">
         <br>
-        <dynamic-component width="1000px" v-if="selectedComponentItem!=null"
+        <dynamic-component id="vser-selected-comp" width="1000px" v-if="selectedComponentItem!=null"
                            :path="'/plugins/recording/vcomponents/line'"
                            :default="'basic'"
                            :template="selectedComponentType|normalize"
@@ -12,7 +12,7 @@
       </vtab>
       <vtab name="TREE" width="1000px">
         <ul style="width:1000px">
-          <simple-tree style="width:1000px"
+          <simple-tree id="vser-selected-tree" style="width:1000px"
                        :open-item="false"
                        class="item"
                        :item="treeData"

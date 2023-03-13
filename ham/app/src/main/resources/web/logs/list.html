@@ -24,9 +24,9 @@
         <div class="col-md-8">
             <h3>LOGS</h3>
             <br>
-            <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+            <button id="logs-list-grid-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
             <br><br>
-            <simple-grid id="logs08"
+            <simple-grid id="logs-list-grid"
                     v-on:gridclicked="gridClicked"
                     :page-size="1000"
                     ref="grid"

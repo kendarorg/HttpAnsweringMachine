@@ -6,11 +6,11 @@
     <span slot="header">Dns Mapping</span>
     <span slot="body"><change-dns-mapping :data="modalData.data"/></span>
   </simple-modal>
-  <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
-  <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
-  <button v-on:click="downloadHostFiles()" class="bi bi-download" title="Download Hosts File"></button>
+  <button id="dns-mappings-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+  <button id="dns-mappings-add" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+  <button id="dns-mappings-download" v-on:click="downloadHostFiles()" class="bi bi-download" title="Download Hosts File"></button>
   <br><br>
-  <simple-grid id="dns09"
+  <simple-grid id="dns-mappings-grid"
       v-on:gridclicked="gridClicked"
       ref="grid"
       :columns="columns"

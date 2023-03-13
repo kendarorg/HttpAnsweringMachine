@@ -1,7 +1,7 @@
 <template>
   <div  v-if="typeof this.data!='undefined'" width="800px">
 
-    <ham-upload
+    <ham-upload id="respdata-upload"
         @success="onSuccess"
         @error="onError"
         v-bind:path="address"

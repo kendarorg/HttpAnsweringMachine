@@ -7,10 +7,10 @@
       <span slot="body"><change-jdbc-rewrite :data="modalData.data"/></span>
     </simple-modal>
 
-    <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
-    <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+    <button id="jdbcprx-grid-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <button id="jdbcprx-grid-addnew" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
     <br><br>
-    <simple-grid id="jdbc07"
+    <simple-grid id="jdbcprx-grid"
         v-on:gridclicked="gridClicked"
         ref="grid"
         :columns="columns"
