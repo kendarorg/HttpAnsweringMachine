@@ -37,12 +37,8 @@ public class Main {
 
     public static void correctAllCrLf(String directoryName) {
         File directory = new File(directoryName);
-
-        //List<File> resultList = new ArrayList<File>();
-
         // get all the files from a directory
         File[] fList = directory.listFiles();
-        //resultList.addAll(Arrays.asList(fList));
         for (File file : fList) {
             if (file.isFile()) {
                 if(file.getName().toLowerCase(Locale.ROOT).endsWith(".sh")){
@@ -56,8 +52,6 @@ public class Main {
 
                     }
                 }
-
-                System.out.println(file.getAbsolutePath());
             } else if (file.isDirectory()) {
                 if(file.getName().startsWith(".")){
                     continue;
@@ -65,8 +59,6 @@ public class Main {
                 correctAllCrLf(file.getAbsolutePath());
             }
         }
-        System.out.println(fList);
-        //return resultList;
     }
 
 

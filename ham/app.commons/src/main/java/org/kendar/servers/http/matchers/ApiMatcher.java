@@ -88,7 +88,7 @@ public class ApiMatcher implements FilterMatcher,PathMatcher,HostMatcher{
 
     @Override
     public boolean matches(Request req) {
-        if(pathSimpleMatchers.notMatch(req.getMethod(),this.method)){
+        if(pathSimpleMatchers!=null && pathSimpleMatchers.notMatch(req.getMethod(),this.method)){
             return false;
         }
         if(this.hostPatternReal!=null && !hostPatternReal.matcher(req.getHost()).matches()) {
@@ -97,14 +97,14 @@ public class ApiMatcher implements FilterMatcher,PathMatcher,HostMatcher{
             return false;
         }
 
-        if(pathMatchers.matches(req,pathPatternReal)){
+        if(pathMatchers!=null && pathMatchers.matches(req,pathPatternReal)){
             return true;
         }
 
-        if(pathSimpleMatchers.matches(req)){
+        if(pathSimpleMatchers!=null && pathSimpleMatchers.matches(req)){
             return true;
         }
-        if(pathSimpleMatchers.notMatch(req.getPath(),this.pathAddress)){
+        if(pathSimpleMatchers!=null && pathSimpleMatchers.notMatch(req.getPath(),this.pathAddress)){
             return false;
         }
 

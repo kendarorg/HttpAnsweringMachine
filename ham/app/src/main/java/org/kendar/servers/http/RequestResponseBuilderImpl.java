@@ -87,17 +87,17 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
       }
 
       // Calculate body
-      if (headerContentType.toLowerCase(Locale.ROOT).startsWith("multipart")) {
+      if (headerContentType!=null && headerContentType.toLowerCase(Locale.ROOT).startsWith("multipart")) {
         Pattern rp = Pattern.compile("boundary", Pattern.CASE_INSENSITIVE);
         var boundary = SimpleStringUtils.splitByString("boundary=", headerContentType)[1];
         result.setMultipartData(
             RequestUtils.buildMultipart(data, boundary, result.getHeader(ConstantsHeader.CONTENT_TYPE)));
-      } else if (headerContentType
+      } else if (headerContentType!=null && headerContentType
               .toLowerCase(Locale.ROOT)
               .startsWith("application/x-www-form-urlencoded")) {
         var requestText = new String(data, StandardCharsets.UTF_8);
         result.setPostParameters(RequestUtils.queryToMap(requestText));
-      } else if (headerContentType
+      } else if (headerContentType!=null && headerContentType
               .toLowerCase(Locale.ROOT)
               .startsWith(ConstantsMime.JSON_SMILE)) {
         var requestText = JsonSmile.smileToJSON(data).toPrettyString();
