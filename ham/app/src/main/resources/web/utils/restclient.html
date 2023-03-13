@@ -35,7 +35,7 @@
 
             <div class="form-group">
                 <label for="source">source</label>
-                <textarea class="form-control" rows="6" cols="50" name="source" id="source" v-model="source"></textarea>
+                <textarea placeholder="GET https://www.kendar.org"  class="form-control" rows="6" cols="50" name="source" id="source" v-model="source"></textarea>
             </div>
             <div class="form-group">
                 <button type="button" id="execute" name="execute" @click="doexecute()" class="btn btn-default">execute
@@ -54,7 +54,7 @@
         el: '#app',
         components: {},
         data: {
-            source: "GET https://www.kendar.org",
+            source: "",
             result: ""
         },
         methods: {
