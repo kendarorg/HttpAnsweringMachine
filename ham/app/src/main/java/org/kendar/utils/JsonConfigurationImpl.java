@@ -120,7 +120,9 @@ public class JsonConfigurationImpl implements JsonConfiguration {
             parsedConfig.deserialized = data;
             parsedConfig.timestamp = Calendar.getInstance().getTimeInMillis();
             deserializedConfigurations.put(sanitizedId, parsedConfig);
-            runnable.run();
+            if(runnable!=null) {
+                runnable.run();
+            }
             var evt = new ConfigChangedEvent();
             evt.setName(aClass.getName());
             eventQueue.handle(evt);
