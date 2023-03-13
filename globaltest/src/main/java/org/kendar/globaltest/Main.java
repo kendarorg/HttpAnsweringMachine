@@ -15,10 +15,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -36,6 +33,40 @@ public class Main {
         System.setProperty("log4j.logger.org.apache.http", "error");
         System.setProperty("log4j.logger.org.apache.http.wire", "error");
         System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "error");
+    }
+
+    public static void correctAllCrLf(String directoryName) {
+        File directory = new File(directoryName);
+
+        //List<File> resultList = new ArrayList<File>();
+
+        // get all the files from a directory
+        File[] fList = directory.listFiles();
+        //resultList.addAll(Arrays.asList(fList));
+        for (File file : fList) {
+            if (file.isFile()) {
+                if(file.getName().toLowerCase(Locale.ROOT).endsWith(".sh")){
+                    try {
+                        var content = Files.readString(Path.of(file.getAbsolutePath()));
+                        if(content.indexOf("\r\n")>0){
+                            var result = content.replace("\r\n","\n");
+                            Files.writeString(Path.of(file.getAbsolutePath()),result);
+                        }
+                    } catch (IOException e) {
+
+                    }
+                }
+
+                System.out.println(file.getAbsolutePath());
+            } else if (file.isDirectory()) {
+                if(file.getName().startsWith(".")){
+                    continue;
+                }
+                correctAllCrLf(file.getAbsolutePath());
+            }
+        }
+        System.out.println(fList);
+        //return resultList;
     }
 
 
@@ -586,6 +617,8 @@ public class Main {
             env.put("DOCKER_IP",dockerIp);
             env.put("DOCKER_HOST",dockerHost);
             killAllHamProcesses();
+
+            correctAllCrLf(startingPath);
 
             var buildDir = pathOf(startingPath,"scripts","build");
             var samplesDir = pathOf(startingPath,"samples");
