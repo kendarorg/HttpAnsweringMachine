@@ -9,11 +9,16 @@
     <script src="/libs/httpVueLoader.js"></script>
     <script src="/libs/axios.min.js"></script>
     <script src="/libs/utils.js"></script>
-    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
 </head>
 <body>
 <div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
-    <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
+    <div class="spinner-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
 <div id="messageObject"></div>
@@ -40,11 +45,11 @@
             <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
             <br><br>
             <simple-grid id="res21"
-                    v-on:gridclicked="gridClicked"
-                    ref="grid"
-                    :columns="columns"
-                    :extra="extraColumns"
-                    :retrieve-data="retrieveData"
+                         v-on:gridclicked="gridClicked"
+                         ref="grid"
+                         :columns="columns"
+                         :extra="extraColumns"
+                         :retrieve-data="retrieveData"
             >
             </simple-grid>
         </div>
@@ -72,12 +77,22 @@
                 ],
                 extraColumns: [
                     {
-                        id: "_edit", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                        id: "_edit",
+                        template: "iconbutton",
+                        default: false,
+                        searchable: false,
+                        sortable: false,
+                        properties: {
                             name: "Edit", style: "bi bi-pen-fill"
                         }
                     },
                     {
-                        id: "_delete", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                        id: "_delete",
+                        template: "iconbutton",
+                        default: false,
+                        searchable: false,
+                        sortable: false,
+                        properties: {
                             name: "Delete", style: "bi bi-trash"
                         }
                     }
@@ -93,10 +108,10 @@
                 var row = this.$refs.grid.getById(evt.index);
 
                 if (evt.buttonid == "_edit") {
-                    location.href = "script.html?id="+row['id'];
+                    location.href = "script.html?id=" + row['id'];
                 } else if (evt.buttonid == "_delete") {
-                    await axiosHandle(axios.delete("/api/plugins/replayer/recording/" + row['id']),()=>
-                    this.reload());
+                    await axiosHandle(axios.delete("/api/plugins/replayer/recording/" + row['id']), () =>
+                        this.reload());
                 }
             },
             reload: function () {
@@ -121,13 +136,13 @@
             save: async function () {
                 if (this.modalData.edit) {
                     await axiosHandle(axios.put('/api/plugins/replayer/recording/' + this.modalData.data.id,
-                        this.modalData.data),() => {
+                        this.modalData.data), () => {
                         this.modalShow = false;
                         this.reload();
                         axiosOk();
                     });
                 } else {
-                    await axiosHandle(axios.post('/api/plugins/replayer/recording', this.modalData.data),() => {
+                    await axiosHandle(axios.post('/api/plugins/replayer/recording', this.modalData.data), () => {
                         this.modalShow = false;
                         this.reload();
                         axiosOk();

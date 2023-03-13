@@ -4,23 +4,24 @@
                :modal-data="modalData"
                @close="showModal = false">
     </kvp-modal>
-    <div  width="800px">
-    <input class="form-check-input" type="checkbox" value="" id="request_binary" name="request_binary"
-           v-model="data.binaryResponse">
-    <label class="form-check-label" for="request_binary">
-      Is Binary
-    </label>
-      </div>
-    <div  width="800px">
+    <div width="800px">
+      <input class="form-check-input" type="checkbox" value="" id="request_binary" name="request_binary"
+             v-model="data.binaryResponse">
+      <label class="form-check-label" for="request_binary">
+        Is Binary
+      </label>
+    </div>
+    <div width="800px">
       <h4>RESPONSE HEADERS</h4>
     </div>
-    <div  width="800px">
-      <button v-on:click="addNewHeader(false,[])" class="bi bi-plus-square" title="Add new"></button><br/><br/>
+    <div width="800px">
+      <button v-on:click="addNewHeader(false,[])" class="bi bi-plus-square" title="Add new"></button>
+      <br/><br/>
       <simple-grid id="response01"
-          :is-object="true"
-          :extra="extraColumns"
-          v-on:gridclicked="headersGridClicked"
-          ref="headersGrid"
+                   :is-object="true"
+                   :extra="extraColumns"
+                   v-on:gridclicked="headersGridClicked"
+                   ref="headersGrid"
       />
     </div>
   </div>
@@ -28,13 +29,13 @@
 <script>
 module.exports = {
   name: "response-line",
-  props:{
-    data:Object
+  props: {
+    data: Object
   },
-  data:function (){
+  data: function () {
     return {
-      showModal:false,
-      modalData:{},
+      showModal: false,
+      modalData: {},
       extraColumns: [
         {id: "select", template: "boolw", default: false},
         {
@@ -50,18 +51,18 @@ module.exports = {
       ]
     }
   },
-  watch:{
-    data:function(val,old){
-      var th=this;
+  watch: {
+    data: function (val, old) {
+      var th = this;
       waitForAvailableVariableTimes(
-          ()=>th.$refs.headersGrid,
+          () => th.$refs.headersGrid,
           100,
-          function(){
+          function () {
             th.$nextTick(function () {
 
               th.$refs.headersGrid.reload(th.data.headers)
             })
-          },10
+          }, 10
       );
     }
   },
@@ -71,10 +72,10 @@ module.exports = {
   },
   methods: {
     headersGridClicked: async function (evt) {
-      if(evt.buttonid=="_edit"){
-        this.addNewHeader(true,evt.index)
-      }else if(evt.buttonid=="_delete"){
-        this.$refs.headersGrid.delete(evt.index,this.data.headers);
+      if (evt.buttonid == "_edit") {
+        this.addNewHeader(true, evt.index)
+      } else if (evt.buttonid == "_delete") {
+        this.$refs.headersGrid.delete(evt.index, this.data.headers);
       }
     },
     addNewHeader: function (shouldEdit, rowId) {
@@ -82,24 +83,24 @@ module.exports = {
       if (shouldEdit) {
         row = this.$refs.headersGrid.getById(rowId);
       }
-      this.modalData={
-        valDesc:"Value",
-        valValue:row==null?"":row['value'],
-        keyDesc:"Key",
-        keyValue:row==null?"":row['key'],
-        title:"Header",
-        edit:shouldEdit,
-        save:this.saveHeader
+      this.modalData = {
+        valDesc: "Value",
+        valValue: row == null ? "" : row['value'],
+        keyDesc: "Key",
+        keyValue: row == null ? "" : row['key'],
+        title: "Header",
+        edit: shouldEdit,
+        save: this.saveHeader
       };
-      this.showModal=true;
+      this.showModal = true;
     },
-    saveHeader:function(data){
+    saveHeader: function (data) {
       var realData = {
-        key:this.modalData.keyValue,
-        value:this.modalData.valValue
+        key: this.modalData.keyValue,
+        value: this.modalData.valValue
       };
-      this.$refs.headersGrid.update(realData,this.data.headers);
-      this.showModal=false;
+      this.$refs.headersGrid.update(realData, this.data.headers);
+      this.showModal = false;
     }
   }
 }

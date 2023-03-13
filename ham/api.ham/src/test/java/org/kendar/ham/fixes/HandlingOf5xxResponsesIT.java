@@ -6,7 +6,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.kendar.ham.*;
+import org.kendar.ham.GlobalSettings;
+import org.kendar.ham.HamBuilder;
+import org.kendar.ham.HamException;
 import org.tkendar.ham.HamStarter;
 import org.tkendar.ham.HamTestException;
 import org.tkendar.ham.LocalHttpServer;
@@ -18,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class HandlingOf5xxResponsesIT {
-    private static HamBuilder hamBuilder = (HamBuilder)GlobalSettings.builder();
+    private static HamBuilder hamBuilder = (HamBuilder) GlobalSettings.builder();
     private static String proxyId;
     private static HttpServer server;
 
@@ -28,7 +30,7 @@ public class HandlingOf5xxResponsesIT {
         HamStarter.runHamJar(HandlingOf5xxResponsesIT.class);
         proxyId = hamBuilder
                 .proxies()
-                .addProxy("http://www.local.test/testError","http://127.0.0.1:9091/testError","www.local.test:80");
+                .addProxy("http://www.local.test/testError", "http://127.0.0.1:9091/testError", "www.local.test:80");
     }
 
     @AfterAll
@@ -39,30 +41,29 @@ public class HandlingOf5xxResponsesIT {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {200,201,401,404,500,501,304})
+    @ValueSource(ints = {200, 201, 401, 404, 500, 501, 304})
     public void doTestA(int code) throws HamTestException, HamException {
-        System.out.println("Proposed "+code);
-        var httpGet = new HttpGet("http://www.local.test/testError?code="+code);
+        System.out.println("Proposed " + code);
+        var httpGet = new HttpGet("http://www.local.test/testError?code=" + code);
         var clientResponse = hamBuilder.execute(httpGet);
         assertEquals(code, clientResponse.getStatusLine().getStatusCode());
     }
 
 
-
     @ParameterizedTest
-    @ValueSource(ints = {301,302})
+    @ValueSource(ints = {301, 302})
     public void doTestB(int code) throws HamTestException, HamException {
-        System.out.println("Proposed "+code);
-        var hd = new HashMap<String,String>();
-        hd.put("Location","https://www.facebook.com");
-        var httpGet = new HttpGet("http://www.local.test/testError?code="+code+
+        System.out.println("Proposed " + code);
+        var hd = new HashMap<String, String>();
+        hd.put("Location", "https://www.facebook.com");
+        var httpGet = new HttpGet("http://www.local.test/testError?code=" + code +
                 "&location=http://www.local.test");
         var clientResponse = hamBuilder.execute(httpGet);
         assertNotEquals(code, clientResponse.getStatusLine().getStatusCode());
     }
 
     private static Map<String, String> queryToMap(String query) {
-        if(query == null) {
+        if (query == null) {
             return null;
         }
         Map<String, String> result = new HashMap<>();
@@ -70,7 +71,7 @@ public class HandlingOf5xxResponsesIT {
             String[] entry = param.split("=");
             if (entry.length > 1) {
                 result.put(entry[0], entry[1]);
-            }else{
+            } else {
                 result.put(entry[0], "");
             }
         }
@@ -83,12 +84,12 @@ public class HandlingOf5xxResponsesIT {
                     try {
 
                         System.out.println("Requested data");
-                        var headers = new HashMap<String,String>();
+                        var headers = new HashMap<String, String>();
                         var code = Integer.valueOf(call.query.get("code"));
-                        if(call.query.containsKey("location")){
-                            headers.put("Location",call.query.get("location"));
+                        if (call.query.containsKey("location")) {
+                            headers.put("Location", call.query.get("location"));
                         }
-                        System.out.println("Responding with "+code);
+                        System.out.println("Responding with " + code);
                         LocalHttpServer.sendResponse(call.httpExchange, code, new byte[]{}, headers);
 
                     } catch (Exception e) {

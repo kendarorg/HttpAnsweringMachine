@@ -56,10 +56,10 @@
                                     <directory>${project.build.directory}/classes/lib</directory>
                                     <filtering>false</filtering>
                                     <includes>
-<!--                                        <include>mybatis*.jar</include>-->
-<!--                                        <include>tika*.jar</include>-->
-<!--                                        <include>rhino-*.jar</include>-->
-<!--                                        <include>hamcrest-*.jar</include>-->
+                                        <!--                                        <include>mybatis*.jar</include>-->
+                                        <!--                                        <include>tika*.jar</include>-->
+                                        <!--                                        <include>rhino-*.jar</include>-->
+                                        <!--                                        <include>hamcrest-*.jar</include>-->
                                     </includes>
                                 </resource>
                             </resources>

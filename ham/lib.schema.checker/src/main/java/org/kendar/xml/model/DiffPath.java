@@ -9,12 +9,13 @@ public class DiffPath {
     public void push(String s) {
         position.add(s);
     }
-    public void pop(){
-        position.remove(position.size()-1);
+
+    public void pop() {
+        position.remove(position.size() - 1);
     }
 
 
-    public String getPath(){
-        return String.join(".",position);
+    public String getPath() {
+        return String.join(".", position);
     }
 }

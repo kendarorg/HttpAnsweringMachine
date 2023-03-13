@@ -8,13 +8,11 @@ import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
-import org.kendar.replayer.ReplayerConfig;
 import org.kendar.replayer.apis.models.Scripts;
 import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.replayer.utils.Md5Tester;
-import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -57,13 +55,13 @@ public class ReplayerAPIScripts implements FilteringClass {
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/extension",
             method = "GET")
-    @HamDoc(description = "retrieves the extensions",tags = {"plugin/replayer"},
+    @HamDoc(description = "retrieves the extensions", tags = {"plugin/replayer"},
             responses = @HamResponse(
                     body = String[].class
             )
     )
     public void retrieveExtensions(Request req, Response res) throws Exception {
-        var result = engineList.stream().map(e->e.getId()).collect(Collectors.toList());
+        var result = engineList.stream().map(e -> e.getId()).collect(Collectors.toList());
         res.setStatusCode(200);
         res.setResponseText(mapper.writeValueAsString(result));
     }
@@ -72,8 +70,8 @@ public class ReplayerAPIScripts implements FilteringClass {
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
             method = "GET")
-    @HamDoc(description = "retrieves the scripts associate with a recording line",tags = {"plugin/replayer"},
-            path = {@PathParameter(key = "id"),@PathParameter(key = "line")},
+    @HamDoc(description = "retrieves the scripts associate with a recording line", tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"), @PathParameter(key = "line")},
             responses = @HamResponse(
                     body = String.class
             )
@@ -82,21 +80,21 @@ public class ReplayerAPIScripts implements FilteringClass {
         var recordingId = Long.parseLong(req.getPathParameter("id"));
         var line = Long.parseLong(req.getPathParameter("line"));
 
-        sessionFactory.query(em->{
-            var prevId = (Long)em.createQuery("SELECT COALESCE( MAX(e.id),-1) FROM CallIndex e WHERE" +
-                    " e.recordingId="+recordingId+" AND e.id<"+line).getResultList().get(0);
+        sessionFactory.query(em -> {
+            var prevId = (Long) em.createQuery("SELECT COALESCE( MAX(e.id),-1) FROM CallIndex e WHERE" +
+                    " e.recordingId=" + recordingId + " AND e.id<" + line).getResultList().get(0);
 
-            var nexId = (Long)em.createQuery("SELECT COALESCE( MIN(e.id),-1) FROM CallIndex e WHERE" +
-                    " e.recordingId="+recordingId+" AND e.id>"+line).getResultList().get(0);
+            var nexId = (Long) em.createQuery("SELECT COALESCE( MIN(e.id),-1) FROM CallIndex e WHERE" +
+                    " e.recordingId=" + recordingId + " AND e.id>" + line).getResultList().get(0);
 
-            var index = (CallIndex)em.createQuery("SELECT e FROM CallIndex e WHERE" +
-                    " e.recordingId="+recordingId+" AND e.id="+line).getResultList().get(0);
-            var row = (ReplayerRow)em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
-                    " e.recordingId="+recordingId+" AND e.id="+line).getResultList().get(0);
+            var index = (CallIndex) em.createQuery("SELECT e FROM CallIndex e WHERE" +
+                    " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
+            var row = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+                    " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
 
 
-            res.addHeader("X-NEXT", ""+nexId);
-            res.addHeader("X-PREV", ""+prevId);
+            res.addHeader("X-NEXT", "" + nexId);
+            res.addHeader("X-PREV", "" + prevId);
             var result = new Scripts();
             result.setId(index.getId());
             result.setHost(row.getRequest().getHost());
@@ -112,21 +110,20 @@ public class ReplayerAPIScripts implements FilteringClass {
     }
 
 
-
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
             method = "DELETE")
-    @HamDoc(description = "delete the scripts associate with a recording line",tags = {"plugin/replayer"},
-            path = {@PathParameter(key = "id"),@PathParameter(key = "line")}
+    @HamDoc(description = "delete the scripts associate with a recording line", tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"), @PathParameter(key = "line")}
     )
     public void deleteScript(Request req, Response res) throws Exception {
         var recordingId = Long.parseLong(req.getPathParameter("id"));
         var line = Long.parseLong(req.getPathParameter("line"));
 
-        sessionFactory.transactional(em-> {
-            var index = (CallIndex)em.createQuery("SELECT e FROM CallIndex e WHERE" +
-                    " e.recordingId="+recordingId+" AND e.id="+line).getResultList().get(0);
+        sessionFactory.transactional(em -> {
+            var index = (CallIndex) em.createQuery("SELECT e FROM CallIndex e WHERE" +
+                    " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
             index.setPostScript(null);
             index.setPreScript(null);
             em.merge(index);
@@ -137,8 +134,8 @@ public class ReplayerAPIScripts implements FilteringClass {
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/script/{line}",
             method = "PUT")
-    @HamDoc(description = "modify/insert the scripts associate with a recording line",tags = {"plugin/replayer"},
-            path = {@PathParameter(key = "id"),@PathParameter(key = "line")},
+    @HamDoc(description = "modify/insert the scripts associate with a recording line", tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"), @PathParameter(key = "line")},
             responses = @HamResponse(
                     body = String.class
             )
@@ -149,16 +146,16 @@ public class ReplayerAPIScripts implements FilteringClass {
                 .map(Long::parseLong).collect(Collectors.toList());
 
 
-        var data = mapper.readValue(req.getRequestText(),Scripts.class);
+        var data = mapper.readValue(req.getRequestText(), Scripts.class);
 
-        sessionFactory.transactional(em-> {
+        sessionFactory.transactional(em -> {
 
-            for(var line:lines) {
+            for (var line : lines) {
                 var index = (CallIndex) em.createQuery("SELECT e FROM CallIndex e WHERE" +
                         " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
 
-                var row = (ReplayerRow)em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
-                        " e.recordingId="+recordingId+" AND e.id="+line).getResultList().get(0);
+                var row = (ReplayerRow) em.createQuery("SELECT e FROM ReplayerRow e WHERE" +
+                        " e.recordingId=" + recordingId + " AND e.id=" + line).getResultList().get(0);
 
                 if (data.getPre() == null || data.getPre().trim().isEmpty()) {
                     index.setPreScript(null);

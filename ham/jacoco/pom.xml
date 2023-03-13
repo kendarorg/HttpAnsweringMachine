@@ -148,159 +148,159 @@
                         <configuration>
                             <target name="report">
                                 <!-- Execute an ant task within maven -->
-                                <echo message="Generating JaCoCo Reports" />
+                                <echo message="Generating JaCoCo Reports"/>
                                 <taskdef name="report"
                                          classname="org.jacoco.ant.ReportTask">
                                     <classpath
-                                            path="**/*.jar" />
+                                            path="**/*.jar"/>
                                 </taskdef>
-                                <mkdir dir="${basedir}/target/coverage-report" />
+                                <mkdir dir="${basedir}/target/coverage-report"/>
                                 <report>
                                     <executiondata>
                                         <fileset dir="${basedir}/../api.ham/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../api.js.builder/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../api.replayer/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
 
                                         <fileset dir="${basedir}/../api.test/target">
-                                            <include name="jacoco*.exec" />
-                                            <include name="test*.exec" />
+                                            <include name="jacoco*.exec"/>
+                                            <include name="test*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../app/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../app.commons/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../app.dns/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../app.http/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../app.http.standardfilters/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../lib.schema.checker/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.js.filters/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.oidc.server/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.replayer.server/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.replayer.http/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.replayer.jdbc/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.socks5.server/target">
-                                            <include name="jacoco*.exec" />
+                                            <include name="jacoco*.exec"/>
                                         </fileset>
                                     </executiondata>
                                     <structure name="Integration Tests Coverage Report">
                                         <sourcefiles encoding="UTF-8">
                                             <dirset dir="${basedir}/../api.ham">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                             <dirset dir="${basedir}/../api.js.builder">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                             <dirset dir="${basedir}/../api.replayer">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
 
                                             <dirset dir="${basedir}/../api.test">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                             <dirset dir="${basedir}/../app">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                             <dirset dir="${basedir}/../app.commons">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                             <dirset dir="${basedir}/../app.dns">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                             <dirset dir="${basedir}/../app.http">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                             <dirset dir="${basedir}/../app.http.standardfilters">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                             <dirset dir="${basedir}/../lib.schema.checker">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                             <dirset dir="${basedir}/../plugin.js.filters">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                             <dirset dir="${basedir}/../plugin.oidc.server">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                             <dirset dir="${basedir}/../plugin.replayer.server">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                             <dirset dir="${basedir}/../plugin.socks5.server">
-                                                <include name="**/src/main/java" />
+                                                <include name="**/src/main/java"/>
                                             </dirset>
                                         </sourcefiles>
                                         <classfiles>
                                             <fileset dir="${basedir}/../api.ham/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../api.js.builder/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../api.replayer/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
 
                                             <fileset dir="${basedir}/../api.test/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../app/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../app.commons/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../app.dns/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../app.http/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../app.http.standardfilters/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../lib.schema.checker/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../plugin.js.filters/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../plugin.oidc.server/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../plugin.replayer.server/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../plugin.socks5.server/target/classes">
-                                                <include name="org/kendar/**/*" />
+                                                <include name="org/kendar/**/*"/>
                                             </fileset>
                                         </classfiles>
                                     </structure>
-                                    <html destdir="${basedir}/target/coverage-report/html" />
+                                    <html destdir="${basedir}/target/coverage-report/html"/>
                                 </report>
                             </target>
                         </configuration>

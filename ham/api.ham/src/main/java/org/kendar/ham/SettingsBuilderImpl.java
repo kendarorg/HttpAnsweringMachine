@@ -2,7 +2,7 @@ package org.kendar.ham;
 
 import org.kendar.utils.ConstantsMime;
 
-public class SettingsBuilderImpl implements SettingsBuilder{
+public class SettingsBuilderImpl implements SettingsBuilder {
     private final HamBuilder hamBuilder;
 
     SettingsBuilderImpl(HamBuilder hamBuilder) {
@@ -14,7 +14,7 @@ public class SettingsBuilderImpl implements SettingsBuilder{
         var request = hamBuilder.newRequest()
                 .withMethod("POST")
                 .withPath("/api/utils/settings/")
-                .withHamFile("newsettings.json",value, ConstantsMime.JSON);
+                .withHamFile("newsettings.json", value, ConstantsMime.JSON);
         hamBuilder.call(request.build());
     }
 

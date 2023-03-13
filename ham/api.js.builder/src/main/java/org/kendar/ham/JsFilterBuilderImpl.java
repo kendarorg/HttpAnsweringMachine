@@ -8,18 +8,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
+public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
     private ObjectMapper mapper = new ObjectMapper();
 
     private HamInternalBuilder hamBuilder;
     private String name;
     private String type = "body";
 
-    JsFilterBuilderImpl(HamInternalBuilder hamBuilder, String name){
+    JsFilterBuilderImpl(HamInternalBuilder hamBuilder, String name) {
 
         this.hamBuilder = hamBuilder;
         this.name = name;
     }
+
     private Methods method;
     private String hostAddress;
     private String hostPattern;
@@ -52,12 +53,13 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
         this.hostPattern = host;
         return this;
     }
+
     @Override
     public JsFilterBuilder verifyHostPattern(String host) {
         var pattern = Pattern.compile(hostPattern);
         var matcher = pattern.matcher(host);
-        if(!matcher.matches()){
-            throw new RuntimeException(host+ " does not match "+ hostPattern);
+        if (!matcher.matches()) {
+            throw new RuntimeException(host + " does not match " + hostPattern);
         }
         return this;
     }
@@ -79,12 +81,13 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
         this.pathPattern = host;
         return this;
     }
+
     @Override
     public JsFilterBuilder verifyPathPattern(String host) {
         var pattern = Pattern.compile(pathPattern);
         var matcher = pattern.matcher(host);
-        if(!matcher.matches()){
-            throw new RuntimeException(host+ " does not match "+ hostPattern);
+        if (!matcher.matches()) {
+            throw new RuntimeException(host + " does not match " + hostPattern);
         }
         return this;
     }
@@ -97,31 +100,31 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
 
     @Override
     public JsSourceBuilder withSource() {
-        source="";
+        source = "";
         return this;
     }
 
     @Override
     public JsSourceBuilder addLine(String line) {
-        source+=line+"\n";
+        source += line + "\n";
         return this;
     }
 
     @Override
     public JsFilterBuilder closeBlocking() {
 
-        return (JsFilterBuilder)addLine("return false;");
+        return (JsFilterBuilder) addLine("return false;");
     }
 
     @Override
     public JsFilterBuilder closeNonBlocking() {
-        return (JsFilterBuilder)addLine("return true;");
+        return (JsFilterBuilder) addLine("return true;");
     }
 
     @Override
     public Long create() throws HamException {
         var data = new JsBuilder.FilterDescriptor();
-        var matchers = new HashMap<String,String>();
+        var matchers = new HashMap<String, String>();
         var matcher = new JsBuilder.ApiMatcher();
         matcher.setMethod(this.method);
         matcher.setHostAddress(this.hostAddress);
@@ -129,7 +132,7 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
         matcher.setPathAddress(this.pathAddress);
         matcher.setPathPattern(this.pathPattern);
         try {
-            matchers.put("apimatcher",mapper.writeValueAsString(matcher));
+            matchers.put("apimatcher", mapper.writeValueAsString(matcher));
         } catch (JsonProcessingException e) {
             throw new HamException(e);
         }
@@ -145,7 +148,7 @@ public class JsFilterBuilderImpl implements JsFilterBuilder,JsSourceBuilder{
                 .withPost()
                 .withPath("/api/plugins/jsfilter/filters")
                 .withJsonBody(data);
-        var res= hamBuilder.call(request.build());
+        var res = hamBuilder.call(request.build());
         Sleeper.sleep(500);
         return Long.parseLong(res.getResponseText());
     }

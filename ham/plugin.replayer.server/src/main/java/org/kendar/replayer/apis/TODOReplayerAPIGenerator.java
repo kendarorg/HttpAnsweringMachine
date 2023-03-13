@@ -9,9 +9,8 @@ import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
-import org.kendar.replayer.ReplayerConfig;
-import org.kendar.replayer.generator.SingleRequestGenerator;
 import org.kendar.replayer.engine.ReplayerResult;
+import org.kendar.replayer.generator.SingleRequestGenerator;
 import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.Request;
@@ -49,6 +48,7 @@ public class TODOReplayerAPIGenerator implements FilteringClass {
 
         this.fileResourcesUtils = fileResourcesUtils;
     }
+
     @Override
     public String getId() {
         return this.getClass().getName();
@@ -59,7 +59,7 @@ public class TODOReplayerAPIGenerator implements FilteringClass {
             phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/generator/{id}",
             method = "GET")
-    @HamDoc(description = "Generate request response source files with pom (NOT COMPLETE)",tags = {"plugin/replayer"},
+    @HamDoc(description = "Generate request response source files with pom (NOT COMPLETE)", tags = {"plugin/replayer"},
             path = @PathParameter(key = "id"),
             responses = @HamResponse(
                     content = "application/zip",
@@ -73,14 +73,14 @@ public class TODOReplayerAPIGenerator implements FilteringClass {
         Map<String, byte[]> result;
         var rootPath = Path.of(fileResourcesUtils.buildPath("replayerData", id + ".json"));
         if (Files.exists(rootPath)) {
-            var fileContent = FileUtils.readFileToString(rootPath.toFile(),"UTF-8");
+            var fileContent = FileUtils.readFileToString(rootPath.toFile(), "UTF-8");
             var replayer = mapper.readValue(fileContent, ReplayerResult.class);
-            result = singleRequestGenerator.generateRequestResponse(pack,id,replayer);
+            result = singleRequestGenerator.generateRequestResponse(pack, id, replayer);
 
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ZipOutputStream zos = new ZipOutputStream(baos);
-            for(var item :result.entrySet()) {
+            for (var item : result.entrySet()) {
                 ZipEntry entry = new ZipEntry(item.getKey());
                 entry.setSize(item.getValue().length);
                 zos.putNextEntry(entry);

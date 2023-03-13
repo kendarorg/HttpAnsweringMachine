@@ -9,16 +9,15 @@ import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Calendar;
 
 @Component
 
 @Entity
-@Table(name="REPLAYER_ROW")
+@Table(name = "REPLAYER_ROW")
 public class ReplayerRow implements DbTable {
 
-    @Column(name="type")
+    @Column(name = "type")
     private String type;
 
     public boolean isBinaryRequest() {
@@ -29,7 +28,7 @@ public class ReplayerRow implements DbTable {
         this.binaryRequest = binaryRequest;
     }
 
-    @Column(name="binaryRequest")
+    @Column(name = "binaryRequest")
     private boolean binaryRequest;
     //FIXME SHOULD ADD A DECENT ID
 
@@ -49,13 +48,13 @@ public class ReplayerRow implements DbTable {
         this.host = host;
     }
 
-    @Column(name="path",length = 6400)
+    @Column(name = "path", length = 6400)
     private String path;
 
-    @Column(name="host",length = 6400)
+    @Column(name = "host", length = 6400)
     private String host;
 
-    @Column(name="query",length = 6400)
+    @Column(name = "query", length = 6400)
     private String query;
 
     private static ObjectMapper mapper = new ObjectMapper();
@@ -68,7 +67,7 @@ public class ReplayerRow implements DbTable {
         this.index = index;
     }
 
-    @Column(name="timestamp")
+    @Column(name = "timestamp")
     private long timestamp = Calendar.getInstance().getTimeInMillis();
 
     public String getRequestSerialized() {
@@ -79,7 +78,7 @@ public class ReplayerRow implements DbTable {
         this.requestSerialized = requestSerialized;
     }
 
-    @Column(name="requestSerialized",columnDefinition = "CLOB")
+    @Column(name = "requestSerialized", columnDefinition = "CLOB")
     @JsonIgnore
     private String requestSerialized;
 
@@ -91,13 +90,13 @@ public class ReplayerRow implements DbTable {
         this.responsSerialized = responsSerialized;
     }
 
-    @Column(name="responsSerialized",columnDefinition = "CLOB")
+    @Column(name = "responsSerialized", columnDefinition = "CLOB")
     @Lob
     @JsonIgnore
     private String responsSerialized;
 
 
-    @Column(name="requestHash")
+    @Column(name = "requestHash")
     private String requestHash;
 
     public long getRecordingId() {
@@ -108,12 +107,11 @@ public class ReplayerRow implements DbTable {
         this.recordingId = recordingId;
     }
 
-    @Column(name="recordingId")
+    @Column(name = "recordingId")
     private long recordingId;
 
 
-
-    @Column(name="responseHash")
+    @Column(name = "responseHash")
     private String responseHash;
 
 
@@ -155,7 +153,7 @@ public class ReplayerRow implements DbTable {
 
     public Request getRequest() {
         try {
-            return mapper.readValue(requestSerialized,Request.class);
+            return mapper.readValue(requestSerialized, Request.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -174,7 +172,7 @@ public class ReplayerRow implements DbTable {
 
     public Response getResponse() {
         try {
-            return mapper.readValue(responsSerialized,Response.class);
+            return mapper.readValue(responsSerialized, Response.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -212,13 +210,14 @@ public class ReplayerRow implements DbTable {
         this.responseHash = responseHash;
     }
 
-    @Column(name="done")
-    private boolean done =false;
+    @Column(name = "done")
+    private boolean done = false;
+
     public void markAsDone() {
-        done =true;
+        done = true;
     }
 
-    public boolean done(){
+    public boolean done() {
         return done;
     }
 

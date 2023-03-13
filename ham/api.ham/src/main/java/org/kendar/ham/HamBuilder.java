@@ -1,17 +1,9 @@
 package org.kendar.ham;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.type.CollectionType;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.kendar.utils.ConstantsHeader;
-import org.kendar.utils.ConstantsMime;
-import org.kendar.utils.Sleeper;
-import org.xbill.DNS.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -22,9 +14,12 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.DnsResolver;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
@@ -32,16 +27,17 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContexts;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.ConstantsHeader;
+import org.kendar.utils.ConstantsMime;
+import org.kendar.utils.Sleeper;
+import org.xbill.DNS.*;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLHandshakeException;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -53,6 +49,7 @@ import java.util.function.Supplier;
 
 public class HamBuilder implements HamInternalBuilder {
     static ObjectMapper mapper;
+
     static {
         mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -86,7 +83,6 @@ public class HamBuilder implements HamInternalBuilder {
         this.port = port;
         return this;
     }
-
 
 
     @Override
@@ -159,30 +155,30 @@ public class HamBuilder implements HamInternalBuilder {
     public ProxyBuilder proxies() {
         return new ProxyBuilderImpl(this);
     }
+
     public SettingsBuilder settings() {
         return new SettingsBuilderImpl(this);
     }
 
-    public  <T> T pluginBuilder(Class<T> clazz) {
-        var initMethod = Arrays.stream(clazz.getMethods()).filter(m->
+    public <T> T pluginBuilder(Class<T> clazz) {
+        var initMethod = Arrays.stream(clazz.getMethods()).filter(m ->
                 m.getName().equalsIgnoreCase("init") &&
-                m.getParameterCount()==0).findFirst();
+                        m.getParameterCount() == 0).findFirst();
         var className = initMethod.get().getReturnType();
-        if(!pluginBuilders.containsKey(clazz.getName().toLowerCase(Locale.ROOT))) {
-            pluginBuilders.put(clazz.getName().toLowerCase(Locale.ROOT), (h)->{
+        if (!pluginBuilders.containsKey(clazz.getName().toLowerCase(Locale.ROOT))) {
+            pluginBuilders.put(clazz.getName().toLowerCase(Locale.ROOT), (h) -> {
                 try {
                     var constr = className.getConstructor(HamInternalBuilder.class);
                     var result = constr.newInstance(h);
                     return result;
-                }catch(Exception ex){
+                } catch (Exception ex) {
                     return null;
                 }
             });
         }
 
-        return (T)pluginBuilders.get(clazz.getName().toLowerCase(Locale.ROOT)).apply(this);
+        return (T) pluginBuilders.get(clazz.getName().toLowerCase(Locale.ROOT)).apply(this);
     }
-
 
 
     public <T> T callJson(Request request, Class<T> clazz) throws HamException {
@@ -207,17 +203,17 @@ public class HamBuilder implements HamInternalBuilder {
     }
 
     public CloseableHttpResponse execute(HttpUriRequest request) throws HamException {
-        return execute(request,false);
+        return execute(request, false);
     }
 
-    public CloseableHttpResponse execute(HttpUriRequest request,boolean ignoreSSLCertificates) throws HamException {
+    public CloseableHttpResponse execute(HttpUriRequest request, boolean ignoreSSLCertificates) throws HamException {
 
-        var key = String.format("%s|%s|%s|%s|%s",dnsServer,dnsPort,proxyIp,proxyPort,""+ignoreSSLCertificates);
+        var key = String.format("%s|%s|%s|%s|%s", dnsServer, dnsPort, proxyIp, proxyPort, "" + ignoreSSLCertificates);
 
         try {
             DnsResolver dnsResolver = null;
 
-            if(dnsServer!=null) {
+            if (dnsServer != null) {
                 dnsResolver = buildDnsResolver();
             }
             SSLConnectionSocketFactory ssfs = null;
@@ -238,15 +234,15 @@ public class HamBuilder implements HamInternalBuilder {
 
                 return httpClient.execute(request);
             }
-        }catch (SSLHandshakeException sslHandshakeException){
-            final String message="You probably should import the certificate from HAM certificates \r\n" +
-                    "in your local keystore. You can find it on "+getHamAddress()+"/api/certificates/ca.der\r\n" +
+        } catch (SSLHandshakeException sslHandshakeException) {
+            final String message = "You probably should import the certificate from HAM certificates \r\n" +
+                    "in your local keystore. You can find it on " + getHamAddress() + "/api/certificates/ca.der\r\n" +
                     "Linux: $JAVA_HOME/bin/keytool -import -file ca.der -alias HamCert \\\r\n" +
-                    "    -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt\r\n"+
+                    "    -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt\r\n" +
                     "Windows: %JAVA_HOME%\\bin\\keytool -import -file ca.der -alias HamCert ^\r\n" +
                     "    -keystore %JAVA_HOME%\\lib\\security\\cacerts -storepass changeit -noprompt\r\n";
-            throw new HamException(message,sslHandshakeException);
-        }catch(Exception ex){
+            throw new HamException(message, sslHandshakeException);
+        } catch (Exception ex) {
             throw new HamException(ex);
         }
     }
@@ -269,7 +265,7 @@ public class HamBuilder implements HamInternalBuilder {
         }
         var builder = HttpClients.custom()
                 .setConnectionManager(cm);
-        if(dnsResolver !=null){
+        if (dnsResolver != null) {
             builder = builder.setDnsResolver(dnsResolver);
         }
         if (ssfs != null) {
@@ -293,14 +289,14 @@ public class HamBuilder implements HamInternalBuilder {
                 .build();
 
         PoolingHttpClientConnectionManager cm = null;
-        if(dnsResolver !=null) {
+        if (dnsResolver != null) {
             cm = new PoolingHttpClientConnectionManager(reg, dnsResolver);
-        }else{
+        } else {
             cm = new PoolingHttpClientConnectionManager(reg);
         }
 
         var custom = HttpClients.custom();
-        if(dnsResolver !=null)custom = custom.setDnsResolver(dnsResolver);
+        if (dnsResolver != null) custom = custom.setDnsResolver(dnsResolver);
         custom = custom.setSSLSocketFactory(ssfs)
                 .setConnectionManager(cm);
         return custom;
@@ -352,7 +348,7 @@ public class HamBuilder implements HamInternalBuilder {
         }
 
         public MyConnectionSocketFactory(SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-            super(sslContext,hostnameVerifier);
+            super(sslContext, hostnameVerifier);
         }
 
         @Override
@@ -383,11 +379,11 @@ public class HamBuilder implements HamInternalBuilder {
         }catch(IOException ex){
 
         }*/
-        for(int i=1;i>=0;i--){
-            try{
+        for (int i = 1; i >= 0; i--) {
+            try {
                 return callInternal(request);
-            }catch(Exception ex){
-                if(i==0){
+            } catch (Exception ex) {
+                if (i == 0) {
                     throw new HamException(ex);
                 }
                 Sleeper.sleep(1000);

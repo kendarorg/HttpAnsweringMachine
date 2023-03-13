@@ -9,27 +9,33 @@
     <script src="/libs/axios.min.js"></script>
     <script src="/libs/utils.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
-    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
 </head>
 <body>
 <div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
-    <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
+    <div class="spinner-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
 <div id="messageObject"></div>
 <div class="container-fluid" id="app">
-        <div class="row"><div class="col-md-8">
+    <div class="row">
+        <div class="col-md-8">
             <br>
-            <a  href='../index.html'>Main</a>&gt;
+            <a href='../index.html'>Main</a>&gt;
         </div>
         <br>
         <div class="col-md-8">
             <h3>PLUGINS</h3>
             <simple-grid id="index06"
-                    ref="pluginsGrid"
-                    :columns="gridColumns"
-                    :extra="extraColumns"
-                    :retrieve-data="pluginsRetrieveData"
+                         ref="pluginsGrid"
+                         :columns="gridColumns"
+                         :extra="extraColumns"
+                         :retrieve-data="pluginsRetrieveData"
             >
             </simple-grid>
         </div>
@@ -42,19 +48,21 @@
         components: {
             'simple-grid': httpVueLoader('/vcomponents/testgrid.vue')
         },
-        data:{
-            extraColumns:[],
+        data: {
+            extraColumns: [],
             gridColumns: [
-                {id:"address",template:"link",funcname:function(data){
+                {
+                    id: "address", template: "link", funcname: function (data) {
                         return data.description;
-                    },searchable:false,sortable:false,index:true}
+                    }, searchable: false, sortable: false, index: true
+                }
             ]
         },
-        methods:{
-            pluginsRetrieveData: async function(){
+        methods: {
+            pluginsRetrieveData: async function () {
                 var result = await axiosHandle(axios.get("/api/plugins"));
-                result.data.forEach(function(lk){
-                    lk.address="../"+lk.address;
+                result.data.forEach(function (lk) {
+                    lk.address = "../" + lk.address;
                 });
                 return result;
             }

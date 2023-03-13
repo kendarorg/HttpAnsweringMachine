@@ -7,7 +7,6 @@ import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.Example;
-import org.kendar.http.annotations.multi.HamRequest;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.servers.dns.DnsMultiResolver;
@@ -24,10 +23,12 @@ import java.util.ArrayList;
 public class DnsLookupApi implements FilteringClass {
     private final DnsMultiResolver dnsMultiResolver;
     private final ObjectMapper mapper = new ObjectMapper();
-    public DnsLookupApi(DnsMultiResolver dnsMultiResolver){
+
+    public DnsLookupApi(DnsMultiResolver dnsMultiResolver) {
 
         this.dnsMultiResolver = dnsMultiResolver;
     }
+
     @Override
     public String getId() {
         return this.getClass().getName();
@@ -53,12 +54,12 @@ public class DnsLookupApi implements FilteringClass {
     public void resolve(Request req, Response res) throws Exception {
         var toResolve = req.getPathParameter("id");
         var resultList = dnsMultiResolver.resolve(toResolve);
-        if(resultList.size()>0){
+        if (resultList.size() > 0) {
             res.setResponseText(resultList.get(0));
-        }else{
+        } else {
             res.setResponseText("");
         }
-        res.addHeader(ConstantsHeader.CONTENT_TYPE,ConstantsMime.TEXT);
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.TEXT);
     }
 
     @HttpMethodFilter(
@@ -74,7 +75,7 @@ public class DnsLookupApi implements FilteringClass {
     public void listAll(Request req, Response res) throws Exception {
         var resultList = dnsMultiResolver.listDomains();
         var result = new ArrayList<DnsItem>();
-        for(var item:resultList.entrySet()){
+        for (var item : resultList.entrySet()) {
             var ni = new DnsItem();
             ni.setName(item.getKey());
             ni.setIp(item.getValue());
@@ -89,7 +90,7 @@ public class DnsLookupApi implements FilteringClass {
             pathAddress = "/api/dns/list",
             method = "DELETE")
     @HamDoc(
-            tags = {"base/utils/lookup"},description = "Force the dns resolved reloading")
+            tags = {"base/utils/lookup"}, description = "Force the dns resolved reloading")
     public void clear(Request req, Response res) throws Exception {
         dnsMultiResolver.clearCache();
     }

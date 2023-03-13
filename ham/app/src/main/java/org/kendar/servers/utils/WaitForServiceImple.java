@@ -1,6 +1,5 @@
 package org.kendar.servers.utils;
 
-import org.kendar.events.Event;
 import org.kendar.events.EventQueue;
 import org.kendar.events.ServiceStarted;
 import org.kendar.servers.WaitForService;
@@ -9,35 +8,34 @@ import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 
 @Component
 public class WaitForServiceImple implements WaitForService {
-    private ConcurrentHashMap<String,String> services=new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, String> services = new ConcurrentHashMap<>();
 
-    public WaitForServiceImple(EventQueue eventQueue){
+    public WaitForServiceImple(EventQueue eventQueue) {
         eventQueue.register(this::handleServiceStarted, ServiceStarted.class);
 
     }
 
     private void handleServiceStarted(ServiceStarted t) {
-        services.put(t.getType().toLowerCase(Locale.ROOT),t.getType());
+        services.put(t.getType().toLowerCase(Locale.ROOT), t.getType());
     }
 
-    public void waitForService(String name){
-        while(!services.containsKey(name.toLowerCase(Locale.ROOT))){
+    public void waitForService(String name) {
+        while (!services.containsKey(name.toLowerCase(Locale.ROOT))) {
             Sleeper.sleep(1000);
         }
     }
 
     @Override
     public void waitForService(String name, Runnable runnable) {
-        if(services.containsKey(name.toLowerCase(Locale.ROOT))){
+        if (services.containsKey(name.toLowerCase(Locale.ROOT))) {
             runnable.run();
             return;
         }
-        var th = new Thread(()->{
-            while(!services.containsKey(name.toLowerCase(Locale.ROOT))){
+        var th = new Thread(() -> {
+            while (!services.containsKey(name.toLowerCase(Locale.ROOT))) {
                 Sleeper.sleep(1000);
             }
             runnable.run();

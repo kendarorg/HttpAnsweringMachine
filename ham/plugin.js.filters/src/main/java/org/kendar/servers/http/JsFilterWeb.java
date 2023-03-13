@@ -12,11 +12,12 @@ import org.springframework.stereotype.Component;
 public class JsFilterWeb extends StaticWebFilter {
 
     @Override
-    public String getDescription(){
+    public String getDescription() {
         return "JsFilter web";
     }
+
     @Override
-    public String getAddress(){
+    public String getAddress() {
         return "plugins/jsfilter/index.html";
     }
 

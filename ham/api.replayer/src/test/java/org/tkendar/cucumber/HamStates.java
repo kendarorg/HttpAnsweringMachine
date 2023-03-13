@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class HamStates  extends BaseStates{
+public class HamStates extends BaseStates {
 
 
     @Given("^I have a running HAM instance$")
@@ -23,22 +23,22 @@ public class HamStates  extends BaseStates{
     }
 
     @Given("^I add a dns mapping from '(.+)' to '(.+)'$")
-    public void iAddDnsMapping(String ip,String name) throws HamTestException,HamException {
-        var dnsId =hamBuilder.dns().addDnsName(ip,name);
+    public void iAddDnsMapping(String ip, String name) throws HamTestException, HamException {
+        var dnsId = hamBuilder.dns().addDnsName(ip, name);
         hamBuilder.certificates().addAltName(name);
         dnses.add(dnsId);
     }
 
     @Given("^I add a proxy from '(.+)' to '(.+)' testing it with '(.+)'$")
-    public void iAddAProxy(String from,String to,String test) throws HamTestException, HamException {
-        var proxyId = hamBuilder.proxies().addProxy(from,to,test);
+    public void iAddAProxy(String from, String to, String test) throws HamTestException, HamException {
+        var proxyId = hamBuilder.proxies().addProxy(from, to, test);
         proxies.add(proxyId);
     }
 
     @Given("^I have a server listening on port '([0-9]+)'$")
     public void iHaveServerListemimgOn(int port) throws HamTestException {
-        if(httpServer!=null)return;
-        httpServer =  getHttpServer(port);
+        if (httpServer != null) return;
+        httpServer = getHttpServer(port);
     }
 
 
@@ -76,8 +76,8 @@ public class HamStates  extends BaseStates{
 
     @Given("^the response should contain '(.*)'$")
     public void the_response_should_be_(String data) {
-        if(data==null && resultData==null) return;
-        if(data!=null && data.isEmpty() && resultData==null) return;
+        if (data == null && resultData == null) return;
+        if (data != null && data.isEmpty() && resultData == null) return;
         assertTrue(resultData.contains(data));
     }
 }

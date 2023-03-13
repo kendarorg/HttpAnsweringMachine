@@ -1,3 +1,6 @@
 [
-  {"id": "something","content": "where"}
+  {
+    "id": "something",
+    "content": "where"
+  }
 ]

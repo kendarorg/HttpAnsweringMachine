@@ -28,7 +28,7 @@ public class DefaultFiltersLoader implements CustomFiltersLoader {
     public DefaultFiltersLoader(List<FilteringClass> filteringClassList,
                                 Environment environment, LoggerBuilder loggerBuilder,
                                 PluginsInitializer pluginsInitializer,
-                                JsonConfiguration jsonConfiguration){
+                                JsonConfiguration jsonConfiguration) {
 
         this.filteringClassList = filteringClassList;
         this.environment = environment;
@@ -37,32 +37,33 @@ public class DefaultFiltersLoader implements CustomFiltersLoader {
         this.jsonConfiguration = jsonConfiguration;
     }
 
-    private static boolean hasFilterType(FilteringClass cl){
-        return cl.getClass().getAnnotation(HttpTypeFilter.class)!=null;
+    private static boolean hasFilterType(FilteringClass cl) {
+        return cl.getClass().getAnnotation(HttpTypeFilter.class) != null;
     }
 
-    private List<FilterDescriptor> getAnnotatedMethods(FilteringClass cl,Environment environment) {
+    private List<FilterDescriptor> getAnnotatedMethods(FilteringClass cl, Environment environment) {
         var result = new ArrayList<FilterDescriptor>();
         var typeFilter = cl.getClass().getAnnotation(HttpTypeFilter.class);
-        for (Method m: cl.getClass().getMethods()) {
+        for (Method m : cl.getClass().getMethods()) {
             var methodFilter = m.getAnnotation(HttpMethodFilter.class);
-            if(methodFilter==null) continue;
-            if(cl instanceof StaticWebFilter){
-                var swf =(StaticWebFilter)cl;
-                if(swf.getAddress()!=null) {
+            if (methodFilter == null) continue;
+            if (cl instanceof StaticWebFilter) {
+                var swf = (StaticWebFilter) cl;
+                if (swf.getAddress() != null) {
                     pluginsInitializer.addPluginAddress(swf.getAddress(), swf.getDescription());
                 }
             }
             var hamDoc = m.getAnnotation(HamDoc.class);
-            result.add(new FilterDescriptor(this,typeFilter,methodFilter,m,cl,environment,jsonConfiguration,hamDoc));
+            result.add(new FilterDescriptor(this, typeFilter, methodFilter, m, cl, environment, jsonConfiguration, hamDoc));
         }
         return result;
     }
+
     @Override
     public List<FilterDescriptor> loadFilters() {
         var result = new ArrayList<FilterDescriptor>();
-        for (var filterClass :filteringClassList) {
-            if(!hasFilterType(filterClass)) continue;
+        for (var filterClass : filteringClassList) {
+            if (!hasFilterType(filterClass)) continue;
             result.addAll(getAnnotatedMethods(filterClass, environment));
         }
 

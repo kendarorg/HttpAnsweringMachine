@@ -12,13 +12,14 @@ public class HttpTypeFilterConcrete implements HttpTypeFilter {
     private int priority;
     private Pattern hostPattern;
 
-    public HttpTypeFilterConcrete(String hostAddress, boolean blocking, int priority, Pattern hostPattern){
+    public HttpTypeFilterConcrete(String hostAddress, boolean blocking, int priority, Pattern hostPattern) {
 
         this.hostAddress = hostAddress;
         this.blocking = blocking;
         this.priority = priority;
         this.hostPattern = hostPattern;
     }
+
     @Override
     public Class<? extends Annotation> annotationType() {
         return null;

@@ -9,7 +9,7 @@ public class XmlElementGroup {
     private List<XmlElement> items;
     private String tag;
 
-    public XmlElementGroup(){
+    public XmlElementGroup() {
         items = new ArrayList<>();
     }
 
@@ -17,9 +17,9 @@ public class XmlElementGroup {
     public String toString() {
         return "{\"type\":\"XmlElementGroup\"" +
                 ", \"tag\":\"" + tag + "\"" +
-                ", \"constraint\":\"" + constraint +"\"" +
-                ", \"items\":[" + String.join(",",items.stream()
-                .sorted(Comparator.comparing(XmlElement::getTag)).map(XmlElement::toString).collect(Collectors.toList())) +"]"+
+                ", \"constraint\":\"" + constraint + "\"" +
+                ", \"items\":[" + String.join(",", items.stream()
+                .sorted(Comparator.comparing(XmlElement::getTag)).map(XmlElement::toString).collect(Collectors.toList())) + "]" +
                 '}';
     }
 

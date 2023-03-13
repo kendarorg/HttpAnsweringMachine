@@ -7,7 +7,6 @@ import org.kendar.http.annotations.HamDoc;
 import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.Example;
-import org.kendar.http.annotations.multi.HamRequest;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -32,7 +31,7 @@ public class HealthController implements FilteringClass {
             description = "Retrieve the application status",
             responses = @HamResponse(
                     body = String.class,
-                     examples = @Example(example = "OK")
+                    examples = @Example(example = "OK")
             ))
     public void getStatus(Request req, Response res) {
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.TEXT);

@@ -22,7 +22,7 @@
       </span>
     </simple-modal>
 
-    <h3>{{value.type}}</h3><br>
+    <h3>{{ value.type }}</h3><br>
     <div class="form-group">
       <label htmlFor="method">Method</label>
       <input class="form-control" type="text" name="method" id="method" v-model="value.children[0].value"/>
@@ -33,8 +33,8 @@
       <tr>
         <th>
           <button id="cmdexec-update"
-              style="border:none;background-color: #4CAF50;"
-              class="bi bi-plus-square" @click="doUpdate(-1)" title="Add"></button>
+                  style="border:none;background-color: #4CAF50;"
+                  class="bi bi-plus-square" @click="doUpdate(-1)" title="Add"></button>
         </th>
         <th>Type</th>
         <th>Value</th>
@@ -56,9 +56,8 @@ module.exports = {
   props: {
     value: Object
   },
-  computed:{
-    gridData:function(){
-      //this.triggerChange;
+  computed: {
+    gridData: function () {
       return this.value.children[1].children;
     }
   },
@@ -90,33 +89,27 @@ module.exports = {
         this.value.children[2].children[item.index].type = item.typevalue;
       } else {
         this.value.children[1].children.push({
-          name:"_",
-          type:"java.lang.Class",
-          value:item.type
+          name: "_",
+          type: "java.lang.Class",
+          value: item.type
         });
         this.value.children[2].children.push({
-          name:"_",
-          type:item.typevalue,
-          value:item.value
+          name: "_",
+          type: item.typevalue,
+          value: item.value
         });
       }
-      this.$emit("componentevent",{
-        id:"changed"
+      this.$emit("componentevent", {
+        id: "changed"
       })
-      this.modalData={}
+      this.modalData = {}
       this.modalShow = false;
-      //.triggerChange = !this.triggerChange;
     }
   },
   data: function () {
     return {
-      //triggerChange:false,
       modalData: null,
       modalShow: false,
-      // columns: [
-      //   {id: "id", template: "string", index: true,size:20,sortable:true},
-      //   {id: "type", template: "string",label:"Type",size:20,sortable:true}
-      //     ]
     }
   },
   components: {

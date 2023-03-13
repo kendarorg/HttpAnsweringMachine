@@ -6,8 +6,11 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Inherited
 public @interface HamMatcher {
-     String value();
-     MatcherFunction function() default MatcherFunction.STARTS;
-     MatcherType type();
-     String id() default "";
+    String value();
+
+    MatcherFunction function() default MatcherFunction.STARTS;
+
+    MatcherType type();
+
+    String id() default "";
 }

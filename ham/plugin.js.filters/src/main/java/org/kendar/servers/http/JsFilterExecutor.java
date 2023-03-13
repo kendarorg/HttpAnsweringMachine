@@ -1,9 +1,9 @@
 package org.kendar.servers.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.kendar.servers.http.matchers.FilterMatcher;
 import org.kendar.http.GenericFilterExecutor;
 import org.kendar.http.HttpFilterType;
+import org.kendar.servers.http.matchers.FilterMatcher;
 import org.kendar.servers.http.types.http.JsHttpFilterDescriptor;
 import org.kendar.utils.LoggerBuilder;
 import org.mozilla.javascript.Context;
@@ -19,11 +19,11 @@ public class JsFilterExecutor extends GenericFilterExecutor {
     private final JsFilterLoader jsFilterLoader;
 
     public JsFilterExecutor(JsHttpFilterDescriptor filterDescriptor, JsFilterLoader jsFilterLoader, LoggerBuilder loggerBuilder,
-                            String id,FilterMatcher ... matchers) {
+                            String id, FilterMatcher... matchers) {
         super(filterDescriptor.getPriority(),
-                filterDescriptor.isBlocking(),filterDescriptor.isBlocking(),
+                filterDescriptor.isBlocking(), filterDescriptor.isBlocking(),
 
-                HttpFilterType.valueOf(filterDescriptor.getPhase()),null,null,matchers);
+                HttpFilterType.valueOf(filterDescriptor.getPhase()), null, null, matchers);
         setId(id);
         this.logger = loggerBuilder.build(JsFilterExecutor.class);
         this.filterDescriptor = filterDescriptor;
@@ -34,7 +34,7 @@ public class JsFilterExecutor extends GenericFilterExecutor {
 
     @Override
     public boolean run(Request request, Response response) {
-        if(filterDescriptor.getAction().getType().equalsIgnoreCase("body")){
+        if (filterDescriptor.getAction().getType().equalsIgnoreCase("body")) {
             response.setResponseText(filterDescriptor.getAction().getSource());
             return true;
         }
@@ -46,24 +46,24 @@ public class JsFilterExecutor extends GenericFilterExecutor {
         try {
             Map<Object, Object> result = new HashMap<>();
             Scriptable currentScope = jsFilterLoader.getNewScope(cx);
-            currentScope.put("REQUESTJSON", currentScope,request);
-            currentScope.put("RESPONSEJSON", currentScope,response);
+            currentScope.put("REQUESTJSON", currentScope, request);
+            currentScope.put("RESPONSEJSON", currentScope, response);
             currentScope.put("globalResult", currentScope, result);
-            currentScope.put("utils",currentScope,
-                    Context.toObject(filterDescriptor.retrieveQueue(),currentScope));
+            currentScope.put("utils", currentScope,
+                    Context.toObject(filterDescriptor.retrieveQueue(), currentScope));
             //
             //cx.setClassShutter(sandboxClassShutter);
             filterDescriptor.getScript().exec(cx, currentScope);
 
-            var isBlocking =!(boolean)result.get("continue");
-            if(response.getStatusCode()==500){
+            var isBlocking = !(boolean) result.get("continue");
+            if (response.getStatusCode() == 500) {
                 logger.error(response.getResponseText());
             }
             return isBlocking;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             response.setStatusCode(500);
             response.setResponseText(ex.getMessage());
-            logger.error(ex.getMessage(),ex);
+            logger.error(ex.getMessage(), ex);
             return false;
         } finally {
             Context.exit();

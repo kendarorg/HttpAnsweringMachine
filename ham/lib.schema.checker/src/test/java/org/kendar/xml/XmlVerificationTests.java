@@ -14,7 +14,7 @@ public class XmlVerificationTests extends BaseUtils {
 
         var target = new DiffInferrer();
         assertException(XmlException.class, () -> {
-            target.diff(xml1,xml2);
+            target.diff(xml1, xml2);
         }, "a.b MISSING ATTRIBUTE id");
     }
 
@@ -25,7 +25,7 @@ public class XmlVerificationTests extends BaseUtils {
 
         var target = new DiffInferrer();
         assertException(XmlException.class, () -> {
-            target.diff(xml1,xml2);
+            target.diff(xml1, xml2);
         }, "a.b MISSING CHILD e");
     }
 
@@ -36,7 +36,7 @@ public class XmlVerificationTests extends BaseUtils {
 
         var target = new DiffInferrer();
         assertException(XmlException.class, () -> {
-            target.diff(xml1,xml2);
+            target.diff(xml1, xml2);
         }, "a.e MISSING CONTENT");
     }
 
@@ -46,7 +46,7 @@ public class XmlVerificationTests extends BaseUtils {
         var xml2 = read("/xml/correct.xml");
 
         var target = new DiffInferrer();
-        target.diff(xml1,xml2);
+        target.diff(xml1, xml2);
     }
 
 

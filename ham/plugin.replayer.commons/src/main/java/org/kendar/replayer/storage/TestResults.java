@@ -4,18 +4,14 @@ import org.kendar.servers.db.DbTable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 @Component
 
 @Entity
-@Table(name="REPLAYER_RESULT")
+@Table(name = "REPLAYER_RESULT")
 public class TestResults implements DbTable {
     public Long getId() {
         return id;
@@ -51,7 +47,7 @@ public class TestResults implements DbTable {
     @Column(name = "duration")
     private long duration;
 
-    @Column(name = "errors",length = 64000)
+    @Column(name = "errors", length = 64000)
     private String errors;
 
     @Column(name = "type")
@@ -71,8 +67,8 @@ public class TestResults implements DbTable {
 
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
-        if(timestamp!=null){
-            Date date=new Date(timestamp.getTime());
+        if (timestamp != null) {
+            Date date = new Date(timestamp.getTime());
 
 // Conversion
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");

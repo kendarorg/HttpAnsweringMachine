@@ -1,13 +1,15 @@
 <template>
-  <div v-show="isActive"><slot></slot></div>
+  <div v-show="isActive">
+    <slot></slot>
+  </div>
 </template>
 <script>
 module.exports = {
   name: 'vtab',
   props: {
     title: String,
-    name: { required: true },
-    selected: { default: false}
+    name: {required: true},
+    selected: {default: false}
   },
   data() {
     return {
@@ -15,13 +17,13 @@ module.exports = {
     };
   },
   computed: {
-    compTitle:function(){
-      if(isUndefined(this.title)){
+    compTitle: function () {
+      if (isUndefined(this.title)) {
         return this.name;
       }
       return this.title;
     },
-    href:function() {
+    href: function () {
       return '#' + this.name.toLowerCase().replace(/ /g, '-');
     }
   },

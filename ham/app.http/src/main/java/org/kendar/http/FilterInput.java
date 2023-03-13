@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class FilterInput {
     private HttpFilterType phase;
-    private HashMap<String,String> matches;
+    private HashMap<String, String> matches;
     private Request request;
     private Response response;
 

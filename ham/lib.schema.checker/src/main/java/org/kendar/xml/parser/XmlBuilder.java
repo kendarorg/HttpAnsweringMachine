@@ -16,11 +16,11 @@ public class XmlBuilder {
         var result = new XmlElement();
         result.setTag(node.getTagName());
         //result.setConstraint(XmlConstraint.MANDATORY_VALUE);
-        result.setAttributes(loadAttributes(node.getAttributes(),diffResult));
-        for(var i =0;i<node.getChildNodes().getLength();i++){
+        result.setAttributes(loadAttributes(node.getAttributes(), diffResult));
+        for (var i = 0; i < node.getChildNodes().getLength(); i++) {
             var childNode = node.getChildNodes().item(i);
 
-            if(childNode instanceof Element) {
+            if (childNode instanceof Element) {
                 var el = (Element) childNode;
                 var elTag = el.getTagName();
                 if (!result.getChildren().containsKey(elTag)) {
@@ -29,14 +29,14 @@ public class XmlBuilder {
                     result.getChildren().put(elTag, group);
                 }
                 //result.getChildren().get(elTag).setConstraint(XmlConstraint.MANDATORY_VALUE);
-                result.getChildren().get(elTag).getItems().add(load(el,depth+1,diffResult));
-            }else if(childNode instanceof Node){
-                var el = (Node)childNode;
+                result.getChildren().get(elTag).getItems().add(load(el, depth + 1, diffResult));
+            } else if (childNode instanceof Node) {
+                var el = (Node) childNode;
                 var val = el.getNodeValue();
                 //result.setConstraint(XmlConstraint.MANDATORY_VALUE);
-                if(Utils.stringIsEmptyOrNull(val)){
+                if (Utils.stringIsEmptyOrNull(val)) {
                     //result.setValueConstraint(XmlConstraint.NULLABLE_VALUE);
-                }else {
+                } else {
                     //result.setValueConstraint(XmlConstraint.MANDATORY_VALUE);
                     result.setValue(val);
                 }
@@ -47,19 +47,19 @@ public class XmlBuilder {
 
 
     private Map<String, XmlAttribute> loadAttributes(NamedNodeMap attributes, DiffPath diffResult) {
-        var result = new HashMap<String,XmlAttribute>();
-        for(var i =0;i<attributes.getLength();i++){
+        var result = new HashMap<String, XmlAttribute>();
+        for (var i = 0; i < attributes.getLength(); i++) {
             var att = attributes.item(i);
             var val = new XmlAttribute();
             //val.setConstraint(XmlConstraint.MANDATORY_VALUE);
             val.setName(att.getNodeName());
-            if(Utils.stringIsEmptyOrNull(att.getNodeValue())) {
+            if (Utils.stringIsEmptyOrNull(att.getNodeValue())) {
                 //val.setValueConstraint(XmlConstraint.NULLABLE_VALUE);
-            }else{
+            } else {
                 //val.setValueConstraint(XmlConstraint.MANDATORY_VALUE);
                 val.setValue(att.getNodeValue());
             }
-            result.put(val.getName(),val);
+            result.put(val.getName(), val);
         }
         return result;
     }

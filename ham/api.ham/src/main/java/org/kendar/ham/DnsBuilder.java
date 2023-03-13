@@ -1,7 +1,5 @@
 package org.kendar.ham;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import java.util.List;
 import java.util.function.Function;
 
@@ -11,6 +9,7 @@ import java.util.function.Function;
 public interface DnsBuilder extends DnsCertsAndNamesBuilder {
     /**
      * Resolve the given dns name.
+     *
      * @param domain
      * @return the IP string
      * @throws HamException
@@ -46,6 +45,7 @@ public interface DnsBuilder extends DnsCertsAndNamesBuilder {
             this.dns = dns;
         }
     }
+
     public class ResolvedNames {
         private String ip;
         private String name;
@@ -66,6 +66,7 @@ public interface DnsBuilder extends DnsCertsAndNamesBuilder {
             this.name = name;
         }
     }
+
     public class DnsServer {
         private String id;
         private String address;
@@ -108,7 +109,8 @@ public interface DnsBuilder extends DnsCertsAndNamesBuilder {
 
     /**
      * Add a new DNS resolution
-     * @param ip the ip to which the name will be resolved
+     *
+     * @param ip   the ip to which the name will be resolved
      * @param name the name resolved
      * @return the id of the generated name
      * @throws HamException
@@ -117,13 +119,15 @@ public interface DnsBuilder extends DnsCertsAndNamesBuilder {
 
     /**
      * Add new DNS resolutionS to localhost
+     *
      * @param names the name resolved
      * @throws HamException
      */
-    void addLocalDnsNames(String ... names) throws HamException;
+    void addLocalDnsNames(String... names) throws HamException;
 
     /**
      * Remove an id by name
+     *
      * @param id
      * @throws HamException
      */
@@ -131,6 +135,7 @@ public interface DnsBuilder extends DnsCertsAndNamesBuilder {
 
     /**
      * Retrieve all registered DNS ip-name associations
+     *
      * @return
      * @throws HamException
      */
@@ -138,15 +143,17 @@ public interface DnsBuilder extends DnsCertsAndNamesBuilder {
 
     /**
      * Add a new DNS server
+     *
      * @param address the ip or dns name of the server
      * @param enabled if should be enabled at start
      * @return
      * @throws HamException
      */
-    String addDnsServer(String address,boolean enabled) throws HamException;
+    String addDnsServer(String address, boolean enabled) throws HamException;
 
     /**
      * Remove DNS server by id
+     *
      * @param id
      * @throws HamException
      */
@@ -154,6 +161,7 @@ public interface DnsBuilder extends DnsCertsAndNamesBuilder {
 
     /**
      * Retrieves all DNS servers
+     *
      * @return
      * @throws HamException
      */
@@ -161,6 +169,7 @@ public interface DnsBuilder extends DnsCertsAndNamesBuilder {
 
     /**
      * Retrieve all the DNS resolved through ham dns server
+     *
      * @return
      * @throws HamException
      */
@@ -168,13 +177,15 @@ public interface DnsBuilder extends DnsCertsAndNamesBuilder {
 
     /**
      * Set dns/tls for the selected sites
+     *
      * @param filter to select from founded items
      * @return
      */
-    DnsCertsAndNamesBuilder withResolvedNames(Function<ResolvedNames,Boolean> filter) throws HamException;
+    DnsCertsAndNamesBuilder withResolvedNames(Function<ResolvedNames, Boolean> filter) throws HamException;
 
     /**
      * List of names to search within
+     *
      * @param with
      * @return
      */

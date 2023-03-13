@@ -52,10 +52,10 @@ public class DnsSocks5Handler implements SocksHandler {
             selectedMethod.doMethod(session);
             CommandMessage commandMessage = new CommandMessage();
             session.read(commandMessage);
-            if(commandMessage.hasSocksException() && commandMessage.getSocksException().getMessage()
-                    .equalsIgnoreCase("Host unreachable")){
-                var realHost = multiResolver.resolve( commandMessage.getHost());
-                if(realHost!=null && !realHost.isEmpty()){
+            if (commandMessage.hasSocksException() && commandMessage.getSocksException().getMessage()
+                    .equalsIgnoreCase("Host unreachable")) {
+                var realHost = multiResolver.resolve(commandMessage.getHost());
+                if (realHost != null && !realHost.isEmpty()) {
                     commandMessage.setSocksException(null);
                 }
             }
@@ -65,13 +65,13 @@ public class DnsSocks5Handler implements SocksHandler {
                 logger.info("SESSION[{}] will close, because {}", session.getId(), serverReply);
             } else {
                 this.sessionManager.sessionOnCommand(session, commandMessage);
-                if(commandMessage.getCommand()==SocksCommand.BIND){
+                if (commandMessage.getCommand() == SocksCommand.BIND) {
                     this.doBind(session, commandMessage);
 
-                }else if(commandMessage.getCommand()==SocksCommand.CONNECT){
+                } else if (commandMessage.getCommand() == SocksCommand.CONNECT) {
                     this.doConnect(session, commandMessage);
 
-                }else if(commandMessage.getCommand()==SocksCommand.UDP_ASSOCIATE){
+                } else if (commandMessage.getCommand() == SocksCommand.UDP_ASSOCIATE) {
                     this.doUDPAssociate(session, commandMessage);
                 }
 
@@ -85,14 +85,14 @@ public class DnsSocks5Handler implements SocksHandler {
         InetAddress bindAddress = null;
         int bindPort = 0;
         InetAddress remoteServerAddress;
-        List<String> realHost  = new ArrayList<>();
-        if(commandMessage.getHost()!=null && !commandMessage.getHost().isEmpty()) {
+        List<String> realHost = new ArrayList<>();
+        if (commandMessage.getHost() != null && !commandMessage.getHost().isEmpty()) {
             realHost = multiResolver.resolve(commandMessage.getHost());
         }
 
-        if(realHost!=null && !realHost.isEmpty()){
+        if (realHost != null && !realHost.isEmpty()) {
             remoteServerAddress = InetAddress.getByName(realHost.get(0));
-        }else{
+        } else {
             remoteServerAddress = commandMessage.getInetAddress();
         }
         int remoteServerPort = commandMessage.getPort();
@@ -106,8 +106,8 @@ public class DnsSocks5Handler implements SocksHandler {
                 socket = new SocksSocket(this.proxy, remoteServerAddress, remoteServerPort);
             }
 
-            bindAddress = ((Socket)socket).getLocalAddress();
-            bindPort = ((Socket)socket).getLocalPort();
+            bindAddress = ((Socket) socket).getLocalAddress();
+            bindPort = ((Socket) socket).getLocalPort();
             reply = ServerReply.SUCCEEDED;
         } catch (IOException var14) {
             if (var14.getMessage().equals("Connection refused")) {
@@ -130,20 +130,20 @@ public class DnsSocks5Handler implements SocksHandler {
         if (reply != ServerReply.SUCCEEDED) {
             session.close();
         } else {
-            Pipe pipe = new SocketPipe(session.getSocket(), (Socket)socket);
-            ((Pipe)pipe).setName("SESSION[" + session.getId() + "]");
-            ((Pipe)pipe).setBufferSize(this.bufferSize);
+            Pipe pipe = new SocketPipe(session.getSocket(), (Socket) socket);
+            ((Pipe) pipe).setName("SESSION[" + session.getId() + "]");
+            ((Pipe) pipe).setBufferSize(this.bufferSize);
             if (this.getSocksProxyServer().getPipeInitializer() != null) {
-                pipe = this.getSocksProxyServer().getPipeInitializer().initialize((Pipe)pipe);
+                pipe = this.getSocksProxyServer().getPipeInitializer().initialize((Pipe) pipe);
             }
 
-            ((Pipe)pipe).start();
+            ((Pipe) pipe).start();
 
-            while(((Pipe)pipe).isRunning()) {
+            while (((Pipe) pipe).isRunning()) {
                 try {
-                    Thread.sleep((long)this.idleTime);
+                    Thread.sleep((long) this.idleTime);
                 } catch (InterruptedException var13) {
-                    ((Pipe)pipe).stop();
+                    ((Pipe) pipe).stop();
                     session.close();
                     logger.info("SESSION[{}] closed", session.getId());
                 }
@@ -164,9 +164,9 @@ public class DnsSocks5Handler implements SocksHandler {
         pipe.setBufferSize(this.bufferSize);
         pipe.start();
 
-        while(pipe.isRunning()) {
+        while (pipe.isRunning()) {
             try {
-                Thread.sleep((long)this.idleTime);
+                Thread.sleep((long) this.idleTime);
             } catch (InterruptedException var8) {
                 pipe.stop();
                 session.close();
@@ -178,14 +178,14 @@ public class DnsSocks5Handler implements SocksHandler {
     }
 
     public void doUDPAssociate(Session session, CommandMessage commandMessage) throws SocksException, IOException {
-        UDPRelayServer udpRelayServer = new UDPRelayServer(((InetSocketAddress)session.getClientAddress()).getAddress(), commandMessage.getPort());
-        InetSocketAddress socketAddress = (InetSocketAddress)udpRelayServer.start();
+        UDPRelayServer udpRelayServer = new UDPRelayServer(((InetSocketAddress) session.getClientAddress()).getAddress(), commandMessage.getPort());
+        InetSocketAddress socketAddress = (InetSocketAddress) udpRelayServer.start();
         logger.info("Create UDP relay server at[{}] for {}", socketAddress, commandMessage.getSocketAddress());
         session.write(new CommandResponseMessage(5, ServerReply.SUCCEEDED, InetAddress.getLocalHost(), socketAddress.getPort()));
 
-        while(udpRelayServer.isRunning()) {
+        while (udpRelayServer.isRunning()) {
             try {
-                Thread.sleep((long)this.idleTime);
+                Thread.sleep((long) this.idleTime);
             } catch (InterruptedException var6) {
                 session.close();
                 logger.info("Session[{}] closed", session.getId());

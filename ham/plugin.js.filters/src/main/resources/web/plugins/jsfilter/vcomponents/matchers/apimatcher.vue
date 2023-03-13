@@ -37,11 +37,11 @@ module.exports = {
   props: {
     matcher: Object
   },
-  methods:{
-    isValid:function(){
+  methods: {
+    isValid: function () {
 
-      return !isUndefined(this.matcher.pathPattern)||!isUndefined(this.matcher.pathAddress)||
-          !isUndefined(this.matcher.hostAddress)||!isUndefined(this.matcher.hostPattern);
+      return !isUndefined(this.matcher.pathPattern) || !isUndefined(this.matcher.pathAddress) ||
+          !isUndefined(this.matcher.hostAddress) || !isUndefined(this.matcher.hostPattern);
     }
   }
 }

@@ -19,12 +19,11 @@
       "url": "jdbc:h2:tcp://localhost/ham;MODE=MYSQL;",
       "login": "sa",
       "password": "sa",
-      "startInternalH2" : true,
+      "startInternalH2": true,
       "driver": "org.h2.Driver",
-      "hibernateDialect":"org.hibernate.dialect.MySQLDialect"
+      "hibernateDialect": "org.hibernate.dialect.MySQLDialect"
     },
     "logging": {
-
       "logLevel": "INFO",
       "loggers": {
         "org.kendar.servers.http.Request": "OFF",

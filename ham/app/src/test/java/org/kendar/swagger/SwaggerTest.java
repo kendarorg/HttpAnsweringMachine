@@ -1,11 +1,9 @@
 package org.kendar.swagger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.models.*;
-import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.links.Link;
@@ -43,10 +41,9 @@ public class SwaggerTest {
                 .title("title")
                 .version("2.0.0"));
 
-        schemas.entrySet().stream().forEach(es->
-                swagger.components(new Components().addSchemas(es.getKey(),es.getValue()))
+        schemas.entrySet().stream().forEach(es ->
+                swagger.components(new Components().addSchemas(es.getKey(), es.getValue()))
         );
-
 
 
         //PathItem expectedPath = new PathItem().$ref("http://my.company.com/paths/health.json");
@@ -72,9 +69,7 @@ public class SwaggerTest {
         RequestBody requestBody = new RequestBody().content(content);
 
 
-
         List<Parameter> parameters = new ArrayList<>();
-
 
 
         parameters.add(new QueryParameter()

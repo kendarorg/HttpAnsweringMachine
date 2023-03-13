@@ -15,7 +15,7 @@ public class Request {
     private String method;
     private String requestText;
     private byte[] requestBytes;
-    private Map<String,String> headers;
+    private Map<String, String> headers;
     private String protocol;
     private boolean soapRequest;
     private String basicPassword;
@@ -24,9 +24,9 @@ public class Request {
     private boolean staticRequest;
     private String host;
     private String path;
-    private Map<String,String> postParameters = new HashMap<>();
+    private Map<String, String> postParameters = new HashMap<>();
     private int port;
-    private Map<String,String> query = new HashMap<>();
+    private Map<String, String> query = new HashMap<>();
     private String remoteHost;
     private Map<String, String> pathParameters = new HashMap<>();
     private Request original;
@@ -161,48 +161,49 @@ public class Request {
 
     public String getHeader(String id) {
 
-        return RequestUtils.getFromMap(this.headers,id);
+        return RequestUtils.getFromMap(this.headers, id);
     }
 
     public void addPathParameter(String key, String value) {
-        if(this.pathParameters==null) this.pathParameters = new HashMap<>();
-        RequestUtils.addToMap(this.pathParameters,key,value);
+        if (this.pathParameters == null) this.pathParameters = new HashMap<>();
+        RequestUtils.addToMap(this.pathParameters, key, value);
     }
 
     public String getPathParameter(String id) {
-        return RequestUtils.getFromMap(this.pathParameters,id);
+        return RequestUtils.getFromMap(this.pathParameters, id);
     }
 
     public String getRequestParameter(String key) {
         var result = getPostParameter(key);
-        if(result==null){
+        if (result == null) {
             result = getQuery(key);
         }
-        if(result== null){
+        if (result == null) {
             result = getHeader(key);
         }
-        if(result== null){
+        if (result == null) {
             result = getPathParameter(key);
         }
         return result;
     }
+
     public void addHeader(String key, String value) {
-        if(this.headers==null) this.headers = new HashMap<>();
-        RequestUtils.addToMap(this.headers,key,value);
+        if (this.headers == null) this.headers = new HashMap<>();
+        RequestUtils.addToMap(this.headers, key, value);
     }
 
     public void addQuery(String key, String value) {
 
-        if(this.query==null) this.query = new HashMap<>();
-        RequestUtils.addToMap(this.query,key,value);
+        if (this.query == null) this.query = new HashMap<>();
+        RequestUtils.addToMap(this.query, key, value);
     }
 
     public String getQuery(String id) {
-        return RequestUtils.getFromMap(this.query,id);
+        return RequestUtils.getFromMap(this.query, id);
     }
 
     public String getPostParameter(String id) {
-        return RequestUtils.getFromMap(this.postParameters,id);
+        return RequestUtils.getFromMap(this.postParameters, id);
     }
 
     public void setRemoteHost(String remoteHost) {
@@ -214,7 +215,7 @@ public class Request {
     }
 
     public String extractRemoteHostName() {
-        try{
+        try {
             return InetAddress.getByName(remoteHost).getHostName();
         } catch (UnknownHostException e) {
             return remoteHost;
@@ -238,7 +239,7 @@ public class Request {
     }
 
     public Request copy() {
-        var r  = new Request();
+        var r = new Request();
         r.id = this.id;
         r.pathParameters = this.pathParameters.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -248,29 +249,29 @@ public class Request {
         r.basicPassword = this.basicPassword;
         r.basicUsername = this.basicUsername;
         r.binaryRequest = this.binaryRequest;
-        if(headers!=null) {
+        if (headers != null) {
             r.headers = this.headers.entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         }
         r.host = this.host;
         r.method = this.method;
-        if(multipartData!=null) {
+        if (multipartData != null) {
             r.multipartData = this.multipartData.stream().map(multipartPart -> multipartPart.copy()).collect(Collectors.toList());
         }
         r.port = this.port;
-        if(postParameters!=null) {
+        if (postParameters != null) {
             r.postParameters = this.postParameters.entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         }
         r.protocol = this.protocol;
-        if(query!=null) {
+        if (query != null) {
             r.query = this.query.entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         }
-        r.requestBytes = this.requestBytes!=null?this.requestBytes.clone():this.requestBytes;
-        r.requestText = this.requestText!=null?new String(this.requestText):this.requestText;
-        r.soapRequest= this.soapRequest;
-        r.staticRequest= this.staticRequest;
+        r.requestBytes = this.requestBytes != null ? this.requestBytes.clone() : this.requestBytes;
+        r.requestText = this.requestText != null ? new String(this.requestText) : this.requestText;
+        r.soapRequest = this.soapRequest;
+        r.staticRequest = this.staticRequest;
         return r;
     }
 
@@ -278,27 +279,27 @@ public class Request {
         this.original = oriSource;
     }
 
-    public Request retrieveOriginal(){
-        if(original!=null) return original;
+    public Request retrieveOriginal() {
+        if (original != null) return original;
         return this;
     }
 
-    public String findCookie(String value){
+    public String findCookie(String value) {
         var cookies = this.getHeader("Cookie");
-        if(cookies==null) return null;
+        if (cookies == null) return null;
         var splittedCookies = cookies.split(";");
-        for(var cookie:splittedCookies){
+        for (var cookie : splittedCookies) {
             var cookieData = cookie.trim().split("=");
-            if(value.equalsIgnoreCase(cookieData[0].trim())){
+            if (value.equalsIgnoreCase(cookieData[0].trim())) {
                 return cookieData[1].trim();
             }
         }
         return null;
     }
 
-    public boolean bodyExists(){
-        return (requestBytes!=null && requestBytes.length>0)||
-                (requestText!=null && requestText.length()>0);
+    public boolean bodyExists() {
+        return (requestBytes != null && requestBytes.length > 0) ||
+                (requestText != null && requestText.length() > 0);
     }
 
     public long getId() {

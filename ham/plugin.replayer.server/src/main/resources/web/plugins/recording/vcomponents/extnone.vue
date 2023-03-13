@@ -4,8 +4,8 @@
 <script>
 module.exports = {
   name: 'extnone',
-  props:{
-    value:Object
+  props: {
+    value: Object
   }
 }
 </script>

@@ -12,7 +12,10 @@ import javax.annotation.PostConstruct;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,17 +65,18 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
         logger.info("Simple proxies LOADED");
     }
 
-    private class ProxyPollTiming{
+    private class ProxyPollTiming {
         public long lastTimeCheck;
         public String id;
         public boolean lastStatus;
     }
 
-    private ConcurrentHashMap<String,ProxyPollTiming> pollTiming = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, ProxyPollTiming> pollTiming = new ConcurrentHashMap<>();
 
-    private AtomicBoolean running=new AtomicBoolean(false);
+    private AtomicBoolean running = new AtomicBoolean(false);
+
     private void verifyProxyConfiguration() {
-        if(running.get())return;
+        if (running.get()) return;
         running.set(true);
         try {
             var config = configuration.getConfiguration(SimpleProxyConfig.class).copy();
@@ -83,7 +87,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
             for (int i = 0; i < config.getProxies().size(); i++) {
                 var now = Calendar.getInstance().getTimeInMillis();
                 var currentProxy = config.getProxies().get(i);
-                if(currentProxy.isForce()){
+                if (currentProxy.isForce()) {
                     continue;
                 }
                 if (!pollTiming.containsKey(currentProxy.getId())) {
@@ -114,7 +118,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
                 configuration.setConfiguration(config);
             }
             running.set(false);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             running.set(false);
         }
     }

@@ -14,20 +14,26 @@ import java.nio.charset.StandardCharsets;
 public class HamRequestBuilder {
 
 
-    public String getHost(){
+    public String getHost() {
         return this.request.getHost();
     }
+
     public HamRequestBuilder withHost(String host) {
         this.request.setHost(host);
         return this;
     }
+
     public HamRequestBuilder withProtocol(String host) {
         this.request.setProtocol(host);
         return this;
     }
-    private HamRequestBuilder(){}
+
+    private HamRequestBuilder() {
+    }
+
     private Request request;
-    public static HamRequestBuilder newRequest(String protocol,String host){
+
+    public static HamRequestBuilder newRequest(String protocol, String host) {
         var result = new HamRequestBuilder();
         result.request = new Request();
         result.request.setProtocol(protocol);
@@ -37,19 +43,19 @@ public class HamRequestBuilder {
     }
 
 
-    public HamRequestBuilder withPort(int port){
+    public HamRequestBuilder withPort(int port) {
         request.setPort(port);
         return this;
     }
 
-    public HamRequestBuilder withMethod(String method){
+    public HamRequestBuilder withMethod(String method) {
         request.setMethod(method);
         return this;
     }
 
     ObjectMapper mapper = new ObjectMapper();
 
-    public HamRequestBuilder withJsonBody(Object body){
+    public HamRequestBuilder withJsonBody(Object body) {
         String text = null;
         try {
             text = mapper.writeValueAsString(body);
@@ -61,12 +67,12 @@ public class HamRequestBuilder {
         return this;
     }
 
-    public HamRequestBuilder withPost(){
+    public HamRequestBuilder withPost() {
         request.setMethod("POST");
         return this;
     }
 
-    public static class FileRequest{
+    public static class FileRequest {
         private String name;
         private String data;
         private String type;
@@ -96,60 +102,60 @@ public class HamRequestBuilder {
         }
     }
 
-    public HamRequestBuilder withHamFile(String fileName,byte[] data,String mime){
+    public HamRequestBuilder withHamFile(String fileName, byte[] data, String mime) {
 
         var fileReq = new FileRequest();
         fileReq.name = fileName;
-        fileReq.type =mime;
+        fileReq.type = mime;
         fileReq.data = Base64.encodeBase64String(data);
         return this.withPost().withJsonBody(fileReq);
     }
 
-    public HamRequestBuilder withHamFile(String fileName,String data,String mime){
+    public HamRequestBuilder withHamFile(String fileName, String data, String mime) {
 
-        return withHamFile(fileName,data.getBytes(StandardCharsets.UTF_8),mime);
+        return withHamFile(fileName, data.getBytes(StandardCharsets.UTF_8), mime);
     }
 
-    public HamRequestBuilder withPut(){
+    public HamRequestBuilder withPut() {
         request.setMethod("PUT");
         return this;
     }
 
-    public HamRequestBuilder withDelete(){
+    public HamRequestBuilder withDelete() {
         request.setMethod("DELETE");
         return this;
     }
 
-    public HamRequestBuilder withPath(String path){
+    public HamRequestBuilder withPath(String path) {
         request.setPath(path);
         return this;
     }
 
-    public HamRequestBuilder withHeader(String id, String value){
-        request.addHeader(id,value);
+    public HamRequestBuilder withHeader(String id, String value) {
+        request.addHeader(id, value);
         return this;
     }
 
 
-    public HamRequestBuilder withBasicAuth(String user, String pass){
+    public HamRequestBuilder withBasicAuth(String user, String pass) {
         request.setBasicPassword(pass);
         request.setBasicUsername(user);
         return this;
     }
 
 
-    public HamRequestBuilder withQuery(String id, String value){
-        request.addQuery(id,value);
+    public HamRequestBuilder withQuery(String id, String value) {
+        request.addQuery(id, value);
         return this;
     }
 
 
-    public HamRequestBuilder withContentType(String value){
-        return withHeader(ConstantsHeader.CONTENT_TYPE,value);
+    public HamRequestBuilder withContentType(String value) {
+        return withHeader(ConstantsHeader.CONTENT_TYPE, value);
     }
 
 
-    public HamRequestBuilder withText(String text){
+    public HamRequestBuilder withText(String text) {
         request.setRequestText(text);
         request.setBinaryRequest(false);
         return this;
@@ -162,7 +168,7 @@ public class HamRequestBuilder {
     }
 
 
-    public HamRequestBuilder withBytes(byte[] data){
+    public HamRequestBuilder withBytes(byte[] data) {
         request.setRequestBytes(data);
         request.setBinaryRequest(true);
         return this;
@@ -175,7 +181,7 @@ public class HamRequestBuilder {
         return this;
     }
 
-    public Request build(){
+    public Request build() {
         return request;
     }
 

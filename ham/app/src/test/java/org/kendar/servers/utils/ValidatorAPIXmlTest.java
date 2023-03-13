@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("HttpUrlsUsage")
 public class ValidatorAPIXmlTest {
-    final String XML_INVALID="<?xml version = \"1.0\"?>\n" +
+    final String XML_INVALID = "<?xml version = \"1.0\"?>\n" +
             "\n" +
             "<class>  \n" +
             "   <student>\n" +
@@ -39,7 +39,7 @@ public class ValidatorAPIXmlTest {
             "      <marks>90</marks>\n" +
             "   </student>\n" +
             "</class>";
-    final String XML_XSD="<?xml version = \"1.0\"?>\n" +
+    final String XML_XSD = "<?xml version = \"1.0\"?>\n" +
             "\n" +
             "<xs:schema xmlns:xs = \"http://www.w3.org/2001/XMLSchema\">\n" +
             "   <xs:element name = 'class'>\n" +
@@ -61,7 +61,7 @@ public class ValidatorAPIXmlTest {
             "      <xs:attribute name = 'rollno' type = 'xs:positiveInteger'/>\n" +
             "   </xs:complexType>\t\t\t \n" +
             "</xs:schema>";
-    final String XML_MESSAGE="<?xml version = \"1.0\"?>\n" +
+    final String XML_MESSAGE = "<?xml version = \"1.0\"?>\n" +
             "\n" +
             "<class>  \n" +
             "   <student rollno = \"393\">\n" +
@@ -85,7 +85,7 @@ public class ValidatorAPIXmlTest {
             "      <marks>90</marks>\n" +
             "   </student>\n" +
             "</class>";
-    final String TEMPLATE ="<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+    final String TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
             "<env:Envelope xmlns:env=\"http://www.w3.org/2003/05/soap-envelope\"> \n" +
             " <env:Header>\n" +
             "  <m:reservation xmlns:m=\"http://travelcompany.example.org/reservation\" \n" +
@@ -117,7 +117,7 @@ public class ValidatorAPIXmlTest {
             "  </p:itinerary>\n" +
             " </env:Body>\n" +
             "</env:Envelope>";
-    final String VALID="<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+    final String VALID = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
             "<env:Envelope xmlns:env=\"http://www.w3.org/2003/05/soap-envelope\"> \n" +
             " <env:Header>\n" +
             "  <m:reservation xmlns:m=\"http://travelcompany.example.org/reservation\" \n" +
@@ -151,7 +151,7 @@ public class ValidatorAPIXmlTest {
             "</env:Envelope>";
 
 
-    final String NOT_VALID="<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+    final String NOT_VALID = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
             "<env:Envelope xmlns:env=\"http://www.w3.org/2003/05/soap-envelope\"> \n" +
             " <env:Header>\n" +
             "  <m:reservation xmlns:m=\"http://travelcompany.example.org/reservation\" \n" +
@@ -195,11 +195,12 @@ public class ValidatorAPIXmlTest {
         input.setSource(VALID);
         req.setRequestText(mapper.writeValueAsString(input));
 
-        target.validateXml(req,res);
+        target.validateXml(req, res);
         var result = mapper.readValue(res.getResponseText(), ValidatorResult.class);
         assertFalse(result.isError());
-        assertEquals(0,result.getErrors().size());
+        assertEquals(0, result.getErrors().size());
     }
+
     @Test
     public void shouldNotValidate() throws IOException, ParserConfigurationException, SAXException {
         var target = new ValidatorAPI();
@@ -210,10 +211,10 @@ public class ValidatorAPIXmlTest {
         input.setSource(NOT_VALID);
         req.setRequestText(mapper.writeValueAsString(input));
 
-        target.validateXml(req,res);
+        target.validateXml(req, res);
         var result = mapper.readValue(res.getResponseText(), ValidatorResult.class);
         assertTrue(result.isError());
-        assertEquals(1,result.getErrors().size());
+        assertEquals(1, result.getErrors().size());
     }
 
 
@@ -227,11 +228,12 @@ public class ValidatorAPIXmlTest {
         input.setSource(XML_MESSAGE);
         req.setRequestText(mapper.writeValueAsString(input));
 
-        target.validateXml(req,res);
+        target.validateXml(req, res);
         var result = mapper.readValue(res.getResponseText(), ValidatorResult.class);
         assertFalse(result.isError());
-        assertEquals(0,result.getErrors().size());
+        assertEquals(0, result.getErrors().size());
     }
+
     @Test
     public void shouldNotValidateXsd() throws IOException, ParserConfigurationException, SAXException {
         var target = new ValidatorAPI();
@@ -242,11 +244,12 @@ public class ValidatorAPIXmlTest {
         input.setSource(XML_INVALID);
         req.setRequestText(mapper.writeValueAsString(input));
 
-        target.validateXml(req,res);
+        target.validateXml(req, res);
         var result = mapper.readValue(res.getResponseText(), ValidatorResult.class);
         assertTrue(result.isError());
-        assertEquals(1,result.getErrors().size());
+        assertEquals(1, result.getErrors().size());
     }
+
     @Test
     public void shouldNotValidateXsdTemplate() throws IOException, ParserConfigurationException, SAXException {
         var target = new ValidatorAPI();
@@ -257,9 +260,9 @@ public class ValidatorAPIXmlTest {
         input.setSource(XML_INVALID);
         req.setRequestText(mapper.writeValueAsString(input));
 
-        target.validateXml(req,res);
+        target.validateXml(req, res);
         var result = mapper.readValue(res.getResponseText(), ValidatorResult.class);
         assertTrue(result.isError());
-        assertEquals(1,result.getErrors().size());
+        assertEquals(1, result.getErrors().size());
     }
 }

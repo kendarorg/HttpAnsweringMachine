@@ -9,10 +9,11 @@ import java.lang.annotation.Annotation;
 public class HamMatcherConcrete implements HamMatcher {
     private HamMatcher matcher;
 
-    public HamMatcherConcrete(HamMatcher matcher){
+    public HamMatcherConcrete(HamMatcher matcher) {
 
         this.matcher = matcher;
     }
+
     @Override
     public Class<? extends Annotation> annotationType() {
         return null;
@@ -35,7 +36,7 @@ public class HamMatcherConcrete implements HamMatcher {
 
     @Override
     public String id() {
-        if(matcher.id().length()>0){
+        if (matcher.id().length() > 0) {
             return matcher.id();
         }
         return null;

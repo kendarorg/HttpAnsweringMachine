@@ -1,24 +1,25 @@
 <template>
-<div>
-  <simple-modal v-if="modalShow"
-                :modal-data="modalData"
-                @close="modalShow = false">
-    <span slot="header">Dns Server</span>
-    <span slot="body"><change-dns-server :data="modalData.data"/></span>
-  </simple-modal>
+  <div>
+    <simple-modal v-if="modalShow"
+                  :modal-data="modalData"
+                  @close="modalShow = false">
+      <span slot="header">Dns Server</span>
+      <span slot="body"><change-dns-server :data="modalData.data"/></span>
+    </simple-modal>
 
-  <button  id="dns-servers-reload-grid" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
-  <button id="dns-servers-add" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button><br/>
-  <br><br>
-  <simple-grid  id="dns-servers-grid"
-                v-on:gridclicked="gridClicked"
-      ref="grid"
-      :columns="columns"
-      :extra="extraColumns"
-      :retrieve-data="retrieveData"
-  >
-  </simple-grid>
-</div>
+    <button id="dns-servers-reload-grid" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <button id="dns-servers-add" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+    <br/>
+    <br><br>
+    <simple-grid id="dns-servers-grid"
+                 v-on:gridclicked="gridClicked"
+                 ref="grid"
+                 :columns="columns"
+                 :extra="extraColumns"
+                 :retrieve-data="retrieveData"
+    >
+    </simple-grid>
+  </div>
 </template>
 <script>
 module.exports = {
@@ -63,9 +64,10 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axiosHandle(axios.delete("/api/dns/servers/" + row['id']),()=>{
+        await axiosHandle(axios.delete("/api/dns/servers/" + row['id']), () => {
           axiosOk();
-          this.reload()});
+          this.reload()
+        });
       }
     },
     reload: function () {
@@ -89,13 +91,13 @@ module.exports = {
     },
     save: async function () {
       if (this.modalData.edit) {
-        await axiosHandle(axios.put('/api/dns/servers/' + this.modalData.data.id, this.modalData.data),() => {
+        await axiosHandle(axios.put('/api/dns/servers/' + this.modalData.data.id, this.modalData.data), () => {
           this.modalShow = false;
           axiosOk()
           this.reload();
         });
       } else {
-        await axiosHandle(axios.post('/api/dns/servers', this.modalData.data),() => {
+        await axiosHandle(axios.post('/api/dns/servers', this.modalData.data), () => {
           this.modalShow = false;
           axiosOk()
           this.reload();

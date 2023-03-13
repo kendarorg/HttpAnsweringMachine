@@ -11,18 +11,18 @@
     <button id="webprx-gird-add" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
     <br><br>
     Apply Proxy to file
-    <ham-upload  id="webprx-upload"
-        path="/api/utils/proxiesapply"
-        @success="onSuccessApply"
-        @error="onErrorApply"
+    <ham-upload id="webprx-upload"
+                path="/api/utils/proxiesapply"
+                @success="onSuccessApply"
+                @error="onErrorApply"
     ></ham-upload>
     <br><br>
     <simple-grid id="webprx-gird"
-        v-on:gridclicked="gridClicked"
-        ref="grid"
-        :columns="columns"
-        :extra="extraColumns"
-        :retrieve-data="retrieveData"
+                 v-on:gridclicked="gridClicked"
+                 ref="grid"
+                 :columns="columns"
+                 :extra="extraColumns"
+                 :retrieve-data="retrieveData"
     >
     </simple-grid>
   </div>
@@ -73,13 +73,12 @@ module.exports = {
     }
   },
   methods: {
-    onSuccessApply:function(data){
+    onSuccessApply: function (data) {
       const filename = "applied.txt";
       const blob = new Blob([data.response.data], {type: 'text/plain'});
-      if(window.navigator.msSaveOrOpenBlob) {
+      if (window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveBlob(blob, filename);
-      }
-      else{
+      } else {
         const elem = window.document.createElement('a');
         elem.href = window.URL.createObjectURL(blob);
         elem.download = filename;
@@ -87,10 +86,9 @@ module.exports = {
         elem.click();
         document.body.removeChild(elem);
       }
-      //location.href = "script.html?id="+data.response.data;
     },
-    onErrorApply:function(data){
-      addMessage(data.error,error);
+    onErrorApply: function (data) {
+      addMessage(data.error, error);
     },
     retrieveData: async function () {
       var result = await axiosHandle(axios.get("/api/proxies"));
@@ -102,7 +100,7 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axiosHandle(axios.delete("/api/proxies/" + row['id']),axiosOk);
+        await axiosHandle(axios.delete("/api/proxies/" + row['id']), axiosOk);
         this.reload();
       }
     },
@@ -127,13 +125,13 @@ module.exports = {
     },
     save: async function () {
       if (this.modalData.edit) {
-        await axiosHandle(axios.put('/api/proxies/' + this.modalData.data.id, this.modalData.data),() => {
+        await axiosHandle(axios.put('/api/proxies/' + this.modalData.data.id, this.modalData.data), () => {
           this.modalShow = false;
           this.reload();
           axiosOk()
         });
       } else {
-        await axiosHandle(axios.post('/api/proxies', this.modalData.data),() => {
+        await axiosHandle(axios.post('/api/proxies', this.modalData.data), () => {
           this.modalShow = false;
           this.reload();
           axiosOk()

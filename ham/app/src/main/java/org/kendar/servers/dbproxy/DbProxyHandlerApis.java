@@ -63,7 +63,7 @@ public class DbProxyHandlerApis implements FilteringClass {
     @HamDoc(
             tags = {"base/proxy"},
             path = @PathParameter(key = "id"),
-            query = @QueryString(key="test",description = "Optional, if specified with true check the connection"),
+            query = @QueryString(key = "test", description = "Optional, if specified with true check the connection"),
             description = "Retrieve specific proxy data",
             responses = @HamResponse(
                     body = DbProxy.class
@@ -76,15 +76,15 @@ public class DbProxyHandlerApis implements FilteringClass {
             if (item.getId().equalsIgnoreCase(id)) {
                 var test = req.getQuery("test");
                 res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-                if(test!=null && test.equalsIgnoreCase("true")){
+                if (test != null && test.equalsIgnoreCase("true")) {
                     try {
                         testConnection(item);
                         res.setResponseText("{}");
-                    }catch (SQLException ex){
+                    } catch (SQLException ex) {
                         res.setResponseText(mapper.writeValueAsString(ex.getMessage()));
                         res.setStatusCode(500);
                     }
-                }else {
+                } else {
                     res.setResponseText(mapper.writeValueAsString(item));
                 }
                 return;

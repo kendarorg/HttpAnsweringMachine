@@ -1,14 +1,14 @@
 <template>
-<div>
-  <simple-grid id="ssl-certificates-grid"
-      v-on:gridclicked="gridClicked"
-      ref="grid"
-      :columns="columns"
-      :extra="extraColumns"
-      :retrieve-data="retrieveData"
-  >
-  </simple-grid>
-</div>
+  <div>
+    <simple-grid id="ssl-certificates-grid"
+                 v-on:gridclicked="gridClicked"
+                 ref="grid"
+                 :columns="columns"
+                 :extra="extraColumns"
+                 :retrieve-data="retrieveData"
+    >
+    </simple-grid>
+  </div>
 </template>
 <script>
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
       modalData: null,
       modalShow: false,
       columns: [
-        {id: "id", template: "string", index: true,searchable:false,sortable:false}
+        {id: "id", template: "string", index: true, searchable: false, sortable: false}
       ],
       extraColumns: [
         {
@@ -36,9 +36,9 @@ module.exports = {
     retrieveData: async function () {
       var result = await axiosHandle(axios.get("/api/certificates"));
       var realData = [];
-      for(var i=0;i<result.data.length;i++){
-        var newRow={};
-        newRow.id=result.data[i];
+      for (var i = 0; i < result.data.length; i++) {
+        var newRow = {};
+        newRow.id = result.data[i];
         realData.push(newRow);
       }
       result.data = realData;
@@ -48,7 +48,7 @@ module.exports = {
       var row = this.$refs.grid.getById(evt.index);
 
       if (evt.buttonid == "_download") {
-        downloadFile("/api/certificates/"+row.id,row.id+".zip");
+        downloadFile("/api/certificates/" + row.id, row.id + ".zip");
       }
     }
   }

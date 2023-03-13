@@ -1,9 +1,9 @@
 package org.kendar.replayer;
 
 import ch.qos.logback.classic.Level;
+import org.kendar.replayer.engine.db.DbReplayer;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.ReplayerRow;
-import org.kendar.replayer.engine.db.DbReplayer;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 
 public class FakeDbReplayer extends DbReplayer {
 
-    public Map<Long,ReplayerRow> replayerRowMap = new HashMap<>();
-    public Map<Long,CallIndex> callIndexMap = new HashMap<>();
+    public Map<Long, ReplayerRow> replayerRowMap = new HashMap<>();
+    public Map<Long, CallIndex> callIndexMap = new HashMap<>();
 
     public FakeDbReplayer(HibernateSessionFactory sessionFactory) {
         super(sessionFactory, new LoggerBuilder() {
@@ -36,10 +36,10 @@ public class FakeDbReplayer extends DbReplayer {
             public Logger build(Class<?> toLogClass) {
                 return new FakeLogger();
             }
-        },null);
+        }, null);
     }
 
-    protected boolean hasDbRows(Long recordingId) throws Exception{
+    protected boolean hasDbRows(Long recordingId) throws Exception {
         hasRows = true;
         return true;
     }
@@ -49,8 +49,8 @@ public class FakeDbReplayer extends DbReplayer {
     }
 
     protected void addAllIndexes(Long recordingId, ArrayList<CallIndex> indexes, EntityManager e) {
-        for(var index:callIndexMap.values().stream().sorted(Comparator.comparingLong(CallIndex::getId)).collect(Collectors.toList())){
-            if(replayerRowMap.containsKey(index.getReference()) && !index.isStimulatorTest()){
+        for (var index : callIndexMap.values().stream().sorted(Comparator.comparingLong(CallIndex::getId)).collect(Collectors.toList())) {
+            if (replayerRowMap.containsKey(index.getReference()) && !index.isStimulatorTest()) {
                 indexes.add(index);
             }
         }

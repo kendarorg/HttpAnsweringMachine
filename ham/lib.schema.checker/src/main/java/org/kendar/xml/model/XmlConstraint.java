@@ -10,13 +10,13 @@ public enum XmlConstraint {
     XmlConstraint(long flag) {
         this.flag = flag;
     }
-    
-    public long getValue(){
+
+    public long getValue() {
         return flag;
     }
-    
-    public boolean matches(XmlConstraint toMatch){
-        return (toMatch.flag & flag)==toMatch.flag;
+
+    public boolean matches(XmlConstraint toMatch) {
+        return (toMatch.flag & flag) == toMatch.flag;
     }
 
 }

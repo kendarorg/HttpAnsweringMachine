@@ -4,10 +4,10 @@
       <br/>
 
       <button type="button" class="bi bi-floppy" v-on:click="updateContent()"
-               title="Save changes"></button>
+              title="Save changes"></button>
       &nbsp;
       <button type="button" class="bi bi-download" v-on:click="download()"
-               title="Download"></button>
+              title="Download"></button>
       <br/>
       <br/>
 
@@ -36,7 +36,8 @@
         <select class="form-control" name="matcher" id="matcher" v-model="matchersSelected" @change="onChangeMatcher()">
           <option v-for="item in matchers"
                   v-bind:value="item"
-          >{{ item }}</option>
+          >{{ item }}
+          </option>
         </select>
       </div>
       <div class="form-group">
@@ -65,11 +66,11 @@
     <div class="boxed col-md-12">
       <br>
       <dynamic-matcher ref="dynmatch" width="1000px"
-                         :path="'/plugins/jsfilter/vcomponents/matchers'"
-                         :default="'apimatcher'"
-                         :template="matchersSelected"
-                         :value="matcher"
-                         @componentevent="onMatcherEvent"/>
+                       :path="'/plugins/jsfilter/vcomponents/matchers'"
+                       :default="'apimatcher'"
+                       :template="matchersSelected"
+                       :value="matcher"
+                       @componentevent="onMatcherEvent"/>
       <br>
     </div>
     <!--<div>
@@ -139,13 +140,12 @@ module.exports = {
   props: {
     selectedRow: Number
   },
-  watch:{
-  },
+  watch: {},
   data: function () {
     return {
       data: {},
       matcher: {},
-      matchersSelected:"apimatcher",
+      matchersSelected: "apimatcher",
       matchers: [],
       source: "",
       columns: [
@@ -171,30 +171,28 @@ module.exports = {
     'simple-modal': httpVueLoader('/vcomponents/tmodal.vue'),
     'dynamic-matcher': httpVueLoader('/plugins/jsfilter/vcomponents/dynamic-matcher.vue'),
   },
-  computed:{
-
-  },
+  computed: {},
   watch: {
     selectedRow: function (val, oldVal) {
       if (isUndefined(val)) return;
       var th = this;
       axiosHandle(axios.get("/api/matchers")
-          ,(matchers)=>{
-            matchers.data.forEach(function (f){
+          , (matchers) => {
+            matchers.data.forEach(function (f) {
               console.log(f);
               th.matchers.push(f);
             });
             axiosHandle(axios.get("/api/plugins/jsfilter/filters/" + val)
-                ,(result)=>{
+                , (result) => {
                   var matcherIndex = "apimatcher";
                   for (const [key, value] of Object.entries(result.data.matchers)) {
-                    matcherIndex=key;
+                    matcherIndex = key;
                   }
                   console.log("MATCHER SELECTED")
                   th.matchersSelected = matcherIndex;
                   th.matcher = JSON.parse(result.data.matchers[matcherIndex]);
-                  if(isUndefined(th.matcher)){
-                    th.matcher={};
+                  if (isUndefined(th.matcher)) {
+                    th.matcher = {};
                   }
                   th.data = result.data;
                   th.source = th.data.source;
@@ -204,29 +202,17 @@ module.exports = {
 
     },
     data: function (val, old) {
-      // var th=this;
-      // waitForAvailableVariableTimes(
-      //     ()=>th.$refs.grid,
-      //     100,
-      //     function(){
-      //       th.$nextTick(function () {
-      //
-      //         th.$refs.grid.reload(th.data.headers)
-      //         th.$refs.queryGrid.reload(th.data.query)
-      //         th.$refs.postGrid.reload(th.data.postParameters)
-      //       })
-      //     },10
-      // );
+
     }
   },
   methods: {
-    download:function(){
-      downloadFile("/api/plugins/jsfilter/filters/"+this.data.id+"?full=true","script_"+this.data.id);
+    download: function () {
+      downloadFile("/api/plugins/jsfilter/filters/" + this.data.id + "?full=true", "script_" + this.data.id);
     },
-    onChangeMatcher:function(){
-      this.matcher={};
+    onChangeMatcher: function () {
+      this.matcher = {};
     },
-    onMatcherEvent: function (evt){
+    onMatcherEvent: function (evt) {
 
     },
     fromArray: function (arlist) {
@@ -237,32 +223,15 @@ module.exports = {
       return result;
     },
     updateContent: function () {
-      if(!this.$refs.dynmatch.isValid()){
-        addMessage("Fill required fields!","error");
+      if (!this.$refs.dynmatch.isValid()) {
+        addMessage("Fill required fields!", "error");
         return;
       }
       this.data.source = this.source
-      this.data.matchers={};
+      this.data.matchers = {};
       this.data.matchers[this.matchersSelected] = JSON.stringify(this.matcher);
-      axiosHandle(axios.put("/api/plugins/jsfilter/filters/" + this.data.id, this.data),axiosOk);
+      axiosHandle(axios.put("/api/plugins/jsfilter/filters/" + this.data.id, this.data), axiosOk);
     },
-    // gridClicked: async function (evt) {
-    //   var row = this.$refs.grid.getById(evt.index);
-    //
-    //   if (evt.buttonid == "_edit") {
-    //     location.href="text.html?id="+getUrlParameter("id")+
-    //         "&file="+value["value"]+"&action=edit";
-    //   } else if (evt.buttonid == "_delete") {
-    //     ("DELETE TO BE IMPLEMENTED"); //TODO
-    //     this.$refs.grid.delete(evt.index);
-    //   }
-    // },
-    // retrieveData: async function () {
-    //
-    //   return {
-    //     data:[]
-    //   };
-    // },
   }
 }
 </script>

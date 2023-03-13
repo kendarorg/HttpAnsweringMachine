@@ -14,22 +14,22 @@ public class ResultSetConverterImpl implements ResultSetConverter {
 
 
     public HamResultSet toHam(ResultSet resultSet) throws Exception {
-        if(!(resultSet instanceof JdbcResultSet))throw new Exception("Invalid resultset");
+        if (!(resultSet instanceof JdbcResultSet)) throw new Exception("Invalid resultset");
         var ser = serializer.newInstance();
         ser.write("rs", resultSet);
-        String serialized = (String)ser.getSerialized();
-        serialized= serialized.replace("org.kendar.janus.JdbcResultSet","org.kendar.servers.dbproxy.utils.HamResultSetImpl");
+        String serialized = (String) ser.getSerialized();
+        serialized = serialized.replace("org.kendar.janus.JdbcResultSet", "org.kendar.servers.dbproxy.utils.HamResultSetImpl");
 
         var deser = serializer.newInstance();
         deser.deserialize(serialized);
         return deser.read("rs");
     }
 
-    public ResultSet fromHam(HamResultSet resultSet){
+    public ResultSet fromHam(HamResultSet resultSet) {
         var ser = serializer.newInstance();
         ser.write("rs", resultSet);
-        String serialized = (String)ser.getSerialized();
-        serialized = serialized.replace("org.kendar.servers.dbproxy.utils.HamResultSetImpl","org.kendar.janus.JdbcResultSet");
+        String serialized = (String) ser.getSerialized();
+        serialized = serialized.replace("org.kendar.servers.dbproxy.utils.HamResultSetImpl", "org.kendar.janus.JdbcResultSet");
 
         var deser = serializer.newInstance();
         deser.deserialize(serialized);

@@ -4,7 +4,7 @@ public class PluginDescriptor {
     private String address;
     private String description;
 
-    public PluginDescriptor(String address, String description){
+    public PluginDescriptor(String address, String description) {
 
         this.address = address;
         this.description = description;

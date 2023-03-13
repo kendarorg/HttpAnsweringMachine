@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * To contact the certificates APIs
- *
+ * <p>
  * addAltName and removeAltName does a RESTART OF THE HTTPS SERVER
  */
 public interface CertificatesBuilder {
@@ -37,11 +37,12 @@ public interface CertificatesBuilder {
      * @return The ids inserted
      * @throws HamException
      */
-    List<String> addAltName(String ... addresses) throws HamException;
+    List<String> addAltName(String... addresses) throws HamException;
 
     /**
      * Remove the alt-name via id
      * <B>THIS RESTART THE HTTPS SERVER AND WAIT 1 second</B>
+     *
      * @param id
      * @throws HamException
      */
@@ -49,6 +50,7 @@ public interface CertificatesBuilder {
 
     /**
      * Retrieve the list of all the alt-names (aka SSL/TLS enabled websites)
+     *
      * @return
      * @throws HamException
      */

@@ -35,7 +35,7 @@ public class FileLogsApi implements FilteringClass {
     public FileLogsApi(JsonConfiguration configuration,
                        LoggerBuilder loggerBuilder,
                        FileResourcesUtils fileResourcesUtils,
-                       HibernateSessionFactory sessionFactory){
+                       HibernateSessionFactory sessionFactory) {
 
         this.configuration = configuration;
         this.loggerBuilder = loggerBuilder;
@@ -50,11 +50,11 @@ public class FileLogsApi implements FilteringClass {
             description = "List all log files",
             responses = @HamResponse(
                     body = FileLogListItem[].class
-            ),tags = {"base/logs"})
+            ), tags = {"base/logs"})
     public void getLogFiles(Request req, Response res) throws Exception {
-        var index =Long.parseLong(req.getQuery("index"));
-        var pageSize =Long.parseLong(req.getQuery("pageSize"));
-        ArrayList<FileLogListItem> result = getFileLogListItems(index,pageSize);
+        var index = Long.parseLong(req.getQuery("index"));
+        var pageSize = Long.parseLong(req.getQuery("pageSize"));
+        ArrayList<FileLogListItem> result = getFileLogListItems(index, pageSize);
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setResponseText(mapper.writeValueAsString(result.stream().sorted(Comparator.comparing(FileLogListItem::getTimestamp)).collect(Collectors.toList())));
 
@@ -63,13 +63,13 @@ public class FileLogsApi implements FilteringClass {
     private ArrayList<FileLogListItem> getFileLogListItems(long index, long pageSize) throws Exception {
         var result = new ArrayList<FileLogListItem>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS", Locale.ROOT);
-        var start = index*pageSize;
-        sessionFactory.query(em->{
-            var query =em.createQuery("SELECT e FROM LoggingTable e ORDER BY e.id ASC");
-            query.setFirstResult((int)start);
-            query.setMaxResults((int)(pageSize*2));
+        var start = index * pageSize;
+        sessionFactory.query(em -> {
+            var query = em.createQuery("SELECT e FROM LoggingTable e ORDER BY e.id ASC");
+            query.setFirstResult((int) start);
+            query.setMaxResults((int) (pageSize * 2));
             List<LoggingTable> rs = query.getResultList();
-            for(var srs:rs){
+            for (var srs : rs) {
                 var newItem = new FileLogListItem();
                 newItem.setId(srs.getId());
                 newItem.setHost(srs.getHost());
@@ -85,14 +85,13 @@ public class FileLogsApi implements FilteringClass {
     }
 
 
-
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/log/files/{id}",
             method = "GET")
     @HamDoc(
             description = "Retrieve single log file",
-            path = @PathParameter(key="id"),
+            path = @PathParameter(key = "id"),
             responses = @HamResponse(
                     body = String.class,
                     description = "Content of the log file",
@@ -100,43 +99,43 @@ public class FileLogsApi implements FilteringClass {
                             @Header(key = "X-NEXT", description = "Next file id if present"),
                             @Header(key = "X-PREV", description = "Previous file id if present")
                     }
-            ),tags = {"base/logs"})
+            ), tags = {"base/logs"})
     public void getLogFile(Request req, Response res) throws Exception {
         Long id = Long.parseLong(req.getPathParameter("id"));
-        var result = new HashMap<String,Object>();
-        sessionFactory.query(em->{
+        var result = new HashMap<String, Object>();
+        sessionFactory.query(em -> {
 
 
-            var prevId = (Long)em.createQuery("SELECT COALESCE( MAX(e.id),-1) FROM LoggingTable e WHERE" +
-                    " e.id<"+id).getResultList().get(0);
+            var prevId = (Long) em.createQuery("SELECT COALESCE( MAX(e.id),-1) FROM LoggingTable e WHERE" +
+                    " e.id<" + id).getResultList().get(0);
 
-            var nexIt = (Long)em.createQuery("SELECT COALESCE( MIN(e.id),-1) FROM LoggingTable e WHERE" +
-                    " e.id>"+id).getResultList().get(0);
+            var nexIt = (Long) em.createQuery("SELECT COALESCE( MIN(e.id),-1) FROM LoggingTable e WHERE" +
+                    " e.id>" + id).getResultList().get(0);
 
 
-            var query =em.createQuery("SELECT e FROM LoggingTable e WHERE e.id=:id");
-            query.setParameter("id",id);
-            LoggingTable rs = (LoggingTable)query.getResultList().get(0);
-            result.put("common",rs);
+            var query = em.createQuery("SELECT e FROM LoggingTable e WHERE e.id=:id");
+            query.setParameter("id", id);
+            LoggingTable rs = (LoggingTable) query.getResultList().get(0);
+            result.put("common", rs);
 
-            query =em.createQuery("SELECT e FROM LoggingDataTable e WHERE e.id=:id");
-            query.setParameter("id",id);
-            LoggingDataTable rsld = (LoggingDataTable)query.getResultList().get(0);
-            var reqs = mapper.readValue(rsld.getRequest(),Request.class);
-            var ress = mapper.readValue(rsld.getResponse(),Response.class);
-            result.put("request",reqs);
-            result.put("response",ress);
-            if(reqs.bodyExists()&& !reqs.isBinaryRequest()) {
-                result.put("request_body",reqs.getRequestText());
+            query = em.createQuery("SELECT e FROM LoggingDataTable e WHERE e.id=:id");
+            query.setParameter("id", id);
+            LoggingDataTable rsld = (LoggingDataTable) query.getResultList().get(0);
+            var reqs = mapper.readValue(rsld.getRequest(), Request.class);
+            var ress = mapper.readValue(rsld.getResponse(), Response.class);
+            result.put("request", reqs);
+            result.put("response", ress);
+            if (reqs.bodyExists() && !reqs.isBinaryRequest()) {
+                result.put("request_body", reqs.getRequestText());
             }
-            if(ress.bodyExists()&& !ress.isBinaryResponse()) {
-                result.put("response_body",ress.getResponseText());
+            if (ress.bodyExists() && !ress.isBinaryResponse()) {
+                result.put("response_body", ress.getResponseText());
             }
 
-            if(prevId>=0){
+            if (prevId >= 0) {
                 res.addHeader("X-PAST", prevId.toString());
             }
-            if(nexIt!=null){
+            if (nexIt != null) {
                 res.addHeader("X-NEXT", nexIt.toString());
             }
         });
@@ -159,9 +158,9 @@ public class FileLogsApi implements FilteringClass {
             description = "Clean all log files",
             responses = @HamResponse(
                     body = FileLogListItem[].class
-            ),tags = {"base/logs"})
+            ), tags = {"base/logs"})
     public void cleanLogFiles(Request req, Response res) throws Exception {
-        sessionFactory.transactional(em-> {
+        sessionFactory.transactional(em -> {
             em.createQuery("DELETE FROM LoggingTable").executeUpdate();
             em.createQuery("DELETE FROM LoggingDataTable ").executeUpdate();
         });

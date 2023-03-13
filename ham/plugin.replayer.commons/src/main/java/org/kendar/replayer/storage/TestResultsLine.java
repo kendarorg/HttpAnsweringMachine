@@ -4,15 +4,11 @@ import org.kendar.servers.db.DbTable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 
 @Entity
-@Table(name="REPLAYER_RESULT_LINE")
+@Table(name = "REPLAYER_RESULT_LINE")
 public class TestResultsLine implements DbTable {
 
     @Id
@@ -39,15 +35,15 @@ public class TestResultsLine implements DbTable {
         this.recordingId = recordingId;
     }
 
-    @Column(name="resultId")
+    @Column(name = "resultId")
     private Long resultId;
-    @Column(name="recordingId")
+    @Column(name = "recordingId")
     private Long recordingId;
 
-    @Column(name = "expected",length = 64000)
+    @Column(name = "expected", length = 64000)
     private String expectedResponse;
 
-    @Column(name = "actual",length = 64000)
+    @Column(name = "actual", length = 64000)
     private String actualResponse;
 
     public String getExpectedResponse() {
@@ -90,6 +86,6 @@ public class TestResultsLine implements DbTable {
         this.executedLine = executedLine;
     }
 
-    @Column(name="executedLine")
+    @Column(name = "executedLine")
     private Long executedLine;
 }

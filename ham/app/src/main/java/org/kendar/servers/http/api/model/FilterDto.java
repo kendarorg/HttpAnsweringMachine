@@ -17,10 +17,10 @@ public class FilterDto {
     private boolean enabled;
     private final String id;
 
-    public FilterDto(boolean enabled,HttpTypeFilter type, HttpMethodFilter method,String filterClass) {
+    public FilterDto(boolean enabled, HttpTypeFilter type, HttpMethodFilter method, String filterClass) {
         this.enabled = enabled;
-        this.id = IdBuilder.buildId(type,method,filterClass);
-        blocking = type.blocking()||method.blocking();
+        this.id = IdBuilder.buildId(type, method, filterClass);
+        blocking = type.blocking() || method.blocking();
         hostAddress = type.hostAddress();
         hostPattern = type.hostPattern();
         priority = type.priority();

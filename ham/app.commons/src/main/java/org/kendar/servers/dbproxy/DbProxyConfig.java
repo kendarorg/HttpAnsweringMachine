@@ -2,18 +2,17 @@ package org.kendar.servers.dbproxy;
 
 import org.kendar.servers.BaseJsonConfig;
 import org.kendar.servers.config.ConfigAttribute;
-import org.kendar.servers.proxy.RemoteServerStatus;
-import org.kendar.servers.proxy.SimpleProxyConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@ConfigAttribute(id="dbproxy")
+@ConfigAttribute(id = "dbproxy")
 public class DbProxyConfig extends BaseJsonConfig<DbProxyConfig> {
     @Override
     public boolean isSystem() {
         return true;
     }
+
     private List<DbProxy> proxies = new ArrayList<>();
 
     public List<DbProxy> getProxies() {
@@ -28,7 +27,7 @@ public class DbProxyConfig extends BaseJsonConfig<DbProxyConfig> {
     public DbProxyConfig copy() {
         var result = new DbProxyConfig();
         result.setProxies(new ArrayList<>());
-        for(var rss : proxies){
+        for (var rss : proxies) {
             result.getProxies().add(rss.copy());
         }
         result.setId(this.getId());

@@ -18,7 +18,7 @@ public class ListAllRecordList {
     private String description;
     private List<ReplayerRow> lines = new ArrayList<>();
     private List<CallIndex> indexes = new ArrayList<>();
-    private HashMap<String,String> filters;
+    private HashMap<String, String> filters;
 
     private DbRecording recording;
 
@@ -30,13 +30,13 @@ public class ListAllRecordList {
 
     public ListAllRecordList(HibernateSessionFactory sessionFactory, Long id, boolean cleanJs) throws Exception {
 
-        sessionFactory.query(em->{
+        sessionFactory.query(em -> {
             recording = (DbRecording) em.createQuery("SELECT e FROM DbRecording e").getResultList().get(0);
-            replayerRows = (List<ReplayerRow>) em.createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId="+id).getResultList();
-            callIndex =  (List<CallIndex>) em.createQuery("SELECT e FROM CallIndex e WHERE e.recordingId="+id).getResultList();
+            replayerRows = (List<ReplayerRow>) em.createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId=" + id).getResultList();
+            callIndex = (List<CallIndex>) em.createQuery("SELECT e FROM CallIndex e WHERE e.recordingId=" + id).getResultList();
         });
 
-        for(var row:replayerRows){
+        for (var row : replayerRows) {
             var req = row.getRequest();
             req.setRequestText(null);
             req.setRequestBytes(null);
@@ -47,13 +47,13 @@ public class ListAllRecordList {
             res.setResponseBytes(null);
             row.setResponse(res);
         }
-        if(recording.getFilter()!=null && !recording.getFilter().isEmpty()){
-            filters=mapper.readValue(recording.getFilter(),typeRef);
-        }else{
+        if (recording.getFilter() != null && !recording.getFilter().isEmpty()) {
+            filters = mapper.readValue(recording.getFilter(), typeRef);
+        } else {
             filters = new HashMap<>();
         }
 
-        for(var index: callIndex){
+        for (var index : callIndex) {
             getIndexes().add(index);
         }
         this.setId(id);

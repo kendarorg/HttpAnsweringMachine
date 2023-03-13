@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class ConnectionBuilderImpl implements ConnectionBuilder{
+public class ConnectionBuilderImpl implements ConnectionBuilder {
     private static final HttpRequestRetryHandler requestRetryHandler =
             (exception, executionCount, context) -> executionCount != 3;
     private final DnsMultiResolver multiResolver;
@@ -42,17 +42,17 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
     private SystemDefaultDnsResolver fullDnsResolver;
 
     public ConnectionBuilderImpl(DnsMultiResolver multiResolver,
-                                 LoggerBuilder loggerBuilder){
+                                 LoggerBuilder loggerBuilder) {
         this.multiResolver = multiResolver;
         logger = loggerBuilder.build(ConnectionBuilder.class);
     }
 
     private SystemDefaultDnsResolver buildFullResolver() {
-        return  new SystemDefaultDnsResolver() {
+        return new SystemDefaultDnsResolver() {
             @Override
             public InetAddress[] resolve(final String host) throws UnknownHostException {
                 var result = multiResolver.resolve(host);
-                if(!result.isEmpty()) {
+                if (!result.isEmpty()) {
                     return new InetAddress[]{InetAddress.getByName(result.get(0))};
                 }
                 return new InetAddress[]{};
@@ -61,7 +61,7 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
     }
 
     private SystemDefaultDnsResolver buildRemoteResolver() {
-        return  new SystemDefaultDnsResolver() {
+        return new SystemDefaultDnsResolver() {
             @Override
             public InetAddress[] resolve(final String host) throws UnknownHostException {
                 ResolvedDomain descriptor;
@@ -105,7 +105,7 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
                     .register("http", PlainConnectionSocketFactory.getSocketFactory())
                     .register("https", sslsf).build();
 
-        } catch (NoSuchAlgorithmException|KeyStoreException|KeyManagementException e) {
+        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
             e.printStackTrace();
             return null;
         }
@@ -119,24 +119,24 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
     }
 
     @PostConstruct
-    public void init(){
-        this.remoteDnsResolver= buildRemoteResolver();
+    public void init() {
+        this.remoteDnsResolver = buildRemoteResolver();
         this.fullDnsResolver = buildFullResolver();
         Registry<ConnectionSocketFactory> defaultRegistry = buildDefaultRegistry();
         Registry<ConnectionSocketFactory> sslUncheckedRegistry = buildSslUncheckedRegistry();
     }
 
-    public HttpClientConnectionManager getConnectionManger(boolean remoteDns){
-        return getConnectionManger(remoteDns,true);
+    public HttpClientConnectionManager getConnectionManger(boolean remoteDns) {
+        return getConnectionManger(remoteDns, true);
     }
 
-    public HttpClientConnectionManager getConnectionManger(boolean remoteDns, boolean checkSsl){
+    public HttpClientConnectionManager getConnectionManger(boolean remoteDns, boolean checkSsl) {
         return new PoolingHttpClientConnectionManager();
     }
 
     @Override
-    public CloseableHttpClient buildClient(boolean remoteDns, boolean checkSsl, int port,String protocol) {
-        var dnsResolver = remoteDns?this.remoteDnsResolver:this.fullDnsResolver;
+    public CloseableHttpClient buildClient(boolean remoteDns, boolean checkSsl, int port, String protocol) {
+        var dnsResolver = remoteDns ? this.remoteDnsResolver : this.fullDnsResolver;
         SSLContext sslContext = null;
         try {
             sslContext = new SSLContextBuilder()
@@ -149,7 +149,7 @@ public class ConnectionBuilderImpl implements ConnectionBuilder{
                 .disableAutomaticRetries()
                 .setSSLContext(sslContext).
                 setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).
-                        setDnsResolver(dnsResolver)
+                setDnsResolver(dnsResolver)
                 .setConnectionManagerShared(true)
                 .disableRedirectHandling()
                 .build();

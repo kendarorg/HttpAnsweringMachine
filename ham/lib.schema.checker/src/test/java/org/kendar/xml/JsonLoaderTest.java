@@ -17,7 +17,7 @@ public class JsonLoaderTest extends BaseUtils {
         var json = "[{\"id\":\"a\"}]";
         var target = new JsonBuilder();
         var data = mapper.readTree(json);
-        var result = target.load(data,0,new DiffPath());
+        var result = target.load(data, 0, new DiffPath());
         assertNotNull(result);
     }
 
@@ -26,7 +26,7 @@ public class JsonLoaderTest extends BaseUtils {
         var json = "[{\"id\":{\"part\":\"a\"}}]";
         var target = new JsonBuilder();
         var data = mapper.readTree(json);
-        var result = target.load(data,0,new DiffPath());
+        var result = target.load(data, 0, new DiffPath());
         assertNotNull(result);
     }
 
@@ -35,7 +35,7 @@ public class JsonLoaderTest extends BaseUtils {
         var json = "[\"a\",\"b\"]";
         var target = new JsonBuilder();
         var data = mapper.readTree(json);
-        var result = target.load(data,0,new DiffPath());
+        var result = target.load(data, 0, new DiffPath());
         assertNotNull(result);
     }
 }

@@ -4,11 +4,13 @@
     <p>At least one between host address/regexp must be set, with the script</p>
     <div class="form-group">
       <label htmlFor="hostAddress">hostAddress</label>
-      <input class="form-control" type="text" required name="hostAddress" id="hostAddress" v-model="matcher.hostAddress"/>
+      <input class="form-control" type="text" required name="hostAddress" id="hostAddress"
+             v-model="matcher.hostAddress"/>
     </div>
     <div class="form-group">
       <label htmlFor="pathAddress">pathAddress</label>
-      <input class="form-control" type="text" required name="pathAddress" id="pathAddress" v-model="matcher.pathAddress"/>
+      <input class="form-control" type="text" required name="pathAddress" id="pathAddress"
+             v-model="matcher.pathAddress"/>
     </div>
     <div class="form-group">
       <label for="script">script</label><br>
@@ -25,9 +27,9 @@ module.exports = {
   props: {
     matcher: Object
   },
-  methods:{
-    isValid:function(){
-      return ( !isUndefined(this.matcher.hostAddress)||!isUndefined(this.matcher.pathAddress) ) &&
+  methods: {
+    isValid: function () {
+      return (!isUndefined(this.matcher.hostAddress) || !isUndefined(this.matcher.pathAddress)) &&
           !isUndefined(this.matcher.script);
     }
   }

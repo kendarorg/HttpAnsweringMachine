@@ -1,23 +1,23 @@
 <template>
-<div>
-  <simple-modal v-if="modalShow"
-                :modal-data="modalData"
-                @close="modalShow = false">
-    <span slot="header">SSL Website</span>
-    <span slot="body"><change-ssl-website :data="modalData.data"/></span>
-  </simple-modal>
-  <button id="ssl-sites-grid-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
-  <button id="ssl-sites-add" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
-  <br><br>
-  <simple-grid id="ssl-sites-grid"
-      v-on:gridclicked="gridClicked"
-      ref="grid"
-      :columns="columns"
-      :extra="extraColumns"
-      :retrieve-data="retrieveData"
-  >
-  </simple-grid>
-</div>
+  <div>
+    <simple-modal v-if="modalShow"
+                  :modal-data="modalData"
+                  @close="modalShow = false">
+      <span slot="header">SSL Website</span>
+      <span slot="body"><change-ssl-website :data="modalData.data"/></span>
+    </simple-modal>
+    <button id="ssl-sites-grid-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <button id="ssl-sites-add" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+    <br><br>
+    <simple-grid id="ssl-sites-grid"
+                 v-on:gridclicked="gridClicked"
+                 ref="grid"
+                 :columns="columns"
+                 :extra="extraColumns"
+                 :retrieve-data="retrieveData"
+    >
+    </simple-grid>
+  </div>
 </template>
 <script>
 module.exports = {
@@ -60,7 +60,7 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axiosHandle(axios.delete("/api/ssl/" + row['id']),()=>{
+        await axiosHandle(axios.delete("/api/ssl/" + row['id']), () => {
           this.reload()
           addMessage("Deleted")
         });
@@ -88,14 +88,14 @@ module.exports = {
     save: async function () {
       showSpinner(true);
       if (this.modalData.edit) {
-        await axiosHandle(axios.put('/api/ssl/' + this.modalData.data.id, this.modalData.data),() => {
+        await axiosHandle(axios.put('/api/ssl/' + this.modalData.data.id, this.modalData.data), () => {
           this.modalShow = false;
           showSpinner(false);
           addMessage("Modified webiste")
           this.reload();
         });
       } else {
-        await axiosHandle(axios.post('/api/ssl', this.modalData.data),() => {
+        await axiosHandle(axios.post('/api/ssl', this.modalData.data), () => {
           this.modalShow = false;
           showSpinner(false);
           addMessage("Added webiste")

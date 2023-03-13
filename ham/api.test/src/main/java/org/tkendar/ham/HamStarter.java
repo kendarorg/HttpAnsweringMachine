@@ -22,16 +22,17 @@ public class HamStarter {
     private static boolean showTrace = false;
     private static Thread realThread;
 
-    public static void showTrace(){
+    public static void showTrace() {
         showTrace = true;
     }
-    public static class ThreadAndProc{
+
+    public static class ThreadAndProc {
         public Thread thread;
         public Process process;
         public ArrayList<Supplier<Boolean>> trace;
     }
 
-    private static String getRootPath(Class<?> caller){
+    private static String getRootPath(Class<?> caller) {
         final File jarFile =
                 new File(caller.getProtectionDomain().getCodeSource().getLocation().getPath());
         var path = Path.of(jarFile.getAbsolutePath());
@@ -42,7 +43,7 @@ public class HamStarter {
     }
 
     private static boolean deleteDirectory(File directoryToBeDeleted) {
-        if(!directoryToBeDeleted.exists()){
+        if (!directoryToBeDeleted.exists()) {
             return true;
         }
         File[] allContents = directoryToBeDeleted.listFiles();
@@ -53,7 +54,8 @@ public class HamStarter {
         }
         return directoryToBeDeleted.delete();
     }
-    private static String findJava(){
+
+    private static String findJava() {
         return "java";
         /*
         var possible = System.getProperty("sun.boot.library.path");
@@ -79,7 +81,8 @@ public class HamStarter {
 
         return possible;*/
     }
-    private static ConcurrentHashMap<String,ThreadAndProc> processes = new ConcurrentHashMap<>();
+
+    private static ConcurrentHashMap<String, ThreadAndProc> processes = new ConcurrentHashMap<>();
 
 
     private static String getHTML(String urlToRead) throws Exception {
@@ -96,23 +99,24 @@ public class HamStarter {
         return result.toString();
     }
 
-    public static boolean shutdownHookInitialized =false;
+    public static boolean shutdownHookInitialized = false;
+
     public static void runJar(List<String> command, String jarDir, Supplier<Boolean>... expected) throws HamTestException {
 
         var someError = false;
-        var commandIndex = String.join(" ",command);
-        for(var i=expected.length-1;i>=0;i--){
-            if(!expected[i].get()){
+        var commandIndex = String.join(" ", command);
+        for (var i = expected.length - 1; i >= 0; i--) {
+            if (!expected[i].get()) {
                 someError = true;
             }
         }
-        if(!someError) return;
+        if (!someError) return;
         var internalExpected = new ArrayList<>(Arrays.asList(expected));
         initShutdownHook();
         try {
-            if(processes.containsKey(commandIndex)){
+            if (processes.containsKey(commandIndex)) {
                 var process = processes.get(commandIndex);
-                if(process!=null) {
+                if (process != null) {
                     if (process.process.isAlive()) {
                         return;
                     }
@@ -121,7 +125,7 @@ public class HamStarter {
                 processes.remove(commandIndex);
             }
 
-            processes.computeIfAbsent(commandIndex,(cm)->{
+            processes.computeIfAbsent(commandIndex, (cm) -> {
                 try {
 
                     var ntpc = new ThreadAndProc();
@@ -157,14 +161,14 @@ public class HamStarter {
                             int x;
 
                             try {
-                                while((x = fromProcess.read()) != -1)
-                                    System.out.print((char)x);
+                                while ((x = fromProcess.read()) != -1)
+                                    System.out.print((char) x);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             try {
-                                while((x = fromError.read()) != -1)
-                                    System.err.print((char)x);
+                                while ((x = fromError.read()) != -1)
+                                    System.err.print((char) x);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -177,7 +181,7 @@ public class HamStarter {
                         }
                     });
                     ntpc.thread.start();
-                    System.out.println("STARTING "+commandIndex);
+                    System.out.println("STARTING " + commandIndex);
 
                     Sleeper.sleep(100);
 
@@ -186,46 +190,46 @@ public class HamStarter {
                         Sleeper.sleep(100);
                     }*/
                     return ntpc;
-                }catch (Exception ex){
+                } catch (Exception ex) {
                     return null;
                 }
             });
 
             var ntpc = processes.get(commandIndex);
 
-            if(!ntpc.thread.isAlive()){
+            if (!ntpc.thread.isAlive()) {
                 ntpc.process.destroy();
                 throw new RuntimeException("ERROR STARTING APP");
             }
-            while(!ntpc.trace.isEmpty()){
-                for(var i=ntpc.trace.size()-1;i>=0;i--){
-                    if(ntpc.trace.get(i).get()){
+            while (!ntpc.trace.isEmpty()) {
+                for (var i = ntpc.trace.size() - 1; i >= 0; i--) {
+                    if (ntpc.trace.get(i).get()) {
                         ntpc.trace.remove(i);
                     }
                 }
                 Sleeper.sleep(100);
             }
             System.out.println("STARTED");
-        }catch (Exception ex){
-            throw new HamTestException("Unable to start "+command);
+        } catch (Exception ex) {
+            throw new HamTestException("Unable to start " + command);
         }
     }
 
     private static void initShutdownHook() {
-        if(shutdownHookInitialized)return;
+        if (shutdownHookInitialized) return;
         Runtime.getRuntime().addShutdownHook(new Thread() {
 
             @Override
             public void run() {
                 // place your code here
-                for(var proc : processes.values()){
-                    System.out.println("DESTROYING "+proc.process);
+                for (var proc : processes.values()) {
+                    System.out.println("DESTROYING " + proc.process);
                     try {
-                        var res =getHTML("http://127.0.0.1/api/shutdown");
+                        var res = getHTML("http://127.0.0.1/api/shutdown");
                         //Thread.sleep(60*000);
-                    }catch (Exception ex){}
+                    } catch (Exception ex) {
+                    }
                     //proc.process.destroy();
-
 
 
                 }
@@ -233,22 +237,23 @@ public class HamStarter {
 
         });
     }
+
     public static void runHamJarCommand(Class<?> caller) throws HamTestException {
         var commandLine = new ArrayList<String>();
         commandLine.add(findJava());
 
-        var agentPath = Path.of(getRootPath(caller),"ham","api.test","org.jacoco.agent-0.8.8-runtime.jar");
-        var jacocoExecPath = Path.of(getRootPath(caller),"ham","api.test","target","jacoco_starter.exec");
-        var externalJsonPath  =Path.of(getRootPath(caller),"ham","test.external.json").toString();
-        commandLine.add("-Djsonconfig="+externalJsonPath);
-        var libsPath  =Path.of(getRootPath(caller),"ham","libs").toString();
-        commandLine.add("-Dloader.path="+libsPath);
+        var agentPath = Path.of(getRootPath(caller), "ham", "api.test", "org.jacoco.agent-0.8.8-runtime.jar");
+        var jacocoExecPath = Path.of(getRootPath(caller), "ham", "api.test", "target", "jacoco_starter.exec");
+        var externalJsonPath = Path.of(getRootPath(caller), "ham", "test.external.json").toString();
+        commandLine.add("-Djsonconfig=" + externalJsonPath);
+        var libsPath = Path.of(getRootPath(caller), "ham", "libs").toString();
+        commandLine.add("-Dloader.path=" + libsPath);
         commandLine.add("-Dham.tempdb=data/tmp");
         commandLine.add("-Dloader.main=org.kendar.Main");
-        if(!SystemUtils.IS_OS_WINDOWS) {
+        if (!SystemUtils.IS_OS_WINDOWS) {
             commandLine.add("-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**");
             commandLine.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:9863");
-        }else{
+        } else {
             commandLine.add("\"-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**\"");
             commandLine.add("\"-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:9863\"");
         }
@@ -256,19 +261,18 @@ public class HamStarter {
         //commandLine.add("\"-javaagent:"+agentPath+"=destfile="+jacocoExecPath+"\"");
 
 
+        var appPathRootPath = Path.of(getRootPath(caller), "ham", "app", "target");
 
-        var appPathRootPath = Path.of(getRootPath(caller),"ham","app","target");
-
-        if(!appPathRootPath.toFile().exists()){
-            throw new HamTestException("WRONG STARTING PATH "+appPathRootPath);
+        if (!appPathRootPath.toFile().exists()) {
+            throw new HamTestException("WRONG STARTING PATH " + appPathRootPath);
         }
         File[] matchingFiles = appPathRootPath.toFile().listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
-                if(name == null) return false;
+                if (name == null) return false;
                 return name.startsWith("app-") && name.endsWith(".jar");
             }
         });
-        var appPathRoot  =Path.of(matchingFiles[0].getAbsolutePath()).toString();
+        var appPathRoot = Path.of(matchingFiles[0].getAbsolutePath()).toString();
         /*try {
             Files.copy(Path.of(appPathRoot),Path.of(appPathRoot+".tmp"), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -278,12 +282,12 @@ public class HamStarter {
         //-javaagent:/opt/coverage/lib/jacocoagent.jar=destfile=/opt/coverage/jacoco.exec,include=org.kendar.*
         //
         commandLine.add(appPathRoot);
-        var jarDir= Path.of(matchingFiles[0].getAbsolutePath()).getParent().toAbsolutePath().toString();
+        var jarDir = Path.of(matchingFiles[0].getAbsolutePath()).getParent().toAbsolutePath().toString();
         //processBuilder.directory(new File("src"));
-        runJar(commandLine,jarDir,()-> {
-            deleteDirectory(Path.of(getRootPath(caller),"jsplugins").toFile());
+        runJar(commandLine, jarDir, () -> {
+            deleteDirectory(Path.of(getRootPath(caller), "jsplugins").toFile());
             return true;
-        },()-> {
+        }, () -> {
             try {
                 var result = getHTML("http://127.0.0.1/api/dns/lookup/test");
                 return true;

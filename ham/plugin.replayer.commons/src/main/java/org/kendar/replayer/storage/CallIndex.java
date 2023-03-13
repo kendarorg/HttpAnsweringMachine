@@ -11,7 +11,7 @@ import java.util.Calendar;
 @Component
 
 @Entity
-@Table(name="REPLAYER_CALL_INDEX")
+@Table(name = "REPLAYER_CALL_INDEX")
 public class CallIndex implements DbTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class CallIndex implements DbTable {
         this.recordingId = recordingId;
     }
 
-    @Column(name="recordingId")
+    @Column(name = "recordingId")
     private long recordingId;
 
     @Column(name = "reference")
@@ -39,7 +39,7 @@ public class CallIndex implements DbTable {
     @JsonSetter(nulls = Nulls.SKIP)
     private long calls = 1;
 
-    @Column(name = "description",length = 1024)
+    @Column(name = "description", length = 1024)
     private String description;
 
 
@@ -72,7 +72,7 @@ public class CallIndex implements DbTable {
     private boolean stimulatorTest;
 
 
-    @Column(name="timestamp")
+    @Column(name = "timestamp")
     private long timestamp = Calendar.getInstance().getTimeInMillis();
 
     public Long getId() {

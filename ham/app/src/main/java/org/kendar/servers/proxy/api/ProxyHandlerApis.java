@@ -46,8 +46,8 @@ public class ProxyHandlerApis implements FilteringClass {
             phase = HttpFilterType.API,
             pathAddress = "/api/utils/proxiesapply",
             method = "POST")
-    @HamDoc(description = "Apply proxy to API",tags = {"base/proxy"},
-            requests = @HamRequest(body= JsonFileData.class))
+    @HamDoc(description = "Apply proxy to API", tags = {"base/proxy"},
+            requests = @HamRequest(body = JsonFileData.class))
     public void applyRecording(Request req, Response res) throws Exception {
         JsonFileData jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
         String realFileName = FilenameUtils.removeExtension(jsonFileData.getName());
@@ -57,7 +57,7 @@ public class ProxyHandlerApis implements FilteringClass {
         var proxies = clone.getProxies();
         var id = req.getPathParameter("id");
         for (var item : proxies) {
-            content = content.replace(item.getWhen(),item.getWhere());
+            content = content.replace(item.getWhen(), item.getWhere());
         }
 
         res.setResponseText(content);

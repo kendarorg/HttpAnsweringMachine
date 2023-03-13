@@ -37,7 +37,8 @@ public class SSLDomain implements Copyable<SSLDomain> {
         this.address = address;
     }
 
-    @Override public SSLDomain copy() {
+    @Override
+    public SSLDomain copy() {
         var result = new SSLDomain();
         result.id = this.id;
         result.address = this.address;

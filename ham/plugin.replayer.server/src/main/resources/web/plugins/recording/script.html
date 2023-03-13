@@ -10,11 +10,16 @@
     <script src="/libs/axios.min.js"></script>
     <script src="/libs/utils.js"></script>
     <script src="/plugins/recording/vcomponents/utils.js"></script>
-    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
 </head>
 <body>
 <div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
-    <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
+    <div class="spinner-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
 <div id="messageObject"></div>
@@ -45,28 +50,40 @@
                           v-model="data.description"></textarea>
             </div>
             <br>
-            <button type="button" :disabled="buttons.save" class="bi bi-floppy" @click="saveRecordingData" title="Save">Save global script data</button>&nbsp;
-            <button type="button" :disabled="buttons.record"  class="bi bi-record-btn" @click="executeAct('start','record')" title="Record">Record</button>&nbsp;
-            <button type="button" :disabled="buttons.stop"  class="bi bi-stop-btn" @click="executeAct('stop')" title="Stop">Stop</button>&nbsp;
-            <button type="button" :disabled="buttons.play"  class="bi bi-play-btn" @click="executeAct('start','replay')" title="Play">Play</button>&nbsp;
-            <button type="button" :disabled="buttons.pause"  class="bi bi-pause-btn" @click="executeAct('pause')" title="Pause">Pause</button>
-            <button type="button" :disabled="buttons.auto"  class="bi bi-play-btn" @click="executeAct('start','auto')" title="Play stim">Play Stimulator</button>&nbsp;
+            <button type="button" :disabled="buttons.save" class="bi bi-floppy" @click="saveRecordingData" title="Save">
+                Save global script data
+            </button>&nbsp;
+            <button type="button" :disabled="buttons.record" class="bi bi-record-btn"
+                    @click="executeAct('start','record')" title="Record">Record
+            </button>&nbsp;
+            <button type="button" :disabled="buttons.stop" class="bi bi-stop-btn" @click="executeAct('stop')"
+                    title="Stop">Stop
+            </button>&nbsp;
+            <button type="button" :disabled="buttons.play" class="bi bi-play-btn" @click="executeAct('start','replay')"
+                    title="Play">Play
+            </button>&nbsp;
+            <button type="button" :disabled="buttons.pause" class="bi bi-pause-btn" @click="executeAct('pause')"
+                    title="Pause">Pause
+            </button>
+            <button type="button" :disabled="buttons.auto" class="bi bi-play-btn" @click="executeAct('start','auto')"
+                    title="Play stim">Play Stimulator
+            </button>&nbsp;
 
             <button v-on:click="updateButtons()" class="btn btn-primary btn-sm">Reload status</button>
             <div>
-                    <dynamic-extension v-for="key in extensions"
-                                       :path="'/plugins/recording/vcomponents'"
-                                       :template="key"
-                                       :default="'none'"
-                                       :value="extensionsData"
-                                       @componentevent="onExtensionChange"/>
+                <dynamic-extension v-for="key in extensions"
+                                   :path="'/plugins/recording/vcomponents'"
+                                   :template="key"
+                                   :default="'none'"
+                                   :value="extensionsData"
+                                   @componentevent="onExtensionChange"/>
 
             </div>
 
             <br>
             <br>
             <div>
-            <button v-on:click="makeStaticCalls()" class="btn btn-sm">Convert to static calls</button>
+                <button v-on:click="makeStaticCalls()" class="btn btn-sm">Convert to static calls</button>
 
                 <select class="form-control" name="makeStatic" id="makeStatic" v-model="makestatic">
                     <option>*</option>
@@ -88,13 +105,17 @@
                             v-on:download="download"
                             v-on:reload="reloadForm"
                             v-on:gridrowclicked="recordingListClicked"
-                            ref="recordingList" ></recording-list>
+                            ref="recordingList"></recording-list>
                 </vtab>
                 <vtab name="SELECTED" :title="selectedRowTitle">
                     <br>
                     <div width="800px" ref="container">
-                        <button type="button" :disabled="currentRowFromFilter.prev==null"  class="bi bi-floppy" v-on:click="extprevRow()" title="Prev">Prev</button>
-                        <button type="button" :disabled="currentRowFromFilter.next==null"  class="bi bi-floppy" v-on:click="extnextRow()" title="Next">Next</button>
+                        <button type="button" :disabled="currentRowFromFilter.prev==null" class="bi bi-floppy"
+                                v-on:click="extprevRow()" title="Prev">Prev
+                        </button>
+                        <button type="button" :disabled="currentRowFromFilter.next==null" class="bi bi-floppy"
+                                v-on:click="extnextRow()" title="Next">Next
+                        </button>
                     </div>
                     <br>
                     <iframe :src="iframeAddress"
@@ -102,25 +123,25 @@
                             ref="selectedIframe"
                             width="1000"
                             :height="iframeHeightComputed"
-                            frameborder="0" >
+                            frameborder="0">
 
                     </iframe>
-<!--                    <current-line-->
-<!--                            @rowchanged="changeRow"-->
-<!--                            :current-row="selectedRow"-->
-<!--                            ref="currentLine">-->
+                    <!--                    <current-line-->
+                    <!--                            @rowchanged="changeRow"-->
+                    <!--                            :current-row="selectedRow"-->
+                    <!--                            ref="currentLine">-->
 
-<!--                    </current-line>-->
+                    <!--                    </current-line>-->
                 </vtab>
                 <vtab name="RESULTS">
                     <button v-on:click="reloadResult()" class="bi bi-arrow-clockwise" title="Reload"></button>
                     <br><br>
                     <simple-grid id="res22"
-                            v-on:gridclicked="gridClickedResult"
-                            ref="results"
-                            :columns="columnsResult"
-                            :extra="extraColumnsResult"
-                            :retrieve-data="retrieveDataResult"
+                                 v-on:gridclicked="gridClickedResult"
+                                 ref="results"
+                                 :columns="columnsResult"
+                                 :extra="extraColumnsResult"
+                                 :retrieve-data="retrieveDataResult"
                     >
                     </simple-grid>
                 </vtab>
@@ -140,14 +161,14 @@
             'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
             'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
         },
-        mounted: async function(){
-            var th=this;
+        mounted: async function () {
+            var th = this;
             window.addEventListener("message", (event) => {
-                if(event.data.type=="iframesizechanged") {
-                    if (th.iframeHeight != event.data.height && event.data.height>1000) {
+                if (event.data.type == "iframesizechanged") {
+                    if (th.iframeHeight != event.data.height && event.data.height > 1000) {
                         th.iframeHeight = event.data.height;
                     }
-                }else if(event.data.type=="changerow") {
+                } else if (event.data.type == "changerow") {
                     th.changeRow(event.data.id)
                 }
             });
@@ -155,13 +176,13 @@
         },
         data: function () {
             return {
-                makestatic:"*",
-                currentRowSelectedIndex:null,
-                currentRowFromFilter:{current:null,prev:null,next:null},
-                extensionsData:{},
-                extensions:[],
-                currentState:"UNDEFINED",
-                iframeHeight:"1000px",
+                makestatic: "*",
+                currentRowSelectedIndex: null,
+                currentRowFromFilter: {current: null, prev: null, next: null},
+                extensionsData: {},
+                extensions: [],
+                currentState: "UNDEFINED",
+                iframeHeight: "1000px",
                 columnsResult: [
                     {id: "fileId", template: "long", index: true},
                     {id: "date", template: "string"},
@@ -171,71 +192,81 @@
                 ],
                 extraColumnsResult: [
                     {
-                        id: "_download", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                        id: "_download",
+                        template: "iconbutton",
+                        default: false,
+                        searchable: false,
+                        sortable: false,
+                        properties: {
                             name: "Download", style: "bi bi-pen-fill"
                         }
                     },
                     {
-                        id: "_delete", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                        id: "_delete",
+                        template: "iconbutton",
+                        default: false,
+                        searchable: false,
+                        sortable: false,
+                        properties: {
                             name: "Delete", style: "bi bi-trash"
                         }
                     }
                 ],
-                selectedRow:-1,
-                selectedType:'none',
-                data:{},
-                buttons:{
-                    save:false,
-                    record:false,
-                    stop:true,
-                    play:true,
-                    pause:true,
-                    auto:true
+                selectedRow: -1,
+                selectedType: 'none',
+                data: {},
+                buttons: {
+                    save: false,
+                    record: false,
+                    stop: true,
+                    play: true,
+                    pause: true,
+                    auto: true
                 }
 
             }
         },
-        computed:{
-            iframeHeightComputed:function(){
-              return this.iframeHeight;
+        computed: {
+            iframeHeightComputed: function () {
+                return this.iframeHeight;
             },
-          iframeAddress:function(){
+            iframeAddress: function () {
 
-            return "/plugins/recording/current"+this.selectedType+".html?selectedRow="+this.selectedRow+
-                "&recordingId="+getUrlParameter('id');
-          },
-          selectedRowTitle:function(){
-              if(isUndefined(this.selectedRow) || this.selectedRow<0){
-                  return "NONE";
-              }
-              var result = "[SELECTED "+this.selectedRow+"]";
+                return "/plugins/recording/current" + this.selectedType + ".html?selectedRow=" + this.selectedRow +
+                    "&recordingId=" + getUrlParameter('id');
+            },
+            selectedRowTitle: function () {
+                if (isUndefined(this.selectedRow) || this.selectedRow < 0) {
+                    return "NONE";
+                }
+                var result = "[SELECTED " + this.selectedRow + "]";
 
-              return result;
-          }
+                return result;
+            }
         },
         methods: {
-            onExtensionChange:function(evt){
-                if(this.extensionsData==null){
-                    this.extensionsData={};
+            onExtensionChange: function (evt) {
+                if (this.extensionsData == null) {
+                    this.extensionsData = {};
                 }
-                this.extensionsData[evt.id]=evt.value
+                this.extensionsData[evt.id] = evt.value
             },
-            changeRow:function(newRow){
-               this.selectedRow = newRow;
+            changeRow: function (newRow) {
+                this.selectedRow = newRow;
             },
             retrieveDataResult: async function () {
                 var id = getUrlParameter("id");
-                var result = await axiosHandle(axios.get("/api/plugins/replayer/results?id="+id));
+                var result = await axiosHandle(axios.get("/api/plugins/replayer/results?id=" + id));
                 return result;
             },
             gridClickedResult: async function (evt) {
                 var row = this.$refs.results.getById(evt.index);
 
                 if (evt.buttonid == "_download") {
-                    window.open("/api/plugins/replayer/results/"+row['fileId']);
+                    window.open("/api/plugins/replayer/results/" + row['fileId']);
                 } else if (evt.buttonid == "_delete") {
-                    await axiosHandle(axios.delete("/api/plugins/replayer/results/" + row['fileId']),()=>
-                    this.$refs.results.delete(evt.index));
+                    await axiosHandle(axios.delete("/api/plugins/replayer/results/" + row['fileId']), () =>
+                        this.$refs.results.delete(evt.index));
 
                 }
             },
@@ -243,211 +274,208 @@
 
                 this.$refs.results.reload();
             },
-            executeAct:function(what,onWhat){
+            executeAct: function (what, onWhat) {
                 var th = this;
                 showSpinner(true);
                 var id = getUrlParameter("id");
-                if(!isUndefined(onWhat)){
+                if (!isUndefined(onWhat)) {
                     var extra = "";
 
                     var arrayKeys = Object.getOwnPropertyNames(this.extensionsData);
-                    var count =0;
-                    for (let i = 0; i < arrayKeys.length; i++){
+                    var count = 0;
+                    for (let i = 0; i < arrayKeys.length; i++) {
                         var key = arrayKeys[i];
-                        if(key.startsWith("_"))continue;
-                        var value=this.extensionsData[key];
-                        if(count==0)extra+="?";
-                        else extra+="&";
-                        extra+=key+"="+value;
+                        if (key.startsWith("_")) continue;
+                        var value = this.extensionsData[key];
+                        if (count == 0) extra += "?";
+                        else extra += "&";
+                        extra += key + "=" + value;
                         count++;
                     }
                     var id = getUrlParameter("id");
-                    var url = "/api/plugins/replayer/recording/"+id+"/"+onWhat+"/"+what+extra;
-                    axiosHandle(axios.get(url),(result)=>{
-                            th.updateButtons();
-                            showSpinner(false);
-                        },(r)=> {
+                    var url = "/api/plugins/replayer/recording/" + id + "/" + onWhat + "/" + what + extra;
+                    axiosHandle(axios.get(url), (result) => {
+                        th.updateButtons();
+                        showSpinner(false);
+                    }, (r) => {
                         addError(r.message);
                         showSpinner(false)
                     });
-                }else {
-                    axiosHandle( axios.get("/api/plugins/replayer/status"),(result)=>{
-                            var data = result.data;
-                            data.status = data.status.toUpperCase();
-                            data.running = data.running.toUpperCase();
+                } else {
+                    axiosHandle(axios.get("/api/plugins/replayer/status"), (result) => {
+                        var data = result.data;
+                        data.status = data.status.toUpperCase();
+                        data.running = data.running.toUpperCase();
 
-                            if (id == data.running) {
-                                if (data.status == "RECORDING")th.executeAct(what,'record');
-                                if (data.status == "PAUSED_RECORDING")th.executeAct(what,'record');
-                                if (data.status == "REPLAYING")th.executeAct(what,'replay');
-                                if (data.status == "PAUSED_REPLAYING")th.executeAct(what,'replay');
-                            }
-                    },(r)=>{
+                        if (id == data.running) {
+                            if (data.status == "RECORDING") th.executeAct(what, 'record');
+                            if (data.status == "PAUSED_RECORDING") th.executeAct(what, 'record');
+                            if (data.status == "REPLAYING") th.executeAct(what, 'replay');
+                            if (data.status == "PAUSED_REPLAYING") th.executeAct(what, 'replay');
+                        }
+                    }, (r) => {
                         addError(r.message);
-                        showSpinner(false)});
+                        showSpinner(false)
+                    });
                 }
             },
-            rowSelected:function(rowId,type){
-                //th.$emit("selectrow",row['id'],row['type']);
-                console.log("SELECTED "+rowId)
-                this.selectedRow=rowId;
+            rowSelected: function (rowId, type) {
+                console.log("SELECTED " + rowId)
+                this.selectedRow = rowId;
                 this.selectedType = type;
-                //this.selectedRow=rowId;
                 sessionStorage.setItem("recordingCurrentLine", rowId);
                 sessionStorage.setItem("recordingId", getUrlParameter("id"));
                 sessionStorage.setItem("selectedType", type);
             },
-            updateButtons:function(){
+            updateButtons: function () {
                 console.log("UPDATE")
-                var th=this;
-                axiosHandle(axios.get("/api/plugins/replayer/status"),(result)=>{
-                        var data = result.data;
-                        data.status=data.status.toUpperCase();
-                        data.running=data.running.toUpperCase();
-                        if(this.currentState==data.status){
-                            return;
+                var th = this;
+                axiosHandle(axios.get("/api/plugins/replayer/status"), (result) => {
+                    var data = result.data;
+                    data.status = data.status.toUpperCase();
+                    data.running = data.running.toUpperCase();
+                    if (this.currentState == data.status) {
+                        return;
+                    }
+                    this.currentState == data.status
+                    var thisScript = getUrlParameter("id");
+                    if (data.status != "NONE" && thisScript != data.running) {
+                        data.status = "OTHER_RUNNING";
+                        if (typeof th.timer != "undefined") {
+                            clearTimeout(th.timer);
+                            th.timer = undefined;
                         }
-                        this.currentState==data.status
-                        var thisScript =getUrlParameter("id");
-                        if(data.status!="NONE" && thisScript!=data.running ){
-                            data.status="OTHER_RUNNING";
-                            if(typeof th.timer != "undefined"){
-                                clearTimeout(th.timer);
-                                th.timer=undefined;
+                    }
+                    if (data.status == "NONE") {
+                        if (typeof th.timer != "undefined") {
+                            clearTimeout(th.timer);
+                            th.timer = undefined;
+                        }
+                    }
+
+                    if (th.data.lines.length == 0 && data.status == "NONE") {
+                        th.buttons.record = false;
+                    }
+                    if (data.status == "OTHER_RUNNING") {
+                        th.buttons.save = false;
+                        th.buttons.stop = true;
+                        th.buttons.play = true;
+                        th.buttons.auto = true;
+                    } else if (data.status == "RECORDING" || data.status == "REPLAYING") {
+                        th.buttons.save = true;
+                        th.buttons.stop = false;
+                        th.buttons.record = true;
+                        th.buttons.pause = false;
+                        th.buttons.play = true;
+                        if (data.status == "REPLAYING") {
+                            th.buttons.auto = false;
+                            if (typeof th.timer == "undefined") {
+                                th.timer = setInterval(th.updateButtons, 2000)
                             }
                         }
-                        if(data.status=="NONE"  ){
-                            if(typeof th.timer != "undefined"){
-                                clearTimeout(th.timer);
-                                th.timer=undefined;
-                            }
+                    } else if (data.status == "PAUSED_RECORDING") {
+                        th.buttons.record = false;
+                        th.buttons.save = true;
+                        th.buttons.stop = false;
+                        th.buttons.pause = true;
+                        th.buttons.play = true;
+                        th.buttons.auto = true;
+                    } else if (data.status == "PAUSED_REPLAYING") {
+                        th.buttons.record = true;
+                        th.buttons.save = true;
+                        th.buttons.stop = false;
+                        th.buttons.pause = true;
+                        th.buttons.play = false;
+                        th.buttons.auto = true;
+                    } else if (data.status == "NONE") {
+                        th.buttons.save = false;
+                        th.buttons.stop = true;
+                        th.buttons.pause = true;
+                        if (th.data.lines.length > 0) {
+                            th.buttons.record = true;
+                            th.buttons.play = false;
+                            th.buttons.auto = false;
+                        } else {
+                            th.buttons.record = false;
+                            th.buttons.play = true;
+                            th.buttons.auto = true;
                         }
 
-                        if(th.data.lines.length==0 && data.status=="NONE"){
-                            th.buttons.record=false;
-                        }
-                        if(data.status=="OTHER_RUNNING"){
-                            th.buttons.save=false;
-                            th.buttons.stop=true;
-                            th.buttons.play=true;
-                            th.buttons.auto=true;
-                        }else if(data.status=="RECORDING"||data.status=="REPLAYING"){
-                            th.buttons.save=true;
-                            th.buttons.stop=false;
-                            th.buttons.record=true;
-                            th.buttons.pause=false;
-                            th.buttons.play=true;
-                            if(data.status=="REPLAYING") {
-                                th.buttons.auto = false;
-                                if(typeof th.timer == "undefined"){
-                                    th.timer=setInterval(th.updateButtons,2000)
-                                }
-                            }
-                        }else if(data.status=="PAUSED_RECORDING"){
-                            th.buttons.record=false;
-                            th.buttons.save=true;
-                            th.buttons.stop=false;
-                            th.buttons.pause=true;
-                            th.buttons.play=true;
-                            th.buttons.auto=true;
-                        }else if(data.status=="PAUSED_REPLAYING"){
-                            th.buttons.record=true;
-                            th.buttons.save=true;
-                            th.buttons.stop=false;
-                            th.buttons.pause=true;
-                            th.buttons.play=false;
-                            th.buttons.auto=true;
-                        }else if(data.status=="NONE"){
-                            th.buttons.save=false;
-                            th.buttons.stop=true;
-                            th.buttons.pause=true;
-                            if(th.data.lines.length>0){
-                                th.buttons.record=true;
-                                th.buttons.play=false;
-                                th.buttons.auto=false;
-                            }else{
-                                th.buttons.record=false;
-                                th.buttons.play=true;
-                                th.buttons.auto=true;
-                            }
+                    }
 
-                        }
-
-                    })
+                })
             },
-            reloadForm: function(searchStr){
+            reloadForm: function (searchStr) {
                 showSpinner(true);
-                var th=this;
-                axiosHandle(axios.get("/api/plugins/replayer/extension"),(result)=>{
-                        clearArray(th.extensions)
-                        result.data.forEach(function (fe){
-                            th.extensions.push(fe);
-                        });
+                var th = this;
+                axiosHandle(axios.get("/api/plugins/replayer/extension"), (result) => {
+                    clearArray(th.extensions)
+                    result.data.forEach(function (fe) {
+                        th.extensions.push(fe);
                     });
-                if(isUndefined(searchStr)) {
-                    axiosHandle(axios.get("/api/plugins/replayer/recording/" + getUrlParameter("id")),(result)=>{
-                            th.putDataOnGrid(result, th);
-                        });
-                }else{
-                    axiosHandle(axios.post("/api/plugins/replayer/recording/" + getUrlParameter("id"),[searchStr])
-                        ,(result)=>{
+                });
+                if (isUndefined(searchStr)) {
+                    axiosHandle(axios.get("/api/plugins/replayer/recording/" + getUrlParameter("id")), (result) => {
+                        th.putDataOnGrid(result, th);
+                    });
+                } else {
+                    axiosHandle(axios.post("/api/plugins/replayer/recording/" + getUrlParameter("id"), [searchStr])
+                        , (result) => {
                             th.putDataOnGrid(result, th);
                         });
                 }
             },
-            putDataOnGrid:function(result,th){
-                th.data=result.data;
-                th.extensionsData=th.data.filter;
+            putDataOnGrid: function (result, th) {
+                th.data = result.data;
+                th.extensionsData = th.data.filter;
                 th.$refs.recordingList.reload(th.data.lines);
-                //if(th.data.linse.length>0){
                 th.updateButtons();
-                //}
 
                 var recording = sessionStorage.getItem("recordingId");
-                if(null!=recording){
-                    recording = recording+"";
-                    if(recording==getUrlParameter("id")){
+                if (null != recording) {
+                    recording = recording + "";
+                    if (recording == getUrlParameter("id")) {
                         var current = sessionStorage.getItem("recordingCurrentLine");
                         var selectedType = sessionStorage.getItem("selectedType");
-                        if(null!=current){
-                            th.rowSelected(parseInt(current),selectedType);
+                        if (null != current) {
+                            th.rowSelected(parseInt(current), selectedType);
                         }
                     }
                 }
                 showSpinner(false);
             },
-            download:function(){
-                downloadFile("/api/plugins/replayer/recording/"+getUrlParameter("id")+"/full",this.data.name);
+            download: function () {
+                downloadFile("/api/plugins/replayer/recording/" + getUrlParameter("id") + "/full", this.data.name);
             },
-            saveRecordingData:function (){
+            saveRecordingData: function () {
                 var id = getUrlParameter("id");
 
                 var stimulatorTest = [];
                 this.data.lines.forEach(function (row, i) {
 
-                    if(row['stimulatorTest']==true){
+                    if (row['stimulatorTest'] == true) {
                         stimulatorTest.push(row['id']);
                     }
                 });
 
                 var data = {
-                    id:id,
+                    id: id,
                     description: this.data.description,
-                    name:this.data.name,
-                    filter:this.extensionsData,
-                    stimulatorTest:stimulatorTest
+                    name: this.data.name,
+                    filter: this.extensionsData,
+                    stimulatorTest: stimulatorTest
                 };
 
                 showSpinner(true);
                 const headers = {'Content-Type': 'application/json'};
-                axiosHandle(axios.put('/api/plugins/replayer/recording/'+id,
-                    data, {headers}),(res) => {
+                axiosHandle(axios.put('/api/plugins/replayer/recording/' + id,
+                    data, {headers}), (res) => {
                     showSpinner(false);
                 });
             },
-            recordingListClicked:function(evt){
-                this.currentRowFromFilter= evt;
-                if(this.currentRowFromFilter.current!=null) {
+            recordingListClicked: function (evt) {
+                this.currentRowFromFilter = evt;
+                if (this.currentRowFromFilter.current != null) {
                     var rowId = this.currentRowFromFilter.current['id'];
                     var type = this.currentRowFromFilter.current['type'];
                     console.log("SELECTED " + rowId)
@@ -459,42 +487,38 @@
                     sessionStorage.setItem("selectedType", type);
                 }
             },
-            extprevRow:function(){
-                if(this.currentRowFromFilter!=null && this.currentRowFromFilter.prev!=null){
-                    this.currentRowSelectedIndex = this.currentRowFromFilter.index-1;
-                    //th.$emit("selectrow",row['id'],row['type']);
-                    var rowId=this.currentRowFromFilter.current['id'];
-                    var type=this.currentRowFromFilter.current['type'];
-                    console.log("SELECTED "+rowId)
-                    this.selectedRow=rowId;
+            extprevRow: function () {
+                if (this.currentRowFromFilter != null && this.currentRowFromFilter.prev != null) {
+                    this.currentRowSelectedIndex = this.currentRowFromFilter.index - 1;
+                    var rowId = this.currentRowFromFilter.current['id'];
+                    var type = this.currentRowFromFilter.current['type'];
+                    console.log("SELECTED " + rowId)
+                    this.selectedRow = rowId;
                     this.selectedType = type;
-                    //this.selectedRow=rowId;
                     sessionStorage.setItem("recordingCurrentLine", rowId);
                     sessionStorage.setItem("recordingId", getUrlParameter("id"));
                     sessionStorage.setItem("selectedType", type);
                 }
             },
-            extnextRow:function(){
-                if(this.currentRowFromFilter!=null && this.currentRowFromFilter.next!=null){
-                    this.currentRowSelectedIndex = this.currentRowFromFilter.index+1;
-                    //th.$emit("selectrow",row['id'],row['type']);
-                    var rowId=this.currentRowFromFilter.current['id'];
-                    var type=this.currentRowFromFilter.current['type'];
-                    console.log("SELECTED "+rowId)
-                    this.selectedRow=rowId;
+            extnextRow: function () {
+                if (this.currentRowFromFilter != null && this.currentRowFromFilter.next != null) {
+                    this.currentRowSelectedIndex = this.currentRowFromFilter.index + 1;
+                    var rowId = this.currentRowFromFilter.current['id'];
+                    var type = this.currentRowFromFilter.current['type'];
+                    console.log("SELECTED " + rowId)
+                    this.selectedRow = rowId;
                     this.selectedType = type;
-                    //this.selectedRow=rowId;
                     sessionStorage.setItem("recordingCurrentLine", rowId);
                     sessionStorage.setItem("recordingId", getUrlParameter("id"));
                     sessionStorage.setItem("selectedType", type);
                 }
             },
-            makeStaticCalls:function(){
+            makeStaticCalls: function () {
                 var id = getUrlParameter("id");
 
                 showSpinner(true);
-                axiosHandle(axios.get("/api/plugins/replayer/utils/staticize/"+id
-                    +"?type="+this.makestatic),()=>showSpinner(false),()=>showSpinner(false));
+                axiosHandle(axios.get("/api/plugins/replayer/utils/staticize/" + id
+                    + "?type=" + this.makestatic), () => showSpinner(false), () => showSpinner(false));
             }
         }
     });

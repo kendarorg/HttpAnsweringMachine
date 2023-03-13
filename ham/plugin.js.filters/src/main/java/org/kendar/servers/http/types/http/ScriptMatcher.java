@@ -58,14 +58,14 @@ public class ScriptMatcher implements FilterMatcher, PathMatcher, HostMatcher {
 
     @Override
     public boolean matches(Request request) {
-        if(hostAddress==null) return false;
-        if(pathSimpleMatchers.notMatch(request.getHost(),this.hostAddress)){
+        if (hostAddress == null) return false;
+        if (pathSimpleMatchers.notMatch(request.getHost(), this.hostAddress)) {
             return false;
         }
-        if(pathSimpleMatchers.matches(request)){
+        if (pathSimpleMatchers.matches(request)) {
             return true;
         }
-        if(pathSimpleMatchers.notMatch(request.getPath(),this.pathAddress)){
+        if (pathSimpleMatchers.notMatch(request.getPath(), this.pathAddress)) {
             return false;
         }
         Context cx = Context.enter();
@@ -74,14 +74,14 @@ public class ScriptMatcher implements FilterMatcher, PathMatcher, HostMatcher {
         cx.initStandardObjects();
         Map<Object, Object> result = new HashMap<>();
         Scriptable currentScope = getNewScope(cx);
-        currentScope.put("REQUESTJSON", currentScope,request);
+        currentScope.put("REQUESTJSON", currentScope, request);
         currentScope.put("globalResult", currentScope, result);
-        currentScope.put("utils",currentScope,
-                Context.toObject(jsUtils,currentScope));
+        currentScope.put("utils", currentScope,
+                Context.toObject(jsUtils, currentScope));
 
         js.exec(cx, currentScope);
 
-        return (boolean)result.get("continue");
+        return (boolean) result.get("continue");
     }
 
     private Scriptable getNewScope(Context cx) {
@@ -94,8 +94,8 @@ public class ScriptMatcher implements FilterMatcher, PathMatcher, HostMatcher {
 
     @Override
     public void initialize(Function<String, String> apply) {
-        if(hostAddress!=null)hostAddress = apply.apply(hostAddress);
-        if(pathAddress!=null){
+        if (hostAddress != null) hostAddress = apply.apply(hostAddress);
+        if (pathAddress != null) {
             pathAddress = apply.apply(pathAddress);
             pathSimpleMatchers.setupPathSimpleMatchers(pathAddress);
         }
@@ -112,10 +112,10 @@ public class ScriptMatcher implements FilterMatcher, PathMatcher, HostMatcher {
 
     @Override
     public boolean validate() {
-        return (isValid(pathAddress)||isValid(hostAddress))&& isValid(script);
+        return (isValid(pathAddress) || isValid(hostAddress)) && isValid(script);
     }
 
     private boolean isValid(String val) {
-        return val!=null&&val.length()>0;
+        return val != null && val.length() > 0;
     }
 }

@@ -49,7 +49,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
                 deserializedConfigurations.put(sanitizedId, parsedConfig);
             }
             var founded = deserializedConfigurations.get(sanitizedId);
-            if(founded==null || founded.deserialized==null){
+            if (founded == null || founded.deserialized == null) {
                 return handleMissing(aClass);
             }
             return (T) founded.deserialized;
@@ -59,17 +59,17 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     }
 
     private <T extends BaseJsonConfig> T handleMissing(Class<T> aClass) {
-        logger.warn("Missing configuration "+ aClass.getName()+  " going default");
+        logger.warn("Missing configuration " + aClass.getName() + " going default");
         var nopars = Arrays.stream(aClass.getConstructors()).
-                filter(c->c.getParameterCount()==0).collect(Collectors.toList());
-        if(nopars.isEmpty()){
-            logger.error(aClass.getName()+" Must have default constructor");
-            throw new RuntimeException(aClass.getName()+" Must have default constructor");
+                filter(c -> c.getParameterCount() == 0).collect(Collectors.toList());
+        if (nopars.isEmpty()) {
+            logger.error(aClass.getName() + " Must have default constructor");
+            throw new RuntimeException(aClass.getName() + " Must have default constructor");
         }
         try {
             return (T) nopars.get(0).newInstance(new Object[]{});
-        } catch (InstantiationException|IllegalAccessException|InvocationTargetException ex) {
-            logger.error(aClass.getName()+" Must have default constructor");
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+            logger.error(aClass.getName() + " Must have default constructor");
             throw new RuntimeException(ex);
         }
     }

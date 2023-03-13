@@ -1,16 +1,17 @@
 package org.kendar.servers.config;
 
+import ch.qos.logback.classic.Level;
 import org.kendar.servers.Copyable;
 
 import java.util.HashMap;
-import ch.qos.logback.classic.Level;
 
 public class GlobalConfigLogging implements Copyable<GlobalConfigLogging> {
     private Level logLevel;
     private HashMap<String, Level> loggers = new HashMap<>();
 
 
-    @Override public GlobalConfigLogging copy() {
+    @Override
+    public GlobalConfigLogging copy() {
         var result = new GlobalConfigLogging();
         result.loggers = new HashMap<>(this.loggers);
         result.logLevel = this.logLevel;

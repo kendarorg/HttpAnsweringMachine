@@ -21,7 +21,7 @@ public class HttpMethodFilterConcrete implements HttpMethodFilter {
     public HttpMethodFilterConcrete(HttpFilterType phase, boolean methodBlocking,
                                     String pathAddress, Pattern pathPattern,
                                     String method, String description,
-                                    String id, HamMatcher[] extraMatches){
+                                    String id, HamMatcher[] extraMatches) {
 
         this.phase = phase;
         this.methodBlocking = methodBlocking;
@@ -32,6 +32,7 @@ public class HttpMethodFilterConcrete implements HttpMethodFilter {
         this.id = id;
         this.extraMatches = extraMatches;
     }
+
     @Override
     public Class<? extends Annotation> annotationType() {
         return null;
@@ -76,7 +77,7 @@ public class HttpMethodFilterConcrete implements HttpMethodFilter {
     @Override
     public HamMatcher[] matcher() {
         var result = new ArrayList<HamMatcher>();
-        if(extraMatches!=null && extraMatches.length>0){
+        if (extraMatches != null && extraMatches.length > 0) {
             for (var matcher :
                     extraMatches) {
                 result.add(new HamMatcherConcrete(matcher));

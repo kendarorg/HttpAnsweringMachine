@@ -1,5 +1,5 @@
 <template>
-  <div  v-if="typeof this.data!='undefined'" width="800px">
+  <div v-if="typeof this.data!='undefined'" width="800px">
     <div class="form-group">
       <label htmlFor="id">Id</label>
       <input class="form-control" readOnly type="text" name="id" id="id" v-model="data.id"/>
@@ -13,12 +13,14 @@
       <input class="form-control" readOnly type="text" name="timestamp" id="timestamp" v-model="data.timestamp"/>
     </div>
     <div width="800px">
-      <input class="form-check-input" type="checkbox" value="" id="binaryRequest" name="binaryRequest" v-model="data.request.binaryRequest">
+      <input class="form-check-input" type="checkbox" value="" id="binaryRequest" name="binaryRequest"
+             v-model="data.request.binaryRequest">
       <label class="form-check-label" for="binaryRequest">
         Binary request
       </label>
       &nbsp;
-      <input class="form-check-input" type="checkbox" value="" id="binaryResponse" name="binaryResponse" v-model="data.response.binaryResponse">
+      <input class="form-check-input" type="checkbox" value="" id="binaryResponse" name="binaryResponse"
+             v-model="data.response.binaryResponse">
       <label class="form-check-label" for="binaryResponse">
         Binary response
       </label>
@@ -29,7 +31,8 @@
     </div>
     <div class="form-group">
       <label htmlFor="request_protocol">Protocol</label>
-      <input class="form-control" type="text" name="request_protocol" id="request_protocol" v-model="data.request.protocol"/>
+      <input class="form-control" type="text" name="request_protocol" id="request_protocol"
+             v-model="data.request.protocol"/>
     </div>
     <div class="form-group">
       <label htmlFor="request_port">Port</label>
@@ -48,12 +51,10 @@
 <script>
 module.exports = {
   name: "global-line",
-  props:{
-    data:Object
+  props: {
+    data: Object
   },
-  methods:{
-
-  }
+  methods: {}
 
 }
 </script>

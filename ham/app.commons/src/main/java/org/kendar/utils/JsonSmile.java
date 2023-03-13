@@ -12,11 +12,11 @@ public class JsonSmile {
     private static ObjectMapper mapper = new ObjectMapper();
 
     public static byte[] jsonToSmile(String jsonValue) throws JsonProcessingException {
-            JsonNode actualObj = mapper.readTree(jsonValue);
-            return smileMapper.writeValueAsBytes(actualObj);
+        JsonNode actualObj = mapper.readTree(jsonValue);
+        return smileMapper.writeValueAsBytes(actualObj);
     }
 
     public static JsonNode smileToJSON(byte[] smileBytes) throws IOException {
-            return smileMapper.readValue(smileBytes, JsonNode.class);
+        return smileMapper.readValue(smileBytes, JsonNode.class);
     }
 }

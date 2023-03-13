@@ -15,9 +15,9 @@ public class Response {
 
     private List<String> messages = new ArrayList<>();
 
-    public boolean bodyExists(){
-        return (responseBytes!=null && responseBytes.length>0)||
-                (responseText!=null && responseText.length()>0);
+    public boolean bodyExists() {
+        return (responseBytes != null && responseBytes.length > 0) ||
+                (responseText != null && responseText.length() > 0);
     }
 
 
@@ -70,20 +70,20 @@ public class Response {
     }
 
     public String getHeader(String s) {
-        if(this.headers==null) this.headers = new HashMap<>();
-        return RequestUtils.getFromMap(this.headers,s);
+        if (this.headers == null) this.headers = new HashMap<>();
+        return RequestUtils.getFromMap(this.headers, s);
     }
 
     public void addHeader(String key, String value) {
-        RequestUtils.addToMap(headers,key,value);
+        RequestUtils.addToMap(headers, key, value);
     }
 
-    public Response copy(){
+    public Response copy() {
         var r = new Response();
         r.headers = this.headers.entrySet().stream()
-                .collect(Collectors.toMap(t -> (String)t.getKey(), v->(String)v.getValue()));
-        r.responseBytes = this.responseBytes!=null?this.responseBytes.clone():this.responseBytes;
-        r.responseText = this.responseText!=null?new String(this.responseText):this.responseText;
+                .collect(Collectors.toMap(t -> (String) t.getKey(), v -> (String) v.getValue()));
+        r.responseBytes = this.responseBytes != null ? this.responseBytes.clone() : this.responseBytes;
+        r.responseText = this.responseText != null ? new String(this.responseText) : this.responseText;
         r.binaryResponse = this.binaryResponse;
         r.statusCode = this.statusCode;
 
@@ -91,8 +91,8 @@ public class Response {
     }
 
     public void removeHeader(String s) {
-        for(var kvp : headers.keySet()){
-            if(s.equalsIgnoreCase(kvp)){
+        for (var kvp : headers.keySet()) {
+            if (s.equalsIgnoreCase(kvp)) {
                 headers.remove(kvp);
                 return;
             }

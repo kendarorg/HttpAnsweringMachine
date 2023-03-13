@@ -13,7 +13,7 @@ public class ReplayerResult {
     private List<ReplayerRow> dynamicRequests = new ArrayList<>();
     private List<String> errors = new ArrayList<>();
     private List<CallIndex> indexes = new ArrayList<>();
-    private HashMap<String,String> variables = new HashMap<>();
+    private HashMap<String, String> variables = new HashMap<>();
     private String initScript;
     private String name;
 

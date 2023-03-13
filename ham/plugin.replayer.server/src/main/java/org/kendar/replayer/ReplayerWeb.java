@@ -12,16 +12,17 @@ import org.springframework.stereotype.Component;
 public class ReplayerWeb extends StaticWebFilter {
 
     @Override
-    public String getDescription(){
+    public String getDescription() {
         return "Replayer web";
     }
+
     @Override
-    public String getAddress(){
+    public String getAddress() {
         return "plugins/recording/index.html";
     }
 
 
-    public ReplayerWeb(FileResourcesUtils fileResourcesUtils,LoggerBuilder loggerBuilder) {
+    public ReplayerWeb(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
         super(fileResourcesUtils);
         Logger logger = loggerBuilder.build(ReplayerWeb.class);
         logger.info("Replayer server LOADED");

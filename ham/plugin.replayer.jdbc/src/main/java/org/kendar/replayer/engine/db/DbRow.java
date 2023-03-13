@@ -39,7 +39,7 @@ public class DbRow {
         this.initiator = httpRequest.getPathParameter("targetType");
         this.connectionId = Long.parseLong(httpRequest.getHeader("X-Connection-Id"));
         this.traceId = -1L;
-        if(httpRequest.getPathParameter("targetId")!=null){
+        if (httpRequest.getPathParameter("targetId") != null) {
             this.traceId = Long.parseLong(httpRequest.getPathParameter("targetId"));
         }
     }

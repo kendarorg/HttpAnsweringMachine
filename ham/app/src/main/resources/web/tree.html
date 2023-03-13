@@ -9,11 +9,16 @@
     <script src="/libs/axios.min.js"></script>
     <script src="/libs/utils.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
-    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
 </head>
 <body>
 <div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
-    <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
+    <div class="spinner-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
 <p>(You can double click on an item to turn it into a folder.)</p>
@@ -31,20 +36,20 @@
     var treeData = {
         name: "My Tree",
         children: [
-            { name: "hello" },
-            { name: "wat" },
+            {name: "hello"},
+            {name: "wat"},
             {
                 name: "child folder",
                 children: [
                     {
                         name: "child folder",
-                        children: [{ name: "hello" }, { name: "wat" }]
+                        children: [{name: "hello"}, {name: "wat"}]
                     },
-                    { name: "hello" },
-                    { name: "wat" },
+                    {name: "hello"},
+                    {name: "wat"},
                     {
                         name: "child folder",
-                        children: [{ name: "hello" }, { name: "wat" }]
+                        children: [{name: "hello"}, {name: "wat"}]
                     }
                 ]
             }
@@ -70,7 +75,7 @@
         '  ":command:": "org.kendar.janus.cmd.Exec"' +
         '}';
 
-    stringData='{' +
+    stringData = '{' +
         '  "result": {' +
         '    "traceid": 81,' +
         '    ":traceid:": "java.lang.Long",' +
@@ -120,26 +125,6 @@
         '    ":columndescriptors:": "java.util.ArrayList",' +
         '    "lastrow": false,' +
         '    ":lastrow:": "java.lang.Boolean"' +
-        // '    ",rows": [{' +
-        // '      "_": [{' +
-        // '        "_": 1,' +
-        // '        ":_:": "java.lang.Long"' +
-        // '      }, {}, {' +
-        // '        "_": "Test2 (1)",' +
-        // '        ":_:": "java.lang.String"' +
-        // '      }],' +
-        // '      ":_:": "java.util.ArrayList"' +
-        // '    }, {' +
-        // '      "_": [{' +
-        // '        "_": 5,' +
-        // '        ":_:": "java.lang.Long"' +
-        // '      }, {}, {' +
-        // '        "_": "testdb",' +
-        // '        ":_:": "java.lang.String"' +
-        // '      }],' +
-        // '      ":_:": "java.util.ArrayList"' +
-        // '    }],' +
-        // '    ":rows:": "java.util.ArrayList"' +
         '  },' +
         '  ":result:": "org.kendar.janus.JdbcResultSet"' +
         '}';
@@ -152,7 +137,7 @@
         name: "My Tree",
         type: "ROOT",
         value: null,
-        children:nodes
+        children: nodes
     }
 
     console.log(treeData);
@@ -167,11 +152,11 @@
             treeData: treeData
         },
         methods: {
-            makeFolder: function(item) {
+            makeFolder: function (item) {
                 Vue.set(item, "children", []);
                 this.addItem(item);
             },
-            addItem: function(item) {
+            addItem: function (item) {
                 item.children.push({
                     name: "new stuff"
                 });

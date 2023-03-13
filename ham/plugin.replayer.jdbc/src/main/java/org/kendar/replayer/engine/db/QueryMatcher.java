@@ -17,11 +17,12 @@ public class QueryMatcher implements FilterMatcher {
     private static JsonTypedSerializer serializer = new JsonTypedSerializer();
     private String dbName;
     private String sql;
+
     @Override
     public boolean matches(Request req) {
-        if(dbName==null) return false;
-        if(!req.getPath().toLowerCase(Locale.ROOT).startsWith(
-                ("/api/db/"+dbName).toLowerCase(Locale.ROOT))){
+        if (dbName == null) return false;
+        if (!req.getPath().toLowerCase(Locale.ROOT).startsWith(
+                ("/api/db/" + dbName).toLowerCase(Locale.ROOT))) {
             return false;
         }
         var reqDeser = serializer.newInstance();
@@ -29,13 +30,13 @@ public class QueryMatcher implements FilterMatcher {
         try {
             reqDeser.deserialize(req.getRequestText());
             cmd = reqDeser.read("command");
-            if(cmd==null) return false;
-        }catch (Exception ex){
+            if (cmd == null) return false;
+        } catch (Exception ex) {
             return false;
         }
-        if(ClassUtils.isAssignable(cmd.getClass(), JdbcSqlCommand.class)){
-            var sql = ((JdbcSqlCommand)cmd).getSql();
-            if(!sql.trim().equalsIgnoreCase(sql.trim())){
+        if (ClassUtils.isAssignable(cmd.getClass(), JdbcSqlCommand.class)) {
+            var sql = ((JdbcSqlCommand) cmd).getSql();
+            if (!sql.trim().equalsIgnoreCase(sql.trim())) {
                 return false;
             }
 
@@ -56,13 +57,14 @@ public class QueryMatcher implements FilterMatcher {
     public void setDbName(String dbName) {
         this.dbName = dbName;
     }
+
     @Override
     public boolean validate() {
         return isValid(dbName);
     }
 
     private boolean isValid(String val) {
-        return val!=null&&val.length()>0;
+        return val != null && val.length() > 0;
     }
 
     public String getSql() {

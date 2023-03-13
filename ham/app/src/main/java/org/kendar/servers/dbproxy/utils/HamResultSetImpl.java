@@ -12,7 +12,6 @@ import org.kendar.janus.serialization.TypedSerializable;
 import org.kendar.janus.serialization.TypedSerializer;
 import org.kendar.servers.dbproxy.HamResultSet;
 import org.kendar.util.convert.TypeConverter;
-import org.kendar.util.convert.TypeConverterException;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -24,19 +23,20 @@ import java.util.*;
 
 public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResultSetImpl> {
     public JdbcResultsetMetaData metadata;
-    public Map<String,Integer> labelsToId;
-    public Map<String,Integer> namesToId;
+    public Map<String, Integer> labelsToId;
+    public Map<String, Integer> namesToId;
     public List<ColumnDescriptor> columnDescriptors;
     public boolean lastRow;
-    public int cursor=-1;
+    public int cursor = -1;
     public Engine engine;
     public JdbcConnection connection;
     public int columnCount;
     public boolean closed;
 
-    public HamResultSetImpl(){
+    public HamResultSetImpl() {
 
     }
+
     public long traceId;
     public ResultSetType type;
     public ResultSetHoldability holdability;
@@ -47,88 +47,88 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
 
     public List<List<Object>> rows;
 
-    public static Class<?> getTypeFromSqlType( int type) throws Exception {
-            Class<?> value=null;
-            if (type == java.sql.Types.ARRAY) {
-                value = java.sql.Array.class;
-            } else if (type == java.sql.Types.BIGINT) {
-                value = Long.class;
-            } else if (type == java.sql.Types.BINARY) {
-                value = byte[].class;
-            } else if (type == java.sql.Types.BIT) {
-                value = boolean.class;
-            } else if (type == java.sql.Types.BLOB) {
-                value = byte[].class;
-            } else if (type == java.sql.Types.BOOLEAN) {
-                value = boolean.class;
-            } else if (type == java.sql.Types.CHAR) {
-                value = String.class;
-            } else if (type == java.sql.Types.CLOB) {
-                value = String.class;
-            } else if (type == java.sql.Types.DATALINK) {
-                //value = resultSet.getBinaryStream(column);
-                throw new Exception("DATALINK NOT SUPPORTED");
-            } else if (type == java.sql.Types.DATE) {
-                value = java.sql.Date.class;
-            } else if (type == java.sql.Types.DECIMAL) {
-                value = BigDecimal.class;
-            } else if (type == java.sql.Types.DOUBLE) {
-                value = double.class;
-            } else if (type == java.sql.Types.FLOAT) {
-                value = float.class;
-            } else if (type == java.sql.Types.INTEGER) {
-                value = int.class;
-            } else if (type == java.sql.Types.JAVA_OBJECT) {
-                throw new Exception("JAVA_OBJECT NOT SUPPORTED");
-            } else if (type == java.sql.Types.LONGVARBINARY) {
-                value = byte[].class;
-            } else if (type == java.sql.Types.LONGVARCHAR) {
-                value = String.class;
-            } else if (type == java.sql.Types.NULL) {
-                value = null;
-            } else if (type == java.sql.Types.NUMERIC) {
-                value = BigDecimal.class;
-            } else if (type == java.sql.Types.OTHER) {
-                throw new Exception("OTHER NOT SUPPORTED");
-            } else if (type == java.sql.Types.REAL) {
-                value = double.class;
-            } else if (type == java.sql.Types.REF) {
-                throw new Exception("REF NOT SUPPORTED");
-            } else if (type == java.sql.Types.SMALLINT) {
-                value = int.class;
-            } else if (type == java.sql.Types.TIME) {
-                value = java.sql.Time.class;
-            } else if (type == java.sql.Types.TIMESTAMP) {
-                value = java.sql.Timestamp.class;
-            } else if (type == java.sql.Types.TINYINT) {
-                value = int.class;
-            } else if (type == java.sql.Types.VARBINARY) {
-                value = byte[].class;
-            } else if (type == java.sql.Types.VARCHAR) {
-                value = String.class;
-            }else if (type == 100) {
-                // oracle specific
-                value = float.class;
-            } else if (type == 101) {
-                // oracle specific
-                value = double.class;
-            }else {
-                throw new Exception("Could not get value for result set using type ["
-                        + type + "]");
-            }
+    public static Class<?> getTypeFromSqlType(int type) throws Exception {
+        Class<?> value = null;
+        if (type == java.sql.Types.ARRAY) {
+            value = java.sql.Array.class;
+        } else if (type == java.sql.Types.BIGINT) {
+            value = Long.class;
+        } else if (type == java.sql.Types.BINARY) {
+            value = byte[].class;
+        } else if (type == java.sql.Types.BIT) {
+            value = boolean.class;
+        } else if (type == java.sql.Types.BLOB) {
+            value = byte[].class;
+        } else if (type == java.sql.Types.BOOLEAN) {
+            value = boolean.class;
+        } else if (type == java.sql.Types.CHAR) {
+            value = String.class;
+        } else if (type == java.sql.Types.CLOB) {
+            value = String.class;
+        } else if (type == java.sql.Types.DATALINK) {
+            //value = resultSet.getBinaryStream(column);
+            throw new Exception("DATALINK NOT SUPPORTED");
+        } else if (type == java.sql.Types.DATE) {
+            value = java.sql.Date.class;
+        } else if (type == java.sql.Types.DECIMAL) {
+            value = BigDecimal.class;
+        } else if (type == java.sql.Types.DOUBLE) {
+            value = double.class;
+        } else if (type == java.sql.Types.FLOAT) {
+            value = float.class;
+        } else if (type == java.sql.Types.INTEGER) {
+            value = int.class;
+        } else if (type == java.sql.Types.JAVA_OBJECT) {
+            throw new Exception("JAVA_OBJECT NOT SUPPORTED");
+        } else if (type == java.sql.Types.LONGVARBINARY) {
+            value = byte[].class;
+        } else if (type == java.sql.Types.LONGVARCHAR) {
+            value = String.class;
+        } else if (type == java.sql.Types.NULL) {
+            value = null;
+        } else if (type == java.sql.Types.NUMERIC) {
+            value = BigDecimal.class;
+        } else if (type == java.sql.Types.OTHER) {
+            throw new Exception("OTHER NOT SUPPORTED");
+        } else if (type == java.sql.Types.REAL) {
+            value = double.class;
+        } else if (type == java.sql.Types.REF) {
+            throw new Exception("REF NOT SUPPORTED");
+        } else if (type == java.sql.Types.SMALLINT) {
+            value = int.class;
+        } else if (type == java.sql.Types.TIME) {
+            value = java.sql.Time.class;
+        } else if (type == java.sql.Types.TIMESTAMP) {
+            value = java.sql.Timestamp.class;
+        } else if (type == java.sql.Types.TINYINT) {
+            value = int.class;
+        } else if (type == java.sql.Types.VARBINARY) {
+            value = byte[].class;
+        } else if (type == java.sql.Types.VARCHAR) {
+            value = String.class;
+        } else if (type == 100) {
+            // oracle specific
+            value = float.class;
+        } else if (type == 101) {
+            // oracle specific
+            value = double.class;
+        } else {
+            throw new Exception("Could not get value for result set using type ["
+                    + type + "]");
+        }
 
         return value;
     }
 
     public void fromSerializable(List<List<Object>> source) throws Exception {
         rows = new ArrayList<>();
-        for(var row:source){
+        for (var row : source) {
             var newRow = new ArrayList<Object>();
             for (int i = 0; i < row.size(); i++) {
                 var cd = columnDescriptors.get(i);
                 var realType = getTypeFromSqlType(cd.getType());
                 Object field = row.get(i);
-                if (field == null || field.getClass()==realType) {
+                if (field == null || field.getClass() == realType) {
                     newRow.add(field);
                     continue;
                 }
@@ -142,38 +142,38 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
 
     public List<List<Object>> toSerializable() throws SQLException {
         var result = new ArrayList<List<Object>>();
-        for(var row:rows){
+        for (var row : rows) {
             var newRow = new ArrayList<Object>();
-            for(var field:row){
-                if(field==null){
+            for (var field : row) {
+                if (field == null) {
                     newRow.add(null);
                     continue;
                 }
-                if(ClassUtils.isPrimitiveOrWrapper(field.getClass())){
+                if (ClassUtils.isPrimitiveOrWrapper(field.getClass())) {
                     newRow.add(field);
                     continue;
                 }
-                if(field instanceof String){
+                if (field instanceof String) {
                     newRow.add(field);
                     continue;
                 }
-                if(ClassUtils.isAssignable(field.getClass(),Clob.class)){
-                    newRow.add(toString((Clob)field));
+                if (ClassUtils.isAssignable(field.getClass(), Clob.class)) {
+                    newRow.add(toString((Clob) field));
                     continue;
                 }
-                if(ClassUtils.isAssignable(field.getClass(),SQLXML.class)){
-                    newRow.add(toString((SQLXML)field));
+                if (ClassUtils.isAssignable(field.getClass(), SQLXML.class)) {
+                    newRow.add(toString((SQLXML) field));
                     continue;
                 }
-                if(ClassUtils.isAssignable(field.getClass(),RowId.class)){
-                    newRow.add(toBytes((RowId)field));
+                if (ClassUtils.isAssignable(field.getClass(), RowId.class)) {
+                    newRow.add(toBytes((RowId) field));
                     continue;
                 }
-                if(ClassUtils.isAssignable(field.getClass(),Blob.class)){
+                if (ClassUtils.isAssignable(field.getClass(), Blob.class)) {
                     try {
                         newRow.add(((Blob) field).getBinaryStream().readAllBytes());
                         continue;
-                    }catch (Exception ex){
+                    } catch (Exception ex) {
                         throw new SQLException(ex);
                     }
                 }
@@ -198,7 +198,7 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
                 buffer.append("" + (char) ch);
             }
             return buffer.toString();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new SQLException(ex);
         }
     }
@@ -213,56 +213,56 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
                 buffer.append("" + (char) ch);
             }
             return buffer.toString();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new SQLException(ex);
         }
     }
 
     public void serialize(TypedSerializer builder) {
-        builder.write("traceId",traceId);
-        builder.write("type",type);
-        builder.write("concurrency",concurrency);
-        builder.write("holdability",holdability);
-        builder.write("maxRows",maxRows);
-        builder.write("prefetchMetadata",prefetchMetadata);
-        builder.write("charset",charset);
-        builder.write("columnDescriptors",columnDescriptors);
-        builder.write("lastRow",lastRow);
-        builder.write("rows",rows);
-        builder.write("metadata",metadata);
+        builder.write("traceId", traceId);
+        builder.write("type", type);
+        builder.write("concurrency", concurrency);
+        builder.write("holdability", holdability);
+        builder.write("maxRows", maxRows);
+        builder.write("prefetchMetadata", prefetchMetadata);
+        builder.write("charset", charset);
+        builder.write("columnDescriptors", columnDescriptors);
+        builder.write("lastRow", lastRow);
+        builder.write("rows", rows);
+        builder.write("metadata", metadata);
     }
 
     public HamResultSetImpl deserialize(TypedSerializer input) {
-        traceId= input.read("traceId");
-        type= input.read("type");
+        traceId = input.read("traceId");
+        type = input.read("type");
         concurrency = input.read("concurrency");
-        holdability =input.read("holdability");
-        maxRows=     input.read("maxRows");
-        prefetchMetadata=         input.read("prefetchMetadata");
-        charset=                  input.read("charset");
+        holdability = input.read("holdability");
+        maxRows = input.read("maxRows");
+        prefetchMetadata = input.read("prefetchMetadata");
+        charset = input.read("charset");
         columnDescriptors = input.read("columnDescriptors");
-        lastRow  = input.read("lastRow");
-        rows  = input.read("rows");
-        metadata =input.read("metadata");
+        lastRow = input.read("lastRow");
+        rows = input.read("rows");
+        metadata = input.read("metadata");
         columnCount = columnDescriptors.size();
         labelsToId = new HashMap<>();
         namesToId = new HashMap<>();
         for (int i = 1; i <= columnCount; ++i) {
-            var field =columnDescriptors.get(i-1);
-            if(field.getLabel()!=null) {
+            var field = columnDescriptors.get(i - 1);
+            if (field.getLabel() != null) {
                 labelsToId.put(field.getLabel().toLowerCase(Locale.ROOT), i - 1);
             }
-            if(field.getName()!=null) {
+            if (field.getName() != null) {
                 namesToId.put(field.getName().toLowerCase(Locale.ROOT), i - 1);
             }
         }
         return this;
     }
 
-    private int getColumnType(ResultSetMetaData md,int i) throws SQLException {
+    private int getColumnType(ResultSetMetaData md, int i) throws SQLException {
         try {
             return md.getColumnType(i);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return Types.OTHER;
         }
     }

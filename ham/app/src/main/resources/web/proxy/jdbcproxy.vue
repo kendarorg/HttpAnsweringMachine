@@ -11,11 +11,11 @@
     <button id="jdbcprx-grid-addnew" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
     <br><br>
     <simple-grid id="jdbcprx-grid"
-        v-on:gridclicked="gridClicked"
-        ref="grid"
-        :columns="columns"
-        :extra="extraColumns"
-        :retrieve-data="retrieveData"
+                 v-on:gridclicked="gridClicked"
+                 ref="grid"
+                 :columns="columns"
+                 :extra="extraColumns"
+                 :retrieve-data="retrieveData"
     >
     </simple-grid>
   </div>
@@ -35,8 +35,16 @@ module.exports = {
       columns: [
         {id: "id", template: "string", index: true},
         {id: "driver", template: "string"},
-        {id: "remote", template: "string",func:function(e){return e.remote.connectionString; }},
-        {id: "exposed", template: "string",func:function(e){return e.exposed.connectionString; }},
+        {
+          id: "remote", template: "string", func: function (e) {
+            return e.remote.connectionString;
+          }
+        },
+        {
+          id: "exposed", template: "string", func: function (e) {
+            return e.exposed.connectionString;
+          }
+        },
       ],
       extraColumns: [
         {
@@ -48,7 +56,7 @@ module.exports = {
           properties: {
             name: "Edit", style: "bi bi-pen-fill"
           }
-        },{
+        }, {
           id: "_test",
           template: "iconbutton",
           default: false,
@@ -82,16 +90,16 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axiosHandle(axios.delete("/api/jdbcproxies/proxies/" + row['id']),axiosOk);
+        await axiosHandle(axios.delete("/api/jdbcproxies/proxies/" + row['id']), axiosOk);
         this.reload();
-      }else if (evt.buttonid == "_test") {
+      } else if (evt.buttonid == "_test") {
         await axiosHandle(
-            axios.get("/api/jdbcproxies/proxies/" + row['id']+"?test=true"),(data)=>{
-          if(data.status==200)addMessage("OK");
-          else addMessage("ERROR CONNECTING!","error")
-        },(error)=>{
-          addMessage(error.response.data,"error");
-        });
+            axios.get("/api/jdbcproxies/proxies/" + row['id'] + "?test=true"), (data) => {
+              if (data.status == 200) addMessage("OK");
+              else addMessage("ERROR CONNECTING!", "error")
+            }, (error) => {
+              addMessage(error.response.data, "error");
+            });
       }
     },
     reload: function () {
@@ -104,8 +112,8 @@ module.exports = {
       } else {
         row = {
           id: URL.createObjectURL(new Blob([])).substr(-36),
-          remote:{},
-          exposed:{}
+          remote: {},
+          exposed: {}
         }
       }
       this.modalData = {
@@ -119,12 +127,12 @@ module.exports = {
       if (this.modalData.edit) {
         await axiosHandle(axios.put('/api/jdbcproxies/proxies/' + this.modalData.data.id, this.modalData.data),
             () => {
-          axiosOk();
-          this.modalShow = false;
-          this.reload();
-        });
+              axiosOk();
+              this.modalShow = false;
+              this.reload();
+            });
       } else {
-        await axiosHandle(axios.post('/api/jdbcproxies/proxies', this.modalData.data),() => {
+        await axiosHandle(axios.post('/api/jdbcproxies/proxies', this.modalData.data), () => {
           this.modalShow = false;
           axiosOk();
           this.reload();

@@ -9,11 +9,16 @@
     <script src="/libs/httpVueLoader.js"></script>
     <script src="/libs/axios.min.js"></script>
     <script src="/libs/utils.js"></script>
-    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
 </head>
 <body>
 <div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
-    <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
+    <div class="spinner-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
 <div id="messageObject"></div>
@@ -36,21 +41,22 @@
         <vtabs>
             <vtab name="SCRIPTS">
                 <br>
-                <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
-                <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+                <button id="js-grid-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+                <button id="js-grid-addnew" v-on:click="addNew(false,[])" class="bi bi-plus-square"
+                        title="Add new"></button>
                 <br><br>
-                <simple-grid id="js16"
-                        v-on:gridrowclicked="jsListClicked"
-                        v-on:gridclicked="gridClicked"
-                        ref="grid"
-                        :columns="columns"
-                        :extra="extraColumns"
-                        :retrieve-data="retrieveData"
+                <simple-grid id="js-grid"
+                             v-on:gridrowclicked="jsListClicked"
+                             v-on:gridclicked="gridClicked"
+                             ref="grid"
+                             :columns="columns"
+                             :extra="extraColumns"
+                             :retrieve-data="retrieveData"
                 >
                 </simple-grid>
             </vtab>
             <vtab name="CURRENT">
-                <edit-js :selected-row="selectedRow">
+                <edit-js id="js-current" :selected-row="selectedRow">
 
                 </edit-js>
             </vtab>
@@ -70,8 +76,8 @@
         },
         data: function () {
             return {
-                currentRowFromFilter:{current:null,prev:null,next:null},
-                selectedRow:null,
+                currentRowFromFilter: {current: null, prev: null, next: null},
+                selectedRow: null,
                 modalData: null,
                 modalShow: false,
                 columns: [
@@ -82,12 +88,22 @@
                 ],
                 extraColumns: [
                     {
-                        id: "_edit", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                        id: "_edit",
+                        template: "iconbutton",
+                        default: false,
+                        searchable: false,
+                        sortable: false,
+                        properties: {
                             name: "Edit", style: "bi bi-pen-fill"
                         }
                     },
                     {
-                        id: "_delete", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                        id: "_delete",
+                        template: "iconbutton",
+                        default: false,
+                        searchable: false,
+                        sortable: false,
+                        properties: {
                             name: "Delete", style: "bi bi-trash"
                         }
                     }
@@ -103,10 +119,10 @@
                 var row = this.$refs.grid.getById(evt.index);
 
                 if (evt.buttonid == "_edit") {
-                    this.selectedRow=row['id'];
+                    this.selectedRow = row['id'];
                 } else if (evt.buttonid == "_delete") {
-                    await axiosHandle(axios.delete("/api/plugins/jsfilter/filters/" + row['id']),()=>
-                    this.$refs.grid.delete(evt.index));
+                    await axiosHandle(axios.delete("/api/plugins/jsfilter/filters/" + row['id']), () =>
+                        this.$refs.grid.delete(evt.index));
                 }
             },
             reload: function () {
@@ -131,24 +147,24 @@
             save: async function () {
                 if (this.modalData.edit) {
                     await axiosHandle(axios.put('/api/plugins/replayer/recording/' +
-                        this.modalData.data.id, this.modalData.data),() => {
+                        this.modalData.data.id, this.modalData.data), () => {
                         this.modalShow = false;
                         this.reload();
                         axiosOk();
                     });
                 } else {
-                    await axiosHandle(axios.post('/api/plugins/replayer/recording', this.modalData.data),() => {
+                    await axiosHandle(axios.post('/api/plugins/replayer/recording', this.modalData.data), () => {
                         this.modalShow = false;
                         this.reload();
                         axiosOk();
                     });
                 }
             },
-            jsListClicked:function(evt){
-                this.currentRowFromFilter= evt;
-                if(this.currentRowFromFilter.current!=null) {
+            jsListClicked: function (evt) {
+                this.currentRowFromFilter = evt;
+                if (this.currentRowFromFilter.current != null) {
                     var rowId = this.currentRowFromFilter.current['id'];
-                    this.selectedRow=rowId;
+                    this.selectedRow = rowId;
                 }
             },
         }

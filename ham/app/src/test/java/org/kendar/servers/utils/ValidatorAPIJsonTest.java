@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ValidatorAPIJsonTest {
-    private final String TEMPLATE= "{\n" +
+    private final String TEMPLATE = "{\n" +
             "  \"squadName\": \"Super hero squad\",\n" +
             "  \"homeTown\": \"Metro City\",\n" +
             "  \"formed\": 2016,\n" +
@@ -85,10 +85,10 @@ public class ValidatorAPIJsonTest {
         input.setSource(VALID);
         req.setRequestText(mapper.writeValueAsString(input));
 
-        target.validate(req,res);
+        target.validate(req, res);
         var result = mapper.readValue(res.getResponseText(), ValidatorResult.class);
         assertFalse(result.isError());
-        assertEquals(0,result.getErrors().size());
+        assertEquals(0, result.getErrors().size());
     }
 
     @Test
@@ -101,10 +101,10 @@ public class ValidatorAPIJsonTest {
         input.setSource("{}");
         req.setRequestText(mapper.writeValueAsString(input));
 
-        target.validate(req,res);
+        target.validate(req, res);
         var result = mapper.readValue(res.getResponseText(), ValidatorResult.class);
         assertTrue(result.isError());
-        assertEquals(1,result.getErrors().size());
+        assertEquals(1, result.getErrors().size());
     }
 
     @Test
@@ -128,7 +128,7 @@ public class ValidatorAPIJsonTest {
         input.setSource(VALID_EMPTYARRAY);
         req.setRequestText(mapper.writeValueAsString(input));
 
-        target.validate(req,res);
+        target.validate(req, res);
         var result = mapper.readValue(res.getResponseText(), ValidatorResult.class);
         assertFalse(result.isError());
     }
@@ -162,7 +162,7 @@ public class ValidatorAPIJsonTest {
         input.setSource(VALID_NULL);
         req.setRequestText(mapper.writeValueAsString(input));
 
-        target.validate(req,res);
+        target.validate(req, res);
         var result = mapper.readValue(res.getResponseText(), ValidatorResult.class);
         assertFalse(result.isError());
     }
@@ -195,10 +195,10 @@ public class ValidatorAPIJsonTest {
         input.setSource(INVALID_NULL);
         req.setRequestText(mapper.writeValueAsString(input));
 
-        target.validate(req,res);
+        target.validate(req, res);
         var result = mapper.readValue(res.getResponseText(), ValidatorResult.class);
         assertTrue(result.isError());
-        assertEquals(1,result.getErrors().size());
+        assertEquals(1, result.getErrors().size());
     }
 
     @Test
@@ -237,7 +237,7 @@ public class ValidatorAPIJsonTest {
         input.setSource(s_VALID);
         req.setRequestText(mapper.writeValueAsString(input));
 
-        target.validate(req,res);
+        target.validate(req, res);
         var result = mapper.readValue(res.getResponseText(), ValidatorResult.class);
         assertFalse(result.isError());
     }

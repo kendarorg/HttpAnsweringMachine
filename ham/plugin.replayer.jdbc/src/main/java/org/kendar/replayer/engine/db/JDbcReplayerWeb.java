@@ -12,11 +12,12 @@ import org.springframework.stereotype.Component;
 public class JDbcReplayerWeb extends StaticWebFilter {
 
     @Override
-    public String getDescription(){
+    public String getDescription() {
         return "Replayer web=Jdbc extension";
     }
+
     @Override
-    public String getAddress(){
+    public String getAddress() {
         return null;
     }
 

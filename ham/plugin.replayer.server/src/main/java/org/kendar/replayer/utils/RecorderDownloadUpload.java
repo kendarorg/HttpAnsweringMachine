@@ -3,7 +3,6 @@ package org.kendar.replayer.utils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
-import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.apis.models.LocalRecording;
 import org.kendar.replayer.engine.ReplayerResult;
 import org.kendar.replayer.storage.CallIndex;
@@ -26,16 +25,19 @@ public class RecorderDownloadUpload implements FullDownloadUpload {
     private final HibernateSessionFactory sessionFactory;
 
     public RecorderDownloadUpload(JsonConfiguration configuration,
-                            EventQueue eventQueue,
-                            HibernateSessionFactory sessionFactory){
+                                  EventQueue eventQueue,
+                                  HibernateSessionFactory sessionFactory) {
 
         this.configuration = configuration;
         this.eventQueue = eventQueue;
         this.sessionFactory = sessionFactory;
     }
+
     TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<HashMap<String, String>>() {};
+            = new TypeReference<HashMap<String, String>>() {
+    };
     ObjectMapper mapper = new ObjectMapper();
+
     @Override
     public Map<String, byte[]> retrieveItems() throws Exception {
 
@@ -44,8 +46,8 @@ public class RecorderDownloadUpload implements FullDownloadUpload {
 
         var listOfItems = new ArrayList<LocalRecording>();
         sessionFactory.query((em -> {
-            List<DbRecording> allRecs= em.createQuery("SELECT e FROM DbRecording e").getResultList();
-            for(var rs: allRecs){
+            List<DbRecording> allRecs = em.createQuery("SELECT e FROM DbRecording e").getResultList();
+            for (var rs : allRecs) {
                 var lr = new LocalRecording();
                 lr.setId(rs.getId());
                 lr.setName(rs.getName());
@@ -53,29 +55,29 @@ public class RecorderDownloadUpload implements FullDownloadUpload {
             }
         }));
 
-        for(var singleIt:listOfItems){
+        for (var singleIt : listOfItems) {
             var result = new ReplayerResult();
 
 
-            sessionFactory.query(em-> {
+            sessionFactory.query(em -> {
                 DbRecording recording = (DbRecording) em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + singleIt.getId()).getResultList().get(0);
                 List<CallIndex> indexLines = em.createQuery("SELECT e FROM CallIndex e WHERE e.recordingId=" + singleIt.getId()).getResultList();
                 List<ReplayerRow> rows = em.createQuery("SELECT e FROM ReplayerRow e WHERE e.recordingId=" + singleIt.getId()).getResultList();
 
                 result.setName(recording.getName());
                 result.setDescription(recording.getDescription());
-                for(var row:rows){
-                    if(row.isStaticRequest()){
+                for (var row : rows) {
+                    if (row.isStaticRequest()) {
                         result.getStaticRequests().add(row);
-                    }else{
+                    } else {
                         result.getDynamicRequests().add(row);
                     }
                 }
-                for(var indexLine:indexLines){
+                for (var indexLine : indexLines) {
                     result.getIndexes().add(indexLine);
                 }
             });
-            resultData.put("recording."+singleIt.getId()+".json",mapper.writeValueAsBytes(result));
+            resultData.put("recording." + singleIt.getId() + ".json", mapper.writeValueAsBytes(result));
         }
 
         return resultData;
@@ -88,14 +90,14 @@ public class RecorderDownloadUpload implements FullDownloadUpload {
 
     @Override
     public void uploadItems(HashMap<String, byte[]> data) throws Exception {
-        sessionFactory.transactional(em->{
+        sessionFactory.transactional(em -> {
             em.createQuery("DELETE FROM TestResultsLine").executeUpdate();
             em.createQuery("DELETE FROM TestResults").executeUpdate();
             em.createQuery("DELETE FROM ReplayerRow").executeUpdate();
             em.createQuery("DELETE FROM CallIndex").executeUpdate();
             em.createQuery("DELETE FROM DbRecording").executeUpdate();
         });
-        for(var filter:data.entrySet()) {
+        for (var filter : data.entrySet()) {
             var json = new String(filter.getValue());
             var replayerResult = mapper.readValue(json, ReplayerResult.class);
             var recording = new DbRecording();
@@ -103,32 +105,31 @@ public class RecorderDownloadUpload implements FullDownloadUpload {
             recording.setName(replayerResult.getName());
             recording.setFilter(mapper.writeValueAsString(replayerResult.getFilter()));
 
-            sessionFactory.transactional(em-> {
+            sessionFactory.transactional(em -> {
                 em.persist(recording);
             });
-            for(var row:replayerResult.getDynamicRequests()){
+            for (var row : replayerResult.getDynamicRequests()) {
                 row.setIndex(null);
                 row.setRecordingId(recording.getId());
-                sessionFactory.transactional(em-> {
+                sessionFactory.transactional(em -> {
                     em.persist(row);
                 });
             }
-            for(var row:replayerResult.getStaticRequests()){
+            for (var row : replayerResult.getStaticRequests()) {
                 row.setIndex(null);
                 row.setRecordingId(recording.getId());
-                sessionFactory.transactional(em-> {
+                sessionFactory.transactional(em -> {
                     em.persist(row);
                 });
             }
-            for(var row:replayerResult.getIndexes()){
+            for (var row : replayerResult.getIndexes()) {
                 row.setIndex(null);
                 row.setRecordingId(recording.getId());
-                sessionFactory.transactional(em-> {
+                sessionFactory.transactional(em -> {
                     em.persist(row);
                 });
             }
         }
-
 
 
     }

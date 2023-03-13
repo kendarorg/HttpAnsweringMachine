@@ -11,26 +11,53 @@ input {
 }
 
 
+.btn-kendar {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c
+}
 
-.btn-kendar{color:#fff;background-color:#5cb85c;border-color:#4cae4c}
 .btn-kendar.focus,
-.btn-kendar:focus{color:#fff;background-color:#449d44;border-color:#255625}
-.btn-kendar:hover{color:#fff;background-color:#449d44;border-color:#398439}
+.btn-kendar:focus {
+    color: #fff;
+    background-color: #449d44;
+    border-color: #255625
+}
+
+.btn-kendar:hover {
+    color: #fff;
+    background-color: #449d44;
+    border-color: #398439
+}
+
 .btn-kendar.active,
 .btn-kendar:active,
-.open>.dropdown-toggle.btn-kendar{color:#fff;background-color:#449d44;border-color:#398439}
+.open > .dropdown-toggle.btn-kendar {
+    color: #fff;
+    background-color: #449d44;
+    border-color: #398439
+}
+
 .btn-kendar.active.focus,
 .btn-kendar.active:focus,
 .btn-kendar.active:hover,
 .btn-kendar:active.focus,
 .btn-kendar:active:focus,
 .btn-kendar:active:hover,
-.open>.dropdown-toggle.btn-kendar.focus,
-.open>.dropdown-toggle.btn-kendar:focus,
-.open>.dropdown-toggle.btn-kendar:hover{color:#fff;background-color:#398439;border-color:#255625}
+.open > .dropdown-toggle.btn-kendar.focus,
+.open > .dropdown-toggle.btn-kendar:focus,
+.open > .dropdown-toggle.btn-kendar:hover {
+    color: #fff;
+    background-color: #398439;
+    border-color: #255625
+}
+
 .btn-kendar.active,
 .btn-kendar:active,
-.open>.dropdown-toggle.btn-kendar{background-image:none}
+.open > .dropdown-toggle.btn-kendar {
+    background-image: none
+}
+
 .btn-kendar.disabled.focus,
 .btn-kendar.disabled:focus,
 .btn-kendar.disabled:hover,
@@ -39,8 +66,15 @@ input {
 .btn-kendar[disabled]:hover,
 fieldset[disabled] .btn-kendar.focus,
 fieldset[disabled] .btn-kendar:focus,
-fieldset[disabled] .btn-kendar:hover{background-color:#5cb85c;border-color:#4cae4c}
-.btn-kendar .badge{color:#5cb85c;background-color:#fff}
+fieldset[disabled] .btn-kendar:hover {
+    background-color: #5cb85c;
+    border-color: #4cae4c
+}
+
+.btn-kendar .badge {
+    color: #5cb85c;
+    background-color: #fff
+}
 
 /**
 https://unicode-table.com/en/1F5AB/
@@ -51,18 +85,18 @@ https://unicode-table.com/en/1F5AB/
 }
 
 .boxed {
-    border: 1px solid black ;
+    border: 1px solid black;
     border-radius: 25px;
     padding: 10px;
 }
 
 
- table {
-     border-collapse:separate;
-     border: 2px solid #42b983;
-     border-radius: 5px;
-     background-color: #fff;
- }
+table {
+    border-collapse: separate;
+    border: 2px solid #42b983;
+    border-radius: 5px;
+    background-color: #fff;
+}
 
 th {
     background-color: #42b983;
@@ -116,12 +150,12 @@ th.active .arrow {
 /* SPINNER */
 
 .spinner-p {
-                 font-size: 2em;
-                 font-weight: 300;
-                 margin-top: 5px;
-                 letter-spacing: 1px;
-                 color: rgb(82, 82, 82);
-             }
+    font-size: 2em;
+    font-weight: 300;
+    margin-top: 5px;
+    letter-spacing: 1px;
+    color: rgb(82, 82, 82);
+}
 
 .spinner-loader-wrapper {
     text-align: center;
@@ -133,6 +167,7 @@ th.active .arrow {
     width: 80px;
     height: 80px;
 }
+
 .spinner-loader div {
     box-sizing: border-box;
     display: block;
@@ -145,12 +180,15 @@ th.active .arrow {
     animation: spinnerloader 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     border-color: #6916a0 transparent transparent transparent;
 }
+
 .spinner-loader div:nth-child(1) {
     animation-delay: -0.45s;
 }
+
 .spinner-loader div:nth-child(2) {
     animation-delay: -0.3s;
 }
+
 .spinner-loader div:nth-child(3) {
     animation-delay: -0.15s;
 }
@@ -178,13 +216,13 @@ th.active .arrow {
     background:rgba(204, 204, 204, 0.75);
 }*/
 
-.spinner-overlay{
-    opacity:0.8;
+.spinner-overlay {
+    opacity: 0.8;
     background-color: rgba(204, 204, 204, 0.75);
-    position:fixed;
-    width:100%;
-    height:100%;
-    top:0px;
-    left:0px;
-    z-index:1000;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: 1000;
 }

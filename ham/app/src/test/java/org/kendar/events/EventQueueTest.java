@@ -23,7 +23,7 @@ public class EventQueueTest {
         var results = new ArrayList<Event>();
         EventQueue target = new EventQueueImpl(loggerBuilder);
 
-        target.register((c)->{
+        target.register((c) -> {
             results.add(c);
         }, TestEvent.class);
 
@@ -33,8 +33,8 @@ public class EventQueueTest {
         target.handle(te);
         Sleeper.sleep(500);
 
-        assertEquals(1,results.size());
-        assertEquals(mapper.writeValueAsString(te),mapper.writeValueAsString(results.get(0)));
+        assertEquals(1, results.size());
+        assertEquals(mapper.writeValueAsString(te), mapper.writeValueAsString(results.get(0)));
     }
 
     @Test
@@ -42,18 +42,18 @@ public class EventQueueTest {
         var results = new ArrayList<Event>();
         EventQueue target = new EventQueueImpl(loggerBuilder);
 
-        target.register((c)->{
+        target.register((c) -> {
             results.add(c);
-        },TestEvent.class);
+        }, TestEvent.class);
 
         var te = new TestEvent();
         te.setString("string");
         te.setInteger(1);
         var tes = mapper.writeValueAsString(te);
-        target.handle("TestEvent",tes);
+        target.handle("TestEvent", tes);
         Sleeper.sleep(500);
 
-        assertEquals(1,results.size());
+        assertEquals(1, results.size());
     }
 
     @Test
@@ -61,22 +61,22 @@ public class EventQueueTest {
         var results = new ArrayList<Event>();
         EventQueue target = new EventQueueImpl(loggerBuilder);
 
-        target.register((c)->{
+        target.register((c) -> {
             results.add(c);
-        },TestEvent.class);
+        }, TestEvent.class);
 
         var te = new OtherEvent();
         target.handle(te);
         Sleeper.sleep(500);
 
-        assertEquals(0,results.size());
+        assertEquals(0, results.size());
     }
 
     @Test
     public void exceptionWillNotBePropagated() throws JsonProcessingException, InterruptedException {
         EventQueue target = new EventQueueImpl(loggerBuilder);
 
-        target.register((c)->{
+        target.register((c) -> {
             throw new RuntimeException();
         }, TestEvent.class);
 
@@ -93,11 +93,11 @@ public class EventQueueTest {
         var results = new ArrayList<Event>();
         EventQueue target = new EventQueueImpl(loggerBuilder);
 
-        target.register((c)->{
+        target.register((c) -> {
             throw new RuntimeException();
         }, TestEvent.class);
 
-        target.register((c)->{
+        target.register((c) -> {
             results.add(c);
         }, TestEvent.class);
 
@@ -107,6 +107,6 @@ public class EventQueueTest {
         target.handle(te);
         Sleeper.sleep(500);
 
-        assertEquals(1,results.size());
+        assertEquals(1, results.size());
     }
 }

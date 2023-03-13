@@ -12,13 +12,13 @@
     </properties>
 
 
-        <repositories>
-            <repository>
-                <id>example-repo</id>
-                <name>Example Repository</name>
-                <url>file://${project.basedir}/externals</url>
-            </repository>
-        </repositories>
+    <repositories>
+        <repository>
+            <id>example-repo</id>
+            <name>Example Repository</name>
+            <url>file://${project.basedir}/externals</url>
+        </repository>
+    </repositories>
 
     <parent>
         <artifactId>HttpAnsweringMachine</artifactId>

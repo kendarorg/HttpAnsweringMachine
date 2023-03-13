@@ -10,13 +10,14 @@
     <script src="/libs/axios.min.js"></script>
     <script src="/libs/utils.js"></script>
     <script src="/plugins/recording/vcomponents/utils.js"></script>
-    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
 </head>
 <body>
 <div id="messageObject"></div>
 <div class="container-fluid" id="app">
     <div width="800px" ref="container">
-        <button type="button" :disabled="data.id ==-1"  class="bi bi-floppy" v-on:click="updateContent()" title="Save changes"></button>
+        <button type="button" :disabled="data.id ==-1" class="bi bi-floppy" v-on:click="updateContent()"
+                title="Save changes"></button>
     </div>
 
     <h3>NO ITEM SELECTED!</h3>
@@ -29,55 +30,55 @@
             'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
             'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
         },
-        data: function(){
+        data: function () {
             return {
-                windowSize:0,
-                next:-1,
-                prev:-1,
-                data:{
-                    type:'none',
-                    id:-1,
-                    request:{path:'',requestText:'{}'},
-                    response:{responseText:'{}'}
+                windowSize: 0,
+                next: -1,
+                prev: -1,
+                data: {
+                    type: 'none',
+                    id: -1,
+                    request: {path: '', requestText: '{}'},
+                    response: {responseText: '{}'}
                 },
-                script:{},
-                recordingId:-1,
-                selectedRow:-1
+                script: {},
+                recordingId: -1,
+                selectedRow: -1
 
             }
         },
-        mounted: async function(){
-            this.timer = setInterval(this.iframeHeightNotify,300)
+        mounted: async function () {
+            this.timer = setInterval(this.iframeHeightNotify, 300)
             //Here load data
         },
-        methods:{
-            iframeHeightNotify(){
-                if(this.windowSize!=window.outerHeight) {
-                    this.windowSize=window.outerHeight
+        methods: {
+            iframeHeightNotify() {
+                if (this.windowSize != window.outerHeight) {
+                    this.windowSize = window.outerHeight
                     var msg = {
-                        type:"iframesizechanged",
+                        type: "iframesizechanged",
                         height: window.outerHeight//this.$refs.container.scrollHeight
                     }
                     window.parent.postMessage(msg, '*')
                 }
             },
-            prevRow:function(newRow){
+            prevRow: function (newRow) {
                 var msg = {
-                    type:"changerow",
+                    type: "changerow",
                     id: this.prev//this.$refs.container.scrollHeight
                 }
                 window.parent.postMessage(msg, '*')
             },
-            nextRow:function(newRow){
+            nextRow: function (newRow) {
                 var msg = {
-                    type:"changerow",
+                    type: "changerow",
                     id: this.next//this.$refs.container.scrollHeight
                 }
                 window.parent.postMessage(msg, '*')
             },
-            updateContent:function (){
-                axiosHandle(axios.put("/api/plugins/replayer/recording/"+this.recordingId+"/line/" +
-                    this.selectedRow,this.data),axiosOk);
+            updateContent: function () {
+                axiosHandle(axios.put("/api/plugins/replayer/recording/" + this.recordingId + "/line/" +
+                    this.selectedRow, this.data), axiosOk);
             }
         }
     });

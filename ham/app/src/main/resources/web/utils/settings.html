@@ -9,11 +9,16 @@
     <script src="/libs/axios.min.js"></script>
     <script src="/libs/utils.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
-    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
 </head>
 <body>
 <div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
-    <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
+    <div class="spinner-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
 <div id="messageObject"></div>
@@ -32,9 +37,9 @@
         <div class="col-md-8">
             <h3>LOAD SETTINGS</h3>
             <ham-upload id="setts-upload"
-                    path="/api/utils/settings"
-                    @success="onSuccess"
-                    @error="onError"
+                        path="/api/utils/settings"
+                        @success="onSuccess"
+                        @error="onError"
             ></ham-upload>
         </div>
         <div class="col-md-8">
@@ -45,9 +50,9 @@
         <div class="col-md-8">
             <h3>LOAD FULL STATUS</h3> require restart
             <ham-upload id="setts-full-upload"
-                    path="/api/utils/settings/full"
-                    @success="onSuccessFull"
-                    @error="onError"
+                        path="/api/utils/settings/full"
+                        @success="onSuccessFull"
+                        @error="onError"
             ></ham-upload>
         </div>
     </div>
@@ -58,17 +63,16 @@
         components: {
             'ham-upload': httpVueLoader('/vcomponents/tupload.vue')
         },
-        data: {
-        },
+        data: {},
         methods: {
-            onSuccess:function(data){
+            onSuccess: function (data) {
                 addMessage("Success");
             },
-            onSuccessFull:function(data){
+            onSuccessFull: function (data) {
                 addWarning("Please Restart HAM!");
             },
-            onError:function(data){
-                addMessage(data.error,error);
+            onError: function (data) {
+                addMessage(data.error, error);
             },
         }
     });

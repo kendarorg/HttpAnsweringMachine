@@ -9,11 +9,16 @@
     <script src="/libs/axios.min.js"></script>
     <script src="/libs/utils.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
-    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
 </head>
 <body>
 <div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
-    <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
+    <div class="spinner-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
 <div id="messageObject"></div>
@@ -22,20 +27,20 @@
         <div class="col-md-8">
             <h3>MAIN FUNCTIONS</h3>
             <simple-grid id="index04"
-                    ref="pluginsGrid"
-                    :columns="gridColumns"
-                    :extra="extraColumns"
-                    :retrieve-data="mainRetrieveData"
+                         ref="pluginsGrid"
+                         :columns="gridColumns"
+                         :extra="extraColumns"
+                         :retrieve-data="mainRetrieveData"
             >
             </simple-grid>
         </div>
         <div class="col-md-8">
             <h3>PLUGINS</h3>
             <simple-grid id="index05"
-                    ref="pluginsGrid"
-                    :columns="gridColumns"
-                    :extra="extraColumns"
-                    :retrieve-data="pluginsRetrieveData"
+                         ref="pluginsGrid"
+                         :columns="gridColumns"
+                         :extra="extraColumns"
+                         :retrieve-data="pluginsRetrieveData"
             >
             </simple-grid>
         </div>
@@ -47,57 +52,59 @@
         components: {
             'simple-grid': httpVueLoader('/vcomponents/testgrid.vue')
         },
-        data:{
-            extraColumns:[],
+        data: {
+            extraColumns: [],
             gridColumns: [
-                {id:"address",template:"link",funcname:function(data){
-                    return data.description;
-                    },searchable:false,sortable:false,index:true}
+                {
+                    id: "address", template: "link", funcname: function (data) {
+                        return data.description;
+                    }, searchable: false, sortable: false, index: true
+                }
             ]
         },
-        methods:{
-            pluginsRetrieveData: async function(){
+        methods: {
+            pluginsRetrieveData: async function () {
                 var result = await axiosHandle(axios.get("/api/plugins"));
                 return result;
             },
-            mainRetrieveData: async function(){
-                var result = {data:null};
+            mainRetrieveData: async function () {
+                var result = {data: null};
                 result.data = [
                     {
-                        address:"dns/index.html",
-                        description:"Dns"
+                        address: "dns/index.html",
+                        description: "Dns"
                     },
                     {
-                        address:"proxy/index.html",
-                        description:"Url/Db Rewrites"
+                        address: "proxy/index.html",
+                        description: "Url/Db Rewrites"
                     },
                     {
-                        address:"certificates/index.html",
-                        description:"SSL/Certificates"
+                        address: "certificates/index.html",
+                        description: "SSL/Certificates"
                     },
                     {
-                        address:"utils/index.html",
-                        description:"Utils"
+                        address: "utils/index.html",
+                        description: "Utils"
                     },
                     {
-                        address:"logs/index.html",
-                        description:"Logs Management"
+                        address: "logs/index.html",
+                        description: "Logs Management"
                     },
                     {
-                        address:"logs/list.html",
-                        description:"Logs Viewer"
+                        address: "logs/list.html",
+                        description: "Logs Viewer"
                     },
                     {
-                        address:"swagger/index.html",
-                        description:"Swagger"
+                        address: "swagger/index.html",
+                        description: "Swagger"
                     },
                     {
-                        address:"utils/settings.html",
-                        description:"Settings"
+                        address: "utils/settings.html",
+                        description: "Settings"
                     },
                     {
-                        address:"utils/restclient.html",
-                        description:"Simple REST Client"
+                        address: "utils/restclient.html",
+                        description: "Simple REST Client"
                     }
                 ]
                 return result;

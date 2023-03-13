@@ -8,10 +8,11 @@ import java.lang.annotation.Annotation;
 public class HamDocConcrete implements HamDoc {
     private HamDoc doc;
 
-    public HamDocConcrete(HamDoc doc){
+    public HamDocConcrete(HamDoc doc) {
 
         this.doc = doc;
     }
+
     @Override
     public Class<? extends Annotation> annotationType() {
         return null;

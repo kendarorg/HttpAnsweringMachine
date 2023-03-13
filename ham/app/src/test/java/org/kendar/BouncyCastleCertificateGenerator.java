@@ -20,7 +20,6 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS8EncryptedPrivateKeyInfoBuilder;
 import org.bouncycastle.pkcs.jcajce.JcePKCSPBEOutputEncryptorBuilder;
-//import org.bouncycastle.util.encoders.Base64;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -46,13 +45,14 @@ public class BouncyCastleCertificateGenerator {
     private static X509Certificate rootCert;
 
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         // Add the BouncyCastle Provider
         Security.addProvider(new BouncyCastleProvider());
         generateRootCertificate();
         //generateSiteCert();
 
     }
+
     public static void generateRootCertificate() throws Exception {
         // Initialize a new KeyPair generator
         keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM, BC_PROVIDER);
@@ -91,7 +91,7 @@ public class BouncyCastleCertificateGenerator {
                 Extension.extendedKeyUsage,
                 false,
                 new ExtendedKeyUsage(
-                        new KeyPurposeId[] {
+                        new KeyPurposeId[]{
                                 KeyPurposeId.id_kp_serverAuth,
                                 KeyPurposeId.id_kp_clientAuth,
                                 KeyPurposeId.id_kp_codeSigning,
@@ -114,7 +114,7 @@ public class BouncyCastleCertificateGenerator {
         X509CertificateHolder rootCertHolder = rootCertBuilder.build(rootCertContentSigner);
         rootCert = new JcaX509CertificateConverter().setProvider(BC_PROVIDER).getCertificate(rootCertHolder);
 
-        writeCertToFileBase64Encoded(rootCert, "ca",rootKeyPair);
+        writeCertToFileBase64Encoded(rootCert, "ca", rootKeyPair);
         //exportKeyPairToKeystoreFile(rootKeyPair, rootCert, "root-cert", "root-cert.pfx", "PKCS12", "pass");
 
     }
@@ -152,13 +152,13 @@ public class BouncyCastleCertificateGenerator {
         issuedCertBuilder.addExtension(Extension.keyUsage, false, new KeyUsage(KeyUsage.keyEncipherment));
 
         // Add DNS name is cert is to used for SSL
-        issuedCertBuilder.addExtension(Extension.subjectAlternativeName, false, new DERSequence(new ASN1Encodable[] {
+        issuedCertBuilder.addExtension(Extension.subjectAlternativeName, false, new DERSequence(new ASN1Encodable[]{
                 new GeneralName(GeneralName.dNSName, "mydomain.local"),
                 new GeneralName(GeneralName.iPAddress, "127.0.0.1")
         }));
 
         X509CertificateHolder issuedCertHolder = issuedCertBuilder.build(csrContentSigner);
-        X509Certificate issuedCert  = new JcaX509CertificateConverter().setProvider(BC_PROVIDER).getCertificate(issuedCertHolder);
+        X509Certificate issuedCert = new JcaX509CertificateConverter().setProvider(BC_PROVIDER).getCertificate(issuedCertHolder);
 
         // Verify the issued cert signature against the root (issuer) cert
         issuedCert.verify(rootCert.getPublicKey(), BC_PROVIDER);
@@ -171,7 +171,7 @@ public class BouncyCastleCertificateGenerator {
     static void exportKeyPairToKeystoreFile(KeyPair keyPair, Certificate certificate, String alias, String fileName, String storeType, String storePass) throws Exception {
         KeyStore sslKeyStore = KeyStore.getInstance(storeType, BC_PROVIDER);
         sslKeyStore.load(null, null);
-        sslKeyStore.setKeyEntry(alias, keyPair.getPrivate(),null, new Certificate[]{certificate});
+        sslKeyStore.setKeyEntry(alias, keyPair.getPrivate(), null, new Certificate[]{certificate});
         FileOutputStream keyStoreOs = new FileOutputStream(fileName);
         sslKeyStore.store(keyStoreOs, storePass.toCharArray());
     }
@@ -179,11 +179,11 @@ public class BouncyCastleCertificateGenerator {
 
     static void writeCertToFileBase64Encoded(Certificate certificate, String fileName, KeyPair rootKeyPair) throws Exception {
         StringWriter sw = new StringWriter();
-        try (JcaPEMWriter  writer  = new JcaPEMWriter(sw)) {
+        try (JcaPEMWriter writer = new JcaPEMWriter(sw)) {
             writer.writeObject(certificate);
         }
         String pem = sw.toString();
-        BufferedWriter bw = new BufferedWriter(new FileWriter(fileName+".der"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(fileName + ".der"));
         bw.write(pem);
         bw.close();
 
@@ -197,18 +197,18 @@ public class BouncyCastleCertificateGenerator {
         var password = "test".toCharArray();
         var outputBuilder = encryptorBuilder.build(password);
         var privKeyObj = builder.build(outputBuilder);
-        var fos = new FileOutputStream(fileName+".encrypted.key");
+        var fos = new FileOutputStream(fileName + ".encrypted.key");
         fos.write(privKeyObj.getEncoded());
         fos.flush();
         fos.close();
 
 
-         sw = new StringWriter();
-        try (JcaPEMWriter  writer  = new JcaPEMWriter(sw)) {
+        sw = new StringWriter();
+        try (JcaPEMWriter writer = new JcaPEMWriter(sw)) {
             writer.writeObject(priv);
         }
-         pem = sw.toString();
-         bw = new BufferedWriter(new FileWriter(fileName+".key"));
+        pem = sw.toString();
+        bw = new BufferedWriter(new FileWriter(fileName + ".key"));
         bw.write(pem);
         bw.close();
     }

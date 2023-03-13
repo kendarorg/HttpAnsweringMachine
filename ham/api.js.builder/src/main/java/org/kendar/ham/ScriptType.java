@@ -10,6 +10,7 @@ public enum ScriptType {
 
         this.text = text;
     }
+
     @Override
     public String toString() {
         return text;

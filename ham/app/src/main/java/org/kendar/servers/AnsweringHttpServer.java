@@ -17,79 +17,79 @@ import java.util.concurrent.Executors;
 @Component
 public class AnsweringHttpServer implements AnsweringServer {
 
-  private final Logger logger;
-  private final AnsweringHandler handler;
-  private final JsonConfiguration configuration;
-  private EventQueue eventQueue;
-  private boolean running = false;
-  private final HashMap<String,HttpServer> httpServers = new HashMap<>();
+    private final Logger logger;
+    private final AnsweringHandler handler;
+    private final JsonConfiguration configuration;
+    private EventQueue eventQueue;
+    private boolean running = false;
+    private final HashMap<String, HttpServer> httpServers = new HashMap<>();
 
-  public AnsweringHttpServer(
-          LoggerBuilder loggerBuilder, AnsweringHandler handler, JsonConfiguration configuration, EventQueue eventQueue) {
-    this.logger = loggerBuilder.build(AnsweringHttpServer.class);
-    this.handler = handler;
-    this.configuration = configuration;
-    this.eventQueue = eventQueue;
-  }
+    public AnsweringHttpServer(
+            LoggerBuilder loggerBuilder, AnsweringHandler handler, JsonConfiguration configuration, EventQueue eventQueue) {
+        this.logger = loggerBuilder.build(AnsweringHttpServer.class);
+        this.handler = handler;
+        this.configuration = configuration;
+        this.eventQueue = eventQueue;
+    }
 
-  public void isSystem() {
-    //To check if is a system class
-  }
+    public void isSystem() {
+        //To check if is a system class
+    }
 
-  @Override
-  public void run() {
-    if (running) return;
-    var config = configuration.getConfiguration(HttpWebServerConfig.class).copy();
-    if (!config.isActive()) return;
-    running = true;
-    httpServers.clear();
+    @Override
+    public void run() {
+        if (running) return;
+        var config = configuration.getConfiguration(HttpWebServerConfig.class).copy();
+        if (!config.isActive()) return;
+        running = true;
+        httpServers.clear();
 
-    try {
-      // setup the socket address
-      var ports= config.getPort().split(";");
-      for(var port:ports) {
-        InetSocketAddress address = new InetSocketAddress(Integer.parseInt(port));
+        try {
+            // setup the socket address
+            var ports = config.getPort().split(";");
+            for (var port : ports) {
+                InetSocketAddress address = new InetSocketAddress(Integer.parseInt(port));
 
-        // initialise the HTTPS server
-        var httpServer = HttpServer.create(address, config.getBacklog());
+                // initialise the HTTPS server
+                var httpServer = HttpServer.create(address, config.getBacklog());
 
-        httpServer.createContext("/", handler);
-        if (config.isUseCachedExecutor()) {
-          httpServer.setExecutor(Executors.newCachedThreadPool()); // creates a cached
-        } else {
-          httpServer.setExecutor(null); // creates a default executor
+                httpServer.createContext("/", handler);
+                if (config.isUseCachedExecutor()) {
+                    httpServer.setExecutor(Executors.newCachedThreadPool()); // creates a cached
+                } else {
+                    httpServer.setExecutor(null); // creates a default executor
+                }
+
+                httpServer.start();
+                httpServers.put(port, httpServer);
+                eventQueue.handle(new ServiceStarted().withTye("http"));
+                logger.info("Http server LOADED, port: {}", port);
+            }
+
+            var localConfig = configuration.getConfiguration(HttpWebServerConfig.class);
+            while (running && localConfig.isActive()) {
+                Sleeper.sleep(10000);
+                localConfig = configuration.getConfiguration(HttpWebServerConfig.class);
+            }
+        } catch (Exception ex) {
+            logger.error(
+                    "Failed to create HTTP server on port " + config.getPort() + " of localhost", ex);
+        } finally {
+            running = false;
         }
-
-        httpServer.start();
-        httpServers.put(port,httpServer);
-        eventQueue.handle(new ServiceStarted().withTye("http"));
-        logger.info("Http server LOADED, port: {}",port);
-      }
-
-      var localConfig = configuration.getConfiguration(HttpWebServerConfig.class);
-      while (running && localConfig.isActive()) {
-        Sleeper.sleep(10000);
-        localConfig = configuration.getConfiguration(HttpWebServerConfig.class);
-      }
-    } catch (Exception ex) {
-      logger.error(
-          "Failed to create HTTP server on port " + config.getPort() + " of localhost", ex);
-    } finally {
-      running = false;
     }
-  }
 
-  @Override
-  public boolean shouldRun() {
-    var localConfig = configuration.getConfiguration(HttpWebServerConfig.class);
-    return localConfig.isActive() && !running;
-  }
-
-  public void stop() {
-    for(var httpServer:httpServers.entrySet()) {
-      httpServer.getValue().stop(0);
+    @Override
+    public boolean shouldRun() {
+        var localConfig = configuration.getConfiguration(HttpWebServerConfig.class);
+        return localConfig.isActive() && !running;
     }
-    running = false;
-    Sleeper.sleep(1000);
-  }
+
+    public void stop() {
+        for (var httpServer : httpServers.entrySet()) {
+            httpServer.getValue().stop(0);
+        }
+        running = false;
+        Sleeper.sleep(1000);
+    }
 }

@@ -1,7 +1,7 @@
 <template>
-  <div class="col-md-8" >
+  <div class="col-md-8">
     <ul class="nav nav-tabs tabs-width">
-      <li  v-for="tab in tabs" class="nav-item">
+      <li v-for="tab in tabs" class="nav-item">
         <a class="nav-link" :href="tab.href" :class="{ 'really-active': tab.isActive }" @click="selectTab(tab)">
           {{ tab.compTitle }}
         </a>
@@ -16,15 +16,15 @@
 <script>
 module.exports = {
   name: 'vtabs',
-  props:{
+  props: {
     reactToHashBang: {
       type: Boolean,
       required: false,
-      default:false
+      default: false
     }
   },
   data() {
-    return {tabs: [] };
+    return {tabs: []};
   },
   components: {
     'vtab': httpVueLoader('/vcomponents/tab/vtab.vue')
@@ -32,30 +32,30 @@ module.exports = {
   created() {
     this.tabs = this.$children;
   },
-  watch:{
-    tabs:function(val,oldVal){
-      if(val.length>0){
-        val[0].isActive=true;
+  watch: {
+    tabs: function (val, oldVal) {
+      if (val.length > 0) {
+        val[0].isActive = true;
       }
     }
   },
   methods: {
     selectTab(selectedTab) {
       var toSelect = "";
-      if(typeof selectedTab === 'string'){
-        toSelect=selectedTab;
-      }else{
-        toSelect=selectedTab.name;
+      if (typeof selectedTab === 'string') {
+        toSelect = selectedTab;
+      } else {
+        toSelect = selectedTab.name;
       }
       this.tabs.forEach(tab => {
-        if(tab.isActive == (tab.name == toSelect))return;
+        if (tab.isActive == (tab.name == toSelect)) return;
         tab.isActive = (tab.name == toSelect);
       });
     }
   }
 }
 </script>
-<style >
+<style>
 .really-active {
   border: 1px solid;
   border-top-left-radius: 0.25rem;

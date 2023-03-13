@@ -13,9 +13,12 @@ public interface DnsMultiResolver {
     void clearCache();
 
     List<String> resolve(String dnsName);
+
     List<String> resolveLocal(String dnsName);
+
     List<String> resolveRemote(String dnsName);
-    HashMap<String,String> listDomains();
+
+    HashMap<String, String> listDomains();
 
     void setRunnable(ThreeParamsFunction<String, String, LoggerBuilder, Callable<List<String>>> runnable);
 }

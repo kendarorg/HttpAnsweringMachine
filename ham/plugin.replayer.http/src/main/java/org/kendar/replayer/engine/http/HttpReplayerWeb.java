@@ -12,11 +12,12 @@ import org.springframework.stereotype.Component;
 public class HttpReplayerWeb extends StaticWebFilter {
 
     @Override
-    public String getDescription(){
+    public String getDescription() {
         return "Replayer web=Http extension";
     }
+
     @Override
-    public String getAddress(){
+    public String getAddress() {
         return null;
     }
 

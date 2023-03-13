@@ -9,11 +9,16 @@
     <script src="/libs/axios.min.js"></script>
     <script src="/libs/utils.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
-    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
 </head>
 <body>
 <div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
-    <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
+    <div class="spinner-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
 <div id="messageObject"></div>
@@ -23,8 +28,12 @@
             <br>
             <a href='../index.html'>Main</a>&gt;
             <a href='list.html'>Utils</a>&gt;
-            <button id="single-log-prev" v-if="goPrev" type="button"  class="btn btn-default" v-on:click="movePrev()">Prev</button>
-            <button id="single-log-next" v-if="goNext" type="button"  class="btn btn-default" v-on:click="moveNext()">Next</button>
+            <button id="single-log-prev" v-if="goPrev" type="button" class="btn btn-default" v-on:click="movePrev()">
+                Prev
+            </button>
+            <button id="single-log-next" v-if="goNext" type="button" class="btn btn-default" v-on:click="moveNext()">
+                Next
+            </button>
         </div>
         <div class="col-md-8">
             <br>
@@ -45,7 +54,8 @@
                         <label htmlFor="response_body">response_body</label>
                         <textarea spellcheck="false"
                                   class="form-control"
-                                  rows="6" cols="50" name="response_body" id="response_body" v-model="responseBody"></textarea>
+                                  rows="6" cols="50" name="response_body" id="response_body"
+                                  v-model="responseBody"></textarea>
                     </div>
                 </vtab>
                 <vtab name="REQUEST">
@@ -59,7 +69,8 @@
                         <label htmlFor="request_body">request_body</label>
                         <textarea spellcheck="false"
                                   class="form-control"
-                                  rows="6" cols="50" name="request_body" id="request_body" v-model="requestBody"></textarea>
+                                  rows="6" cols="50" name="request_body" id="request_body"
+                                  v-model="requestBody"></textarea>
                     </div>
                 </vtab>
                 <vtab name="ENVELOPE">
@@ -84,13 +95,13 @@
         async created() {
             var response = await axiosHandle(axios.get("/api/log/files/" + getUrlParameter("id")));
             var next = response.headers.get("X-NEXT");
-            if(next==null|| typeof next == "undefined")next="";
+            if (next == null || typeof next == "undefined") next = "";
             var past = response.headers.get("X-PAST");
-            if(past==null|| typeof past == "undefined")past="";
+            if (past == null || typeof past == "undefined") past = "";
             this.next = next;
             this.past = past;
-            console.log(next+" "+past)
-            var res=response.data;
+            console.log(next + " " + past)
+            var res = response.data;
 
             var cloned = JSON.parse(JSON.stringify(res));
             cloned['request'] = "NA";
@@ -114,27 +125,31 @@
             }
         },
         computed: {
-            goPrev:function(){return typeof this.past != "undefined" && this.past!="" && this.past!=null;},
-            goNext:function(){return typeof this.next != "undefined" && this.next!=""
-                && this.next!=null && this.next!="-1" && this.next!=-1;},
+            goPrev: function () {
+                return typeof this.past != "undefined" && this.past != "" && this.past != null;
+            },
+            goNext: function () {
+                return typeof this.next != "undefined" && this.next != ""
+                    && this.next != null && this.next != "-1" && this.next != -1;
+            },
         },
-        data: function(){
+        data: function () {
             return {
-                source:"",
-                request:"",
-                requestBody:"",
-                response:"",
-                responseBody:"",
-                next:"",
-                past:""
+                source: "",
+                request: "",
+                requestBody: "",
+                response: "",
+                responseBody: "",
+                next: "",
+                past: ""
             }
         },
-        methods:{
-            movePrev:function(){
-                location.href='single.html?id='+this.past;
+        methods: {
+            movePrev: function () {
+                location.href = 'single.html?id=' + this.past;
             },
-            moveNext:function(){
-                location.href='single.html?id='+this.next;
+            moveNext: function () {
+                location.href = 'single.html?id=' + this.next;
             }
         }
     });

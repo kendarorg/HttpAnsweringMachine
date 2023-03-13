@@ -37,7 +37,7 @@
 module.exports = {
   name: 'search-auto-complete',
   props: {
-    startvalue:String,
+    startvalue: String,
     items: {
       type: Array,
       required: false,

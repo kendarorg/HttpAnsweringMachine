@@ -1,7 +1,5 @@
 package org.kendar.servers.dbproxy;
 
-import java.util.List;
-
 public class ModifyResultSetCommand {
     private String jsonResultSet;
     private String data;

@@ -22,8 +22,8 @@ module.exports = {
   props: {
     matcher: Object
   },
-  methods:{
-    isValid:function(){
+  methods: {
+    isValid: function () {
       return !isUndefined(this.matcher.dbName);
     }
   }

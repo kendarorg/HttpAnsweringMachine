@@ -1,5 +1,5 @@
 <template>
-  <table style="width:1000px"  >
+  <table style="width:1000px">
     <tr>
       <th>
         <button
@@ -31,9 +31,9 @@ module.exports = {
     value: Object,
     field: String
   },
-  computed:{
-    parameters:{
-      get: function() {
+  computed: {
+    parameters: {
+      get: function () {
         var result = [];
         try {
           var partial = findChildItemWithType(this.value, this.field).children;
@@ -47,8 +47,8 @@ module.exports = {
             }
             result.push(toAdd);
           }
-        }catch (e) {
-          
+        } catch (e) {
+
         }
         return result;
       }

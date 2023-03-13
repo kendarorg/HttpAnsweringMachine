@@ -2,24 +2,22 @@ package org.kendar.oidc;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.kendar.http.annotations.SwaggerEnricher;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 
 @Component
 public class OidcSwaggerEnricher implements SwaggerEnricher {
     /**
      * According to https://swagger.io/docs/specification/authentication/#multiple
      * https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#securitySchemeObject
+     *
      * @param swagger
      */
     @Override
     public void enrich(OpenAPI swagger) {
         var components = swagger.getComponents();
-        if(components==null) {
+        if (components == null) {
             components = new Components();
         }
         var securityScheme = new SecurityScheme();
@@ -28,13 +26,13 @@ public class OidcSwaggerEnricher implements SwaggerEnricher {
         securityScheme.bearerFormat("Value: Bearer {jwt}");
         securityScheme.in(SecurityScheme.In.HEADER);
         securityScheme.name("Authorization");
-        components.addSecuritySchemes("OidcBearer",securityScheme);
+        components.addSecuritySchemes("OidcBearer", securityScheme);
         securityScheme = new SecurityScheme();
         securityScheme.type(SecurityScheme.Type.HTTP);
         securityScheme.scheme("basic");
         securityScheme.in(SecurityScheme.In.HEADER);
         securityScheme.name("Authorization");
-        components.addSecuritySchemes("OidcBasic",securityScheme);
+        components.addSecuritySchemes("OidcBasic", securityScheme);
         swagger.components(components);
 
         /*var security = swagger.getSecurity();

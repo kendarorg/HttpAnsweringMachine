@@ -1,23 +1,23 @@
 <template>
-<div>
-  <simple-modal v-if="modalShow"
-                :modal-data="modalData"
-                @close="modalShow = false">
-    <span slot="header">Standard logger</span>
-    <span slot="body"><change-logger :data="modalData.data"/></span>
-  </simple-modal>
-  <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
-  <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
-  <br><br>
-  <simple-grid id="standard14"
-      v-on:gridclicked="gridClicked"
-      ref="grid"
-      :columns="columns"
-      :extra="extraColumns"
-      :retrieve-data="retrieveData"
-  >
-  </simple-grid>
-</div>
+  <div>
+    <simple-modal v-if="modalShow"
+                  :modal-data="modalData"
+                  @close="modalShow = false">
+      <span slot="header">Standard logger</span>
+      <span slot="body"><change-logger :data="modalData.data"/></span>
+    </simple-modal>
+    <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+    <br><br>
+    <simple-grid id="standard14"
+                 v-on:gridclicked="gridClicked"
+                 ref="grid"
+                 :columns="columns"
+                 :extra="extraColumns"
+                 :retrieve-data="retrieveData"
+    >
+    </simple-grid>
+  </div>
 </template>
 <script>
 module.exports = {
@@ -60,7 +60,7 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axiosHandle(axios.delete("/api/log/logger/" + row['key']+"?level="+row['value']),axiosOk)
+        await axiosHandle(axios.delete("/api/log/logger/" + row['key'] + "?level=" + row['value']), axiosOk)
         this.reload();
       }
     },
@@ -73,8 +73,8 @@ module.exports = {
         row = this.$refs.grid.getById(rowId);
       } else {
         row = {
-          key:'',
-          value:'DEBUG'
+          key: '',
+          value: 'DEBUG'
         }
       }
       this.modalData = {
@@ -86,8 +86,8 @@ module.exports = {
     },
     save: async function () {
       await axiosHandle(axios.post('/api/log/logger/' +
-          this.modalData.data.key+"?level="+
-          this.modalData.data.value, this.modalData.data),() => {
+          this.modalData.data.key + "?level=" +
+          this.modalData.data.value, this.modalData.data), () => {
         this.modalShow = false;
         this.reload();
         axiosOk()

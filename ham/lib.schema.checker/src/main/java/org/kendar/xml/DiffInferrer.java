@@ -41,18 +41,18 @@ public class DiffInferrer {
     public boolean diff(String... xmls) throws XmlException {
 
         var first = xmls[0].trim();
-        if(first==null){
-            if(!Arrays.stream(xmls).skip(1).allMatch(a->a==null)){
+        if (first == null) {
+            if (!Arrays.stream(xmls).skip(1).allMatch(a -> a == null)) {
                 throw new XmlException("Expected:null Found content instead");
             }
-        }else{
-            if(Arrays.stream(xmls).skip(1).anyMatch(a->a==null)){
+        } else {
+            if (Arrays.stream(xmls).skip(1).anyMatch(a -> a == null)) {
                 throw new XmlException("Expected not nulls Found nulls instead");
             }
         }
         var diffResult = new DiffPath();
         var templates = new ArrayList<XmlElement>();
-        XmlElement toCheck ;
+        XmlElement toCheck;
 
         if (first.startsWith("{") || first.startsWith("[")) {
             //IS JSON
@@ -66,9 +66,9 @@ public class DiffInferrer {
             for (var i = 0; i < xmls.length - 1; i++) {
                 templates.add(xmlBuilder.load(toXml(xmls[i]).getDocumentElement(), 0, diffResult));
             }
-        }else{
-            if(!first.equals((xmls[xmls.length - 1].trim()))){
-                throw new XmlException("Expected:"+first+" Found:"+xmls[xmls.length - 1]);
+        } else {
+            if (!first.equals((xmls[xmls.length - 1].trim()))) {
+                throw new XmlException("Expected:" + first + " Found:" + xmls[xmls.length - 1]);
             }
             return true;
         }

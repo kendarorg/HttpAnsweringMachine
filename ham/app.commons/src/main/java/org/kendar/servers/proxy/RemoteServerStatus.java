@@ -8,7 +8,7 @@ public class RemoteServerStatus {
     private boolean running = false;
     private boolean force = false;
 
-    public RemoteServerStatus(){
+    public RemoteServerStatus() {
 
     }
 
@@ -44,7 +44,7 @@ public class RemoteServerStatus {
     }
 
     public boolean isRunning() {
-        return running||force;
+        return running || force;
     }
 
     public void setRunning(boolean running) {
@@ -59,8 +59,8 @@ public class RemoteServerStatus {
         this.id = id;
     }
 
-    public RemoteServerStatus copy(){
-        var res = new RemoteServerStatus(this.id,this.when,this.where,this.test);
+    public RemoteServerStatus copy() {
+        var res = new RemoteServerStatus(this.id, this.when, this.where, this.test);
         res.setForce(this.force);
         return res;
     }

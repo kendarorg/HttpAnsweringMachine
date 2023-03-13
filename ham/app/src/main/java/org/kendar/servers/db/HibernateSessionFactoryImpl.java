@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class HibernateSessionFactoryImpl implements HibernateSessionFactory{
+public class HibernateSessionFactoryImpl implements HibernateSessionFactory {
     private Configuration configuration;
     private static SessionFactory sessionFactory;
 
@@ -28,21 +28,21 @@ public class HibernateSessionFactoryImpl implements HibernateSessionFactory{
     }
 
     @Override
-    public <T> T  transactionalResult(EntityManagerFunctionResult function) throws Exception {
+    public <T> T transactionalResult(EntityManagerFunctionResult function) throws Exception {
         var sessionFactory = createSession();
         var em = sessionFactory.createEntityManager();
         em.getTransaction().begin();
-        T result = (T)function.apply(em);
+        T result = (T) function.apply(em);
         em.getTransaction().commit();
         em.close();
         return result;
     }
 
     @Override
-    public <T> T  queryResult(EntityManagerFunctionResult function) throws Exception {
+    public <T> T queryResult(EntityManagerFunctionResult function) throws Exception {
         var sessionFactory = configuration.buildSessionFactory();
         var em = sessionFactory.createEntityManager();
-        T result = (T)function.apply(em);
+        T result = (T) function.apply(em);
         em.close();
         return result;
     }
@@ -51,13 +51,13 @@ public class HibernateSessionFactoryImpl implements HibernateSessionFactory{
     public <T> Optional<T> querySingle(EntityManagerFunctionResult function) throws Exception {
         var sessionFactory = configuration.buildSessionFactory();
         var em = sessionFactory.createEntityManager();
-        var query = (Query)function.apply(em);
+        var query = (Query) function.apply(em);
         Optional result;
-        var list = (List<T>)query.getResultList();
-        if(list.size()==0){
+        var list = (List<T>) query.getResultList();
+        if (list.size() == 0) {
             em.close();
             result = Optional.empty();
-        }else{
+        } else {
             result = Optional.of(list.get(0));
             em.close();
         }

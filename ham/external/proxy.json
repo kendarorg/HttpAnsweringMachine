@@ -7,14 +7,16 @@
       "when": "http://localhost/int/prova001",
       "where": "http://fake1.forced",
       "test": "fake1",
-      "running": false, "force":true
+      "running": false,
+      "force": true
     },
     {
       "id": "f9669eb8-11dd-4c0f-ab1a-345fdce32311",
       "when": "http://localhost/int/prova002",
       "where": "http://fake2.noforced",
       "test": "fake2",
-      "running": false, "force":false
+      "running": false,
+      "force": false
     }
   ]
 }

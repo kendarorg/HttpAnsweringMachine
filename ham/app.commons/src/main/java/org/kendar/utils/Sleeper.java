@@ -6,15 +6,16 @@ package org.kendar.utils;
 public class Sleeper {
     /**
      * Runs a synchronized based wait mechanism instead of sleep
+     *
      * @param timeoutMillis
      */
-    public static void sleep(long timeoutMillis){
+    public static void sleep(long timeoutMillis) {
         try {
             Object obj = new Object();
             synchronized (obj) {
                 obj.wait(timeoutMillis);
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
 
         }
     }

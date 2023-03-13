@@ -1,6 +1,6 @@
 <template>
 
-    <input name="query" v-model="searchQuery" v-bind:size="inputLength"/>
+  <input name="query" v-model="searchQuery" v-bind:size="inputLength"/>
 
 </template>
 <script>
@@ -9,24 +9,24 @@ module.exports = {
     descriptor: Object,
   },
   name: 'slong',
-  data:function(){
+  data: function () {
     return {
       searchQuery: ""
     };
   },
   computed: {
     inputLength: function () {
-      if(typeof this.descriptor.size =="undefined")return 30;
+      if (typeof this.descriptor.size == "undefined") return 30;
       return this.descriptor.size;
     }
   },
-  watch:{
-    searchQuery:function(val,oldVal){
-      this.$parent.setSearchField(this.descriptor.id,val,this.descriptor.template);
+  watch: {
+    searchQuery: function (val, oldVal) {
+      this.$parent.setSearchField(this.descriptor.id, val, this.descriptor.template);
     }
   },
-  methods:{
-    clean:function(){
+  methods: {
+    clean: function () {
       this.searchQuery = "";
     }
   }

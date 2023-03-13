@@ -40,8 +40,6 @@ module.exports = {
   },
   components: {
     'simple-tree': httpVueLoader('/vcomponents/vtree.vue'),
-    //'basiccomponent': httpVueLoader('/plugins/recording/vcomponents/line/vbasic.vue'),
-    //'orgkendarjanuscmdexec': httpVueLoader('/plugins/recording/vcomponents/line/orgkendarjanuscmdexec.vue'),
     'root': httpVueLoader('/plugins/recording/vcomponents/line/root.vue'),
     'dynamic-component': httpVueLoader('/plugins/recording/vcomponents/dynamic-component.vue'),
     'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
@@ -60,7 +58,7 @@ module.exports = {
   watch: {
     data: function (val, oldVal) {
       this.prepareTree(val);
-      if(typeof this.treeData =="undefined" || typeof this.treeData.type =="undefined") return;
+      if (typeof this.treeData == "undefined" || typeof this.treeData.type == "undefined") return;
       this.visualization = val;
       this.selectedComponentItem = this.treeData;
       this.selectedComponentType = this.treeData.type.replaceAll(".", "").toLowerCase();
@@ -68,7 +66,7 @@ module.exports = {
   },
   created: function () {
     this.prepareTree(this.data);
-    if(typeof this.treeData =="undefined" || typeof this.treeData.type =="undefined") return;
+    if (typeof this.treeData == "undefined" || typeof this.treeData.type == "undefined") return;
     this.selectedComponentItem = this.treeData;
     this.selectedComponentType = this.treeData.type.replaceAll(".", "").toLowerCase();
   },
@@ -98,24 +96,24 @@ module.exports = {
     onComponentEvent: function (evt) {
       if (evt.id == "changed") {
         this.visualization = JSON.stringify(convertToStructure([this.treeData]))
-        this.$emit("changed",this.visualization)
-      }else if(evt.id=="reloadcallback"){
+        this.$emit("changed", this.visualization)
+      } else if (evt.id == "reloadcallback") {
         var th = this;
-        evt.callback(this.visualization,function(toupdate){
-          th.visualization=toupdate;
-          th.$emit("changed",th.visualization)
+        evt.callback(this.visualization, function (toupdate) {
+          th.visualization = toupdate;
+          th.$emit("changed", th.visualization)
         })
       }
     },
     prepareTree: function (newData) {
       try {
         this.treeData = convertToNodes(JSON.parse(newData))[0];
-      }catch (e) {
-        
+      } catch (e) {
+
       }
     },
     showContent: function (item) {
-      if (typeof item=="undefined" || item.type=="undefined") {
+      if (typeof item == "undefined" || item.type == "undefined") {
         this.selectedComponentItem = null;
         this.selectedComponentType = "basic";
         return;
@@ -123,16 +121,6 @@ module.exports = {
       this.selectedComponentItem = item;
       var type = item.type.replaceAll(".", "").toLowerCase();
       this.selectedComponentType = item.type;
-      /*
-      let componentExists = type in this.$options.components
-      if (componentExists) {
-
-      } else {
-
-        this.selectedComponentType = "basic";
-      }*/
-      //Vue.set(item, "children", []);
-      //this.addItem(item);
     },
     addItem: function (item) {
       item.children.push({

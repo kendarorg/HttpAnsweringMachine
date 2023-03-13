@@ -14,25 +14,27 @@ public enum ExtraParam {
     HTTP_HOSTS("hosts");
 
     private static final Map<String, ExtraParam> typesMap = new HashMap<>();
+
     static {
         for (ExtraParam type : ExtraParam.values()) {
-            typesMap.put(type.text.toLowerCase(Locale.ROOT),type);
+            typesMap.put(type.text.toLowerCase(Locale.ROOT), type);
         }
     }
 
-    public static ExtraParam fromString(String value){
+    public static ExtraParam fromString(String value) {
         var type = typesMap.get(value);
-        if(type==null) {
-            var founded = Arrays.stream(ExtraParam.values()).filter(a->a.name().equalsIgnoreCase(value))
+        if (type == null) {
+            var founded = Arrays.stream(ExtraParam.values()).filter(a -> a.name().equalsIgnoreCase(value))
                     .findFirst();
-            return founded.isEmpty()?null:founded.get();
+            return founded.isEmpty() ? null : founded.get();
         }
         return type;
     }
 
-    public boolean is(String text){
+    public boolean is(String text) {
         return text.equalsIgnoreCase(this.text);
     }
+
     private final String text;
 
     ExtraParam(final String text) {

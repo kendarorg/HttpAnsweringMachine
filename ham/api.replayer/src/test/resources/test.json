@@ -1,1 +1,164 @@
-{"staticRequests":[],"dynamicRequests":[{"binaryRequest":true,"path":"/api/v2/$metadata","host":"www.nuget.org","query":null,"timestamp":1668685438983,"requestHash":"0","recordingId":10,"responseHash":"501312c7eb44565f60cb7bb491ffda3e","id":1,"index":17,"stimulatedTest":false,"staticRequest":false,"done":false,"request":{"ms":1668685438068,"binaryRequest":true,"method":"GET","requestText":null,"requestBytes":null,"headers":{"Accept-encoding":"gzip,deflate","Connection":"Keep-Alive","Host":"www.nuget.org","User-agent":"Apache-HttpClient/4.5.13 (Java/11.0.13)","Content-Type":"application/octet-stream"},"protocol":"https","soapRequest":false,"basicPassword":null,"basicUsername":null,"multipartData":[],"staticRequest":false,"host":"www.nuget.org","path":"/api/v2/$metadata","postParameters":{},"port":-1,"query":{},"remoteHost":"127.0.0.1","pathParameters":{}},"response":{"responseBytes":null,"responseText":"<?xml version=\"1.0\" encoding=\"utf-8\"?><edmx:Edmx Version=\"1.0\" xmlns:edmx=\"http://schemas.MARKERTESTWORD.com/ado/2007/06/edmx\"><edmx:DataServices m:DataServiceVersion=\"2.0\" m:MaxDataServiceVersion=\"2.0\" xmlns:m=\"http://schemas.MARKERTESTWORD.com/ado/2007/08/dataservices/metadata\"><Schema Namespace=\"NuGetGallery.OData\" xmlns=\"http://schemas.MARKERTESTWORD.com/ado/2006/04/edm\"><EntityType Name=\"V2FeedPackage\" m:HasStream=\"true\"><Key><PropertyRef Name=\"Id\" /><PropertyRef Name=\"Version\" /></Key><Property Name=\"Id\" Type=\"Edm.String\" Nullable=\"false\" /><Property Name=\"Version\" Type=\"Edm.String\" Nullable=\"false\" /><Property Name=\"NormalizedVersion\" Type=\"Edm.String\" /><Property Name=\"Authors\" Type=\"Edm.String\" /><Property Name=\"Copyright\" Type=\"Edm.String\" /><Property Name=\"Created\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"Dependencies\" Type=\"Edm.String\" /><Property Name=\"Description\" Type=\"Edm.String\" /><Property Name=\"DownloadCount\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"GalleryDetailsUrl\" Type=\"Edm.String\" /><Property Name=\"IconUrl\" Type=\"Edm.String\" /><Property Name=\"IsLatestVersion\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"IsAbsoluteLatestVersion\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"IsPrerelease\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Language\" Type=\"Edm.String\" /><Property Name=\"LastUpdated\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"Published\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"PackageHash\" Type=\"Edm.String\" /><Property Name=\"PackageHashAlgorithm\" Type=\"Edm.String\" /><Property Name=\"PackageSize\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"ProjectUrl\" Type=\"Edm.String\" /><Property Name=\"ReportAbuseUrl\" Type=\"Edm.String\" /><Property Name=\"ReleaseNotes\" Type=\"Edm.String\" /><Property Name=\"RequireLicenseAcceptance\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Summary\" Type=\"Edm.String\" /><Property Name=\"Tags\" Type=\"Edm.String\" /><Property Name=\"Title\" Type=\"Edm.String\" /><Property Name=\"VersionDownloadCount\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"MinClientVersion\" Type=\"Edm.String\" /><Property Name=\"LastEdited\" Type=\"Edm.DateTime\" /><Property Name=\"LicenseUrl\" Type=\"Edm.String\" /><Property Name=\"LicenseNames\" Type=\"Edm.String\" /><Property Name=\"LicenseReportUrl\" Type=\"Edm.String\" /></EntityType></Schema><Schema Namespace=\"NuGetGallery\" xmlns=\"http://schemas.MARKERTESTWORD.com/ado/2006/04/edm\"><EntityContainer Name=\"V2FeedContext\" m:IsDefaultEntityContainer=\"true\"><EntitySet Name=\"Packages\" EntityType=\"NuGetGallery.OData.V2FeedPackage\" /><FunctionImport Name=\"Search\" ReturnType=\"Collection(NuGetGallery.OData.V2FeedPackage)\" EntitySet=\"Packages\"><Parameter Name=\"searchTerm\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"targetFramework\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"includePrerelease\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Parameter Name=\"semVerLevel\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport><FunctionImport Name=\"FindPackagesById\" ReturnType=\"Collection(NuGetGallery.OData.V2FeedPackage)\" EntitySet=\"Packages\"><Parameter Name=\"id\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport><FunctionImport Name=\"GetUpdates\" ReturnType=\"Collection(NuGetGallery.OData.V2FeedPackage)\" EntitySet=\"Packages\"><Parameter Name=\"packageIds\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"versions\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"includePrerelease\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Parameter Name=\"includeAllVersions\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Parameter Name=\"targetFrameworks\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"versionConstraints\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"semVerLevel\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport></EntityContainer></Schema></edmx:DataServices></edmx:Edmx>","headers":{"Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff","Access-Control-Allow-Methods":"*","X-CorrelationId":"3627cb97-cda5-414b-9305-9f93108c0416","Pragma":"no-cache","Date":"Thu, 17 Nov 2022 11:43:59 GMT","Access-Control-Allow-Headers":"*","X-Frame-Options":"DENY","Access-Control-Expose-Headers":"*","Strict-Transport-Security":"max-age=31536000; includeSubDomains","access-control-allow-credentials":"false","Cache-Control":"no-cache","Content-Security-Policy":"frame-ancestors 'none'","Set-Cookie":"ARRAffinitySameSite=9b78f19010cde6d04cb8246933dcb4f2744e93b3b758d64c2432bf18d4d16e78;Path=/;HttpOnly;SameSite=None;Secure;Domain=nuget-prod-v2gallery-appservice.trafficmanager.net","Expires":"-1","X-XSS-Protection":"1; mode=block","Access-Control-Max-Age":"86400","DataServiceVersion":"3.0","Content-Type":"application/xml; charset=utf-8","Request-Context":"appId=cid-v1:338f6804-b1a9-4fe3-bba7-c93064e7ae7b"},"statusCode":200,"binaryResponse":false,"messages":[]}},{"binaryRequest":true,"path":"/api/v2/$metadata","host":"gateway.int.test","query":null,"timestamp":1668685438983,"requestHash":"0","recordingId":10,"responseHash":"501312c7eb44565f60cb7bb491ffda3e","id":0,"index":18,"stimulatedTest":false,"staticRequest":false,"done":false,"request":{"ms":1668685437272,"binaryRequest":true,"method":"GET","requestText":null,"requestBytes":null,"headers":{"Accept-encoding":"gzip,deflate","Connection":"Keep-Alive","Host":"gateway.int.test","User-agent":"Apache-HttpClient/4.5.13 (Java/11.0.13)","Content-Type":"application/octet-stream"},"protocol":"http","soapRequest":false,"basicPassword":null,"basicUsername":null,"multipartData":[],"staticRequest":false,"host":"gateway.int.test","path":"/api/v2/$metadata","postParameters":{},"port":-1,"query":{},"remoteHost":"127.0.0.1","pathParameters":{}},"response":{"responseBytes":null,"responseText":"<?xml version=\"1.0\" encoding=\"utf-8\"?><edmx:Edmx Version=\"1.0\" xmlns:edmx=\"http://schemas.MARKERTESTWORD.com/ado/2007/06/edmx\"><edmx:DataServices m:DataServiceVersion=\"2.0\" m:MaxDataServiceVersion=\"2.0\" xmlns:m=\"http://schemas.MARKERTESTWORD.com/ado/2007/08/dataservices/metadata\"><Schema Namespace=\"NuGetGallery.OData\" xmlns=\"http://schemas.MARKERTESTWORD.com/ado/2006/04/edm\"><EntityType Name=\"V2FeedPackage\" m:HasStream=\"true\"><Key><PropertyRef Name=\"Id\" /><PropertyRef Name=\"Version\" /></Key><Property Name=\"Id\" Type=\"Edm.String\" Nullable=\"false\" /><Property Name=\"Version\" Type=\"Edm.String\" Nullable=\"false\" /><Property Name=\"NormalizedVersion\" Type=\"Edm.String\" /><Property Name=\"Authors\" Type=\"Edm.String\" /><Property Name=\"Copyright\" Type=\"Edm.String\" /><Property Name=\"Created\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"Dependencies\" Type=\"Edm.String\" /><Property Name=\"Description\" Type=\"Edm.String\" /><Property Name=\"DownloadCount\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"GalleryDetailsUrl\" Type=\"Edm.String\" /><Property Name=\"IconUrl\" Type=\"Edm.String\" /><Property Name=\"IsLatestVersion\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"IsAbsoluteLatestVersion\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"IsPrerelease\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Language\" Type=\"Edm.String\" /><Property Name=\"LastUpdated\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"Published\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"PackageHash\" Type=\"Edm.String\" /><Property Name=\"PackageHashAlgorithm\" Type=\"Edm.String\" /><Property Name=\"PackageSize\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"ProjectUrl\" Type=\"Edm.String\" /><Property Name=\"ReportAbuseUrl\" Type=\"Edm.String\" /><Property Name=\"ReleaseNotes\" Type=\"Edm.String\" /><Property Name=\"RequireLicenseAcceptance\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Summary\" Type=\"Edm.String\" /><Property Name=\"Tags\" Type=\"Edm.String\" /><Property Name=\"Title\" Type=\"Edm.String\" /><Property Name=\"VersionDownloadCount\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"MinClientVersion\" Type=\"Edm.String\" /><Property Name=\"LastEdited\" Type=\"Edm.DateTime\" /><Property Name=\"LicenseUrl\" Type=\"Edm.String\" /><Property Name=\"LicenseNames\" Type=\"Edm.String\" /><Property Name=\"LicenseReportUrl\" Type=\"Edm.String\" /></EntityType></Schema><Schema Namespace=\"NuGetGallery\" xmlns=\"http://schemas.MARKERTESTWORD.com/ado/2006/04/edm\"><EntityContainer Name=\"V2FeedContext\" m:IsDefaultEntityContainer=\"true\"><EntitySet Name=\"Packages\" EntityType=\"NuGetGallery.OData.V2FeedPackage\" /><FunctionImport Name=\"Search\" ReturnType=\"Collection(NuGetGallery.OData.V2FeedPackage)\" EntitySet=\"Packages\"><Parameter Name=\"searchTerm\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"targetFramework\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"includePrerelease\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Parameter Name=\"semVerLevel\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport><FunctionImport Name=\"FindPackagesById\" ReturnType=\"Collection(NuGetGallery.OData.V2FeedPackage)\" EntitySet=\"Packages\"><Parameter Name=\"id\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport><FunctionImport Name=\"GetUpdates\" ReturnType=\"Collection(NuGetGallery.OData.V2FeedPackage)\" EntitySet=\"Packages\"><Parameter Name=\"packageIds\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"versions\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"includePrerelease\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Parameter Name=\"includeAllVersions\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Parameter Name=\"targetFrameworks\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"versionConstraints\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"semVerLevel\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport></EntityContainer></Schema></edmx:DataServices></edmx:Edmx>","headers":{"access-control-allow-credentials":"false","Access-Control-Expose-Headers":"*","Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"*","Content-length":"4042","Access-Control-Max-Age":"86400","Date":"Thu, 17 Nov 2022 11:43:58 GMT","Access-Control-Allow-Headers":"*"},"statusCode":200,"binaryResponse":false,"messages":[]}}],"errors":[],"indexes":[{"index":17,"id":0,"recordingId":10,"reference":0,"description":null,"preScript":null,"postScript":null,"pactTest":false,"stimulatorTest":false},{"index":18,"id":1,"recordingId":10,"reference":1,"description":null,"preScript":null,"postScript":null,"pactTest":false,"stimulatorTest":false}],"variables":{},"initScript":null,"description":null,"filter":null}
+{
+  "staticRequests": [],
+  "dynamicRequests": [
+    {
+      "binaryRequest": true,
+      "path": "/api/v2/$metadata",
+      "host": "www.nuget.org",
+      "query": null,
+      "timestamp": 1668685438983,
+      "requestHash": "0",
+      "recordingId": 10,
+      "responseHash": "501312c7eb44565f60cb7bb491ffda3e",
+      "id": 1,
+      "index": 17,
+      "stimulatedTest": false,
+      "staticRequest": false,
+      "done": false,
+      "request": {
+        "ms": 1668685438068,
+        "binaryRequest": true,
+        "method": "GET",
+        "requestText": null,
+        "requestBytes": null,
+        "headers": {
+          "Accept-encoding": "gzip,deflate",
+          "Connection": "Keep-Alive",
+          "Host": "www.nuget.org",
+          "User-agent": "Apache-HttpClient/4.5.13 (Java/11.0.13)",
+          "Content-Type": "application/octet-stream"
+        },
+        "protocol": "https",
+        "soapRequest": false,
+        "basicPassword": null,
+        "basicUsername": null,
+        "multipartData": [],
+        "staticRequest": false,
+        "host": "www.nuget.org",
+        "path": "/api/v2/$metadata",
+        "postParameters": {},
+        "port": -1,
+        "query": {},
+        "remoteHost": "127.0.0.1",
+        "pathParameters": {}
+      },
+      "response": {
+        "responseBytes": null,
+        "responseText": "<?xml version=\"1.0\" encoding=\"utf-8\"?><edmx:Edmx Version=\"1.0\" xmlns:edmx=\"http://schemas.MARKERTESTWORD.com/ado/2007/06/edmx\"><edmx:DataServices m:DataServiceVersion=\"2.0\" m:MaxDataServiceVersion=\"2.0\" xmlns:m=\"http://schemas.MARKERTESTWORD.com/ado/2007/08/dataservices/metadata\"><Schema Namespace=\"NuGetGallery.OData\" xmlns=\"http://schemas.MARKERTESTWORD.com/ado/2006/04/edm\"><EntityType Name=\"V2FeedPackage\" m:HasStream=\"true\"><Key><PropertyRef Name=\"Id\" /><PropertyRef Name=\"Version\" /></Key><Property Name=\"Id\" Type=\"Edm.String\" Nullable=\"false\" /><Property Name=\"Version\" Type=\"Edm.String\" Nullable=\"false\" /><Property Name=\"NormalizedVersion\" Type=\"Edm.String\" /><Property Name=\"Authors\" Type=\"Edm.String\" /><Property Name=\"Copyright\" Type=\"Edm.String\" /><Property Name=\"Created\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"Dependencies\" Type=\"Edm.String\" /><Property Name=\"Description\" Type=\"Edm.String\" /><Property Name=\"DownloadCount\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"GalleryDetailsUrl\" Type=\"Edm.String\" /><Property Name=\"IconUrl\" Type=\"Edm.String\" /><Property Name=\"IsLatestVersion\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"IsAbsoluteLatestVersion\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"IsPrerelease\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Language\" Type=\"Edm.String\" /><Property Name=\"LastUpdated\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"Published\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"PackageHash\" Type=\"Edm.String\" /><Property Name=\"PackageHashAlgorithm\" Type=\"Edm.String\" /><Property Name=\"PackageSize\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"ProjectUrl\" Type=\"Edm.String\" /><Property Name=\"ReportAbuseUrl\" Type=\"Edm.String\" /><Property Name=\"ReleaseNotes\" Type=\"Edm.String\" /><Property Name=\"RequireLicenseAcceptance\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Summary\" Type=\"Edm.String\" /><Property Name=\"Tags\" Type=\"Edm.String\" /><Property Name=\"Title\" Type=\"Edm.String\" /><Property Name=\"VersionDownloadCount\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"MinClientVersion\" Type=\"Edm.String\" /><Property Name=\"LastEdited\" Type=\"Edm.DateTime\" /><Property Name=\"LicenseUrl\" Type=\"Edm.String\" /><Property Name=\"LicenseNames\" Type=\"Edm.String\" /><Property Name=\"LicenseReportUrl\" Type=\"Edm.String\" /></EntityType></Schema><Schema Namespace=\"NuGetGallery\" xmlns=\"http://schemas.MARKERTESTWORD.com/ado/2006/04/edm\"><EntityContainer Name=\"V2FeedContext\" m:IsDefaultEntityContainer=\"true\"><EntitySet Name=\"Packages\" EntityType=\"NuGetGallery.OData.V2FeedPackage\" /><FunctionImport Name=\"Search\" ReturnType=\"Collection(NuGetGallery.OData.V2FeedPackage)\" EntitySet=\"Packages\"><Parameter Name=\"searchTerm\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"targetFramework\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"includePrerelease\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Parameter Name=\"semVerLevel\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport><FunctionImport Name=\"FindPackagesById\" ReturnType=\"Collection(NuGetGallery.OData.V2FeedPackage)\" EntitySet=\"Packages\"><Parameter Name=\"id\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport><FunctionImport Name=\"GetUpdates\" ReturnType=\"Collection(NuGetGallery.OData.V2FeedPackage)\" EntitySet=\"Packages\"><Parameter Name=\"packageIds\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"versions\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"includePrerelease\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Parameter Name=\"includeAllVersions\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Parameter Name=\"targetFrameworks\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"versionConstraints\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"semVerLevel\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport></EntityContainer></Schema></edmx:DataServices></edmx:Edmx>",
+        "headers": {
+          "Access-Control-Allow-Origin": "*",
+          "X-Content-Type-Options": "nosniff",
+          "Access-Control-Allow-Methods": "*",
+          "X-CorrelationId": "3627cb97-cda5-414b-9305-9f93108c0416",
+          "Pragma": "no-cache",
+          "Date": "Thu, 17 Nov 2022 11:43:59 GMT",
+          "Access-Control-Allow-Headers": "*",
+          "X-Frame-Options": "DENY",
+          "Access-Control-Expose-Headers": "*",
+          "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+          "access-control-allow-credentials": "false",
+          "Cache-Control": "no-cache",
+          "Content-Security-Policy": "frame-ancestors 'none'",
+          "Set-Cookie": "ARRAffinitySameSite=9b78f19010cde6d04cb8246933dcb4f2744e93b3b758d64c2432bf18d4d16e78;Path=/;HttpOnly;SameSite=None;Secure;Domain=nuget-prod-v2gallery-appservice.trafficmanager.net",
+          "Expires": "-1",
+          "X-XSS-Protection": "1; mode=block",
+          "Access-Control-Max-Age": "86400",
+          "DataServiceVersion": "3.0",
+          "Content-Type": "application/xml; charset=utf-8",
+          "Request-Context": "appId=cid-v1:338f6804-b1a9-4fe3-bba7-c93064e7ae7b"
+        },
+        "statusCode": 200,
+        "binaryResponse": false,
+        "messages": []
+      }
+    },
+    {
+      "binaryRequest": true,
+      "path": "/api/v2/$metadata",
+      "host": "gateway.int.test",
+      "query": null,
+      "timestamp": 1668685438983,
+      "requestHash": "0",
+      "recordingId": 10,
+      "responseHash": "501312c7eb44565f60cb7bb491ffda3e",
+      "id": 0,
+      "index": 18,
+      "stimulatedTest": false,
+      "staticRequest": false,
+      "done": false,
+      "request": {
+        "ms": 1668685437272,
+        "binaryRequest": true,
+        "method": "GET",
+        "requestText": null,
+        "requestBytes": null,
+        "headers": {
+          "Accept-encoding": "gzip,deflate",
+          "Connection": "Keep-Alive",
+          "Host": "gateway.int.test",
+          "User-agent": "Apache-HttpClient/4.5.13 (Java/11.0.13)",
+          "Content-Type": "application/octet-stream"
+        },
+        "protocol": "http",
+        "soapRequest": false,
+        "basicPassword": null,
+        "basicUsername": null,
+        "multipartData": [],
+        "staticRequest": false,
+        "host": "gateway.int.test",
+        "path": "/api/v2/$metadata",
+        "postParameters": {},
+        "port": -1,
+        "query": {},
+        "remoteHost": "127.0.0.1",
+        "pathParameters": {}
+      },
+      "response": {
+        "responseBytes": null,
+        "responseText": "<?xml version=\"1.0\" encoding=\"utf-8\"?><edmx:Edmx Version=\"1.0\" xmlns:edmx=\"http://schemas.MARKERTESTWORD.com/ado/2007/06/edmx\"><edmx:DataServices m:DataServiceVersion=\"2.0\" m:MaxDataServiceVersion=\"2.0\" xmlns:m=\"http://schemas.MARKERTESTWORD.com/ado/2007/08/dataservices/metadata\"><Schema Namespace=\"NuGetGallery.OData\" xmlns=\"http://schemas.MARKERTESTWORD.com/ado/2006/04/edm\"><EntityType Name=\"V2FeedPackage\" m:HasStream=\"true\"><Key><PropertyRef Name=\"Id\" /><PropertyRef Name=\"Version\" /></Key><Property Name=\"Id\" Type=\"Edm.String\" Nullable=\"false\" /><Property Name=\"Version\" Type=\"Edm.String\" Nullable=\"false\" /><Property Name=\"NormalizedVersion\" Type=\"Edm.String\" /><Property Name=\"Authors\" Type=\"Edm.String\" /><Property Name=\"Copyright\" Type=\"Edm.String\" /><Property Name=\"Created\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"Dependencies\" Type=\"Edm.String\" /><Property Name=\"Description\" Type=\"Edm.String\" /><Property Name=\"DownloadCount\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"GalleryDetailsUrl\" Type=\"Edm.String\" /><Property Name=\"IconUrl\" Type=\"Edm.String\" /><Property Name=\"IsLatestVersion\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"IsAbsoluteLatestVersion\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"IsPrerelease\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Language\" Type=\"Edm.String\" /><Property Name=\"LastUpdated\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"Published\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"PackageHash\" Type=\"Edm.String\" /><Property Name=\"PackageHashAlgorithm\" Type=\"Edm.String\" /><Property Name=\"PackageSize\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"ProjectUrl\" Type=\"Edm.String\" /><Property Name=\"ReportAbuseUrl\" Type=\"Edm.String\" /><Property Name=\"ReleaseNotes\" Type=\"Edm.String\" /><Property Name=\"RequireLicenseAcceptance\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Summary\" Type=\"Edm.String\" /><Property Name=\"Tags\" Type=\"Edm.String\" /><Property Name=\"Title\" Type=\"Edm.String\" /><Property Name=\"VersionDownloadCount\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"MinClientVersion\" Type=\"Edm.String\" /><Property Name=\"LastEdited\" Type=\"Edm.DateTime\" /><Property Name=\"LicenseUrl\" Type=\"Edm.String\" /><Property Name=\"LicenseNames\" Type=\"Edm.String\" /><Property Name=\"LicenseReportUrl\" Type=\"Edm.String\" /></EntityType></Schema><Schema Namespace=\"NuGetGallery\" xmlns=\"http://schemas.MARKERTESTWORD.com/ado/2006/04/edm\"><EntityContainer Name=\"V2FeedContext\" m:IsDefaultEntityContainer=\"true\"><EntitySet Name=\"Packages\" EntityType=\"NuGetGallery.OData.V2FeedPackage\" /><FunctionImport Name=\"Search\" ReturnType=\"Collection(NuGetGallery.OData.V2FeedPackage)\" EntitySet=\"Packages\"><Parameter Name=\"searchTerm\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"targetFramework\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"includePrerelease\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Parameter Name=\"semVerLevel\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport><FunctionImport Name=\"FindPackagesById\" ReturnType=\"Collection(NuGetGallery.OData.V2FeedPackage)\" EntitySet=\"Packages\"><Parameter Name=\"id\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport><FunctionImport Name=\"GetUpdates\" ReturnType=\"Collection(NuGetGallery.OData.V2FeedPackage)\" EntitySet=\"Packages\"><Parameter Name=\"packageIds\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"versions\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"includePrerelease\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Parameter Name=\"includeAllVersions\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Parameter Name=\"targetFrameworks\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"versionConstraints\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"semVerLevel\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport></EntityContainer></Schema></edmx:DataServices></edmx:Edmx>",
+        "headers": {
+          "access-control-allow-credentials": "false",
+          "Access-Control-Expose-Headers": "*",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "*",
+          "Content-length": "4042",
+          "Access-Control-Max-Age": "86400",
+          "Date": "Thu, 17 Nov 2022 11:43:58 GMT",
+          "Access-Control-Allow-Headers": "*"
+        },
+        "statusCode": 200,
+        "binaryResponse": false,
+        "messages": []
+      }
+    }
+  ],
+  "errors": [],
+  "indexes": [
+    {
+      "index": 17,
+      "id": 0,
+      "recordingId": 10,
+      "reference": 0,
+      "description": null,
+      "preScript": null,
+      "postScript": null,
+      "pactTest": false,
+      "stimulatorTest": false
+    },
+    {
+      "index": 18,
+      "id": 1,
+      "recordingId": 10,
+      "reference": 1,
+      "description": null,
+      "preScript": null,
+      "postScript": null,
+      "pactTest": false,
+      "stimulatorTest": false
+    }
+  ],
+  "variables": {},
+  "initScript": null,
+  "description": null,
+  "filter": null
+}

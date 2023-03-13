@@ -8,18 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class SettingsDownloadUpload implements FullDownloadUpload{
+public class SettingsDownloadUpload implements FullDownloadUpload {
     private final JsonConfiguration configuration;
 
-    public SettingsDownloadUpload(JsonConfiguration configuration){
+    public SettingsDownloadUpload(JsonConfiguration configuration) {
 
         this.configuration = configuration;
     }
+
     @Override
     public Map<String, byte[]> retrieveItems() throws Exception {
         var data = configuration.getConfigurationAsString();
-        var result = new HashMap<String,byte[]>();
-        result.put("external.json",data.getBytes(StandardCharsets.UTF_8));
+        var result = new HashMap<String, byte[]>();
+        result.put("external.json", data.getBytes(StandardCharsets.UTF_8));
         return result;
     }
 
@@ -31,7 +32,7 @@ public class SettingsDownloadUpload implements FullDownloadUpload{
     @Override
     public void uploadItems(HashMap<String, byte[]> data) {
         var settings = data.get("external.json");
-        if(settings!=null){
+        if (settings != null) {
             configuration.setConfigurationAsString(new String(settings));
         }
     }

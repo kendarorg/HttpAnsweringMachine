@@ -8,30 +8,34 @@ import java.io.InputStream;
 
 public class HamResponseBuilder {
 
-    private HamResponseBuilder(){}
+    private HamResponseBuilder() {
+    }
+
     private Response response;
-    public static HamResponseBuilder newResponse(){
+
+    public static HamResponseBuilder newResponse() {
         var result = new HamResponseBuilder();
         result.response = new Response();
         return result;
     }
 
-    public HamResponseBuilder withHeader(String id, String value){
-        response.addHeader(id,value);
+    public HamResponseBuilder withHeader(String id, String value) {
+        response.addHeader(id, value);
         return this;
     }
 
-    public HamResponseBuilder withContentType(String value){
-        return withHeader(ConstantsHeader.CONTENT_TYPE,value);
+    public HamResponseBuilder withContentType(String value) {
+        return withHeader(ConstantsHeader.CONTENT_TYPE, value);
     }
 
 
-    public HamResponseBuilder withText(String text){
+    public HamResponseBuilder withText(String text) {
         response.setResponseText(text);
         response.setBinaryResponse(false);
         return this;
     }
-    public HamResponseBuilder withStatus(int statusCode){
+
+    public HamResponseBuilder withStatus(int statusCode) {
         response.setStatusCode(statusCode);
         return this;
     }
@@ -43,7 +47,7 @@ public class HamResponseBuilder {
     }
 
 
-    public HamResponseBuilder withBytes(byte[] data){
+    public HamResponseBuilder withBytes(byte[] data) {
         response.setResponseBytes(data);
         response.setBinaryResponse(true);
         return this;
@@ -56,7 +60,7 @@ public class HamResponseBuilder {
         return this;
     }
 
-    public Response build(){
+    public Response build() {
         return response;
     }
 }

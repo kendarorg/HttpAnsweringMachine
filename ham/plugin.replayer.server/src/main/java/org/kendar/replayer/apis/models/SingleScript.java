@@ -6,7 +6,7 @@ import java.util.List;
 
 public class SingleScript {
     private List<SingleScriptLine> lines = new ArrayList<>();
-    private HashMap<String,String> filter;
+    private HashMap<String, String> filter;
     private Long id;
     private String description;
     private String name;
@@ -35,11 +35,11 @@ public class SingleScript {
         this.lines = lines;
     }
 
-    public HashMap<String,String> getFilter() {
+    public HashMap<String, String> getFilter() {
         return filter;
     }
 
-    public void setFilter(HashMap<String,String> filter) {
+    public void setFilter(HashMap<String, String> filter) {
         this.filter = filter;
     }
 

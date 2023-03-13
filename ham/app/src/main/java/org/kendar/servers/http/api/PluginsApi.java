@@ -25,7 +25,7 @@ public class PluginsApi implements FilteringClass {
     final ObjectMapper mapper = new ObjectMapper();
     private final PluginsInitializer pluginsInitializer;
 
-    public PluginsApi(PluginsInitializer pluginsInitializer){
+    public PluginsApi(PluginsInitializer pluginsInitializer) {
 
         this.pluginsInitializer = pluginsInitializer;
     }
@@ -37,18 +37,18 @@ public class PluginsApi implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins",
-            method = "GET",id="1zty7a4b4-277d-11ec-9621-0242ac130002")
+            method = "GET", id = "1zty7a4b4-277d-11ec-9621-0242ac130002")
     @HamDoc(
             description = "List all installed plugins",
             responses = @HamResponse(
                     body = PluginDescriptor[].class
-            ),tags = {"base/utils"}
+            ), tags = {"base/utils"}
     )
     public void getStatus(Request req, Response res) throws JsonProcessingException {
         var result = new ArrayList<PluginDescriptor>();
-        for(var item : pluginsInitializer.getPluginAddresses().entrySet()){
-            if(item.getValue()==null || item.getValue().isEmpty()) continue;
-            result.add(new PluginDescriptor(item.getKey(),item.getValue()));
+        for (var item : pluginsInitializer.getPluginAddresses().entrySet()) {
+            if (item.getValue() == null || item.getValue().isEmpty()) continue;
+            result.add(new PluginDescriptor(item.getKey(), item.getValue()));
         }
 
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);

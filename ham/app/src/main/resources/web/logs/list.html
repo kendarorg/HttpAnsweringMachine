@@ -6,34 +6,42 @@
     <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
     <script src="/libs/vue.js"></script>
     <script src="/libs/httpVueLoader.js"></script>
-    <script src="/libs/axios.min.js"></script><script src="/libs/utils.js"></script>
+    <script src="/libs/axios.min.js"></script>
+    <script src="/libs/utils.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
-    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
 </head>
 <body>
 <div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
-    <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
+    <div class="spinner-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
 <div id="messageObject"></div>
 <div class="container-fluid" id="app">
-    <div class="row"><div class="col-md-8">
-        <br>
-        <a href='../index.html'>Main</a>&gt;
-    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <a href='../index.html'>Main</a>&gt;
+        </div>
         <div class="col-md-8">
             <h3>LOGS</h3>
             <br>
-            <button id="logs-list-grid-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+            <button id="logs-list-grid-reload" v-on:click="reload()" class="bi bi-arrow-clockwise"
+                    title="Reload"></button>
             <br><br>
             <simple-grid id="logs-list-grid"
-                    v-on:gridclicked="gridClicked"
-                    :page-size="1000"
-                    ref="grid"
-                    :server-pagination="true"
-                    :columns="gridColumns"
-                    :extra="extraColumns"
-                    :retrieve-data="retrieveData"
+                         v-on:gridclicked="gridClicked"
+                         :page-size="1000"
+                         ref="grid"
+                         :server-pagination="true"
+                         :columns="gridColumns"
+                         :extra="extraColumns"
+                         :retrieve-data="retrieveData"
             >
             </simple-grid>
         </div>
@@ -45,12 +53,12 @@
         components: {
             'simple-grid': httpVueLoader('/vcomponents/testgrid.vue')
         },
-        data:{
+        data: {
             gridColumns: [
-                {id:"id",template:"long",index:true},
-                {id:"time",template:"string"},
-                {id:"host",template:"string"},
-                {id:"path",template:"string"}
+                {id: "id", template: "long", index: true},
+                {id: "time", template: "string"},
+                {id: "host", template: "string"},
+                {id: "path", template: "string"}
             ],
             extraColumns: [
                 {
@@ -60,16 +68,16 @@
                 }
             ]
         },
-        methods:{
-            retrieveData: async function(index,pageSize){
-                var result = await axiosHandle(axios.get("/api/log/files?index="+index+"&pageSize="+pageSize));
+        methods: {
+            retrieveData: async function (index, pageSize) {
+                var result = await axiosHandle(axios.get("/api/log/files?index=" + index + "&pageSize=" + pageSize));
                 return result;
             },
             gridClicked: async function (evt) {
                 console.log(row);
                 var row = this.$refs.grid.getById(evt.index);
                 if (evt.buttonid == "_go") {
-                    window.location="single.html?id="+row['id'];
+                    window.location = "single.html?id=" + row['id'];
                 }
             },
             reload: function () {

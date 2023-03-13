@@ -13,22 +13,25 @@ public class PluginsInitializerImpl implements PluginsInitializer {
 
     private final LoggerBuilder loggerBuilder;
 
-    public PluginsInitializerImpl(LoggerBuilder loggerBuilder){
+    public PluginsInitializerImpl(LoggerBuilder loggerBuilder) {
         this.loggerBuilder = loggerBuilder;
     }
-    private final HashMap<String,String> plugins = new HashMap<>();
-    private final HashMap<String,String> specialLoggers = new HashMap<>();
+
+    private final HashMap<String, String> plugins = new HashMap<>();
+    private final HashMap<String, String> specialLoggers = new HashMap<>();
+
     @Override
     public void addPluginAddress(String address, String description) {
-        if(null != address){
-            plugins.put(address,description);
+        if (null != address) {
+            plugins.put(address, description);
         }
     }
 
-    @Override public void addSpecialLogger(String path, String description) {
-        if(null != path){
+    @Override
+    public void addSpecialLogger(String path, String description) {
+        if (null != path) {
 
-            specialLoggers.put(path,description);
+            specialLoggers.put(path, description);
         }
     }
 
@@ -37,8 +40,9 @@ public class PluginsInitializerImpl implements PluginsInitializer {
         return new HashMap<>(plugins);
     }
 
-    @Override public List<SpecialLoggerDescriptor> getSpecialLoggers() {
-        return specialLoggers.entrySet().stream().map(m->{
+    @Override
+    public List<SpecialLoggerDescriptor> getSpecialLoggers() {
+        return specialLoggers.entrySet().stream().map(m -> {
             var res = new SpecialLoggerDescriptor();
             res.setDescription(m.getValue());
             res.setPath(m.getKey());

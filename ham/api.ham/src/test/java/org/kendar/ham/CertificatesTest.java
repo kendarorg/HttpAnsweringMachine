@@ -12,19 +12,21 @@ public class CertificatesTest {
     public static void beforeAll() throws HamTestException {
         HamStarter.runHamJar(CertificatesTest.class);
     }
+
     private HamBasicBuilder hamBuilder = GlobalSettings.builder();
+
     @Test
     public void testAddingCertificate() throws HamException, InterruptedException {
         var inserted = hamBuilder.certificates()
                 .addAltName("www.google.com");
         assertNotNull(inserted);
-        assertTrue(inserted.size()==1);
+        assertTrue(inserted.size() == 1);
         var newItems = hamBuilder.certificates().retrieveAltNames().stream()
-                        .filter(add->
-                                add.getAddress().equalsIgnoreCase("www.google.com")
+                .filter(add ->
+                        add.getAddress().equalsIgnoreCase("www.google.com")
                                 && add.getId().equalsIgnoreCase(inserted.get(0))
-                        ).count();
-        assertEquals(1,newItems);
+                ).count();
+        assertEquals(1, newItems);
         hamBuilder.certificates().removeAltName(inserted.get(0));
     }
 }

@@ -8,11 +8,11 @@ import org.kendar.servers.http.Response;
 import java.lang.reflect.InvocationTargetException;
 
 public interface FilteringClassesHandler {
-  boolean handle(
-      GlobalConfig config,
-      HttpFilterType filterType,
-      Request request,
-      Response response,
-      HttpClientConnectionManager connectionManager)
-      throws InvocationTargetException, IllegalAccessException;
+    boolean handle(
+            GlobalConfig config,
+            HttpFilterType filterType,
+            Request request,
+            Response response,
+            HttpClientConnectionManager connectionManager)
+            throws InvocationTargetException, IllegalAccessException;
 }

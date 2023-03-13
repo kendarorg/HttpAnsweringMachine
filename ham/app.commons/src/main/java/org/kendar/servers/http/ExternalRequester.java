@@ -1,5 +1,5 @@
 package org.kendar.servers.http;
 
-public interface ExternalRequester extends BaseRequester{
+public interface ExternalRequester extends BaseRequester {
 
 }

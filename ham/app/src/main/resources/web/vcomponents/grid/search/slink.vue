@@ -7,13 +7,11 @@ module.exports = {
     descriptor: Object
   },
   name: 'slink',
-  data:function(){
-    return {
-
-    };
+  data: function () {
+    return {};
   },
-  methods:{
-    clean:function(){
+  methods: {
+    clean: function () {
 
     }
   }

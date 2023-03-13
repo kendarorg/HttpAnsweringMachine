@@ -3,16 +3,20 @@ body {
     color: white;
     font-family: monospace;
 }
+
 input, .modal {
     color: black;
 }
+
 .table-striped > tbody > tr:nth-child(2n + 1) > td,
 .table-striped > tbody > tr:nth-child(2n + 1) > th {
     background-color: #34495e;
 }
+
 .row .alert {
     margin-top: 25px;
 }
+
 th, td {
     border-top: none !important;
 }
@@ -34,7 +38,7 @@ h4 {
     letter-spacing: .1em;
 }
 
-.modal-content{
+.modal-content {
     border-radius: 0;
 }
 
@@ -78,6 +82,6 @@ a.unlinked:active {
 }
 
 .container {
-    width:100%;
+    width: 100%;
     margin-left: 4px;
 }

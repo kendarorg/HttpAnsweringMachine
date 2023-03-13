@@ -12,6 +12,7 @@ public class PathRegexpMatcher {
     private static final Pattern namedGroupsPattern =
             Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z\\d]*)>");
     private List<String> pathMatchers;
+
     public void getNamedGroupCandidates(String pathPattern) {
         Set<String> matchedGroups = new TreeSet<>();
         var m = namedGroupsPattern.matcher(pathPattern);
@@ -21,7 +22,7 @@ public class PathRegexpMatcher {
         pathMatchers = new ArrayList<>(matchedGroups);
     }
 
-    public boolean matches(Request req, Pattern pathPatternReal){
+    public boolean matches(Request req, Pattern pathPatternReal) {
         if (pathPatternReal != null) {
             var matcher = pathPatternReal.matcher(req.getPath());
             if (matcher.matches()) {

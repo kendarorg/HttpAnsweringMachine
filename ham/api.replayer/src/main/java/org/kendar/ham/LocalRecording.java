@@ -92,11 +92,11 @@ public class LocalRecording implements HamReplayerRecorderStop, HamReplayerWait 
     }
 
     public HamReplayerRecorderStop startRecording() throws HamException {
-        if(!parametersMap.containsKey(ExtraParam.DB_NAMES.toString())){
-            parametersMap.put(ExtraParam.DB_NAMES.toString(),"*");
+        if (!parametersMap.containsKey(ExtraParam.DB_NAMES.toString())) {
+            parametersMap.put(ExtraParam.DB_NAMES.toString(), "*");
         }
-        if(!parametersMap.containsKey(ExtraParam.HTTP_HOSTS.toString())){
-            parametersMap.put(ExtraParam.HTTP_HOSTS.toString(),"*");
+        if (!parametersMap.containsKey(ExtraParam.HTTP_HOSTS.toString())) {
+            parametersMap.put(ExtraParam.HTTP_HOSTS.toString(), "*");
         }
         return executeAct("start", "record");
     }
@@ -109,8 +109,8 @@ public class LocalRecording implements HamReplayerRecorderStop, HamReplayerWait 
         return executeAct("start", "auto");
     }
 
-    private static String toQuery(Map.Entry<String,String> entry){
-        return entry.getKey()+"="+entry.getValue();
+    private static String toQuery(Map.Entry<String, String> entry) {
+        return entry.getKey() + "=" + entry.getValue();
     }
 
     private LocalRecording executeAct(String action, String usedType) throws HamException {
@@ -119,12 +119,12 @@ public class LocalRecording implements HamReplayerRecorderStop, HamReplayerWait 
 
         var extra = String.join("&", parametersMap.entrySet()
                 .stream().map(LocalRecording::toQuery).collect(Collectors.toList()));
-       if(extra.length()>0){
-           extra="?"+extra;
-       }
+        if (extra.length() > 0) {
+            extra = "?" + extra;
+        }
 
         var request = builder.hamBuilder.newRequest()
-                .withPath("/api/plugins/replayer/recording/" + id + "/" + usedType + "/" + action+extra);
+                .withPath("/api/plugins/replayer/recording/" + id + "/" + usedType + "/" + action + extra);
         builder.hamBuilder.call(request.build());
         return this;
     }

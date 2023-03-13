@@ -3,9 +3,7 @@ package org.kendar.servers.config;
 
 import org.kendar.servers.Copyable;
 
-import java.util.HashMap;
-
-public class GlobalConfigDb implements Copyable<GlobalConfigDb>{
+public class GlobalConfigDb implements Copyable<GlobalConfigDb> {
     private String url;
     private String login;
 
@@ -56,7 +54,9 @@ public class GlobalConfigDb implements Copyable<GlobalConfigDb>{
     }
 
     private String password;
-    @Override public GlobalConfigDb copy() {
+
+    @Override
+    public GlobalConfigDb copy() {
         var result = new GlobalConfigDb();
         result.login = login;
         result.url = url;

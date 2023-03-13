@@ -9,7 +9,7 @@ class JsBuilderImpl implements JsBuilder {
 
     private final HamInternalBuilder hamBuilder;
 
-    public JsBuilderImpl(HamInternalBuilder hamBuilder){
+    public JsBuilderImpl(HamInternalBuilder hamBuilder) {
         this.hamBuilder = hamBuilder;
     }
 
@@ -23,21 +23,21 @@ class JsBuilderImpl implements JsBuilder {
     @Override
     public FilterDescriptor filterById(Long id) throws HamException {
         var request = hamBuilder.newRequest()
-                .withPath("/api/plugins/jsfilter/filters/"+id);
+                .withPath("/api/plugins/jsfilter/filters/" + id);
         return hamBuilder.callJson(request.build(), FilterDescriptor.class);
     }
 
     @Override
     public JsFilterBuilder addFilter(String name) {
 
-        return new JsFilterBuilderImpl(hamBuilder,name);
+        return new JsFilterBuilderImpl(hamBuilder, name);
     }
 
     @Override
     public void deleteFilter(Long id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withDelete()
-                .withPath("/api/plugins/jsfilter/filters/"+id);
+                .withPath("/api/plugins/jsfilter/filters/" + id);
         hamBuilder.call(request.build());
         Sleeper.sleep(500);
     }

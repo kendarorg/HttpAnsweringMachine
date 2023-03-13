@@ -21,28 +21,29 @@ public class EventQueueImpl implements EventQueue {
     private final ObjectMapper mapper = new ObjectMapper();
     private final ExecutorService executorService = Executors.newFixedThreadPool(20);
 
-    public EventQueueImpl(LoggerBuilder loggerBuilder){
+    public EventQueueImpl(LoggerBuilder loggerBuilder) {
         this.logger = loggerBuilder.build(EventQueue.class);
     }
-    private final HashMap<String,List<Consumer<Event>>> eventHandlers = new HashMap<>();
+
+    private final HashMap<String, List<Consumer<Event>>> eventHandlers = new HashMap<>();
     @SuppressWarnings("rawtypes")
-    private final HashMap<String,Class> conversions = new HashMap<>();
-    private final HashMap<String, Function<Event,Object>> commandHandlers = new HashMap<>();
+    private final HashMap<String, Class> conversions = new HashMap<>();
+    private final HashMap<String, Function<Event, Object>> commandHandlers = new HashMap<>();
 
 
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Event> void register(Consumer<T> consumer, Class<T> clazz) {
         var eventName = clazz.getSimpleName().toLowerCase(Locale.ROOT);
-        conversions.put(eventName,clazz);
-        var realConsumer = new Consumer<Event>(){
+        conversions.put(eventName, clazz);
+        var realConsumer = new Consumer<Event>() {
             @Override
             public void accept(Event event) {
-                consumer.accept((T)event);
+                consumer.accept((T) event);
             }
         };
-        if(!eventHandlers.containsKey(eventName)){
-            eventHandlers.put(eventName,new ArrayList<>());
+        if (!eventHandlers.containsKey(eventName)) {
+            eventHandlers.put(eventName, new ArrayList<>());
         }
         eventHandlers.get(eventName).add(realConsumer);
     }
@@ -50,27 +51,27 @@ public class EventQueueImpl implements EventQueue {
     @Override
     public <T extends Event> void registerCommand(Function<T, Object> function, Class<T> clazz) {
         var eventName = clazz.getSimpleName().toLowerCase(Locale.ROOT);
-        conversions.put(eventName,clazz);
-        var realConsumer = new Function<Event,Object>(){
+        conversions.put(eventName, clazz);
+        var realConsumer = new Function<Event, Object>() {
             @Override
             public Object apply(Event event) {
-                return function.apply((T)event);
+                return function.apply((T) event);
             }
         };
-        if(commandHandlers.containsKey(eventName)){
-            throw new RuntimeException("Duplicate event "+eventName);
+        if (commandHandlers.containsKey(eventName)) {
+            throw new RuntimeException("Duplicate event " + eventName);
         }
-        commandHandlers.put(eventName,realConsumer);
+        commandHandlers.put(eventName, realConsumer);
     }
 
     @Override
     public void handle(Event event) {
         var eventName = event.getClass().getSimpleName().toLowerCase(Locale.ROOT);
-        if(!eventHandlers.containsKey(eventName) &&
-         !commandHandlers.containsKey(eventName)) return;
+        if (!eventHandlers.containsKey(eventName) &&
+                !commandHandlers.containsKey(eventName)) return;
         var handlers = eventHandlers.get(eventName);
         var handler = commandHandlers.get(eventName);
-        if(handlers!=null) {
+        if (handlers != null) {
             executorService.submit(() -> {
                 for (var i = 0; i < handlers.size(); i++) {
                     var subHandler = handlers.get(i);
@@ -82,14 +83,14 @@ public class EventQueueImpl implements EventQueue {
                 }
 
             });
-        }else if(handler!=null){
+        } else if (handler != null) {
             executorService.submit(() -> {
 
-                    try {
-                        handler.apply(event);
-                    } catch (Exception ex) {
-                        logger.error("Error executing Event " + eventName, ex);
-                    }
+                try {
+                    handler.apply(event);
+                } catch (Exception ex) {
+                    logger.error("Error executing Event " + eventName, ex);
+                }
 
             });
         }
@@ -99,22 +100,22 @@ public class EventQueueImpl implements EventQueue {
     @Override
     public void handle(String eventType, String jsonEvent) {
         eventType = eventType.toLowerCase(Locale.ROOT);
-        if(!conversions.containsKey(eventType))return;
+        if (!conversions.containsKey(eventType)) return;
         var clazz = conversions.get(eventType);
         try {
-            var event = (Event)mapper.readValue(jsonEvent,clazz);
+            var event = (Event) mapper.readValue(jsonEvent, clazz);
             handle(event);
         } catch (JsonProcessingException e) {
-            logger.error("Error deserializing Event "+eventType+" with body: "+jsonEvent,e);
+            logger.error("Error deserializing Event " + eventType + " with body: " + jsonEvent, e);
         }
     }
 
     @Override
     public <T extends Object> T execute(Event event, Class<T> clazz) throws Exception {
         var eventName = event.getClass().getSimpleName().toLowerCase(Locale.ROOT);
-        if(!commandHandlers.containsKey(eventName)) return null;
+        if (!commandHandlers.containsKey(eventName)) return null;
         var handler = commandHandlers.get(eventName);
 
-        return (T)handler.apply(event);
+        return (T) handler.apply(event);
     }
 }

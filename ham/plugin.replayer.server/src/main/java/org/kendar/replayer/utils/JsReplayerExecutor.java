@@ -26,14 +26,14 @@ public class JsReplayerExecutor {
         return cx.newObject(globalScope);
     }
 
-    public Script prepare(String data){
-        if(data==null||data.isEmpty()) return null;
+    public Script prepare(String data) {
+        if (data == null || data.isEmpty()) return null;
         StringBuilder scriptSrc =
                 new StringBuilder(
                         "runFilter(RUNID,REQUESTJSON,RESPONSEJSON,EXPECTEDRESPONSEJSON);\n");
         scriptSrc.append("\r\nfunction runFilter(runid,request,response,expectedresponse){");
         String[] lines = LINE_SEP_PATTERN.split(data);
-        for (var sourceLine :lines) {
+        for (var sourceLine : lines) {
             scriptSrc
                     .append("\r\n")
                     .append(sourceLine);
@@ -45,14 +45,14 @@ public class JsReplayerExecutor {
             cx.setLanguageVersion(Context.VERSION_1_8);
             Scriptable currentScope = getNewScope(cx);
             return cx.compileString(scriptSrc.toString(), "my_script_id", 1, null);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return null;
-        }finally {
+        } finally {
             Context.exit();
         }
     }
 
-    public void run(Long id,Request request, Response response,Response expectedResponse,Script script) throws Exception{
+    public void run(Long id, Request request, Response response, Response expectedResponse, Script script) throws Exception {
         Context cx = Context.enter();
         cx.setOptimizationLevel(9);
         cx.setLanguageVersion(Context.VERSION_1_8);
@@ -66,13 +66,13 @@ public class JsReplayerExecutor {
             Scriptable currentScope = getNewScope(cx);
             currentScope.put("RUNID", currentScope,
                     id);
-            currentScope.put("REQUESTJSON", currentScope,request);
-            currentScope.put("RESPONSEJSON", currentScope,response);
-            currentScope.put("EXPECTEDRESPONSEJSON",currentScope, expectedResponse);
+            currentScope.put("REQUESTJSON", currentScope, request);
+            currentScope.put("RESPONSEJSON", currentScope, response);
+            currentScope.put("EXPECTEDRESPONSEJSON", currentScope, expectedResponse);
             script.exec(cx, currentScope);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             throw new Exception(ex);
-        }finally {
+        } finally {
             Context.exit();
         }
     }

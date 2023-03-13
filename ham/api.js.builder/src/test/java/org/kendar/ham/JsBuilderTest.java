@@ -5,14 +5,15 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kendar.utils.Sleeper;
 import org.tkendar.ham.HamStarter;
 import org.tkendar.ham.HamTestException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import org.kendar.utils.Sleeper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class JsBuilderTest {
     @BeforeAll
@@ -23,7 +24,7 @@ public class JsBuilderTest {
     public static final String HTTP_SIMPLE_TEST_TEST_THING = "http://simple.test/test/thing";
     public static final String HTTP_SIMPLE_TOAST_TEST_THONG = "http://simple.toast/test/thong";
 
-    public static class ValueDate{
+    public static class ValueDate {
         private String value;
         private String date;
 
@@ -45,11 +46,12 @@ public class JsBuilderTest {
     }
 
     ObjectMapper mapper = new ObjectMapper();
+
     @Test
     public void testFilterWithoutRegexp() throws HamException, IOException, InterruptedException {
         var hamBuilder = (HamBuilder) GlobalSettings.builder();
         //Add dns
-        var dnsNameId = hamBuilder.dns().addDnsName("127.0.0.1","simple.test");
+        var dnsNameId = hamBuilder.dns().addDnsName("127.0.0.1", "simple.test");
         var jsBuilder = hamBuilder.pluginBuilder(JsBuilder.class);
         var realid = jsBuilder.addFilter("test")
                 .inPhase(FilterPhase.API)
@@ -66,22 +68,22 @@ public class JsBuilderTest {
                 .closeBlocking()
                 .create();
 
-        ValueDate result = requestJsApiTestThing(hamBuilder,HTTP_SIMPLE_TEST_TEST_THING);
-        assertEquals(result.getValue(),"A value");
+        ValueDate result = requestJsApiTestThing(hamBuilder, HTTP_SIMPLE_TEST_TEST_THING);
+        assertEquals(result.getValue(), "A value");
         Sleeper.sleep(500);
 
-        ValueDate result2 = requestJsApiTestThing(hamBuilder,HTTP_SIMPLE_TEST_TEST_THING);
-        assertNotEquals(result.getDate(),result2.getDate());
+        ValueDate result2 = requestJsApiTestThing(hamBuilder, HTTP_SIMPLE_TEST_TEST_THING);
+        assertNotEquals(result.getDate(), result2.getDate());
 
         hamBuilder.dns().removeDnsName(dnsNameId);
         jsBuilder.deleteFilter(realid);
     }
 
-    private ValueDate requestJsApiTestThing(HamBuilder hamBuilder,String url) throws HamException, IOException {
+    private ValueDate requestJsApiTestThing(HamBuilder hamBuilder, String url) throws HamException, IOException {
         var httpGet = new HttpGet(url);
         var clientResponse = hamBuilder.execute(httpGet);
-        var  data = IOUtils.toString(clientResponse.getEntity().getContent(), StandardCharsets.UTF_8);
-        var result = mapper.readValue(data,ValueDate.class);
+        var data = IOUtils.toString(clientResponse.getEntity().getContent(), StandardCharsets.UTF_8);
+        var result = mapper.readValue(data, ValueDate.class);
         return result;
     }
 
@@ -91,8 +93,8 @@ public class JsBuilderTest {
         var hamBuilder = (HamBuilder) GlobalSettings.builder();
 
         //Add dns
-        var dnsNameId = hamBuilder.dns().addDnsName("127.0.0.1","simple.test");
-        var dnsNameId2 = hamBuilder.dns().addDnsName("127.0.0.1","simple.toast");
+        var dnsNameId = hamBuilder.dns().addDnsName("127.0.0.1", "simple.test");
+        var dnsNameId2 = hamBuilder.dns().addDnsName("127.0.0.1", "simple.toast");
         var jsBuilder = hamBuilder.pluginBuilder(JsBuilder.class);
 
         var builder = jsBuilder.addFilter("test2")
@@ -115,12 +117,12 @@ public class JsBuilderTest {
         var filterId = builder.create();
 
         ValueDate result = requestJsApiTestThing(hamBuilder, HTTP_SIMPLE_TEST_TEST_THING);
-        assertEquals(result.getValue(),"A value");
+        assertEquals(result.getValue(), "A value");
         Sleeper.sleep(500);
 
         ValueDate result2 = requestJsApiTestThing(hamBuilder, HTTP_SIMPLE_TOAST_TEST_THONG);
-        assertEquals(result.getValue(),result2.getValue());
-        assertNotEquals(result.getDate(),result2.getDate());
+        assertEquals(result.getValue(), result2.getValue());
+        assertNotEquals(result.getDate(), result2.getDate());
 
         hamBuilder.dns().removeDnsName(dnsNameId);
         hamBuilder.dns().removeDnsName(dnsNameId2);

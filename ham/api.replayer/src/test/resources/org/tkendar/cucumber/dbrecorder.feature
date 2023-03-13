@@ -1,5 +1,6 @@
 Feature: Testing db recorder
   user should be able to record replay db and so on
+
   Background:
     Given I have a server listening on port '9091'
     And I have a running HAM instance
@@ -21,7 +22,6 @@ Feature: Testing db recorder
     And user delete recording
     And file 'testdbs.json' does not contains 'testDb/Connection/connect'
     And file 'testdbs.json' does not contains 'setAutoCommit'
-
 
 
   Scenario: Recording and storing normal

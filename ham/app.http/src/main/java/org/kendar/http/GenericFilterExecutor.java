@@ -1,8 +1,8 @@
 package org.kendar.http;
 
-import org.kendar.servers.http.matchers.FilterMatcher;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.servers.http.matchers.FilterMatcher;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -18,24 +18,26 @@ public abstract class GenericFilterExecutor {
     private List<FilterMatcher> matchers = new ArrayList<>();
     private final Method callback;
     private final FilteringClass filterClass;
+
     public abstract boolean run(Request request, Response response);
+
     private String id;
 
-    public String getId(){
+    public String getId() {
         return id;
     }
 
-    public void setId(String id){
+    public void setId(String id) {
         this.id = id;
     }
 
     public GenericFilterExecutor(int priority, boolean methodBlocking,
                                  boolean typeBlocking, HttpFilterType phase,
-                                 Method callback, FilteringClass filterClass,FilterMatcher ... matcher) {
-        for(var match:matcher){
+                                 Method callback, FilteringClass filterClass, FilterMatcher... matcher) {
+        for (var match : matcher) {
             this.matchers.add(match);
         }
-        if(filterClass!=null) {
+        if (filterClass != null) {
             this.id = filterClass.getId();
         }
         this.priority = priority;

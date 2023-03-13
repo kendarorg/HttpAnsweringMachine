@@ -5,8 +5,8 @@
 <script>
 module.exports = {
   name: "root",
-  props:{
-    value:Object
+  props: {
+    value: Object
   }
 }
 </script>

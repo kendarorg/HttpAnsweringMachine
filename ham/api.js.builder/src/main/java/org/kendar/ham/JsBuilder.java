@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface JsBuilder {
 
-    public class ApiMatcher{
+    public class ApiMatcher {
         private Methods method;
         private String hostAddress;
         private String hostPattern;
@@ -52,7 +52,8 @@ public interface JsBuilder {
             this.pathPattern = pathPattern;
         }
     }
-    public class FilterDescriptor{
+
+    public class FilterDescriptor {
 
         private FilterPhase phase;
         private List<String> require;
@@ -132,11 +133,15 @@ public interface JsBuilder {
 
     /**
      * /api/plugins/jsfilter/filters
+     *
      * @return
      */
     List<String> filterIds() throws HamException;
+
     FilterDescriptor filterById(Long id) throws HamException;
+
     JsFilterBuilder addFilter(String name);
+
     void deleteFilter(Long id) throws HamException;
 
     JsBuilderImpl init();

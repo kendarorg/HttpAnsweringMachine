@@ -1,7 +1,6 @@
 package org.kendar.servers.certificates.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.models.OpenAPI;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
@@ -25,58 +24,57 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class CertificatesController implements FilteringClass {
-  final ObjectMapper mapper = new ObjectMapper();
-  private final FileResourcesUtils fileResourcesUtils;
-  private final Logger logger;
+    final ObjectMapper mapper = new ObjectMapper();
+    private final FileResourcesUtils fileResourcesUtils;
+    private final Logger logger;
 
-  public CertificatesController(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder,
-                                EventQueue eventQueue) {
-    logger = loggerBuilder.build(CertificatesController.class);
+    public CertificatesController(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder,
+                                  EventQueue eventQueue) {
+        logger = loggerBuilder.build(CertificatesController.class);
 
-    this.fileResourcesUtils = fileResourcesUtils;
-  }
-
-  @Override
-  public String getId() {
-    return "org.kendar.servers.certificates.api.CertificatesController";
-  }
-
-  @HttpMethodFilter(
-      phase = HttpFilterType.API,
-      pathAddress = "/api/certificates",
-      method = "GET")
-  @HamDoc(
-          tags = {"base/certificates"},
-          description = "Retrieve the list of certificates",
-          responses = @HamResponse(body = String[].class),
-          requests = @HamRequest)
-  public void listAllCertificates(Request req, Response res)
-      throws IOException {
-    var resources = fileResourcesUtils.loadResources(this, "certificates");
-
-    var result = new ArrayList<String>();
-    for (var resource : resources.keySet()) {
-      var path = Path.of(resource);
-      var stringPath = path.getFileName().toString();
-      try {
-        var byteContent =
-            fileResourcesUtils.getFileFromResourceAsByteArray("certificates/" + stringPath);
-        if (byteContent.length == 0) continue; // avoid directories
-        result.add(stringPath);
-      } catch (Exception ex) {
-        logger.trace(ex.getMessage());
-      }
+        this.fileResourcesUtils = fileResourcesUtils;
     }
-    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-    res.setResponseText(mapper.writeValueAsString(result));
-  }
+
+    @Override
+    public String getId() {
+        return "org.kendar.servers.certificates.api.CertificatesController";
+    }
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/certificates",
+            method = "GET")
+    @HamDoc(
+            tags = {"base/certificates"},
+            description = "Retrieve the list of certificates",
+            responses = @HamResponse(body = String[].class),
+            requests = @HamRequest)
+    public void listAllCertificates(Request req, Response res)
+            throws IOException {
+        var resources = fileResourcesUtils.loadResources(this, "certificates");
+
+        var result = new ArrayList<String>();
+        for (var resource : resources.keySet()) {
+            var path = Path.of(resource);
+            var stringPath = path.getFileName().toString();
+            try {
+                var byteContent =
+                        fileResourcesUtils.getFileFromResourceAsByteArray("certificates/" + stringPath);
+                if (byteContent.length == 0) continue; // avoid directories
+                result.add(stringPath);
+            } catch (Exception ex) {
+                logger.trace(ex.getMessage());
+            }
+        }
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
+        res.setResponseText(mapper.writeValueAsString(result));
+    }
   /*
   application/pkcs8                   .p8  .key
   application/pkcs10                  .p10 .csr
@@ -95,60 +93,60 @@ public class CertificatesController implements FilteringClass {
   application/x-pkcs7-certreqresp     .p7r
    */
 
-  @HttpMethodFilter(
-      phase = HttpFilterType.API,
-      pathAddress = "/api/certificates/{file}",
-      method = "GET")
-  @HamDoc(
-          tags = {"base/certificates"},
-          description = "Retrieve the certificate",
-          responses = {@HamResponse(
-                  code = 200,
-                  description = "Certificate",
-                  body = String.class,
-                  content = "text/plain"),
-                  @HamResponse(
-                          code = 200,
-                          body = byte[].class,
-                          description = "Zip with certificate",
-                          content = "application/zip")},
-          path = @PathParameter(key="file"),
-          query = @QueryString(key="clear", description = "If set returns a plain text certificate"))
-  public void getSingleCertificate(Request req, Response res)
-      throws IOException {
-    var resources = fileResourcesUtils.loadResources(this, "certificates");
-    var name = req.getPathParameter("file");
-    var returnClear = req.getQuery("clear")!=null;
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/certificates/{file}",
+            method = "GET")
+    @HamDoc(
+            tags = {"base/certificates"},
+            description = "Retrieve the certificate",
+            responses = {@HamResponse(
+                    code = 200,
+                    description = "Certificate",
+                    body = String.class,
+                    content = "text/plain"),
+                    @HamResponse(
+                            code = 200,
+                            body = byte[].class,
+                            description = "Zip with certificate",
+                            content = "application/zip")},
+            path = @PathParameter(key = "file"),
+            query = @QueryString(key = "clear", description = "If set returns a plain text certificate"))
+    public void getSingleCertificate(Request req, Response res)
+            throws IOException {
+        var resources = fileResourcesUtils.loadResources(this, "certificates");
+        var name = req.getPathParameter("file");
+        var returnClear = req.getQuery("clear") != null;
 
-    for (var resource : resources.keySet()) {
-      var path = Path.of(resource).getFileName().toString();
-      if (path.equalsIgnoreCase(name)) {
-        var result = fileResourcesUtils.getFileFromResourceAsByteArray("certificates/" + path);
+        for (var resource : resources.keySet()) {
+            var path = Path.of(resource).getFileName().toString();
+            if (path.equalsIgnoreCase(name)) {
+                var result = fileResourcesUtils.getFileFromResourceAsByteArray("certificates/" + path);
 
-        if(!returnClear) {
-          ByteArrayOutputStream baos = new ByteArrayOutputStream();
-          ZipOutputStream zos = new ZipOutputStream(baos);
-          ZipEntry entry = new ZipEntry(path);
-          entry.setSize(result.length);
-          zos.putNextEntry(entry);
-          zos.write(result);
-          zos.closeEntry();
-          zos.close();
-          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.ZIP);
-          res.addHeader("Content-disposition", "inline;filename=" + path + ".zip");
-          res.setResponseBytes(baos.toByteArray());
-          res.setBinaryResponse(true);
-        }else{
-          res.setResponseBytes(result);
-          res.setBinaryResponse(true);
-          res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.STREAM);
+                if (!returnClear) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ZipOutputStream zos = new ZipOutputStream(baos);
+                    ZipEntry entry = new ZipEntry(path);
+                    entry.setSize(result.length);
+                    zos.putNextEntry(entry);
+                    zos.write(result);
+                    zos.closeEntry();
+                    zos.close();
+                    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.ZIP);
+                    res.addHeader("Content-disposition", "inline;filename=" + path + ".zip");
+                    res.setResponseBytes(baos.toByteArray());
+                    res.setBinaryResponse(true);
+                } else {
+                    res.setResponseBytes(result);
+                    res.setBinaryResponse(true);
+                    res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.STREAM);
+                }
+
+                res.setBinaryResponse(true);
+                return;
+            }
         }
-
-        res.setBinaryResponse(true);
-        return;
-      }
+        res.setStatusCode(404);
+        res.setResponseText("Unable to find " + name);
     }
-    res.setStatusCode(404);
-    res.setResponseText("Unable to find " + name);
-  }
 }

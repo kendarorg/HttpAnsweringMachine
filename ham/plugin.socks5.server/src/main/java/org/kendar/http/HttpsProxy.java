@@ -1,18 +1,12 @@
 package org.kendar.http;
 
-import ch.qos.logback.classic.Level;
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.dns.DnsMultiResolver;
-import org.kendar.socks5.DnsSocks5Handler;
 import org.kendar.socks5.Socks5Config;
 import org.kendar.utils.LoggerBuilder;
-import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
-import sockslib.common.methods.NoAuthenticationRequiredMethod;
-import sockslib.server.SocksProxyServer;
-import sockslib.server.SocksServerBuilder;
 
 @Component
 public class HttpsProxy implements AnsweringServer {
@@ -22,21 +16,22 @@ public class HttpsProxy implements AnsweringServer {
     private DnsMultiResolver multiResolver;
     private boolean running = false;
 
-    public HttpsProxy(DnsMultiResolver multiResolver, LoggerBuilder loggerBuilder, JsonConfiguration configuration){
+    public HttpsProxy(DnsMultiResolver multiResolver, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
 
         this.multiResolver = multiResolver;
         this.logger = loggerBuilder.build(HttpsProxy.class);
         this.loggerBuilder = loggerBuilder;
         this.configuration = configuration;
     }
+
     @Override
     public void run() {
         if (running) return;
         var config = configuration.getConfiguration(Socks5Config.class).copy();
         if (!config.isActive()) return;
         running = true;
-        try{
-            var proxyHttp = new HttpsProxyImpl(config.getHttpProxyPort(), false,loggerBuilder,multiResolver);
+        try {
+            var proxyHttp = new HttpsProxyImpl(config.getHttpProxyPort(), false, loggerBuilder, multiResolver);
 
             logger.info("Http/s proxy server LOADED, port: " + config.getHttpProxyPort());
             proxyHttp.listen();

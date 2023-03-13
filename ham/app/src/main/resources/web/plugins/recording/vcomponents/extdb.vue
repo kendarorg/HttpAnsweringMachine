@@ -38,13 +38,13 @@ module.exports = {
       recordDbCalls: true,
       recordVoidDbCalls: false,
       useSimEngine: true,
-      dbNames:"*"
+      dbNames: "*"
     }
   },
-  watch:{
+  watch: {
     $props: {
-      handler(val,oldVal) {
-        if(!isUndefined(val.value)) {
+      handler(val, oldVal) {
+        if (!isUndefined(val.value)) {
           if (!isUndefined(val.value.recordDbCalls)) this.recordDbCalls = isTrue(val.value.recordDbCalls);
           if (!isUndefined(val.value.recordVoidDbCalls)) this.recordVoidDbCalls = isTrue(val.value.recordVoidDbCalls);
           if (!isUndefined(val.value.useSimEngine)) this.useSimEngine = isTrue(val.value.useSimEngine);

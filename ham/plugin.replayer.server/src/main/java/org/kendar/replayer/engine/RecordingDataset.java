@@ -1,6 +1,5 @@
 package org.kendar.replayer.engine;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.replayer.ReplayerState;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DbRecording;
@@ -9,13 +8,10 @@ import org.kendar.replayer.utils.Md5Tester;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
-import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.LoggerBuilder;
-import org.kendar.utils.MimeChecker;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Component
-public class RecordingDataset implements BaseDataset{
+public class RecordingDataset implements BaseDataset {
     private final ConcurrentLinkedQueue<String> errors = new ConcurrentLinkedQueue<>();
     private final AtomicLong counter = new AtomicLong(0L);
     private final Md5Tester md5Tester;
@@ -34,7 +30,7 @@ public class RecordingDataset implements BaseDataset{
     private String description;
     private Map<String, String> specialParams;
 
-    public Long getName(){
+    public Long getName() {
         return this.name;
     }
 
@@ -75,24 +71,24 @@ public class RecordingDataset implements BaseDataset{
 //            engine.setupStaticCalls(recording);
 //        }
         staticRequests.clear();
-        recording =  null;
+        recording = null;
     }
 
-    private static Map<String,Long> staticRequests = new HashMap<>();
+    private static Map<String, Long> staticRequests = new HashMap<>();
     private static DbRecording recording;
 
     public boolean add(Request req, Response res) throws Exception {
-        if(name==null){
-            sessionFactory.transactional((em)->{
+        if (name == null) {
+            sessionFactory.transactional((em) -> {
                 recording = new DbRecording();
                 recording.setDescription(description);
                 em.persist(recording);
                 name = recording.getId();
             });
         }
-        if(recording == null){
-            recording = sessionFactory.queryResult((em)->{
-                return em.createQuery("SELECT e FROM DbRecording e WHERE e.id="+name).getResultList().get(0);
+        if (recording == null) {
+            recording = sessionFactory.queryResult((em) -> {
+                return em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + name).getResultList().get(0);
             });
         }
         var path = req.getHost() + req.getPath();
@@ -107,18 +103,18 @@ public class RecordingDataset implements BaseDataset{
                 engine = replayerEngines.get(i);
                 if (engine.isValidPath(req)) {
                     replayerRow.setType(engine.getId());
-                    if(!engine.isValidRoundTrip(req,res,specialParams)){
-                        engine=null;
+                    if (!engine.isValidRoundTrip(req, res, specialParams)) {
+                        engine = null;
                         continue;
                     }
-                    engine.updateReqRes(req,res,specialParams);
+                    engine.updateReqRes(req, res, specialParams);
                     break;
-                }else{
-                    engine=null;
+                } else {
+                    engine = null;
                 }
             }
 
-            if(engine==null){
+            if (engine == null) {
                 return false;
             }
 
@@ -149,10 +145,10 @@ public class RecordingDataset implements BaseDataset{
             callIndex.setRecordingId(recording.getId());
 
             final ReplayerEngine constEngine = engine;
-            sessionFactory.transactional(em-> {
-                    replayerRow.setStaticRequest(false);
-                    em.persist(replayerRow);
-                    em.persist(callIndex);
+            sessionFactory.transactional(em -> {
+                replayerRow.setStaticRequest(false);
+                em.persist(replayerRow);
+                em.persist(callIndex);
             });
             return true;
         } catch (Exception e) {

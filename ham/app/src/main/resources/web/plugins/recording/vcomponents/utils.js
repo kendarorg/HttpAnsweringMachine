@@ -1,4 +1,3 @@
-
 /*
 
 [
@@ -73,45 +72,45 @@
 	":command:": "org.kendar.janus.cmd.Exec"
 }
  */
-const convertToStructure = function(nodes){
+const convertToStructure = function (nodes) {
     var result = {};
-    nodes.forEach(function(node){
-        result[":"+node.name+":"]=node.type;
+    nodes.forEach(function (node) {
+        result[":" + node.name + ":"] = node.type;
 
-        if(node.children &&
-            ((node.size!=null && typeof node.size!="undefined" && node.size>=0)||
-                node.type=="java.util.ArrayList"
-            )){
-            if(node.size!=null && typeof node.size!="undefined"){
-                result["["+node.name+"]"]=node.size;
+        if (node.children &&
+            ((node.size != null && typeof node.size != "undefined" && node.size >= 0) ||
+                node.type == "java.util.ArrayList"
+            )) {
+            if (node.size != null && typeof node.size != "undefined") {
+                result["[" + node.name + "]"] = node.size;
             }
-            var temp=[];
-            node.children.forEach(function(ch){
+            var temp = [];
+            node.children.forEach(function (ch) {
                 var str = convertToStructure([ch]);
                 temp.push(str);
             })
-            result[node.name]=temp;
+            result[node.name] = temp;
 
             //Contains an array
 
-        }else if(typeof node.value!="undefined"){
-                //Contains an object
-                result[node.name] = node.value
-        }else{
-            if(node.children && node.children.length>0 && node.children[0].type=="_MapEntry") {
+        } else if (typeof node.value != "undefined") {
+            //Contains an object
+            result[node.name] = node.value
+        } else {
+            if (node.children && node.children.length > 0 && node.children[0].type == "_MapEntry") {
                 var finalResult = [];
-                node.children.forEach(function(mapEntry){
+                node.children.forEach(function (mapEntry) {
                     finalResult.push(convertToStructure(mapEntry.children));
                 });
                 result[node.name] = finalResult;
-            }else{
-                result[node.name]=convertToStructure(node.children);
+            } else {
+                result[node.name] = convertToStructure(node.children);
             }
         }
-        })
+    })
     return result;
 }
-const convertToNodes = function(serializedObject){
+const convertToNodes = function (serializedObject) {
     var ob = serializedObject;
     var keys = Object.keys(ob);
     //console.log(keys);
@@ -120,30 +119,30 @@ const convertToNodes = function(serializedObject){
     var valChildrens = [];
     var valSizes = [];
     var allKeys = [];
-    keys.forEach(function(id){
+    keys.forEach(function (id) {
 
-        var size=0;
-        valSizes[id]=null;
-        valChildrens[id]=[];
-        if(id.startsWith("[")){
-            valSizes[id.substring(1,id.length-1)]=parseInt(ob[id]);
-        }else if(id.startsWith(":")){
-            typeValues[id.substring(1,id.length-1)]=ob[id];
-        }else{
+        var size = 0;
+        valSizes[id] = null;
+        valChildrens[id] = [];
+        if (id.startsWith("[")) {
+            valSizes[id.substring(1, id.length - 1)] = parseInt(ob[id]);
+        } else if (id.startsWith(":")) {
+            typeValues[id.substring(1, id.length - 1)] = ob[id];
+        } else {
             allKeys.push(id);
             var subVal = ob[id];
-            if(isAnObject(subVal)){
-                if(isAnArray(subVal))debugger;
+            if (isAnObject(subVal)) {
+                if (isAnArray(subVal)) debugger;
                 var nodes = convertToNodes(subVal);
-                nodes.forEach(function(v){
+                nodes.forEach(function (v) {
                     valChildrens[id].push(v);
                 })
 
-            }else if(isAnArray(subVal)){
+            } else if (isAnArray(subVal)) {
                 var tmp = [];
-                subVal.forEach(function(v){
+                subVal.forEach(function (v) {
                     var nodes = convertToNodes(v);
-                    if(nodes.length>1){
+                    if (nodes.length > 1) {
                         var mapEntry = {};
                         mapEntry.name = "_MapEntry";
                         mapEntry.type = "_MapEntry";
@@ -151,15 +150,15 @@ const convertToNodes = function(serializedObject){
                         mapEntry.value = null;
                         mapEntry.children = nodes;
                         tmp.push(mapEntry)
-                    }else{
+                    } else {
                         tmp.push(nodes[0])
                     }
                     size++;
                 });
-                valChildrens[id]=tmp;
-            }else{
-                if(isAnArray(subVal))debugger;
-                valValues[id]=subVal;
+                valChildrens[id] = tmp;
+            } else {
+                if (isAnArray(subVal)) debugger;
+                valValues[id] = subVal;
             }
 
         }
@@ -168,24 +167,25 @@ const convertToNodes = function(serializedObject){
     // console.log(valValues);
     // console.log(allKeys);
     var nodes = [];
-    allKeys.forEach(function(id){
+    allKeys.forEach(function (id) {
         var node = {};
         node.name = id;
         node.type = typeValues[id];
         node.size = valSizes[id];
         node.value = valValues[id];
         node.children = valChildrens[id];
-        if(typeof node.children=="undefined")debugger;
-        if(node.children){
-            node.children.forEach(function(child){
-                if(typeof child=="undefined")return;
+        if (typeof node.children == "undefined") debugger;
+        if (node.children) {
+            node.children.forEach(function (child) {
+                if (typeof child == "undefined") return;
 
-                if( child.type=="_MapEntry"){
-                    child.children.forEach(function(mapCh){
-                        mapCh.parent=child;
+                if (child.type == "_MapEntry") {
+                    child.children.forEach(function (mapCh) {
+                        mapCh.parent = child;
                     })
-                };
-                child.parent=node;
+                }
+                ;
+                child.parent = node;
             })
         }
         nodes.push(node);
@@ -193,13 +193,13 @@ const convertToNodes = function(serializedObject){
     return nodes;
 }
 
-const findChildItemWithType = function(tree,type){
+const findChildItemWithType = function (tree, type) {
     type = type.toLowerCase();
     //iterate on children to find the one matching the given name
-    for(var i=0;i<tree.children.length;i++){
-        if(tree.children[i].name.toLowerCase()==type){
+    for (var i = 0; i < tree.children.length; i++) {
+        if (tree.children[i].name.toLowerCase() == type) {
             return tree.children[i];
         }
     }
-    return {value:null};
+    return {value: null};
 }

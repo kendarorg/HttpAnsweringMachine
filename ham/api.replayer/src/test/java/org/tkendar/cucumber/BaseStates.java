@@ -13,5 +13,5 @@ public class BaseStates {
     protected static HttpServer httpServer = null;
     protected static List<String> dnses = new ArrayList<>();
     protected static List<String> proxies = new ArrayList<>();
-    protected static HamBuilder hamBuilder = (HamBuilder)GlobalSettings.builder();
+    protected static HamBuilder hamBuilder = (HamBuilder) GlobalSettings.builder();
 }

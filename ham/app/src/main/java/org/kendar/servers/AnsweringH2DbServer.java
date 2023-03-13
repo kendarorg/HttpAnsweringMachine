@@ -2,7 +2,6 @@ package org.kendar.servers;
 
 import org.apache.commons.io.FileUtils;
 import org.h2.tools.Server;
-import org.hibernate.boot.MetadataSources;
 import org.hibernate.cfg.Configuration;
 import org.kendar.events.EventQueue;
 import org.kendar.events.ServiceStarted;
@@ -11,7 +10,6 @@ import org.kendar.servers.config.GlobalConfigDb;
 import org.kendar.servers.db.DbTable;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.AnsweringHandler;
-import org.kendar.servers.logging.LoggingDataTable;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
@@ -20,12 +18,10 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.List;
 
 @Component
-public class AnsweringH2DbServer  implements AnsweringServer{
+public class AnsweringH2DbServer implements AnsweringServer {
 
     private final Logger logger;
     private final AnsweringHandler handler;
@@ -58,7 +54,7 @@ public class AnsweringH2DbServer  implements AnsweringServer{
         if (running) return;
         var config = configuration.getConfiguration(GlobalConfig.class)
                 .getDb().copy();
-        try{
+        try {
 
             if (!config.isStartInternalH2() && !initialized) {
                 initializeDb(config);
@@ -66,30 +62,30 @@ public class AnsweringH2DbServer  implements AnsweringServer{
             }
             running = true;
 
-            String userDir = System.getProperty("user.dir")+ "/data";
-            if(System.getProperty("ham.tempdb")!=null){
-                userDir=System.getProperty("ham.tempdb");
-                if(!Paths.get(userDir).isAbsolute()){
-                    userDir=Paths.get(System.getProperty("user.dir"),userDir).toAbsolutePath().toString();
+            String userDir = System.getProperty("user.dir") + "/data";
+            if (System.getProperty("ham.tempdb") != null) {
+                userDir = System.getProperty("ham.tempdb");
+                if (!Paths.get(userDir).isAbsolute()) {
+                    userDir = Paths.get(System.getProperty("user.dir"), userDir).toAbsolutePath().toString();
                 }
-                if(!Files.exists(Paths.get(userDir))) {
+                if (!Files.exists(Paths.get(userDir))) {
                     Files.createDirectories(Paths.get(userDir));
                 }
                 FileUtils.cleanDirectory(new File(userDir));
             }
 
-            server = Server.createTcpServer("-baseDir", userDir ,"-tcpAllowOthers","-ifNotExists");
+            server = Server.createTcpServer("-baseDir", userDir, "-tcpAllowOthers", "-ifNotExists");
             server.start();
 
-            if(!initialized){
+            if (!initialized) {
                 initializeDb(config);
             }
             /**/
-            logger.info("H2 DB server LOADED, port: {}",server.getPort());
+            logger.info("H2 DB server LOADED, port: {}", server.getPort());
 
 
-            while(running){
-                Sleeper.sleep(60*1000);
+            while (running) {
+                Sleeper.sleep(60 * 1000);
             }
         } catch (Exception ex) {
             logger.error(
@@ -118,8 +114,8 @@ public class AnsweringH2DbServer  implements AnsweringServer{
             this.sessionFactory.setConfiguration(hibernateConfig);
             eventQueue.handle(new ServiceStarted().withTye("db"));
 
-        }catch (Exception ex){
-            logger.error("Error building tables"+ex);
+        } catch (Exception ex) {
+            logger.error("Error building tables" + ex);
         }
 
 

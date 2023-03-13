@@ -8,7 +8,7 @@ public class ScriptData {
     private String description;
     private String name;
     private String id;
-    private HashMap<String,String> filter;
+    private HashMap<String, String> filter;
     private List<Integer> stimulatorTest = new ArrayList<>();
 
     public String getDescription() {
@@ -27,11 +27,11 @@ public class ScriptData {
         this.id = id;
     }
 
-    public HashMap<String,String> getFilter() {
+    public HashMap<String, String> getFilter() {
         return filter;
     }
 
-    public void setFilter(HashMap<String,String> filter) {
+    public void setFilter(HashMap<String, String> filter) {
         this.filter = filter;
     }
 

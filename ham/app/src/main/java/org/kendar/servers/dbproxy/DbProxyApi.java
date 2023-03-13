@@ -1,6 +1,5 @@
 package org.kendar.servers.dbproxy;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
@@ -46,50 +45,51 @@ public class DbProxyApi implements FilteringClass {
     private JsonConfiguration configuration;
     private EventQueue eventQueue;
     private ResultSetConverter resultSetConverter;
-    private ConcurrentHashMap<String,ServerData> janusEngines = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, ServerData> janusEngines = new ConcurrentHashMap<>();
 
     public DbProxyApi(JsonConfiguration configuration, EventQueue eventQueue, LoggerBuilder loggerBuilder,
-                      PluginsInitializer pluginsInitializer,ResultSetConverter resultSetConverter){
+                      PluginsInitializer pluginsInitializer, ResultSetConverter resultSetConverter) {
         this.logger = loggerBuilder.build(DbProxyApi.class);
         this.specialLogger = loggerBuilder.build(ProxyDb.class);
         this.configuration = configuration;
         this.eventQueue = eventQueue;
         this.resultSetConverter = resultSetConverter;
         this.serializer = new JsonTypedSerializer();
-        eventQueue.register(this::handleConfigChange,DbProxyConfigChanged.class);
+        eventQueue.register(this::handleConfigChange, DbProxyConfigChanged.class);
         pluginsInitializer.addSpecialLogger(ProxyDb.class.getName(), "Basic db logging (DEBUG)");
     }
 
     private Object syncObject = new Object();
-    private  void handleConfigChange(DbProxyConfigChanged t) {
-        synchronized (syncObject){
+
+    private void handleConfigChange(DbProxyConfigChanged t) {
+        synchronized (syncObject) {
             janusEngines.clear();
             initialize();
         }
     }
 
     @PostConstruct
-    public void postConstruct(){
+    public void postConstruct() {
         initialize();
     }
 
     private void initialize() {
         var proxyConfig = configuration.getConfiguration(DbProxyConfig.class);
-        if(proxyConfig==null)return;
-        for(var proxy:proxyConfig.getProxies()){
+        if (proxyConfig == null) return;
+        for (var proxy : proxyConfig.getProxies()) {
             var id = proxy.getId().toLowerCase(Locale.ROOT);
             var remote = proxy.getRemote();
             var local = proxy.getExposed();
             var result = new ServerData();
             result.setActive(proxy.isActive());
             result.setLocal(local);
-            if(result.isActive()) {
+            if (result.isActive()) {
                 var serverEngine = new ServerEngine(remote.getConnectionString(), remote.getLogin(), remote.getPassword());
                 serverEngine.setMaxRows(500);
                 result.setServerEngine(serverEngine);
             }
-            logger.info("Db Proxy LOADED, from: " + local.getConnectionString()+" to "+remote.getConnectionString());
-            janusEngines.put(local.getConnectionString(),result);
+            logger.info("Db Proxy LOADED, from: " + local.getConnectionString() + " to " + remote.getConnectionString());
+            janusEngines.put(local.getConnectionString(), result);
         }
     }
 
@@ -130,7 +130,7 @@ public class DbProxyApi implements FilteringClass {
             ))
     public boolean testConnection(Request req, Response res) throws Exception {
         var id = req.getPathParameter("type");
-        if(id!=null && id.equalsIgnoreCase("prepared")){
+        if (id != null && id.equalsIgnoreCase("prepared")) {
             return preparedStatement(req, res);
         }
         return simpleExecution(req, res);
@@ -158,21 +158,21 @@ public class DbProxyApi implements FilteringClass {
 
         HamResultSet hamResultSet = resultSetConverter.toHam(resultSet);
         var toChangeTo = new ArrayList<List<Object>>();
-        ArrayNode tree = (ArrayNode)mapper.readTree(newData.getData());
-        for(var sub:tree){
+        ArrayNode tree = (ArrayNode) mapper.readTree(newData.getData());
+        for (var sub : tree) {
             var newLine = new ArrayList<Object>();
             toChangeTo.add(newLine);
-            var suba = (ArrayNode)sub;
-            for(var fld:suba){
-                if(fld.getNodeType()== JsonNodeType.STRING){
+            var suba = (ArrayNode) sub;
+            for (var fld : suba) {
+                if (fld.getNodeType() == JsonNodeType.STRING) {
                     newLine.add(fld.textValue());
-                }else if(fld.getNodeType()== JsonNodeType.NUMBER){
+                } else if (fld.getNodeType() == JsonNodeType.NUMBER) {
                     newLine.add(fld.numberValue());
-                }else if(fld.getNodeType()== JsonNodeType.BOOLEAN){
+                } else if (fld.getNodeType() == JsonNodeType.BOOLEAN) {
                     newLine.add(fld.booleanValue());
-                }else if(fld.getNodeType()== JsonNodeType.BINARY){
+                } else if (fld.getNodeType() == JsonNodeType.BINARY) {
                     newLine.add(fld.binaryValue());
-                }else{
+                } else {
                     newLine.add(fld.textValue());
                 }
             }
@@ -183,14 +183,14 @@ public class DbProxyApi implements FilteringClass {
 
         var ser = serializer.newInstance();
         ser.write("result", modified);
-        String modifiedSerialized = (String)ser.getSerialized();
+        String modifiedSerialized = (String) ser.getSerialized();
 
         res.setResponseText(modifiedSerialized);
         res.setStatusCode(200);
     }
 
     private boolean preparedStatement(Request req, Response res) {
-        var result ="";
+        var result = "";
         try {
             var id = req.getPathParameter("dBname");
             if (id == null || !janusEngines.containsKey(id) || !janusEngines.get(id).isActive()) {
@@ -201,7 +201,7 @@ public class DbProxyApi implements FilteringClass {
             var connection = DriverManager.getConnection("jdbc:janus:http://localhost/api/db/" + id);
             var statement = connection.prepareStatement(
                     "SELECT * FROM REPLAYER_RECORDING WHERE ID>?");
-            statement.setInt(1,0);
+            statement.setInt(1, 0);
             var resultset = statement.executeQuery();
             result += "[";
             var count = 1;
@@ -222,10 +222,10 @@ public class DbProxyApi implements FilteringClass {
             }
             result += "]";
             connection.close();
-            res.getHeaders().put("content-type","application/json");
-        }catch (Exception ex){
-            result=ex.getMessage();
-            logger.error("Error",ex);
+            res.getHeaders().put("content-type", "application/json");
+        } catch (Exception ex) {
+            result = ex.getMessage();
+            logger.error("Error", ex);
         }
 
         res.setResponseText(result);
@@ -233,7 +233,7 @@ public class DbProxyApi implements FilteringClass {
     }
 
     private boolean simpleExecution(Request req, Response res) {
-        var result ="";
+        var result = "";
         try {
             var id = req.getPathParameter("dBname");
             if (id == null || !janusEngines.containsKey(id) || !janusEngines.get(id).isActive()) {
@@ -266,10 +266,10 @@ public class DbProxyApi implements FilteringClass {
             }
             result += "]";
             connection.close();
-            res.getHeaders().put("content-type","application/json");
-        }catch (Exception ex){
-            result=ex.getMessage();
-            logger.error("Error",ex);
+            res.getHeaders().put("content-type", "application/json");
+        } catch (Exception ex) {
+            result = ex.getMessage();
+            logger.error("Error", ex);
         }
 
         res.setResponseText(result);
@@ -285,7 +285,7 @@ public class DbProxyApi implements FilteringClass {
             tags = {"base/proxydb"},
             description = "Proxies db-not on connections",
             header = {
-              @Header(key="X-Connection-Id",description = "The connection id")
+                    @Header(key = "X-Connection-Id", description = "The connection id")
             },
             path = {
                     @PathParameter(
@@ -311,7 +311,7 @@ public class DbProxyApi implements FilteringClass {
             ))
     public boolean handleGeneral(Request req, Response res) throws Exception {
         var id = req.getPathParameter("dBname");
-        if(id==null ||!janusEngines.containsKey(id)||!janusEngines.get(id).isActive()){
+        if (id == null || !janusEngines.containsKey(id) || !janusEngines.get(id).isActive()) {
             return false;
         }
 
@@ -322,8 +322,6 @@ public class DbProxyApi implements FilteringClass {
     }
 
 
-
-
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/db/{dbName}/{targetType}/{command}",
@@ -332,7 +330,7 @@ public class DbProxyApi implements FilteringClass {
             tags = {"base/proxydb"},
             description = "Proxies db-connections only",
             header = {
-                    @Header(key="X-Connection-Id",description = "The connection id")
+                    @Header(key = "X-Connection-Id", description = "The connection id")
             },
             path = {
                     @PathParameter(
@@ -353,7 +351,7 @@ public class DbProxyApi implements FilteringClass {
             ))
     public boolean handleConnections(Request req, Response res) throws Exception {
         var id = req.getPathParameter("dBname");
-        if(id==null ||!janusEngines.containsKey(id)||!janusEngines.get(id).isActive()){
+        if (id == null || !janusEngines.containsKey(id) || !janusEngines.get(id).isActive()) {
             return false;
         }
 
@@ -369,15 +367,15 @@ public class DbProxyApi implements FilteringClass {
         var deserialized = (JdbcCommand) deser.read("command");
 
         var uuid = UUID.randomUUID();
-        if(specialLogger.isTraceEnabled()||specialLogger.isDebugEnabled()) {
-            specialLogger.debug(uuid+" REQ: "+ req.getPath());
+        if (specialLogger.isTraceEnabled() || specialLogger.isDebugEnabled()) {
+            specialLogger.debug(uuid + " REQ: " + req.getPath());
         }
         JdbcResult result = janusEngines.get(id).getServerEngine().execute(deserialized, connectionId, itemId);
-        if(specialLogger.isTraceEnabled()||specialLogger.isDebugEnabled()) {
-            if(result!=null){
-                specialLogger.debug(uuid+" RES: "+result.getClass().getSimpleName());
-            }else{
-                specialLogger.debug(uuid+" RES: null");
+        if (specialLogger.isTraceEnabled() || specialLogger.isDebugEnabled()) {
+            if (result != null) {
+                specialLogger.debug(uuid + " RES: " + result.getClass().getSimpleName());
+            } else {
+                specialLogger.debug(uuid + " RES: null");
             }
         }
 

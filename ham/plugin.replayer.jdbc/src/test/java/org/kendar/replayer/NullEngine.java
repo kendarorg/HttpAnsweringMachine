@@ -18,7 +18,7 @@ public class NullEngine implements Engine {
 
     @Override
     public JdbcResult execute(JdbcCommand jdbcCommand, Long aLong, Long aLong1) throws SQLException {
-        if(jdbcCommand instanceof RetrieveRemainingResultSet){
+        if (jdbcCommand instanceof RetrieveRemainingResultSet) {
             var res = new RemainingResultSetResult();
             res.setRows(new ArrayList<>());
             res.setLastRow(true);

@@ -5,10 +5,11 @@ import org.kendar.servers.BaseJsonConfig;
 import java.util.ArrayList;
 import java.util.List;
 
-@ConfigAttribute(id="ssl")
+@ConfigAttribute(id = "ssl")
 public class SSLConfig extends BaseJsonConfig<SSLConfig> {
     private String cname;
     private List<SSLDomain> domains;
+
     @Override
     public boolean isSystem() {
         return true;

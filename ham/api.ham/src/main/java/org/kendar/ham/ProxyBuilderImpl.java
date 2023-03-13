@@ -9,7 +9,7 @@ import java.util.UUID;
 import static org.kendar.ham.HamBuilder.pathId;
 import static org.kendar.ham.HamBuilder.updateMethod;
 
-class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
+class ProxyBuilderImpl implements ProxyBuilder, DbProxyBuilder {
     private HamBuilder hamBuilder;
     private DbProxy dbProxy;
 
@@ -22,8 +22,8 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
     public String addProxy(String when, String where, String test) throws HamException {
         var proxy = new Proxy();
         var alreadyExisting = retrieveProxies()
-                .stream().filter(d-> d.getWhen().equalsIgnoreCase(when)).findAny();
-        proxy.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() : UUID.randomUUID().toString());
+                .stream().filter(d -> d.getWhen().equalsIgnoreCase(when)).findAny();
+        proxy.setId(alreadyExisting.isPresent() ? alreadyExisting.get().getId() : UUID.randomUUID().toString());
         proxy.setTest(test);
         proxy.setWhen(when);
         proxy.setWhere(where);
@@ -32,18 +32,18 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
                 .withPath(pathId(
                         "/api/proxies",
                         alreadyExisting,
-                        ()-> alreadyExisting.get().getId()))
+                        () -> alreadyExisting.get().getId()))
                 .withJsonBody(proxy);
 
         hamBuilder.call(request.build());
         var inserted = retrieveProxies()
-                .stream().filter(d-> d.getWhen().equalsIgnoreCase(when)).findAny();
-        if(inserted.isPresent()){
+                .stream().filter(d -> d.getWhen().equalsIgnoreCase(when)).findAny();
+        if (inserted.isPresent()) {
             return inserted.get().getId();
         }
         inserted = retrieveProxies()
-                .stream().filter(d-> d.getWhere().equalsIgnoreCase(where)).findAny();
-        if(inserted.isPresent()){
+                .stream().filter(d -> d.getWhere().equalsIgnoreCase(where)).findAny();
+        if (inserted.isPresent()) {
 
             return inserted.get().getId();
         }
@@ -51,7 +51,7 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
     }
 
     @Override
-    public DbProxyBuilder addRemoteDbProxy(String dbName, String login, String password,String dbDriver) throws HamException {
+    public DbProxyBuilder addRemoteDbProxy(String dbName, String login, String password, String dbDriver) throws HamException {
 
         var proxy = new DbProxy();
         var dbd = new DbDescriptor();
@@ -69,7 +69,7 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
     public void removeProxy(String id) throws HamException {
         var request = hamBuilder.newRequest()
                 .withDelete()
-                .withPath("/api/proxies/"+id);
+                .withPath("/api/proxies/" + id);
         hamBuilder.call(request.build());
     }
 
@@ -91,8 +91,8 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
     @Override
     public String asLocal(String dbName, String login, String password) throws HamException {
         var alreadyExisting = retrieveDbProxies()
-                .stream().filter(d-> d.getExposed().getConnectionString().equalsIgnoreCase(dbName)).findAny();
-        dbProxy.setId(alreadyExisting.isPresent()? alreadyExisting.get().getId() : UUID.randomUUID().toString());
+                .stream().filter(d -> d.getExposed().getConnectionString().equalsIgnoreCase(dbName)).findAny();
+        dbProxy.setId(alreadyExisting.isPresent() ? alreadyExisting.get().getId() : UUID.randomUUID().toString());
         var dbd = new DbDescriptor();
         dbd.setConnectionString(dbName);
         dbd.setPassword(password);
@@ -104,14 +104,14 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
                 .withPath(pathId(
                         "/api/jdbcproxies/proxies",
                         alreadyExisting,
-                        ()-> alreadyExisting.get().getId()))
+                        () -> alreadyExisting.get().getId()))
                 .withJsonBody(dbProxy);
 
         hamBuilder.call(request.build());
         var inserted = retrieveDbProxies()
-                .stream().filter(d-> d.getExposed().getConnectionString().equalsIgnoreCase(dbName)).findAny();
-        if(inserted.isPresent()){
-            return String.format("jdbc:janus:http://%s/api/db/%s",request.getHost(),dbName);
+                .stream().filter(d -> d.getExposed().getConnectionString().equalsIgnoreCase(dbName)).findAny();
+        if (inserted.isPresent()) {
+            return String.format("jdbc:janus:http://%s/api/db/%s", request.getHost(), dbName);
         }
         throw new HamException("Missing id");
     }
@@ -126,7 +126,7 @@ class ProxyBuilderImpl implements ProxyBuilder,DbProxyBuilder{
     public void removeDbProxy(String dbId) throws HamException {
         var request = hamBuilder.newRequest()
                 .withDelete()
-                .withPath("/api/jdbcproxies/proxies/"+dbId);
+                .withPath("/api/jdbcproxies/proxies/" + dbId);
         hamBuilder.call(request.build());
     }
 

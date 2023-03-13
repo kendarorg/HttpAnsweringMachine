@@ -11,30 +11,32 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class LoggerBuilderImpl implements LoggerBuilder {
-    private final ConcurrentHashMap<String,Logger> loggers = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Logger> loggers = new ConcurrentHashMap<>();
 
-    @Override public void setLevel(String loggerName, Level level) {
+    @Override
+    public void setLevel(String loggerName, Level level) {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         var logger = loggerContext.getLogger(loggerName);
         logger.setLevel(level);
     }
 
-    @Override public Level getLevel(String loggerName){
-        if(!loggers.containsKey(loggerName)) return Level.OFF;
+    @Override
+    public Level getLevel(String loggerName) {
+        if (!loggers.containsKey(loggerName)) return Level.OFF;
         var logger = loggers.get(loggerName);
-        if(logger.isDebugEnabled()&& logger.isTraceEnabled() && logger.isErrorEnabled() &&
-        logger.isInfoEnabled() && logger.isWarnEnabled()) return Level.ALL;
-        if(logger.isDebugEnabled())return Level.DEBUG;
-        if(logger.isWarnEnabled()) return Level.WARN;
-        if(logger.isInfoEnabled()) return Level.INFO;
-        if(logger.isTraceEnabled()) return Level.TRACE;
-        if(logger.isErrorEnabled()) return Level.ERROR;
+        if (logger.isDebugEnabled() && logger.isTraceEnabled() && logger.isErrorEnabled() &&
+                logger.isInfoEnabled() && logger.isWarnEnabled()) return Level.ALL;
+        if (logger.isDebugEnabled()) return Level.DEBUG;
+        if (logger.isWarnEnabled()) return Level.WARN;
+        if (logger.isInfoEnabled()) return Level.INFO;
+        if (logger.isTraceEnabled()) return Level.TRACE;
+        if (logger.isErrorEnabled()) return Level.ERROR;
         return Level.OFF;
     }
 
     @Override
     public Logger build(Class<?> toLogClass) {
-        return loggers.computeIfAbsent(toLogClass.getCanonicalName(),s -> LoggerFactory.getLogger(toLogClass));
+        return loggers.computeIfAbsent(toLogClass.getCanonicalName(), s -> LoggerFactory.getLogger(toLogClass));
     }
 }

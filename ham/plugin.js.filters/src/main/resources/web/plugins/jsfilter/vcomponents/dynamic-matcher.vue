@@ -1,12 +1,12 @@
 <template>
-  <component  :is="component"  v-if="component"
-               :matcher="value" ref="subcomp" @componentevent="onComponentEvent"/>
+  <component :is="component" v-if="component"
+             :matcher="value" ref="subcomp" @componentevent="onComponentEvent"/>
 </template>
 <script>
 
 module.exports = {
   name: 'dynamic-matcher',
-  props:['template','path','default','value'],
+  props: ['template', 'path', 'default', 'value'],
   data() {
     return {
       component: null,
@@ -20,28 +20,28 @@ module.exports = {
       return httpVueLoader(this.path + "/" + this.template + ".vue");
     },
   },
-  watch:{
-    template:function(val,oldVal){
+  watch: {
+    template: function (val, oldVal) {
       if (this.template) {
         this.reload();
       }
     }
   },
   methods: {
-    isValid:function(){
+    isValid: function () {
       return this.$refs.subcomp.isValid();
     },
-    reload:function(){
+    reload: function () {
       this.loader()
           .then(() => {
             this.component = () => this.loader()
           })
           .catch(() => {
-            this.component = httpVueLoader(this.path+"/"+this.default+'.vue')
+            this.component = httpVueLoader(this.path + "/" + this.default + '.vue')
           })
     },
-    onComponentEvent:function(evt){
-      this.$emit("componentevent",evt);
+    onComponentEvent: function (evt) {
+      this.$emit("componentevent", evt);
     }
   },
   mounted() {

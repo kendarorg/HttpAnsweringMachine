@@ -25,9 +25,10 @@ public class ReplayerAPIActions implements FilteringClass {
     public String getId() {
         return "org.kendar.replayer.apis.ReplayerAPIActions";
     }
+
     private final ReplayerStatus replayerStatus;
 
-    public ReplayerAPIActions(ReplayerStatus replayerStatus, LoggerBuilder loggerBuilder){
+    public ReplayerAPIActions(ReplayerStatus replayerStatus, LoggerBuilder loggerBuilder) {
         this.replayerStatus = replayerStatus;
         this.logger = loggerBuilder.build(ReplayerAPIActions.class);
     }
@@ -35,10 +36,10 @@ public class ReplayerAPIActions implements FilteringClass {
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/record/{action}",
             method = "GET")
-    @HamDoc(description = "Start/stop/pauses recording" ,tags = {"plugin/replayer"},
+    @HamDoc(description = "Start/stop/pauses recording", tags = {"plugin/replayer"},
             path = {
                     @PathParameter(key = "id"),
-                    @PathParameter(key="action", description = "start/pause/stop")
+                    @PathParameter(key = "action", description = "start/pause/stop")
             },
             query = {
             }
@@ -47,67 +48,68 @@ public class ReplayerAPIActions implements FilteringClass {
         var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
 
-        if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
+        if (action.equalsIgnoreCase("start") && replayerStatus.getStatus() == ReplayerState.NONE) {
             var description = req.getQuery("description");
 //            var recordVoidDbCalls=Boolean.parseBoolean(req.getQuery("recordVoidDbCalls"));
 //            var recordDbCalls=Boolean.parseBoolean(req.getQuery("recordDbCalls"));
-            replayerStatus.startRecording(id,description,req.getQuery());
-        }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_RECORDING){
+            replayerStatus.startRecording(id, description, req.getQuery());
+        } else if (action.equalsIgnoreCase("start") && replayerStatus.getStatus() == ReplayerState.PAUSED_RECORDING) {
             replayerStatus.restartRecording();
-        }else if(action.equalsIgnoreCase("pause") && replayerStatus.getStatus()==ReplayerState.RECORDING){
+        } else if (action.equalsIgnoreCase("pause") && replayerStatus.getStatus() == ReplayerState.RECORDING) {
             replayerStatus.pauseRecording();
-        }else if(action.equalsIgnoreCase("stop") &&
-                (replayerStatus.getStatus()==ReplayerState.RECORDING||replayerStatus.getStatus()==ReplayerState.PAUSED_RECORDING)){
+        } else if (action.equalsIgnoreCase("stop") &&
+                (replayerStatus.getStatus() == ReplayerState.RECORDING || replayerStatus.getStatus() == ReplayerState.PAUSED_RECORDING)) {
             replayerStatus.stopAndSave();
-        }else{
-            logger.error("Unable to start "+id+":record:"+action);
+        } else {
+            logger.error("Unable to start " + id + ":record:" + action);
         }
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/replay/{action}",
             method = "GET")
-    @HamDoc(description = "Start/stop/pauses replaying" ,tags = {"plugin/replayer"},
-            path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
+    @HamDoc(description = "Start/stop/pauses replaying", tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"), @PathParameter(key = "action", description = "start/pause/stop")}
     )
     public void handleReplay(Request req, Response res) throws Exception {
         var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
-        if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
-            Long runId = replayerStatus.startReplaying(id,req.getQuery());
-        }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_REPLAYING){
-            replayerStatus.restartReplaying(id,req.getQuery());
-        }else if(action.equalsIgnoreCase("pause") && replayerStatus.getStatus()==ReplayerState.REPLAYING){
+        if (action.equalsIgnoreCase("start") && replayerStatus.getStatus() == ReplayerState.NONE) {
+            Long runId = replayerStatus.startReplaying(id, req.getQuery());
+        } else if (action.equalsIgnoreCase("start") && replayerStatus.getStatus() == ReplayerState.PAUSED_REPLAYING) {
+            replayerStatus.restartReplaying(id, req.getQuery());
+        } else if (action.equalsIgnoreCase("pause") && replayerStatus.getStatus() == ReplayerState.REPLAYING) {
             replayerStatus.pauseReplaying(id);
-        }else if(action.equalsIgnoreCase("stop") &&
-                replayerStatus.getStatus()==ReplayerState.REPLAYING){
+        } else if (action.equalsIgnoreCase("stop") &&
+                replayerStatus.getStatus() == ReplayerState.REPLAYING) {
             replayerStatus.stopReplaying(id);
-        }else{
-            logger.error("Unable to start "+id+":replay:"+action);
+        } else {
+            logger.error("Unable to start " + id + ":replay:" + action);
         }
     }
+
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/recording/{id}/auto/{action}",
             method = "GET")
-    @HamDoc(description = "Start/stop/pauses stimulator tests. If not replaying starts it" ,tags = {"plugin/replayer"},
-            path = {@PathParameter(key = "id"),@PathParameter(key="action", description = "start/pause/stop")}
+    @HamDoc(description = "Start/stop/pauses stimulator tests. If not replaying starts it", tags = {"plugin/replayer"},
+            path = {@PathParameter(key = "id"), @PathParameter(key = "action", description = "start/pause/stop")}
     )
     public void handleAutoTest(Request req, Response res) throws Exception {
         var id = Long.valueOf(req.getPathParameter("id"));
         var action = req.getPathParameter("action");
-        if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.NONE){
-            replayerStatus.startStimulator(id,req.getQuery());
-        }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.PAUSED_REPLAYING){
+        if (action.equalsIgnoreCase("start") && replayerStatus.getStatus() == ReplayerState.NONE) {
+            replayerStatus.startStimulator(id, req.getQuery());
+        } else if (action.equalsIgnoreCase("start") && replayerStatus.getStatus() == ReplayerState.PAUSED_REPLAYING) {
             replayerStatus.restartReplaying(id, req.getQuery());
-        }else if(action.equalsIgnoreCase("pause") && replayerStatus.getStatus()==ReplayerState.REPLAYING){
+        } else if (action.equalsIgnoreCase("pause") && replayerStatus.getStatus() == ReplayerState.REPLAYING) {
             replayerStatus.pauseReplaying(id);
-        }else if(action.equalsIgnoreCase("start") && replayerStatus.getStatus()==ReplayerState.REPLAYING){
-            replayerStatus.startStimulator(id,req.getQuery());
-        }else if(action.equalsIgnoreCase("stop") &&
-                replayerStatus.getStatus()==ReplayerState.REPLAYING){
+        } else if (action.equalsIgnoreCase("start") && replayerStatus.getStatus() == ReplayerState.REPLAYING) {
+            replayerStatus.startStimulator(id, req.getQuery());
+        } else if (action.equalsIgnoreCase("stop") &&
+                replayerStatus.getStatus() == ReplayerState.REPLAYING) {
             replayerStatus.stopReplaying(id);
-        }else{
-            logger.error("Unable to start "+id+":auto:"+action);
+        } else {
+            logger.error("Unable to start " + id + ":auto:" + action);
         }
     }
 }

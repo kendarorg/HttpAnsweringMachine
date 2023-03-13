@@ -6,21 +6,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class XmlElement {
-    private Map<String,XmlAttribute> attributes = new HashMap<>();
+    private Map<String, XmlAttribute> attributes = new HashMap<>();
     private String value;
 
     @Override
     public String toString() {
         return "{\"type\":\"XmlElement\"" +
                 ", \"tag\":\"" + tag + "\"" +
-                ", \"constraint\":\"" + constraint + "\""+
+                ", \"constraint\":\"" + constraint + "\"" +
                 ", \"value\":\"" + value + "\"" +
-                ", \"valueConstraint\":\"" + valueConstraint + "\""+
-                ", \"attributes\":[" + String.join(",",attributes.values().stream()
-                        .sorted(Comparator.comparing(XmlAttribute::getName))
-                    .map(a->a.toString()).collect(Collectors.toList())) +"]"+
-                ", \"children\":[" + String.join(",",children.values().stream()
-                    .sorted(Comparator.comparing(XmlElementGroup::getTag)).map(a->a.toString()).collect(Collectors.toList())) +"]"+
+                ", \"valueConstraint\":\"" + valueConstraint + "\"" +
+                ", \"attributes\":[" + String.join(",", attributes.values().stream()
+                .sorted(Comparator.comparing(XmlAttribute::getName))
+                .map(a -> a.toString()).collect(Collectors.toList())) + "]" +
+                ", \"children\":[" + String.join(",", children.values().stream()
+                .sorted(Comparator.comparing(XmlElementGroup::getTag)).map(a -> a.toString()).collect(Collectors.toList())) + "]" +
                 "}";
     }
 
@@ -57,7 +57,7 @@ public class XmlElement {
         return children;
     }
 
-    public void setChildren(Map<String,XmlElementGroup> children) {
+    public void setChildren(Map<String, XmlElementGroup> children) {
         this.children = children;
     }
 

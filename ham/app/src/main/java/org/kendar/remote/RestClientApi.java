@@ -1,7 +1,6 @@
 package org.kendar.remote;
 
 import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.util.encoders.Base64Encoder;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
@@ -14,8 +13,6 @@ import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
-
-import java.net.URISyntaxException;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}",

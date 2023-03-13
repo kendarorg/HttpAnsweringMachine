@@ -15,7 +15,7 @@ public class SimEngine implements Engine {
 
     @Override
     public JdbcResult execute(JdbcCommand jdbcCommand, Long aLong, Long aLong1) throws SQLException {
-        return (JdbcResult) SqlSimulator.handleInternal(jdbcCommand,aLong);
+        return (JdbcResult) SqlSimulator.handleInternal(jdbcCommand, aLong);
     }
 
     @Override

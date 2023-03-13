@@ -23,7 +23,7 @@ public class FakeFuture implements Future<Object> {
     }
 
     @Override
-    public Object get()  {
+    public Object get() {
         return null;
     }
 

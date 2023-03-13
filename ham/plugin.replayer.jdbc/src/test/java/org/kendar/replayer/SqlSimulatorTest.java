@@ -16,17 +16,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SqlSimulatorTest {
     @Test
-    void test(){
+    void test() {
         var target = new SqlSimulator();
         var res = target.handle(new ConnectionConnect(), 0L);
         assertTrue(res.isHasResponse());
     }
 
     @Test
-    void test01(){
+    void test01() {
         var target = new SqlSimulator();
-        var initiator = new JdbcConnection(0L,null,true);
-        var exec = new Exec(initiator,"isValid");
+        var initiator = new JdbcConnection(0L, null, true);
+        var exec = new Exec(initiator, "isValid");
         var res = target.handle(exec, 0L);
         assertTrue(res.isHasResponse());
         assertTrue((boolean) ob(res.getResponse()).getResult());
@@ -34,19 +34,19 @@ public class SqlSimulatorTest {
 
 
     @Test
-    void test02(){
+    void test02() {
         var target = new SqlSimulator();
-        var initiator = new JdbcCallableStatement(null,null,1,1,1,
+        var initiator = new JdbcCallableStatement(null, null, 1, 1, 1,
                 ResultSetType.FORWARD_ONLY, ResultSetConcurrency.CONCUR_READ_ONLY, ResultSetHoldability.DEFAULT);
-        var exec = new Exec(initiator,"commit");
+        var exec = new Exec(initiator, "commit");
         var res = target.handle(exec, 0L);
         assertTrue(res.isHasResponse());
-        assertNull( ob(res.getResponse()).getResult());
+        assertNull(ob(res.getResponse()).getResult());
     }
 
 
     @Test
-    void test03(){
+    void test03() {
         var target = new SqlSimulator();
         var command = new PreparedStatementExecute();
         var res = target.handle(command, 0L);

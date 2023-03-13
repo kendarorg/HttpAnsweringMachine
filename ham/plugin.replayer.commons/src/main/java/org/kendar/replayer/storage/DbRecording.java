@@ -9,22 +9,22 @@ import javax.persistence.*;
 @Component
 
 @Entity
-@Table(name="REPLAYER_RECORDING")
+@Table(name = "REPLAYER_RECORDING")
 public class DbRecording implements DbTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="filter")
+    @Column(name = "filter")
     private String filter;
 
-    @Column(name="description")
+    @Column(name = "description")
     private String description;
-    
+
     public String getFilter() {
         return filter;
     }

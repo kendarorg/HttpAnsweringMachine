@@ -25,23 +25,26 @@ public class JsDownloadUpload implements FullDownloadUpload {
 
     public JsDownloadUpload(JsonConfiguration configuration,
                             EventQueue eventQueue,
-                            HibernateSessionFactory sessionFactory){
+                            HibernateSessionFactory sessionFactory) {
 
         this.configuration = configuration;
         this.eventQueue = eventQueue;
         this.sessionFactory = sessionFactory;
     }
+
     TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<HashMap<String, String>>() {};
+            = new TypeReference<HashMap<String, String>>() {
+    };
     ObjectMapper mapper = new ObjectMapper();
+
     @Override
     public Map<String, byte[]> retrieveItems() throws Exception {
-        var result = new HashMap<String,byte[]>();
+        var result = new HashMap<String, byte[]>();
 
-        var dbFilters = (List<DbFilter>)sessionFactory.queryResult(em->
+        var dbFilters = (List<DbFilter>) sessionFactory.queryResult(em ->
                 em.createQuery("SELECT e FROM DbFilter e").getResultList());
 
-        for(var dbFilter:dbFilters) {
+        for (var dbFilter : dbFilters) {
 
             var rf = new RestFilter();
             rf.setId(dbFilter.getId());
@@ -62,7 +65,7 @@ public class JsDownloadUpload implements FullDownloadUpload {
                 dbf.setContent(rqf.getContent());
                 rf.getRequire().add(dbf);
             }
-            result.put("filter."+dbFilter.getId()+".json",mapper.writeValueAsBytes(rf));
+            result.put("filter." + dbFilter.getId() + ".json", mapper.writeValueAsBytes(rf));
         }
         return result;
     }
@@ -74,15 +77,15 @@ public class JsDownloadUpload implements FullDownloadUpload {
 
     @Override
     public void uploadItems(HashMap<String, byte[]> data) throws Exception {
-        sessionFactory.transactional(em->{
+        sessionFactory.transactional(em -> {
             em.createQuery("DELETE FROM DbFilterRequire").executeUpdate();
-                em.createQuery("DELETE FROM DbFilter").executeUpdate();
+            em.createQuery("DELETE FROM DbFilter").executeUpdate();
         });
         eventQueue.handle(new ScriptsModified());
-        for(var filter:data.entrySet()){
+        for (var filter : data.entrySet()) {
             var json = new String(filter.getValue());
-            var jsonFileData = mapper.readValue(json,RestFilter.class);
-            sessionFactory.transactional(em->{
+            var jsonFileData = mapper.readValue(json, RestFilter.class);
+            sessionFactory.transactional(em -> {
                 var dbFilter = new DbFilter();
                 dbFilter.setMatcher(mapper.writeValueAsString(jsonFileData.getMatchers()));
                 dbFilter.setName(jsonFileData.getName());
@@ -92,7 +95,7 @@ public class JsDownloadUpload implements FullDownloadUpload {
                 dbFilter.setType(jsonFileData.getType());
                 dbFilter.setBlocking(jsonFileData.isBlocking());
                 em.persist(dbFilter);
-                for(var rq:jsonFileData.getRequire()){
+                for (var rq : jsonFileData.getRequire()) {
                     var r = new DbFilterRequire();
                     r.setName(rq.getName());
                     r.setBinary(rq.isBinary());

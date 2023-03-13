@@ -11,18 +11,18 @@
 <script>
 module.exports = {
   name: 'exthttp',
-  props:{
-    value:Object
+  props: {
+    value: Object
   },
   data: function () {
     return {
-      hosts:"*"
+      hosts: "*"
     }
   },
-  watch:{
+  watch: {
     $props: {
-      handler(val,oldVal) {
-        if(val.value.hosts)this.hosts=val.value.hosts;
+      handler(val, oldVal) {
+        if (val.value.hosts) this.hosts = val.value.hosts;
         this.changeHosts();
       },
       deep: true,

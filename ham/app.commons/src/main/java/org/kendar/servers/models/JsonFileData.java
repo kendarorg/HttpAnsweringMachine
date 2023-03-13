@@ -34,15 +34,16 @@ public class JsonFileData {
 
     private byte[] byteData;
     private String stringData;
-    public byte[] readAsByte(){
-        if(byteData==null) {
+
+    public byte[] readAsByte() {
+        if (byteData == null) {
             byteData = Base64.getDecoder().decode(this.data);
         }
         return byteData;
     }
 
-    public String readAsString(){
-        if(stringData==null) {
+    public String readAsString() {
+        if (stringData == null) {
             var bytes = readAsByte();
             stringData = new String(bytes, StandardCharsets.UTF_8);
         }
@@ -50,7 +51,7 @@ public class JsonFileData {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean matchContentType(String possible){
-        return possible.equalsIgnoreCase(this.type) ;
+    public boolean matchContentType(String possible) {
+        return possible.equalsIgnoreCase(this.type);
     }
 }

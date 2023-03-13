@@ -2,7 +2,7 @@ package org.kendar.servers.dbproxy;
 
 public class DbProxy {
 
-    public DbProxy(){
+    public DbProxy() {
 
     }
 
@@ -15,6 +15,7 @@ public class DbProxy {
     public void setId(String id) {
         this.id = id;
     }
+
     private String driver;
     private DbDescriptor exposed;
     private DbDescriptor remote;

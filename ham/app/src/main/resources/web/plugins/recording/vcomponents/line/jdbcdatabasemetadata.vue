@@ -1,7 +1,7 @@
 <template>
 
   <div v-if="value.type=='org.kendar.janus.JdbcDatabaseMetaData'">
-    <h3>{{value.type}}</h3><br>
+    <h3>{{ value.type }}</h3><br>
     <table>
       <tr>
         <th>Item</th>
@@ -20,8 +20,8 @@ module.exports = {
   props: {
     value: Object
   },
-  computed:{
-    gridData:function(){
+  computed: {
+    gridData: function () {
       //this.triggerChange;
       return this.value.children;
     }

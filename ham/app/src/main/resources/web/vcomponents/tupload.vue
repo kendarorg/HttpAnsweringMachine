@@ -1,8 +1,10 @@
 <template>
   <div>
     <div class="form-group">
-      <button type="button" id="btLoadFile" name="btLoadFile" class="bi bi-folder2-open" v-on:click="openFile" title="Open File"></button>
-      <button type="button" id="btUploadScript" name="btUploadScript" class="bi bi-cloud-plus" v-on:click="upload" title="Upload"></button>
+      <button type="button" id="btLoadFile" name="btLoadFile" class="bi bi-folder2-open" v-on:click="openFile"
+              title="Open File"></button>
+      <button type="button" id="btUploadScript" name="btUploadScript" class="bi bi-cloud-plus" v-on:click="upload"
+              title="Upload"></button>
       <input ref="uploadScript" type="file" style="width:0;height: 0;opacity:0;"
              id="uploadScript" name="uploadScript"
              @change="loadFile"
@@ -17,71 +19,71 @@
 <script>
 module.exports = {
   props: {
-    useFormData:Boolean,
-    contentType:String,
-    path:String
+    useFormData: Boolean,
+    contentType: String,
+    path: String
   },
   name: 'ham-upload',
-  data:function(){
+  data: function () {
     return {
-      fileContent:null,
-      uploadScriptShow:""
+      fileContent: null,
+      uploadScriptShow: ""
     };
   },
-  methods:{
-    openFile:function(){
+  methods: {
+    openFile: function () {
       this.fileContent = null;
       this.$refs.uploadScript.click();
     },
-    loadFile:function(){
+    loadFile: function () {
       var th = this;
-      this.uploadAsyncFile(this.$refs.uploadScript.files,function(data){
+      this.uploadAsyncFile(this.$refs.uploadScript.files, function (data) {
         th.fileContent = data[0];
         th.uploadScriptShow = data[0].name;
-      },function(exception){
+      }, function (exception) {
         this.$emit('error', {
-          files : [],
-          error : exception
+          files: [],
+          error: exception
         });
       });
     },
-    upload:function(){
-      var contentType=this.contentType;
-      if(this.contentType==null||typeof this.contentType =="undefined"||this.contentType==""){
-        contentType="application/json";
+    upload: function () {
+      var contentType = this.contentType;
+      if (this.contentType == null || typeof this.contentType == "undefined" || this.contentType == "") {
+        contentType = "application/json";
       }
-      if(this.useFormData==null||typeof this.useFormData == "undefined"||this.useFormData==false) {
+      if (this.useFormData == null || typeof this.useFormData == "undefined" || this.useFormData == false) {
         var toUpload = JSON.stringify(this.fileContent);
         const headers = {'Content-Type': contentType};
-        var th=this;
-        axiosHandle(axios.post(this.path, toUpload, {headers}),(res) => {
+        var th = this;
+        axiosHandle(axios.post(this.path, toUpload, {headers}), (res) => {
           var data = {
-            response:res,
-            name:th.uploadScriptShow,
-            length:toUpload.length
+            response: res,
+            name: th.uploadScriptShow,
+            length: toUpload.length
           };
           axiosOk();
-          th.$emit('success',data)
+          th.$emit('success', data)
         });
-      }else {
+      } else {
         const formData = new FormData();
         formData.append('file', this.fileContent);
-        const headers = { 'Content-Type': 'multipart/form-data' };
-        axiosHandle(axios.post(this.path, formData, { headers }),(res) => {
+        const headers = {'Content-Type': 'multipart/form-data'};
+        axiosHandle(axios.post(this.path, formData, {headers}), (res) => {
           axiosOk();
-          th.$emit('success',{
-            response:res,
-            name:th.uploadScriptShow,
-            length:toUpload.length
+          th.$emit('success', {
+            response: res,
+            name: th.uploadScriptShow,
+            length: toUpload.length
           });
         });
       }
     },
-    splitOnFirst : function (str, sep) {
+    splitOnFirst: function (str, sep) {
       const index = str.indexOf(sep);
       return index < 0 ? [str] : [str.slice(0, index), str.slice(index + sep.length)];
     },
-    uploadAsyncFile : async function (files, callback, callbackError) {
+    uploadAsyncFile: async function (files, callback, callbackError) {
 
       let filesLoadedEvent = [];
       let filesLoaded = [];
@@ -103,18 +105,18 @@ module.exports = {
           callback(filesLoaded)
         } catch (exception) {
           this.$emit('error', {
-            files : filesLoadedEvent,
-            error : exception
+            files: filesLoadedEvent,
+            error: exception
           });
         }
       } else {
         this.$emit('error', {
-          files:[],
-          error:"No files to upldad"
+          files: [],
+          error: "No files to upldad"
         });
       }
     },
-    convertFileToBase64 : function (file) {
+    convertFileToBase64: function (file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);

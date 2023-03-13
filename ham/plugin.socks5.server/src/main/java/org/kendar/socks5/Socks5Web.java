@@ -4,19 +4,19 @@ import org.kendar.http.StaticWebFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.utils.FileResourcesUtils;
 import org.kendar.utils.LoggerBuilder;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}")
-public class Socks5Web  extends StaticWebFilter {
+public class Socks5Web extends StaticWebFilter {
 
     @Override
-    public String getDescription(){
+    public String getDescription() {
         return "Socks5 proxy";
     }
+
     @Override
-    public String getAddress(){
+    public String getAddress() {
         return "plugins/socks5/index.html";
     }
 

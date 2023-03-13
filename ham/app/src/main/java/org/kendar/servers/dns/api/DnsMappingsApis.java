@@ -45,7 +45,7 @@ public class DnsMappingsApis implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/mappings",
-            method = "GET",id="1000a4b4-277d-11ef-9621-0242ac130002")
+            method = "GET", id = "1000a4b4-277d-11ef-9621-0242ac130002")
     @HamDoc(
             tags = {"base/dns"},
             description = "Retrieve all dns mappings",
@@ -60,7 +60,7 @@ public class DnsMappingsApis implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/dns/hosts",
-            method = "GET",id="1000a4b4asd-277d-11ef-9621-0242ac130002")
+            method = "GET", id = "1000a4b4asd-277d-11ef-9621-0242ac130002")
 
     @HamDoc(
             tags = {"base/dns"},
@@ -72,11 +72,11 @@ public class DnsMappingsApis implements FilteringClass {
                             example = "127.0.0.1 localhost\n127.0.0.1 www.local.test"
                     )
             ))
-    public void getHostsFile(Request req, Response res)  {
+    public void getHostsFile(Request req, Response res) {
         var records = configuration.getConfiguration(DnsConfig.class).getResolved();
         StringBuilder result = new StringBuilder();
-        for(var record:records){
-            if(!record.patternMatcher()){
+        for (var record : records) {
+            if (!record.patternMatcher()) {
                 result.append(record.getIp()).append(" ").append(record.getDns()).append("\r\n");
             }
         }
@@ -87,8 +87,8 @@ public class DnsMappingsApis implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-      pathAddress = "/api/dns/mappings/{id}",
-      method = "PUT",id="1000a4f4-277d-11ef-9621-0242ac130002")
+            pathAddress = "/api/dns/mappings/{id}",
+            method = "PUT", id = "1000a4f4-277d-11ef-9621-0242ac130002")
     @HamDoc(
             tags = {"base/dns"},
             description = "Modify custom dns mapping",
@@ -105,8 +105,8 @@ public class DnsMappingsApis implements FilteringClass {
         newObject.initialize();
         var dnsConfig = configuration.getConfiguration(DnsConfig.class).copy();
         var newMapped = new ArrayList<PatternItem>();
-        for(var config :dnsConfig.getResolved()){
-            if(config.getId().equalsIgnoreCase(id)) continue;
+        for (var config : dnsConfig.getResolved()) {
+            if (config.getId().equalsIgnoreCase(id)) continue;
             newMapped.add(config);
         }
         newMapped.add(newObject);
@@ -117,16 +117,15 @@ public class DnsMappingsApis implements FilteringClass {
     }
 
 
-
     @HttpMethodFilter(phase = HttpFilterType.API,
-      pathAddress = "/api/dns/mappings",
-      method = "POST",id="3000a4f4-277k-11ef-9621-0242ac130002")
+            pathAddress = "/api/dns/mappings",
+            method = "POST", id = "3000a4f4-277k-11ef-9621-0242ac130002")
     @HamDoc(
             tags = {"base/dns"},
             description = "Modify custom dns mapping",
             requests = {@HamRequest(
                     body = PatternItem[].class
-            ),@HamRequest(
+            ), @HamRequest(
                     body = PatternItem.class
             )},
             responses = @HamResponse(
@@ -136,26 +135,26 @@ public class DnsMappingsApis implements FilteringClass {
         var cloned = configuration.getConfiguration(DnsConfig.class).copy();
 
         List<PatternItem> newList = new ArrayList<>();
-        if(req.getRequestText().startsWith("[")){
-            newList = (List<PatternItem>)mapper.readValue(req.getRequestText(), List.class).stream()
-                    .map(a->{
+        if (req.getRequestText().startsWith("[")) {
+            newList = (List<PatternItem>) mapper.readValue(req.getRequestText(), List.class).stream()
+                    .map(a -> {
                         var newDomain = new PatternItem();
                         newDomain.setId(UUID.randomUUID().toString());
                         newDomain.setIp("127.0.0.1");
-                        newDomain.setDns((String)a);
+                        newDomain.setDns((String) a);
                         newDomain.initialize();
                         return newDomain;
                     }).collect(Collectors.toList());
 
-        }else {
+        } else {
             var newITem = mapper.readValue(req.getRequestText(), PatternItem.class);
             newITem.initialize();
-            newList.add( newITem);
+            newList.add(newITem);
         }
 
-        final var newList2= newList;
+        final var newList2 = newList;
         var notNew = cloned.getResolved().stream()
-                .filter(a-> newList2.stream().noneMatch(m-> m.getDns().equalsIgnoreCase(a.getDns())))
+                .filter(a -> newList2.stream().noneMatch(m -> m.getDns().equalsIgnoreCase(a.getDns())))
                 .collect(Collectors.toList());
         newList.addAll(notNew);
 
@@ -166,8 +165,8 @@ public class DnsMappingsApis implements FilteringClass {
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
-      pathAddress = "/api/dns/mappings/{id}",
-      method = "DELETE",id="10k0a4f4-277d-11ef-9621-0242ac130002")
+            pathAddress = "/api/dns/mappings/{id}",
+            method = "DELETE", id = "10k0a4f4-277d-11ef-9621-0242ac130002")
     @HamDoc(
             tags = {"base/dns"},
             description = "Modify custom dns mapping",
@@ -176,8 +175,8 @@ public class DnsMappingsApis implements FilteringClass {
         var id = req.getPathParameter("id");
         var dnsConfig = configuration.getConfiguration(DnsConfig.class).copy();
         var newMapped = new ArrayList<PatternItem>();
-        for(var config :dnsConfig.getResolved()){
-            if(config.getId().equalsIgnoreCase(id)) continue;
+        for (var config : dnsConfig.getResolved()) {
+            if (config.getId().equalsIgnoreCase(id)) continue;
             newMapped.add(config);
         }
         dnsConfig.setResolved(newMapped);

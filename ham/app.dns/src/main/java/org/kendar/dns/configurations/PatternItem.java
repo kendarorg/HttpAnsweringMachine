@@ -10,40 +10,41 @@ public class PatternItem implements Copyable<PatternItem> {
     private Pattern compile;
     private String ip;
     private String name;
-    private  String matcher;
+    private String matcher;
     private boolean initialized = false;
 
-    public void initialize(){
-        if(!initialized){
-            if(dns.startsWith("@")){
+    public void initialize() {
+        if (!initialized) {
+            if (dns.startsWith("@")) {
                 matcher = dns.substring(1);
                 compile = Pattern.compile(matcher);
-            }else{
+            } else {
                 name = dns;
                 matcher = dns;
             }
             initialized = true;
         }
     }
-    public PatternItem(){
+
+    public PatternItem() {
 
     }
 
-    public PatternItem(String id,String dns, String ip) {
-        this.id=id;
+    public PatternItem(String id, String dns, String ip) {
+        this.id = id;
         this.dns = dns;
         this.ip = ip;
         initialize();
     }
 
-    public boolean match(String domain){
+    public boolean match(String domain) {
         initialize();
-        if(name!=null) return name.equalsIgnoreCase(domain);
+        if (name != null) return name.equalsIgnoreCase(domain);
         return compile.matcher(domain).matches();
     }
 
-    public boolean patternMatcher(){
-        return name==null || name.isEmpty();
+    public boolean patternMatcher() {
+        return name == null || name.isEmpty();
     }
 
     public String getIp() {
@@ -51,10 +52,10 @@ public class PatternItem implements Copyable<PatternItem> {
     }
 
     public String writeHostsLine() {
-        if(compile!=null){
-            return "#"+ip+" "+matcher;
-        }else{
-            return ip+" "+matcher;
+        if (compile != null) {
+            return "#" + ip + " " + matcher;
+        } else {
+            return ip + " " + matcher;
         }
     }
 
@@ -73,7 +74,7 @@ public class PatternItem implements Copyable<PatternItem> {
     }
 
     public PatternItem copy() {
-        return new PatternItem(id,dns,ip);
+        return new PatternItem(id, dns, ip);
     }
 
     public String getId() {

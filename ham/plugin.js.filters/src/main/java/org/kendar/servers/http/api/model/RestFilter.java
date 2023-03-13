@@ -1,6 +1,5 @@
 package org.kendar.servers.http.api.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

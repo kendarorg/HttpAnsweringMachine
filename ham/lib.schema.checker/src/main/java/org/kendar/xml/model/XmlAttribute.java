@@ -8,9 +8,9 @@ public class XmlAttribute {
     public String toString() {
         return "{ \"type\":\"XmlAttribute\"" +
                 ", \"name\":\"" + name + "\"" +
-                ", \"constraint\":\"" + constraint+ "\"" +
-                ", \"value\":\"" + value + "\""  +
-                ", \"valueConstraint\":\"" + valueConstraint + "\""+
+                ", \"constraint\":\"" + constraint + "\"" +
+                ", \"value\":\"" + value + "\"" +
+                ", \"valueConstraint\":\"" + valueConstraint + "\"" +
                 "}";
     }
 

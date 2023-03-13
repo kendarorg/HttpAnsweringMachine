@@ -1,8 +1,6 @@
 package org.kendar.servers.http.types.http;
 
-import org.kendar.servers.http.matchers.ApiMatcher;
 import org.kendar.servers.http.JsUtils;
-import org.kendar.servers.http.matchers.FilterMatcher;
 import org.mozilla.javascript.Script;
 
 import java.util.ArrayList;
@@ -18,9 +16,6 @@ public class JsHttpFilterDescriptor {
     private boolean blocking;
     private String id;
     private JsUtils jsQueueHandler;
-
-
-
 
 
     public String getPhase() {
@@ -52,7 +47,7 @@ public class JsHttpFilterDescriptor {
         this.compiledScript = compiledScript;
     }
 
-    public Script getScript(){
+    public Script getScript() {
         return this.compiledScript;
     }
 
@@ -77,7 +72,7 @@ public class JsHttpFilterDescriptor {
         this.jsQueueHandler = jsQueueHandler;
     }
 
-    public JsUtils retrieveQueue(){
+    public JsUtils retrieveQueue() {
         return jsQueueHandler;
     }
 

@@ -8,14 +8,14 @@
         <marks>85</marks>
     </student>
 
-    <student rollno = "493">
+    <student rollno="493">
         <firstname>Vaneet</firstname>
         <lastname>Gupta</lastname>
         <nickname>Vinni</nickname>
         <marks>95</marks>
     </student>
 
-    <student rollno = "593">
+    <student rollno="593">
         <lastname>Singh</lastname>
         <nickname>Jazz</nickname>
         <marks>90</marks>

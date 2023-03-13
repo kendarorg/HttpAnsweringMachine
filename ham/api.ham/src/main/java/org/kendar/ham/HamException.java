@@ -8,7 +8,8 @@ public class HamException extends Exception {
     public HamException(Exception e) {
         super(e);
     }
-    public HamException(String message,Exception e) {
-        super(message,e);
+
+    public HamException(String message, Exception e) {
+        super(message, e);
     }
 }

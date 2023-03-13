@@ -9,11 +9,16 @@
     <script src="/libs/axios.min.js"></script>
     <script src="/libs/utils.js"></script>
     <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
-    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
 </head>
 <body>
 <div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
-    <div class="spinner-loader"><div></div><div></div><div></div><div></div></div>
+    <div class="spinner-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
     <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
 </div>
 <div id="messageObject"></div>
@@ -29,7 +34,7 @@
 
             <div class="form-group">
                 <label htmlFor="type">type</label>
-                <select class="form-control" name="type" id="type" v-model="type" >
+                <select class="form-control" name="type" id="type" v-model="type">
                     <option>json</option>
                     <option>xml</option>
                 </select>
@@ -40,14 +45,16 @@
             </div>
             <div class="form-group">
                 <label for="template">template</label>
-                <textarea class="form-control" rows="6" cols="50" name="template" id="template" v-model="template"></textarea>
+                <textarea class="form-control" rows="6" cols="50" name="template" id="template"
+                          v-model="template"></textarea>
             </div>
             <div class="form-group">
                 <label for="source">toverify</label>
                 <textarea class="form-control" rows="6" cols="50" name="source" id="source" v-model="source"></textarea>
             </div>
             <div class="form-group">
-                <button type="button" id="verify" name="verify" @click="doverify()"  class="btn btn-default">Verify</button>
+                <button type="button" id="verify" name="verify" @click="doverify()" class="btn btn-default">Verify
+                </button>
             </div>
             <div class="form-group">
                 <label for="result">result</label>
@@ -59,34 +66,32 @@
 <script type="text/javascript">
     new Vue({
         el: '#app',
-        components: {
-
-        },
+        components: {},
         data: {
-            type:"json",
-            schema:"",
-            template:"{\"name\":\"value\"}",
-            source:"{\"name\":\"something\"}",
-            result:""
+            type: "json",
+            schema: "",
+            template: "{\"name\":\"value\"}",
+            source: "{\"name\":\"something\"}",
+            result: ""
         },
         methods: {
-            doverify:function (){
+            doverify: function () {
                 var th = this;
-                var data={
+                var data = {
                     source: this.source,
                     template: this.template,
                     schema: this.schema
                 };
-                axiosHandle(axios.post('/api/utils/schemavalidator/'+this.type, data),(resultall) => {
+                axiosHandle(axios.post('/api/utils/schemavalidator/' + this.type, data), (resultall) => {
                     var result = resultall.data;
-                    if(result.error){
-                        var toput = "Found "+result.errors.length+" errors:\r\n";
-                        for (var i = 0; i < result.errors.length;i++){
-                            toput+=result.errors[i]+"\r\n";
+                    if (result.error) {
+                        var toput = "Found " + result.errors.length + " errors:\r\n";
+                        for (var i = 0; i < result.errors.length; i++) {
+                            toput += result.errors[i] + "\r\n";
                         }
-                        th.result=(toput);
-                    }else {
-                        th.result=("Valid!");
+                        th.result = (toput);
+                    } else {
+                        th.result = ("Valid!");
                     }
                 });
             }

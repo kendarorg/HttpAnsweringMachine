@@ -1,6 +1,6 @@
 package org.kendar.events;
 
-public class ServiceStarted implements Event{
+public class ServiceStarted implements Event {
     private String type;
 
     public String getType() {
@@ -11,7 +11,7 @@ public class ServiceStarted implements Event{
         this.type = type;
     }
 
-    public ServiceStarted withTye(String type){
+    public ServiceStarted withTye(String type) {
         this.type = type;
         return this;
     }

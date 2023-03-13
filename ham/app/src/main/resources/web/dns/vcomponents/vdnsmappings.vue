@@ -1,24 +1,25 @@
 <template>
-<div>
-  <simple-modal v-if="modalShow"
-                :modal-data="modalData"
-                @close="modalShow = false">
-    <span slot="header">Dns Mapping</span>
-    <span slot="body"><change-dns-mapping :data="modalData.data"/></span>
-  </simple-modal>
-  <button id="dns-mappings-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
-  <button id="dns-mappings-add" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
-  <button id="dns-mappings-download" v-on:click="downloadHostFiles()" class="bi bi-download" title="Download Hosts File"></button>
-  <br><br>
-  <simple-grid id="dns-mappings-grid"
-      v-on:gridclicked="gridClicked"
-      ref="grid"
-      :columns="columns"
-      :extra="extraColumns"
-      :retrieve-data="retrieveData"
-  >
-  </simple-grid>
-</div>
+  <div>
+    <simple-modal v-if="modalShow"
+                  :modal-data="modalData"
+                  @close="modalShow = false">
+      <span slot="header">Dns Mapping</span>
+      <span slot="body"><change-dns-mapping :data="modalData.data"/></span>
+    </simple-modal>
+    <button id="dns-mappings-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <button id="dns-mappings-add" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+    <button id="dns-mappings-download" v-on:click="downloadHostFiles()" class="bi bi-download"
+            title="Download Hosts File"></button>
+    <br><br>
+    <simple-grid id="dns-mappings-grid"
+                 v-on:gridclicked="gridClicked"
+                 ref="grid"
+                 :columns="columns"
+                 :extra="extraColumns"
+                 :retrieve-data="retrieveData"
+    >
+    </simple-grid>
+  </div>
 </template>
 <script>
 module.exports = {
@@ -62,7 +63,7 @@ module.exports = {
       if (evt.buttonid == "_edit") {
         this.addNew(true, evt.index)
       } else if (evt.buttonid == "_delete") {
-        await axiosHandle(axios.delete("/api/dns/mappings/" + row['id']),()=>{
+        await axiosHandle(axios.delete("/api/dns/mappings/" + row['id']), () => {
           this.reload()
           addMessage("Deleted")
         });
@@ -78,7 +79,7 @@ module.exports = {
       } else {
         row = {
           id: URL.createObjectURL(new Blob([])).substr(-36),
-          ip:"127.0.0.1"
+          ip: "127.0.0.1"
         }
       }
       this.modalData = {
@@ -90,21 +91,21 @@ module.exports = {
     },
     save: async function () {
       if (this.modalData.edit) {
-        await axiosHandle(axios.put('/api/dns/mappings/' + this.modalData.data.id, this.modalData.data),() => {
+        await axiosHandle(axios.put('/api/dns/mappings/' + this.modalData.data.id, this.modalData.data), () => {
           addMessage("Modified")
           this.modalShow = false;
           this.reload();
         });
       } else {
-        await axiosHandle(axios.post('/api/dns/mappings', this.modalData.data),() => {
+        await axiosHandle(axios.post('/api/dns/mappings', this.modalData.data), () => {
           addMessage("Added")
           this.modalShow = false;
           this.reload();
         });
       }
     },
-    downloadHostFiles:function(){
-      downloadFile("/api/dns/hosts","hosts");
+    downloadHostFiles: function () {
+      downloadFile("/api/dns/hosts", "hosts");
     }
   }
 }

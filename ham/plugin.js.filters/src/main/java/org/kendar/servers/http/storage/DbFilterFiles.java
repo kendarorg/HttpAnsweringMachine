@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Component
 @Entity
-@Table(name="JS_FILTERS_FILES")
+@Table(name = "JS_FILTERS_FILES")
 public class DbFilterFiles implements DbTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +41,6 @@ public class DbFilterFiles implements DbTable {
     @Column(name = "name")
     private String name;
 
-    @Column(name="content",columnDefinition = "CLOB")
+    @Column(name = "content", columnDefinition = "CLOB")
     private String content;
 }

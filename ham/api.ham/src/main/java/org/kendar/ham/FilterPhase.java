@@ -1,10 +1,14 @@
 package org.kendar.ham;
 
 public enum FilterPhase {
-    /** Never executed */
+    /**
+     * Never executed
+     */
     NONE("NONE"),
     PRE_RENDER("PRE_RENDER"),
-    /** Always blocking */
+    /**
+     * Always blocking
+     */
     API("API"),
     STATIC("STATIC"),
     PRE_CALL("PRE_CALL"),

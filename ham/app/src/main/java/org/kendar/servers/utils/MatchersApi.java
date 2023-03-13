@@ -2,8 +2,6 @@ package org.kendar.servers.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.kendar.dns.configurations.DnsConfig;
-import org.kendar.dns.configurations.PatternItem;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
@@ -19,14 +17,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
-public class MatchersApi  implements FilteringClass {
+public class MatchersApi implements FilteringClass {
 
     private MatchersRegistry matchersRegistry;
 
-    public MatchersApi(MatchersRegistry matchersRegistry){
+    public MatchersApi(MatchersRegistry matchersRegistry) {
 
         this.matchersRegistry = matchersRegistry;
     }
+
     ObjectMapper mapper = new ObjectMapper();
 
     @Override

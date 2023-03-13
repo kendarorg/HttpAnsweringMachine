@@ -33,161 +33,161 @@ import java.util.List;
 
 @Component
 public class CertificatesManagerImpl implements CertificatesManager {
-  private final Logger logger;
-  private final FileResourcesUtils fileResourcesUtils;
-  private GeneratedCert caCertificate;
+    private final Logger logger;
+    private final FileResourcesUtils fileResourcesUtils;
+    private GeneratedCert caCertificate;
 
-  public CertificatesManagerImpl(
-      FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
-    this.fileResourcesUtils = fileResourcesUtils;
-    this.logger = loggerBuilder.build(CertificatesManagerImpl.class);
-    Provider aProvider = Security.getProvider("BC");
-    if (aProvider == null) {
-      updateProvider();
-    }
-  }
-
-  public void updateProvider() {
-    //Security.insertProviderAt(new BouncyCastleProvider(), 1);
-    Security.addProvider(new BouncyCastleProvider());
-  }
-
-  @Override
-  public GeneratedCert getCaCertificate() {
-    return caCertificate;
-  }
-
-  @Override
-  public GeneratedCert loadRootCertificate(String derFile, String keyFile)
-      throws CertificateException, IOException {
-    var caStream = fileResourcesUtils.getFileFromResourceAsStream(derFile);
-    var certificateFactory = CertificateFactory.getInstance("X.509");
-    var certificate = (X509Certificate) certificateFactory.generateCertificate(caStream);
-
-    var keyStream = fileResourcesUtils.getFileFromResourceAsStream(keyFile);
-
-    PEMParser pemParser = new PEMParser(new InputStreamReader(keyStream));
-    JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
-    Object object = pemParser.readObject();
-    KeyPair kp = converter.getKeyPair((PEMKeyPair) object);
-    var privateKey = kp.getPrivate();
-
-    caCertificate = new GeneratedCert(privateKey, certificate);
-    return caCertificate;
-  }
-
-  private GeneratedCert createSNACertificate(String cnName,
-                                             String rootDomain,
-                                             GeneratedCert issuer,
-                                             List<String> childDomains) throws Exception{
-    logger.trace("Create certificate");
-    // Generate the key-pair with the official Java API's
-    KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-    KeyPair certKeyPair = keyGen.generateKeyPair();
-    X500Name name = new X500Name(cnName);
-
-    // If you issue more than just test certificates, you might want a decent serial number schema
-    // ^.^
-    BigInteger serialNumber = BigInteger.valueOf(System.currentTimeMillis());
-    Instant now = Instant.now();
-    Instant validFrom = now.minus(360, ChronoUnit.DAYS);
-    Instant validUntil = now.plus( 360, ChronoUnit.DAYS);
-
-    // If there is no issuer, we self-sign our certificate.
-    X500Name issuerName;
-    PrivateKey issuerKey;
-    if (issuer == null) {
-      issuerName = name;
-      issuerKey = certKeyPair.getPrivate();
-    } else {
-      issuerName = new X500Name(issuer.certificate.getSubjectDN().getName());
-      issuerKey = issuer.privateKey;
+    public CertificatesManagerImpl(
+            FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
+        this.fileResourcesUtils = fileResourcesUtils;
+        this.logger = loggerBuilder.build(CertificatesManagerImpl.class);
+        Provider aProvider = Security.getProvider("BC");
+        if (aProvider == null) {
+            updateProvider();
+        }
     }
 
-    // The cert builder to build up our certificate information
-    JcaX509v3CertificateBuilder builder =
-            new JcaX509v3CertificateBuilder(
-                    issuerName,
-                    serialNumber,
-                    Date.from(validFrom),
-                    Date.from(validUntil),
-                    name,
-                    certKeyPair.getPublic());
-
-    // Make the cert to a Cert Authority to sign more certs when needed
-
-      byte[] bytes = new byte[20];
-      SecureRandom.getInstanceStrong().nextBytes(bytes);
-      SubjectKeyIdentifier securityKeyIdentifier =
-              new SubjectKeyIdentifier(bytes);
-      builder.addExtension(Extension.subjectKeyIdentifier, false, securityKeyIdentifier);
-
-    // Modern browsers demand the DNS name entry
-    if (rootDomain != null) {
-      builder.addExtension(
-              Extension.subjectAlternativeName,
-              false,
-              new GeneralNames(new GeneralName(GeneralName.dNSName, rootDomain)));
-    } else if (childDomains.size() > 0) {
-      var generalNames = new GeneralName[childDomains.size()];
-      for (int i = 0; i < childDomains.size(); i++) {
-        generalNames[i] = new GeneralName(GeneralName.dNSName, childDomains.get(i));
-      }
-
-      // GeneralNames subjectAltNames = GeneralNames.getInstance(generalNames);
-      builder.addExtension(Extension.subjectAlternativeName, false, new GeneralNames(generalNames));
-    }
-    if (issuer != null) {
-      byte[] extvalue =
-              //issuer.certificate.getExtensionValue(Extension.authorityKeyIdentifier.getId());
-              issuer.certificate.getExtensionValue(Extension.subjectKeyIdentifier.getId());
-      if (extvalue != null) {
-        byte[] filteredByteArray =
-                Arrays.copyOfRange(extvalue, extvalue.length - 20, extvalue.length);
-
-        AuthorityKeyIdentifier authorityKeyIdentifier =
-                new AuthorityKeyIdentifier(filteredByteArray);
-        builder.addExtension(Extension.authorityKeyIdentifier, false, authorityKeyIdentifier);
-      }
-      builder.addExtension(
-              new ASN1ObjectIdentifier("2.5.29.19"), false, new BasicConstraints(false));
-      builder.addExtension(
-              Extension.extendedKeyUsage,
-              false,
-              new ExtendedKeyUsage(
-                      new KeyPurposeId[] {KeyPurposeId.id_kp_serverAuth, KeyPurposeId.id_kp_clientAuth}));
-
-      builder.addExtension(
-              Extension.keyUsage,
-              false,
-              new X509KeyUsage(
-                      X509KeyUsage.digitalSignature
-                              | X509KeyUsage.nonRepudiation
-                              | X509KeyUsage.keyEncipherment
-                              | X509KeyUsage.dataEncipherment));
+    public void updateProvider() {
+        //Security.insertProviderAt(new BouncyCastleProvider(), 1);
+        Security.addProvider(new BouncyCastleProvider());
     }
 
-    // Finally, sign the certificate:
-    ContentSigner signer = new JcaContentSignerBuilder("SHA256WithRSA").build(issuerKey);
-    //ContentSigner signer = new JcaContentSignerBuilder("SHA256").build(issuerKey);
-    X509CertificateHolder certHolder = builder.build(signer);
-    X509Certificate cert = new JcaX509CertificateConverter().getCertificate(certHolder);
-
-    return new GeneratedCert(certKeyPair.getPrivate(), cert);
-  }
-
-  @Override
-  public GeneratedCert createCertificate(
-      String cnName,
-      String rootDomain,
-      GeneratedCert issuer,
-      List<String> childDomains,
-      boolean isCa)
-      throws Exception {
-    if(!isCa){
-      return createSNACertificate(cnName,rootDomain,issuer,childDomains);
-    }else{
-      throw new Exception("Miss");
+    @Override
+    public GeneratedCert getCaCertificate() {
+        return caCertificate;
     }
-  }
+
+    @Override
+    public GeneratedCert loadRootCertificate(String derFile, String keyFile)
+            throws CertificateException, IOException {
+        var caStream = fileResourcesUtils.getFileFromResourceAsStream(derFile);
+        var certificateFactory = CertificateFactory.getInstance("X.509");
+        var certificate = (X509Certificate) certificateFactory.generateCertificate(caStream);
+
+        var keyStream = fileResourcesUtils.getFileFromResourceAsStream(keyFile);
+
+        PEMParser pemParser = new PEMParser(new InputStreamReader(keyStream));
+        JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
+        Object object = pemParser.readObject();
+        KeyPair kp = converter.getKeyPair((PEMKeyPair) object);
+        var privateKey = kp.getPrivate();
+
+        caCertificate = new GeneratedCert(privateKey, certificate);
+        return caCertificate;
+    }
+
+    private GeneratedCert createSNACertificate(String cnName,
+                                               String rootDomain,
+                                               GeneratedCert issuer,
+                                               List<String> childDomains) throws Exception {
+        logger.trace("Create certificate");
+        // Generate the key-pair with the official Java API's
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        KeyPair certKeyPair = keyGen.generateKeyPair();
+        X500Name name = new X500Name(cnName);
+
+        // If you issue more than just test certificates, you might want a decent serial number schema
+        // ^.^
+        BigInteger serialNumber = BigInteger.valueOf(System.currentTimeMillis());
+        Instant now = Instant.now();
+        Instant validFrom = now.minus(360, ChronoUnit.DAYS);
+        Instant validUntil = now.plus(360, ChronoUnit.DAYS);
+
+        // If there is no issuer, we self-sign our certificate.
+        X500Name issuerName;
+        PrivateKey issuerKey;
+        if (issuer == null) {
+            issuerName = name;
+            issuerKey = certKeyPair.getPrivate();
+        } else {
+            issuerName = new X500Name(issuer.certificate.getSubjectDN().getName());
+            issuerKey = issuer.privateKey;
+        }
+
+        // The cert builder to build up our certificate information
+        JcaX509v3CertificateBuilder builder =
+                new JcaX509v3CertificateBuilder(
+                        issuerName,
+                        serialNumber,
+                        Date.from(validFrom),
+                        Date.from(validUntil),
+                        name,
+                        certKeyPair.getPublic());
+
+        // Make the cert to a Cert Authority to sign more certs when needed
+
+        byte[] bytes = new byte[20];
+        SecureRandom.getInstanceStrong().nextBytes(bytes);
+        SubjectKeyIdentifier securityKeyIdentifier =
+                new SubjectKeyIdentifier(bytes);
+        builder.addExtension(Extension.subjectKeyIdentifier, false, securityKeyIdentifier);
+
+        // Modern browsers demand the DNS name entry
+        if (rootDomain != null) {
+            builder.addExtension(
+                    Extension.subjectAlternativeName,
+                    false,
+                    new GeneralNames(new GeneralName(GeneralName.dNSName, rootDomain)));
+        } else if (childDomains.size() > 0) {
+            var generalNames = new GeneralName[childDomains.size()];
+            for (int i = 0; i < childDomains.size(); i++) {
+                generalNames[i] = new GeneralName(GeneralName.dNSName, childDomains.get(i));
+            }
+
+            // GeneralNames subjectAltNames = GeneralNames.getInstance(generalNames);
+            builder.addExtension(Extension.subjectAlternativeName, false, new GeneralNames(generalNames));
+        }
+        if (issuer != null) {
+            byte[] extvalue =
+                    //issuer.certificate.getExtensionValue(Extension.authorityKeyIdentifier.getId());
+                    issuer.certificate.getExtensionValue(Extension.subjectKeyIdentifier.getId());
+            if (extvalue != null) {
+                byte[] filteredByteArray =
+                        Arrays.copyOfRange(extvalue, extvalue.length - 20, extvalue.length);
+
+                AuthorityKeyIdentifier authorityKeyIdentifier =
+                        new AuthorityKeyIdentifier(filteredByteArray);
+                builder.addExtension(Extension.authorityKeyIdentifier, false, authorityKeyIdentifier);
+            }
+            builder.addExtension(
+                    new ASN1ObjectIdentifier("2.5.29.19"), false, new BasicConstraints(false));
+            builder.addExtension(
+                    Extension.extendedKeyUsage,
+                    false,
+                    new ExtendedKeyUsage(
+                            new KeyPurposeId[]{KeyPurposeId.id_kp_serverAuth, KeyPurposeId.id_kp_clientAuth}));
+
+            builder.addExtension(
+                    Extension.keyUsage,
+                    false,
+                    new X509KeyUsage(
+                            X509KeyUsage.digitalSignature
+                                    | X509KeyUsage.nonRepudiation
+                                    | X509KeyUsage.keyEncipherment
+                                    | X509KeyUsage.dataEncipherment));
+        }
+
+        // Finally, sign the certificate:
+        ContentSigner signer = new JcaContentSignerBuilder("SHA256WithRSA").build(issuerKey);
+        //ContentSigner signer = new JcaContentSignerBuilder("SHA256").build(issuerKey);
+        X509CertificateHolder certHolder = builder.build(signer);
+        X509Certificate cert = new JcaX509CertificateConverter().getCertificate(certHolder);
+
+        return new GeneratedCert(certKeyPair.getPrivate(), cert);
+    }
+
+    @Override
+    public GeneratedCert createCertificate(
+            String cnName,
+            String rootDomain,
+            GeneratedCert issuer,
+            List<String> childDomains,
+            boolean isCa)
+            throws Exception {
+        if (!isCa) {
+            return createSNACertificate(cnName, rootDomain, issuer, childDomains);
+        } else {
+            throw new Exception("Miss");
+        }
+    }
 }

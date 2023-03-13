@@ -7,7 +7,7 @@ import org.kendar.servers.config.ConfigAttribute;
 import java.util.ArrayList;
 import java.util.List;
 
-@ConfigAttribute(id="dns")
+@ConfigAttribute(id = "dns")
 public class DnsConfig extends BaseJsonConfig<DnsConfig> implements SpecialJsonConfig {
     private boolean active;
     private int port;
@@ -61,11 +61,12 @@ public class DnsConfig extends BaseJsonConfig<DnsConfig> implements SpecialJsonC
         this.resolved = resolved;
     }
 
-    @Override public DnsConfig copy() {
+    @Override
+    public DnsConfig copy() {
         var result = new DnsConfig();
-        result.active =this.active;
+        result.active = this.active;
         result.setId(this.getId());
-        result.blocked = new ArrayList<>( this.blocked);
+        result.blocked = new ArrayList<>(this.blocked);
         result.port = this.port;
         result.forceLocalAddress = this.forceLocalAddress;
         result.resolved = new ArrayList<>();
@@ -81,11 +82,12 @@ public class DnsConfig extends BaseJsonConfig<DnsConfig> implements SpecialJsonC
         return result;
     }
 
-    @Override public void preSave() {
+    @Override
+    public void preSave() {
         var newExtraServers = new ArrayList<ExtraDnsServer>();
         for (int i = 0; i < this.extraServers.size(); i++) {
             var ext = this.extraServers.get(i);
-            if(ext.isEnv())continue;
+            if (ext.isEnv()) continue;
             newExtraServers.add(ext);
         }
         this.extraServers = newExtraServers;

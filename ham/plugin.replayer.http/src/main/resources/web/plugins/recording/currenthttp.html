@@ -10,16 +10,18 @@
     <script src="/libs/axios.min.js"></script>
     <script src="/libs/utils.js"></script>
     <script src="/plugins/recording/vcomponents/utils.js"></script>
-    <link rel="stylesheet" type="text/css" href="/vcss/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
 </head>
 <body>
 <div id="messageObject"></div>
 <div class="container-fluid" id="app">
-    <div width="800px" ref="container" >
-        <button type="button" :disabled="data.id ==-1"  class="bi bi-floppy" v-on:click="updateContent()" title="Save changes">Save global changes</button>
+    <div width="800px" ref="container">
+        <button type="button" :disabled="data.id ==-1" class="bi bi-floppy" v-on:click="updateContent()"
+                title="Save changes">Save global changes
+        </button>
         <br>
         <br>
-        <vtabs width="800px" >
+        <vtabs width="800px">
             <vtab name="GLOBAL">
                 <br>
                 <global-line :data="data" width="800px">
@@ -40,7 +42,7 @@
             </vtab>
             <vtab name="RESPONSE">
                 <br>
-                <response-line   :data="data.response" ref="drs"  width="800px">
+                <response-line :data="data.response" ref="drs" width="800px">
 
                 </response-line>
             </vtab>
@@ -60,85 +62,85 @@
     </div>
 </div>
 <script>
-new Vue({
-    el: '#app',
-    components: {
-        'global-line': httpVueLoader('/plugins/recording/vcomponents/line/vglobal.vue'),
-        'global-script': httpVueLoader('/plugins/recording/vcomponents/line/vscript.vue'),
-        'request-line': httpVueLoader('/plugins/recording/vcomponents/line/vrequest.vue'),
-        'response-line': httpVueLoader('/plugins/recording/vcomponents/line/vresponse.vue'),
-        'request-data': httpVueLoader('/plugins/recording/vcomponents/line/vrequestdata.vue'),
-        'response-data': httpVueLoader('/plugins/recording/vcomponents/line/vresponsedata.vue'),
-        'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
-        'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
-    },
-    data: function(){
-        return {
-            windowSize:0,
-            next:-1,
-            prev:-1,
-            data:{
-                type:'none',
-                id:-1,
-                request:{path:'',requestText:'{}'},
-                response:{responseText:'{}'}
+    new Vue({
+        el: '#app',
+        components: {
+            'global-line': httpVueLoader('/plugins/recording/vcomponents/line/vglobal.vue'),
+            'global-script': httpVueLoader('/plugins/recording/vcomponents/line/vscript.vue'),
+            'request-line': httpVueLoader('/plugins/recording/vcomponents/line/vrequest.vue'),
+            'response-line': httpVueLoader('/plugins/recording/vcomponents/line/vresponse.vue'),
+            'request-data': httpVueLoader('/plugins/recording/vcomponents/line/vrequestdata.vue'),
+            'response-data': httpVueLoader('/plugins/recording/vcomponents/line/vresponsedata.vue'),
+            'vtab': httpVueLoader('/vcomponents/tab/vtab.vue'),
+            'vtabs': httpVueLoader('/vcomponents/tab/vtabs.vue')
+        },
+        data: function () {
+            return {
+                windowSize: 0,
+                next: -1,
+                prev: -1,
+                data: {
+                    type: 'none',
+                    id: -1,
+                    request: {path: '', requestText: '{}'},
+                    response: {responseText: '{}'}
+                },
+                script: {},
+                recordingId: -1,
+                selectedRow: -1
+
+            }
+        },
+        mounted: async function () {
+            this.timer = setInterval(this.iframeHeightNotify, 300)
+            var th = this;
+            th.recordingId = getUrlParameter('recordingId');
+            th.selectedRow = getUrlParameter('selectedRow');
+            axiosHandle(axios.get("/api/plugins/replayer/recording/" + th.recordingId + "/line/" + th.selectedRow)
+                , (result) => {
+
+                    th.next = parseInt(result.headers.get("X-NEXT"));
+                    th.prev = parseInt(result.headers.get("X-PREV"));
+                    th.$set(th, "data", result.data);
+
+                    axiosHandle(axios.get("/api/plugins/replayer/recording/" +
+                            th.recordingId + "/script/" + th.selectedRow)
+                        , (results) => {
+                            th.script = results.data;
+                        })
+                })
+        },
+        methods: {
+            iframeHeightNotify() {
+                if (this.windowSize != window.outerHeight) {
+                    this.windowSize = window.outerHeight
+                    var msg = {
+                        type: "iframesizechanged",
+                        height: window.outerHeight//this.$refs.container.scrollHeight
+                    }
+                    window.parent.postMessage(msg, '*')
+                }
             },
-            script:{},
-            recordingId:-1,
-            selectedRow:-1
-
-        }
-    },
-    mounted: async function(){
-        this.timer = setInterval(this.iframeHeightNotify,300)
-        var th=this;
-        th.recordingId = getUrlParameter('recordingId');
-        th.selectedRow = getUrlParameter('selectedRow');
-        axiosHandle(axios.get("/api/plugins/replayer/recording/" + th.recordingId + "/line/" + th.selectedRow)
-            ,(result)=>{
-
-                th.next = parseInt(result.headers.get("X-NEXT"));
-                th.prev = parseInt(result.headers.get("X-PREV"));
-                th.$set(th,"data", result.data);
-
-                axiosHandle(axios.get("/api/plugins/replayer/recording/" +
-                    th.recordingId + "/script/" + th.selectedRow)
-                    ,(results)=>{
-                        th.script = results.data;
-                    })
-            })
-    },
-    methods:{
-        iframeHeightNotify(){
-            if(this.windowSize!=window.outerHeight) {
-                this.windowSize=window.outerHeight
+            prevRow: function (newRow) {
                 var msg = {
-                    type:"iframesizechanged",
-                    height: window.outerHeight//this.$refs.container.scrollHeight
+                    type: "changerow",
+                    id: this.prev//this.$refs.container.scrollHeight
                 }
                 window.parent.postMessage(msg, '*')
+            },
+            nextRow: function (newRow) {
+                var msg = {
+                    type: "changerow",
+                    id: this.next//this.$refs.container.scrollHeight
+                }
+                window.parent.postMessage(msg, '*')
+            },
+            updateContent: function () {
+                axiosHandle(axios.put("/api/plugins/replayer/recording/" + this.recordingId + "/line/" +
+                    this.selectedRow, this.data), axiosOk);
             }
-        },
-        prevRow:function(newRow){
-            var msg = {
-                type:"changerow",
-                id: this.prev//this.$refs.container.scrollHeight
-            }
-            window.parent.postMessage(msg, '*')
-        },
-        nextRow:function(newRow){
-            var msg = {
-                type:"changerow",
-                id: this.next//this.$refs.container.scrollHeight
-            }
-            window.parent.postMessage(msg, '*')
-        },
-        updateContent:function (){
-            axiosHandle(axios.put("/api/plugins/replayer/recording/"+this.recordingId+"/line/" +
-                this.selectedRow,this.data),axiosOk);
         }
-    }
-});
+    });
 </script>
 </body>
 </html>

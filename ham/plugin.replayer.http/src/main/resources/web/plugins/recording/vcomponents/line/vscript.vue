@@ -1,7 +1,8 @@
 <template>
-  <div  v-if="typeof this.data!='undefined'" width="800px">
+  <div v-if="typeof this.data!='undefined'" width="800px">
     <button type="button" class="bi bi-floppy" v-on:click="updateContent()"
-            title="Save changes">Save script changes</button>
+            title="Save changes">Save script changes
+    </button>
     <br><br>
     <div class="form-group">
       <label htmlFor="request_id">Id</label>
@@ -19,39 +20,41 @@
       <label htmlFor="request_path">Path</label>
       <input class="form-control" type="text" name="request_path" id="request_path" v-model="data.path"/>
     </div>
-      <div class="form-group">
-        <label for="jsScriptPre">PRE</label>
-        <textarea class="form-control" rows="6" cols="50" name="jsScriptPre" id="jsScriptPre" v-model="data.pre"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="jsScriptPost">POST</label>
-        <textarea class="form-control" rows="6" cols="50" name="jsScriptPost" id="jsScriptPost" v-model="data.post"></textarea>
-      </div>
+    <div class="form-group">
+      <label for="jsScriptPre">PRE</label>
+      <textarea class="form-control" rows="6" cols="50" name="jsScriptPre" id="jsScriptPre"
+                v-model="data.pre"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="jsScriptPost">POST</label>
+      <textarea class="form-control" rows="6" cols="50" name="jsScriptPost" id="jsScriptPost"
+                v-model="data.post"></textarea>
+    </div>
   </div>
 </template>
 <script>
 module.exports = {
   name: "global-script",
-  props:{
-    data:Object,
-    recordingid:String
+  props: {
+    data: Object,
+    recordingid: String
   },
-  methods:{
-    hasData:function(){
-      return typeof this.data != 'undefined' && this.data!=null;
+  methods: {
+    hasData: function () {
+      return typeof this.data != 'undefined' && this.data != null;
     },
-    updateContent:function(){
+    updateContent: function () {
       var data = {
-        id:this.data.id,
-        method:this.data.method,
-        host:this.data.host,
-        path:this.data.path,
-        pre:this.data.pre,
-        post:this.data.post
+        id: this.data.id,
+        method: this.data.method,
+        host: this.data.host,
+        path: this.data.path,
+        pre: this.data.pre,
+        post: this.data.post
       };
       const headers = {'Content-Type': 'application/json'};
-      axiosHandle(axios.put('/api/plugins/replayer/recording/'+this.recordingid+'/script/'+this.data.id,
-          data, {headers}),axiosOk);
+      axiosHandle(axios.put('/api/plugins/replayer/recording/' + this.recordingid + '/script/' + this.data.id,
+          data, {headers}), axiosOk);
     }
   }
 

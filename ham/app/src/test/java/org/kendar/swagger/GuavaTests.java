@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GuavaTests {
     @Test
-    public void test(){
+    public void test() {
         assertTrue(Primitives.isWrapperType(Integer.class));
         assertFalse(Primitives.isWrapperType(int.class));
         assertTrue(int.class.isPrimitive());

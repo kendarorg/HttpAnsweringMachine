@@ -23,7 +23,7 @@ public class HttpDnsRunnable implements Callable<List<String>> {
     @Override
     public List<String> call() throws Exception {
 
-        URL url = new URL("http://"+requestedServer+"/api/dns/lookup/"+requestedDomain);
+        URL url = new URL("http://" + requestedServer + "/api/dns/lookup/" + requestedDomain);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         int status = con.getResponseCode();
@@ -37,8 +37,8 @@ public class HttpDnsRunnable implements Callable<List<String>> {
         in.close();
 
         var rs = new ArrayList<String>();
-        var rres= content.toString();
-        if(rres.length()>0){
+        var rres = content.toString();
+        if (rres.length() > 0) {
             rs.add(rres);
         }
         //rs.add(result);

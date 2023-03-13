@@ -11,10 +11,11 @@ import org.kendar.servers.http.Response;
 import java.util.HashMap;
 
 public class ReqRespBuilder {
-    public static ReqRespBuilder create(String db){
+    public static ReqRespBuilder create(String db) {
         return new ReqRespBuilder().withDb(db);
     }
-    private static JsonTypedSerializer serializer = new  JsonTypedSerializer();
+
+    private static JsonTypedSerializer serializer = new JsonTypedSerializer();
     private String db;
     private JdbcCommand command;
     private JdbcResult result;
@@ -23,33 +24,38 @@ public class ReqRespBuilder {
     private boolean isstatic;
     private boolean isstimulator;
 
-    public ReqRespBuilder withDb(String db){
-        this.db= db;
+    public ReqRespBuilder withDb(String db) {
+        this.db = db;
         return this;
     }
-    public ReqRespBuilder withCommand(JdbcCommand command){
-        this.command= command;
+
+    public ReqRespBuilder withCommand(JdbcCommand command) {
+        this.command = command;
         return this;
     }
-    public ReqRespBuilder withResult(JdbcResult result){
-        this.result= result;
+
+    public ReqRespBuilder withResult(JdbcResult result) {
+        this.result = result;
         return this;
     }
+
     public ReqRespBuilder asStatic() {
         this.isstatic = true;
         return this;
     }
-    public ReqRespBuilder asStimulator(){
-        this.isstimulator=true;
-        return this;
-    }
-    public ReqRespBuilder withConnectionTrace(long connection,long traceId){
-        this.connection= connection;
-        this.traceId= traceId;
+
+    public ReqRespBuilder asStimulator() {
+        this.isstimulator = true;
         return this;
     }
 
-    public ReplayerRow buildRow(long id){
+    public ReqRespBuilder withConnectionTrace(long connection, long traceId) {
+        this.connection = connection;
+        this.traceId = traceId;
+        return this;
+    }
+
+    public ReplayerRow buildRow(long id) {
         var result = new ReplayerRow();
         result.setType("db");
         result.setIndex(id);
@@ -58,33 +64,33 @@ public class ReqRespBuilder {
         var req = new Request();
         req.setStaticRequest(isstatic);
         var commandPath = command.getPath().substring(1).split("/");
-        var pathParameters = new HashMap<String,String>();
-        pathParameters.put("dbName","test");
-        pathParameters.put("targetType",commandPath[0]);
-        pathParameters.put("command",commandPath[1]);
-        var path = "/api/db/"+pathParameters.get("dbName")+ command.getPath();
-        if(traceId>=0){
-            path+="/"+traceId;
-            pathParameters.put("traceId",traceId+"");
+        var pathParameters = new HashMap<String, String>();
+        pathParameters.put("dbName", "test");
+        pathParameters.put("targetType", commandPath[0]);
+        pathParameters.put("command", commandPath[1]);
+        var path = "/api/db/" + pathParameters.get("dbName") + command.getPath();
+        if (traceId >= 0) {
+            path += "/" + traceId;
+            pathParameters.put("traceId", traceId + "");
         }
         req.setPathParameters(pathParameters);
-        req.addHeader("x-connection-id",""+id);
+        req.addHeader("x-connection-id", "" + id);
         var ser = serializer.newInstance();
         ser.write("command", command);
-        req.setRequestText((String)ser.getSerialized());
+        req.setRequestText((String) ser.getSerialized());
         req.setPath(path);
         result.setRequest(req);
 
 
-        var res= new Response();
+        var res = new Response();
         var dser = serializer.newInstance();
         dser.write("result", this.result);
-        res.setResponseText((String)ser.getSerialized());
+        res.setResponseText((String) ser.getSerialized());
         result.setResponse(res);
         return result;
     }
 
-    public CallIndex buildIndex(long id){
+    public CallIndex buildIndex(long id) {
         var result = new CallIndex();
         result.setReference(id);
         result.setIndex(id);
@@ -94,8 +100,8 @@ public class ReqRespBuilder {
         return result;
     }
 
-    public void build(long id,FakeDbReplayer target) {
-        target.callIndexMap.put(id,buildIndex(id));
-        target.replayerRowMap.put(id,buildRow(id));
+    public void build(long id, FakeDbReplayer target) {
+        target.callIndexMap.put(id, buildIndex(id));
+        target.replayerRowMap.put(id, buildRow(id));
     }
 }

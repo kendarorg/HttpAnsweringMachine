@@ -77,7 +77,7 @@ public class SettingsAPI implements FilteringClass {
             method = "POST")
     @HamDoc(description = "Upload the full configuration,recordings etc",
             requests = @HamRequest(
-                     accept = ConstantsMime.ZIP
+                    accept = ConstantsMime.ZIP
             ),
             tags = {"base/utils"}
     )

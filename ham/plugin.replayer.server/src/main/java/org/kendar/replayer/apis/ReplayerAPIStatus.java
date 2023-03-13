@@ -24,18 +24,19 @@ public class ReplayerAPIStatus implements FilteringClass {
     public String getId() {
         return this.getClass().getName();
     }
+
     private final ReplayerStatus replayerStatus;
 
-    public ReplayerAPIStatus(ReplayerStatus replayerStatus){
+    public ReplayerAPIStatus(ReplayerStatus replayerStatus) {
         this.replayerStatus = replayerStatus;
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/plugins/replayer/status",
-            method = "GET",id="300999f-11ec-9621-0242ac1afe002")
+            method = "GET", id = "300999f-11ec-9621-0242ac1afe002")
     @HamDoc(description = "Retrieve the current running script",
             responses = @HamResponse(
-                    body=String.class,
+                    body = String.class,
                     examples = @Example(
                             example = "{\"status\":\"RECORDING\",\"running\":\"TestScript\"}"
                     )
@@ -44,14 +45,14 @@ public class ReplayerAPIStatus implements FilteringClass {
     public void recording(Request req, Response res) throws IOException {
         String realStatus;
         Long currentScript;
-        try{
+        try {
             realStatus = replayerStatus.getStatus().toString();
             currentScript = replayerStatus.getCurrentScript();
-        }catch(Exception ex){
+        } catch (Exception ex) {
             realStatus = "NONE";
             currentScript = null;
         }
-        var status = "{\"status\":\""+realStatus+"\",\"running\":\""+currentScript+"\"}";
+        var status = "{\"status\":\"" + realStatus + "\",\"running\":\"" + currentScript + "\"}";
         res.setResponseText(status);
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
         res.setStatusCode(200);

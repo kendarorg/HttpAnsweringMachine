@@ -11,11 +11,12 @@ public interface ProxyBuilder {
 
     /**
      * Remove a local db proxy
+     *
      * @param exposed the exposed dbname
      */
     void removeDbProxy(String exposed) throws HamException;
 
-    public class Proxy{
+    public class Proxy {
         private String id;
         private String when;
         private String where;
@@ -66,16 +67,18 @@ public interface ProxyBuilder {
 
     /**
      * Add a proxy
-     * @param when the matching "address bar"
+     *
+     * @param when  the matching "address bar"
      * @param where the when will be replaced with where
-     * @param test the domain/domain:port that will be inspected to check. If it's running the proxy will be used
+     * @param test  the domain/domain:port that will be inspected to check. If it's running the proxy will be used
      * @return the id of the added proxy
      * @throws HamException
      */
-    String addProxy(String when,String where, String test) throws HamException;
+    String addProxy(String when, String where, String test) throws HamException;
 
     /**
      * Add a db proxy, specify the db to be proxied
+     *
      * @param dbName
      * @param login
      * @param password
@@ -83,10 +86,11 @@ public interface ProxyBuilder {
      * @return
      * @throws HamException
      */
-    DbProxyBuilder addRemoteDbProxy(String connectionString, String login, String password,String dbDriver) throws HamException;
+    DbProxyBuilder addRemoteDbProxy(String connectionString, String login, String password, String dbDriver) throws HamException;
 
     /**
      * Remove proxy by id
+     *
      * @param id
      * @throws HamException
      */
@@ -94,6 +98,7 @@ public interface ProxyBuilder {
 
     /**
      * List all current proxies with their states
+     *
      * @return
      * @throws HamException
      */
@@ -101,6 +106,7 @@ public interface ProxyBuilder {
 
     /**
      * List all current db proxies
+     *
      * @return
      * @throws HamException
      */
@@ -108,6 +114,7 @@ public interface ProxyBuilder {
 
     /**
      * Refresh proxy
+     *
      * @throws HamException
      */
     void refresh() throws HamException;

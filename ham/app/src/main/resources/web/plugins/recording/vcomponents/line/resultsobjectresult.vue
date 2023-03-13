@@ -1,7 +1,7 @@
 <template>
   <div v-if="value.type=='org.kendar.janus.results.ObjectResult'">
 
-    <h3>{{value.type}}</h3><br>
+    <h3>{{ value.type }}</h3><br>
     <div class="form-group" v-if="otype!=null">
       <label htmlFor="typ">Result Type</label>
       <input class="form-control" type="text" name="typ" id="typ" v-model="otype"/>
@@ -18,36 +18,36 @@ module.exports = {
   props: {
     value: Object
   },
-  computed:{
+  computed: {
     otype: {
       get: function () {
         try {
           return this.value.children[0].type;
-        }catch(e){
+        } catch (e) {
           return null;
         }
       },
       // setter
       set: function (newValue) {
-        this.value.children[0].type=newValue;
-        this.$emit("componentevent",{
-          id:"changed"
+        this.value.children[0].type = newValue;
+        this.$emit("componentevent", {
+          id: "changed"
         })
       }
     },
     ovalue: {
       get: function () {
-        try{
+        try {
           return this.value.children[0].value;
-        }catch(e){
+        } catch (e) {
           return null;
         }
       },
       // setter
       set: function (newValue) {
-        this.value.children[0].value=newValue;
-        this.$emit("componentevent",{
-          id:"changed"
+        this.value.children[0].value = newValue;
+        this.$emit("componentevent", {
+          id: "changed"
         })
       }
     }

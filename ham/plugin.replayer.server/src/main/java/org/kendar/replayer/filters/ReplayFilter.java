@@ -18,46 +18,46 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-@HttpTypeFilter(hostAddress = "*",priority = 200)
+@HttpTypeFilter(hostAddress = "*", priority = 200)
 public class ReplayFilter implements FilteringClass {
-  private final ReplayerStatus replayerStatus;
-  private final String localAddress;
-  private final Logger logger;
-  private List<ReplayerEngine> replayerEngines;
+    private final ReplayerStatus replayerStatus;
+    private final String localAddress;
+    private final Logger logger;
+    private List<ReplayerEngine> replayerEngines;
 
-  public ReplayFilter(ReplayerStatus replayerStatus, JsonConfiguration configuration, LoggerBuilder loggerBuilder,
-                      List<ReplayerEngine> replayerEngines) {
-    this.replayerStatus = replayerStatus;
-    this.localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
-    this.logger = loggerBuilder.build(ReplayFilter.class);
-    this.replayerEngines = replayerEngines;
-  }
-
-  @Override
-  public String getId() {
-    return "org.kendar.replayer.filters.RecordFilter";
-  }
-
-  @HttpMethodFilter(
-      phase = HttpFilterType.PRE_RENDER,
-      pathAddress = "*",
-      method = "*")
-  public boolean replay(Request req, Response res) {
-    if (replayerStatus.getStatus() != ReplayerState.REPLAYING ) return false;
-
-    var validAddress = false;
-    for(var i=0;i<replayerEngines.size();i++){
-      validAddress = replayerEngines.get(i).isValidPath(req)||validAddress;
+    public ReplayFilter(ReplayerStatus replayerStatus, JsonConfiguration configuration, LoggerBuilder loggerBuilder,
+                        List<ReplayerEngine> replayerEngines) {
+        this.replayerStatus = replayerStatus;
+        this.localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
+        this.logger = loggerBuilder.build(ReplayFilter.class);
+        this.replayerEngines = replayerEngines;
     }
-    if(!validAddress) return false;
-    var toReplay ="Replaying "+
-            req.getProtocol()+"://"+
-            req.getHost()+
-            req.getPath();
-    var result = replayerStatus.replay(req, res);
-    if(result){
-        logger.info(toReplay);
+
+    @Override
+    public String getId() {
+        return "org.kendar.replayer.filters.RecordFilter";
     }
-    return result;
-  }
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.PRE_RENDER,
+            pathAddress = "*",
+            method = "*")
+    public boolean replay(Request req, Response res) {
+        if (replayerStatus.getStatus() != ReplayerState.REPLAYING) return false;
+
+        var validAddress = false;
+        for (var i = 0; i < replayerEngines.size(); i++) {
+            validAddress = replayerEngines.get(i).isValidPath(req) || validAddress;
+        }
+        if (!validAddress) return false;
+        var toReplay = "Replaying " +
+                req.getProtocol() + "://" +
+                req.getHost() +
+                req.getPath();
+        var result = replayerStatus.replay(req, res);
+        if (result) {
+            logger.info(toReplay);
+        }
+        return result;
+    }
 }

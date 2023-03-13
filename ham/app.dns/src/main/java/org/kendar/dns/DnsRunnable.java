@@ -27,7 +27,7 @@ public class DnsRunnable implements Callable<List<String>> {
         SimpleResolver resolver;
         List<String> result = new ArrayList<>();
         try {
-            logger.debug("Request to "+requestedServer+" for "+requestedDomain);
+            logger.debug("Request to " + requestedServer + " for " + requestedDomain);
             resolver = new SimpleResolver(requestedServer);
             resolver.setPort(53);
             var resolvers = new ArrayList<Resolver>();
@@ -40,10 +40,10 @@ public class DnsRunnable implements Callable<List<String>> {
             lookup.setCache(null);
             lookup.setHostsFileParser(null);
             var records = lookup.run();
-            if(records!=null){
-                for (org.xbill.DNS.Record record:records) {
+            if (records != null) {
+                for (org.xbill.DNS.Record record : records) {
                     String realip = ((ARecord) records[0]).getAddress().getHostAddress();
-                    logger.debug("Resolved with "+requestedServer+" for "+requestedDomain+ ": "+realip);
+                    logger.debug("Resolved with " + requestedServer + " for " + requestedDomain + ": " + realip);
                     result.add(realip);
 
                 }
@@ -51,8 +51,8 @@ public class DnsRunnable implements Callable<List<String>> {
         } catch (UnknownHostException | TextParseException e) {
             throw new UnknownHostException();
         }
-        if(result==null || result.size()==0){
-            logger.debug("NOTRESOLVED with "+requestedServer+" for "+requestedDomain);
+        if (result == null || result.size() == 0) {
+            logger.debug("NOTRESOLVED with " + requestedServer + " for " + requestedDomain);
         }
         return result;
     }

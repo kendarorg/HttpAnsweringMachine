@@ -6,11 +6,11 @@ import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InternalRequesterImpl extends BaseRequesterImpl implements InternalRequester{
+public class InternalRequesterImpl extends BaseRequesterImpl implements InternalRequester {
 
     public InternalRequesterImpl(RequestResponseBuilder requestResponseBuilder, DnsMultiResolver multiResolver,
                                  LoggerBuilder loggerBuilder, ConnectionBuilder connnectionBuilder) {
-        super(requestResponseBuilder, multiResolver, loggerBuilder,connnectionBuilder);
+        super(requestResponseBuilder, multiResolver, loggerBuilder, connnectionBuilder);
     }
 
     @Override

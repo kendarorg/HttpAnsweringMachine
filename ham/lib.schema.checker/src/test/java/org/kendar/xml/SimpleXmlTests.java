@@ -16,7 +16,7 @@ public class SimpleXmlTests extends BaseUtils {
         var xml2 = ("<a><b></b></a>");
 
         var target = new DiffInferrer();
-        var result= target.diff(xml1,xml2);
+        var result = target.diff(xml1, xml2);
         assertTrue(result);
     }
 
@@ -26,7 +26,7 @@ public class SimpleXmlTests extends BaseUtils {
         var xml2 = ("<a></a>");
 
         var target = new DiffInferrer();
-        assertException(XmlException.class,()-> target.diff(xml1,xml2),"a MISSING CHILD b");
+        assertException(XmlException.class, () -> target.diff(xml1, xml2), "a MISSING CHILD b");
     }
 
     @Test
@@ -35,6 +35,6 @@ public class SimpleXmlTests extends BaseUtils {
         var xml2 = ("<a><b></b></a>");
 
         var target = new DiffInferrer();
-        assertTrue(target.diff(xml1,xml2));
+        assertTrue(target.diff(xml1, xml2));
     }
 }

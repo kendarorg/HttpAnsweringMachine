@@ -9,9 +9,9 @@ import org.kendar.janus.results.JdbcResult;
 import org.kendar.janus.results.ObjectResult;
 import org.kendar.janus.results.VoidResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
+import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.engine.db.sqlsim.SqlSimulator;
 import org.kendar.replayer.storage.CallIndex;
-import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.storage.DbRecording;
 import org.kendar.replayer.storage.ReplayerRow;
 import org.kendar.servers.JsonConfiguration;
@@ -128,7 +128,7 @@ public class DbReplayer implements ReplayerEngine {
         for (var index : indexes) {
             sessionFactory.query(e -> {
                 ReplayerRow row = getReplayerRow(recordingId, index, e);
-                if(row==null)return;
+                if (row == null) return;
                 var reqDeser = serializer.newInstance();
                 reqDeser.deserialize(row.getRequest().getRequestText());
                 var resDeser = serializer.newInstance();
@@ -168,7 +168,7 @@ public class DbReplayer implements ReplayerEngine {
                 " e.type='db'" +
                 " AND e.id =" + index.getReference() + " " +
                 "AND e.recordingId=" + recordingId).getResultList();
-        if(rs.size()>0) {
+        if (rs.size() > 0) {
             return (ReplayerRow) rs.get(0);
         }
         return null;
@@ -184,7 +184,7 @@ public class DbReplayer implements ReplayerEngine {
         var rs = e.createQuery("SELECT e FROM CallIndex e LEFT JOIN ReplayerRow f " +
                 " ON e.reference = f.id" +
                 " WHERE " +
-                " f.type='"+this.getId()+"' AND e.recordingId=" + recordingId +
+                " f.type='" + this.getId() + "' AND e.recordingId=" + recordingId +
                 " AND e.stimulatorTest=false ORDER BY e.id ASC").getResultList();
         var founded = new HashSet<Long>();
         for (var rss : rs) {
@@ -375,31 +375,31 @@ public class DbReplayer implements ReplayerEngine {
         loadIndexes(recording.getId(), indexes);
         for (var index : indexes) {
             sessionFactory.query(e -> {
-                Object[] crcPath =  (Object[])e.createQuery("SELECT " +
+                Object[] crcPath = (Object[]) e.createQuery("SELECT " +
                         " c.requestHash,c.path,c.responseHash " +
                         " FROM ReplayerRow c WHERE c.recordingId=" + recording.getId() + " AND " +
                         " c.id=" + index.getReference()).getResultList().get(0);
 
-                var requestHash = (String)crcPath[0];
-                var path = (String)crcPath[1];
-                var responseHash = (String)crcPath[2];
-                if(path.matches(".*/[0-9]+")){
+                var requestHash = (String) crcPath[0];
+                var path = (String) crcPath[1];
+                var responseHash = (String) crcPath[2];
+                if (path.matches(".*/[0-9]+")) {
                     var arr = path.split("/");
-                    String[] subarray = new String[arr.length-1];
+                    String[] subarray = new String[arr.length - 1];
                     System.arraycopy(arr, 0, subarray, 0, subarray.length);
-                    path = String.join("/",subarray);
+                    path = String.join("/", subarray);
                 }
                 //var crc = row.getRequestHash()+":"+row.getResponseHash();
-                if (!mappingIndexes.containsKey(requestHash+path)) {
-                    mappingIndexes.put(requestHash+path, new ArrayList<>());
-                    mappingResponses.put(requestHash+path, new HashSet<>());
+                if (!mappingIndexes.containsKey(requestHash + path)) {
+                    mappingIndexes.put(requestHash + path, new ArrayList<>());
+                    mappingResponses.put(requestHash + path, new HashSet<>());
                 }
-                mappingIndexes.get(requestHash+path).add(index.getId());
-                mappingResponses.get(requestHash+path).add(responseHash);
+                mappingIndexes.get(requestHash + path).add(index.getId());
+                mappingResponses.get(requestHash + path).add(responseHash);
             });
         }
         for (var mappingIndex : mappingIndexes.entrySet()) {
-            if (mappingIndex.getValue().size() > 1 && mappingResponses.get(mappingIndex.getKey()).size()==1) {
+            if (mappingIndex.getValue().size() > 1 && mappingResponses.get(mappingIndex.getKey()).size() == 1) {
 
                 sessionFactory.transactional(e -> {
                     var first = mappingIndex.getValue().get(0);
@@ -411,7 +411,7 @@ public class DbReplayer implements ReplayerEngine {
                             " WHERE " +
                             " e.recordingId=" + recording.getId() +
                             " AND e.id=" + first).getResultList().get(0);
-                    callIndex.setCalls(callIndexesToRemove.size()+1);
+                    callIndex.setCalls(callIndexesToRemove.size() + 1);
                     var row = (ReplayerRow) e.createQuery("SELECT e FROM ReplayerRow e " +
                             " WHERE " +
                             " e.recordingId=" + recording.getId() +
@@ -445,27 +445,27 @@ public class DbReplayer implements ReplayerEngine {
     @Override
     public void updateReqRes(Request req, Response res, Map<String, String> specialParams) {
 
-            var reqDeser = serializer.newInstance();
-            reqDeser.deserialize(req.getRequestText());
-            var cmd = reqDeser.read("command");
-            if (ClassUtils.isAssignable(cmd.getClass(), TraceAwareType.class)) {
-                var oriTraceId = ((TraceAwareType) cmd).getTraceId();
-                req.getHeaders().put("X-ORI-TRACE-ID", String.valueOf(oriTraceId));
-                ((TraceAwareType) cmd).setTraceId(0);
-                var reqSer = serializer.newInstance();
-                reqSer.write("command", cmd);
-                req.setRequestText((String) reqSer.getSerialized());
-            }
-            var resDeser = serializer.newInstance();
-            resDeser.deserialize(res.getResponseText());
-            var result = resDeser.read("result");
-            if (ClassUtils.isAssignable(result.getClass(), TraceAwareType.class)) {
-                var oriTraceId = ((TraceAwareType) result).getTraceId();
-                res.getHeaders().put("X-ORI-TRACE-ID", String.valueOf(oriTraceId));
-                ((TraceAwareType) result).setTraceId(0);
-                var resSer = serializer.newInstance();
-                resSer.write("result", result);
-                res.setResponseText((String) resSer.getSerialized());
-            }
+        var reqDeser = serializer.newInstance();
+        reqDeser.deserialize(req.getRequestText());
+        var cmd = reqDeser.read("command");
+        if (ClassUtils.isAssignable(cmd.getClass(), TraceAwareType.class)) {
+            var oriTraceId = ((TraceAwareType) cmd).getTraceId();
+            req.getHeaders().put("X-ORI-TRACE-ID", String.valueOf(oriTraceId));
+            ((TraceAwareType) cmd).setTraceId(0);
+            var reqSer = serializer.newInstance();
+            reqSer.write("command", cmd);
+            req.setRequestText((String) reqSer.getSerialized());
+        }
+        var resDeser = serializer.newInstance();
+        resDeser.deserialize(res.getResponseText());
+        var result = resDeser.read("result");
+        if (ClassUtils.isAssignable(result.getClass(), TraceAwareType.class)) {
+            var oriTraceId = ((TraceAwareType) result).getTraceId();
+            res.getHeaders().put("X-ORI-TRACE-ID", String.valueOf(oriTraceId));
+            ((TraceAwareType) result).setTraceId(0);
+            var resSer = serializer.newInstance();
+            resSer.write("result", result);
+            res.setResponseText((String) resSer.getSerialized());
+        }
     }
 }

@@ -50,7 +50,8 @@
         <th v-for="key in columns"
             @click="sortBy(key.id)"
         >
-          <span :id="'grid-h-car-'+index" v-if="getBoolVal(key.sortable,true) && getBoolVal(key.visible,true)" class="btn btn-kendar btn-sm"
+          <span :id="'grid-h-car-'+index" v-if="getBoolVal(key.sortable,true) && getBoolVal(key.visible,true)"
+                class="btn btn-kendar btn-sm"
                 :class="{ active: sortKey == key.id }">
                 {{ buildLabel(key) | cleanUp }}
                 <span :class="(sortOrders[key] > 0 ? 'arrow asc' : 'arrow dsc')">
@@ -73,7 +74,8 @@
                      :descriptor="key"/>
         </td>
         <td v-for="(key,index) in columns">
-          <component :id="'grid-s-c-'+index" :is="'s'+key.template" v-if="getBoolVal(key.searchable,true) && getBoolVal(key.visible,true)"
+          <component :id="'grid-s-c-'+index" :is="'s'+key.template"
+                     v-if="getBoolVal(key.searchable,true) && getBoolVal(key.visible,true)"
                      :ref="'search'+key.id"
                      :descriptor="key"/>
         </td>
@@ -87,11 +89,11 @@
         </td>
         <td v-for="(key,coln) in columns">
           <component :id="'grid-rowc-'+index+'-'+coln"
-              v-if="getBoolVal(key.visible,true)"
-              :is="'c'+key.template" :descriptor="key"
-              :value="entry"
-              :ref="buildIndexCrc(entry)+key.id"
-              :index="buildId(entry)"/>
+                     v-if="getBoolVal(key.visible,true)"
+                     :is="'c'+key.template" :descriptor="key"
+                     :value="entry"
+                     :ref="buildIndexCrc(entry)+key.id"
+                     :index="buildId(entry)"/>
         </td>
       </tr>
       </tbody>
@@ -202,7 +204,6 @@ module.exports = {
         this.localFilteredData = [];
         return [];
       }
-      //this.$attrs["id"]
       this.forceUpdate;
       var filterKeys = this.filterKeys;
 
@@ -417,7 +418,6 @@ module.exports = {
     },
     asyncRequestsRunner: function (asyncFunc) {
       let promises = [asyncFunc()]
-      //let promises = [async function(){ return await asyncFunc();}]
       let result = {
         data: [],
         err: null

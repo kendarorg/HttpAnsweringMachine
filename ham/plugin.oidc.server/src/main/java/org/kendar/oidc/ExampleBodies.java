@@ -1,8 +1,8 @@
 package org.kendar.oidc;
 
 public class ExampleBodies {
-    public static final String JWKS_ENDPOINT ="{\"keys\":[{\"kty\":\"RSA\",\"e\":\"AQAB\",\"kid\":\"rsa1\",\"alg\":\"RS256\",\"n\":\"nVGg2Pw8MK1H6_on7PV8_zphnXVpa6bRcKfF8H61NEqK1rW9JUblyLuv7QNXD7ujC6v6laRVgNPFLZyFjGbU_PyCc3oIKgT9gbllGXMjBhZo70OEQ5uutrK1dTB6kSsX4GRTjxNG6ilb26NEUJZifun5QbjK8Lj0cc4VgfGvUkSLlggv7V45CIYvVQprB5Kbd1gM__xP7MHxaYY4LZNOq0OrxX7f6O7a-LjjHQw4dENCgzyPr4z7mlCIc4rBOKiva9QwKVC-VXlhB0KlYGaBhwt_KZLaGmzSwdZKKhHcEk9kxV9KNcl8gdZegOiq1jtikX_sTLL894tqLdaQXcuXMQ\"}]}";
-    public static final String METADATA_ENDPOINT="{\n" +
+    public static final String JWKS_ENDPOINT = "{\"keys\":[{\"kty\":\"RSA\",\"e\":\"AQAB\",\"kid\":\"rsa1\",\"alg\":\"RS256\",\"n\":\"nVGg2Pw8MK1H6_on7PV8_zphnXVpa6bRcKfF8H61NEqK1rW9JUblyLuv7QNXD7ujC6v6laRVgNPFLZyFjGbU_PyCc3oIKgT9gbllGXMjBhZo70OEQ5uutrK1dTB6kSsX4GRTjxNG6ilb26NEUJZifun5QbjK8Lj0cc4VgfGvUkSLlggv7V45CIYvVQprB5Kbd1gM__xP7MHxaYY4LZNOq0OrxX7f6O7a-LjjHQw4dENCgzyPr4z7mlCIc4rBOKiva9QwKVC-VXlhB0KlYGaBhwt_KZLaGmzSwdZKKhHcEk9kxV9KNcl8gdZegOiq1jtikX_sTLL894tqLdaQXcuXMQ\"}]}";
+    public static final String METADATA_ENDPOINT = "{\n" +
             "  \"issuer\": \"https://localhost/api/plugins/oidc/\",\n" +
             "  \"authorization_endpoint\": \"https://localhost/api/plugins/oidc/api/plugins/oidc/authorize\",\n" +
             "  \"token_endpoint\": \"https://localhost/api/plugins/oidc/api/plugins/oidc/token\",\n" +
@@ -43,7 +43,7 @@ public class ExampleBodies {
             "    \"S256\"\n" +
             "  ]\n" +
             "}";
-    public static final String AUTHORIZATION_ENDPOINT_CODE ="Location: http://localhost/api/remote/mirror?code=j8unx0s-JbEPU_EPUldLKA&state=random_state_string";
+    public static final String AUTHORIZATION_ENDPOINT_CODE = "Location: http://localhost/api/remote/mirror?code=j8unx0s-JbEPU_EPUldLKA&state=random_state_string";
     public static final String USERINFO_ENDPOINT = "{\n" +
             "  \"sub\"         : \"83692\",\n" +
             "  \"name\"        : \"Alice Adams\",\n" +

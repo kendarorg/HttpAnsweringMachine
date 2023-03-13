@@ -9,7 +9,7 @@ public class RecordingItem {
     private String testType;
     private String name;
     private Long fileId;
-    private boolean successful=false;
+    private boolean successful = false;
     private String error;
 
     public boolean isSuccessful() {

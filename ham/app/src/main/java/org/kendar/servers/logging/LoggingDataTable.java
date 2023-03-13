@@ -1,14 +1,15 @@
 package org.kendar.servers.logging;
 
 
-import javax.persistence.*;
 import org.kendar.servers.db.DbTable;
 import org.springframework.stereotype.Component;
+
+import javax.persistence.*;
 
 
 @Component
 @Entity
-@Table(name="LOGS_DATA")
+@Table(name = "LOGS_DATA")
 public class LoggingDataTable implements DbTable {
     public long getId() {
         return id;
