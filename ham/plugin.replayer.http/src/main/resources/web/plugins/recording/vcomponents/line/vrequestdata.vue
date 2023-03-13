@@ -8,9 +8,9 @@
                 :content-type="contentType"
     ></ham-upload>
 
-    <button v-if="data.requestHash!='0'" v-on:click="downloadData()" class="bi bi-download"
+    <button id="req-downdata" v-if="data.requestHash!='0'" v-on:click="downloadData()" class="bi bi-download"
             title="Download Data"></button>
-    <button v-if="!data.request.binaryRequest" type="button" class="bi bi-floppy" v-on:click="updateContent()"
+    <button id="req-savechanges" v-if="!data.request.binaryRequest" type="button" class="bi bi-floppy" v-on:click="updateContent()"
             title="Save changes">Save request data changes
     </button>
     <div v-if="!data.request.binaryRequest">

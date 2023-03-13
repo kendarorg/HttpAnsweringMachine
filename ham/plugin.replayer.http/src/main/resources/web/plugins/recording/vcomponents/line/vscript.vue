@@ -1,6 +1,6 @@
 <template>
   <div v-if="typeof this.data!='undefined'" width="800px">
-    <button type="button" class="bi bi-floppy" v-on:click="updateContent()"
+    <button id="script-savechanges" type="button" class="bi bi-floppy" v-on:click="updateContent()"
             title="Save changes">Save script changes
     </button>
     <br><br>

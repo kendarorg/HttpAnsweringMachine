@@ -8,25 +8,25 @@
       <!--    <span slot="footer">-->
       <!--              <button type="button" class="bi bi-x-square" @click="$emit('close')" title="Close"></button></span>-->
     </simple-modal>
-    <button v-on:click="selectAll()" class="btn btn-default" title="Check All">Check all</button>
-    <button v-on:click="toggleSelect()" class="btn btn-default" title="Toggle">Toggle Selected</button>
-    <button v-on:click="deleteSelected()" class="bi bi-trash" title="Toggle">Delete Selected</button>
-    <button v-on:click="selectedToStimulator()" class="btn btn-default" title="Toggle">Selected Stimulator</button>
+    <button id="recording-list-checkall" v-on:click="selectAll()" class="btn btn-default" title="Check All">Check all</button>
+    <button id="recording-list-togglesel"  v-on:click="toggleSelect()" class="btn btn-default" title="Toggle">Toggle Selected</button>
+    <button id="recording-list-delsel" v-on:click="deleteSelected()" class="bi bi-trash" title="Toggle">Delete Selected</button>
+    <button id="recording-list-seltostim" v-on:click="selectedToStimulator()" class="btn btn-default" title="Toggle">Selected Stimulator</button>
     <Br><br>
-    <button v-on:click="generateDns()" class="btn btn-default" title="Toggle">Gnerate DNS for selected</button>
-    <button v-on:click="generateSSL()" class="btn btn-default" title="Toggle">Gnerate SSL for selected</button>
-    <button v-on:click="setScript()" class="btn btn-default" title="Toggle">Set SCript for selected</button>
+    <button id="recording-list-gendns" v-on:click="generateDns()" class="btn btn-default" title="Toggle">Gnerate DNS for selected</button>
+    <button id="recording-list-genssl" v-on:click="generateSSL()" class="btn btn-default" title="Toggle">Gnerate SSL for selected</button>
+    <button id="recording-list-setscript" v-on:click="setScript()" class="btn btn-default" title="Toggle">Set SCript for selected</button>
     <Br><br>
-    <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <button id="recording-list-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
     <!--<button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>-->
-    <button v-on:click="download()" class="bi bi-download" title="Download Hosts File"></button>
+    <button id="recording-list-download" v-on:click="download()" class="bi bi-download" title="Download Hosts File"></button>
     <br><br>
     <div class="form-group">
       <label for="searchStr">Search content</label>
-      <button v-on:click="searchForStr()" class="bi bi-arrow-clockwise" title="Reload"></button>
+      <button id="recording-list-searchforstr" v-on:click="searchForStr()" class="bi bi-arrow-clockwise" title="Reload"></button>
       <input class="form-control" type="text" name="searchStr" id="searchStr" v-model="searchStr"/>
     </div>
-    <simple-grid id="res23"
+    <simple-grid id="recording-list-grid"
                  v-on:gridrowclicked="recordingListClicked"
                  v-on:gridclicked="gridClicked"
                  ref="grid"

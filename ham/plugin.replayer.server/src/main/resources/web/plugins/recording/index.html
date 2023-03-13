@@ -29,7 +29,7 @@
         <span slot="header">Recording</span>
         <span slot="body"><create-recording :data="modalData.data"/></span>
         <span slot="footer">
-              <button type="button" class="bi bi-x-square" @click="$emit('close')" title="Close"></button></span>
+              <button id="recording-save" type="button" class="bi bi-x-square" @click="$emit('close')" title="Close"></button></span>
     </simple-modal>
     <div class="row">
         <div class="col-md-8">
@@ -41,10 +41,10 @@
             <h3>RECORDINGS</h3>
             <br>
 
-            <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
-            <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+            <button id="main-recording-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+            <button id="main-recording-addnew" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
             <br><br>
-            <simple-grid id="res21"
+            <simple-grid id="main-recording-grid"
                          v-on:gridclicked="gridClicked"
                          ref="grid"
                          :columns="columns"

@@ -8,22 +8,6 @@
                     @success="onSuccess"
                     @error="onError"
         ></ham-upload>
-        <!--<form action="" id="addUser"  method="POST"  >
-          <div class="form-group">
-            <button type="button" id="btLoadFile" name="btLoadFile" class="btn btn-default" v-on:click="openFile">Open file</button>
-            <input ref="uploadScript" type="file" style="width:0;height: 0;opacity:0;"
-                   id="uploadScript" name="uploadScript"
-                   @change="loadFile"
-            >
-          </div>
-          <div class="form-group">
-            <input class="form-control" type="text" name="uploadScriptShow" id="uploadScriptShow"
-              v-model="uploadScriptShow"/>
-          </div>
-          <div class="form-group">
-            <button type="button" id="btUploadScript" name="btUploadScript" class="btn btn-default" v-on:click="upload">Upload</button>
-          </div>
-        </form>-->
       </div>
       <div class="col-md-8">
         <h3>CREATE RECORDING</h3>

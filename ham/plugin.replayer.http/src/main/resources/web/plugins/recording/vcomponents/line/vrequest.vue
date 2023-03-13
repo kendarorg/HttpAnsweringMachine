@@ -29,9 +29,9 @@
       <h4>REQUEST QUERY</h4>
     </div>
     <div width="800px">
-      <button v-on:click="addNewQuery(false,[])" class="bi bi-plus-square" title="Add new"></button>
+      <button id="req-newquery"  v-on:click="addNewQuery(false,[])" class="bi bi-plus-square" title="Add new"></button>
       <br/><br/>
-      <simple-grid id="rep18"
+      <simple-grid id="req-querygrid"
                    :is-object="true"
                    :extra="extraColumns"
                    v-on:gridclicked="queryGridClicked"
@@ -42,9 +42,9 @@
       <h4>REQUEST POST PARAMETERS</h4>
     </div>
     <div width="800px">
-      <button v-on:click="addNewPost(false,[])" class="bi bi-plus-square" title="Add new"></button>
+      <button id="req-post-param" v-on:click="addNewPost(false,[])" class="bi bi-plus-square" title="Add new"></button>
       <br/><br/>
-      <simple-grid id="rep19"
+      <simple-grid id="req-post-grid"
                    :is-object="true"
                    :extra="extraColumns"
                    v-on:gridclicked="postGridClicked"
@@ -55,9 +55,9 @@
       <h4>REQUEST HEADERS</h4>
     </div>
     <div width="800px">
-      <button v-on:click="addNewHeader(false,[])" class="bi bi-plus-square" title="Add new"></button>
+      <button id="req-headers-add" v-on:click="addNewHeader(false,[])" class="bi bi-plus-square" title="Add new"></button>
       <br/><br/>
-      <simple-grid id="rep20"
+      <simple-grid id="req-headers-grid"
                    :is-object="true"
                    :extra="extraColumns"
                    v-on:gridclicked="headersGridClicked"

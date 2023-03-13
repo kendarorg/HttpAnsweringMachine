@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <button id="loggers-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
     <br><br>
     <simple-grid id="loggers12"
                  ref="grid"

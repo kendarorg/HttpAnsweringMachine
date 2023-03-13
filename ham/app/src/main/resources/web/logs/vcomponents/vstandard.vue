@@ -6,10 +6,10 @@
       <span slot="header">Standard logger</span>
       <span slot="body"><change-logger :data="modalData.data"/></span>
     </simple-modal>
-    <button v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
-    <button v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+    <button id="standard-reload"  v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+    <button id="standard-addne"  v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
     <br><br>
-    <simple-grid id="standard14"
+    <simple-grid id="standard-log-grid"
                  v-on:gridclicked="gridClicked"
                  ref="grid"
                  :columns="columns"

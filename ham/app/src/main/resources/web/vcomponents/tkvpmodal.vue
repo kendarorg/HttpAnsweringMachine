@@ -11,7 +11,7 @@
                   <h2>{{ modalData.title }}</h2>
                 </td>
                 <td>
-                  <button type="button" class="close" @click="$emit('close')" aria-label="Close">
+                  <button id="tkvp-close" type="button" class="close" @click="$emit('close')" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </td>
@@ -33,8 +33,8 @@
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="bi bi-x-square" @click="$emit('close')" title="Close"></button>
-            <button type="button" class="bi bi-floppy" v-on:click="saveTheModal" title="Save changes"></button>
+            <button id="tkvp-closes"  type="button" class="bi bi-x-square" @click="$emit('close')" title="Close"></button>
+            <button id="tkvp-save"  type="button" class="bi bi-floppy" v-on:click="saveTheModal" title="Save changes"></button>
           </div>
         </div>
       </div>

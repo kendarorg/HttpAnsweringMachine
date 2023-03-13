@@ -3,10 +3,10 @@
     <div class="col-md-12">
       <br/>
 
-      <button type="button" class="bi bi-floppy" v-on:click="updateContent()"
+      <button id="editfilter-save" type="button" class="bi bi-floppy" v-on:click="updateContent()"
               title="Save changes"></button>
       &nbsp;
-      <button type="button" class="bi bi-download" v-on:click="download()"
+      <button id="editfilter-download" type="button" class="bi bi-download" v-on:click="download()"
               title="Download"></button>
       <br/>
       <br/>
