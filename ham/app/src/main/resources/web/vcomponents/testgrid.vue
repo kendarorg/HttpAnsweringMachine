@@ -311,11 +311,11 @@ module.exports = {
     sortBy: function (inputKey) {
 
       for (const key of this.columns) {
-        if (key.id.toUpperCase() == inputKey.toUpperCase() && !key.sortable) return;
+        if (key.id.toUpperCase() == inputKey.toUpperCase() && !this.getBoolVal(key.sortable,true)) return;
       }
       if (this.extra) {
         for (const key of this.extra) {
-          if (key.id.toUpperCase() == inputKey.toUpperCase() && !key.sortable) return;
+          if (key.id.toUpperCase() == inputKey.toUpperCase() && !this.getBoolVal(key.sortable,true)) return;
         }
       }
       this.sortKey = inputKey;

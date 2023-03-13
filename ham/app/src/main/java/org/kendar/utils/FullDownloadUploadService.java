@@ -1,5 +1,7 @@
 package org.kendar.utils;
 
+import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
@@ -19,13 +21,16 @@ import java.util.zip.ZipOutputStream;
 @Component
 public class FullDownloadUploadService {
     private final List<FullDownloadUpload> downloadUploadList;
+    private final Logger logger;
 
-    public FullDownloadUploadService(List<FullDownloadUpload> downloadUploadList) {
+    public FullDownloadUploadService(List<FullDownloadUpload> downloadUploadList, LoggerBuilder builder) {
 
         this.downloadUploadList = downloadUploadList;
+        this.logger= builder.build(FullDownloadUploadService.class);
     }
 
     public byte[] retrieveItems() throws Exception {
+        logger.info("Downloading full settings");
         //ZipFile war = new ZipFile("war.zip");
         ZipOutputStream append = new ZipOutputStream(new FileOutputStream("append.zip"));
         append.setLevel(Deflater.BEST_COMPRESSION);
@@ -35,7 +40,7 @@ public class FullDownloadUploadService {
                 var path = du.getId() + "/" + su.getKey();
                 var content = su.getValue();
                 ZipEntry e = new ZipEntry(path);
-                System.out.println("append: " + e.getName());
+                logger.info("append: " + e.getName());
                 append.putNextEntry(e);
                 append.write(su.getValue());
                 append.closeEntry();
@@ -47,6 +52,7 @@ public class FullDownloadUploadService {
     }
 
     public void uploadItems(byte[] input) throws Exception {
+        logger.info("Uploading full settings");
         var data = new HashMap<String, HashMap<String, byte[]>>();
         try (var zi = new ZipInputStream(new ByteArrayInputStream(input))) {
             byte[] b = new byte[8192];
