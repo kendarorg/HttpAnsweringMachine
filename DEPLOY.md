@@ -21,23 +21,26 @@ The version is like 4.1.1 or 5.1.1-SNAPSHOT
 
 ## DEPLOY
 
-set DOCKER_IP=192.168.56.2
-set DOCKER_HOST=tcp://%DOCKER_IP%:23750
-set DOCKER_DEPLOY=true
+    set DOCKER_IP=192.168.56.2
+    set DOCKER_HOST=tcp://%DOCKER_IP%:23750
+    set DOCKER_DEPLOY=true
+    
+    Set-Variable -Name "DOCKER_IP" -Value "192.168.56.2" -Scope global
+    Set-Variable -Name "DOCKER_HOST" -Value "tcp://192.168.56.2:32750" -Scope global
+    Set-Variable -Name "DOCKER_DEPLY" -Value "true" -Scope global
+    
+    export DOCKER_DEPLOY=true
+    export DOCKER_IP=192.168.1.40
 
-Set-Variable -Name "DOCKER_IP" -Value "192.168.56.2" -Scope global
-Set-Variable -Name "DOCKER_HOST" -Value "tcp://192.168.56.2:32750" -Scope global
-Set-Variable -Name "DOCKER_DEPLY" -Value "true" -Scope global
-
-export DOCKER_DEPLOY=true
-export DOCKER_IP=192.168.1.40
 # The docker on which should firstly deploy
-export DOCKER_HOST=tcp://192.168.1.40:23750
-./scripts/build/build_release.sh
-./scripts/build/build_release_samples.sh
-./scripts/build/build_docker.sh  TWICE....
-./scripts/build/build_docker_samples.sh  TWICE....
-./scripts/build/deploy_jar.sh
+
+    export DOCKER_HOST=tcp://192.168.1.40:23750
+    ./scripts/build/build_release.sh
+    ./scripts/build/build_release_samples.sh
+    ./scripts/build/build_docker.sh  TWICE....
+    ./scripts/build/build_docker_samples.sh  TWICE....
+    ./scripts/build/deploy_jar.sh
+
 Upload on github the releases on release dir
 
 
@@ -45,12 +48,18 @@ Upload on github the releases on release dir
 
 unset DOCKER_DEPLOY
 # The docker on which should firstly deploy
-export DOCKER_IP=192.168.1.40
-export DOCKER_HOST=tcp://$DOCKER_IP:23750
-./globaltest.sh
+
+    export DOCKER_IP=192.168.1.40
+    export DOCKER_HOST=tcp://$DOCKER_IP:23750
+    ./globaltest.sh
+
 Upload on github the releases on release dir
 
 
 ## CLeanup
 
 docker rmi $(docker images | grep "<none>"|grep -v "kendar" | awk "{print $3}")
+
+Or simply the dangling images
+
+    docker rmi $(docker images -f dangling=true -q) 
