@@ -72,7 +72,23 @@ GET https://www.microsoft.com
 GET https://www.apple.com
 
 Check that there are results containing data
-Check the pagination and filters
+Check the pagination and filters (here we have server pagination)
+
+### Js filters
+
+ScriptType script matcher API
+verify navigating
+ScriptType script matcher script
+verify navigating
+ScriptType body matcher API
+verify navigating
+ScriptType body matcher API with regexp
+verify navigating
+ScriptType body matcher script
+verify navigating
+
+Delete script
+
 
 
 ## API TEST

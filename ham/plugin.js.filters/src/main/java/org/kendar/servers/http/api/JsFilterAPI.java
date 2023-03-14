@@ -110,9 +110,17 @@ public class JsFilterAPI implements FilteringClass {
                         false :
                         "true".equalsIgnoreCase(req.getQuery("full"));
 
-        var dbFilter = (DbFilter) sessionFactory.querySingle(em ->
-                em.createQuery("SELECT e FROM DbFilter e WHERE e.id=" + jsFilterDescriptor + " ORDER BY e.id ASC")).get();
+        DbFilter dbFilter = null;
+        Optional<DbFilter> dbFilterOpt =  sessionFactory.querySingle(em ->
+                em.createQuery("SELECT e FROM DbFilter e WHERE e.id=" + jsFilterDescriptor + " ORDER BY e.id ASC"));
 
+        if(dbFilterOpt.isPresent()){
+            dbFilter = dbFilterOpt.get();
+        }else{
+            res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
+            return;
+        }
+        var id=dbFilter.getId();
         var rf = new RestFilter();
         rf.setId(dbFilter.getId());
         rf.setPhase(dbFilter.getPhase());
@@ -124,7 +132,7 @@ public class JsFilterAPI implements FilteringClass {
         rf.setMatchers(mapper.readValue(dbFilter.getMatcher(), typeRef));
         rf.setRequire(new ArrayList<>());
         List<DbFilterRequire> rq = sessionFactory.queryResult(em ->
-                em.createQuery("SELECT e.name,e.binary FROM DbFilterRequire e WHERE e.scriptId=" + dbFilter.getId() + " ORDER BY e.id ASC").getResultList());
+                em.createQuery("SELECT e.name,e.binary FROM DbFilterRequire e WHERE e.scriptId=" + id + " ORDER BY e.id ASC").getResultList());
         for (var rqf : rq) {
             var dbf = new RestFilterRequire();
             dbf.setBinary(rqf.isBinary());

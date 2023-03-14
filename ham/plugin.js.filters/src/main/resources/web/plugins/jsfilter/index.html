@@ -122,7 +122,8 @@
                     this.selectedRow = row['id'];
                 } else if (evt.buttonid == "_delete") {
                     await axiosHandle(axios.delete("/api/plugins/jsfilter/filters/" + row['id']), () =>
-                        this.$refs.grid.delete(evt.index));
+                        this.$refs.grid.reload());
+
                 }
             },
             reload: function () {
