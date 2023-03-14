@@ -23,7 +23,7 @@
     <parent>
         <artifactId>HttpAnsweringMachine</artifactId>
         <groupId>org.kendar</groupId>
-        <version>4.1.6</version>
+        <version>4.2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <packaging>jar</packaging>

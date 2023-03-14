@@ -1,5 +1,5 @@
 @echo off
-set HAM_VERSION=4.1.6
+set HAM_VERSION=4.2.0
 set START_LOCATION=%cd%
 set SCRIPT_DIR=%~dp0
 cd %SCRIPT_DIR%
