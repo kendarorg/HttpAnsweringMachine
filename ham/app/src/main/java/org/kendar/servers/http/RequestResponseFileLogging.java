@@ -68,15 +68,33 @@ public class RequestResponseFileLogging implements FilteringClass {
         return le.isDebugEnabled() || le.isTraceEnabled();
     }
 
+    private boolean isInfoOrMore(Logger le) {
+        return le.isInfoEnabled() || le.isDebugEnabled() || le.isTraceEnabled();
+    }
+
     @HttpMethodFilter(
             phase = HttpFilterType.POST_RENDER,
             pathAddress = "*",
             method = "*")
     public boolean doLog(Request serReq, Response serRes) {
-        if (serReq.isStaticRequest() && !isDebugOrMore(staticLogger)) return false;
-        if (!serReq.isStaticRequest() && !isDebugOrMore(dynamicLogger)) return false;
+        var staticEnabled = isDebugOrMore(staticLogger) && serReq.isStaticRequest();
+        var dynamicEnabled = isDebugOrMore(dynamicLogger) && !serReq.isStaticRequest();
+        var internalEnabled = isDebugOrMore(internalLogger)&&localAddress.equalsIgnoreCase(serReq.getHost());
+        var requestEnabled = isInfoOrMore(requestLogger);
+        var responseEnabled = isInfoOrMore(requestLogger);
 
-        if (!isDebugOrMore(internalLogger) && localAddress.equalsIgnoreCase(serReq.getHost())) {
+        if(!staticEnabled && !dynamicEnabled &&
+            !internalEnabled && !requestEnabled && !responseEnabled){
+            return false;
+        }
+
+
+
+
+        if (!staticEnabled) return false;
+        if (!dynamicEnabled) return false;
+
+        if (!internalEnabled && localAddress.equalsIgnoreCase(serReq.getHost())) {
             return false;
         }
         var rt = serReq.getRequestText();
@@ -84,24 +102,22 @@ public class RequestResponseFileLogging implements FilteringClass {
         var st = serRes.getResponseText();
         var sb = serRes.getResponseBytes();
 
-        if (requestLogger.isTraceEnabled()) {
-
-        } else if (requestLogger.isDebugEnabled()
-                && serReq.getRequestText() != null
-                && serReq.getRequestText().length() > 100) {
-            serReq.setRequestText(serReq.getRequestText().substring(0, 100));
-        } else {
+        if (isDebugOrMore(requestLogger) && serReq.getRequestText() != null) {
+            if(serReq.getRequestText().length() > 100 && requestLogger.isDebugEnabled()) {
+                serReq.setRequestText(serReq.getRequestText().substring(0, 100));
+            }
+        }else if(requestLogger.isInfoEnabled()){
             serReq.setRequestText(null);
         }
-        serReq.setRequestBytes(null);
-        if (responseLogger.isTraceEnabled()) {
-        } else if (responseLogger.isDebugEnabled()
-                && serRes.getResponseText() != null
-                && serRes.getResponseText().length() > 100) {
-            serRes.setResponseText(serRes.getResponseText().substring(0, 100));
-        } else {
+
+        if (isDebugOrMore(responseLogger) && serRes.getResponseText() != null) {
+            if(serRes.getResponseText().length() > 100 && responseLogger.isDebugEnabled()) {
+                serRes.setResponseText(serRes.getResponseText().substring(0, 100));
+            }
+        }else if(responseLogger.isInfoEnabled()){
             serRes.setResponseText(null);
         }
+        serReq.setRequestBytes(null);
         serRes.setResponseBytes(null);
 
         try {

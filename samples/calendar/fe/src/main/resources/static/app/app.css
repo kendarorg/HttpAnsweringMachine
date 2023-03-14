@@ -76,3 +76,8 @@ a.unlinked:hover {
 a.unlinked:active {
     color: white;
 }
+
+.icon-black {
+    color: black;
+    /*font-size: 25px;*/
+}

@@ -1,153 +1,147 @@
 <html>
 <head>
     <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
-    <script src="/libs/jquery-3.2.1.min.js"></script>
-    <script src="/libs/bootstrap.min.js"></script>
+    <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+    <script src="/libs/vue.js"></script>
+    <script src="/libs/httpVueLoader.js"></script>
+    <script src="/libs/axios.min.js"></script>
+    <script src="/libs/utils.js"></script>
     <link href="/app/app.css" rel="stylesheet"/>
 </head>
 <body>
-<div class="container">
+<div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
+    <div class="spinner-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
+</div>
+<div id="messageObject"></div>
+<div class="container-fluid" id="app">
+    <simple-modal v-if="modalShow"
+                  :modal-data="modalData"
+                  @close="modalShow = false">
+        <span slot="header">Employees</span>
+        <span slot="body"><edit-employee :data="modalData.data"/></span>
+    </simple-modal>
     <div class="row">
 
         <div class="col-md-8">
             <h3>EMPLOYEES</h3>
-            <table class="table table-striped" id="employeesTable">
-                <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Role</th>
-                    <th>Appointments</th>
-                    <th colspan="2">
-                        <button class="btn btn-danger form-control"
-                                onClick="addEmployee();">Add</button>
-                    </th>
-                </tr>
-            </table>
+            <button id="appoint-reload" v-on:click="reload()" class="bi bi-arrow-clockwise icon-black" title="Reload"></button>
+            <button id="appoint-add" v-on:click="addNew(false,[])" class="bi bi-plus-square icon-black" title="Add new"></button>
+            <simple-grid id="appoint-grid"
+                         v-on:gridclicked="gridClicked"
+                         ref="grid"
+                         :columns="columns"
+                         :extra="extraColumns"
+                         :retrieve-data="retrieveData"
+            >
+            </simple-grid>
         </div>
     </div>
 </div>
-<!-- Modal -->
-<div aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">Proxy</h4>
-            </div>
-            <div class="modal-body"></div>
-            <div class="modal-footer"></div>
-        </div>
-    </div>
-</div>
-<script src="app/app.js"></script>
 <script>
-    var employeeModal = `
-    <label for="name">name</label>
-    <input class="form-control" type="text" name="name"  id="name" />
-    <label for="role">role</label>
-    <input class="form-control" type="text" name="role"  id="role" />
-    `;
-    var addEmployee = function () {
-        var modal = ".modal";
-        var randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
-        var target = {
-            id: 0
-        };
-        var id = target.id;
-        buildGenericModal(modal, scriptsTable, target, "id", employeeModal, randomId, false);
-        $(modal).find("#" + randomId).click(function () {
-            scriptsTable.saveFunction(scriptsTable, id, true);
-        });
-    }
-    var editEmployee = function (table, id) {
-        var modal = ".modal";
-        var randomId = "BUTTON" + Math.floor(Math.random() * 999999999);
-        var localTable = table;
-        localTable.data.forEach(function (value, i) {
-            if (value["id"] == id) {
-                buildGenericModal(modal, table, value, "id", employeeModal, randomId, true);
-                $(modal).find("#" + randomId).click(function () {
-                    localTable.saveFunction(localTable, id, false);
-                });
-                $(modal).find("#name").val(value["name"]);
-                $(modal).find("#role").val(value["role"]);
-            }
-        });
-    }
-
-    var goToAppointments = function (id) {
-        location.href = "appointments.html?employeeId=" + id;
-    }
-    var scriptsTable = new SimpleGrid("Employees", "employeesTable", "id", ["id", "name", "role", "_appointments"],
-        function (table) {
-            $.ajax({
-                url: useresHost + "/api/v1/employees",
-                type: 'GET',
-                success: function (res) {
-                    for (var v = 0; v < res.length; v++) {
-                        res[v]["_appointments"] = "<button class=\"btn btn-success form-control\" id=\"appointments-" +
-                            res[v]['id'] +
-                            "-edit\" onclick='goToAppointments(\"" + res[v]['id'] + "\")'>Go</button>"
+    new Vue({
+        el: '#app',
+        components: {
+            'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
+            'simple-modal': httpVueLoader('/vcomponents/tmodal.vue'),
+            'edit-employee': httpVueLoader('/vcomponents/editemployee.vue')
+        },
+        name: 'employees',
+        data: function () {
+            return {
+                modalData: null,
+                modalShow: false,
+                apiHost:'',
+                columns: [
+                    {id: "id", template: "string", index: true, visible:false},
+                    {id: "name", template: "string"},
+                    {id: "role", template: "string"}
+                ],
+                extraColumns: [
+                    {
+                        id: "_edit", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                            name: "Edit", style: "bi bi-pen-fill icon-black"
+                        }
+                    },
+                    {
+                        id: "_delete", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                            name: "Delete", style: "bi bi-trash icon-black"
+                        }
+                    },
+                    {
+                        id: "_appointments", template: "iconbutton", default: false, searchable: false, sortable: false, properties: {
+                            name: "Edit", style: "bi bi-calendar-date-fill icon-black"
+                        }
                     }
-                    $.each(res, function (i, script) {
-                        table.appendToTable(script);
+                ]
+            }
+        },
+        methods: {
+            retrieveData: async function () {
+                var settings = await axiosHandle(axios.get("/api/settings"));
+                this.apiHost=settings.data["appointment"];
+                var result = await axiosHandle(axios.get(this.apiHost+"/api/v1/employees"));
+                return result;
+            },
+            gridClicked: async function (evt) {
+                var row = this.$refs.grid.getById(evt.index);
+
+                switch(evt.buttonid){
+                    case("_edit"):
+                        this.addNew(true, evt.index)
+                        break;
+                    case("_delete"):
+                        await axiosHandle(axios.delete(this.apiHost+"/api/v1/employees/" + row['id']), () => {
+                            this.reload()
+                            addMessage("Deleted")
+                        });
+                        break;
+                    case("_appointments"):
+                        location.href = "appointments.html?employeeId=" + row['id'];
+                        break;
+                }
+            },
+            reload: function () {
+                this.$refs.grid.reload();
+            },
+            addNew: function (shouldEdit, rowId) {
+                var row = null;
+                if (shouldEdit) {
+                    row = this.$refs.grid.getById(rowId);
+                } else {
+                    row = {
+                        id: 0
+                    }
+                }
+                this.modalData = {
+                    data: row,
+                    edit: shouldEdit,
+                    save: this.save
+                };
+                this.modalShow = true;
+            },
+            save: async function () {
+                if (this.modalData.edit) {
+                    await axiosHandle(axios.put(this.apiHost+'/api/v1/employees/' + this.modalData.data.id, this.modalData.data), () => {
+                        addMessage("Modified")
+                        this.modalShow = false;
+                        this.reload();
+                    });
+                } else {
+                    await axiosHandle(axios.post(this.apiHost+'/api/v1/employees/', this.modalData.data), () => {
+                        addMessage("Added")
+                        this.modalShow = false;
+                        this.reload();
                     });
                 }
-            });
-        },
-        function (table, id) {
-            editEmployee(table, id)
-        },
-        function (table, id) {
-            table.deleteFromTable(id, function (id, success, error) {
-                $.ajax({
-                    url: useresHost + "/api/v1/employees/" + id,
-                    type: 'DELETE',
-                    success: function (res) {
-                        success();
-                        location.reload();
-                    },
-                    error: function (res) {
-                        error();
-                    }
-                });
-            });
-        },
-        function (table, id, saveOrUpdate) {
-            var modal = ".modal";
-            var data = {
-                id: id,
-                name: $(modal).find("#name").val(),
-                role: $(modal).find("#role").val()
-            };
-
-            $.ajax({
-                url: useresHost + "/api/v1/employees" + (saveOrUpdate ? "" : "/" + id),
-                type: saveOrUpdate ? 'POST' : 'PUT',
-                data: JSON.stringify(data),
-                contentType: "application/json",
-                success: function (res) {
-                    success();
-                    location.reload();
-                },
-                error: function (res) {
-                    error();
-                }
-            });
-        });
-    $.ajax({
-        url: "/api/settings",
-        type: 'GET',
-        success: function(settings) {
-
-            apiHost=settings["appointment"];
-            useresHost=settings["employee"];
-            feLocation=settings["feLocation"];
-
-            scriptsTable.load();
-        }});
+            }
+        }
+    });
 </script>
 </body>
 </html>

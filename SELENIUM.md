@@ -61,6 +61,19 @@ Test the local test and verify ok
 Add/remove/modify an SSL item
 Sort address
 
+### Logs
+
+Enable static and dynamic to debug
+Enable request and response to trace
+
+Do some request via REST Client
+GET https://www.google.com
+GET https://www.microsoft.com
+GET https://www.apple.com
+
+Check that there are results containing data
+Check the pagination and filters
+
 
 ## API TEST
 
