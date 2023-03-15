@@ -44,6 +44,14 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.slf4j:jul-to-slf4j:1.7.30" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: jakarta.annotation:jakarta.annotation-api:1.3.5" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.yaml:snakeyaml:1.27" level="project" />
+    <orderEntry type="module" module-name="app.http" scope="TEST" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-context:5.3.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-aop:5.3.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-beans:5.3.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-expression:5.3.1" level="project" />
+    <orderEntry type="library" name="Maven: javax.annotation:jsr250-api:1.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.commonmark:commonmark:0.18.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.swagger.core.v3:swagger-models:2.2.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-suite:1.8.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-suite-engine:1.8.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-suite-commons:1.8.0" level="project" />
@@ -78,15 +86,10 @@
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.30" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="module" module-name="plugin.replayer.jdbc" scope="TEST" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-context:5.3.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-aop:5.3.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-beans:5.3.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-expression:5.3.1" level="project" />
     <orderEntry type="module" module-name="plugin.replayer.http" scope="TEST" />
     <orderEntry type="module" module-name="plugin.replayer.commons" scope="TEST" />
     <orderEntry type="module" module-name="plugin.replayer.server" scope="TEST" />
     <orderEntry type="library" scope="TEST" name="Maven: com.h2database:h2:2.1.214" level="project" />
-    <orderEntry type="library" name="Maven: javax.annotation:jsr250-api:1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mybatis:mybatis:3.5.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.tika:tika-core:2.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mozilla:rhino:1.7.13" level="project" />

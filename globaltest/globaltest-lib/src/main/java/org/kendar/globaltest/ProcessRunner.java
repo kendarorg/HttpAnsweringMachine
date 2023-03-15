@@ -27,6 +27,15 @@ public class ProcessRunner {
         this();
         this.env=env;
     }
+
+    public ProcessRunner asShell(){
+        if (SystemUtils.IS_OS_WINDOWS) {
+            withCommand("cmd").withParameter("/C");
+        }else{
+            withCommand("bash").withParameter("-c");
+        }
+        return this;
+    }
     public ProcessRunner withCommand(String command) {
         this.command = command;
         return this;

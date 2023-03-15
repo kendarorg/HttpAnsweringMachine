@@ -9,6 +9,32 @@ import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class LogWriter {
+
+    public static void info(String data,Object ... pars){
+        if(pars.length>0){
+            System.out.println("[INFO] "+String.format(data,pars));
+        }else{
+            System.out.println("[INFO] "+data);
+        }
+    }
+    public static void warn(String data,Object ... pars){
+        if(pars.length>0){
+            System.out.println("[WARN] "+String.format(data,pars));
+        }else{
+            System.out.println("[WARN] "+data);
+        }
+    }
+    public static void errror(String data,Object ... pars){
+        if(pars.length>0){
+            System.err.println("[ERROR] "+String.format(data,pars));
+        }else{
+            System.err.println("[ERROR] "+data);
+        }
+    }
+
+    private static void write(String level,String data,Object ... pars){
+
+    }
     private static Path path;
     private static Thread logWriter ;
     static {
@@ -42,7 +68,7 @@ public class LogWriter {
                     try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
                         writer.write(data);
                     } catch (IOException ioe) {
-                        System.err.format("IOException: %s", ioe);
+                        LogWriter.errror("IOException: %s", ioe);
                     }
                 }
                 Thread.sleep(1000);
@@ -50,5 +76,10 @@ public class LogWriter {
 
             }
         }
+    }
+
+    public static void errror(Exception ex) {
+        System.err.println("[ERROR] "+ex.getMessage());
+        System.err.println(ex);
     }
 }

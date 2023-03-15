@@ -3,6 +3,7 @@
 set DOCKER_IP=192.168.56.2
 set DOCKER_HOST=tcp://%DOCKER_IP%:23750
 set STARTING_PATH=%~dp0
+set HAM_VERSION=4.2.0
 
 call %STARTING_PATH%\scripts\libs\version.bat
 
@@ -18,9 +19,10 @@ IF exist %UTILS_TODEL_DIR% (
 cd %STARTING_PATH%\globaltest
 call mvn clean install package  2>&1 1>NUL
 echo [INFO] starting global test runner
-cd %STARTING_PATH%\globaltest\target
+cd %STARTING_PATH%\globaltest\globaltest-main\target
 
-call java -cp globaltest-1.0.0-jar-with-dependencies.jar org.kendar.globaltest.Main
+call java -cp globaltest-main-%HAM_VERSION%.jar org.kendar.globaltest.Main
+cd %STARTING_PATH%
 
 
 

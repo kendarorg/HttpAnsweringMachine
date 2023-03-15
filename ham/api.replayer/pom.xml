@@ -37,6 +37,13 @@
             <version>${ham.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>app.http</artifactId>
+            <version>${ham.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
