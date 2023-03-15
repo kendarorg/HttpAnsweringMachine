@@ -268,7 +268,6 @@ public class Main {
 
             buildDeploymentArtifacts(startingPath, hamVersion, buildDir, releasePath);
             testAndGenerateJacoco(startingPath);
-            exit(0);
             applyReleasePermissions(releasePath);
             testLocalHam(releasePath);
             testCalendarSample(calendarPath);
@@ -291,12 +290,12 @@ public class Main {
         LogWriter.info("Unit test ham & report");
         start(pathOf(startingPath, "scripts", "globaltest"), "test.run", Main::handleRunErrors).run();
         if (SystemUtils.IS_OS_WINDOWS) {
-            HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").noError().run();
+            HttpChecker.checkForSite(5, "http://127.0.0.1/api/shutdown").noError().run();
             _processUtils.sigtermProcesses(findHamProcesses);
         } else {
             _processUtils.sigtermProcesses(findHamProcesses);
         }
-        var path = Path.of(startingPath, "ham", "api.test", "target", "test_run_starter.exec");
+        var path = Path.of(startingPath, "ham", "api.test", "target", "jacoco_starter.exec");
         var now = System.currentTimeMillis();
         var end = now + 5 * 60 * 1000;
 

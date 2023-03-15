@@ -18,23 +18,23 @@ public class LogWriter {
     }
     public static void info(String data,Object ... pars){
         if(pars.length>0){
-            System.out.println(getCurrentLocalDateTimeStamp()+" [INFO] "+String.format(data,pars));
+            System.out.println("[INFO] "+String.format(data,pars));
         }else{
-            System.out.println(getCurrentLocalDateTimeStamp()+" [INFO] "+data);
+            System.out.println("[INFO] "+data);
         }
     }
     public static void warn(String data,Object ... pars){
         if(pars.length>0){
-            System.out.println(getCurrentLocalDateTimeStamp()+" [WARN] "+String.format(data,pars));
+            System.out.println("[WARN] "+String.format(data,pars));
         }else{
-            System.out.println(getCurrentLocalDateTimeStamp()+" [WARN] "+data);
+            System.out.println("[WARN] "+data);
         }
     }
     public static void errror(String data,Object ... pars){
         if(pars.length>0){
-            System.err.println(getCurrentLocalDateTimeStamp()+" [ERROR] "+String.format(data,pars));
+            System.err.println("[ERROR] "+String.format(data,pars));
         }else{
-            System.err.println(getCurrentLocalDateTimeStamp()+" [ERROR] "+data);
+            System.err.println("[ERROR] "+data);
         }
     }
     private static final Path path;
