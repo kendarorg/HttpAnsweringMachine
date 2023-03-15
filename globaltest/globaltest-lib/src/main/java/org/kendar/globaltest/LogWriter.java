@@ -31,12 +31,8 @@ public class LogWriter {
             System.err.println("[ERROR] "+data);
         }
     }
-
-    private static void write(String level,String data,Object ... pars){
-
-    }
-    private static Path path;
-    private static Thread logWriter ;
+    private static final Path path;
+    private static final Thread logWriter ;
     static {
         path = Path.of("globaltest."+(new Date().getTime())+".log");
         try {
@@ -48,7 +44,7 @@ public class LogWriter {
         logWriter.start();
     }
 
-    private static LinkedBlockingQueue<String> logs = new LinkedBlockingQueue<>();
+    private static final LinkedBlockingQueue<String> logs = new LinkedBlockingQueue<>();
 
     public static void writeProcess(String data){
         try {
@@ -66,7 +62,9 @@ public class LogWriter {
                         data = data.trim()+"\n";
                     }
                     try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
-                        writer.write(data);
+                        if(data!=null) {
+                            writer.write(data);
+                        }
                     } catch (IOException ioe) {
                         LogWriter.errror("IOException: %s", ioe);
                     }

@@ -6,14 +6,36 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 
 public class HttpChecker {
-    public boolean checkForSite(int seconds, String url) throws Exception {
+    int seconds;
+    int proxyPort = -1;
+    String proxyUrl = null;
+    String url;
+    private Runnable onError=null;
 
-        return checkForSite(seconds, url, null, -1);
+    protected HttpChecker(){
+
+    }
+    public static HttpChecker checkForSite(int seconds, String url) {
+        var result = new HttpChecker();
+        result.seconds = seconds;
+        result.url = url;
+        return result;
     }
 
-    public boolean checkForSite(int seconds, String url, String proxyUrl, int proxyPort) throws Exception {
+    public HttpChecker withProxy(String proxyUrl, int proxyPort){
+        this.proxyUrl=proxyUrl;
+        this.proxyPort = proxyPort;
+        return this;
+    }
+
+    public HttpChecker onError(Runnable onError){
+        this.onError=onError;
+        return this;
+    }
+
+    public boolean run() throws Exception {
         var now = System.currentTimeMillis();
-        var end = now + seconds * 1000;
+        var end = now + seconds * 1000L;
         LogWriter.info("Testing for %d seconds %s: ", seconds, url);
         while (end > System.currentTimeMillis()) {
             System.out.print(".");
@@ -46,6 +68,9 @@ public class HttpChecker {
             Thread.sleep(1000);
         }
         LogWriter.errror("testing " + url);
+        if(onError!=null){
+            onError.run();
+        }
         return false;
     }
 }

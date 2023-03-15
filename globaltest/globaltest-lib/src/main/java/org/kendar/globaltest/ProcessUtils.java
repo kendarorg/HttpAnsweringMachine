@@ -2,17 +2,18 @@ package org.kendar.globaltest;
 
 import org.apache.commons.lang3.SystemUtils;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class ProcessKiller {
-    private Map<String, String> env;
+public class ProcessUtils {
+    private final Map<String, String> env;
 
-    public ProcessKiller(Map<String,String> env){
+    public ProcessUtils(Map<String,String> env){
 
         this.env = env;
     }
@@ -74,6 +75,20 @@ public class ProcessKiller {
                         run();
 
             }
+        }
+    }
+
+
+
+    public void chmodExec(String dir,String ...exts) throws Exception {
+        Path of = Path.of(dir);
+        if (!Files.exists(of)) {
+            Files.createDirectories(of);
+        }
+
+        if (SystemUtils.IS_OS_WINDOWS) return;
+        for(var ext:exts) {
+            new ProcessRunner(env).asShell().withParameter("chmod +x *."+ext).withStartingPath(dir).withNoOutput().run();
         }
     }
 }

@@ -1,14 +1,7 @@
 package org.kendar.globaltest;
 
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.http.HttpHost;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -16,26 +9,19 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static java.lang.System.exit;
+import static org.kendar.globaltest.LocalFileUtils.pathOf;
 
 public class Main {
     private static HashMap<String, String> env;
-    private static ProcessKiller _processKiller;
-    private static HttpChecker _httpChecker;
-    private static Function<String, Boolean> findHamProcesses = (psLine) ->
+    private static ProcessUtils _processUtils;
+    private static final Function<String, Boolean> findHamProcesses = (psLine) ->
                     psLine.contains("java") &&
                     psLine.contains("httpanswering") &&
                     !psLine.contains("globaltest");
-    private static void doOrExit(ExceptionSupplier<Boolean> b) throws Exception {
-        if (!b.get()) doExit(1);
-    };
 
     private static void killApacheLogger() {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
@@ -47,37 +33,13 @@ public class Main {
         System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "error");
     }
 
-    public static void correctAllCrLf(String directoryName) {
-        File directory = new File(directoryName);
-        // get all the files from a directory
-        File[] fList = directory.listFiles();
-        for (File file : fList) {
-            if (file.isFile()) {
-                if (file.getName().toLowerCase(Locale.ROOT).endsWith(".sh")) {
-                    try {
-                        var content = Files.readString(Path.of(file.getAbsolutePath()));
-                        if (content.indexOf("\r\n") > 0) {
-                            var result = content.replace("\r\n", "\n");
-                            Files.writeString(Path.of(file.getAbsolutePath()), result);
-                        }
-                    } catch (IOException e) {
 
-                    }
-                }
-            } else if (file.isDirectory()) {
-                if (file.getName().startsWith(".")) {
-                    continue;
-                }
-                correctAllCrLf(file.getAbsolutePath());
-            }
-        }
-    }
 
 
     private static void doExit(int i) {
         try {
             if (i == 0) {
-                _processKiller.killProcesses(findHamProcesses);
+                _processUtils.killProcesses(findHamProcesses);
             } else {
                 var scanner = new Scanner(System.in); // create scanner
                 LogWriter.warn("");
@@ -85,7 +47,7 @@ public class Main {
                 LogWriter.warn("Would you like to leave the processes running? (y/n default)");       // prompt user
                 var result = scanner.next().toLowerCase(Locale.ROOT);
                 if (result.isEmpty() || result.equalsIgnoreCase("n")) {
-                    _processKiller.killProcesses(findHamProcesses);
+                    _processUtils.killProcesses(findHamProcesses);
                 }
                 exit(i);
             }
@@ -94,23 +56,13 @@ public class Main {
         }
     }
 
-    private static String ext() {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            return ".bat";
-        }
-        return ".sh";
-    }
 
-
-    private static String pathOf(String first, String... pars) {
-        return Path.of(first, pars).toString();
-    }
 
 
     private static void runBuild(String buildDir, String releasePath, String script) throws Exception {
         LogWriter.info("BEG " + script);
         var runDir = buildDir;
-        var runFile = pathOf(runDir, script + ext());
+        var runFile = pathOf(runDir, script + LocalFileUtils.execScriptExt());
         var logDir = releasePath;
 
         new ProcessRunner(env).withCommand(runFile).withStartingPath(runDir).run();
@@ -120,7 +72,7 @@ public class Main {
                 String line = reader.readLine();
                 var hasError = false;
                 while (line != null) {
-                    if (line.toLowerCase(Locale.ROOT).contains("ERROR")) {
+                    if (line.toLowerCase(Locale.ROOT).contains("error")) {
                         LogWriter.errror("[%s] %s", script, line);
                         hasError = true;
                     }
@@ -146,132 +98,64 @@ public class Main {
         }
     }
 
-    private static String findCommand(String command) {
-        try {
-            ConcurrentLinkedQueue<String> storage = new ConcurrentLinkedQueue<>();
-            new ProcessRunner(env).withCommand("whereis").withParameter(command).withStorage(storage).run();
-            var lines = storage.peek().split("\\s+");
-            for (var line : lines) {
-                if (line.indexOf("bin") > 0) {
-                    return line;
-                }
-            }
-        } catch (Exception ex) {
-        }
-        return command;
-    }
-
-    private static void chmodExec(String dir) throws Exception {
-        if (SystemUtils.IS_OS_WINDOWS) return;
-        if (!Files.exists(Path.of(dir))) {
-            Files.createDirectories(Path.of(dir));
-        }
-
-        new ProcessRunner(env).asShell().withParameter("chmod +x *.sh").withStartingPath(dir).withNoOutput().run();
-    }
-
-    private static void extract(String startingPath, String name) throws Exception {
-        File initialFile = new File(startingPath + File.separatorChar + name + ".tar.gz");
-        var in = new FileInputStream(initialFile);
-        var BUFFER_SIZE = 64000;
-        GzipCompressorInputStream gzipIn = new GzipCompressorInputStream(in);
-        try (TarArchiveInputStream tarIn = new TarArchiveInputStream(gzipIn)) {
-            TarArchiveEntry entry;
-
-            while ((entry = (TarArchiveEntry) tarIn.getNextEntry()) != null) {
-                /** If the entry is a directory, create the directory. **/
-                if (entry.isDirectory()) {
-                    var entryName = entry.getName();
-                    if (entryName.equalsIgnoreCase("./")) continue;
-                    entryName = startingPath + entryName.substring(1);
-                    File f = new File(entryName);
-                    boolean created = f.mkdir();
-                    if (!created) {
-                        LogWriter.errror("Unable to create directory '%s', during extraction of archive contents.", f.getAbsolutePath());
-                        doExit(1);
-                    }
-                } else {
-                    int count;
-                    byte data[] = new byte[BUFFER_SIZE];
-                    var entryName = entry.getName();
-                    entryName = startingPath + entryName.substring(1);
-                    var fos = new FileOutputStream(entryName, false);
-                    try (BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER_SIZE)) {
-                        while ((count = tarIn.read(data, 0, BUFFER_SIZE)) != -1) {
-                            dest.write(data, 0, count);
-                        }
-                    }
-                }
-            }
-
-            LogWriter.info("Untar completed successfully!");
-        }
-    }
-
-
-
-
-
-
-
 
     private static void testCalendarSample(String calendarPath) throws Exception {
         LogWriter.info("Testing calendar/scripts/be");
         start(pathOf(calendarPath, "scripts"), "be").runBackground();
-        doOrExit(()->_httpChecker.checkForSite(60, "http://127.0.0.1:8100/api/v1/health"));
-        _processKiller.killProcesses(findHamProcesses);
+        HttpChecker.checkForSite(60, "http://127.0.0.1:8100/api/v1/health").onError(()->doExit(1)).run();
+        _processUtils.killProcesses(findHamProcesses);
 
         LogWriter.info("Testing calendar/scripts/fe");
         start(pathOf(calendarPath, "scripts"), "fe").runBackground();
-        doOrExit(()->_httpChecker.checkForSite(60, "http://127.0.0.1:8080/api/v1/health"));
-        _processKiller.killProcesses(findHamProcesses);
+        HttpChecker.checkForSite(60, "http://127.0.0.1:8080/api/v1/health").onError(()->doExit(1)).run();
+        _processUtils.killProcesses(findHamProcesses);
 
         LogWriter.info("Testing calendar/scripts/gateway");
         start(pathOf(calendarPath, "scripts"), "gateway").runBackground();
-        doOrExit(()->_httpChecker.checkForSite(60, "http://127.0.0.1:8090/api/v1/health"));
-        _processKiller.killProcesses(findHamProcesses);
+        HttpChecker.checkForSite(60, "http://127.0.0.1:8090/api/v1/health").onError(()->doExit(1)).run();
+        _processUtils.killProcesses(findHamProcesses);
 
         LogWriter.info("Testing calendar/scripts/ham");
         start(pathOf(calendarPath, "scripts"), "ham").runBackground();
-        doOrExit(()->_httpChecker.checkForSite(60, "http://www.local.test/api/health", "127.0.0.1", 1081));
-        _processKiller.killProcesses(findHamProcesses);
+        HttpChecker.checkForSite(60, "http://www.local.test/api/health").withProxy("127.0.0.1",1081).onError(()->doExit(1)).run();
+        _processUtils.killProcesses(findHamProcesses);
 
 
         LogWriter.info("Testing calendar/rundb");
         start(calendarPath, "rundb").runBackground();
-        doOrExit(()->_httpChecker.checkForSite(60, "http://localhost:8082"));
+        HttpChecker.checkForSite(60, "http://localhost:8082").onError(()->doExit(1)).run();
         LogWriter.info("Testing calendar/scripts/bedb");
         start(pathOf(calendarPath, "scripts"), "bedb").runBackground();
-        doOrExit(()->_httpChecker.checkForSite(60, "http://127.0.0.1:8100/api/v1/health"));
-        _processKiller.killProcesses(findHamProcesses);
+        HttpChecker.checkForSite(60, "http://127.0.0.1:8100/api/v1/health").onError(()->doExit(1)).run();
+        _processUtils.killProcesses(findHamProcesses);
     }
 
     private static void testLocalHam(String releasePath) throws Exception {
         LogWriter.info("Testing ham/local.run");
         start(pathOf(releasePath, "ham"), "local.run").runBackground();
-        doOrExit(()->_httpChecker.checkForSite(60, "http://127.0.0.1/api/health"));
-        _processKiller.killProcesses(findHamProcesses);
+        HttpChecker.checkForSite(60, "http://127.0.0.1/api/health").onError(()->doExit(1)).run();
+        _processUtils.killProcesses(findHamProcesses);
 
         LogWriter.info("Testing ham/proxy.run");
         start(pathOf(releasePath, "ham"), "proxy.run").runBackground();
-        doOrExit(()->_httpChecker.checkForSite(60, "http://www.local.test/api/health", "127.0.0.1", 1081));
-        _processKiller.killProcesses(findHamProcesses);
+        HttpChecker.checkForSite(60, "http://www.local.test/api/health").withProxy("127.0.0.1",1081).onError(()->doExit(1)).run();
+        _processUtils.killProcesses(findHamProcesses);
     }
 
     private static void applyReleasePermissions(String releasePath) throws Exception {
-        chmodExec(pathOf(releasePath, "ham"));
-        chmodExec(pathOf(releasePath, "simpledns"));
-        chmodExec(pathOf(releasePath, "calendar"));
-        chmodExec(pathOf(releasePath, "calendar", "scripts"));
+        _processUtils.chmodExec(pathOf(releasePath, "ham"),"sh");
+        _processUtils.chmodExec(pathOf(releasePath, "simpledns"),"sh");
+        _processUtils.chmodExec(pathOf(releasePath, "calendar"),"sh");
+        _processUtils.chmodExec(pathOf(releasePath, "calendar", "scripts"),"sh");
     }
 
     private static void buildDeploymentArtifacts(String startingPath, String hamVersion, String buildDir, String releasePath) throws Exception {
         cleanDirectory(releasePath);
 
         runBuild(buildDir, releasePath, "build_release");
-        extract(pathOf(startingPath, "release"), "ham-" + hamVersion);
+        TarUtils.extract(pathOf(startingPath, "release"), "ham-" + hamVersion,()->doExit(1));
         runBuild(buildDir, releasePath, "build_release_samples");
-        extract(pathOf(startingPath, "release"), "ham-samples-" + hamVersion);
+        TarUtils.extract(pathOf(startingPath, "release"), "ham-samples-" + hamVersion,()->doExit(1));
     }
 
 
@@ -304,10 +188,10 @@ public class Main {
         startComposer(pathOf(samplesDir, "calendar", "hub_composer"), "docker-compose-local.yml", "down").runBackground();
         Thread.sleep(3000);
         startComposer(pathOf(samplesDir, "calendar", "hub_composer"), "docker-compose-local.yml", "up", Main::handleDockerErrors).runBackground();
-        doOrExit(()->_httpChecker.checkForSite(60, "http://www.local.test/api/health", dockerIp, 1081));
-        doOrExit(()->_httpChecker.checkForSite(60, "http://www.sample.test/api/v1/health", dockerIp, 1081));
-        doOrExit(()->_httpChecker.checkForSite(60, "http://gateway.sample.test/api/v1/health", dockerIp, 1081));
-        doOrExit(()->_httpChecker.checkForSite(60, "http://be.sample.test/api/v1/health", dockerIp, 1081));
+        HttpChecker.checkForSite(60, "http://www.local.test/api/health").withProxy(dockerIp,1081).onError(()->doExit(1)).run();
+        HttpChecker.checkForSite(60, "http://www.sample.test/api/v1/health").withProxy(dockerIp,1081).onError(()->doExit(1)).run();
+        HttpChecker.checkForSite(60, "http://gateway.sample.test/api/v1/health").withProxy(dockerIp,1081).onError(()->doExit(1)).run();
+        HttpChecker.checkForSite(60, "http://be.sample.test/api/v1/health").withProxy(dockerIp,1081).onError(()->doExit(1)).run();
         startComposer(pathOf(samplesDir, "calendar", "hub_composer"), "docker-compose-local.yml", "down").runBackground();
 
 
@@ -317,8 +201,8 @@ public class Main {
         startComposer(pathOf(samplesDir, "quotes", "hub_composer"), "docker-compose-local.yml", "up", Main::handleDockerErrors).runBackground();
 
         Thread.sleep(3000);
-        doOrExit(()->_httpChecker.checkForSite(60, "http://www.local.test/api/health", dockerIp, 1081));
-        doOrExit(()->_httpChecker.checkForSite(60, "http://www.quotes.test/api/health/index.php", dockerIp, 1081));
+        HttpChecker.checkForSite(60, "http://www.local.test/api/health").withProxy(dockerIp,1081).onError(()->doExit(1)).run();
+        HttpChecker.checkForSite(60, "http://www.quotes.test/api/health/index.php").withProxy(dockerIp,1081).onError(()->doExit(1)).run();
         startComposer(pathOf(samplesDir, "quotes", "hub_composer"), "docker-compose-local.yml", "down").runBackground();
 
         Thread.sleep(3000);
@@ -337,16 +221,16 @@ public class Main {
     private static void testCalendarSampleFull(String calendarPath) throws Exception {
         LogWriter.info("Testing calendar/runcalendar");
         start(pathOf(calendarPath), "runcalendar").runBackground();
-        doOrExit(()->_httpChecker.checkForSite(60, "http://www.local.test/api/health", "127.0.0.1", 1081));
-        doOrExit(()->_httpChecker.checkForSite(60, "http://www.sample.test/api/v1/health", "127.0.0.1", 1081));
-        doOrExit(()->_httpChecker.checkForSite(60, "http://localhost/int/gateway.sample.test/api/v1/health", "127.0.0.1", 1081));
-        doOrExit(()->_httpChecker.checkForSite(60, "http://localhost/int/be.sample.test/api/v1/health", "127.0.0.1", 1081));
-        _processKiller.killProcesses(findHamProcesses);
+        HttpChecker.checkForSite(60, "http://www.local.test/api/health").withProxy("127.0.0.1",1081).onError(()->doExit(1)).run();
+        HttpChecker.checkForSite(60, "http://www.sample.test/api/v1/health").withProxy("127.0.0.1",1081).onError(()->doExit(1)).run();
+        HttpChecker.checkForSite(60, "http://localhost/int/gateway.sample.test/api/v1/health").withProxy("127.0.0.1",1081).onError(()->doExit(1)).run();
+        HttpChecker.checkForSite(60, "http://localhost/int/be.sample.test/api/v1/health").withProxy("127.0.0.1",1081).onError(()->doExit(1)).run();
+        _processUtils.killProcesses(findHamProcesses);
 
         LogWriter.info("Starting calendar");
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         try {
 
@@ -368,16 +252,15 @@ public class Main {
             //dockerHost="tcp://"+dockerIp+":23750";
 
 
-            env = new HashMap<String, String>();
+            env = new HashMap<>();
             env.put("STARTING_PATH", startingPath);
             env.put("HAM_VERSION", hamVersion);
             env.put("DOCKER_IP", dockerIp);
             env.put("DOCKER_HOST", dockerHost);
-            _processKiller = new ProcessKiller(env);
-            _processKiller.killProcesses(findHamProcesses);
-            _httpChecker = new HttpChecker();
+            _processUtils = new ProcessUtils(env);
+            _processUtils.killProcesses(findHamProcesses);
 
-            correctAllCrLf(startingPath);
+            LocalFileUtils.dos2unix(startingPath,"sh");
 
             var buildDir = pathOf(startingPath, "scripts", "build");
             var samplesDir = pathOf(startingPath, "samples");
@@ -386,7 +269,7 @@ public class Main {
 
 
             buildDeploymentArtifacts(startingPath, hamVersion, buildDir, releasePath);
-            testAndGenerateJacoco(startingPath, hamVersion, buildDir, releasePath);
+            testAndGenerateJacoco(startingPath);
             applyReleasePermissions(releasePath);
             testLocalHam(releasePath);
             testCalendarSample(calendarPath);
@@ -394,7 +277,7 @@ public class Main {
             buildDockerImages(buildDir);
             testDockerCalendarAndQuotesSamples(dockerIp, samplesDir);
 
-            _processKiller.killProcesses(findHamProcesses);
+            _processUtils.killProcesses(findHamProcesses);
             exit(0);
         } catch (Exception ex) {
             LogWriter.errror(ex);
@@ -403,13 +286,13 @@ public class Main {
 
     }
 
-    private static void testAndGenerateJacoco(String startingPath, String hamVersion, String buildDir, String releasePath) throws Exception {
+    private static void testAndGenerateJacoco(String startingPath) throws Exception {
         LogWriter.info("Unit test ham & report");
         start(pathOf(startingPath, "scripts", "globaltest"), "test.run", Main::handleRunErrors).run();
         if (SystemUtils.IS_OS_WINDOWS) {
-            doOrExit(()->_httpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown"));
+            HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").onError(()->doExit(1)).run();
         } else {
-            _processKiller.sigtermProcesses(findHamProcesses);
+            _processUtils.sigtermProcesses(findHamProcesses);
         }
         var path = Path.of(startingPath, "ham", "api.test", "target", "test_run_starter.exec");
         var now = System.currentTimeMillis();
@@ -427,17 +310,18 @@ public class Main {
             LogWriter.info("OK");
         }
 
-        _processKiller.sigtermProcesses(findHamProcesses);
+        _processUtils.sigtermProcesses(findHamProcesses);
         start(pathOf(startingPath, "scripts", "globaltest"), "test.jacoco", Main::handleRunErrors).run();
     }
 
 
+    @SafeVarargs
     private static ProcessRunner start(String dir, String script,
-                                  BiConsumer<String,Process> ...biConsumers) throws Exception {
+                                       BiConsumer<String,Process> ...biConsumers) {
 
         var pr = new ProcessRunner(env).
                 asShell().
-                withParameter(script + ext()).
+                withParameter(script + LocalFileUtils.execScriptExt()).
                 withStartingPath(dir).
                 withNoOutput();
         if (biConsumers.length > 0) {
@@ -450,8 +334,9 @@ public class Main {
     }
 
 
-
-    private static ProcessRunner startComposer(String dir, String composer, String sense, BiConsumer<String, Process>... biConsumers) throws Exception {
+    @SafeVarargs
+    private static ProcessRunner startComposer(String dir, String composer, String sense,
+                                               BiConsumer<String, Process>... biConsumers) {
 
         var pr = new ProcessRunner(env).asShell().
                 withParameter("docker-compose").

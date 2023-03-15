@@ -2,19 +2,17 @@ package org.kendar.globaltest;
 
 import org.apache.commons.lang3.SystemUtils;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class ProcessRunner {
     private String command;
-    private List<String> parameters = new ArrayList<>();
+    private final List<String> parameters = new ArrayList<>();
     private String startingPath;
     private BiConsumer<String,Process> errorConsumer;
     private BiConsumer<String,Process> outConsumer;
