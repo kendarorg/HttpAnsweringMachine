@@ -291,7 +291,8 @@ public class Main {
         LogWriter.info("Unit test ham & report");
         start(pathOf(startingPath, "scripts", "globaltest"), "test.run", Main::handleRunErrors).run();
         if (SystemUtils.IS_OS_WINDOWS) {
-            HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").onError(()->doExit(1)).run();
+            HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").noError().run();
+            _processUtils.sigtermProcesses(findHamProcesses);
         } else {
             _processUtils.sigtermProcesses(findHamProcesses);
         }
