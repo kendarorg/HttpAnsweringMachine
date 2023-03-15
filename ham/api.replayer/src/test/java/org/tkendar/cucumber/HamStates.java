@@ -19,6 +19,12 @@ public class HamStates extends BaseStates {
 
     @Given("^I have a running HAM instance$")
     public void iHaveRunningHamInstance() throws HamTestException {
+        HamStarter.killHam(HamStates.class);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+
+        }
         HamStarter.runHamJar(HamStates.class);
     }
 

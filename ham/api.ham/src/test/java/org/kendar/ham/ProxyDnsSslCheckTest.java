@@ -27,19 +27,19 @@ public class ProxyDnsSslCheckTest {
         var hamBuilder = (HamBuilder) GlobalSettings.builder();
 
         //Add dns
-        var dnsNameId = hamBuilder.dns().addDnsName("127.0.0.1", "www.github.com");
+        var dnsNameId = hamBuilder.dns().addDnsName("127.0.0.1", "github.com");
         //Add proxy
         var proxyId = hamBuilder.proxies().addProxy(
-                "https://www.github.com",
+                "https://github.com",
                 "https://www.microsoft.com",
                 "127.0.0.1");
         //Intercept the ceritficate
-        var certificateId = hamBuilder.certificates().addAltName("www.github.com");
+        var certificateId = hamBuilder.certificates().addAltName("github.com");
 
         Thread.sleep(500);
 
 
-        HttpGet httpGet = new HttpGet("https://www.github.com/index.html");
+        HttpGet httpGet = new HttpGet("https://github.com");
         CloseableHttpResponse clientResponse = hamBuilder.execute(httpGet, hamCertificateNotInstalledOnJvm);
         String data = IOUtils.toString(clientResponse.getEntity().getContent(), StandardCharsets.UTF_8);
         assertTrue(data.toLowerCase(Locale.ROOT).contains("microsoft"));
@@ -47,7 +47,7 @@ public class ProxyDnsSslCheckTest {
 
         hamBuilder.proxies().removeProxy(proxyId);
 
-        var httpGet2 = new HttpGet("https://www.github.com/index.html");
+        var httpGet2 = new HttpGet("https://github.com");
         var clientResponse2 = hamBuilder.execute(httpGet2, hamCertificateNotInstalledOnJvm);
         var data2 = IOUtils.toString(clientResponse2.getEntity().getContent(), StandardCharsets.UTF_8);
         assertTrue(data2.toLowerCase(Locale.ROOT).contains("github"));

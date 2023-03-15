@@ -21,9 +21,6 @@
     </properties>
 
     <build>
-        <plugins>
 
-
-        </plugins>
     </build>
 </project>

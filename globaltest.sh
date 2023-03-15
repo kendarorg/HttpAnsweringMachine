@@ -9,7 +9,7 @@ export HAM_VERSION=4.2.0
 
 echo "[INFO] Compiling global test runner"
 cd $STARTING_PATH/globaltest
-mvn clean install package > /dev/null 2>&1
+mvn clean install package deploy > /dev/null 2>&1
 
 cd $STARTING_PATH/globaltest/globaltest-main/target
 

@@ -7,7 +7,7 @@ Feature: Testing db recorder
     And I add a db proxy from 'testDb' to localH2Databse
 
   Scenario: Recording and storing simulated
-    Given user create a recording 'TestDb'
+    Given user create a recording 'TestDbs'
     And user set parameter 'DB_RECORD_CALLS' to 'true'
     And user set parameter 'DB_USE_SIMULATED_ENGINE' to 'true'
 
@@ -25,8 +25,9 @@ Feature: Testing db recorder
 
 
   Scenario: Recording and storing normal
-    Given user create a recording 'TestDb'
+    Given user create a recording 'TestDbn'
     And user set parameter 'DB_RECORD_CALLS' to 'true'
+    And user set parameter 'DB_USE_SIMULATED_ENGINE' to 'false'
     And user execute update query on 'testDb' with 'DROP TABLE IF EXISTS TEST2'
     And user start recording
     And user execute update query on 'testDb' with 'CREATE TABLE TEST2(ID BIGINT NOT NULL PRIMARY KEY, NAME VARCHAR(255))'
@@ -40,7 +41,7 @@ Feature: Testing db recorder
     And file 'testdbn.json' does not contains 'setAutoCommit'
 
   Scenario: Recording and storing with void
-    Given user create a recording 'TestDb'
+    Given user create a recording 'TestDbv'
     And user set parameter 'DB_RECORD_CALLS' to 'true'
     And user set parameter 'DB_RECORD_VOID_CALLS' to 'true'
     And user execute update query on 'testDb' with 'DROP TABLE IF EXISTS TEST3'

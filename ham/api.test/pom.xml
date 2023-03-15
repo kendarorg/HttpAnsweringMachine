@@ -18,6 +18,11 @@
             <artifactId>app.commons</artifactId>
             <version>${ham.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>globaltest-lib</artifactId>
+            <version>${ham.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

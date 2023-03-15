@@ -17,7 +17,7 @@ IF exist %UTILS_TODEL_DIR% (
 )
 
 cd %STARTING_PATH%\globaltest
-call mvn clean install package  2>&1 1>NUL
+call mvn clean install package deploy 2>&1 1>NUL
 echo [INFO] starting global test runner
 cd %STARTING_PATH%\globaltest\globaltest-main\target
 
