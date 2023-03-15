@@ -11,6 +11,7 @@ public class HttpChecker {
     String proxyUrl = null;
     String url;
     private Runnable onError=null;
+    private boolean showError=true;
 
     protected HttpChecker(){
 
@@ -20,6 +21,11 @@ public class HttpChecker {
         result.seconds = seconds;
         result.url = url;
         return result;
+    }
+
+    public HttpChecker noError(){
+        this.showError=false;
+        return this;
     }
 
     public HttpChecker withProxy(String proxyUrl, int proxyPort){
@@ -67,7 +73,9 @@ public class HttpChecker {
             }
             Thread.sleep(1000);
         }
-        LogWriter.errror("testing " + url);
+        if(showError) {
+            LogWriter.errror("testing " + url);
+        }
         if(onError!=null){
             onError.run();
         }

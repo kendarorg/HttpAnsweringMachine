@@ -19,12 +19,12 @@ OTHER_PATH=$SCRIPT_DIR/api.test/target/jacoco_starter.exec
 #  https://www.jacoco.org/jacoco/trunk/doc/cli.html
 
 # Start the application
-java "-Dloader.path=$SCRIPT_DIR/libs"  -Dloader.main=org.kendar.Main  \
-	  	"-Djsonconfig=$SCRIPT_DIR/test.external.json" -Dham.tempdb=data/tmp \
-	  	"-javaagent:$AGENT_PATH=destfile=$EXEC_PATH,includes=org.kendar.**,dumponexit=true" \
-		  -jar "$SCRIPT_DIR/app/target/app-$HAM_VERSION.jar" org.springframework.boot.loader.PropertiesLauncher &
+#java "-Dloader.path=$SCRIPT_DIR/libs"  -Dloader.main=org.kendar.Main  \
+#	  	"-Djsonconfig=$SCRIPT_DIR/test.external.json" -Dham.tempdb=data/tmp \
+#	  	"-javaagent:$AGENT_PATH=destfile=$EXEC_PATH,includes=org.kendar.**,dumponexit=true" \
+#		  -jar "$SCRIPT_DIR/app/target/app-$HAM_VERSION.jar" org.springframework.boot.loader.PropertiesLauncher &
 
-sleep 15
+#sleep 15
 
 mvn test
 

@@ -7,7 +7,7 @@
       <env name="DOCKER_HOST" value="tcp://192.168.56.2:23750" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="org.kendar.globaltest.Main" />
-    <module name="globaltest" />
+    <module name="globaltest-main" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="org.kendar.globaltest.*" />

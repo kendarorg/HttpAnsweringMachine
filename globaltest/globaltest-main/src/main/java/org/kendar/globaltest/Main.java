@@ -33,9 +33,6 @@ public class Main {
         System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "error");
     }
 
-
-
-
     private static void doExit(int i) {
         try {
             if (i == 0) {
@@ -257,6 +254,7 @@ public class Main {
             env.put("HAM_VERSION", hamVersion);
             env.put("DOCKER_IP", dockerIp);
             env.put("DOCKER_HOST", dockerHost);
+            env.put("GLOBAL_LOG_ON_CONSOLE","true");
             _processUtils = new ProcessUtils(env);
             _processUtils.killProcesses(findHamProcesses);
 
@@ -270,6 +268,7 @@ public class Main {
 
             buildDeploymentArtifacts(startingPath, hamVersion, buildDir, releasePath);
             testAndGenerateJacoco(startingPath);
+            exit(0);
             applyReleasePermissions(releasePath);
             testLocalHam(releasePath);
             testCalendarSample(calendarPath);
@@ -287,6 +286,8 @@ public class Main {
     }
 
     private static void testAndGenerateJacoco(String startingPath) throws Exception {
+
+        _processUtils.killProcesses(findHamProcesses);
         LogWriter.info("Unit test ham & report");
         start(pathOf(startingPath, "scripts", "globaltest"), "test.run", Main::handleRunErrors).run();
         if (SystemUtils.IS_OS_WINDOWS) {

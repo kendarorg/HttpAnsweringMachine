@@ -5,30 +5,36 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class LogWriter {
 
+    private static String getCurrentLocalDateTimeStamp() {
+        return LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+    }
     public static void info(String data,Object ... pars){
         if(pars.length>0){
-            System.out.println("[INFO] "+String.format(data,pars));
+            System.out.println(getCurrentLocalDateTimeStamp()+" [INFO] "+String.format(data,pars));
         }else{
-            System.out.println("[INFO] "+data);
+            System.out.println(getCurrentLocalDateTimeStamp()+" [INFO] "+data);
         }
     }
     public static void warn(String data,Object ... pars){
         if(pars.length>0){
-            System.out.println("[WARN] "+String.format(data,pars));
+            System.out.println(getCurrentLocalDateTimeStamp()+" [WARN] "+String.format(data,pars));
         }else{
-            System.out.println("[WARN] "+data);
+            System.out.println(getCurrentLocalDateTimeStamp()+" [WARN] "+data);
         }
     }
     public static void errror(String data,Object ... pars){
         if(pars.length>0){
-            System.err.println("[ERROR] "+String.format(data,pars));
+            System.err.println(getCurrentLocalDateTimeStamp()+" [ERROR] "+String.format(data,pars));
         }else{
-            System.err.println("[ERROR] "+data);
+            System.err.println(getCurrentLocalDateTimeStamp()+" [ERROR] "+data);
         }
     }
     private static final Path path;
@@ -36,7 +42,13 @@ public class LogWriter {
     static {
         path = Path.of("globaltest."+(new Date().getTime())+".log");
         try {
-            Files.writeString(path,"STARTING");
+            var logOnSystemOut = false;
+            if(System.getenv("GLOBAL_LOG_ON_CONSOLE")!=null){
+                logOnSystemOut = Boolean.parseBoolean(System.getenv("GLOBAL_LOG_ON_CONSOLE"));
+            }
+            if(!logOnSystemOut) {
+                Files.writeString(path, "STARTING");
+            }
         } catch (IOException e) {
 
         }
@@ -54,6 +66,11 @@ public class LogWriter {
         }
     }
     private static void writeLogs() {
+        var logOnSystemOut = false;
+        if(System.getenv("GLOBAL_LOG_ON_CONSOLE")!=null){
+            logOnSystemOut = Boolean.parseBoolean(System.getenv("GLOBAL_LOG_ON_CONSOLE"));
+        }
+
         while(true){
             try {
                 while(!logs.isEmpty()){
@@ -61,12 +78,16 @@ public class LogWriter {
                     if(data!=null){
                         data = data.trim()+"\n";
                     }
-                    try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
-                        if(data!=null) {
-                            writer.write(data);
+                    if(logOnSystemOut) {
+                        System.out.println(data.trim());
+                    }else {
+                        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+                            if (data != null) {
+                                writer.write(data);
+                            }
+                        } catch (IOException ioe) {
+                            LogWriter.errror("IOException: %s", ioe);
                         }
-                    } catch (IOException ioe) {
-                        LogWriter.errror("IOException: %s", ioe);
                     }
                 }
                 Thread.sleep(1000);

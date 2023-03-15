@@ -79,7 +79,7 @@ public class HamStarter {
                 var pu = new ProcessUtils(new HashMap<>());
                 try {
 
-                    HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").run();
+                    HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").noError().run();
                     pu.sigtermProcesses((str)-> str.contains("-Dloader.main=org.kendar.Main"));
                 } catch (Exception e) {
 
@@ -93,7 +93,7 @@ public class HamStarter {
         var pu = new ProcessUtils(new HashMap<>());
         try {
 
-            HttpChecker.checkForSite(5, "http://127.0.0.1/api/shutdown").run();
+            HttpChecker.checkForSite(5, "http://127.0.0.1/api/shutdown").noError().run();
             //pu.sigtermProcesses((str)-> str.toLowerCase(Locale.ROOT).contains("-dloader.main=org.kendar.main"));
         } catch (Exception e) {
 
@@ -102,7 +102,7 @@ public class HamStarter {
 
     public static void runHamJar(Class<?> caller) throws HamTestException {
         try {
-            if(HttpChecker.checkForSite(5, "http://127.0.0.1/api/dns/lookup/test").run()){
+            if(HttpChecker.checkForSite(5, "http://127.0.0.1/api/dns/lookup/test").noError().run()){
                 return;
             }
         } catch (Exception e) {
