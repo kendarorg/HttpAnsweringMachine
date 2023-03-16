@@ -23,6 +23,20 @@ public class ProxiesTest {
                 .addProxy("http://www.microsoft.com", "http://www.local.test/api/health", "www.local.test:80");
 
         assertNotNull(proxyId);
+        var proxy = hamBuilder.proxies().retrieveProxy(proxyId);
+        assertEquals("http://www.microsoft.com",proxy.getWhen());
+        assertEquals("http://www.local.test/api/health",proxy.getWhere());
+        assertEquals("www.local.test:80",proxy.getTest());
+
+        var newProxyId = hamBuilder
+                .proxies()
+                .addProxy("http://www.microsoft.com", "http://www.api.test/api/health", "www.api.test:80");
+        assertEquals(newProxyId,proxyId);
+        proxy = hamBuilder.proxies().retrieveProxy(proxyId);
+        assertEquals("http://www.microsoft.com",proxy.getWhen());
+        assertEquals("http://www.api.test/api/health",proxy.getWhere());
+        assertEquals("www.api.test:80",proxy.getTest());
+
         hamBuilder.proxies().removeProxy(proxyId);
     }
 

@@ -50,6 +50,8 @@ class ProxyBuilderImpl implements ProxyBuilder, DbProxyBuilder {
         throw new HamException("Missing id");
     }
 
+
+
     @Override
     public DbProxyBuilder addRemoteDbProxy(String dbName, String login, String password, String dbDriver) throws HamException {
 
@@ -78,6 +80,13 @@ class ProxyBuilderImpl implements ProxyBuilder, DbProxyBuilder {
         var request = hamBuilder.newRequest()
                 .withPath("/api/proxies");
         return hamBuilder.callJsonList(request.build(), Proxy.class);
+    }
+
+    @Override
+    public Proxy retrieveProxy(String id) throws HamException {
+        var request = hamBuilder.newRequest()
+                .withPath("/api/proxies/"+id);
+        return hamBuilder.callJson(request.build(), Proxy.class);
     }
 
     @Override

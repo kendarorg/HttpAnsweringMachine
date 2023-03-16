@@ -74,7 +74,6 @@
     <orderEntry type="module" module-name="app.http.standardfilters" />
     <orderEntry type="library" name="Maven: commons-fileupload:commons-fileupload:1.3.3" level="project" />
     <orderEntry type="module" module-name="app.dns" />
-    <orderEntry type="library" name="Maven: com.github.saasquatch:json-schema-inferrer:0.1.4" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-jsonSchema:2.11.3" level="project" />
     <orderEntry type="library" name="Maven: javax.validation:validation-api:2.0.1.Final" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.3" level="project" />

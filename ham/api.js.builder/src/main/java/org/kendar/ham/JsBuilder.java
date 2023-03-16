@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface JsBuilder {
 
-    public class ApiMatcher {
+    public class ApiMatcher  implements Matcher{
         private Methods method;
         private String hostAddress;
         private String hostPattern;
@@ -145,4 +145,34 @@ public interface JsBuilder {
     void deleteFilter(Long id) throws HamException;
 
     JsBuilderImpl init();
+
+    public class ScriptMatcher implements Matcher {
+        private String script;
+        private String hostAddress;
+        private String pathAddress;
+
+        public void setScript(String script) {
+            this.script = script;
+        }
+
+        public String getScript() {
+            return script;
+        }
+
+        public void setHostAddress(String hostAddress) {
+            this.hostAddress = hostAddress;
+        }
+
+        public String getHostAddress() {
+            return hostAddress;
+        }
+
+        public void setPathAddress(String pathAddress) {
+            this.pathAddress = pathAddress;
+        }
+
+        public String getPathAddress() {
+            return pathAddress;
+        }
+    }
 }

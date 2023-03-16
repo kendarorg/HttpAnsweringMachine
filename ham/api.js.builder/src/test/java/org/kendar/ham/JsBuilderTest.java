@@ -23,6 +23,7 @@ public class JsBuilderTest {
 
     public static final String HTTP_SIMPLE_TEST_TEST_THING = "http://simple.test/test/thing";
     public static final String HTTP_SIMPLE_TOAST_TEST_THONG = "http://simple.toast/test/thong";
+    public static final String HTTP_SIMPLE_TEST_TEST_FUFFA = "http://simple.test/wetheaver/fuffa";
 
     public static class ValueDate {
         private String value;
@@ -55,9 +56,10 @@ public class JsBuilderTest {
         var jsBuilder = hamBuilder.pluginBuilder(JsBuilder.class);
         var realid = jsBuilder.addFilter("test")
                 .inPhase(FilterPhase.API)
-                .withMethod(Methods.GET)
-                .withHost("simple.test")
-                .withPath("/test/thing")
+                .withApiMatcher(m -> m
+                        .withMethod(Methods.GET)
+                        .withHost("simple.test")
+                        .withPath("/test/thing"))
                 .withType(ScriptType.SCRIPT)
                 .setBlocking()
                 .withSource()
@@ -99,9 +101,11 @@ public class JsBuilderTest {
 
         var builder = jsBuilder.addFilter("test2")
                 .inPhase(FilterPhase.API)
-                .withMethod(Methods.GET)
-                .wihtHostPattern("simple.([a-z]+)")
-                .withPathPattern("/test/([a-z]+)")
+                .withApiMatcher(m -> m.withMethod(Methods.GET)
+                        .wihtHostPattern("simple.([a-z]+)")
+                        .withPathPattern("/test/([a-z]+)")
+                        .verifyHostPattern("simple.thrust")
+                        .verifyPathPattern("/test/wetheaver"))
                 .withType(ScriptType.SCRIPT)
                 .setBlocking()
                 .withSource()
@@ -110,9 +114,6 @@ public class JsBuilderTest {
                 .addLine("response.addHeader('Content-Type','application/json');")
                 .addLine("response.setStatusCode(200);")
                 .closeBlocking();
-
-        builder.verifyHostPattern("simple.thrust");
-        builder.verifyPathPattern("/test/wetheaver");
 
         var filterId = builder.create();
 
@@ -127,5 +128,39 @@ public class JsBuilderTest {
         hamBuilder.dns().removeDnsName(dnsNameId);
         hamBuilder.dns().removeDnsName(dnsNameId2);
         jsBuilder.deleteFilter(filterId);
+    }
+
+    @Test
+    public void testScriptMatcher() throws HamException, IOException, InterruptedException {
+        var hamBuilder = (HamBuilder) GlobalSettings.builder();
+        var script = "var url=request.getPath()+\"\";\n" +
+                "return url.endsWith(\"/fuffa\");";
+        //Add dns
+        var dnsNameId = hamBuilder.dns().addDnsName("127.0.0.1", "simple.test");
+        var jsBuilder = hamBuilder.pluginBuilder(JsBuilder.class);
+        var realid = jsBuilder.addFilter("test")
+                .inPhase(FilterPhase.API)
+                .withScriptMatcher(m ->
+                        m.withScript(script)
+                                .withHost("simple.test"))
+                .withType(ScriptType.SCRIPT)
+                .setBlocking()
+                .withSource()
+                .addLine("var today = new Date().toISOString();")
+                .addLine("response.setResponseText('{\"value\":\"A Script value\",\"date\":\"'+today+'\"}');")
+                .addLine("response.addHeader('Content-Type','application/json');")
+                .addLine("response.setStatusCode(200);")
+                .closeBlocking()
+                .create();
+
+        ValueDate result = requestJsApiTestThing(hamBuilder, HTTP_SIMPLE_TEST_TEST_FUFFA);
+        assertEquals(result.getValue(), "A Script value");
+        Sleeper.sleep(500);
+
+        ValueDate result2 = requestJsApiTestThing(hamBuilder, HTTP_SIMPLE_TEST_TEST_FUFFA);
+        assertNotEquals(result.getDate(), result2.getDate());
+
+        hamBuilder.dns().removeDnsName(dnsNameId);
+        jsBuilder.deleteFilter(realid);
     }
 }

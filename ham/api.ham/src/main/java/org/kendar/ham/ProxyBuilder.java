@@ -77,6 +77,14 @@ public interface ProxyBuilder {
     String addProxy(String when, String where, String test) throws HamException;
 
     /**
+     * Retrieve proxy by id
+     * @param id
+     * @return
+     * @throws HamException
+     */
+    Proxy retrieveProxy(String id) throws HamException;
+
+    /**
      * Add a db proxy, specify the db to be proxied
      *
      * @param dbName

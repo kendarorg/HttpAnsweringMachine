@@ -21,7 +21,7 @@
     </repositories>
 
     <parent>
-        <artifactId>HttpAnsweringMachine</artifactId>
+        <artifactId>ham</artifactId>
         <groupId>org.kendar</groupId>
         <version>4.2.0</version>
         <relativePath>../pom.xml</relativePath>
@@ -156,15 +156,15 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
+        <!--
+        https://jitpack.io/com/github/saasquatch/json-schema-inferrer/
+        https://github.com/saasquatch/json-schema-inferrer
         <dependency>
-            <!--
-            https://jitpack.io/com/github/saasquatch/json-schema-inferrer/
-            https://github.com/saasquatch/json-schema-inferrer
-            -->
             <groupId>com.github.saasquatch</groupId>
             <artifactId>json-schema-inferrer</artifactId>
             <version>0.1.4</version>
         </dependency>
+        -->
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jsonSchema</artifactId>

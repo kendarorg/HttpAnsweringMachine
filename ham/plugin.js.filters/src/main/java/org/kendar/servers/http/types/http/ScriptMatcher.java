@@ -23,6 +23,7 @@ public class ScriptMatcher implements FilterMatcher, PathMatcher, HostMatcher {
 
     private String pathAddress;
     private String hostAddress;
+    private String script;
 
     @Override
     public String getPathAddress() {
@@ -43,7 +44,6 @@ public class ScriptMatcher implements FilterMatcher, PathMatcher, HostMatcher {
         this.hostAddress = hostAddress;
     }
 
-    private String script;
     private JsUtils jsUtils;
     private Script js;
     private static ScriptableObject globalScope;

@@ -42,7 +42,7 @@ public class HamStates extends BaseStates {
     }
 
     @Given("^I have a server listening on port '([0-9]+)'$")
-    public void iHaveServerListemimgOn(int port) throws HamTestException {
+    public void iHaveServerListeningOn(int port) throws HamTestException {
         if (httpServer != null) return;
         httpServer = getHttpServer(port);
     }

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.http.HttpHost;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -21,6 +23,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.apache.http.protocol.HttpContext;
@@ -62,6 +65,7 @@ public class HamBuilder implements HamInternalBuilder {
     private int dnsPort;
     private int proxyPort;
     private String proxyIp;
+    private boolean proxyHttp =false;
 
     private HamBuilder() {
     }
@@ -96,7 +100,17 @@ public class HamBuilder implements HamInternalBuilder {
     public HamBasicBuilder withSocksProxy(String ip, int port) {
         this.proxyIp = ip;
         this.proxyPort = port;
+        this.proxyHttp=false;
         return this;
+    }
+
+    @Override
+    public HamBasicBuilder withHttpProxy(String ip, int port) {
+        /*this.proxyIp = ip;
+        this.proxyPort = port;
+        this.proxyHttp=true;
+        return this;*/
+        throw new NotImplementedException();
     }
 
     @Override
@@ -219,17 +233,29 @@ public class HamBuilder implements HamInternalBuilder {
             SSLConnectionSocketFactory ssfs = null;
 
             if (this.proxyIp != null) {
-                HttpClientBuilder custom = getHttpClientBuilder(ignoreSSLCertificates, dnsResolver);
+                if(this.proxyHttp){
+                    HttpHost socksaddr = new HttpHost(this.proxyIp, this.proxyPort,"http");
+                    var routePlanner = new DefaultProxyRoutePlanner(socksaddr);
+                    HttpClientBuilder custom = getHttpClientBuilder(ignoreSSLCertificates, dnsResolver);
+                    custom.setRoutePlanner(routePlanner);
 
-                CloseableHttpClient httpclient = custom.build();
+                    CloseableHttpClient httpclient = custom.build();
 
-                InetSocketAddress socksaddr = new InetSocketAddress(this.proxyIp, this.proxyPort);
-                HttpClientContext context = HttpClientContext.create();
-                context.setAttribute("socks.address", socksaddr);
+                    HttpClientContext context = HttpClientContext.create();
+                    //context.setAttribute("http.route.default-proxy", socksaddr);
+                    return httpclient.execute(request, context);
+                }else {
+                    HttpClientBuilder custom = getHttpClientBuilder(ignoreSSLCertificates, dnsResolver);
 
-                return httpclient.execute(request, context);
+                    CloseableHttpClient httpclient = custom.build();
+
+                    InetSocketAddress socksaddr = new InetSocketAddress(this.proxyIp, this.proxyPort);
+                    HttpClientContext context = HttpClientContext.create();
+                    context.setAttribute("socks.address", socksaddr);
+                    return httpclient.execute(request, context);
+                }
+
             } else {
-                HttpClientBuilder custom = null;
                 CloseableHttpClient httpClient = getHttpClientBuilderNoProxy(ignoreSSLCertificates, dnsResolver, ssfs).build();
 
                 return httpClient.execute(request);

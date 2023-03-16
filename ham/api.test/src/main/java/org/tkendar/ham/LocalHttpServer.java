@@ -2,9 +2,12 @@ package org.tkendar.ham;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import org.apache.commons.io.IOUtils;
 import org.kendar.servers.http.RequestUtils;
 import org.kendar.utils.Sleeper;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -49,6 +52,12 @@ public class LocalHttpServer {
                 server.createContext(handler.path, exchange -> {
                     var sr = new SimpleRequest();
                     sr.httpExchange = exchange;
+                    sr.data=new byte[]{};
+                    try {
+                        sr.data = IOUtils.toByteArray(exchange.getRequestBody());
+                    }catch (Exception ex){
+                        //ex.printStackTrace();
+                    }
                     sr.path = exchange.getRequestURI().toString();
                     sr.headers = RequestUtils.headersToMap(exchange.getRequestHeaders());
                     sr.query = RequestUtils.queryToMap(exchange.getRequestURI().getRawQuery());

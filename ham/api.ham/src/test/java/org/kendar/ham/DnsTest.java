@@ -17,7 +17,7 @@ public class DnsTest {
 
     @Test
     public void testAddingDnsFix() throws HamException {
-        final String WEIRD_NAME = "casper.core-workload.qa.aws.lmn";
+        final String WEIRD_NAME = "cooper.core-workload.qa.aws.test";
         final String IP = "10.0.0.1";
         var dnsId = hamBuilder
                 .dns()

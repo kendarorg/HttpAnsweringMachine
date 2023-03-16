@@ -9,5 +9,12 @@ public class GlobalSettings {
                 .withDns("127.0.0.1");
     }
 
+    public static HamBasicBuilder builderHttpProxy() {
+        return HamBuilder
+                .newHam("www.local.test")
+                .withHttpProxy("127.0.0.1", 1081)
+                .withDns("127.0.0.1");
+    }
+
 
 }

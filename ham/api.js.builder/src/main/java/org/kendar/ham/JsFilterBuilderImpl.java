@@ -6,6 +6,7 @@ import org.kendar.utils.Sleeper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
@@ -14,6 +15,8 @@ public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
     private HamInternalBuilder hamBuilder;
     private String name;
     private String type = "body";
+    private Matcher matcher;
+    private String matcherType;
 
     JsFilterBuilderImpl(HamInternalBuilder hamBuilder, String name) {
 
@@ -21,20 +24,12 @@ public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
         this.name = name;
     }
 
-    private Methods method;
-    private String hostAddress;
-    private String hostPattern;
-    private String pathAddress;
-    private String pathPattern;
+
     private FilterPhase phase;
     private boolean blocking = false;
     private String source;
 
-    @Override
-    public JsFilterBuilder withMethod(Methods method) {
-        this.method = method;
-        return this;
-    }
+
 
     @Override
     public JsFilterBuilder inPhase(FilterPhase method) {
@@ -42,33 +37,9 @@ public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
         return this;
     }
 
-    @Override
-    public JsFilterBuilder withHost(String host) {
-        this.hostAddress = host;
-        return this;
-    }
 
-    @Override
-    public JsFilterBuilder wihtHostPattern(String host) {
-        this.hostPattern = host;
-        return this;
-    }
 
-    @Override
-    public JsFilterBuilder verifyHostPattern(String host) {
-        var pattern = Pattern.compile(hostPattern);
-        var matcher = pattern.matcher(host);
-        if (!matcher.matches()) {
-            throw new RuntimeException(host + " does not match " + hostPattern);
-        }
-        return this;
-    }
 
-    @Override
-    public JsFilterBuilder withPath(String host) {
-        this.pathAddress = host;
-        return this;
-    }
 
     @Override
     public JsFilterBuilder withType(ScriptType type) {
@@ -76,19 +47,23 @@ public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
         return this;
     }
 
+
+
     @Override
-    public JsFilterBuilder withPathPattern(String host) {
-        this.pathPattern = host;
+    public JsFilterBuilder withApiMatcher(Consumer<ApiMatcherBuilder> matcher) {
+        var apiMatcherBuilder = new ApiMatcherBuilder();
+        matcher.accept(apiMatcherBuilder);
+        this.matcher = apiMatcherBuilder.build();
+        this.matcherType = "apimatcher";
         return this;
     }
 
     @Override
-    public JsFilterBuilder verifyPathPattern(String host) {
-        var pattern = Pattern.compile(pathPattern);
-        var matcher = pattern.matcher(host);
-        if (!matcher.matches()) {
-            throw new RuntimeException(host + " does not match " + hostPattern);
-        }
+    public JsFilterBuilder withScriptMatcher(Consumer<ScriptMatcherBuilder> matcher) {
+        var scriptMatcherBuilder = new ScriptMatcherBuilder();
+        matcher.accept(scriptMatcherBuilder);
+        this.matcher = scriptMatcherBuilder.build();
+        this.matcherType = "scriptmatcher";
         return this;
     }
 
@@ -125,14 +100,9 @@ public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
     public Long create() throws HamException {
         var data = new JsBuilder.FilterDescriptor();
         var matchers = new HashMap<String, String>();
-        var matcher = new JsBuilder.ApiMatcher();
-        matcher.setMethod(this.method);
-        matcher.setHostAddress(this.hostAddress);
-        matcher.setHostPattern(this.hostPattern);
-        matcher.setPathAddress(this.pathAddress);
-        matcher.setPathPattern(this.pathPattern);
+
         try {
-            matchers.put("apimatcher", mapper.writeValueAsString(matcher));
+            matchers.put(matcherType, mapper.writeValueAsString(matcher));
         } catch (JsonProcessingException e) {
             throw new HamException(e);
         }

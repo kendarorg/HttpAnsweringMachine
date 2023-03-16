@@ -37,6 +37,15 @@ public interface HamBasicBuilder {
     HamBasicBuilder withSocksProxy(String ip, int port);
 
     /**
+     * The http(s) proxy to use for connections. Usually the internal HAM proxy
+     *
+     * @param ip
+     * @param port defaults to 1081
+     * @return
+     */
+    HamBasicBuilder withHttpProxy(String ip, int port);
+
+    /**
      * The dns to use for the requests, default port 53
      *
      * @param ip
