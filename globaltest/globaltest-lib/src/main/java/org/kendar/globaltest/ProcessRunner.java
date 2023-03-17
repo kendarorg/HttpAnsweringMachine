@@ -125,7 +125,7 @@ public class ProcessRunner {
         if(this.isShell){
             if(SystemUtils.IS_OS_WINDOWS){
                 realCommand.add("CMD");
-                realCommand.add("/B");
+                realCommand.add("/C");
             }else{
                 if(command.toLowerCase(Locale.getDefault()).endsWith(".sh")){
                     if(Files.exists(Path.of(command))){
@@ -171,10 +171,10 @@ public class ProcessRunner {
         LogWriter.writeProcess("[INFO] Running " + rc);
         StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(),
                 (a) -> {
+                    outConsumer.accept(a, process);
                     if (maxLines.get() <= 0) return;
                     maxLines.decrementAndGet();
                     LogWriter.writeProcess(a);
-                    outConsumer.accept(a, process);
                 });
         StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(),
                 (a) -> {
@@ -242,10 +242,10 @@ public class ProcessRunner {
         LogWriter.writeProcess("[INFO] Running " + rc);
         StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(),
                 (a) -> {
+                    outConsumer.accept(a, process);
                     if (maxLines.get() <= 0) return;
                     maxLines.decrementAndGet();
                     LogWriter.writeProcess(a);
-                    outConsumer.accept(a, process);
                 });
         StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(),
                 (a) -> {

@@ -56,6 +56,7 @@ public class ProcessUtils {
                     withParameter("list").
                     withParameterPlain("/format:csv").
                     withStorage(queue).
+                    limitOutput(5).
                     run();
             var allJavaProcesses = queue.stream().
                     filter(a->check.apply(a.toLowerCase(Locale.ROOT))).

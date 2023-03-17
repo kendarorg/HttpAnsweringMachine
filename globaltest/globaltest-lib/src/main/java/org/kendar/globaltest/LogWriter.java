@@ -82,6 +82,9 @@ public class LogWriter {
                     if(logOnSystemOut) {
                         System.out.println(data.trim());
                     }else {
+                        if(!Files.exists(path)){
+                            Files.writeString(path, "STARTING REMOVED!");
+                        }
                         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
                             if (data != null) {
                                 writer.write(data);

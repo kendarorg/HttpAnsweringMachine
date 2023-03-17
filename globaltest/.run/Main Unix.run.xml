@@ -6,7 +6,7 @@
       <env name="DOCKER_IP" value="192.168.1.40" />
       <env name="GLOBAL_LOG_ON_CONSOLE" value="true" />
       <env name="HAM_VERSION" value="4.2.0" />
-      <env name="LOG_PATH" value="$PROJECT_DIR$" />
+      <env name="LOG_PATH" value="$PROJECT_DIR$/.." />
       <env name="STARTING_PATH" value="$PROJECT_DIR$/.." />
       <env name="DOCKER_HOST" value="tcp://192.168.1.40:23750" />
     </envs>

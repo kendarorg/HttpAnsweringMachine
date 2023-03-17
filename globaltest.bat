@@ -4,7 +4,7 @@ set DOCKER_IP=192.168.56.2
 set DOCKER_HOST=tcp://%DOCKER_IP%:23750
 set STARTING_PATH=%~dp0
 set HAM_VERSION=4.2.0
-set LOG_PATH=%STARTING_PATH%\release
+set LOG_PATH=%STARTING_PATH%
 
 call %STARTING_PATH%\scripts\libs\version.bat
 
