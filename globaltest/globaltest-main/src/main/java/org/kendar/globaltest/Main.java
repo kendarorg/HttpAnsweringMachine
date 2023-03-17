@@ -320,9 +320,12 @@ public class Main {
     private static ProcessRunner start(String dir, String script,
                                        BiConsumer<String,Process> ...biConsumers) {
 
+        if(!SystemUtils.IS_OS_WINDOWS){
+            script="./"+script;
+        }
         var pr = new ProcessRunner(env).
                 asShell().
-                withParameter(script + LocalFileUtils.execScriptExt()).
+                withCommand(script + LocalFileUtils.execScriptExt()).
                 withStartingPath(dir).
                 withNoOutput();
         if (biConsumers.length > 0) {
@@ -340,7 +343,7 @@ public class Main {
                                                BiConsumer<String, Process>... biConsumers) {
 
         var pr = new ProcessRunner(env).asShell().
-                withParameter("docker-compose").
+                withCommand("docker-compose").
                 withParameter("-f").withParameter(composer).
                 withParameter(sense).withStartingPath(dir).withNoOutput();
         if (biConsumers.length > 0) {

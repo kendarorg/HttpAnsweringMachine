@@ -32,6 +32,7 @@ public class ProcessUtils {
                     withCommand("ps").
                     withParameter("-ef").
                     withStorage(queue).
+                    limitOutput(5).
                     run();
             var allJavaProcesses = queue.stream().
                     filter(a->check.apply(a.toLowerCase(Locale.ROOT))).
@@ -88,7 +89,7 @@ public class ProcessUtils {
 
         if (SystemUtils.IS_OS_WINDOWS) return;
         for(var ext:exts) {
-            new ProcessRunner(env).asShell().withParameter("chmod +x *."+ext).withStartingPath(dir).withNoOutput().run();
+            new ProcessRunner(env).asShell().withCommand("chmod +x *."+ext).withStartingPath(dir).withNoOutput().run();
         }
     }
 }

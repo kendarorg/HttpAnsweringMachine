@@ -1,13 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Main Unix" type="Application" factoryName="Application">
     <envs>
-      <env name="STARTING_PATH" value="$PROJECT_DIR$/.." />
-      <env name="HAM_VERSION" value="4.1.5" />
       <env name="DOCKER_IP" value="192.168.1.40" />
+      <env name="HAM_VERSION" value="4.2.0" />
+      <env name="STARTING_PATH" value="$PROJECT_DIR$/.." />
+      <env name="GLOBAL_LOG_ON_CONSOLE" value="true" />
       <env name="DOCKER_HOST" value="tcp://192.168.1.40:23750" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="org.kendar.globaltest.Main" />
-    <module name="globaltest" />
+    <module name="globaltest-main" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="org.kendar.globaltest.*" />
