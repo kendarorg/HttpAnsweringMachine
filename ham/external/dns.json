@@ -1,7 +1,7 @@
 {
   "id": "dns",
   "system": true,
-  "active": false,
+  "active": true,
   "port": 53,
   "logQueries": false,
   "forceLocalAddress": "127.0.0.1",

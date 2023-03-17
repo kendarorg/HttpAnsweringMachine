@@ -57,19 +57,10 @@ public class ProcessRunner {
 
     public ProcessRunner withParameter(String parameter) {
         if (!SystemUtils.IS_OS_WINDOWS) {
-            if(this.command==null){
-                this.command = parameter;
-                return this;
-            }
             this.parameters.add(parameter);
         } else {
             this.parameters.add("\"" + parameter + "\"");
         }
-        return this;
-    }
-
-    public ProcessRunner withParameterClean(String parameter) {
-        this.parameters.add(parameter);
         return this;
     }
 
