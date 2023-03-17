@@ -117,6 +117,8 @@ public class ProcessRunner {
             if(SystemUtils.IS_OS_WINDOWS){
                 realCommand.add("CMD");
                 realCommand.add("/C");
+                realCommand.add(command);
+                realCommand.addAll(parameters);
             }else{
                 if(command.toLowerCase(Locale.getDefault()).endsWith(".sh")){
                     if(command.startsWith("/")){
