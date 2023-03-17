@@ -128,6 +128,11 @@ public class ProcessRunner {
                 realCommand.add("/C");
             }else{
                 if(command.toLowerCase(Locale.getDefault()).endsWith(".sh")){
+                    if(command.startsWith("/")){
+                        command = "." + command;
+                    }else {
+                        command = "./" + command;
+                    }
                     if(Files.exists(Path.of(command))){
                         chooseIfBashOrNot(realCommand,Path.of(command));
                     }else if(startingPath!=null && Files.exists(Path.of(startingPath,command))){
@@ -135,6 +140,9 @@ public class ProcessRunner {
                     }else{
                         throw new Exception("Missing "+command);
                     }
+                }else{
+                    realCommand.add("bash");
+                    realCommand.add("-c");
                 }
             }
         }
@@ -202,62 +210,15 @@ public class ProcessRunner {
         }
         if(isBash){
             realCommand.add("bash");
-            realCommand.add("-b");
+            realCommand.add("-c");
         }else{
             realCommand.add("sh");
-            realCommand.add("-b");
+            realCommand.add("-c");
         }
     }
 
     private AtomicInteger maxLines = new AtomicInteger(Integer.MAX_VALUE);
 
-    public ProcessRunner runSimple() throws Exception {
-        var realCommand = new ArrayList<String>();
-        realCommand.add(command);
-        realCommand.addAll(parameters);
-        var processBuilder = new ProcessBuilder(String.join(" ", realCommand));
-        for (var kvp : env.entrySet()) {
-            processBuilder.environment().put(kvp.getKey(), kvp.getValue());
-        }
-        if (startingPath != null) {
-            processBuilder.directory(new File(startingPath));
-        }
-        if (errorConsumer == null) {
-            errorConsumer = (a, p) -> System.err.println(a);
-        }
-        if (outConsumer == null) {
-            outConsumer = (a, p) -> System.out.println(a);
-        }
-
-        var process = processBuilder.start();
-
-
-        var rc = String.join(" ", realCommand);
-        if (startingPath != null) {
-            if (!rc.startsWith(startingPath)) {
-                rc = startingPath + File.separatorChar + rc;
-            }
-        }
-        maxLines.set(maxOut);
-        LogWriter.writeProcess("[INFO] Running " + rc);
-        StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(),
-                (a) -> {
-                    outConsumer.accept(a, process);
-                    if (maxLines.get() <= 0) return;
-                    maxLines.decrementAndGet();
-                    LogWriter.writeProcess(a);
-                });
-        StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(),
-                (a) -> {
-                    LogWriter.writeProcess(a);
-                    errorConsumer.accept(a, process);
-                });
-
-        new Thread(outputGobbler).start();
-        new Thread(errorGobbler).start();
-        process.waitFor();
-        return this;
-    }
 
     public ProcessRunner limitOutput(int maxOut) {
         this.maxOut = maxOut;

@@ -63,7 +63,7 @@ public class Main {
         var runFile = pathOf(runDir, script + LocalFileUtils.execScriptExt());
         var logDir = releasePath;
 
-        new ProcessRunner(env).asShell().withCommand(runFile).withStartingPath(runDir).run();
+        new ProcessRunner(env).withCommand(runFile).withStartingPath(runDir).run();
 
         for (var file : new File(logDir).listFiles(((dir, name) -> name.toLowerCase().endsWith(".log")))) {
             try (var reader = new BufferedReader(new FileReader(file))) {

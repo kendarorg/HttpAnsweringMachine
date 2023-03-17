@@ -91,14 +91,13 @@ public class ProcessUtils {
         }
 
         if (SystemUtils.IS_OS_WINDOWS) return;
-        LocalFileUtils.runOnEveryFile(dir, Arrays.stream(exts).collect(Collectors.toList()), (p)->{
+        /*LocalFileUtils.runOnEveryFile(dir, Arrays.stream(exts).collect(Collectors.toList()), (p)->{
             new File(p).setExecutable(true);
-        });
-        /*for(var ext:exts) {
+        });*/
+        for(var ext:exts) {
             new ProcessRunner(env).
-                    //withCommand("bash").
-                    //withParameter("-b").
-                    withParameter("chmod +x '"+dir+"/*."+ext+"'").withStartingPath(dir).withNoOutput().run();
-        }*/
+                    asShell().
+                    withCommand("chmod +x "+ext).withStartingPath(dir).withNoOutput().run();
+        }
     }
 }
