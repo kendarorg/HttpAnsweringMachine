@@ -1,5 +1,6 @@
 https://medium.com/@niktrix/getting-rid-of-systemd-resolved-consuming-port-53-605f0234f32f
 
+
 sudo lsof -i -P -n | grep LISTEN
 
 stop systemd-resolved “ sudo systemctl stop systemd-resolved”

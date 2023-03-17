@@ -4,6 +4,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -230,10 +232,72 @@ public class Main {
         LogWriter.info("Starting calendar");
     }
 
+    public static boolean available(int port) {
+        if (port > 63000 || port <= 0) {
+            throw new IllegalArgumentException("Invalid start port: " + port);
+        }
+
+        ServerSocket ss = null;
+        DatagramSocket ds = null;
+        try {
+            ss = new ServerSocket(port);
+            ss.setReuseAddress(true);
+            ds = new DatagramSocket(port);
+            ds.setReuseAddress(true);
+            return true;
+        } catch (IOException e) {
+        } finally {
+            if (ds != null) {
+                ds.close();
+            }
+
+            if (ss != null) {
+                try {
+                    ss.close();
+                } catch (IOException e) {
+                    /* should not be thrown */
+                }
+            }
+        }
+
+        return false;
+    }
+
     public static void main(String[] args) {
 
         try {
-
+            if(!SystemUtils.IS_OS_WINDOWS && !SystemUtils.IS_OS_MAC){
+                var isSudo = CheckSudo.isSudo();
+                if(!isSudo){
+                    System.err.println("[WARNING] BEWARE!");
+                    System.err.println("[WARNING] NOT RUNNING AS SUDO. PORTS LIKE 80,443 and 53 ARE NOT USUALLY ALLOWED");
+                    Thread.sleep(1000);
+                }
+            }
+            if(!available(80)){
+                System.err.println("[ERROR] Port 80 in use!");
+                doExit(1);
+            }
+            if(!available(443)){
+                System.err.println("[ERROR] Port 443 in use!");
+                doExit(1);
+            }
+            if(!available(53)){
+                System.err.println("[ERROR] Port 53 (DNS) in use!");
+                if(!SystemUtils.IS_OS_WINDOWS && !SystemUtils.IS_OS_MAC){
+                    System.err.println("[ERROR] Check if you are using a linux system");
+                    System.err.println("[ERROR] for systemd-resolved");
+                    System.err.println("[ERROR] stop it with: ");
+                    System.err.println("\t\tsudo systemctl stop systemd-resolved");
+                    System.err.println("[ERROR] modify /etc/systemd/resolved.conf");
+                    System.err.println("\t\t[Resolve]");
+                    System.err.println("\t\tDNS=8.8.8.8");
+                    System.err.println("\t\tDNSStubListener=no");
+                    System.err.println("[ERROR] then restart");
+                    System.err.println("\t\tsudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf");
+                }
+                doExit(1);
+            }
             killApacheLogger();
 
             var startingPath = System.getenv("STARTING_PATH");
