@@ -29,7 +29,7 @@ public class LocalFileUtils {
     public static void dos2unix(String directoryName, String ... exts) {
         runOnEveryFile(directoryName, Arrays.stream(exts).collect(Collectors.toList()),LocalFileUtils::dos2unix);
     }
-    private static void runOnEveryFile(String directoryName, List<String> exts, Consumer<String> handlePath) {
+    public static void runOnEveryFile(String directoryName, List<String> exts, Consumer<String> handlePath) {
         File directory = new File(directoryName);
         File[] fList = directory.listFiles();
         if(fList==null) return;

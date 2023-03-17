@@ -2,8 +2,10 @@ package org.kendar.globaltest;
 
 import org.apache.commons.lang3.SystemUtils;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -89,8 +91,14 @@ public class ProcessUtils {
         }
 
         if (SystemUtils.IS_OS_WINDOWS) return;
-        for(var ext:exts) {
-            new ProcessRunner(env).withCommand("chmod +x *."+ext).withStartingPath(dir).withNoOutput().run();
-        }
+        LocalFileUtils.runOnEveryFile(dir, Arrays.stream(exts).collect(Collectors.toList()), (p)->{
+            new File(p).setExecutable(true);
+        });
+        /*for(var ext:exts) {
+            new ProcessRunner(env).
+                    //withCommand("bash").
+                    //withParameter("-b").
+                    withParameter("chmod +x '"+dir+"/*."+ext+"'").withStartingPath(dir).withNoOutput().run();
+        }*/
     }
 }

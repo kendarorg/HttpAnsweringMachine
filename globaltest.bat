@@ -7,7 +7,7 @@ set HAM_VERSION=4.2.0
 set LOG_PATH=%STARTING_PATH%
 
 call %STARTING_PATH%\scripts\libs\version.bat
-
+del /S /Q %STARTING_PATH%\globaltest*.log 2>&1 1>NUL
 echo [INFO] Compiling global test runner
 
 set UTILS_TODEL_DIR=%STARTING_PATH%\globaltest\target\

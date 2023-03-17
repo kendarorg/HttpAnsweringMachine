@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -16,7 +17,7 @@ import static java.lang.System.exit;
 import static org.kendar.globaltest.LocalFileUtils.pathOf;
 
 public class Main {
-    private static HashMap<String, String> env;
+    private static Map<String, String> env;
     private static ProcessUtils _processUtils;
     private static final Function<String, Boolean> findHamProcesses = (psLine) ->
                     psLine.contains("java") &&
@@ -249,8 +250,13 @@ public class Main {
 
             //dockerHost="tcp://"+dockerIp+":23750";
 
-
             env = new HashMap<>();
+            var currentEnv= System.getenv();
+            for (var kvp :
+                    currentEnv.entrySet()) {
+                env.put(kvp.getKey(),kvp.getValue());
+            }
+
             env.put("STARTING_PATH", startingPath);
             env.put("LOG_PATH", logPath);
             env.put("HAM_VERSION", hamVersion);
@@ -266,7 +272,6 @@ public class Main {
             var samplesDir = pathOf(startingPath, "samples");
             var releasePath = pathOf(startingPath, "release");
             var calendarPath = pathOf(releasePath, "calendar");
-
 
             buildDeploymentArtifacts(startingPath, hamVersion, buildDir, releasePath);
             testAndGenerateJacoco(startingPath);
@@ -322,9 +327,9 @@ public class Main {
     private static ProcessRunner start(String dir, String script,
                                        BiConsumer<String,Process> ...biConsumers) {
 
-        if(!SystemUtils.IS_OS_WINDOWS){
+        /*if(!SystemUtils.IS_OS_WINDOWS){
             script="./"+script;
-        }
+        }*/
         var pr = new ProcessRunner(env).
                 asShell().
                 withCommand(script + LocalFileUtils.execScriptExt()).

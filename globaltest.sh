@@ -6,17 +6,25 @@ export STARTING_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null
 export HAM_VERSION=4.2.0
 export LOG_PATH=$STARTING_PATH
 
+find $STARTING_PATH -name "*.sh" -exec chmod +x {} \;
+
 . $STARTING_PATH/scripts/libs/version.sh
 
+rm -f $STARTING_PATH/globaltest*.log
 echo "[INFO] Compiling global test runner"
 cd $STARTING_PATH/globaltest
 mvn clean install package > /dev/null 2>&1
 
 cd $STARTING_PATH/globaltest/globaltest-main/target
 
-java -cp globaltest-main-$HAM_VERSION.jar org.kendar.globaltest.Main
+export currentUser=$(logname)
 
+echo Using user $currentUser behind sudo
+java -cp globaltest-main-$HAM_VERSION.jar org.kendar.globaltest.Main
 cd $STARTING_PATH
+chown -R $currentUser $STARTING_PATH
+
+
 
 
 
