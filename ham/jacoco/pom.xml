@@ -158,54 +158,56 @@
                                 <report>
                                     <executiondata>
                                         <fileset dir="${basedir}/../api.ham/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../api.js.builder/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../api.replayer/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
 
                                         <fileset dir="${basedir}/../api.test/target">
-                                            <include name="jacoco*.exec"/>
-                                            <include name="test*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../app/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../app.commons/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../app.dns/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../app.http/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../app.http.standardfilters/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../lib.schema.checker/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.js.filters/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.oidc.server/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.replayer.server/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
+                                        </fileset>
+                                        <fileset dir="${basedir}/../plugin.replayer.commons/target">
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.replayer.http/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.replayer.jdbc/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.socks5.server/target">
-                                            <include name="jacoco*.exec"/>
+                                            <include name="*.exec"/>
                                         </fileset>
                                     </executiondata>
                                     <structure name="Integration Tests Coverage Report">

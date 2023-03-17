@@ -1,3 +1,15 @@
+https://medium.com/@niktrix/getting-rid-of-systemd-resolved-consuming-port-53-605f0234f32f
+
+sudo lsof -i -P -n | grep LISTEN
+
+stop systemd-resolved “ sudo systemctl stop systemd-resolved”
+edit /etc/systemd/resolved.conf with these
+[Resolve]
+DNS=8.8.8.8
+DNSStubListener=no
+
+sudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
+
 
 Simple Run (all server)
 java -cp app-2.1.3.jar \

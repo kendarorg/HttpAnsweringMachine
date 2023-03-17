@@ -132,7 +132,7 @@ public class HamStarter {
 
         var pr = new ProcessRunner(new ConcurrentHashMap<>()).
                 asShell().
-                withParameter(java).
+                withCommand(java).
                 withParameter("-Djsonconfig=" + externalJsonPath).
                 withParameter("-Dloader.path=" + libsPath).
                 withParameter("-Dham.tempdb=data/tmp").
