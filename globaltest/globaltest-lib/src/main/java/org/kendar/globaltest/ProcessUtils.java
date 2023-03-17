@@ -97,7 +97,7 @@ public class ProcessUtils {
         for(var ext:exts) {
             new ProcessRunner(env).
                     asShell().
-                    withCommand("chmod +x "+ext).withStartingPath(dir).withNoOutput().run();
+                    withCommand("chmod +x *."+ext+" ").withStartingPath(dir).withNoOutput().run();
         }
     }
 }

@@ -131,14 +131,21 @@ public class ProcessRunner {
                     }else{
                         throw new Exception("Missing "+command);
                     }
+                    realCommand.add(command);
+                    realCommand.addAll(parameters);
                 }else{
                     realCommand.add("bash");
                     realCommand.add("-c");
+                    var fullCommand = command+" "+String.join(" ",parameters);
+                    realCommand.add(fullCommand);
+                    //realCommand.addAll(parameters);
                 }
+
             }
+        }else{
+            realCommand.add(command);
+            realCommand.addAll(parameters);
         }
-        realCommand.add(command);
-        realCommand.addAll(parameters);
         var processBuilder = new ProcessBuilder(realCommand);
         for (var kvp : env.entrySet()) {
             processBuilder.environment().put(kvp.getKey(), kvp.getValue());
