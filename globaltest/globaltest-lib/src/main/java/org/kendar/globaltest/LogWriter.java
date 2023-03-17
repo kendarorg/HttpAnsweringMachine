@@ -40,7 +40,8 @@ public class LogWriter {
     private static final Path path;
     private static final Thread logWriter ;
     static {
-        path = Path.of("globaltest."+(new Date().getTime())+".log");
+        var startingPath = System.getenv("LOG_PATH");
+        path = Path.of(startingPath,"globaltest."+(new Date().getTime())+".log");
         try {
             var logOnSystemOut = false;
             if(System.getenv("GLOBAL_LOG_ON_CONSOLE")!=null){

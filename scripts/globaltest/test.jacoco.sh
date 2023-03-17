@@ -13,3 +13,4 @@ HAM_VERSION=4.2.0
 # Retrieve the jar name
 cd jacoco
 mvn test
+mv target/coverage-report $START_DIR/release/

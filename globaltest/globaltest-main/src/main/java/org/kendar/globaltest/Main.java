@@ -62,7 +62,7 @@ public class Main {
         var runFile = pathOf(runDir, script + LocalFileUtils.execScriptExt());
         var logDir = releasePath;
 
-        new ProcessRunner(env).withCommand(runFile).withStartingPath(runDir).run();
+        new ProcessRunner(env).asShell().withCommand(runFile).withStartingPath(runDir).run();
 
         for (var file : new File(logDir).listFiles(((dir, name) -> name.toLowerCase().endsWith(".log")))) {
             try (var reader = new BufferedReader(new FileReader(file))) {
@@ -234,6 +234,7 @@ public class Main {
             killApacheLogger();
 
             var startingPath = System.getenv("STARTING_PATH");
+            var logPath = System.getenv("LOG_PATH");
             var hamVersion = System.getenv("HAM_VERSION");
             var dockerIp = System.getenv("DOCKER_IP");
             var dockerHost = System.getenv("DOCKER_HOST");
@@ -251,6 +252,7 @@ public class Main {
 
             env = new HashMap<>();
             env.put("STARTING_PATH", startingPath);
+            env.put("LOG_PATH", logPath);
             env.put("HAM_VERSION", hamVersion);
             env.put("DOCKER_IP", dockerIp);
             env.put("DOCKER_HOST", dockerHost);

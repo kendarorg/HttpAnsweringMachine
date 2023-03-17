@@ -89,7 +89,7 @@ public class ProcessUtils {
 
         if (SystemUtils.IS_OS_WINDOWS) return;
         for(var ext:exts) {
-            new ProcessRunner(env).asShell().withCommand("chmod +x *."+ext).withStartingPath(dir).withNoOutput().run();
+            new ProcessRunner(env).withCommand("chmod +x *."+ext).withStartingPath(dir).withNoOutput().run();
         }
     }
 }

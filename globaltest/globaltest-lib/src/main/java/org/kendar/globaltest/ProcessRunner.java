@@ -135,9 +135,6 @@ public class ProcessRunner {
                     }else{
                         throw new Exception("Missing "+command);
                     }
-                }else{
-                    realCommand.add("bash");
-                    realCommand.add("-b");
                 }
             }
         }
