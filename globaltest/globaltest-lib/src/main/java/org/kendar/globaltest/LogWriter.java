@@ -61,7 +61,7 @@ public class LogWriter {
 
     public static void writeProcess(String data){
         try {
-            logs.put(data.replaceAll("\\p{Cntrl}", ""));
+            logs.put(data);
         } catch (InterruptedException e) {
 
         }
@@ -87,7 +87,7 @@ public class LogWriter {
                         }
                         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
                             if (data != null) {
-                                writer.write(data.replaceAll("\\p{Cntrl}", ""));
+                                writer.write(data);
                             }
                         } catch (IOException ioe) {
                             LogWriter.errror("IOException: %s", ioe);
