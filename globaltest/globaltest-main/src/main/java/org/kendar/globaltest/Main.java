@@ -208,8 +208,8 @@ public class Main {
 
     private static void handleRunErrors(String a, Process process) {
         if (a.toLowerCase(Locale.ROOT).startsWith("[error]") ||
-                a.equalsIgnoreCase("Error starting applicationcontext")||
-        a.contains("BUILD FAILURE")) {
+                a.toLowerCase(Locale.ROOT).contains("error starting applicationcontext")||
+                a.toLowerCase(Locale.ROOT).contains("build failure")) {
             LogWriter.errror("");
             LogWriter.errror(a);
             process.destroy();
