@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith({SeleniumBase.class})
 public class SeleniumTest extends SeleniumBase{
-    @BeforeAll
 
     @Test
     void aTest() throws InterruptedException {
