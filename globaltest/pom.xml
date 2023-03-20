@@ -69,11 +69,17 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.13</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.3.2</version>
+        </dependency>
     </dependencies>
 
     <modules>
         <module>globaltest-lib</module>
         <module>globaltest-main</module>
+        <module>globaltest-selenium</module>
     </modules>
     <build>
         <extensions>
