@@ -21,6 +21,7 @@ public class ProcessRunner {
     private Map<String, String> env = new HashMap<>();
     private boolean isShell;
     private int maxOut = Integer.MAX_VALUE;
+    private Process process;
 
 
     public ProcessRunner() {
@@ -29,6 +30,23 @@ public class ProcessRunner {
     public ProcessRunner(Map<String, String> env) {
         this();
         this.env = env;
+    }
+    public void destroyAsync() {
+        process.destroy();
+    }
+    public void destroy(){
+        process.destroy();
+        for(var i=0;i<100;i++){
+            if(process.isAlive()){
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+
+                }
+            }else{
+                return;
+            }
+        }
     }
 
     public ProcessRunner asShell() {
@@ -165,7 +183,7 @@ public class ProcessRunner {
                 System.out.println(a);
             };
         }
-        var process = processBuilder.start();
+        process = processBuilder.start();
 
 
         var rc = String.join(" ", realCommand);
