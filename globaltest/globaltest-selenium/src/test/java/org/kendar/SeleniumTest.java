@@ -33,17 +33,20 @@ public class SeleniumTest extends SeleniumBase{
         var recordingData = DbRecordingSetupTest.downloadRecording(driver);
 
         //Do Ui test
+        restart();
         String uiTestId = DbRecordingSetupTest.prepareUiTest(driver,recordingData,"UiTest");
         DbRecordingSetupTest.startPlaying(driver,uiTestId);
         DbRecordingSetupTest.fullNavigation(driver);
         DbRecordingSetupTest.stopAction(driver, uiTestId);
 
         //Do Gateway null test
+        restart();
         String gatewayTestId = DbRecordingSetupTest.prepareGatewayNullTest(driver,recordingData,"GatewayNullTest");
         DbRecordingSetupTest.startNullPlaying(driver,gatewayTestId);
         DbRecordingSetupTest.loadResults(driver,gatewayTestId);
 
         //Do Be fake db test
+        restart();
         String dbTest = DbRecordingSetupTest.prepareFakeDbTest(driver,recordingData,"DbTest");
         DbRecordingSetupTest.startNullPlaying(driver,dbTest);
         DbRecordingSetupTest.loadResults(driver,dbTest);
