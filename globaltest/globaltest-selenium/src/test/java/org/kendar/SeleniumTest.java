@@ -21,6 +21,7 @@ public class SeleniumTest extends SeleniumBase{
 
     @Test
     void dbRecording() throws Throwable {
+        runHamJar(SeleniumTest.class);
         var driver = SeleniumBase.getDriver();
         DbRecordingSetupTest.startup(driver);
 

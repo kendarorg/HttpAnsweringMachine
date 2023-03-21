@@ -28,6 +28,11 @@ import java.util.stream.Collectors;
 
 public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.CloseableResource, AfterAllCallback {
     private String tmpdir;
+
+    private static final Function<String, Boolean> findHamProcesses = (psLine) ->
+            psLine.contains("java") &&
+                    psLine.contains("httpanswering") &&
+                    !psLine.contains("globaltest");
     private static ProcessUtils _processUtils = new ProcessUtils(new HashMap<>());
 
     private static final Function<String, Boolean> findFirefoxHidden = (psLine) ->
@@ -267,6 +272,7 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
 
                     HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").noError().run();
                     pu.sigtermProcesses((str)-> str.contains("-Dloader.main=org.kendar.Main"));
+                    _processUtils.killProcesses(findHamProcesses);
                 } catch (Exception e) {
 
                 }

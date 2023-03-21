@@ -38,7 +38,8 @@ public class ProcessUtils {
                     run();
             var allJavaProcesses = queue.stream().
                     filter(a->{
-                        return check.apply(a.toLowerCase(Locale.ROOT))
+                        if(check.apply(a.toLowerCase(Locale.ROOT)))return true;
+                        return false;
                     }).
                     collect(Collectors.toList());
             for(var javaHam:allJavaProcesses){
