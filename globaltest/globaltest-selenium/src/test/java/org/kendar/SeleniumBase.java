@@ -1,6 +1,5 @@
 package org.kendar;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -10,11 +9,10 @@ import org.kendar.globaltest.ProcessRunner;
 import org.kendar.globaltest.ProcessUtils;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.firefox.FirefoxBinary;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.SessionId;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -23,9 +21,20 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.CloseableResource, AfterAllCallback {
+    private String tmpdir;
+    private static ProcessUtils _processUtils = new ProcessUtils(new HashMap<>());
+
+    private static final Function<String, Boolean> findFirefoxHidden = (psLine) ->
+            (psLine.contains("--marionette") &&
+                    psLine.contains("--remote-debugging-port"))||psLine.contains("geckodriver");
+    private SessionId sessionId;
+
     public static FirefoxDriver getDriver() {
         return driver;
     }
@@ -34,14 +43,64 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
     private static JavascriptExecutor js;
     private static boolean started = false;
 
+    public static void doClick(Supplier<WebElement> el){
+        for(var i=0;i<10;i++){
+            var res = el.get();
+            if(res==null){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+
+                }
+                continue;
+            }
+            try {
+                res.click();
+                Thread.sleep(500);
+                try {
+                    res = el.get();
+                    if (res != null) {
+                        res.click();
+                    }
+                }catch (Exception ex){
+                    return;
+                }
+                return;
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+
+            }
+        }
+        var res = el.get();
+
+        throw new RuntimeException("Unable to click "+res.getText());
+    }
+
     @Override
     public void close() throws Throwable {
+        if(started==false)return;
         try {
+            //driver.close();
             driver.quit();
+            driver = null;
+            js=null;
+            _processUtils.killProcesses(findFirefoxHidden);
+            _processUtils.killProcesses(findFirefoxHidden);
+            //deleteDirectory(new File(tmpdir));
         }catch (Exception ex){
 
         }
         started=false;
+    }
+
+    public void restart() throws Throwable {
+        close();
+        beforeAll(null);
     }
 
     @Override
@@ -54,15 +113,29 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
             Proxy proxy = new Proxy();
 //Adding the desired host and port for the http, ssl, and ftp Proxy Servers respectively
             proxy.setSocksProxy("127.0.0.1:1080");
-            proxy.setHttpProxy("127.0.0.1:1081");
+            proxy.setSocksVersion(5);
+            //proxy.setHttpProxy("127.0.0.1:1081");
 
             //WebDriverManager.firefoxdriver().setup();
             File pathBinary = new File(firefoxExecutable);
             FirefoxBinary firefoxBinary = new FirefoxBinary(pathBinary);
             DesiredCapabilities desired = new DesiredCapabilities();
             FirefoxOptions options = new FirefoxOptions();
+            //tmpdir = Files.createTempDirectory("tmpDirPrefix").toFile().getAbsolutePath();
+            //options.addArguments("--profile");
+            //options.addArguments(tmpdir);
             desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setBinary(firefoxBinary));
             desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setProxy(proxy));
+            //desired.setCapability("marionette", false);
+            //desired.setCapability("network.proxy.socks_remote_dns",true);
+            FirefoxProfile profile = new FirefoxProfile();
+            profile.setAcceptUntrustedCertificates(true);
+            profile.setAssumeUntrustedCertificateIssuer(true);
+            profile.setPreference("network.proxy.socks_remote_dns",true);
+            //profile.setPreference("fission.webContentIsolationStrategy",0);
+            //profile.setPreference("fission.bfcacheInParent",false);
+            desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setProfile(profile));
+
             //driver = new HtmlUnitDriver();
             //driver = new FirefoxDriver(options);
             driver = new FirefoxDriver((new GeckoDriverService.Builder() {
@@ -73,6 +146,10 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
                     return super.createDriverService(exe, port, timeout, args, environment);
                 }
             }).build(),options);
+
+            //driver.manage().timeouts().implicitlyWait(Duration.of(2000, ChronoUnit.MILLIS));
+            //driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+            sessionId = driver.getSessionId();
             js = (JavascriptExecutor) driver;
             runHamJar(SeleniumBase.class);
 

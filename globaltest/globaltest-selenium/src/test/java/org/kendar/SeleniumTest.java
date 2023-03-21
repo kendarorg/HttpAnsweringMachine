@@ -3,14 +3,20 @@ package org.kendar;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kendar.googlehack.GoogleHackSetupTest;
 
 @ExtendWith({SeleniumBase.class})
 public class SeleniumTest extends SeleniumBase{
 
+
+
     @Test
-    void aTest() throws InterruptedException {
+    void googleHack() throws Throwable {
         var driver = SeleniumBase.getDriver();
-        driver.get("https://www.google.com");
-        Thread.sleep(1000);
+        GoogleHackSetupTest.setup(driver);
+        restart();
+        driver = SeleniumBase.getDriver();
+        GoogleHackSetupTest.verify(driver);
+        close();
     }
 }
