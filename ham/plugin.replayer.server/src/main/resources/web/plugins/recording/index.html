@@ -29,7 +29,22 @@
         <span slot="header">Recording</span>
         <span slot="body"><create-recording :data="modalData.data"/></span>
         <span slot="footer">
-              <button id="recording-save" type="button" class="bi bi-x-square" @click="$emit('close')" title="Close"></button></span>
+              <button id="recording-save" type="button" class="bi bi-x-square"
+                      @click="$emit('close')" title="Close"></button></span>
+    </simple-modal>
+    <simple-modal v-if="modalCloneShow"
+                  :modal-data="modalCloneData"
+                  @close="modalCloneShow = false">
+        <span slot="header">Clone</span>
+        <span slot="body">
+            <label for="from">From</label>
+            <input class="form-control" readonly="true" type="text" name="from" id="from" v-model="modalCloneData.data.id"/>
+            <label for="name">Name</label>
+            <input class="form-control" readonly="true" type="text" name="name" id="name" v-model="modalCloneData.data.name"/>
+            <label for="newname">New Name</label>
+            <input class="form-control" type="text" name="newname" id="newname" v-model="modalCloneData.data.newname"/>
+        </span>
+
     </simple-modal>
     <div class="row">
         <div class="col-md-8">
@@ -70,6 +85,8 @@
             return {
                 modalData: null,
                 modalShow: false,
+                modalCloneData: null,
+                modalCloneShow: false,
                 columns: [
                     {id: "id", template: "long", index: true},
                     {id: "state", template: "string"},
@@ -95,6 +112,16 @@
                         properties: {
                             name: "Delete", style: "bi bi-trash"
                         }
+                    },
+                    {
+                        id: "_clone",
+                        template: "iconbutton",
+                        default: false,
+                        searchable: false,
+                        sortable: false,
+                        properties: {
+                            name: "Clone", style: "bi bi-clipboard-check"
+                        }
                     }
                 ]
             }
@@ -112,7 +139,28 @@
                 } else if (evt.buttonid == "_delete") {
                     await axiosHandle(axios.delete("/api/plugins/replayer/recording/" + row['id']), () =>
                         this.reload());
+                }else if (evt.buttonid == "_clone") {
+                    this.cloneRecording(row);
                 }
+            },
+            cloneRecording: function (row){
+                this.modalCloneData = {
+                    data: {
+                        id:row['id'],
+                        name:row['name'],
+                        newname:""
+                    },
+                    save: this.saveClone
+                };
+                this.modalCloneShow = true;
+            },
+            saveClone: function(){
+                axiosHandle(axios.post('/api/plugins/replayer/recording/' + this.modalCloneData.data.id+"/clone",
+                    this.modalCloneData.data), () => {
+                    this.modalCloneShow = false;
+                    this.reload();
+                    axiosOk();
+                });
             },
             reload: function () {
                 this.$refs.grid.reload();

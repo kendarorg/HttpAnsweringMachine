@@ -18,7 +18,7 @@ public class ReplayerResult {
     private String name;
 
     private String description;
-    private RedirectFilter filter;
+    private HashMap<String,String> filter;
 
     public void add(ReplayerRow row) {
         getStaticRequests().add(row);
@@ -60,11 +60,11 @@ public class ReplayerResult {
         this.dynamicRequests = dynamicRequests;
     }
 
-    public void setFilter(RedirectFilter filter) {
+    public void setFilter(HashMap<String,String> filter) {
         this.filter = filter;
     }
 
-    public RedirectFilter getFilter() {
+    public HashMap<String,String> getFilter() {
         return filter;
     }
 

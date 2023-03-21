@@ -27,7 +27,7 @@ public class ProcessUtils {
         killProcesses(true,check);
     }
 
-    private void killProcesses(boolean sigTerm,Function<String,Boolean> check) throws Exception {
+    private void killProcesses(boolean sigTerm,Function<String,Boolean> check,String ... others) throws Exception {
         if(!SystemUtils.IS_OS_WINDOWS) {
             var queue = new ConcurrentLinkedQueue<String>();
             new ProcessRunner(env).
@@ -37,7 +37,9 @@ public class ProcessUtils {
                     limitOutput(5).
                     run();
             var allJavaProcesses = queue.stream().
-                    filter(a->check.apply(a.toLowerCase(Locale.ROOT))).
+                    filter(a->{
+                        return check.apply(a.toLowerCase(Locale.ROOT))
+                    }).
                     collect(Collectors.toList());
             for(var javaHam:allJavaProcesses){
                 var spl = javaHam.trim().split("\\s+");

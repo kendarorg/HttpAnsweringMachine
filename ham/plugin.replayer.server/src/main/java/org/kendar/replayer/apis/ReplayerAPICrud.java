@@ -10,10 +10,7 @@ import org.kendar.http.annotations.HttpMethodFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.*;
 import org.kendar.replayer.ReplayerState;
-import org.kendar.replayer.apis.models.LocalRecording;
-import org.kendar.replayer.apis.models.ScriptData;
-import org.kendar.replayer.apis.models.SingleScript;
-import org.kendar.replayer.apis.models.SingleScriptLine;
+import org.kendar.replayer.apis.models.*;
 import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.engine.ReplayerResult;
 import org.kendar.replayer.engine.ReplayerStatus;
@@ -249,6 +246,15 @@ public class ReplayerAPICrud implements FilteringClass {
     )
     public void getFull(Request req, Response res) throws Exception {
         var id = req.getPathParameter("id");
+        ReplayerResult result = getReplayerResult(id);
+
+        res.setResponseText(mapper.writeValueAsString(result));
+        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
+        res.addHeader("Content-Disposition", "attachment;" + id + ".json");
+        res.setStatusCode(200);
+    }
+
+    private ReplayerResult getReplayerResult(String id) throws Exception {
         var result = new ReplayerResult();
 
 
@@ -259,6 +265,9 @@ public class ReplayerAPICrud implements FilteringClass {
 
             result.setName(recording.getName());
             result.setDescription(recording.getDescription());
+            if (recording.getFilter() != null && !recording.getFilter().isEmpty()) {
+                result.setFilter(mapper.readValue(recording.getFilter(), typeRef));
+            }
             for (var row : rows) {
                 if (row.isStaticRequest()) {
                     result.getStaticRequests().add(row);
@@ -270,11 +279,7 @@ public class ReplayerAPICrud implements FilteringClass {
                 result.getIndexes().add(indexLine);
             }
         });
-
-        res.setResponseText(mapper.writeValueAsString(result));
-        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-        res.addHeader("Content-Disposition", "attachment;" + id + ".json");
-        res.setStatusCode(200);
+        return result;
     }
 
     @HttpMethodFilter(
@@ -287,6 +292,14 @@ public class ReplayerAPICrud implements FilteringClass {
         JsonFileData jsonFileData = mapper.readValue(req.getRequestText(), JsonFileData.class);
         String realFileName = FilenameUtils.removeExtension(jsonFileData.getName());
         var replayerResult = mapper.readValue(jsonFileData.readAsString(), ReplayerResult.class);
+        DbRecording recording = saveRecording(realFileName, replayerResult);
+
+        logger.info("Uploaded replayer binary script ");
+        res.setResponseText(String.valueOf(recording.getId()));
+        res.setStatusCode(200);
+    }
+
+    private DbRecording saveRecording(String realFileName, ReplayerResult replayerResult) throws Exception {
         var recording = new DbRecording();
         recording.setDescription(replayerResult.getDescription());
         recording.setName(realFileName);
@@ -309,10 +322,7 @@ public class ReplayerAPICrud implements FilteringClass {
                 em.persist(row);
             }
         });
-
-        logger.info("Uploaded replayer binary script ");
-        res.setResponseText(String.valueOf(recording.getId()));
-        res.setStatusCode(200);
+        return recording;
     }
 
     @HttpMethodFilter(
@@ -501,5 +511,24 @@ public class ReplayerAPICrud implements FilteringClass {
                 eng.setupStaticCalls(rec);
             }
         }
+    }
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/plugins/replayer/recording/{id}/clone",
+
+            method = "POST")
+    @HamDoc(description = "Clone recording", tags = {"plugin/replayer"},
+            path = @PathParameter(key = "id"),
+            requests = @HamRequest(body = CloneRecording.class))
+    public void cloneRecording(Request req, Response res) throws Exception {
+        CloneRecording jsonFileData = mapper.readValue(req.getRequestText(), CloneRecording.class);
+        var id = req.getPathParameter("id");
+        ReplayerResult result = getReplayerResult(id);
+        DbRecording recording = saveRecording(jsonFileData.getNewname(),result);
+
+        logger.info("Uploaded replayer binary script ");
+        res.setResponseText(String.valueOf(recording.getId()));
+        res.setStatusCode(200);
     }
 }
