@@ -5,16 +5,23 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.kendar.globaltest.HttpChecker;
 import org.kendar.globaltest.ProcessRunner;
+import org.kendar.globaltest.ProcessUtils;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Locale;
+import java.io.FilenameFilter;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
@@ -43,15 +50,31 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
         started = true;
         try {
             var firefoxExecutable = SeleniumBase.findFirefox();
+
+            Proxy proxy = new Proxy();
+//Adding the desired host and port for the http, ssl, and ftp Proxy Servers respectively
+            proxy.setSocksProxy("127.0.0.1:1080");
+            proxy.setHttpProxy("127.0.0.1:1081");
+
             //WebDriverManager.firefoxdriver().setup();
             File pathBinary = new File(firefoxExecutable);
             FirefoxBinary firefoxBinary = new FirefoxBinary(pathBinary);
             DesiredCapabilities desired = new DesiredCapabilities();
             FirefoxOptions options = new FirefoxOptions();
             desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setBinary(firefoxBinary));
+            desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setProxy(proxy));
             //driver = new HtmlUnitDriver();
-            driver = new FirefoxDriver(options);
+            //driver = new FirefoxDriver(options);
+            driver = new FirefoxDriver((new GeckoDriverService.Builder() {
+                @Override
+                protected GeckoDriverService createDriverService(File exe, int port,
+                                                                 Duration timeout,
+                                                                 List<String> args, Map<String, String> environment) {
+                    return super.createDriverService(exe, port, timeout, args, environment);
+                }
+            }).build(),options);
             js = (JavascriptExecutor) driver;
+            runHamJar(SeleniumBase.class);
 
             System.out.println("here it is " + firefoxExecutable);
         }catch (Exception ex){
@@ -123,5 +146,108 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
 
         }
         started=false;
+    }
+
+    private static String rootPath=null;
+
+    private static String getRootPath(Class<?> caller) {
+        if(rootPath!=null){
+            return rootPath;
+        }
+        final File jarFile =
+                new File(caller.getProtectionDomain().getCodeSource().getLocation().getPath());
+        var path = Path.of(jarFile.getAbsolutePath());
+        return path.getParent()    //target
+                .getParent()    //globaltest-selenium
+                .getParent()    //globaltest
+                .getParent().toAbsolutePath().toString();
+    }
+
+    private static boolean deleteDirectory(File directoryToBeDeleted) {
+        if (!directoryToBeDeleted.exists()) {
+            return true;
+        }
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectory(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
+    }
+
+    public static boolean shutdownHookInitialized = false;
+
+
+
+    private static void initShutdownHook() {
+        if (shutdownHookInitialized) return;
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+
+            @Override
+            public void run() {
+                var pu = new ProcessUtils(new HashMap<>());
+                try {
+
+                    HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").noError().run();
+                    pu.sigtermProcesses((str)-> str.contains("-Dloader.main=org.kendar.Main"));
+                } catch (Exception e) {
+
+                }
+            }
+
+        });
+    }
+
+    public static void runHamJar(Class<?> caller) throws Exception {
+        try {
+            if(HttpChecker.checkForSite(5, "http://127.0.0.1/api/dns/lookup/test").noError().run()){
+                return;
+            }
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+        var commandLine = new ArrayList<String>();
+
+        deleteDirectory(Path.of(getRootPath(caller),"data","tmp").toFile());
+        var java = "java";
+        //var agentPath = Path.of(getRootPath(caller), "ham", "api.test", "org.jacoco.agent-0.8.8-runtime.jar");
+        //var jacocoExecPath = Path.of(getRootPath(caller), "ham", "api.test", "target", "jacoco_starter.exec");
+        var externalJsonPath = Path.of(getRootPath(caller), "ham", "test.external.json").toString();
+        var libsPath = Path.of(getRootPath(caller), "ham", "libs").toString();
+        var appPathRootPath = Path.of(getRootPath(caller), "ham", "app", "target");
+
+        if (!appPathRootPath.toFile().exists()) {
+            throw new Exception("WRONG STARTING PATH " + appPathRootPath);
+        }
+        File[] matchingFiles = appPathRootPath.toFile().listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                if (name == null) return false;
+                return name.startsWith("app-") && name.endsWith(".jar");
+            }
+        });
+        var appPathRoot = Path.of(matchingFiles[0].getAbsolutePath()).toString();
+        initShutdownHook();
+
+        var pr = new ProcessRunner(new ConcurrentHashMap<>()).
+                asShell().
+                withCommand(java).
+                withParameter("-Djsonconfig=" + externalJsonPath).
+                withParameter("-Dloader.path=" + libsPath).
+                withParameter("-Dham.tempdb=data/tmp").
+                withParameter("-Dloader.main=org.kendar.Main").
+                //withParameter("-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**").
+                withParameter("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:9863").
+                withParameter("-jar").
+                withParameter(appPathRoot);
+        try {
+            pr.runBackground();
+            if(!HttpChecker.checkForSite(60, "http://127.0.0.1/api/dns/lookup/test").run()){
+                throw new Exception("NOT STARTED");
+            }
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+
     }
 }
