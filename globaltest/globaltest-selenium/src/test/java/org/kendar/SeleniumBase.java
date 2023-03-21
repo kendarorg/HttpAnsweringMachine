@@ -90,7 +90,6 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
             driver = null;
             js=null;
             _processUtils.killProcesses(findFirefoxHidden);
-            _processUtils.killProcesses(findFirefoxHidden);
             //deleteDirectory(new File(tmpdir));
         }catch (Exception ex){
 
@@ -151,7 +150,7 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
             //driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             sessionId = driver.getSessionId();
             js = (JavascriptExecutor) driver;
-            runHamJar(SeleniumBase.class);
+
 
             System.out.println("here it is " + firefoxExecutable);
         }catch (Exception ex){
@@ -227,7 +226,7 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
 
     private static String rootPath=null;
 
-    private static String getRootPath(Class<?> caller) {
+    public static String getRootPath(Class<?> caller) {
         if(rootPath!=null){
             return rootPath;
         }
