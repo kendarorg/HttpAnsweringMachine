@@ -13,7 +13,11 @@ import static org.kendar.SeleniumBase.doClick;
 public class GoogleHackSetupTest {
 
   public static void verify(FirefoxDriver driver) throws InterruptedException {
+
+
     driver.get("https://www.google.com");
+    Thread.sleep(1000);
+    driver.manage().window().setSize(new Dimension(1024, 1024));
     Thread.sleep(1000);
     WebElement el = driver.findElement(By.xpath("//*[text()='Accetta tutto']"));
     if(el==null){
@@ -40,7 +44,7 @@ public class GoogleHackSetupTest {
     assertFalse(text.contains("Bing_logo"));
     driver.get("http://www.local.test/index.html");
     Thread.sleep(1000);
-    driver.manage().window().setSize(new Dimension(1024, 768));
+    driver.manage().window().setSize(new Dimension(1024, 1024));
     Thread.sleep(1000);
     driver.findElement(By.id("grid-rowc-2-0")).click();
     Thread.sleep(1000);

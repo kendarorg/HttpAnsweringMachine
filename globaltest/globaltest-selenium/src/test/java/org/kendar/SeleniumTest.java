@@ -25,9 +25,11 @@ public class SeleniumTest extends SeleniumBase{
         var driver = SeleniumBase.getDriver();
         DbRecordingSetupTest.startup(driver);
 
+        DbRecordingUiActions.fullNavigation(driver);
+
         //Create recording
         String mainId = DbRecordingSetupTest.startRecording(driver,"Main");
-        DbRecordingSetupTest.fullNavigation(driver);
+
         DbRecordingSetupTest.stopAction(driver,mainId);
         DbRecordingSetupTest.analyzeRecording(driver,mainId);
         var recordingData = DbRecordingSetupTest.downloadRecording(driver);
@@ -36,7 +38,7 @@ public class SeleniumTest extends SeleniumBase{
         restart();
         String uiTestId = DbRecordingSetupTest.prepareUiTest(driver,recordingData,"UiTest");
         DbRecordingSetupTest.startPlaying(driver,uiTestId);
-        DbRecordingSetupTest.fullNavigation(driver);
+        DbRecordingUiActions.fullNavigation(driver);
         DbRecordingSetupTest.stopAction(driver, uiTestId);
 
         //Do Gateway null test

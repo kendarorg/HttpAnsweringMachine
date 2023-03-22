@@ -292,6 +292,7 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
         var commandLine = new ArrayList<String>();
 
         deleteDirectory(Path.of(getRootPath(caller),"data","tmp").toFile());
+        deleteDirectory(Path.of(getRootPath(caller),"release","calendar","data").toFile());
         var java = "java";
         //var agentPath = Path.of(getRootPath(caller), "ham", "api.test", "org.jacoco.agent-0.8.8-runtime.jar");
         //var jacocoExecPath = Path.of(getRootPath(caller), "ham", "api.test", "target", "jacoco_starter.exec");

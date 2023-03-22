@@ -34,6 +34,7 @@ module.exports = {
       modalShow: false,
       columns: [
         {id: "id", template: "string", index: true},
+        {id: "active", template: "bool"},
         {id: "driver", template: "string"},
         {
           id: "remote", template: "string", func: function (e) {

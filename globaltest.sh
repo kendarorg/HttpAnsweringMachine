@@ -13,7 +13,7 @@ find $STARTING_PATH -name "*.sh" -exec chmod +x {} \;
 rm -f $STARTING_PATH/globaltest*.log
 echo "[INFO] Compiling global test runner"
 cd $STARTING_PATH/globaltest
-mvn clean install package > /dev/null 2>&1
+mvn clean install package -DskipTests > /dev/null 2>&1
 
 cd $STARTING_PATH/globaltest/globaltest-main/target
 
