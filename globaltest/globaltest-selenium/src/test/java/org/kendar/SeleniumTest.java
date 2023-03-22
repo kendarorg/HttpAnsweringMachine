@@ -29,29 +29,30 @@ public class SeleniumTest extends SeleniumBase{
         //Create recording
         String mainId = DbRecordingSetupTest.startRecording(driver,"Main");
         DbRecordingUiActions.fullNavigation(driver);
-
         DbRecordingSetupTest.stopAction(driver,mainId);
         DbRecordingSetupTest.analyzeRecording(driver,mainId);
-        var recordingData = DbRecordingSetupTest.downloadRecording(driver);
 
         //Do Ui test
         restart();
-        String uiTestId = DbRecordingSetupTest.prepareUiTest(driver,recordingData,"UiTest");
+        String uiTestId = DbRecordingSetupTest.cloneTo(driver,mainId,"UiTest");
+        DbRecordingSetupTest.prepareUiTest(driver,uiTestId);
         DbRecordingSetupTest.startPlaying(driver,uiTestId);
         DbRecordingUiActions.fullNavigation(driver);
         DbRecordingSetupTest.stopAction(driver, uiTestId);
 
         //Do Gateway null test
         restart();
-        String gatewayTestId = DbRecordingSetupTest.prepareGatewayNullTest(driver,recordingData,"GatewayNullTest");
+        String gatewayTestId = DbRecordingSetupTest.cloneTo(driver,mainId,"GatewayNullTest");
+        DbRecordingSetupTest.prepareGatewayNullTest(driver,gatewayTestId);
         DbRecordingSetupTest.startNullPlaying(driver,gatewayTestId);
         DbRecordingSetupTest.loadResults(driver,gatewayTestId);
 
         //Do Be fake db test
         restart();
-        String dbTest = DbRecordingSetupTest.prepareFakeDbTest(driver,recordingData,"DbTest");
-        DbRecordingSetupTest.startNullPlaying(driver,dbTest);
-        DbRecordingSetupTest.loadResults(driver,dbTest);
+        String dbNullTest = DbRecordingSetupTest.cloneTo(driver,mainId,"DbNullTest");
+        DbRecordingSetupTest.prepareDbNullTest(driver,dbNullTest);
+        DbRecordingSetupTest.startNullPlaying(driver,dbNullTest);
+        DbRecordingSetupTest.loadResults(driver,dbNullTest);
 
         close();
     }

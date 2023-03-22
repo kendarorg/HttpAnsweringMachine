@@ -6,9 +6,7 @@ import org.kendar.globaltest.ProcessRunner;
 import org.kendar.globaltest.ProcessUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.interactions.Actions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -235,15 +233,6 @@ public class DbRecordingSetupTest {
     }
 
 
-    public static void analyzeRecording(FirefoxDriver driver, String idRecording) {
-        throw new NotImplementedException();
-    }
-
-    public static String downloadRecording(FirefoxDriver driver) {
-        throw new NotImplementedException();
-    }
-
-
 
     public static void stopAction(FirefoxDriver driver, String idRecording) throws InterruptedException {
         driver.get("http://www.local.test/plugins/recording/script.html?id="+idRecording);
@@ -254,11 +243,12 @@ public class DbRecordingSetupTest {
         Thread.sleep(1000);
     }
 
-    public static String prepareUiTest(FirefoxDriver driver, String recordingData,String recordingId) {
+
+    public static void analyzeRecording(FirefoxDriver driver, String idRecording) {
         throw new NotImplementedException();
     }
 
-    public static String prepareGatewayNullTest(FirefoxDriver driver, String recordingData,String recordingId) {
+    public static String cloneTo(FirefoxDriver driver, String toCloneFrom, String recordingId) {
         throw new NotImplementedException();
     }
 
@@ -274,6 +264,18 @@ public class DbRecordingSetupTest {
         throw new NotImplementedException();
     }
     public static void loadResults(FirefoxDriver driver,String idRecording) {
+        throw new NotImplementedException();
+    }
+
+    public static void prepareUiTest(FirefoxDriver driver, String uiTestId) {
+        throw new NotImplementedException();
+    }
+
+    public static void prepareGatewayNullTest(FirefoxDriver driver, String uiTestId) {
+        throw new NotImplementedException();
+    }
+
+    public static void prepareDbNullTest(FirefoxDriver driver, String dbNullTest) {
         throw new NotImplementedException();
     }
 }
