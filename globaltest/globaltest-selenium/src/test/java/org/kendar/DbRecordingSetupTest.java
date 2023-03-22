@@ -248,13 +248,6 @@ public class DbRecordingSetupTest {
         throw new NotImplementedException();
     }
 
-    public static String cloneTo(FirefoxDriver driver, String toCloneFrom, String recordingId) {
-        throw new NotImplementedException();
-    }
-
-    public static String prepareFakeDbTest(FirefoxDriver driver, String recordingData,String recordingId) {
-        throw new NotImplementedException();
-    }
 
     public static void startPlaying(FirefoxDriver driver,String idRecording) {
         throw new NotImplementedException();
@@ -267,15 +260,4 @@ public class DbRecordingSetupTest {
         throw new NotImplementedException();
     }
 
-    public static void prepareUiTest(FirefoxDriver driver, String uiTestId) {
-        throw new NotImplementedException();
-    }
-
-    public static void prepareGatewayNullTest(FirefoxDriver driver, String uiTestId) {
-        throw new NotImplementedException();
-    }
-
-    public static void prepareDbNullTest(FirefoxDriver driver, String dbNullTest) {
-        throw new NotImplementedException();
-    }
 }
