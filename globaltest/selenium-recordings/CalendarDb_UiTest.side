@@ -1,0 +1,249 @@
+{
+  "id": "f9d99879-5f87-411d-9e3c-f3d5d73fb089",
+  "version": "2.0",
+  "name": "CalendarDb_UiTest",
+  "url": "http://localhost",
+  "tests": [{
+    "id": "a502f33b-3703-4821-bea2-510a1306b1e4",
+    "name": "CalendarDb_UiTestPrepare",
+    "commands": [{
+      "id": "51bdffee-0231-4694-83f3-e0e0bfd55097",
+      "comment": "",
+      "command": "open",
+      "target": "/plugins/recording/script.html?id=12",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a2094366-2133-4a37-a177-504a15ed1b00",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1225x946",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "0bf251cb-e348-4fe9-bfb0-ffc3723d4c9d",
+      "comment": "",
+      "command": "click",
+      "target": "id=grid-visibility",
+      "targets": [
+        ["id=grid-visibility", "id"],
+        ["css=#recording-list-grid #grid-visibility", "css:finder"],
+        ["xpath=//button[@id='grid-visibility']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list-grid']/div/button", "xpath:idRelative"],
+        ["xpath=//div/div/div/div[2]/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0f3a048a-057e-41b7-9654-5199c53d34e3",
+      "comment": "",
+      "command": "click",
+      "target": "css=tr:nth-child(6) .form-check-input",
+      "targets": [
+        ["css=tr:nth-child(6) .form-check-input", "css:finder"],
+        ["xpath=(//input[@value=''])[8]", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list-grid']/div/div/div/div[2]/span/table/tbody/tr[6]/td[2]/input", "xpath:idRelative"],
+        ["xpath=//tr[6]/td[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0a900909-0165-4c3c-bd70-29414f30de7a",
+      "comment": "",
+      "command": "click",
+      "target": "id=mod-save",
+      "targets": [
+        ["id=mod-save", "id"],
+        ["css=#mod-save", "css:finder"],
+        ["xpath=//button[@id='mod-save']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list-grid']/div/div/div/div[3]/button[2]", "xpath:idRelative"],
+        ["xpath=//div[3]/button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "42a7d310-2915-48ba-8689-6b25f881be03",
+      "comment": "",
+      "command": "click",
+      "target": "id=grid-s-c-4",
+      "targets": [
+        ["id=grid-s-c-4", "id"],
+        ["css=td:nth-child(8) > #grid-s-c-4", "css:finder"],
+        ["xpath=//input[@id='grid-s-c-4']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list-grid']/table/tbody/tr/td[8]/input", "xpath:idRelative"],
+        ["xpath=//td[8]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "39d5d8c9-144d-4da1-95e4-b4383400c277",
+      "comment": "",
+      "command": "type",
+      "target": "id=grid-s-c-4",
+      "targets": [
+        ["id=grid-s-c-4", "id"],
+        ["css=td:nth-child(8) > #grid-s-c-4", "css:finder"],
+        ["xpath=//input[@id='grid-s-c-4']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list-grid']/table/tbody/tr/td[8]/input", "xpath:idRelative"],
+        ["xpath=//td[8]/input", "xpath:position"]
+      ],
+      "value": "www"
+    }, {
+      "id": "5875a2cd-437c-4442-b024-e5e17e312f5a",
+      "comment": "",
+      "command": "click",
+      "target": "id=recording-list-checkall",
+      "targets": [
+        ["id=recording-list-checkall", "id"],
+        ["css=#recording-list-checkall", "css:finder"],
+        ["xpath=//button[@id='recording-list-checkall']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list']/button", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Check all')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "979c43b5-4994-4562-a69d-cab42f57110a",
+      "comment": "",
+      "command": "click",
+      "target": "id=recording-list-delsel",
+      "targets": [
+        ["id=recording-list-delsel", "id"],
+        ["css=#recording-list-delsel", "css:finder"],
+        ["xpath=//button[@id='recording-list-delsel']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list']/button[3]", "xpath:idRelative"],
+        ["xpath=//div/div/div/div/button[3]", "xpath:position"],
+        ["xpath=//button[contains(.,'Delete Selected')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "55730081-5e35-4eae-a906-335faabc07ba",
+      "comment": "",
+      "command": "runScript",
+      "target": "window.scrollTo(0,852)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2350eb98-c4fb-4dec-9f82-36453c8483e1",
+      "comment": "",
+      "command": "click",
+      "target": "id=grid-s-c-5",
+      "targets": [
+        ["id=grid-s-c-5", "id"],
+        ["css=#grid-s-c-5", "css:finder"],
+        ["xpath=//input[@id='grid-s-c-5']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list-grid']/table/tbody/tr/td[9]/input", "xpath:idRelative"],
+        ["xpath=//td[9]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "cae50639-7c40-4157-9525-8c61bbc4aaee",
+      "comment": "",
+      "command": "type",
+      "target": "id=grid-s-c-5",
+      "targets": [
+        ["id=grid-s-c-5", "id"],
+        ["css=#grid-s-c-5", "css:finder"],
+        ["xpath=//input[@id='grid-s-c-5']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list-grid']/table/tbody/tr/td[9]/input", "xpath:idRelative"],
+        ["xpath=//td[9]/input", "xpath:position"]
+      ],
+      "value": "/int/be"
+    }, {
+      "id": "1660be51-c609-4be9-afe1-779be8413e9b",
+      "comment": "",
+      "command": "click",
+      "target": "id=recording-list-checkall",
+      "targets": [
+        ["id=recording-list-checkall", "id"],
+        ["css=#recording-list-checkall", "css:finder"],
+        ["xpath=//button[@id='recording-list-checkall']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list']/button", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Check all')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "bb4a8eac-a73e-4fff-a10d-1c9acff2c310",
+      "comment": "",
+      "command": "click",
+      "target": "id=recording-list-delsel",
+      "targets": [
+        ["id=recording-list-delsel", "id"],
+        ["css=#recording-list-delsel", "css:finder"],
+        ["xpath=//button[@id='recording-list-delsel']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list']/button[3]", "xpath:idRelative"],
+        ["xpath=//div/div/div/div/button[3]", "xpath:position"],
+        ["xpath=//button[contains(.,'Delete Selected')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "108f4dbb-8cf1-4fcd-b90c-5a2a4edf3eff",
+      "comment": "",
+      "command": "runScript",
+      "target": "window.scrollTo(0,883)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "56171a1b-17ce-4dbf-ab8e-7537bc8a520f",
+      "comment": "",
+      "command": "click",
+      "target": "id=grid-s-c-1",
+      "targets": [
+        ["id=grid-s-c-1", "id"],
+        ["css=td:nth-child(5) > #grid-s-c-1", "css:finder"],
+        ["xpath=//input[@id='grid-s-c-1']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list-grid']/table/tbody/tr/td[5]/input", "xpath:idRelative"],
+        ["xpath=//td[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "59f983d6-c7a5-468c-8610-3df93319758c",
+      "comment": "",
+      "command": "type",
+      "target": "id=grid-s-c-1",
+      "targets": [
+        ["id=grid-s-c-1", "id"],
+        ["css=td:nth-child(5) > #grid-s-c-1", "css:finder"],
+        ["xpath=//input[@id='grid-s-c-1']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list-grid']/table/tbody/tr/td[5]/input", "xpath:idRelative"],
+        ["xpath=//td[5]/input", "xpath:position"]
+      ],
+      "value": "db"
+    }, {
+      "id": "7f7fbf70-1040-481b-b45f-9ad6ca067727",
+      "comment": "",
+      "command": "click",
+      "target": "id=recording-list-checkall",
+      "targets": [
+        ["id=recording-list-checkall", "id"],
+        ["css=#recording-list-checkall", "css:finder"],
+        ["xpath=//button[@id='recording-list-checkall']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list']/button", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Check all')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "41ac3589-4d40-4908-81c0-e5f33605edbc",
+      "comment": "",
+      "command": "click",
+      "target": "id=recording-list-delsel",
+      "targets": [
+        ["id=recording-list-delsel", "id"],
+        ["css=#recording-list-delsel", "css:finder"],
+        ["xpath=//button[@id='recording-list-delsel']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list']/button[3]", "xpath:idRelative"],
+        ["xpath=//div/div/div/div/button[3]", "xpath:position"],
+        ["xpath=//button[contains(.,'Delete Selected')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "9ebd5e9f-db97-48c2-86e2-afa429259789",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["a502f33b-3703-4821-bea2-510a1306b1e4"]
+  }],
+  "urls": ["http://localhost/"],
+  "plugins": []
+}

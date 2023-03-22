@@ -16,12 +16,13 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -84,6 +85,44 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
         var res = el.get();
 
         throw new RuntimeException("Unable to click "+res.getText());
+    }
+
+    public static WebElement checkCheckBox(FirefoxDriver driver,Supplier<WebElement> supplier) {
+        var el = supplier.get();
+        if(!el.isSelected()){
+            var js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].click();",el);
+        }
+        return el;
+    }
+    public static WebElement uncheckCheckBox(FirefoxDriver driver,Supplier<WebElement> supplier) {
+        var el = supplier.get();
+        if(el.isSelected()){
+            var js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].click();",el);
+        }
+        return el;
+    }
+    public static WebElement scrollFind(FirefoxDriver driver,Supplier<WebElement> supplier) throws Exception {
+        var js = (JavascriptExecutor) driver;
+        var result = js.executeScript("return Math.max(" +
+                "document.body.scrollHeight," +
+                "document.body.offsetHeight," +
+                "document.body.clientHeight," +
+                "document.documentElement.scrollHeight," +
+                "document.documentElement.offsetHeight," +
+                "document.documentElement.clientHeight" +
+                ");").toString();
+        var length = Integer.parseInt(result);
+        for(int i=0;i<length;i+=100){
+            js.executeScript("window.scrollTo(0,"+i+")");
+            var we = supplier.get();
+            if(we==null){
+                continue;
+            }
+            return we;
+        }
+        throw new RuntimeException("Unable to find item!");
     }
 
     @Override
@@ -293,6 +332,24 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
         HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").noError().run();
         pu.sigtermProcesses((str)-> str.contains("-Dloader.main=org.kendar.Main"));
         _processUtils.killProcesses(findHamProcesses);
+    }
+
+    private static String byGetResource(Class clazz) {
+        URL classResource = clazz.getResource(clazz.getSimpleName() + ".class");
+        if (classResource == null) {
+            throw new RuntimeException("class resource is null");
+        }
+        String url = classResource.toString();
+        if (url.startsWith("jar:file:")) {
+            // extract 'file:......jarName.jar' part from the url string
+            String path = url.replaceAll("^jar:(file:.*[.]jar)!/.*", "$1");
+            try {
+                return Paths.get(new URL(path).toURI()).toString();
+            } catch (Exception e) {
+                throw new RuntimeException("Invalid Jar File URL String");
+            }
+        }
+        throw new RuntimeException("Invalid Jar File URL String");
     }
 
     public static void runHamJar(Class<?> caller) throws Exception {
