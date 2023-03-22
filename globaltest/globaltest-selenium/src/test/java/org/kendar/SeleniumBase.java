@@ -259,7 +259,16 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
 
     public static boolean shutdownHookInitialized = false;
 
-
+    public static String highlight(WebElement element,String ... style){
+        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+        var oldStile = element.getAttribute("style");
+        if(style.length==0) {
+            jsExecutor.executeScript("arguments[0].setAttribute('style', 'border:2px solid red; background:yellow')", element);
+        }else{
+            jsExecutor.executeScript("arguments[0].setAttribute('style', '"+style[0]+"')", element);
+        }
+        return oldStile;
+    }
 
     private static void initShutdownHook() {
         if (shutdownHookInitialized) return;
