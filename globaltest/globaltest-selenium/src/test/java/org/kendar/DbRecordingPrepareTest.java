@@ -48,14 +48,14 @@ public class DbRecordingPrepareTest {
         doClick(()->driver.findElement(By.id("recording-list-delsel")));
         Thread.sleep(1000);
 
-        https://www.baeldung.com/java-full-path-of-jar-from-class
+        //https://www.baeldung.com/java-full-path-of-jar-from-class
+        var version = SeleniumBase.getVersion();
         _processUtils.killProcesses( (psLine) ->
                 psLine.contains("java") &&
-                        psLine.contains("httpanswering") &&
-                        (psLine.contains("be-")||psLine.contains("gateway-")||
-                                psLine.contains("org.h2.tools.Server")) &&
+                        (psLine.contains("httpanswering") &&
+                        (psLine.contains("be-"+version)||psLine.contains("gateway-"+version)))||
+                                psLine.contains("org.h2.tools.Server") &&
                         !psLine.contains("globaltest"));
-
     }
 
     public static void prepareGatewayNullTest(FirefoxDriver driver, String gatewayTestId) {

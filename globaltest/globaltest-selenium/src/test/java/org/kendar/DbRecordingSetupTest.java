@@ -215,7 +215,7 @@ public class DbRecordingSetupTest {
         Thread.sleep(1000);
         driver.findElement(By.id("createScriptBt")).click();
         Thread.sleep(1000);
-        driver.findElement(By.cssSelector(".col-md-8:nth-child(3) #name")).click();
+        doClick(()->driver.findElement(By.cssSelector(".col-md-8:nth-child(3) #name")));
         driver.findElement(By.cssSelector(".col-md-8:nth-child(3) #name")).clear();
         Thread.sleep(1000);
         driver.findElement(By.cssSelector(".col-md-8:nth-child(3) #name")).sendKeys("be");
@@ -249,8 +249,9 @@ public class DbRecordingSetupTest {
     }
 
 
-    public static void startPlaying(FirefoxDriver driver,String idRecording) {
-        throw new NotImplementedException();
+    public static void startPlaying(FirefoxDriver driver,String idRecording) throws InterruptedException {
+        doClick(()->driver.findElement(By.id("recording-play")));
+        Thread.sleep(1000);
     }
 
     public static void startNullPlaying(FirefoxDriver driver,String idRecording) {

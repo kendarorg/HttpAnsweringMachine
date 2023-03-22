@@ -16,10 +16,13 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -151,6 +154,7 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
         if(started)return;
         started = true;
         try {
+            _processUtils.killProcesses(findFirefoxHidden);
             var firefoxExecutable = SeleniumBase.findFirefox();
 
             Proxy proxy = new Proxy();
@@ -190,7 +194,7 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
                 }
             }).build(),options);
 
-            //driver.manage().timeouts().implicitlyWait(Duration.of(2000, ChronoUnit.MILLIS));
+            driver.manage().timeouts().implicitlyWait(Duration.of(10000, ChronoUnit.MILLIS));
             //driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             sessionId = driver.getSessionId();
             js = (JavascriptExecutor) driver;
@@ -334,22 +338,13 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
         _processUtils.killProcesses(findHamProcesses);
     }
 
-    private static String byGetResource(Class clazz) {
-        URL classResource = clazz.getResource(clazz.getSimpleName() + ".class");
-        if (classResource == null) {
-            throw new RuntimeException("class resource is null");
+    public static String getVersion() {
+        var path = Path.of(getRootPath(SeleniumBase.class),"scripts","version.txt");
+        try {
+            return Files.readString(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        String url = classResource.toString();
-        if (url.startsWith("jar:file:")) {
-            // extract 'file:......jarName.jar' part from the url string
-            String path = url.replaceAll("^jar:(file:.*[.]jar)!/.*", "$1");
-            try {
-                return Paths.get(new URL(path).toURI()).toString();
-            } catch (Exception e) {
-                throw new RuntimeException("Invalid Jar File URL String");
-            }
-        }
-        throw new RuntimeException("Invalid Jar File URL String");
     }
 
     public static void runHamJar(Class<?> caller) throws Exception {

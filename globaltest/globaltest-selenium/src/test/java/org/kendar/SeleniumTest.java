@@ -2,11 +2,10 @@ package org.kendar;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kendar.globaltest.ProcessRunner;
 
 @ExtendWith({SeleniumBase.class})
 public class SeleniumTest extends SeleniumBase{
-
-
 
     @Test
     void googleHack() throws Throwable {
