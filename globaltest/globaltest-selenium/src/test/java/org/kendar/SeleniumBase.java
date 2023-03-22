@@ -194,7 +194,7 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
                 }
             }).build(),options);
 
-            driver.manage().timeouts().implicitlyWait(Duration.of(10000, ChronoUnit.MILLIS));
+            //driver.manage().timeouts().implicitlyWait(Duration.of(10000, ChronoUnit.MILLIS));
             //driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             sessionId = driver.getSessionId();
             js = (JavascriptExecutor) driver;
