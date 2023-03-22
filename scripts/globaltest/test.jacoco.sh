@@ -10,7 +10,7 @@ cd ham
 SCRIPT_DIR=$(pwd)
 
 
-HAM_VERSION=4.2.0
+HAM_VERSION=4.2.1
 # Retrieve the jar name
 cd jacoco
 mvn test

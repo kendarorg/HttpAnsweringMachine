@@ -1,6 +1,6 @@
 @ECHO OFF
 
-set HAM_VERSION=4.2.0
+set HAM_VERSION=4.2.1
 REM Initialize
 set START_DIR=%~dp0
 cd %START_DIR%

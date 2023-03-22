@@ -1,7 +1,7 @@
 FROM ham.base
 
 
-RUN echo ham.openvpn version-4.2.0
+RUN echo ham.openvpn version-4.2.1
 
 # Testing: pamtester
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && \

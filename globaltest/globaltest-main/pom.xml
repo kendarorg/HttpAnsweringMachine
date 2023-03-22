@@ -7,18 +7,18 @@
     <parent>
         <groupId>org.kendar</groupId>
         <artifactId>globaltest</artifactId>
-        <version>4.2.0</version>
+        <version>4.2.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.kendar</groupId>
     <artifactId>globaltest-main</artifactId>
-    <version>4.2.0</version>
+    <version>4.2.1</version>
     <dependencies>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>globaltest-lib</artifactId>
-            <version>4.2.0</version>
+            <version>4.2.1</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
