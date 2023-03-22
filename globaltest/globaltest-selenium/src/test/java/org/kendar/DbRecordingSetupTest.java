@@ -204,6 +204,36 @@ public class DbRecordingSetupTest {
 
     }
 
+    public static String startRecording(FirefoxDriver driver, String idRecording) throws InterruptedException {
+        driver.get("http://www.local.test/index.html");
+        Thread.sleep(1000);
+        driver.findElement(By.linkText("Replayer web")).click();
+        Thread.sleep(1000);
+        driver.findElement(By.id("main-recording-addnew")).click();
+        Thread.sleep(1000);
+        driver.findElement(By.id("createScriptName")).click();
+        Thread.sleep(1000);
+        driver.findElement(By.id("createScriptName")).sendKeys(idRecording);
+        Thread.sleep(1000);
+        driver.findElement(By.id("createScriptBt")).click();
+        Thread.sleep(1000);
+        driver.findElement(By.cssSelector(".col-md-8:nth-child(3) #name")).click();
+        driver.findElement(By.cssSelector(".col-md-8:nth-child(3) #name")).clear();
+        Thread.sleep(1000);
+        driver.findElement(By.cssSelector(".col-md-8:nth-child(3) #name")).sendKeys("be");
+        Thread.sleep(1000);
+        driver.findElement(By.id("description")).click();
+        Thread.sleep(1000);
+        driver.findElement(By.id("description")).sendKeys("Full recording sample");
+        Thread.sleep(1000);
+        driver.findElement(By.id("recording-saverglobscriptdata")).click();
+        Thread.sleep(1000);
+        driver.findElement(By.id("recording-startrecord")).click();
+        Thread.sleep(1000);
+        var result = driver.findElement(By.id("id")).getAttribute("value");
+        return result;
+    }
+
 
     public static void analyzeRecording(FirefoxDriver driver, String idRecording) {
         throw new NotImplementedException();
@@ -213,12 +243,15 @@ public class DbRecordingSetupTest {
         throw new NotImplementedException();
     }
 
-    public static String startRecording(FirefoxDriver driver, String idRecording) {
-        throw new NotImplementedException();
-    }
 
-    public static void stopAction(FirefoxDriver driver, String idRecording) {
-        throw new NotImplementedException();
+
+    public static void stopAction(FirefoxDriver driver, String idRecording) throws InterruptedException {
+        driver.get("http://www.local.test/plugins/recording/script.html?id="+idRecording);
+        Thread.sleep(1000);
+        doClick(()->driver.findElement(By.id("recording-stop")));
+        Thread.sleep(3000);
+        doClick(()->driver.findElement(By.id("recording-list-reload")));
+        Thread.sleep(1000);
     }
 
     public static String prepareUiTest(FirefoxDriver driver, String recordingData,String recordingId) {

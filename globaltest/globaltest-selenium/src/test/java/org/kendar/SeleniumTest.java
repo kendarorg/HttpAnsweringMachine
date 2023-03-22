@@ -25,10 +25,10 @@ public class SeleniumTest extends SeleniumBase{
         var driver = SeleniumBase.getDriver();
         DbRecordingSetupTest.startup(driver);
 
-        DbRecordingUiActions.fullNavigation(driver);
 
         //Create recording
         String mainId = DbRecordingSetupTest.startRecording(driver,"Main");
+        DbRecordingUiActions.fullNavigation(driver);
 
         DbRecordingSetupTest.stopAction(driver,mainId);
         DbRecordingSetupTest.analyzeRecording(driver,mainId);

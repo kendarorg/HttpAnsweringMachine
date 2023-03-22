@@ -1,0 +1,214 @@
+{
+  "id": "cca45b8a-5da7-4c27-bd09-8b749a054653",
+  "version": "2.0",
+  "name": "CalendarDb_Recording",
+  "url": "http://www.local.test",
+  "tests": [{
+    "id": "d172d7ec-9d6b-454e-8ef6-64a8082f76bf",
+    "name": "CalendarDb_Recording",
+    "commands": [{
+      "id": "5fecc5cf-32cc-4f61-bdb3-6a15af8de5fa",
+      "comment": "",
+      "command": "open",
+      "target": "/index.html",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "fbe3fe84-7db4-42b7-b350-33559a7d6c11",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1104x899",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8f00e46d-28fe-4e4c-a219-d80060a2c743",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Replayer web",
+      "targets": [
+        ["linkText=Replayer web", "linkText"],
+        ["css=#index05 #grid-rowc-1-0", "css:finder"],
+        ["xpath=//a[contains(text(),'Replayer web')]", "xpath:link"],
+        ["xpath=(//a[@id='grid-rowc-1-0'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='index05']/table/tbody/tr[3]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, 'plugins/recording/index.html')]", "xpath:href"],
+        ["xpath=//div[2]/div/table/tbody/tr[3]/td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Replayer web')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "446cbfd3-5330-4e20-8501-ac2570011cdd",
+      "comment": "",
+      "command": "click",
+      "target": "id=main-recording-addnew",
+      "targets": [
+        ["id=main-recording-addnew", "id"],
+        ["css=#main-recording-addnew", "css:finder"],
+        ["xpath=//button[@id='main-recording-addnew']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f1d476c9-8970-4681-b976-33963f62d3fd",
+      "comment": "",
+      "command": "click",
+      "target": "id=createScriptName",
+      "targets": [
+        ["id=createScriptName", "id"],
+        ["name=createScriptName", "name"],
+        ["css=#createScriptName", "css:finder"],
+        ["xpath=//input[@id='createScriptName']", "xpath:attributes"],
+        ["xpath=//form[@id='createScript']/div/input", "xpath:idRelative"],
+        ["xpath=//form/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ded32d61-9e19-481b-b79e-b166befc4a4b",
+      "comment": "",
+      "command": "type",
+      "target": "id=createScriptName",
+      "targets": [
+        ["id=createScriptName", "id"],
+        ["name=createScriptName", "name"],
+        ["css=#createScriptName", "css:finder"],
+        ["xpath=//input[@id='createScriptName']", "xpath:attributes"],
+        ["xpath=//form[@id='createScript']/div/input", "xpath:idRelative"],
+        ["xpath=//form/div/input", "xpath:position"]
+      ],
+      "value": "RecordingSample"
+    }, {
+      "id": "f56281c3-fb31-43c8-bdce-83c186db72b5",
+      "comment": "",
+      "command": "click",
+      "target": "id=createScriptBt",
+      "targets": [
+        ["id=createScriptBt", "id"],
+        ["name=createScriptBt", "name"],
+        ["css=#createScriptBt", "css:finder"],
+        ["xpath=//button[@id='createScriptBt']", "xpath:attributes"],
+        ["xpath=//form[@id='createScript']/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Create')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "23ef082b-1cd2-48c1-a8d8-e0ddc140002d",
+      "comment": "",
+      "command": "click",
+      "target": "css=.col-md-8:nth-child(3) #name",
+      "targets": [
+        ["css=.col-md-8:nth-child(3) #name", "css:finder"],
+        ["xpath=(//input[@id='name'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='recording-dynext']/div[3]/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5817ed6d-8d88-4e69-b7eb-86b4ed487f49",
+      "comment": "",
+      "command": "type",
+      "target": "css=.col-md-8:nth-child(3) #name",
+      "targets": [
+        ["css=.col-md-8:nth-child(3) #name", "css:finder"],
+        ["xpath=(//input[@id='name'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='recording-dynext']/div[3]/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": "be"
+    }, {
+      "id": "a9c5db69-d4d3-40ae-8115-511708d09ab5",
+      "comment": "",
+      "command": "click",
+      "target": "id=description",
+      "targets": [
+        ["id=description", "id"],
+        ["name=description", "name"],
+        ["css=#description", "css:finder"],
+        ["xpath=//textarea[@id='description']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/div[3]/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7999ea3b-019c-4897-b258-cdde56e22012",
+      "comment": "",
+      "command": "type",
+      "target": "id=description",
+      "targets": [
+        ["id=description", "id"],
+        ["name=description", "name"],
+        ["css=#description", "css:finder"],
+        ["xpath=//textarea[@id='description']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/div[3]/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "Full recording sample"
+    }, {
+      "id": "fecafd3a-263a-426c-8366-a8dfce0456fa",
+      "comment": "",
+      "command": "click",
+      "target": "id=recording-saverglobscriptdata",
+      "targets": [
+        ["id=recording-saverglobscriptdata", "id"],
+        ["css=#recording-saverglobscriptdata", "css:finder"],
+        ["xpath=//button[@id='recording-saverglobscriptdata']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,' Save global script data')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "37ad869e-0b8e-44f3-8a88-4e8d89968ee5",
+      "comment": "",
+      "command": "click",
+      "target": "id=recording-startrecord",
+      "targets": [
+        ["id=recording-startrecord", "id"],
+        ["css=#recording-startrecord", "css:finder"],
+        ["xpath=//button[@id='recording-startrecord']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Record')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "9dcdd271-4e11-4500-b49a-611d6ec76822",
+      "comment": "",
+      "command": "click",
+      "target": "id=recording-stop",
+      "targets": [
+        ["id=recording-stop", "id"],
+        ["css=#recording-stop", "css:finder"],
+        ["xpath=//button[@id='recording-stop']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div[2]/button[3]", "xpath:idRelative"],
+        ["xpath=//button[3]", "xpath:position"],
+        ["xpath=//button[contains(.,'Stop')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "8e807e0f-0cc6-43d1-aebc-d948abfb0088",
+      "comment": "",
+      "command": "click",
+      "target": "id=recording-list-reload",
+      "targets": [
+        ["id=recording-list-reload", "id"],
+        ["css=#recording-list-reload", "css:finder"],
+        ["xpath=//button[@id='recording-list-reload']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list']/button[8]", "xpath:idRelative"],
+        ["xpath=//button[8]", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "215aed48-a3ef-488f-8b71-d4c478c79411",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["d172d7ec-9d6b-454e-8ef6-64a8082f76bf"]
+  }],
+  "urls": ["http://localhost/"],
+  "plugins": []
+}

@@ -7,7 +7,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class DbRecordingUiActions {
 
     public static void fullNavigation(FirefoxDriver driver) throws InterruptedException {
-
+        Thread.sleep(1000);
         driver.get("http://www.sample.test/");
         Thread.sleep(1000);
         driver.manage().window().setSize(new Dimension(1024, 1024));
@@ -42,6 +42,7 @@ public class DbRecordingUiActions {
         driver.findElement(By.id("grid-rowe-0-0")).click();
         Thread.sleep(1000);
         driver.findElement(By.id("name")).click();
+        driver.findElement(By.id("name")).clear();
         Thread.sleep(1000);
         driver.findElement(By.id("name")).sendKeys("Jane Doe");
         driver.findElement(By.id("mod-save")).click();

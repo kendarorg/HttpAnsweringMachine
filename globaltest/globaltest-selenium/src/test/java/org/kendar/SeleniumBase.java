@@ -267,18 +267,23 @@ public class SeleniumBase implements BeforeAllCallback,ExtensionContext.Store.Cl
 
             @Override
             public void run() {
-                var pu = new ProcessUtils(new HashMap<>());
+
                 try {
 
-                    HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").noError().run();
-                    pu.sigtermProcesses((str)-> str.contains("-Dloader.main=org.kendar.Main"));
-                    _processUtils.killProcesses(findHamProcesses);
+                    killHam();
                 } catch (Exception e) {
 
                 }
             }
 
         });
+    }
+
+    public static void killHam() throws Exception {
+        var pu = new ProcessUtils(new HashMap<>());
+        HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").noError().run();
+        pu.sigtermProcesses((str)-> str.contains("-Dloader.main=org.kendar.Main"));
+        _processUtils.killProcesses(findHamProcesses);
     }
 
     public static void runHamJar(Class<?> caller) throws Exception {
