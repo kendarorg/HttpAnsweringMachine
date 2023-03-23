@@ -12,7 +12,7 @@
           </tr>
           <tr v-for="(key,index) in columns">
             <td>{{ loadLabel(key) }}</td>
-            <td><input class="form-check-input" type="checkbox" value=""
+            <td><input :id="prefix+'show-key-'+key.id" class="form-check-input" type="checkbox" value=""
                        v-model="key.visible"></td>
           </tr>
         </table>
@@ -21,13 +21,13 @@
     </simple-modal>
     <div v-if="pageSize!=null">
       <br>
-      <button id="grid-gostart" v-bind:disabled="index<=0" class="bi bi bi-skip-backward" @click="goStart"
+      <button :id="prefix+'grid-gostart'" v-bind:disabled="index<=0" class="bi bi bi-skip-backward" @click="goStart"
               title="Start"></button>
-      <button id="grid-goprev" v-bind:disabled="index<=0" class="bi bi-skip-start" @click="goPrev"
+      <button :id="prefix+'grid-goprev'" v-bind:disabled="index<=0" class="bi bi-skip-start" @click="goPrev"
               title="Prev"></button>
-      <button id="grid-gonext" v-bind:disabled="!canGoNext()" class="bi bi-skip-end" @click="goNext"
+      <button :id="prefix+'grid-gonext'" v-bind:disabled="!canGoNext()" class="bi bi-skip-end" @click="goNext"
               title="Next"></button>
-      <button id="grid-goend" v-bind:disabled="!canGoNext()" class="bi bi-skip-forward" @click="goEnd"
+      <button :id="prefix+'grid-goend'" v-bind:disabled="!canGoNext()" class="bi bi-skip-forward" @click="goEnd"
               title="End"></button>
       <!--&nbsp;&nbsp;
 
@@ -36,21 +36,21 @@
     </div>
     <div>
 
-      <button id="grid-visibility" class="bi bi-eyeglasses" @click="showVisibility()"
+      <button :id="prefix+'grid-visibility'" class="bi bi-eyeglasses" @click="showVisibility()"
               title="Columns visibility"></button>
     </div>
     <table class="rounded-top">
       <thead>
       <tr>
         <th v-for="(key,index) in extra">
-          <span :id="'grid-h-e-'+index" v-if="getBoolVal(key.sortable,true)" class="btn btn-kendar btn-sm">
+          <span :id="prefix+'grid-h-e-'+index" v-if="getBoolVal(key.sortable,true)" class="btn btn-kendar btn-sm">
           {{ buildLabel(key) | cleanUp }}
           </span>
         </th>
         <th v-for="key in columns"
             @click="sortBy(key.id)"
         >
-          <span :id="'grid-h-car-'+index" v-if="getBoolVal(key.sortable,true) && getBoolVal(key.visible,true)"
+          <span :id="prefix+'grid-h-car-'+index" v-if="getBoolVal(key.sortable,true) && getBoolVal(key.visible,true)"
                 class="btn btn-kendar btn-sm"
                 :class="{ active: sortKey == key.id }">
                 {{ buildLabel(key) | cleanUp }}
@@ -69,12 +69,12 @@
       <tbody>
       <tr>
         <td v-for="(key,index) in extra">
-          <component :id="'grid-s-e-'+index" :is="'s'+key.template" v-if="getBoolVal(key.searchable,true)"
+          <component :id="prefix+'grid-s-e-'+index" :is="'s'+key.template" v-if="getBoolVal(key.searchable,true)"
                      :ref="'search'+key.id"
                      :descriptor="key"/>
         </td>
         <td v-for="(key,index) in columns">
-          <component :id="'grid-s-c-'+index" :is="'s'+key.template"
+          <component :id="prefix+'grid-s-c-'+index" :is="'s'+key.template"
                      v-if="getBoolVal(key.searchable,true) && getBoolVal(key.visible,true)"
                      :ref="'search'+key.id"
                      :descriptor="key"/>
@@ -82,13 +82,13 @@
       </tr>
       <tr v-for="(entry,index) in filteredData" @click="onClicked(entry,index)">
         <td v-for="(key,coln) in extra">
-          <component :id="'grid-rowe-'+index+'-'+coln" :is="'c'+key.template" :descriptor="key"
+          <component :id="prefix+'grid-rowe-'+index+'-'+coln" :is="'c'+key.template" :descriptor="key"
                      :value="entry"
                      :ref="buildIndexCrc(entry)+key.id"
                      :index="buildId(entry)"/>
         </td>
         <td v-for="(key,coln) in columns">
-          <component :id="'grid-rowc-'+index+'-'+coln"
+          <component :id="prefix+'grid-rowc-'+index+'-'+coln"
                      v-if="getBoolVal(key.visible,true)"
                      :is="'c'+key.template" :descriptor="key"
                      :value="entry"
@@ -104,6 +104,11 @@
 <script>
 module.exports = {
   props: {
+    prefix:{
+      type: String,
+      optional: true,
+      default: ""
+    },
     columns: {
       type: Array,
       default: () => [

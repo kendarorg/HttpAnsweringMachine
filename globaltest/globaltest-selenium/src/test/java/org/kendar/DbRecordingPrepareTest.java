@@ -20,7 +20,7 @@ public class DbRecordingPrepareTest {
         doClick(() -> driver.findElement(By.id("grid-visibility")));
         Thread.sleep(1000);
         checkCheckBox(driver, () -> driver.findElement(By.cssSelector("tr:nth-child(6) .form-check-input")));
-        Thread.sleep(1000);
+        Thread.sleep(1000); //todo show-key-requestHost show-key-stimulatorTest
         doClick(() -> driver.findElement(By.id("mod-save")));
         Thread.sleep(1000);
         scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-4"))).click();

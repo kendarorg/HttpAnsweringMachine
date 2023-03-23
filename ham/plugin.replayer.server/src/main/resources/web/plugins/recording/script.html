@@ -133,6 +133,7 @@
                     <button id="recording-grid-result-reload" v-on:click="reloadResult()" class="bi bi-arrow-clockwise" title="Reload"></button>
                     <br><br>
                     <simple-grid id="recording-grid-result"
+                                 prefix="results"
                                  v-on:gridclicked="gridClickedResult"
                                  ref="results"
                                  :columns="columnsResult"
