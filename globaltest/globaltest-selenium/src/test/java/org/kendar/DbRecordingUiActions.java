@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import static org.kendar.SeleniumBase.doClick;
+
 public class DbRecordingUiActions {
 
     public static void fullNavigation(FirefoxDriver driver) throws InterruptedException {
@@ -12,42 +14,42 @@ public class DbRecordingUiActions {
         Thread.sleep(1000);
         driver.manage().window().setSize(new Dimension(1024, 1024));
         Thread.sleep(1000);
-        driver.findElement(By.id("appoint-add")).click();
+        doClick(() -> driver.findElement(By.id("appoint-add")));
         Thread.sleep(1000);
-        driver.findElement(By.id("role")).click();
+        doClick(() -> driver.findElement(By.id("role")));
         Thread.sleep(1000);
         driver.findElement(By.id("role")).sendKeys("Doctor");
         Thread.sleep(1000);
         driver.findElement(By.id("name")).sendKeys("John Doe");
-        driver.findElement(By.id("mod-save")).click();
+        doClick(() -> driver.findElement(By.id("mod-save")));
         Thread.sleep(1000);
-        driver.findElement(By.id("grid-rowe-0-2")).click();
+        doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
         Thread.sleep(1000);
-        driver.findElement(By.id("appoint-add")).click();
+        doClick(() -> driver.findElement(By.id("appoint-add")));
         Thread.sleep(1000);
-        driver.findElement(By.id("description")).click();
+        doClick(() -> driver.findElement(By.id("description")));
         Thread.sleep(1000);
         driver.findElement(By.id("description")).sendKeys("Visit");
-        driver.findElement(By.id("mod-save")).click();
+        doClick(() -> driver.findElement(By.id("mod-save")));
         Thread.sleep(1000);
-        driver.findElement(By.id("grid-rowe-0-2")).click();
+        doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
         Thread.sleep(1000);
-        driver.findElement(By.id("grid-rowe-0-2")).click();
+        doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
         Thread.sleep(1000);
-        driver.findElement(By.id("grid-rowe-0-1")).click();
-        driver.findElement(By.cssSelector(".row")).click();
+        doClick(() -> driver.findElement(By.id("grid-rowe-0-1")));
+        doClick(() -> driver.findElement(By.cssSelector(".row")));
         Thread.sleep(1000);
-        driver.findElement(By.linkText("Employees")).click();
+        doClick(() -> driver.findElement(By.linkText("Employees")));
         Thread.sleep(1000);
-        driver.findElement(By.id("grid-rowe-0-0")).click();
+        doClick(() -> driver.findElement(By.id("grid-rowe-0-0")));
         Thread.sleep(1000);
-        driver.findElement(By.id("name")).click();
+        doClick(() -> driver.findElement(By.id("name")));
         driver.findElement(By.id("name")).clear();
         Thread.sleep(1000);
         driver.findElement(By.id("name")).sendKeys("Jane Doe");
-        driver.findElement(By.id("mod-save")).click();
+        doClick(() -> driver.findElement(By.id("mod-save")));
         Thread.sleep(1000);
-        driver.findElement(By.id("grid-rowe-0-1")).click();
+        doClick(() -> driver.findElement(By.id("grid-rowe-0-1")));
         Thread.sleep(1000);
     }
 }

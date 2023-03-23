@@ -70,7 +70,11 @@ public class ProcessUtils {
                 //var str="XPS15-KENDAR,,XPS15-KENDAR,System Idle Process,,,0,0,,20510591875000,,,System Idle Process,Microsoft Windows 11 Pro|C:\\WINDOWS|\\Device\\Harddisk0\\Partition3,0,0,9,60,0,60,8192,8,0,61440,0,1,0,1,0,0,0,0,,,32,0,8192,10.0.22621,8192,0,0";
 
                 var spl = javaHam.trim().split(",");
-                var pid = spl[spl.length-17];
+                var res= spl.length-17;
+                if(res<=0 || javaHam.startsWith("Node,")){
+                    continue;
+                }
+                var pid = spl[res];
                 var pr =new ProcessRunner(env).
                         withCommand("taskkill");
                 //if(!sigTerm) {

@@ -16,4 +16,6 @@ public interface HamReplayerBuilder {
     List<LocalRecording> retrieveRecordings(String name) throws HamException;
 
     LocalRecording retrieveRecording(long id) throws HamException;
+
+    List<RecordingResult> retrieveResults(long id) throws HamException;
 }

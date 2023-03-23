@@ -88,6 +88,13 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
         return null;
     }
 
+    @Override
+    public List<RecordingResult> retrieveResults(long id) throws HamException {
+        var request = hamBuilder.newRequest()
+                .withPath("/api/plugins/replayer/results?id="+id);
+        return hamBuilder.callJsonList(request.build(), RecordingResult.class).stream().collect(Collectors.toList());
+    }
+
 
     public static class ReplayerStatus {
         private String status;
