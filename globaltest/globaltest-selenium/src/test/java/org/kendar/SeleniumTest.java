@@ -11,12 +11,6 @@ import java.util.HashMap;
 @ExtendWith({SeleniumBase.class})
 public class SeleniumTest extends SeleniumBase {
 
-    ProcessUtils _processUtils = new ProcessUtils(new HashMap<>());
-
-    @Test
-    void simpleTest(){
-        System.out.println("simple");
-    }
     @Test
     void googleHack() throws Throwable {
             beforeAll(null);
