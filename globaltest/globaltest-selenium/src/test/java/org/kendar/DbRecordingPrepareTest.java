@@ -50,6 +50,8 @@ public class DbRecordingPrepareTest {
 
         //https://www.baeldung.com/java-full-path-of-jar-from-class
         var version = SeleniumBase.getVersion();
+        js.executeScript("window.addError('Killing be and gateway');");
+        Thread.sleep(5000);
         _processUtils.killProcesses((psLine) ->
                 psLine.contains("java") &&
                         (psLine.contains("httpanswering") &&
@@ -102,6 +104,10 @@ public class DbRecordingPrepareTest {
         Thread.sleep(1000);
 
         var version = SeleniumBase.getVersion();
+
+        js.executeScript("window.addError('Killing fe');");
+        js.executeScript("window.addError('Starting gateway');");
+        Thread.sleep(5000);
         _processUtils.killProcesses((psLine) ->
                 psLine.contains("java") &&
                         (psLine.contains("httpanswering") &&
@@ -154,7 +160,8 @@ public class DbRecordingPrepareTest {
         var js = (JavascriptExecutor) driver;
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + dbNullTest);
         Thread.sleep(1000);
-
+        js.executeScript("window.addError('Killing gateway');");
+        Thread.sleep(5000);
         var version = SeleniumBase.getVersion();
         _processUtils.killProcesses((psLine) ->
                 psLine.contains("java") &&

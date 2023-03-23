@@ -7,6 +7,7 @@ import org.kendar.globaltest.ProcessRunner;
 import org.kendar.globaltest.ProcessUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 
@@ -34,6 +35,7 @@ public class DbRecordingSetupTest {
                 withStartingPath(pathOf(root, "release", "calendar")).
                 runBackground();
 
+        var js = (JavascriptExecutor)driver;
         Thread.sleep(1000);
 
 
@@ -44,8 +46,11 @@ public class DbRecordingSetupTest {
         Thread.sleep(1000);
         driver.get("http://www.local.test/index.html");
         driver.manage().window().setSize(new Dimension(1024, 1024));
-
         Thread.sleep(2000);
+        js.executeScript("window.addError('Started gateway');");
+        js.executeScript("window.addError('Started fe');");
+        js.executeScript("window.addError('Started h2 database');");
+        Thread.sleep(5000);
         doClick(() -> driver.findElement(By.linkText("Url/Db Rewrites")));
         Thread.sleep(1000);
         doClick(() -> driver.findElement(By.id("webprx-gird-add")));
@@ -133,6 +138,9 @@ public class DbRecordingSetupTest {
         Thread.sleep(1000);
         run(root, env, "bedbham");
 
+        js.executeScript("window.addError('Started be ham');");
+        Thread.sleep(5000);
+
         doClick(() -> driver.findElement(By.linkText("Main")));
         Thread.sleep(1000);
         doClick(() -> driver.findElement(By.linkText("Dns")));
@@ -180,6 +188,8 @@ public class DbRecordingSetupTest {
         HttpChecker.checkForSite(120, "http://127.0.0.1:8100/api/v1/health")
                 .noError().run();
 
+        js.executeScript("window.addError('Killing be ham');");
+        Thread.sleep(5000);
         //Kill the be that initialized the system
         var version = SeleniumBase.getVersion();
         _processUtils.killProcesses((psLine) ->
@@ -216,7 +226,9 @@ public class DbRecordingSetupTest {
         Thread.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-startrecord")));
         Thread.sleep(1000);
-
+        var js = (JavascriptExecutor)driver;
+        js.executeScript("window.addError('Starting be ham without generating database');");
+        Thread.sleep(5000);
         //start the "nogen" and wait for its start
         var root = getRootPath(DbRecordingSetupTest.class);
         Map<String, String> env = new HashMap<>();
@@ -238,9 +250,7 @@ public class DbRecordingSetupTest {
     }
 
 
-    public static void analyzeRecording(FirefoxDriver driver, String idRecording) {
-        throw new NotImplementedException();
-    }
+
 
 
     public static void startPlaying(FirefoxDriver driver, String idRecording) throws InterruptedException {
@@ -276,6 +286,9 @@ public class DbRecordingSetupTest {
         doClick(() -> driver.findElement(By.id("recording-play")));
         Thread.sleep(1000);
         var root = getRootPath(DbRecordingSetupTest.class);
+        var js = (JavascriptExecutor)driver;
+        js.executeScript("window.addError('Starting be ham without generating database');");
+        Thread.sleep(5000);
         Map<String, String> env = new HashMap<>();
         run(root, env, "benogen");
         HttpChecker.checkForSite(120, "http://127.0.0.1:8100/api/v1/health")

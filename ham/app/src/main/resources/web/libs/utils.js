@@ -234,6 +234,7 @@ const generateUUID = function () { // Public Domain/MIT
 const addError = function (message) {
     addMessage(message, "error")
 }
+window.addError = addError;
 /*
 .catch(function (error) {
         addError("Invalid data");
@@ -242,6 +243,7 @@ const addError = function (message) {
 const addWarning = function (message) {
     addMessage(message, "warn")
 }
+window.addWarning = addWarning;
 const addMessage = function (message, type) {
 
     var color = "#b3e5a1";
@@ -287,6 +289,9 @@ const addMessage = function (message, type) {
         d.parentNode.removeChild(d);
     }, to * 1000);
 }
+
+
+window.addMessage = addMessage;
 
 const axiosOk = function () {
     addMessage("Ok")
