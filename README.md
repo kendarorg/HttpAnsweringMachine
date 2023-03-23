@@ -10,10 +10,7 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
-* <b>[Record/replay db calls in integration tests!](docs/generated/dbtest.md) :zap: NO DB REQUIRED TO REPLAY!</b>
-* <b>[Automatic Null test with db!](docs/generated/autodbtest.md) :zap: NO DB REQUIRED TO REPLAY!</b>
-* <b>[Modify recorded db calls!](docs/generated/moddb.md) :zap: NO DB REQUIRED TO REPLAY!</b>
-* <b>Js Filters now on db :zap:</b>
+* <b>Selenium automated runs :zap: for '[Record/replay db calls in integration tests!](docs/generated/dbtest.md)' and [Hacking google](docs/generated/googlehack.md) (with Selenium working unluckily on Win only) 
 
 <br>
 <br>
