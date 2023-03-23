@@ -15,7 +15,7 @@ public class SeleniumTest extends SeleniumBase {
 
     @Test
     void googleHack() throws Throwable {
-
+        beforeAll(null);
         runHamJar(SeleniumTest.class);
         var driver = SeleniumBase.getDriver();
         GoogleHackSetupTest.setup(driver);
@@ -27,7 +27,7 @@ public class SeleniumTest extends SeleniumBase {
 
     @Test
     void dbRecording() throws Throwable {
-
+        beforeAll(null);
         runHamJar(SeleniumTest.class);
         var driver = SeleniumBase.getDriver();
         DbRecordingSetupTest.startup(driver);
