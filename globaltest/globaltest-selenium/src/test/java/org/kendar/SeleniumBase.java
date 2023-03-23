@@ -16,6 +16,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -385,12 +386,39 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         return destFile;
     }
 
+    protected static void setEnv(Map<String, String> newenv) throws Exception {
+        try {
+            Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
+            Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
+            theEnvironmentField.setAccessible(true);
+            Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
+            env.putAll(newenv);
+            Field theCaseInsensitiveEnvironmentField = processEnvironmentClass.getDeclaredField("theCaseInsensitiveEnvironment");
+            theCaseInsensitiveEnvironmentField.setAccessible(true);
+            Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
+            cienv.putAll(newenv);
+        } catch (NoSuchFieldException e) {
+            Class[] classes = Collections.class.getDeclaredClasses();
+            Map<String, String> env = System.getenv();
+            for(Class cl : classes) {
+                if("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
+                    Field field = cl.getDeclaredField("m");
+                    field.setAccessible(true);
+                    Object obj = field.get(env);
+                    Map<String, String> map = (Map<String, String>) obj;
+                    map.clear();
+                    map.putAll(newenv);
+                }
+            }
+        }
+    }
+
     @Override
     public void beforeAll(ExtensionContext context) {
         if (started) return;
         started = true;
         try {
-            deleteDirectory(Path.of(getRootPath(SeleniumBase.class),
+            /*deleteDirectory(Path.of(getRootPath(SeleniumBase.class),
                     "globaltest",
                     "globaltest-selenium","target","kendar_test").toFile());
             unzip(Path.of(getRootPath(SeleniumBase.class),
@@ -399,6 +427,17 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
                     Path.of(getRootPath(SeleniumBase.class),
                             "globaltest",
                             "globaltest-selenium","target").toString());
+            deleteDirectory(Path.of(getRootPath(SeleniumBase.class),
+                    "globaltest",
+                    "globaltest-selenium","target","kendar_tmp").toFile());
+            Files.createDirectory(Path.of(getRootPath(SeleniumBase.class),
+                    "globaltest",
+                    "globaltest-selenium","target","kendar_tmp"));
+            var newEnv= new HashMap<String,String>();
+            newEnv.put("TMPDIR",Path.of(getRootPath(SeleniumBase.class),
+                    "globaltest",
+                    "globaltest-selenium","target","kendar_tmp").toString());
+            setEnv(newEnv);*/
             _processUtils.killProcesses(findFirefoxHidden);
             var firefoxExecutable = SeleniumBase.findFirefox();
             if(firefoxExecutable.startsWith("/snap/bin") && !SystemUtils.IS_OS_WINDOWS && !SystemUtils.IS_OS_MAC){
@@ -412,7 +451,6 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
                 }
 
                 System.setProperty("webdriver.gecko.driver",
-                        //"/snap/bin/firefox.geckodriver");
                         gecko.toAbsolutePath().toString());
             }
 
@@ -427,9 +465,6 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
             FirefoxBinary firefoxBinary = new FirefoxBinary(pathBinary);
             DesiredCapabilities desired = new DesiredCapabilities();
             FirefoxOptions options = new FirefoxOptions();
-            //tmpdir = Files.createTempDirectory("tmpDirPrefix").toFile().getAbsolutePath();
-            //options.addArguments("--profile");
-            //options.addArguments(tmpdir);
             desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setBinary(firefoxBinary));
             desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setProxy(proxy));
             //desired.setCapability("marionette", false);
@@ -437,9 +472,10 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
             FirefoxProfile profile = new FirefoxProfile(Path.of(getRootPath(SeleniumBase.class),
                     "globaltest",
                     "globaltest-selenium","target","kendar_test").toFile());
-            /*profile.setAcceptUntrustedCertificates(true);
+            //profile = new FirefoxProfile();
+            profile.setAcceptUntrustedCertificates(true);
             profile.setAssumeUntrustedCertificateIssuer(true);
-            profile.setPreference("network.proxy.socks_remote_dns", true);*/
+            profile.setPreference("network.proxy.socks_remote_dns", true);
             //profile.setPreference("fission.webContentIsolationStrategy",0);
             //profile.setPreference("fission.bfcacheInParent",false);
             desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setProfile(profile));

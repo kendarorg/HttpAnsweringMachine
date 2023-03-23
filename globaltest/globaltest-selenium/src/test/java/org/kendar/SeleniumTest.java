@@ -14,15 +14,19 @@ public class SeleniumTest extends SeleniumBase {
     ProcessUtils _processUtils = new ProcessUtils(new HashMap<>());
 
     @Test
+    void simpleTest(){
+        System.out.println("simple");
+    }
+    @Test
     void googleHack() throws Throwable {
-        beforeAll(null);
-        runHamJar(SeleniumTest.class);
-        var driver = SeleniumBase.getDriver();
-        GoogleHackSetupTest.setup(driver);
-        restart();
-        driver = SeleniumBase.getDriver();
-        GoogleHackSetupTest.verify(driver);
-        close();
+            beforeAll(null);
+            runHamJar(SeleniumTest.class);
+            var driver = SeleniumBase.getDriver();
+            GoogleHackSetupTest.setup(driver);
+            restart();
+            driver = SeleniumBase.getDriver();
+            GoogleHackSetupTest.verify(driver);
+            close();
     }
 
     @Test
