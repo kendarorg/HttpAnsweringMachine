@@ -15,11 +15,10 @@ import org.openqa.selenium.firefox.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +26,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static org.kendar.globaltest.LocalFileUtils.pathOf;
 
@@ -337,13 +339,82 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         beforeAll(null);
     }
 
+    public static void unzip(String src,String dst) throws IOException {
+        String fileZip = src;
+        File destDir = new File(dst);
+        byte[] buffer = new byte[1024];
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+        ZipEntry zipEntry = zis.getNextEntry();
+        while (zipEntry != null) {
+            File newFile = newFile(destDir, zipEntry);
+            if (zipEntry.isDirectory()) {
+                if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                    throw new IOException("Failed to create directory " + newFile);
+                }
+            } else {
+                // fix for Windows-created archives
+                File parent = newFile.getParentFile();
+                if (!parent.isDirectory() && !parent.mkdirs()) {
+                    throw new IOException("Failed to create directory " + parent);
+                }
+
+                // write file content
+                FileOutputStream fos = new FileOutputStream(newFile);
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
+                fos.close();
+            }
+            zipEntry = zis.getNextEntry();
+        }
+
+        zis.closeEntry();
+        zis.close();
+    }
+    public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+        File destFile = new File(destinationDir, zipEntry.getName());
+
+        String destDirPath = destinationDir.getCanonicalPath();
+        String destFilePath = destFile.getCanonicalPath();
+
+        if (!destFilePath.startsWith(destDirPath + File.separator)) {
+            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+        }
+
+        return destFile;
+    }
+
     @Override
     public void beforeAll(ExtensionContext context) {
         if (started) return;
         started = true;
         try {
+            deleteDirectory(Path.of(getRootPath(SeleniumBase.class),
+                    "globaltest",
+                    "globaltest-selenium","target","kendar_test").toFile());
+            unzip(Path.of(getRootPath(SeleniumBase.class),
+                    "globaltest",
+                    "kendar_test.zip").toString(),
+                    Path.of(getRootPath(SeleniumBase.class),
+                            "globaltest",
+                            "globaltest-selenium","target").toString());
             _processUtils.killProcesses(findFirefoxHidden);
             var firefoxExecutable = SeleniumBase.findFirefox();
+            if(firefoxExecutable.startsWith("/snap/bin") && !SystemUtils.IS_OS_WINDOWS && !SystemUtils.IS_OS_MAC){
+                Path gecko = Path.of("/snap/bin/firefox.geckodriver");
+                try (Stream<Path> walkStream = Files.walk(Paths.get("/snap/firefox"))) {
+                    var res = walkStream.filter(p -> p.toFile().isFile()).filter(f -> f.toString().endsWith("geckodriver")).
+                            sorted().findFirst();
+                    if(res.isPresent()){
+                        gecko = res.get();
+                    }
+                }
+
+                System.setProperty("webdriver.gecko.driver",
+                        //"/snap/bin/firefox.geckodriver");
+                        gecko.toAbsolutePath().toString());
+            }
 
             Proxy proxy = new Proxy();
 //Adding the desired host and port for the http, ssl, and ftp Proxy Servers respectively
@@ -363,14 +434,15 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
             desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setProxy(proxy));
             //desired.setCapability("marionette", false);
             //desired.setCapability("network.proxy.socks_remote_dns",true);
-            FirefoxProfile profile = new FirefoxProfile();
-            profile.setAcceptUntrustedCertificates(true);
+            FirefoxProfile profile = new FirefoxProfile(Path.of(getRootPath(SeleniumBase.class),
+                    "globaltest",
+                    "globaltest-selenium","target","kendar_test").toFile());
+            /*profile.setAcceptUntrustedCertificates(true);
             profile.setAssumeUntrustedCertificateIssuer(true);
-            profile.setPreference("network.proxy.socks_remote_dns", true);
+            profile.setPreference("network.proxy.socks_remote_dns", true);*/
             //profile.setPreference("fission.webContentIsolationStrategy",0);
             //profile.setPreference("fission.bfcacheInParent",false);
             desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setProfile(profile));
-
             //driver = new HtmlUnitDriver();
             //driver = new FirefoxDriver(options);
             driver = new FirefoxDriver((new GeckoDriverService.Builder() {
