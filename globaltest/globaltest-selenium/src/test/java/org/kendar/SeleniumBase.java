@@ -418,69 +418,24 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         if (started) return;
         started = true;
         try {
-            /*deleteDirectory(Path.of(getRootPath(SeleniumBase.class),
-                    "globaltest",
-                    "globaltest-selenium","target","kendar_test").toFile());
-            unzip(Path.of(getRootPath(SeleniumBase.class),
-                    "globaltest",
-                    "kendar_test.zip").toString(),
-                    Path.of(getRootPath(SeleniumBase.class),
-                            "globaltest",
-                            "globaltest-selenium","target").toString());
-            deleteDirectory(Path.of(getRootPath(SeleniumBase.class),
-                    "globaltest",
-                    "globaltest-selenium","target","kendar_tmp").toFile());
-            Files.createDirectory(Path.of(getRootPath(SeleniumBase.class),
-                    "globaltest",
-                    "globaltest-selenium","target","kendar_tmp"));
-            var newEnv= new HashMap<String,String>();
-            newEnv.put("TMPDIR",Path.of(getRootPath(SeleniumBase.class),
-                    "globaltest",
-                    "globaltest-selenium","target","kendar_tmp").toString());
-            setEnv(newEnv);*/
+
             _processUtils.killProcesses(findFirefoxHidden);
             var firefoxExecutable = SeleniumBase.findFirefox();
-            if(firefoxExecutable.startsWith("/snap/bin") && !SystemUtils.IS_OS_WINDOWS && !SystemUtils.IS_OS_MAC){
-                Path gecko = Path.of("/snap/bin/firefox.geckodriver");
-                try (Stream<Path> walkStream = Files.walk(Paths.get("/snap/firefox"))) {
-                    var res = walkStream.filter(p -> p.toFile().isFile()).filter(f -> f.toString().endsWith("geckodriver")).
-                            sorted().findFirst();
-                    if(res.isPresent()){
-                        gecko = res.get();
-                    }
-                }
-
-                System.setProperty("webdriver.gecko.driver",
-                        gecko.toAbsolutePath().toString());
-            }
 
             Proxy proxy = new Proxy();
-//Adding the desired host and port for the http, ssl, and ftp Proxy Servers respectively
             proxy.setSocksProxy("127.0.0.1:1080");
             proxy.setSocksVersion(5);
-            //proxy.setHttpProxy("127.0.0.1:1081");
-
-            //WebDriverManager.firefoxdriver().setup();
             File pathBinary = new File(firefoxExecutable);
             FirefoxBinary firefoxBinary = new FirefoxBinary(pathBinary);
             DesiredCapabilities desired = new DesiredCapabilities();
             FirefoxOptions options = new FirefoxOptions();
             desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setBinary(firefoxBinary));
-            desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setProxy(proxy));
-            //desired.setCapability("marionette", false);
-            //desired.setCapability("network.proxy.socks_remote_dns",true);
-            FirefoxProfile profile = new FirefoxProfile(Path.of(getRootPath(SeleniumBase.class),
-                    "globaltest",
-                    "globaltest-selenium","target","kendar_test").toFile());
-            //profile = new FirefoxProfile();
+            desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setProxy(proxy));;
+            FirefoxProfile profile = new FirefoxProfile();
             profile.setAcceptUntrustedCertificates(true);
             profile.setAssumeUntrustedCertificateIssuer(true);
             profile.setPreference("network.proxy.socks_remote_dns", true);
-            //profile.setPreference("fission.webContentIsolationStrategy",0);
-            //profile.setPreference("fission.bfcacheInParent",false);
             desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setProfile(profile));
-            //driver = new HtmlUnitDriver();
-            //driver = new FirefoxDriver(options);
             driver = new FirefoxDriver((new GeckoDriverService.Builder() {
                 @Override
                 protected GeckoDriverService createDriverService(File exe, int port,
@@ -490,8 +445,6 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
                 }
             }).build(), options);
 
-            //driver.manage().timeouts().implicitlyWait(Duration.of(10000, ChronoUnit.MILLIS));
-            //driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             sessionId = driver.getSessionId();
             js = (JavascriptExecutor) driver;
 
