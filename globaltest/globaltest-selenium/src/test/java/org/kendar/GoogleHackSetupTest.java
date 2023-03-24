@@ -8,6 +8,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kendar.SeleniumBase.doClick;
+import static org.kendar.SeleniumBase.setupSize;
 
 public class GoogleHackSetupTest {
 
@@ -16,7 +17,7 @@ public class GoogleHackSetupTest {
 
         driver.get("https://www.google.com");
         Thread.sleep(1000);
-        driver.manage().window().setSize(new Dimension(1024, 1024));
+        setupSize(driver);
         Thread.sleep(1000);
         WebElement el = driver.findElement(By.xpath("//*[text()='Accetta tutto']"));
         if (el == null) {
@@ -43,7 +44,7 @@ public class GoogleHackSetupTest {
         assertFalse(text.contains("Bing_logo"));
         driver.get("http://www.local.test/index.html");
         Thread.sleep(1000);
-        driver.manage().window().setSize(new Dimension(1024, 1024));
+        setupSize(driver);
         Thread.sleep(1000);
         doClick(() -> driver.findElement(By.id("grid-rowc-2-0")));
         Thread.sleep(1000);

@@ -45,12 +45,9 @@ public class DbRecordingSetupTest {
 
         Thread.sleep(1000);
         driver.get("http://www.local.test/index.html");
-        driver.manage().window().setSize(new Dimension(1024, 1024));
+        setupSize(driver);
         Thread.sleep(2000);
-        js.executeScript("window.addError('Started gateway');");
-        js.executeScript("window.addError('Started fe');");
-        js.executeScript("window.addError('Started h2 database');");
-        Thread.sleep(5000);
+        showMessage(driver,"Started gateway, fe and h2 db");
         doClick(() -> driver.findElement(By.linkText("Url/Db Rewrites")));
         Thread.sleep(1000);
         doClick(() -> driver.findElement(By.id("webprx-gird-add")));
@@ -134,12 +131,11 @@ public class DbRecordingSetupTest {
         Thread.sleep(1000);
         driver.findElement(By.id("passwordL")).sendKeys("password");
         Thread.sleep(1000);
-        doClick(() -> driver.findElement(By.id("mod-save")));
+        scrollFind(driver,() -> driver.findElement(By.id("mod-save"))).click();
         Thread.sleep(1000);
         run(root, env, "bedbham");
 
-        js.executeScript("window.addError('Started be ham');");
-        Thread.sleep(5000);
+        showMessage(driver,"Started be");
 
         doClick(() -> driver.findElement(By.linkText("Main")));
         Thread.sleep(1000);
@@ -188,8 +184,7 @@ public class DbRecordingSetupTest {
         HttpChecker.checkForSite(120, "http://127.0.0.1:8100/api/v1/health")
                 .noError().run();
 
-        js.executeScript("window.addError('Killing be ham');");
-        Thread.sleep(5000);
+        showMessage(driver,"Stopping be");
         //Kill the be that initialized the system
         var version = SeleniumBase.getVersion();
         _processUtils.killProcesses((psLine) ->
@@ -224,11 +219,10 @@ public class DbRecordingSetupTest {
         Thread.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-saverglobscriptdata")));
         Thread.sleep(1000);
+        showMessage(driver,"Starting recording");
         doClick(() -> driver.findElement(By.id("recording-startrecord")));
         Thread.sleep(1000);
-        var js = (JavascriptExecutor)driver;
-        js.executeScript("window.addError('Starting be ham without generating database');");
-        Thread.sleep(5000);
+        showMessage(driver,"Starting be without db initialisation");
         //start the "nogen" and wait for its start
         var root = getRootPath(DbRecordingSetupTest.class);
         Map<String, String> env = new HashMap<>();
@@ -254,19 +248,21 @@ public class DbRecordingSetupTest {
 
 
     public static void startPlaying(FirefoxDriver driver, String idRecording) throws InterruptedException {
+        showMessage(driver,"Starting replay");
         doClick(() -> driver.findElement(By.id("recording-play")));
         Thread.sleep(1000);
     }
 
     public static void startNullPlaying(FirefoxDriver driver, String idRecording) throws Exception {
+        showMessage(driver,"Starting replay with self-test");
         scrollFind(driver, () -> driver.findElement(By.id("recording-playstim"))).click();
         Thread.sleep(2000);
     }
 
-    public static void loadResults(FirefoxDriver driver, String idRecording) throws InterruptedException, HamException {
+    public static void loadResults(FirefoxDriver driver, String idRecording) throws Exception {
         doClick(() -> driver.findElement(By.linkText("RESULTS")));
         Thread.sleep(1000);
-        doClick(() -> driver.findElement(By.id("recording-grid-result-reload")));
+        scrollFind(driver,() -> driver.findElement(By.id("recording-grid-result-reload")),100).click();
         Thread.sleep(1000);
         var builder = HamBuilder
                 .newHam("www.local.test")
@@ -286,9 +282,7 @@ public class DbRecordingSetupTest {
         doClick(() -> driver.findElement(By.id("recording-play")));
         Thread.sleep(1000);
         var root = getRootPath(DbRecordingSetupTest.class);
-        var js = (JavascriptExecutor)driver;
-        js.executeScript("window.addError('Starting be ham without generating database');");
-        Thread.sleep(5000);
+        showMessage(driver,"Starting be without initializing db");
         Map<String, String> env = new HashMap<>();
         run(root, env, "benogen");
         HttpChecker.checkForSite(120, "http://127.0.0.1:8100/api/v1/health")

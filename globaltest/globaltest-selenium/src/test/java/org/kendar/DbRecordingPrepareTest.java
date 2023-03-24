@@ -23,7 +23,7 @@ public class DbRecordingPrepareTest {
         Thread.sleep(1000); //todo show-key-requestHost show-key-stimulatorTest
         doClick(() -> driver.findElement(By.id("mod-save")));
         Thread.sleep(1000);
-        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-4"))).click();
+        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-4")),100).click();
         Thread.sleep(1000);
         driver.findElement(By.id("grid-s-c-4")).sendKeys("www");
         Thread.sleep(1000);
@@ -31,7 +31,7 @@ public class DbRecordingPrepareTest {
         Thread.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-delsel")));
         Thread.sleep(1000);
-        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-5"))).click();
+        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-5")),100).click();
         Thread.sleep(1000);
         driver.findElement(By.id("grid-s-c-5")).sendKeys("/int/be");
         Thread.sleep(1000);
@@ -39,7 +39,7 @@ public class DbRecordingPrepareTest {
         Thread.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-delsel")));
         Thread.sleep(1000);
-        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-1"))).click();
+        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-1")),100).click();
         Thread.sleep(1000);
         driver.findElement(By.id("grid-s-c-1")).sendKeys("db");
         Thread.sleep(1000);
@@ -50,8 +50,7 @@ public class DbRecordingPrepareTest {
 
         //https://www.baeldung.com/java-full-path-of-jar-from-class
         var version = SeleniumBase.getVersion();
-        js.executeScript("window.addError('Killing be and gateway');");
-        Thread.sleep(5000);
+        showMessage(driver,"Stopping be and gateway");
         _processUtils.killProcesses((psLine) ->
                 psLine.contains("java") &&
                         (psLine.contains("httpanswering") &&
@@ -105,9 +104,7 @@ public class DbRecordingPrepareTest {
 
         var version = SeleniumBase.getVersion();
 
-        js.executeScript("window.addError('Killing fe');");
-        js.executeScript("window.addError('Starting gateway');");
-        Thread.sleep(5000);
+        showMessage(driver,"Stopping fe and starting gateway");
         _processUtils.killProcesses((psLine) ->
                 psLine.contains("java") &&
                         (psLine.contains("httpanswering") &&
@@ -134,14 +131,14 @@ public class DbRecordingPrepareTest {
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         doClick(() -> driver.findElement(By.id("recording-list-delsel")));
         Thread.sleep(1000);
-        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-1"))).click();
+        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-1")),100).click();
         Thread.sleep(1000);
         driver.findElement(By.id("grid-s-c-1")).sendKeys("db");
         Thread.sleep(1000);
         driver.findElement(By.id("recording-list-checkall")).click();
         driver.findElement(By.id("recording-list-delsel")).click();
         Thread.sleep(1000);
-        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-5"))).click();
+        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-5")),100).click();
         Thread.sleep(1000);
         driver.findElement(By.id("grid-s-c-5")).sendKeys("/int/gat");
         Thread.sleep(1000);
@@ -150,7 +147,7 @@ public class DbRecordingPrepareTest {
         driver.findElement(By.id("recording-list-seltostim")).click();
         driver.findElement(By.id("recording-saverglobscriptdata")).click();
         Thread.sleep(1000);
-        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-5"))).click();
+        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-5")),100).click();
 
         //https://www.baeldung.com/java-full-path-of-jar-from-class
 
@@ -160,8 +157,7 @@ public class DbRecordingPrepareTest {
         var js = (JavascriptExecutor) driver;
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + dbNullTest);
         Thread.sleep(1000);
-        js.executeScript("window.addError('Killing gateway');");
-        Thread.sleep(5000);
+        showMessage(driver,"Stopping gateway");
         var version = SeleniumBase.getVersion();
         _processUtils.killProcesses((psLine) ->
                 psLine.contains("java") &&
@@ -187,14 +183,14 @@ public class DbRecordingPrepareTest {
         Thread.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-delsel")));
         Thread.sleep(1000);
-        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-1"))).click();
+        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-1")),100).click();
         driver.findElement(By.id("grid-s-c-5")).sendKeys("/int/gat");
         Thread.sleep(1000);
         driver.findElement(By.id("recording-list-checkall")).click();
         Thread.sleep(1000);
         driver.findElement(By.id("recording-list-delsel")).click();
         Thread.sleep(1000);
-        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-5"))).click();
+        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-5")),100).click();
         Thread.sleep(1000);
         driver.findElement(By.id("grid-s-c-5")).sendKeys("/int/be");
         Thread.sleep(1000);
@@ -204,7 +200,7 @@ public class DbRecordingPrepareTest {
         Thread.sleep(1000);
         driver.findElement(By.id("recording-saverglobscriptdata")).click();
         Thread.sleep(1000);
-        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-5"))).click();
+        scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-5")),100).click();
         Thread.sleep(1000);
     }
 }

@@ -8,6 +8,7 @@ import org.kendar.globaltest.HttpChecker;
 import org.kendar.globaltest.LocalFileUtils;
 import org.kendar.globaltest.ProcessRunner;
 import org.kendar.globaltest.ProcessUtils;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebElement;
@@ -61,6 +62,13 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
 
     public static FirefoxDriver getDriver() {
         return driver;
+    }
+
+    public static void showMessage(FirefoxDriver driver,String message) throws InterruptedException {
+        var js = (JavascriptExecutor)driver;
+        js.executeScript("alert(\""+message+"\");");
+        Thread.sleep(5000);
+        driver.switchTo().alert().dismiss();
     }
 
     public static void doClick(Supplier<WebElement> el) {
@@ -119,7 +127,11 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         return el;
     }
 
-    public static WebElement scrollFind(FirefoxDriver driver, Supplier<WebElement> supplier) throws Exception {
+    public static void setupSize(FirefoxDriver driver){
+        driver.manage().window().setSize(new Dimension(1366, 900));
+    }
+
+    public static WebElement scrollFind(FirefoxDriver driver, Supplier<WebElement> supplier,long ... extraLength) throws Exception {
         var js = (JavascriptExecutor) driver;
         var result = js.executeScript("return Math.max(" +
                 "document.body.scrollHeight," +
@@ -135,6 +147,10 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
             var we = supplier.get();
             if (we == null) {
                 continue;
+            }
+            if(extraLength.length>0){
+                js.executeScript("arguments[0].scrollIntoView(true);window.scrollBy(0,-100);", we);
+                //js.executeScript("window.scrollTo(0," + (i+extraLength[0]) + ")");
             }
             return we;
         }

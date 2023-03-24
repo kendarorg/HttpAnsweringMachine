@@ -5,6 +5,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import static org.kendar.SeleniumBase.doClick;
+import static org.kendar.SeleniumBase.setupSize;
 
 public class DbRecordingUiActions {
 
@@ -12,7 +13,7 @@ public class DbRecordingUiActions {
         Thread.sleep(1000);
         driver.get("http://www.sample.test/");
         Thread.sleep(1000);
-        driver.manage().window().setSize(new Dimension(1024, 1024));
+        setupSize(driver);
         Thread.sleep(1000);
         doClick(() -> driver.findElement(By.id("appoint-add")));
         Thread.sleep(1000);
