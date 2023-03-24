@@ -10,15 +10,15 @@
 
     <button id="res-downdata" v-if="data.responseHash!='0'" v-on:click="downloadData()" class="bi bi-download"
             title="Download Data"></button>
-    <button id="req-savechang" v-if="!data.response.binaryResponse" type="button" class="bi bi-floppy" v-on:click="updateContent()"
+    <button id="res-savechang" v-if="!data.response.binaryResponse" type="button" class="bi bi-floppy" v-on:click="updateContent()"
             title="Save changes">Save response data change
     </button>
     <div v-if="!data.response.binaryResponse">
       <br>
       <div class="form-group">
-        <label for="free_content">Value</label>
+        <label for="res_free_content">Value</label>
         <textarea class="form-control" rows="6" cols="50"
-                  name="free_content" id="free_content"
+                  name="res_free_content" id="res_free_content"
                   v-model="data.response.responseText"></textarea>
       </div>
     </div>

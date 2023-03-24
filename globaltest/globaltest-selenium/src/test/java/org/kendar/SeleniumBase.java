@@ -53,6 +53,7 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
     private SessionId sessionId;
 
     public static ProcessRunner run(String root, Map<String, String> env, String script) throws Exception {
+        env.put("RUN_INLINE","true");
         return new ProcessRunner(env).
                 asShell().
                 withCommand(script + LocalFileUtils.execScriptExt()).

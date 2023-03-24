@@ -23,9 +23,9 @@
       <vtab name="JSON" width="1000px">
         <br>
         <div class="form-group" width="1000px">
-          <label for="free_content">Value</label>
+          <label for="cmd11_free_content">Value</label>
           <textarea style="width:1000px" class="form-control" rows="12" cols="100"
-                    name="free_content" id="free_content"
+                    name="cmd11_free_content" id="cmd11_free_content"
                     v-model="shown"></textarea>
         </div>
       </vtab>

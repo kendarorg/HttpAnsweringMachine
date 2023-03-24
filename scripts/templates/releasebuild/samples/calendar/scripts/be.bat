@@ -8,5 +8,9 @@ cd ..
 set CALENDAR_PATH=%cd%
 
 cd %CALENDAR_PATH%\be
-start java  -cp "be-%HAM_VERSION%.jar;janus-driver-%JANUS_DRIVER_VERSION%.jar" org.springframework.boot.loader.JarLauncher --spring.config.location=file:///%cd%\application.properties
+IF "%RUN_INLINE%"=="" (
+    start java  -cp "be-%HAM_VERSION%.jar;janus-driver-%JANUS_DRIVER_VERSION%.jar" org.springframework.boot.loader.JarLauncher --spring.config.location=file:///%cd%\application.properties
+) else (
+    start /b java  -cp "be-%HAM_VERSION%.jar;janus-driver-%JANUS_DRIVER_VERSION%.jar" org.springframework.boot.loader.JarLauncher --spring.config.location=file:///%cd%\application.properties
+)
 cd %START_LOCATION%

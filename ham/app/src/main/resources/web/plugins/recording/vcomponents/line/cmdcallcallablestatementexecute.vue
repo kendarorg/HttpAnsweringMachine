@@ -4,7 +4,7 @@
     <div class="form-group">
       <label htmlFor="method">Query</label>
       <textarea style="width:1000px" wrap="soft" class="form-control" rows="6" cols="60"
-                name="free_content" id="free_content"
+                name="cmd2_free_content" id="cmd2_free_content"
                 v-model="sql"></textarea>
     </div>
     <br>

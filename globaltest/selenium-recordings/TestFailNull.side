@@ -1,0 +1,178 @@
+{
+  "id": "65f34a0c-87e3-4c52-b873-af3bd8106ebd",
+  "version": "2.0",
+  "name": "TestFailNull",
+  "url": "http://localhost",
+  "tests": [{
+    "id": "9fc97a60-befc-4085-85cc-55ddcc1e7661",
+    "name": "FailResponse",
+    "commands": [{
+      "id": "b0e0fa2a-ddd1-4144-8ad9-0f4dc63db1a0",
+      "comment": "",
+      "command": "open",
+      "target": "/plugins/recording/script.html?id=15",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "64159f17-ab96-4334-949e-00fd7fbcf142",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1936x1048",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "18806242-d19e-41ed-8aac-c7230b2ef322",
+      "comment": "",
+      "command": "click",
+      "target": "id=recording-list-reload",
+      "targets": [
+        ["id=recording-list-reload", "id"],
+        ["css=#recording-list-reload", "css:finder"],
+        ["xpath=//button[@id='recording-list-reload']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list']/button[8]", "xpath:idRelative"],
+        ["xpath=//button[8]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6519c376-a3c5-47af-828c-7df21bb75b38",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=recording-list-reload",
+      "targets": [
+        ["id=recording-list-reload", "id"],
+        ["css=#recording-list-reload", "css:finder"],
+        ["xpath=//button[@id='recording-list-reload']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list']/button[8]", "xpath:idRelative"],
+        ["xpath=//button[8]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "eb7db193-6e5b-4df2-83ae-4e127336ea32",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "id=recording-list-reload",
+      "targets": [
+        ["id=recording-list-reload", "id"],
+        ["css=#recording-list-reload", "css:finder"],
+        ["xpath=//button[@id='recording-list-reload']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list']/button[8]", "xpath:idRelative"],
+        ["xpath=//button[8]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4c8d2f15-5811-425d-b87c-fad8ea6d46c9",
+      "comment": "",
+      "command": "click",
+      "target": "id=grid-rowe-5-1",
+      "targets": [
+        ["id=grid-rowe-5-1", "id"],
+        ["css=#grid-rowe-5-1", "css:finder"],
+        ["xpath=//button[@id='grid-rowe-5-1']", "xpath:attributes"],
+        ["xpath=//div[@id='recording-list-grid']/table/tbody/tr[7]/td[2]/button", "xpath:idRelative"],
+        ["xpath=//tr[7]/td[2]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bad74e1f-ca6f-4189-b375-fc6f60abe8c1",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=[SELECTED 285]",
+      "targets": [
+        ["linkText=[SELECTED 285]", "linkText"],
+        ["css=.nav-item:nth-child(2) > .nav-link", "css:finder"],
+        ["xpath=//a[contains(text(),'[SELECTED 285]')]", "xpath:link"],
+        ["xpath=//div[@id='app']/div/div[3]/div/ul/li[2]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '#selected')]", "xpath:href"],
+        ["xpath=//li[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'[SELECTED 285]')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "7848c21b-b0ef-44e9-9ae2-acee0cdb3e18",
+      "comment": "",
+      "command": "selectFrame",
+      "target": "index=0",
+      "targets": [
+        ["index=0"]
+      ],
+      "value": ""
+    }, {
+      "id": "c700e445-4804-423f-887b-0df0fb956a1e",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=RESDATA",
+      "targets": [
+        ["linkText=RESDATA", "linkText"],
+        ["css=.nav-item:nth-child(5) > .nav-link", "css:finder"],
+        ["xpath=//a[contains(text(),'RESDATA')]", "xpath:link"],
+        ["xpath=//div[@id='app']/div/div/ul/li[5]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '#resdata')]", "xpath:href"],
+        ["xpath=//li[5]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'RESDATA')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "27df9686-4f6c-413d-86a0-dfc4686d8677",
+      "comment": "",
+      "command": "click",
+      "target": "css=div:nth-child(4) > .form-group > #free_content",
+      "targets": [
+        ["css=div:nth-child(4) > .form-group > #free_content", "css:finder"],
+        ["xpath=(//textarea[@id='free_content'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/div/div[5]/div/div[2]/div/textarea", "xpath:idRelative"],
+        ["xpath=//div[5]/div/div[2]/div/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "afc11ef9-ae0c-4b9d-84e3-5d3cb6173adf",
+      "comment": "",
+      "command": "type",
+      "target": "css=div:nth-child(4) > .form-group > #free_content",
+      "targets": [
+        ["css=div:nth-child(4) > .form-group > #free_content", "css:finder"],
+        ["xpath=(//textarea[@id='free_content'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/div/div[5]/div/div[2]/div/textarea", "xpath:idRelative"],
+        ["xpath=//div[5]/div/div[2]/div/textarea", "xpath:position"]
+      ],
+      "value": "[{\"id\":1,\"name\":\"John Doe\",\"role\":\"Doctor\",\"fail\":\"fail\"}]"
+    }, {
+      "id": "7a52ef46-7fa0-4205-965b-6d196f1ec089",
+      "comment": "",
+      "command": "click",
+      "target": "id=req-savechang",
+      "targets": [
+        ["id=req-savechang", "id"],
+        ["css=#req-savechang", "css:finder"],
+        ["xpath=//button[@id='req-savechang']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/div/div[5]/div/button[2]", "xpath:idRelative"],
+        ["xpath=//div[5]/div/button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Save response data change')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "205a1f1c-6fb6-4712-9180-8ee02f8ab441",
+      "comment": "",
+      "command": "click",
+      "target": "id=current-saveglobalchanges",
+      "targets": [
+        ["id=current-saveglobalchanges", "id"],
+        ["css=#current-saveglobalchanges", "css:finder"],
+        ["xpath=//button[@id='current-saveglobalchanges']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Save global changes')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "ca662871-5f09-4131-9214-717b32579db7",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["9fc97a60-befc-4085-85cc-55ddcc1e7661"]
+  }],
+  "urls": ["http://localhost/"],
+  "plugins": []
+}

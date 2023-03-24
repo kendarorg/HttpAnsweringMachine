@@ -16,9 +16,9 @@
     <div v-if="!data.request.binaryRequest">
       <br>
       <div class="form-group">
-        <label for="free_content">Value</label>
+        <label for="req_free_content">Value</label>
         <textarea class="form-control" rows="6" cols="50"
-                  name="free_content" id="free_content"
+                  name="req_free_content" id="req_free_content"
                   v-model="data.request.requestText"></textarea>
       </div>
     </div>
