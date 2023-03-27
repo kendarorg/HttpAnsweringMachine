@@ -186,7 +186,7 @@ public class Main {
     private static void testDockerCalendarAndQuotesSamples(String dockerIp, String samplesDir) throws Exception {
         LogWriter.info("Starting composer calendar");
         startComposer(pathOf(samplesDir, "calendar", "hub_composer"), "docker-compose-local.yml", "down").runBackground();
-        Thread.sleep(3000);
+        Sleeper.sleep(3000);
         startComposer(pathOf(samplesDir, "calendar", "hub_composer"), "docker-compose-local.yml", "up", Main::handleDockerErrors).runBackground();
         HttpChecker.checkForSite(60, "http://www.local.test/api/health").withProxy(dockerIp,1081).onError(()->doExit(1)).run();
         HttpChecker.checkForSite(60, "http://www.sample.test/api/v1/health").withProxy(dockerIp,1081).onError(()->doExit(1)).run();
@@ -197,15 +197,15 @@ public class Main {
 
         LogWriter.info("Starting composer quotes");
         startComposer(pathOf(samplesDir, "quotes", "hub_composer"), "docker-compose-local.yml", "down").runBackground();
-        Thread.sleep(3000);
+        Sleeper.sleep(3000);
         startComposer(pathOf(samplesDir, "quotes", "hub_composer"), "docker-compose-local.yml", "up", Main::handleDockerErrors).runBackground();
 
-        Thread.sleep(3000);
+        Sleeper.sleep(3000);
         HttpChecker.checkForSite(60, "http://www.local.test/api/health").withProxy(dockerIp,1081).onError(()->doExit(1)).run();
         HttpChecker.checkForSite(60, "http://www.quotes.test/api/health/index.php").withProxy(dockerIp,1081).onError(()->doExit(1)).run();
         startComposer(pathOf(samplesDir, "quotes", "hub_composer"), "docker-compose-local.yml", "down").runBackground();
 
-        Thread.sleep(3000);
+        Sleeper.sleep(3000);
     }
 
     private static void handleRunErrors(String a, Process process) {
@@ -271,7 +271,7 @@ public class Main {
                 if(!isSudo){
                     System.err.println("[WARNING] BEWARE!");
                     System.err.println("[WARNING] NOT RUNNING AS SUDO. PORTS LIKE 80,443 and 53 ARE NOT USUALLY ALLOWED");
-                    Thread.sleep(1000);
+                    Sleeper.sleep(1000);
                 }
             }
             if(!available(80)){
@@ -375,7 +375,7 @@ public class Main {
         LogWriter.info("Waiting for coverage data");
         while ((!Files.exists(path) || Files.size(path) == 0) && end > System.currentTimeMillis()) {
             System.out.print(".");
-            Thread.sleep(1000);
+            Sleeper.sleep(1000);
         }
         if (!Files.exists(path) || Files.size(path) == 0) {
             LogWriter.errror("Error loading jacoco reports " + path);

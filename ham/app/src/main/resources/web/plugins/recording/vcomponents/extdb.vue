@@ -21,8 +21,8 @@
     </div>
     <div class="col-md-8">
       <div class="form-group">
-        <label for="name">DbNames (comma separated)</label>
-        <input @change="changeDbName" class="form-control" type="text" name="name" id="name" v-model="dbNames"/>
+        <label for="extdbname">DbNames (comma separated)</label>
+        <input @change="changeDbName" class="form-control" type="text" name="extdbname" id="extdbname" v-model="dbNames"/>
       </div>
     </div>
   </div>

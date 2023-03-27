@@ -94,7 +94,7 @@ public class LogWriter {
                         }
                     }
                 }
-                Thread.sleep(1000);
+                Sleeper.sleep(1000);
             }catch (Exception ex){
 
             }

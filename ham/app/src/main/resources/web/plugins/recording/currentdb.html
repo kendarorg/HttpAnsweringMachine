@@ -21,7 +21,7 @@
         </button>
         <br><br>
         <h3>{{data.request.path}}</h3>
-        <vtabs width="800px">
+        <vtabs prefix="curdb" width="800px">
             <vtab name="REQDATA">
                 <br>
                 <serializable-object :data="data.request.requestText" @changed="changedAt" width="800px">

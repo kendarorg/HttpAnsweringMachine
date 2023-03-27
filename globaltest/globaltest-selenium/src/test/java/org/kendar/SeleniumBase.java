@@ -5,10 +5,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.kendar.globaltest.HttpChecker;
-import org.kendar.globaltest.LocalFileUtils;
-import org.kendar.globaltest.ProcessRunner;
-import org.kendar.globaltest.ProcessUtils;
+import org.kendar.globaltest.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Proxy;
@@ -60,7 +57,7 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
     public static void showMessage(ChromeDriver driver,String message) throws InterruptedException {
         var js = (JavascriptExecutor)driver;
         js.executeScript("alert(\""+message+"\");");
-        Thread.sleep(5000);
+        Sleeper.sleep(5000);
         driver.switchTo().alert().dismiss();
     }
 
@@ -68,16 +65,13 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         for (var i = 0; i < 10; i++) {
             var res = el.get();
             if (res == null) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
+                    Sleeper.sleep(1000);
 
-                }
                 continue;
             }
             try {
                 res.click();
-                Thread.sleep(500);
+                Sleeper.sleep(500);
                 try {
                     res = el.get();
                     if (res != null) {
@@ -91,11 +85,8 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
                 System.out.println(e);
             }
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
+                Sleeper.sleep(1000);
 
-            }
         }
         var res = el.get();
 

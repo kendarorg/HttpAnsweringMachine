@@ -1,6 +1,6 @@
 <template>
   <div v-if="typeof this.data!='undefined'" width="1000px">
-    <vtabs width="1000px">
+    <vtabs prefix="vcoline" width="1000px">
       <vtab name="COMPONENT" width="1000px">
         <br>
         <dynamic-component id="vser-selected-comp" width="1000px" v-if="selectedComponentItem!=null"

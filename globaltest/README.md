@@ -3,7 +3,7 @@
 Regexp
 
 FROM: [\t ]+(driver.findElement)([\(a-zA-Z0-9\.\":\-\ )]+)(.click\(\))
-TO: doClick(()->$1$1)
+TO: doClick(()->$1$2)
 
 ### Scroll
 

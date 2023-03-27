@@ -37,13 +37,6 @@ public class SeleniumTest extends SeleniumBase {
         DbRecordingSetupTest.stopAction(driver, mainId);
         //TODODbRecordingSetupTest.analyzeRecording(driver,mainId);
 
-        //Do Ui test
-        String uiTestId = DbRecordingPrepareTest.cloneTo(driver, mainId, "UiTest");
-        DbRecordingPrepareTest.prepareUiTest(driver, uiTestId);
-        DbRecordingSetupTest.startPlaying(driver, uiTestId);
-        DbRecordingUiActions.fullNavigation(driver);
-        DbRecordingSetupTest.stopAction(driver, uiTestId);
-
         //Do Gateway null test
         String gatewayTestId = DbRecordingPrepareTest.cloneTo(driver, mainId, "GatewayNullTest");
         DbRecordingPrepareTest.prepareGatewayNullTest(driver, gatewayTestId);
@@ -56,6 +49,15 @@ public class SeleniumTest extends SeleniumBase {
         DbRecordingPrepareTest.prepareGatewayNullTestFail(driver, gatewayFailTestId);
         DbRecordingSetupTest.startNullPlaying(driver, gatewayFailTestId);
         DbRecordingSetupTest.loadResults(driver, gatewayFailTestId);
+
+        //Do Ui test
+        String uiTestId = DbRecordingPrepareTest.cloneTo(driver, mainId, "UiTest");
+        DbRecordingPrepareTest.prepareUiTest(driver, uiTestId);
+        DbRecordingSetupTest.startPlaying(driver, uiTestId);
+        DbRecordingUiActions.fullNavigation(driver);
+        DbRecordingSetupTest.stopAction(driver, uiTestId);
+
+
 
         //Do Be fake db test
         String dbNullTest = DbRecordingPrepareTest.cloneTo(driver, mainId, "DbNullTest");

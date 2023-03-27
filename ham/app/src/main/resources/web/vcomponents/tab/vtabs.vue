@@ -1,8 +1,8 @@
 <template>
   <div class="col-md-8">
     <ul class="nav nav-tabs tabs-width">
-      <li v-for="tab in tabs" class="nav-item">
-        <a class="nav-link" :href="tab.href" :class="{ 'really-active': tab.isActive }" @click="selectTab(tab)">
+      <li v-for="(tab,index) in tabs" class="nav-item">
+        <a :id="prefix+'tab_'+index" class="nav-link" :href="tab.href" :class="{ 'really-active': tab.isActive }" @click="selectTab(tab)">
           {{ tab.compTitle }}
         </a>
       </li>
@@ -17,6 +17,11 @@
 module.exports = {
   name: 'vtabs',
   props: {
+    prefix:{
+      type: String,
+      required: false,
+      default:""
+    },
     reactToHashBang: {
       type: Boolean,
       required: false,
@@ -34,9 +39,21 @@ module.exports = {
   },
   watch: {
     tabs: function (val, oldVal) {
-      if (val.length > 0) {
-        val[0].isActive = true;
-      }
+
+        if (val.length > 0) {
+          if(this.prefix=="") {
+            val[0].isActive = true;
+          }else{
+            var selected = sessionStorage.getItem("tab_"+this.prefix);
+            if(selected==null){
+              val[0].isActive = true;
+              sessionStorage.setItem("tab_"+this.prefix, "0");
+            }else{
+              val[parseInt(selected)].isActive = true;
+            }
+          }
+        }
+
     }
   },
   methods: {
@@ -51,6 +68,11 @@ module.exports = {
         if (tab.isActive == (tab.name == toSelect)) return;
         tab.isActive = (tab.name == toSelect);
       });
+      for(var i=0;i<this.tabs.length;i++){
+        if(this.tabs[i].isActive){
+          sessionStorage.setItem("tab_"+this.prefix, i+"");
+        }
+      }
     }
   }
 }

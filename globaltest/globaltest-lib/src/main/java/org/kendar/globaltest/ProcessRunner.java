@@ -38,11 +38,8 @@ public class ProcessRunner {
         process.destroy();
         for(var i=0;i<100;i++){
             if(process.isAlive()){
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
+                    Sleeper.sleep(100);
 
-                }
             }else{
                 return;
             }

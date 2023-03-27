@@ -2,8 +2,8 @@
   <div class="row boxed">
     <div class="col-md-8">
       <div class="form-group">
-        <label for="name">Hosts</label>
-        <input @change="changeHosts" class="form-control" type="text" name="name" id="name" v-model="hosts"/>
+        <label for="exthttpname">Hosts</label>
+        <input @change="changeHosts" class="form-control" type="text" name="exthttpname" id="exthttpname" v-model="hosts"/>
       </div>
     </div>
   </div>

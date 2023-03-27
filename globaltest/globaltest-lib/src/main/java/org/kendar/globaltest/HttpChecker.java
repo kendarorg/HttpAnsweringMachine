@@ -71,7 +71,7 @@ public class HttpChecker {
                     //NOP
                 }
             }
-            Thread.sleep(1000);
+            Sleeper.sleep(1000);
         }
         if(showError) {
             LogWriter.errror("testing " + url);
