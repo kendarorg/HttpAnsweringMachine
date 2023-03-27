@@ -2,14 +2,14 @@ package org.kendar;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import static org.kendar.SeleniumBase.doClick;
 import static org.kendar.SeleniumBase.setupSize;
 
 public class DbRecordingUiActions {
 
-    public static void fullNavigation(FirefoxDriver driver) throws InterruptedException {
+    public static void fullNavigation(ChromeDriver driver) throws InterruptedException {
         Thread.sleep(1000);
         driver.get("http://www.sample.test/");
         Thread.sleep(1000);

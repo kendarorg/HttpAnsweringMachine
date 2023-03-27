@@ -3,7 +3,7 @@ package org.kendar;
 import org.kendar.globaltest.ProcessUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import static org.kendar.SeleniumBase.*;
 public class DbRecordingPrepareTest {
     private static ProcessUtils _processUtils = new ProcessUtils(new HashMap<>());
 
-    public static void prepareUiTest(FirefoxDriver driver, String uiTestId) throws Exception {
+    public static void prepareUiTest(ChromeDriver driver, String uiTestId) throws Exception {
         var js = (JavascriptExecutor) driver;
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + uiTestId);
         Thread.sleep(1000);
@@ -60,7 +60,7 @@ public class DbRecordingPrepareTest {
     }
 
 
-    public static String cloneTo(FirefoxDriver driver, String sourceId, String destName) throws InterruptedException {
+    public static String cloneTo(ChromeDriver driver, String sourceId, String destName) throws InterruptedException {
 
         Thread.sleep(1000);
         driver.get("http://www.local.test/plugins/recording/index.html");
@@ -95,7 +95,7 @@ public class DbRecordingPrepareTest {
         return result;
     }
 
-    public static void prepareGatewayNullTest(FirefoxDriver driver, String gatewayTestId) throws Exception {
+    public static void prepareGatewayNullTest(ChromeDriver driver, String gatewayTestId) throws Exception {
         var js = (JavascriptExecutor) driver;
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + gatewayTestId);
         Thread.sleep(1000);
@@ -176,7 +176,7 @@ public class DbRecordingPrepareTest {
 
     }
 
-    public static void prepareDbNullTest(FirefoxDriver driver, String dbNullTest) throws Exception {
+    public static void prepareDbNullTest(ChromeDriver driver, String dbNullTest) throws Exception {
         var js = (JavascriptExecutor) driver;
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + dbNullTest);
         Thread.sleep(1000);
@@ -226,7 +226,7 @@ public class DbRecordingPrepareTest {
         Thread.sleep(1000);
     }
 
-    public static void prepareGatewayNullTestFail(FirefoxDriver driver, String gatewayFailTestId) throws Exception {
+    public static void prepareGatewayNullTestFail(ChromeDriver driver, String gatewayFailTestId) throws Exception {
         showMessage(driver, "Setup a fail changing the expected data");
         doClick(() -> driver.findElement(By.id("grid-rowe-5-1")));
         Thread.sleep(1000);

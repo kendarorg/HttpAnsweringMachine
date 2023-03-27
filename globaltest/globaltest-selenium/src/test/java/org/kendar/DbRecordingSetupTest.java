@@ -8,7 +8,7 @@ import org.kendar.globaltest.ProcessUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 
 import org.kendar.ham.HamReplayerBuilder;
@@ -26,7 +26,7 @@ public class DbRecordingSetupTest {
     private static ProcessUtils _processUtils = new ProcessUtils(new HashMap<>());
 
 
-    public static void startup(FirefoxDriver driver) throws Exception {
+    public static void startup(ChromeDriver driver) throws Exception {
         var root = getRootPath(DbRecordingSetupTest.class);
         Map<String, String> env = new HashMap<>();
         new ProcessRunner(env).
@@ -195,7 +195,7 @@ public class DbRecordingSetupTest {
 
     }
 
-    public static String startRecording(FirefoxDriver driver, String idRecording) throws Exception {
+    public static String startRecording(ChromeDriver driver, String idRecording) throws Exception {
         driver.get("http://www.local.test/index.html");
         Thread.sleep(1000);
         doClick(() -> driver.findElement(By.linkText("Replayer web")));
@@ -234,7 +234,7 @@ public class DbRecordingSetupTest {
     }
 
 
-    public static void stopAction(FirefoxDriver driver, String idRecording) throws InterruptedException {
+    public static void stopAction(ChromeDriver driver, String idRecording) throws InterruptedException {
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + idRecording);
         Thread.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-stop")));
@@ -247,19 +247,19 @@ public class DbRecordingSetupTest {
 
 
 
-    public static void startPlaying(FirefoxDriver driver, String idRecording) throws InterruptedException {
+    public static void startPlaying(ChromeDriver driver, String idRecording) throws InterruptedException {
         showMessage(driver,"Starting replay");
         doClick(() -> driver.findElement(By.id("recording-play")));
         Thread.sleep(1000);
     }
 
-    public static void startNullPlaying(FirefoxDriver driver, String idRecording) throws Exception {
+    public static void startNullPlaying(ChromeDriver driver, String idRecording) throws Exception {
         showMessage(driver,"Starting replay with self-test");
         scrollFind(driver, () -> driver.findElement(By.id("recording-playstim"))).click();
         Thread.sleep(2000);
     }
 
-    public static void loadResults(FirefoxDriver driver, String idRecording) throws Exception {
+    public static void loadResults(ChromeDriver driver, String idRecording) throws Exception {
         doClick(() -> driver.findElement(By.linkText("RESULTS")));
         Thread.sleep(1000);
         scrollFind(driver,() -> driver.findElement(By.id("recording-grid-result-reload")),100).click();
@@ -277,7 +277,7 @@ public class DbRecordingSetupTest {
         Thread.sleep(2000);
     }
 
-    public static void initializeNullPlayingDb(FirefoxDriver driver, String dbNullTest) throws Exception {
+    public static void initializeNullPlayingDb(ChromeDriver driver, String dbNullTest) throws Exception {
         //Setup the application
         doClick(() -> driver.findElement(By.id("recording-play")));
         Thread.sleep(1000);

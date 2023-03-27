@@ -1,5 +1,6 @@
 package org.kendar;
 
+import io.github.bonigarcia.wdm.managers.ChromeDriverManager;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -12,23 +13,20 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.SessionId;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -39,18 +37,12 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
             psLine.contains("java") &&
                     psLine.contains("httpanswering") &&
                     !psLine.contains("globaltest");
-    private static final Function<String, Boolean> findFirefoxHidden = (psLine) ->
-            (psLine.contains("--marionette") &&
-                    psLine.contains("--remote-debugging-port")) || psLine.contains("geckodriver");
-    private static final String INSTALLED_PROGRAMS = "powershell -command \"Get-ItemProperty HKLM:\\\\Software\\\\Wow6432Node\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Uninstall\\\\* | Select-Object DisplayName, InstallLocation | Format-Table –AutoSize\"";
     public static boolean shutdownHookInitialized = false;
     private static ProcessUtils _processUtils = new ProcessUtils(new HashMap<>());
-    private static FirefoxDriver driver;
+    private static ChromeDriver driver;
     private static JavascriptExecutor js;
     private static boolean started = false;
     private static String rootPath = null;
-    private String tmpdir;
-    private SessionId sessionId;
 
     public static ProcessRunner run(String root, Map<String, String> env, String script) throws Exception {
         env.put("RUN_INLINE","true");
@@ -61,11 +53,11 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
                 runBackground();
     }
 
-    public static FirefoxDriver getDriver() {
+    public static ChromeDriver getDriver() {
         return driver;
     }
 
-    public static void showMessage(FirefoxDriver driver,String message) throws InterruptedException {
+    public static void showMessage(ChromeDriver driver,String message) throws InterruptedException {
         var js = (JavascriptExecutor)driver;
         js.executeScript("alert(\""+message+"\");");
         Thread.sleep(5000);
@@ -110,7 +102,7 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         throw new RuntimeException("Unable to click " + res.getText());
     }
 
-    public static WebElement checkCheckBox(FirefoxDriver driver, Supplier<WebElement> supplier) {
+    public static WebElement checkCheckBox(ChromeDriver driver, Supplier<WebElement> supplier) {
         var el = supplier.get();
         if (!el.isSelected()) {
             var js = (JavascriptExecutor) driver;
@@ -119,7 +111,7 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         return el;
     }
 
-    public static WebElement uncheckCheckBox(FirefoxDriver driver, Supplier<WebElement> supplier) {
+    public static WebElement uncheckCheckBox(ChromeDriver driver, Supplier<WebElement> supplier) {
         var el = supplier.get();
         if (el.isSelected()) {
             var js = (JavascriptExecutor) driver;
@@ -128,11 +120,11 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         return el;
     }
 
-    public static void setupSize(FirefoxDriver driver){
+    public static void setupSize(ChromeDriver driver){
         driver.manage().window().setSize(new Dimension(1366, 900));
     }
 
-    public static WebElement scrollFind(FirefoxDriver driver, Supplier<WebElement> supplier,long ... extraLength) throws Exception {
+    public static WebElement scrollFind(ChromeDriver driver, Supplier<WebElement> supplier,long ... extraLength) throws Exception {
         var js = (JavascriptExecutor) driver;
         var result = js.executeScript("return Math.max(" +
                 "document.body.scrollHeight," +
@@ -158,10 +150,10 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         throw new RuntimeException("Unable to find item!");
     }
 
-    public static String findFirefox() throws Exception {
+    public static String findchrome() throws Exception {
         var env = new HashMap<String, String>();
-        if (env.containsKey("FIREFOX_PATH")) {
-            return env.get("FIREFOX_PATH");
+        if (env.containsKey("CHROME_PATH")) {
+            return env.get("CHROME_PATH");
         }
         if (SystemUtils.IS_OS_WINDOWS) {
             var queue = new ConcurrentLinkedQueue<String>();
@@ -179,16 +171,24 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
                     withStorage(queue).
                     limitOutput(5).
                     run();
+
+            new ProcessRunner(env).
+                    withCommand("powershell").
+                    withParameter("-command").
+                    withParameter("ItemPropertyValue -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe' -Name Path").
+                    withStorage(queue).
+                    limitOutput(5).
+                    run();
             var allJavaProcesses = queue.stream().
                     collect(Collectors.toList());
 
             for (var col : allJavaProcesses) {
                 var lower = col.toLowerCase(Locale.ROOT);
-                if (lower.contains("firefox")) {
+                if (lower.contains("chrome")) {
                     var index = col.indexOf(":\\");
                     if (index > 0) {
                         index--;
-                        return col.substring(index).trim() + "\\Firefox.exe";
+                        return col.substring(index).trim() + "\\chrome.exe";
                     }
                 }
             }
@@ -196,7 +196,7 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
             var queue = new ConcurrentLinkedQueue<String>();
             new ProcessRunner(env).
                     withCommand("whereis").
-                    withParameter("firefox").
+                    withParameter("chrome").
                     withStorage(queue).
                     run();
             var allJavaProcesses = String.join(" ", queue.stream().
@@ -204,12 +204,12 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
             var all = allJavaProcesses.split("\\s+");
             for (var col : all) {
                 var trimmed = col.trim().toLowerCase(Locale.ROOT);
-                if (trimmed.endsWith("/firefox")) {
+                if (trimmed.endsWith("/chrome")) {
                     return col;
                 }
             }
         }
-        throw new Exception("Firefox not found!");
+        throw new Exception("chrome not found!");
     }
 
     public static String getRootPath(Class<?> caller) {
@@ -344,7 +344,6 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
             driver.quit();
             driver = null;
             js = null;
-            _processUtils.killProcesses(findFirefoxHidden);
             //deleteDirectory(new File(tmpdir));
         } catch (Exception ex) {
 
@@ -435,38 +434,24 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         if (started) return;
         started = true;
         try {
-
-            _processUtils.killProcesses(findFirefoxHidden);
-            var firefoxExecutable = SeleniumBase.findFirefox();
+            ChromeDriverManager.getInstance().setup();
+            //var chromeExecutable = SeleniumBase.findchrome();
 
             Proxy proxy = new Proxy();
             proxy.setSocksProxy("127.0.0.1:1080");
             proxy.setSocksVersion(5);
-            File pathBinary = new File(firefoxExecutable);
-            FirefoxBinary firefoxBinary = new FirefoxBinary(pathBinary);
+            proxy.setProxyType(Proxy.ProxyType.MANUAL);
             DesiredCapabilities desired = new DesiredCapabilities();
-            FirefoxOptions options = new FirefoxOptions();
-            desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setBinary(firefoxBinary));
-            desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setProxy(proxy));;
-            FirefoxProfile profile = new FirefoxProfile();
-            profile.setAcceptUntrustedCertificates(true);
-            profile.setAssumeUntrustedCertificateIssuer(true);
-            profile.setPreference("network.proxy.socks_remote_dns", true);
-            desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setProfile(profile));
-            driver = new FirefoxDriver((new GeckoDriverService.Builder() {
-                @Override
-                protected GeckoDriverService createDriverService(File exe, int port,
-                                                                 Duration timeout,
-                                                                 List<String> args, Map<String, String> environment) {
-                    return super.createDriverService(exe, port, timeout, args, environment);
-                }
-            }).build(), options);
+            var options = new ChromeOptions();
+             options.setProxy(proxy);;
+             options.setAcceptInsecureCerts(true);
+             options.addArguments("--remote-allow-origins=*");
+            driver = new ChromeDriver(options);
 
-            sessionId = driver.getSessionId();
             js = (JavascriptExecutor) driver;
 
 
-            System.out.println("here it is " + firefoxExecutable);
+            //System.out.println("here it is " + chromeExecutable);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
