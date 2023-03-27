@@ -1,21 +1,20 @@
 package org.kendar;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.kendar.globaltest.*;
+import org.kendar.ham.HamException;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 
 import org.kendar.ham.HamReplayerBuilder;
 import org.kendar.ham.HamBuilder;
-import org.kendar.ham.HamException;
 
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kendar.SeleniumBase.*;
 import static org.kendar.globaltest.LocalFileUtils.pathOf;
 
@@ -196,8 +195,7 @@ public class DbRecordingSetupTest {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.linkText("Replayer web")));
         Sleeper.sleep(1000);
-        scrollFind(driver,()->driver.findElement(By.id("scriptstab_0"))).click();
-        Sleeper.sleep(1000);
+
         doClick(() -> driver.findElement(By.id("main-recording-addnew")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("createScriptName")));
@@ -209,6 +207,13 @@ public class DbRecordingSetupTest {
 
         driver.get("http://www.local.test/plugins/recording/script.html?id=1");
 
+        try {
+            Sleeper.sleep(1000);
+            scrollFind(driver, () -> driver.findElement(By.id("scriptstab_0"))).click();
+        }catch (Exception ex){
+
+        }
+        Sleeper.sleep(1000);
         scrollFind(driver,() -> driver.findElement(By.id("extdbname"))).click();
         driver.findElement(By.id("extdbname")).clear();
         Sleeper.sleep(1000);
@@ -257,24 +262,42 @@ public class DbRecordingSetupTest {
     public static void startNullPlaying(ChromeDriver driver, String idRecording) throws Exception {
         showMessage(driver,"Starting replay with self-test");
         scrollFind(driver, () -> driver.findElement(By.id("recording-playstim"))).click();
-        Sleeper.sleep(2000);
+        Sleeper.sleep(1000);
     }
 
-    public static void loadResults(ChromeDriver driver, String idRecording) throws Exception {
+    public static void loadResults(ChromeDriver driver, String idRecording, boolean success) throws Exception {
         doClick(() -> driver.findElement(By.linkText("RESULTS")));
-        Sleeper.sleep(5000);
-        scrollFind(driver,() -> driver.findElement(By.id("recording-grid-result-reload")),100).click();
         Sleeper.sleep(1000);
         var builder = HamBuilder
                 .newHam("www.local.test")
                 .withSocksProxy("127.0.0.1", 1080)
                 .withDns("127.0.0.1");
         var replayer = builder.pluginBuilder(HamReplayerBuilder.class);
+        int count = 10;
+        while(count>10) {
+            if(replayer.retrieveRecordings().stream().anyMatch(l-> {
+                try {
+                    return !l.isCompleted();
+                } catch (HamException e) {
+                    return false;
+                }
+            })){
+                Sleeper.sleep(1000);
+            }
+            count--;
+        }
+        scrollFind(driver,() -> driver.findElement(By.id("recording-grid-result-reload")),100).click();
+        Sleeper.sleep(1000);
+
+        replayer = builder.pluginBuilder(HamReplayerBuilder.class);
         var results = replayer.retrieveResults(Integer.parseInt(idRecording));
         var result = results.get(0);
         var resultIndex = result.getFileId();
         Sleeper.sleep(1000);
+        showMessage(driver,"Sucess would be "+success);
         driver.get("http://www.local.test/api/plugins/replayer/results/" + resultIndex);
+        String source = driver.getPageSource();
+        assertTrue(source.contains("successful\":"+(success?"true":"false")));
         Sleeper.sleep(2000);
     }
 

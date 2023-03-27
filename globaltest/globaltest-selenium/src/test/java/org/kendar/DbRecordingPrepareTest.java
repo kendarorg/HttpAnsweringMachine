@@ -19,6 +19,8 @@ public class DbRecordingPrepareTest {
         var js = (JavascriptExecutor) driver;
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + uiTestId);
         Sleeper.sleep(1000);
+        scrollFind(driver,()->driver.findElement(By.id("scriptstab_0"))).click();
+        Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("grid-visibility")));
         Sleeper.sleep(1000);
         checkCheckBox(driver, () -> driver.findElement(By.cssSelector("tr:nth-child(6) .form-check-input")));
@@ -124,6 +126,7 @@ public class DbRecordingPrepareTest {
 
 
         scrollFind(driver,()->driver.findElement(By.id("scriptstab_0"))).click();
+        Sleeper.sleep(1000);
         scrollFind(driver, () -> driver.findElement(By.id("grid-visibility"))).click();
         Sleeper.sleep(1000);
         scrollFind(driver, () -> driver.findElement(By.cssSelector("tr:nth-child(6) .form-check-input"))).click();
@@ -190,8 +193,6 @@ public class DbRecordingPrepareTest {
         var js = (JavascriptExecutor) driver;
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + dbNullTest);
         Sleeper.sleep(1000);
-        scrollFind(driver,()->driver.findElement(By.id("scriptstab_0"))).click();
-        Sleeper.sleep(1000);
         showMessage(driver, "Stopping gateway");
         var version = SeleniumBase.getVersion();
         _processUtils.killProcesses((psLine) ->
@@ -201,7 +202,8 @@ public class DbRecordingPrepareTest {
                         psLine.contains("org.h2.tools.Server") &&
                                 !psLine.contains("globaltest"));
 
-
+        scrollFind(driver,()->driver.findElement(By.id("scriptstab_0"))).click();
+        Sleeper.sleep(1000);
         scrollFind(driver, () -> driver.findElement(By.id("grid-visibility"))).click();
         Sleeper.sleep(1000);
         scrollFind(driver, () -> driver.findElement(By.cssSelector("tr:nth-child(6) .form-check-input"))).click();
@@ -252,8 +254,9 @@ public class DbRecordingPrepareTest {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("res_free_content")));
         Sleeper.sleep(1000);
+        driver.findElement(By.id("res_free_content")).clear();
         driver.findElement(By.id("res_free_content")).
-                sendKeys("[{\"id\":1,\"name\":\"John Doe\",\"role\":\"Doctor\",\"fail\":\"fail\"}]");
+                sendKeys("[{\"id\":1,\"name\":\"John Doe\",\"fail\":\"Doctor\"}]");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("res-savechang")));
         Sleeper.sleep(1000);

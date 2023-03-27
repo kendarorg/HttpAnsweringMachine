@@ -37,18 +37,6 @@ public class SeleniumTest extends SeleniumBase {
         DbRecordingSetupTest.stopAction(driver, mainId);
         //TODODbRecordingSetupTest.analyzeRecording(driver,mainId);
 
-        //Do Gateway null test
-        String gatewayTestId = DbRecordingPrepareTest.cloneTo(driver, mainId, "GatewayNullTest");
-        DbRecordingPrepareTest.prepareGatewayNullTest(driver, gatewayTestId);
-        DbRecordingSetupTest.startNullPlaying(driver, gatewayTestId);
-        DbRecordingSetupTest.loadResults(driver, gatewayTestId);
-
-        //Do Gateway null test fail
-        String gatewayFailTestId = DbRecordingPrepareTest.cloneTo(driver, mainId, "GatewayNullTestFail");
-        DbRecordingPrepareTest.prepareGatewayNullTest(driver, gatewayFailTestId);
-        DbRecordingPrepareTest.prepareGatewayNullTestFail(driver, gatewayFailTestId);
-        DbRecordingSetupTest.startNullPlaying(driver, gatewayFailTestId);
-        DbRecordingSetupTest.loadResults(driver, gatewayFailTestId);
 
         //Do Ui test
         String uiTestId = DbRecordingPrepareTest.cloneTo(driver, mainId, "UiTest");
@@ -57,14 +45,25 @@ public class SeleniumTest extends SeleniumBase {
         DbRecordingUiActions.fullNavigation(driver);
         DbRecordingSetupTest.stopAction(driver, uiTestId);
 
+        //Do Gateway null test
+        String gatewayTestId = DbRecordingPrepareTest.cloneTo(driver, mainId, "GatewayNullTest");
+        DbRecordingPrepareTest.prepareGatewayNullTest(driver, gatewayTestId);
+        DbRecordingSetupTest.startNullPlaying(driver, gatewayTestId);
+        DbRecordingSetupTest.loadResults(driver, gatewayTestId,true);
 
+        //Do Gateway null test fail
+        String gatewayFailTestId = DbRecordingPrepareTest.cloneTo(driver, mainId, "GatewayNullTestFail");
+        DbRecordingPrepareTest.prepareGatewayNullTest(driver, gatewayFailTestId);
+        DbRecordingPrepareTest.prepareGatewayNullTestFail(driver, gatewayFailTestId);
+        DbRecordingSetupTest.startNullPlaying(driver, gatewayFailTestId);
+        DbRecordingSetupTest.loadResults(driver, gatewayFailTestId,false);
 
         //Do Be fake db test
         String dbNullTest = DbRecordingPrepareTest.cloneTo(driver, mainId, "DbNullTest");
         DbRecordingPrepareTest.prepareDbNullTest(driver, dbNullTest);
         DbRecordingSetupTest.initializeNullPlayingDb(driver, dbNullTest);
         DbRecordingSetupTest.startNullPlaying(driver, dbNullTest);
-        DbRecordingSetupTest.loadResults(driver, dbNullTest);
+        DbRecordingSetupTest.loadResults(driver, dbNullTest,true);
 
         close();
     }
