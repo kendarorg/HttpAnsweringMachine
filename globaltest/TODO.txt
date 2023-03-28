@@ -1,0 +1,15 @@
+* Search by content in recording
+* staticize
+* Get full result (download)
+* Edit contents ReplayerAPIContent
+* Delete replayer row
+* Recursive calls
+* Logging
+* Special requests
+    public static final String MIRROR_REQUEST_HEADER = "X-MIRROR-REQUEST"; return exactly what was called
+    public static final String TEST_EXPECT_100 = "X-TEST-EXPECT-100";
+    public static final String TEST_OVERWRITE_HOST = "X-TEST-OVERWRITE-HOST"; change the url to the sent host
+
+
+
+* Restart replay/record
