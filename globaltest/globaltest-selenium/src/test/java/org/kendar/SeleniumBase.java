@@ -311,6 +311,7 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
                 withParameter("-Djsonconfig=" + externalJsonPath).
                 withParameter("-Dloader.path=" + libsPath).
                 withParameter("-Dham.tempdb=data/tmp").
+                withParameter("-Dperformance.watcher.interval=0").
                 withParameter("-Dloader.main=org.kendar.Main").
                 //withParameter("-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**").
                         withParameter("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:9863").
@@ -436,8 +437,17 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
             var options = new ChromeOptions();
              options.setProxy(proxy);;
              options.setAcceptInsecureCerts(true);
-             options.addArguments("--remote-allow-origins=*");
+            options.addArguments("--remote-allow-origins=*");
+            //options.addArguments("--disable-dev-shm-usage");
+            //options.addArguments("disable-infobars"); // disabling infobars
+            //options.addArguments("--disable-extensions"); // disabling extensions
+            options.addArguments("--disable-gpu"); // applicable to windows os only
+            options.addArguments("--disable-dev-shm-usage"); // overcome limited resource problems
+            options.addArguments("--no-sandbox"); // Bypass OS security model
+
+            //options.addArguments("--user-data-dir=/tmp/sticazzi2");
             driver = new ChromeDriver(options);
+            driver.manage().deleteAllCookies();
 
             js = (JavascriptExecutor) driver;
 

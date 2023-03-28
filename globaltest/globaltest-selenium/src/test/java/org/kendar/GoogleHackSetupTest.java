@@ -8,8 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.kendar.SeleniumBase.doClick;
-import static org.kendar.SeleniumBase.setupSize;
+import static org.kendar.SeleniumBase.*;
 
 public class GoogleHackSetupTest {
 
@@ -17,15 +16,11 @@ public class GoogleHackSetupTest {
 
 
         driver.get("https://www.google.com");
-        Sleeper.sleep(1000);
+        Sleeper.sleep(2000);
         setupSize(driver);
         Sleeper.sleep(1000);
-        WebElement el = driver.findElement(By.xpath("//*[text()='Accetta tutto']"));
-        if (el == null) {
-            el = driver.findElement(By.xpath("//*[text()='Accept all']"));
-        }
-        el.click();
-        Sleeper.sleep(1000);
+        acceptCookies(driver);
+        Sleeper.sleep(3000);
         var text = driver.executeScript("return document.documentElement.outerHTML;").toString();
         assertTrue(text.contains("Bing_logo"));
     }
@@ -34,12 +29,8 @@ public class GoogleHackSetupTest {
     public static void setup(ChromeDriver driver) throws InterruptedException {
         driver.get("https://www.google.com");
 
-        Sleeper.sleep(1000);
-        WebElement el = driver.findElement(By.xpath("//*[text()='Accetta tutto']"));
-        if (el == null) {
-            el = driver.findElement(By.xpath("//*[text()='Accept all']"));
-        }
-        el.click();
+        Sleeper.sleep(2000);
+        acceptCookies(driver);
         Sleeper.sleep(3000);
         var text = driver.executeScript("return document.documentElement.outerHTML;").toString();
         assertFalse(text.contains("Bing_logo"));
@@ -133,5 +124,22 @@ public class GoogleHackSetupTest {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("editfilter-save")));
         Sleeper.sleep(1000);
+    }
+
+    private static void acceptCookies(ChromeDriver driver) {
+        try {
+            WebElement el = null;
+            try {
+                el = scrollFind(driver, () -> driver.findElement(By.xpath("//*[text()='Accetta tutto']")));
+            }catch (Exception e){
+
+            }
+            if (el == null) {
+                el = scrollFind(driver,()-> driver.findElement(By.xpath("//*[text()='Accept all']")));
+            }
+            el.click();
+        }catch (Exception ex){
+
+        }
     }
 }

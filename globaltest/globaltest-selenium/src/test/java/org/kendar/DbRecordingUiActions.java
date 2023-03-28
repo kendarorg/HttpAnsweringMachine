@@ -13,7 +13,7 @@ public class DbRecordingUiActions {
     public static void fullNavigation(ChromeDriver driver) throws InterruptedException {
         Sleeper.sleep(1000);
         driver.get("http://www.sample.test/");
-        Sleeper.sleep(1000);
+        Sleeper.sleep(2000);
         setupSize(driver);
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("appoint-add")));
