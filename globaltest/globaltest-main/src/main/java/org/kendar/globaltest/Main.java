@@ -385,6 +385,16 @@ public class Main {
         }
 
         _processUtils.sigtermProcesses(findHamProcesses);
+
+        LogWriter.info("Starting selenium test");
+        var pr = new ProcessRunner(env).
+                asShell().
+                withCommand("mvn").
+                withParameter("test").
+                withStartingPath(pathOf(startingPath,  "globaltest")).
+                run();
+        LogWriter.info("Finished selenium test");
+        _processUtils.sigtermProcesses(findHamProcesses);
         start(pathOf(startingPath, "scripts", "globaltest"), "test.jacoco", Main::handleRunErrors).run();
     }
 

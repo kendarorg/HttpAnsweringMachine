@@ -13,3 +13,7 @@ scrollFind(driver, () -> driver.findElement(By.id("grid-s-c-1")))
 
 CHECK: checkCheckBox(driver,() -> driver.findElement(By.id("force")));
 UNCHECK: uncheckCheckBox(driver,() -> driver.findElement(By.id("force")));
+
+
+
+sudo setcap CAP_NET_BIND_SERVICE=+eip /usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java

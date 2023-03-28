@@ -287,8 +287,8 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         deleteDirectory(Path.of(getRootPath(caller), "data", "tmp").toFile());
         deleteDirectory(Path.of(getRootPath(caller), "release", "calendar", "data").toFile());
         var java = "java";
-        //var agentPath = Path.of(getRootPath(caller), "ham", "api.test", "org.jacoco.agent-0.8.8-runtime.jar");
-        //var jacocoExecPath = Path.of(getRootPath(caller), "ham", "api.test", "target", "jacoco_starter.exec");
+        var agentPath = Path.of(getRootPath(caller), "ham", "api.test", "org.jacoco.agent-0.8.8-runtime.jar");
+        var jacocoExecPath = Path.of(getRootPath(caller), "ham", "api.test", "target", "jacoco_selenium.exec");
         var externalJsonPath = Path.of(getRootPath(caller), "ham", "test.external.json").toString();
         var libsPath = Path.of(getRootPath(caller), "ham", "libs").toString();
         var appPathRootPath = Path.of(getRootPath(caller), "ham", "app", "target");
@@ -313,7 +313,7 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
                 withParameter("-Dham.tempdb=data/tmp").
                 withParameter("-Dperformance.watcher.interval=0").
                 withParameter("-Dloader.main=org.kendar.Main").
-                //withParameter("-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**").
+                withParameter("-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**").
                         withParameter("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:9863").
                 withParameter("-jar").
                 withParameter(appPathRoot);
