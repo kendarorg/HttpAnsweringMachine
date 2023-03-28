@@ -93,20 +93,22 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         throw new RuntimeException("Unable to click " + res.getText());
     }
 
-    public static WebElement checkCheckBox(ChromeDriver driver, Supplier<WebElement> supplier) {
+    public static WebElement checkCheckBox(ChromeDriver driver, Supplier<WebElement> supplier) throws InterruptedException {
         var el = supplier.get();
         if (!el.isSelected()) {
             var js = (JavascriptExecutor) driver;
             js.executeScript("arguments[0].click();", el);
+            Thread.sleep(100);
         }
         return el;
     }
 
-    public static WebElement uncheckCheckBox(ChromeDriver driver, Supplier<WebElement> supplier) {
+    public static WebElement uncheckCheckBox(ChromeDriver driver, Supplier<WebElement> supplier) throws InterruptedException {
         var el = supplier.get();
         if (el.isSelected()) {
             var js = (JavascriptExecutor) driver;
             js.executeScript("arguments[0].click();", el);
+            Thread.sleep(100);
         }
         return el;
     }

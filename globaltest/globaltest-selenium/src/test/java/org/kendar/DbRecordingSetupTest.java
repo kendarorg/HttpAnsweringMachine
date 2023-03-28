@@ -60,7 +60,7 @@ public class DbRecordingSetupTest {
         Sleeper.sleep(1000);
         driver.findElement(By.id("test")).sendKeys("127.0.0.1:8090");
         Sleeper.sleep(1000);
-        doClick(() -> driver.findElement(By.id("force")));
+        checkCheckBox(driver,() -> driver.findElement(By.id("force")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(1000);

@@ -1,0 +1,25 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Main Mac" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="adopt-11" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <envs>
+      <env name="DOCKER_IP" value="192.168.1.40" />
+      <env name="GLOBAL_LOG_ON_CONSOLE" value="true" />
+      <env name="HAM_VERSION" value="4.2.0" />
+      <env name="LOG_PATH" value="$PROJECT_DIR$/.." />
+      <env name="STARTING_PATH" value="$PROJECT_DIR$/.." />
+      <env name="DOCKER_HOST" value="tcp://192.168.1.40:23750" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="org.kendar.globaltest.Main" />
+    <module name="globaltest-main" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.kendar.globaltest.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
