@@ -392,6 +392,7 @@ public class Main {
                 withCommand("mvn").
                 withParameter("test").
                 withStartingPath(pathOf(startingPath,  "globaltest")).
+                withErr(Main::handleRunErrors).
                 run();
         LogWriter.info("Finished selenium test");
         _processUtils.sigtermProcesses(findHamProcesses);
