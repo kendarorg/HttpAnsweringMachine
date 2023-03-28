@@ -11,10 +11,9 @@ errors can arise.
 The AnsweringMachine is built to overcome this troubles
 
 * <b>Selenium automated runs :zap: for '[Record/replay db calls in integration tests!](docs/generated/dbtest.md)' and [Hacking google](docs/generated/googlehack.md) (with Selenium working unluckily on Win only) 
-
+* <b>:zap: [Quick install](docs/gen_sources/quickinstall.md)</b>
 <br>
 <br>
-
 
 * [Contribute](CONTRIBUTING.md) it's easy :)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
