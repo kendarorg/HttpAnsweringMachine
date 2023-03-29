@@ -1,5 +1,8 @@
 package org.kendar;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kendar.globaltest.ProcessUtils;
@@ -8,12 +11,20 @@ import java.util.HashMap;
 
 // [\t ]+(driver.findElement)([\(a-zA-Z0-9\.\":\-\ )]+)(.click\(\))
 // doClick(()->$1$1)
-@ExtendWith({SeleniumBase.class})
+
 public class SeleniumTest extends SeleniumBase {
 
+    @BeforeEach
+    public void beforeEach(){
+        this.beforeEach(null);
+    }
+
+    @AfterEach
+    public void afterEach() throws Exception {
+        this.afterEach(null);
+    }
     @Test
     void googleHack() throws Throwable {
-            beforeAll(null);
             runHamJar(SeleniumTest.class);
             var driver = SeleniumBase.getDriver();
             GoogleHackSetupTest.setup(driver);
@@ -25,7 +36,6 @@ public class SeleniumTest extends SeleniumBase {
 
     @Test
     void dbRecording() throws Throwable {
-        beforeAll(null);
         runHamJar(SeleniumTest.class);
         var driver = SeleniumBase.getDriver();
         DbRecordingSetupTest.startup(driver);

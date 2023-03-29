@@ -29,7 +29,7 @@ import java.util.zip.ZipInputStream;
 
 import static org.kendar.globaltest.LocalFileUtils.pathOf;
 
-public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.CloseableResource, AfterAllCallback {
+public class SeleniumBase {
     private static final Function<String, Boolean> findHamProcesses = (psLine) ->
             psLine.contains("java") &&
                     psLine.contains("httpanswering") &&
@@ -143,68 +143,6 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         throw new RuntimeException("Unable to find item!");
     }
 
-    public static String findchrome() throws Exception {
-        var env = new HashMap<String, String>();
-        if (env.containsKey("CHROME_PATH")) {
-            return env.get("CHROME_PATH");
-        }
-        if (SystemUtils.IS_OS_WINDOWS) {
-            var queue = new ConcurrentLinkedQueue<String>();
-            new ProcessRunner(env).
-                    withCommand("powershell").
-                    withParameter("-command").
-                    withParameter("Get-ItemProperty HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | Select-Object DisplayName, InstallLocation | Format-Table –AutoSize").
-                    withStorage(queue).
-                    limitOutput(5).
-                    run();
-            new ProcessRunner(env).
-                    withCommand("powershell").
-                    withParameter("-command").
-                    withParameter("Get-ItemProperty HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | Select-Object DisplayName, InstallLocation | Format-Table –AutoSize").
-                    withStorage(queue).
-                    limitOutput(5).
-                    run();
-
-            new ProcessRunner(env).
-                    withCommand("powershell").
-                    withParameter("-command").
-                    withParameter("ItemPropertyValue -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe' -Name Path").
-                    withStorage(queue).
-                    limitOutput(5).
-                    run();
-            var allJavaProcesses = queue.stream().
-                    collect(Collectors.toList());
-
-            for (var col : allJavaProcesses) {
-                var lower = col.toLowerCase(Locale.ROOT);
-                if (lower.contains("chrome")) {
-                    var index = col.indexOf(":\\");
-                    if (index > 0) {
-                        index--;
-                        return col.substring(index).trim() + "\\chrome.exe";
-                    }
-                }
-            }
-        } else {
-            var queue = new ConcurrentLinkedQueue<String>();
-            new ProcessRunner(env).
-                    withCommand("whereis").
-                    withParameter("chrome").
-                    withStorage(queue).
-                    run();
-            var allJavaProcesses = String.join(" ", queue.stream().
-                    collect(Collectors.toList()));
-            var all = allJavaProcesses.split("\\s+");
-            for (var col : all) {
-                var trimmed = col.trim().toLowerCase(Locale.ROOT);
-                if (trimmed.endsWith("/chrome")) {
-                    return col;
-                }
-            }
-        }
-        throw new Exception("chrome not found!");
-    }
-
     public static String getRootPath(Class<?> caller) {
         if (rootPath != null) {
             return rootPath;
@@ -244,14 +182,15 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
 
     private static void initShutdownHook() {
         if (shutdownHookInitialized) return;
+        shutdownHookInitialized = true;
         Runtime.getRuntime().addShutdownHook(new Thread() {
 
             @Override
             public void run() {
 
                 try {
-
                     killHam();
+
                 } catch (Exception e) {
 
                 }
@@ -305,7 +244,6 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
             }
         });
         var appPathRoot = Path.of(matchingFiles[0].getAbsolutePath()).toString();
-        initShutdownHook();
 
         var pr = new ProcessRunner(new ConcurrentHashMap<>()).
                 asShell().
@@ -330,7 +268,7 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
 
     }
 
-    @Override
+
     public void close() throws Throwable {
         if (started == false) return;
         try {
@@ -347,7 +285,7 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
 
     public void restart() throws Throwable {
         close();
-        beforeAll(null);
+        beforeEach(null);
     }
 
     public static void unzip(String src,String dst) throws IOException {
@@ -423,9 +361,11 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         }
     }
 
-    @Override
-    public void beforeAll(ExtensionContext context) {
+
+    public void beforeEach(ExtensionContext context) {
         if (started) return;
+
+        initShutdownHook();
         started = true;
         try {
             ChromeDriverManager.getInstance().setup();
@@ -460,11 +400,12 @@ public class SeleniumBase implements BeforeAllCallback, ExtensionContext.Store.C
         }
     }
 
-    @Override
-    public void afterAll(ExtensionContext extensionContext) throws Exception {
+    public void afterEach(ExtensionContext extensionContext) throws Exception {
+
         try {
+            close();
             driver.quit();
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
 
         }
         started = false;
