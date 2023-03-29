@@ -83,6 +83,11 @@
             <artifactId>plugin.socks5.server</artifactId>
             <version>${ham.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>plugin.mongo.server</artifactId>
+            <version>${ham.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -209,6 +214,9 @@
                                         <fileset dir="${basedir}/../plugin.socks5.server/target">
                                             <include name="*.exec"/>
                                         </fileset>
+                                        <fileset dir="${basedir}/../plugin.mongo.server/target">
+                                            <include name="*.exec"/>
+                                        </fileset>
                                     </executiondata>
                                     <structure name="Integration Tests Coverage Report">
                                         <sourcefiles encoding="UTF-8">
@@ -255,6 +263,9 @@
                                             <dirset dir="${basedir}/../plugin.socks5.server">
                                                 <include name="**/src/main/java"/>
                                             </dirset>
+                                            <dirset dir="${basedir}/../plugin.mongo.server">
+                                                <include name="**/src/main/java"/>
+                                            </dirset>
                                         </sourcefiles>
                                         <classfiles>
                                             <fileset dir="${basedir}/../api.ham/target/classes">
@@ -298,6 +309,9 @@
                                                 <include name="org/kendar/**/*"/>
                                             </fileset>
                                             <fileset dir="${basedir}/../plugin.socks5.server/target/classes">
+                                                <include name="org/kendar/**/*"/>
+                                            </fileset>
+                                            <fileset dir="${basedir}/../plugin.mongo.server/target/classes">
                                                 <include name="org/kendar/**/*"/>
                                             </fileset>
                                         </classfiles>
