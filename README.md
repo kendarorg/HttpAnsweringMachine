@@ -11,7 +11,7 @@ errors can arise.
 The AnsweringMachine is built to overcome this troubles
 
 * <b>Selenium automated runs :zap: for '[Record/replay db calls in integration tests!](docs/generated/dbtest.md)' and [Hacking google](docs/generated/googlehack.md) (with Selenium working unluckily on Win only) 
-* <b>:zap: [Quick install](docs/gen_sources/quickinstall.md)</b>
+* <b>:zap: [Quick start](docs/generated/quickstart.md)</b>
 <br>
 <br>
 
