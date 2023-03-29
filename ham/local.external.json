@@ -11,6 +11,7 @@
   "#include:external/ssl.json",
   "#include:external/http.json",
   "#include:external/https.json",
+  "#include:external/mongo.json",
   {
     "id": "global",
     "system": true,
