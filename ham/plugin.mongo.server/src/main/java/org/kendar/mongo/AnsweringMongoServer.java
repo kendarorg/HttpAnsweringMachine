@@ -14,12 +14,12 @@ public class AnsweringMongoServer implements AnsweringServer {
     private final JsonConfiguration configuration;
     private EventQueue eventQueue;
     private final Logger logger;
-    private final MongoServer mongoServer;
+    private final MongoServerOld mongoServer;
     private boolean running = false;
 
     public AnsweringMongoServer(
             LoggerBuilder loggerBuilder,
-            MongoServer mongoServer,
+            MongoServerOld mongoServer,
             JsonConfiguration configuration,
             PluginsInitializer pluginsInitializer,
             EventQueue eventQueue) {

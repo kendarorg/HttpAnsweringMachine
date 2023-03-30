@@ -4,43 +4,85 @@ import org.bson.Document;
 
 public class MongoPacket {
 
-    private final int requestId;
-    private final int responseId;
-    private final int opCode;
-    private final byte[] payload;
+    private int flagBits;
+    private String fullCollectionName;
+    private byte[] payload;
+    private byte[] header;
+
+    public int getMessageLength() {
+        return messageLength;
+    }
+
+    public void setMessageLength(int messageLength) {
+        this.messageLength = messageLength;
+    }
 
     public int getRequestId() {
         return requestId;
     }
 
-    public int getResponseId() {
-        return responseId;
+    public void setRequestId(int requestId) {
+        this.requestId = requestId;
+    }
+
+    public int getResponseTo() {
+        return responseTo;
+    }
+
+    public void setResponseTo(int responseTo) {
+        this.responseTo = responseTo;
     }
 
     public int getOpCode() {
         return opCode;
     }
 
+    public void setOpCode(int opCode) {
+        this.opCode = opCode;
+    }
+
+    private int messageLength;
+    private int requestId;
+    private int responseTo;
+    private int opCode;
+
+    public MongoPacket(int messageLength, int requestId, int responseTo, int opCode) {
+
+        this.messageLength = messageLength;
+        this.requestId = requestId;
+        this.responseTo = responseTo;
+        this.opCode = opCode;
+    }
+
+    public void setFlagBits(int flagBits) {
+        this.flagBits = flagBits;
+    }
+
+    public int getFlagBits() {
+        return flagBits;
+    }
+
+    public void setFullCollectionName(String fullCollectionName) {
+        this.fullCollectionName = fullCollectionName;
+    }
+
+    public String getFullCollectionName() {
+        return fullCollectionName;
+    }
+
+    public void setPayload(byte[] payload) {
+        this.payload = payload;
+    }
+
     public byte[] getPayload() {
         return payload;
     }
 
-    public Document getDocument() {
-        return document;
+    public void setHeader(byte[] header) {
+        this.header = header;
     }
 
-    public void setDocument(Document document) {
-        this.document = document;
+    public byte[] getHeader() {
+        return header;
     }
-
-    private Document document;
-
-    public MongoPacket(int requestId, int responseId, int opCode, byte[] payload, Document document) {
-        this.document = document;
-        this.requestId = requestId;
-        this.responseId = responseId;
-        this.opCode = opCode;
-        this.payload = payload;
-    }
-
 }
