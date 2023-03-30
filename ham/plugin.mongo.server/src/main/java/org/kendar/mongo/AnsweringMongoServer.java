@@ -14,12 +14,12 @@ public class AnsweringMongoServer implements AnsweringServer {
     private final JsonConfiguration configuration;
     private EventQueue eventQueue;
     private final Logger logger;
-    private final MongoServerOld mongoServer;
+    private final MongoServer mongoServer;
     private boolean running = false;
 
     public AnsweringMongoServer(
             LoggerBuilder loggerBuilder,
-            MongoServerOld mongoServer,
+            MongoServer mongoServer,
             JsonConfiguration configuration,
             PluginsInitializer pluginsInitializer,
             EventQueue eventQueue) {
@@ -28,7 +28,8 @@ public class AnsweringMongoServer implements AnsweringServer {
         this.configuration = configuration;
         this.eventQueue = eventQueue;
 
-        pluginsInitializer.addSpecialLogger(MongoQuery.class.getName(), "MongoDb Logging (DEBUG,TRACE)");
+        pluginsInitializer.addSpecialLogger(MongoLogClient.class.getName(), "MongoDb Client Logging (DEBUG,TRACE)");
+        pluginsInitializer.addSpecialLogger(MongoLogServer.class.getName(), "MongoDb Server Logging (DEBUG,TRACE)");
     }
 
     public void isSystem() {

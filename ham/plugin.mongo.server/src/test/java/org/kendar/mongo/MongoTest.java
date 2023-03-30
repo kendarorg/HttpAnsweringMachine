@@ -13,32 +13,43 @@ import org.bson.BsonInt64;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kendar.utils.Sleeper;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Arrays;
 
 import static com.mongodb.client.model.Filters.eq;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MongoTest {
 
     private MongoClientHandler clh;
+    private Thread subClientThread;
+    private ServerSocket server;
+    private Thread clientThread;
 
     public void server(int port) throws IOException {
-        ServerSocket server = new ServerSocket(port);
+        server = new ServerSocket(port);
         while(true) {
-            Socket client = server.accept();
-            Thread clientThread = new Thread(new MongoClientHandler(client));
-            clientThread.start();
+            try {
+                Socket client = server.accept();
+                subClientThread = new Thread(new MongoClientHandler(client));
+                subClientThread.start();
+            }catch (SocketException se){
+
+            }
         }
     }
 
-    /*@Test
-    void doTest() throws IOException, InterruptedException {
-        Thread clientThread = new Thread(()->{
+    @BeforeEach
+    void beforeEach() {
+        clientThread = new Thread(()->{
             try {
                 server(27917);
             } catch (IOException e) {
@@ -46,89 +57,40 @@ public class MongoTest {
             }
         });
         clientThread.start();
-        Thread.sleep(100);
-        String uri = "mongodb://user:pass@127.0.0.1:27917/?maxPoolSize=20&w=majority";
-        // Construct a ServerApi instance using the ServerApi.builder() method
+        Sleeper.sleep(1000);
+    }
 
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(uri))
-                //.serverApi(serverApi)
-                .build();
+    @AfterEach
+    void afterEach(){
+        try {
+            server.close();
+        } catch (IOException e) {
 
-        MongoClientURI connectionString = new MongoClientURI(uri);
-        // Create a new client and connect to the server
-        try (MongoClient mongoClient = new MongoClient(connectionString)) {
-            MongoDatabase database = mongoClient.getDatabase("admin");
-            try {
-                // Send a ping to confirm a successful connection
-                Bson command = new BsonDocument("ping", new BsonInt64(1));
-                Document commandResult = database.runCommand(command);
-                System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
-            } catch (MongoException me) {
-                System.err.println(me);
-            }
         }
-    }*/
+        subClientThread.interrupt();
+        clientThread.interrupt();
+    }
 
     @Test
-    void doTest2() throws IOException, InterruptedException {
-        Thread clientThread = new Thread(()->{
-            try {
-                server(27917);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        clientThread.start();
-        Thread.sleep(100);
+    void test_ping_on_real_mongo() throws IOException, InterruptedException {
         String uri = "mongodb://127.0.0.1:27917/?maxPoolSize=20&w=majority";
-        // Construct a ServerApi instance using the ServerApi.builder() method
-        /*ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(uri))
-                .serverApi(serverApi)
-                .build();
-
-        MongoClientURI connectionString = new MongoClientURI(uri);*/
-        // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("admin");
             try {
                 // Send a ping to confirm a successful connection
                 Bson command = new BsonDocument("ping", new BsonInt64(1));
                 Document commandResult = database.runCommand(command);
+                assertEquals((double)1.0,commandResult.get("ok"));
                 System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
             } catch (MongoException me) {
                 System.err.println(me);
             }
         }
-        Thread.sleep(1000);
     }
 
     @Test
-    void doTest3() throws IOException, InterruptedException {
-        Thread clientThread = new Thread(()->{
-            try {
-                server(27917);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        clientThread.start();
-        Thread.sleep(100);
+    void test_insert_select_on_real_mongo() throws IOException, InterruptedException {
         String uri = "mongodb://127.0.0.1:27917/?maxPoolSize=1&w=majority";
-        // Construct a ServerApi instance using the ServerApi.builder() method
-        /*ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(uri))
-                .serverApi(serverApi)
-                .build();
-
-        MongoClientURI connectionString = new MongoClientURI(uri);*/
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             var res = mongoClient.listDatabaseNames().first();
@@ -147,6 +109,5 @@ public class MongoTest {
                 System.err.println("Unable to insert due to an error: " + me);
             }
         }
-        clientThread.interrupt();
     }
 }

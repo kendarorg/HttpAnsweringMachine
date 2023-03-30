@@ -9,6 +9,7 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.io.BasicOutputBuffer;
 import org.bson.io.ByteBufferBsonInput;
+import org.kendar.mongo.model.*;
 import org.xerial.snappy.Snappy;
 
 import java.io.*;
@@ -40,19 +41,14 @@ public class MongoClientHandler implements Runnable {
         }
     }
 
-    public boolean running = true;
 
     //https://gist.github.com/rozza/9c94808ed5b4f1edca75
     @Override
     public void run() {
         try {
-            while (running) {
-                //Read from client
-                processClient(client);
-                //Send to server
-                //Read from server
-                //Send back to client
-            }
+
+            processClient(client);
+
         } catch (Throwable e) {
             e.printStackTrace();
             try {
@@ -69,7 +65,6 @@ public class MongoClientHandler implements Runnable {
         }
     }
 
-    private static int msgcounter = 0;
     private static void processClient(Socket serverSocket) throws IOException {
         try (InputStream fromClient = serverSocket.getInputStream();
              OutputStream toClient = serverSocket.getOutputStream()) {
@@ -82,7 +77,6 @@ public class MongoClientHandler implements Runnable {
                 byte[] mongoHeaderBytes = new byte[16];
                 while (true) {
                     readBytes(fromClient,headerBytes);
-                    msgcounter++;
                     System.out.println("===================");
                     System.out.println("==FROM CLIENT");
                     var clientPacket = readPacketsFromStream(fromClient, headerBytes);
@@ -90,26 +84,18 @@ public class MongoClientHandler implements Runnable {
                     toMongoDb.write(clientPacket.getPayload());
                     toMongoDb.flush();
                     readBytes(fromMongoDb,mongoHeaderBytes);
-                        System.out.println("==FROM SERVER");
-                        var mongoPacket = readPacketsFromStream(fromMongoDb, mongoHeaderBytes);
-                        toClient.write(mongoPacket.getHeader());
-                        toClient.write(mongoPacket.getPayload());
-                        toClient.flush();
-                        System.out.println("===================");
+                    System.out.println("==FROM SERVER");
+                    var mongoPacket = readPacketsFromStream(fromMongoDb, mongoHeaderBytes);
+                    if(mongoPacket.isFinale()){
+                        break;
+                    }
+                    toClient.write(mongoPacket.getHeader());
+                    toClient.write(mongoPacket.getPayload());
+                    toClient.flush();
+                    System.out.println("===================");
 
                     headerBytes = new byte[16];
                     mongoHeaderBytes = new byte[16];
-
-
-                    //sendIsMasterReply(outputStream,requestId);
-                    // Send an acknowledgement to the client
-                /*BasicOutputBuffer ackBuffer = new BasicOutputBuffer();
-                ackBuffer.writeInt(16); // messageLength
-                ackBuffer.writeInt(requestId); // requestId
-                ackBuffer.writeInt(responseTo); // responseTo
-                ackBuffer.writeInt(OpCodes.OP_REPLY); // opCode
-
-                outputStream.write(ackBuffer.toByteArray());*/
                 }
             }
         }
@@ -122,7 +108,12 @@ public class MongoClientHandler implements Runnable {
         int requestId = headerInput.readInt32();
         int responseTo = headerInput.readInt32();
         int opCode = headerInput.readInt32();
-        var packet = new MongoPacket(messageLength, requestId, responseTo, opCode);
+        var packet = new MongoPacket();
+        if(messageLength==0 && opCode==0 && requestId==0 && responseTo==0){
+            packet.setHeader(headerBytes);
+            packet.setPayload(new byte[]{});
+            return packet;
+        }
 
         byte[] remainingBytes = new byte[messageLength - 16];
 
@@ -149,15 +140,16 @@ public class MongoClientHandler implements Runnable {
                 // Decompress remaining bytes using the appropriate compressor (e.g., Snappy, Zlib, etc.)
                 byte[] decompressedBytes = decompress(remainingInput, compressorId, remainingBytes.length - 9);
 
-                packet = new MongoPacket(uncompressedSize + 16, requestId, responseTo, originalOpCode);
-                packet.setHeader(buildHeader(uncompressedSize + 16, requestId, responseTo, originalOpCode));
-                packet.setPayload(decompressedBytes);
+                var cpacket = new CompressedMongoPacket();
+                cpacket.setHeader(buildHeader(uncompressedSize + 16, requestId, responseTo, originalOpCode));
+                cpacket.setPayload(decompressedBytes);
+                packet.setMessage(cpacket);
                 var byteBuffer = ByteBufNIOcreate(decompressedBytes, ByteOrder.LITTLE_ENDIAN);
                 ByteBufferBsonInput decompressedInput = new ByteBufferBsonInput(byteBuffer);
 
-                handleOpCode(originalOpCode, decompressedInput, byteBuffer, packet);
+                handleOpCode(originalOpCode, decompressedInput, byteBuffer, cpacket,decompressedBytes.length);
             } else {
-                handleOpCode(opCode, remainingInput, uncompressedByteBuffer, packet);
+                handleOpCode(opCode, remainingInput, uncompressedByteBuffer, packet,remainingBytes.length);
             }
         }catch(Exception ex){
             ex.printStackTrace();
@@ -226,13 +218,14 @@ public class MongoClientHandler implements Runnable {
         }
     }
 
-    private static void handleOpCode(int opCode, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet) {
+    private static void handleOpCode(int opCode, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet,
+                                     int length) {
         switch (opCode) {
             case 1: // OP_REPLY
                 handleReply(bsonInput,byteBuffer,packet);
                 break;
             case 2013: // OP_MSG
-                handleMsg(bsonInput,byteBuffer,packet);
+                handleMsg(bsonInput,byteBuffer,packet,length);
                 break;
             case 2004: // OP_QUERY
                 handleQuery(bsonInput,packet);
@@ -266,6 +259,13 @@ public class MongoClientHandler implements Runnable {
             long cursorId = bsonInput.readInt64();
             int startingFrom = bsonInput.readInt32();
             int numberReturned = bsonInput.readInt32();
+            var replyPacket = new ReplyPacket();
+            replyPacket.setResponseFlags(responseFlags);
+            replyPacket.setCursorId(cursorId);
+            replyPacket.setStartingFrom(startingFrom);
+            replyPacket.setNumberReturned(numberReturned);
+            packet.setMessage(replyPacket);
+
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
             BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
@@ -279,6 +279,7 @@ public class MongoClientHandler implements Runnable {
             for (int i = 0; i < numberReturned; i++) {
                 BsonDocument document = documentCodec.decode(bsonReader, DecoderContext.builder().build());
                 String json = document.toJson();
+                replyPacket.getJsons().add(json);
                 System.out.println("Reply JSON: " + json);
             }
         } catch (Exception e) {
@@ -291,9 +292,7 @@ public class MongoClientHandler implements Runnable {
 
             System.out.println("======HANDLE INSERT");
             int flagBits = bsonInput.readInt32();
-            packet.setFlagBits(flagBits);
             String fullCollectionName = bsonInput.readCString();
-            packet.setFullCollectionName(fullCollectionName);
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
             BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
@@ -318,9 +317,7 @@ public class MongoClientHandler implements Runnable {
             System.out.println("======HANDLE DELETE");
             bsonInput.readInt32(); // skip ZERO
             String fullCollectionName = bsonInput.readCString();
-            packet.setFullCollectionName(fullCollectionName);
             int flagBits = bsonInput.readInt32();
-            packet.setFlagBits(flagBits);
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
             BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
@@ -346,9 +343,7 @@ public class MongoClientHandler implements Runnable {
             System.out.println("======HANDLE UPDATE");
             bsonInput.readInt32(); // skip ZERO
             String fullCollectionName = bsonInput.readCString();
-            packet.setFullCollectionName(fullCollectionName);
             int flagBits = bsonInput.readInt32();
-            packet.setFlagBits(flagBits);
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
             BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
@@ -376,9 +371,7 @@ public class MongoClientHandler implements Runnable {
         try {
             System.out.println("======HANDLE QUERY");
             int flagBits = bsonInput.readInt32();
-            packet.setFlagBits(flagBits);
             String fullCollectionName = bsonInput.readCString();
-            packet.setFullCollectionName(fullCollectionName);
             int numberToSkip = bsonInput.readInt32();
             int numberToReturn = bsonInput.readInt32();
 
@@ -400,42 +393,60 @@ public class MongoClientHandler implements Runnable {
         }
     }
 
-    private static void handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet) {
+    private static void handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
             System.out.println("======HANDLE MESSAGE");
 
+            var subPacket = new MsgPacket();
+            packet.setMessage(subPacket);
             int flagBits = bsonInput.readInt32();
+            subPacket.setFlagBits(flagBits);
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
-            BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
-            BsonBinaryReader bsonReader = new BsonBinaryReader(bsonInput);
+
+
 
             System.out.println("FlagBits: " + flagBits);
 
-            while (byteBuffer.hasRemaining()) {
-                int payloadType = bsonInput.readByte();
-                //int payloadType2 = bsonInput.readByte();
-                if(payloadType==0){
-                    BsonDocument document = documentCodec.decode(bsonReader, DecoderContext.builder().build());
-                    String json = document.toJson();
-                    System.out.println("Document JSON: " + json);
-                }else if(payloadType==1){
-                    while (byteBuffer.hasRemaining()) {
-                        try {
-                        /*int length = bsonInput.readInt32();
-                        String title = bsonInput.readCString();
+            while (byteBuffer.position()<length) {
+                var remaining = length - byteBuffer.position();
+                if(remaining==4){
+                    subPacket.setChecksum(bsonInput.readInt32());
+                    //Only checksum
+                    break;
+                }else {
+                    int payloadType = bsonInput.readByte();
+                    //int payloadType2 = bsonInput.readByte();
+                    if (payloadType == 0) {
+                        BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
+                        BsonBinaryReader bsonReader = new BsonBinaryReader(bsonInput);
                         BsonDocument document = documentCodec.decode(bsonReader, DecoderContext.builder().build());
-                        String json = document.toJson();*/
+                        String json = document.toJson();
+                        var pl = new MsgDocumentPayload();
+                        pl.setJson(json);
+                        subPacket.getPayloads().add(pl);
+                        System.out.println("Document JSON: " + json);
+                    } else if (payloadType == 1) {
+                        var pl = new MsgSectionPayload();
+                        subPacket.getPayloads().add(pl);
+
+                        pl.setLength(bsonInput.readInt32());
+
+                        var end = byteBuffer.position()+pl.getLength() - 4;
+                        pl.setTitle(bsonInput.readCString());
+                        System.out.println(pl.getTitle()+":"+pl.getLength());
+
+                        while(byteBuffer.position()<end) {
+                            System.out.println("READING DOC");
+                            BsonBinaryReader bsonReader = new BsonBinaryReader(bsonInput);
+                            BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
                             BsonDocument document = documentCodec.decode(bsonReader, DecoderContext.builder().build());
                             String json = document.toJson();
-                            System.out.println("Title JSON: " + json);
-                            System.out.println("SubDocument JSON: " + json);
-                        }catch (Exception ex){}
+                            var doc = new MsgDocumentPayload();
+                            doc.setJson(json);
+                            pl.getDocuments().add(doc);
+                        }
                     }
-                }else{
-                    bsonInput.readByte();
-                    bsonInput.readByte();
-                    bsonInput.readByte();
                 }
                 //String title = bsonInput.readCString();
 

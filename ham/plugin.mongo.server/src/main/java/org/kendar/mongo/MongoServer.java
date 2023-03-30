@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class MongoServerOld {
+public class MongoServer {
     private static final int PORT = 27017;
 
     public void run(int port,AnsweringMongoServer answeringMongoServer) throws IOException {
@@ -14,9 +14,6 @@ public class MongoServerOld {
         while (answeringMongoServer.shouldRun()) {
             Socket client = server.accept();
             System.out.println("New client connected: " + client.getInetAddress().getHostAddress());
-
-
-
             // Handle the client connection in a separate thread
             Thread clientThread = new Thread(new MongoClientHandler(client));
             clientThread.start();
