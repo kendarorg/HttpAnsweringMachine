@@ -1,8 +1,8 @@
 package org.kendar.mongo;
 
 public class CompressorIds {
-    public static byte noop = 0x00;
-    public static byte snappy = 0x01;
-    public static byte zlib = 0x02;
-    public static byte zstd = 0x03;
+    public static byte NOOP = 0x00;
+    public static byte SNAPPY = 0x01;
+    public static byte ZLIB = 0x02;
+    public static byte Z_STD = 0x03;
 }

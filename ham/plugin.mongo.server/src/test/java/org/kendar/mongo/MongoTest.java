@@ -1,7 +1,5 @@
 package org.kendar.mongo;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -29,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MongoTest {
 
-    private MongoClientHandler clh;
     private Thread subClientThread;
     private ServerSocket server;
     private Thread clientThread;
@@ -72,7 +69,7 @@ public class MongoTest {
     }
 
     @Test
-    void test_ping_on_real_mongo() throws IOException, InterruptedException {
+    void test_ping_on_real_mongo() {
         String uri = "mongodb://127.0.0.1:27917/?maxPoolSize=20&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("admin");
@@ -80,20 +77,19 @@ public class MongoTest {
                 // Send a ping to confirm a successful connection
                 Bson command = new BsonDocument("ping", new BsonInt64(1));
                 Document commandResult = database.runCommand(command);
-                assertEquals((double)1.0,commandResult.get("ok"));
+                assertEquals(1.0,commandResult.get("ok"));
                 System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
             } catch (MongoException me) {
-                System.err.println(me);
+                me.printStackTrace();
             }
         }
     }
 
     @Test
-    void test_insert_select_on_real_mongo() throws IOException, InterruptedException {
+    void test_insert_select_on_real_mongo() {
         String uri = "mongodb://127.0.0.1:27917/?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
-            var res = mongoClient.listDatabaseNames().first();
             MongoDatabase database = mongoClient.getDatabase("admin");
             MongoCollection<Document> collection = database.getCollection("movies");
             try {
@@ -106,7 +102,7 @@ public class MongoTest {
                         .first();
                 System.out.println(doc);
             } catch (MongoException me) {
-                System.err.println("Unable to insert due to an error: " + me);
+                me.printStackTrace();
             }
         }
     }

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AnsweringMongoServer implements AnsweringServer {
     private final JsonConfiguration configuration;
-    private EventQueue eventQueue;
+    private final EventQueue eventQueue;
     private final Logger logger;
     private final MongoServer mongoServer;
     private boolean running = false;
