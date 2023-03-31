@@ -2,6 +2,7 @@ package org.kendar.mongo;
 
 import org.kendar.events.EventQueue;
 import org.kendar.events.ServiceStarted;
+import org.kendar.mongo.config.MongoConfig;
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.PluginsInitializer;
