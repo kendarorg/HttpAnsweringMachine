@@ -14,13 +14,15 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kendar.mongo.compressor.*;
+import org.kendar.mongo.handlers.*;
 import org.kendar.utils.Sleeper;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Arrays;
+import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,10 +35,18 @@ public class MongoTest {
 
     public void server(int port) throws IOException {
         server = new ServerSocket(port);
+        var msgHandlers = (List<MsgHandler>)List.of(
+          new OpDeleteHandler(), new OpInsertHandler(),
+          new OpMsgHandler(), new OpQueryHandler(), new OpReplyHandler(), new OpUpdateHandler()
+        );
+        var compressionHandlers = List.of(
+                new NoopCompressionHandler(), new SnappyCompressionHandler(),
+                new ZlibCompressionHandler(), new ZStdCompressionHandler()
+        );
         while(true) {
             try {
                 Socket client = server.accept();
-                subClientThread = new Thread(new MongoClientHandler(client));
+                subClientThread = new Thread(new MongoClientHandler(client,msgHandlers,compressionHandlers));
                 subClientThread.start();
             }catch (SocketException se){
 

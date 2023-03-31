@@ -1,4 +1,4 @@
-package org.kendar.mongo;
+package org.kendar.mongo.compressor;
 
 public class CompressorIds {
     public static byte NOOP = 0x00;

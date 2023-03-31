@@ -14,36 +14,36 @@ import org.kendar.mongo.model.MongoPacket;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OpQueryHandler implements MsgHandler{
+public class OpDeleteHandler implements MsgHandler{
     @Override
     public int getOpCode() {
-        return OpCodes.OP_QUERY;
+        return OpCodes.OP_DELETE;
     }
 
     @Override
     public void handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
-            System.out.println("======HANDLE QUERY");
-            int flagBits = bsonInput.readInt32();
+            System.out.println("======HANDLE DELETE");
+            bsonInput.readInt32(); // skip ZERO
             String fullCollectionName = bsonInput.readCString();
-            int numberToSkip = bsonInput.readInt32();
-            int numberToReturn = bsonInput.readInt32();
+            int flagBits = bsonInput.readInt32();
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
             BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
             BsonBinaryReader bsonReader = new BsonBinaryReader(bsonInput);
-            BsonDocument query = documentCodec.decode(bsonReader, DecoderContext.builder().build());
+
+            BsonDocument selector = documentCodec.decode(bsonReader, DecoderContext.builder().build());
 
             MongoNamespace namespace = new MongoNamespace(fullCollectionName);
 
             // Convert BSON document to JSON
-            String json = query.toJson();
+            String selectorJson = selector.toJson();
 
             // Print out the JSON representation of the message
             System.out.println("Namespace: " + namespace);
-            System.out.println("Query JSON: " + json);
+            System.out.println("Delete JSON: " + selectorJson);
         } catch (Exception e) {
-            System.err.println("Error decoding BSON query message: " + e.getMessage());
+            System.err.println("Error decoding BSON delete message: " + e.getMessage());
         }
     }
 }

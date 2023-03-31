@@ -10,9 +10,10 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.io.ByteBufferBsonInput;
-import org.kendar.mongo.OpCodes;
 import org.kendar.mongo.model.MongoPacket;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OpUpdateHandler implements MsgHandler{
     @Override
     public int getOpCode() {
