@@ -1,9 +1,11 @@
 package org.kendar.mongo.model;
 
+import org.kendar.mongo.model.packets.BaseMongoPacket;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MsgPacket implements BaseMongoPacket{
+public class MsgPacket implements BaseMongoPacket {
 
     public List<BaseMsgPayload> getPayloads() {
         return payloads;

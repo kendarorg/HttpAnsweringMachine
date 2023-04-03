@@ -18,14 +18,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class OpMsgHandler implements MsgHandler {
     @Override
-    public int getOpCode() {
+    public OpCodes getOpCode() {
         return OpCodes.OP_MSG;
     }
 
     @Override
     public void handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
-            System.out.println("======HANDLE MESSAGE");
 
             var subPacket = new MsgPacket();
             packet.setMessage(subPacket);
@@ -33,10 +32,6 @@ public class OpMsgHandler implements MsgHandler {
             subPacket.setFlagBits(flagBits);
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
-
-
-
-            System.out.println("FlagBits: " + flagBits);
 
             while (byteBuffer.position()<length) {
                 var remaining = length - byteBuffer.position();
@@ -55,7 +50,6 @@ public class OpMsgHandler implements MsgHandler {
                         var pl = new MsgDocumentPayload();
                         pl.setJson(json);
                         subPacket.getPayloads().add(pl);
-                        System.out.println("Document JSON: " + json);
                     } else if (payloadType == 1) {
                         var pl = new MsgSectionPayload();
                         subPacket.getPayloads().add(pl);
@@ -64,10 +58,8 @@ public class OpMsgHandler implements MsgHandler {
 
                         var end = byteBuffer.position()+pl.getLength() - 4;
                         pl.setTitle(bsonInput.readCString());
-                        System.out.println(pl.getTitle()+":"+pl.getLength());
 
                         while(byteBuffer.position()<end) {
-                            System.out.println("READING DOC");
                             BsonBinaryReader bsonReader = new BsonBinaryReader(bsonInput);
                             BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
                             BsonDocument document = documentCodec.decode(bsonReader, DecoderContext.builder().build());
@@ -85,6 +77,5 @@ public class OpMsgHandler implements MsgHandler {
             e.printStackTrace();
             System.err.println("Error decoding BSON message: " + e.getMessage());
         }
-        System.out.println("ENDOFMSG");
     }
 }

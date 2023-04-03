@@ -1,9 +1,11 @@
-package org.kendar.mongo.model;
+package org.kendar.mongo.model.packets;
+
+import org.kendar.mongo.model.packets.BaseMongoPacket;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReplyPacket implements BaseMongoPacket{
+public class ReplyPacket implements BaseMongoPacket {
     private List<String> jsons = new ArrayList<>();
     private int responseFlags;
     private long cursorId;

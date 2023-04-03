@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OpUpdateHandler implements MsgHandler{
     @Override
-    public int getOpCode() {
+    public OpCodes getOpCode() {
         return OpCodes.OP_UPDATE;
     }
 

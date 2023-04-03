@@ -1,6 +1,11 @@
 package org.kendar.mongo.model;
 
+import org.kendar.mongo.handlers.OpCodes;
+import org.kendar.mongo.model.packets.BaseMongoPacket;
+
 public class MongoPacket {
+    private OpCodes opCode;
+
     public BaseMongoPacket getMessage() {
         return message;
     }
@@ -38,5 +43,14 @@ public class MongoPacket {
     private byte[] header;
 
     public MongoPacket() {
+    }
+
+    public void setOpCode(OpCodes opCode) {
+
+        this.opCode = opCode;
+    }
+
+    public OpCodes getOpCode() {
+        return opCode;
     }
 }

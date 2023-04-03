@@ -11,23 +11,25 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.io.ByteBufferBsonInput;
 import org.kendar.mongo.model.MongoPacket;
+import org.kendar.mongo.model.packets.QueryMongoPacket;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OpQueryHandler implements MsgHandler{
     @Override
-    public int getOpCode() {
+    public OpCodes getOpCode() {
         return OpCodes.OP_QUERY;
     }
 
     @Override
     public void handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
-            System.out.println("======HANDLE QUERY");
-            int flagBits = bsonInput.readInt32();
+            var payload = new QueryMongoPacket();
+            payload.setFlagBits(bsonInput.readInt32());
             String fullCollectionName = bsonInput.readCString();
-            int numberToSkip = bsonInput.readInt32();
-            int numberToReturn = bsonInput.readInt32();
+            payload.setFullCollectionName(fullCollectionName);
+            payload.setNumberToSkip(bsonInput.readInt32());
+            payload.setNumberToReturn(bsonInput.readInt32());
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
             BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
@@ -38,10 +40,8 @@ public class OpQueryHandler implements MsgHandler{
 
             // Convert BSON document to JSON
             String json = query.toJson();
-
-            // Print out the JSON representation of the message
-            System.out.println("Namespace: " + namespace);
-            System.out.println("Query JSON: " + json);
+            payload.setJson(json);
+            packet.setMessage(payload);
         } catch (Exception e) {
             System.err.println("Error decoding BSON query message: " + e.getMessage());
         }

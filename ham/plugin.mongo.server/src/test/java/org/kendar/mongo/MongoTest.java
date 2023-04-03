@@ -16,7 +16,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kendar.mongo.compressor.*;
 import org.kendar.mongo.handlers.*;
+import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.Sleeper;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -43,10 +45,13 @@ public class MongoTest {
                 new NoopCompressionHandler(), new SnappyCompressionHandler(),
                 new ZlibCompressionHandler(), new ZStdCompressionHandler()
         );
+        var loggerBuilder = (LoggerBuilder)new LocalLoggerBuilderImpl();
+        Logger logger = loggerBuilder.build(MongoTest.class);
         while(true) {
             try {
                 Socket client = server.accept();
-                subClientThread = new Thread(new MongoClientHandler(client,msgHandlers,compressionHandlers));
+                logger.debug("++++++++++++++ACCEPTED CONNECTION");
+                subClientThread = new Thread(new MongoClientHandler(client,msgHandlers,compressionHandlers,loggerBuilder));
                 subClientThread.start();
             }catch (SocketException se){
 
@@ -100,9 +105,12 @@ public class MongoTest {
         String uri = "mongodb://127.0.0.1:27917/?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
+            Sleeper.sleep(1000);
             MongoDatabase database = mongoClient.getDatabase("admin");
+            Sleeper.sleep(1000);
             MongoCollection<Document> collection = database.getCollection("movies");
             try {
+                Sleeper.sleep(1000);
                 InsertOneResult result = collection.insertOne(new Document()
                         .append("_id", new ObjectId())
                         .append("title", "Ski Bloopers")
