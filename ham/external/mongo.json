@@ -1,21 +1,17 @@
 {
   "id": "mongo",
   "active": true,
-  "port": 27119,
   "proxies": [
     {
       "id": "1",
       "active": true,
-      "driver": "org.h2.Driver",
+      "exposedPort": 27097,
+      "exposedIp": "*",
       "remote": {
-        "connection": "localhost:27017/admin",
+        "ip": "localhost",
+        "port": 27027,
         "login": "sa",
         "password": "sa"
-      },
-      "exposed": {
-        "connection": "*:27017/admin",
-        "login": "login",
-        "password": "password"
       }
     }
   ]

@@ -16,8 +16,25 @@ public class MongoProxy {
         this.id = id;
     }
 
-    private String driver;
-    private MongoDescriptor exposed;
+    private int exposedPort;
+    private String exposedIp;
+
+    public int getExposedPort() {
+        return exposedPort;
+    }
+
+    public void setExposedPort(int exposedPort) {
+        this.exposedPort = exposedPort;
+    }
+
+    public String getExposedIp() {
+        return exposedIp;
+    }
+
+    public void setExposedIp(String exposedIp) {
+        this.exposedIp = exposedIp;
+    }
+
     private MongoDescriptor remote;
     private boolean active;
 
@@ -29,13 +46,6 @@ public class MongoProxy {
         this.active = active;
     }
 
-    public MongoDescriptor getExposed() {
-        return exposed;
-    }
-
-    public void setExposed(MongoDescriptor exposed) {
-        this.exposed = exposed;
-    }
 
     public MongoDescriptor getRemote() {
         return remote;
@@ -49,17 +59,9 @@ public class MongoProxy {
         var result = new MongoProxy();
         result.setActive(this.active);
         result.setId(this.id);
-        result.setDriver(this.driver);
-        result.setExposed(this.exposed.copy());
+        result.setExposedIp(this.exposedIp);
+        result.setExposedPort(this.exposedPort);
         result.setRemote(this.remote.copy());
         return result;
-    }
-
-    public String getDriver() {
-        return driver;
-    }
-
-    public void setDriver(String driver) {
-        this.driver = driver;
     }
 }

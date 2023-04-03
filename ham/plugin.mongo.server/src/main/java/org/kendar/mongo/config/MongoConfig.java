@@ -32,19 +32,10 @@ public class MongoConfig extends BaseJsonConfig<MongoConfig> implements SpecialJ
     }
 
 
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
     @Override
     public MongoConfig copy() {
         var result = new MongoConfig();
         result.active = this.active;
-        result.port = this.port;
         result.setProxies(new ArrayList<>());
         for (var rss : proxies) {
             result.getProxies().add(rss.copy());

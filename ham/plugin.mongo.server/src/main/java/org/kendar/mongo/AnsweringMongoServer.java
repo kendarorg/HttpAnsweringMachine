@@ -47,7 +47,8 @@ public class AnsweringMongoServer implements AnsweringServer {
         try {
 
             eventQueue.handle(new ServiceStarted().withTye("mongo"));
-            mongoServer.run(config.getPort(),this);
+            //TODO
+            mongoServer.run(77777,this);
         } catch (Exception e) {
             logger.error("Error running Mongo server", e);
         } finally {

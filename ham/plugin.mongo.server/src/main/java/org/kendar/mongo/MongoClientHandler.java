@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class MongoClientHandler implements Runnable {
+public abstract class MongoClientHandler implements Runnable {
 
     private final Socket client;
     private final Logger logClient;
@@ -30,8 +30,10 @@ public class MongoClientHandler implements Runnable {
     private Map<OpCodes, MsgHandler> msgHandlers;
     private Map<Integer, CompressionHandler> compressionHandlers;
 
+
     public MongoClientHandler(Socket client, List<MsgHandler> msgHandlers,
-                              List<CompressionHandler> compressionHandlers, LoggerBuilder loggerBuilder) {
+                              List<CompressionHandler> compressionHandlers,
+                              LoggerBuilder loggerBuilder) {
         this.client = client;
         this.logClient = loggerBuilder.build(MongoLogClient.class);
         this.logServer = loggerBuilder.build(MongoLogServer.class);
@@ -91,22 +93,21 @@ public class MongoClientHandler implements Runnable {
         try (InputStream fromClient = serverSocket.getInputStream();
              OutputStream toClient = serverSocket.getOutputStream()) {
 
+            connectToClient();
             try (var clientSocket = new Socket("localhost", 27017)) {
 
-                var toMongoDb = clientSocket.getOutputStream();
-                var fromMongoDb = clientSocket.getInputStream();
+
+
                 byte[] headerBytes = new byte[16];
-                byte[] mongoHeaderBytes = new byte[16];
+
                 while (true) {
                     readBytes(fromClient,headerBytes);
                     logClient.debug("===================");
                     var clientPacket = readPacketsFromStream(fromClient, headerBytes);
-                    toMongoDb.write(clientPacket.getHeader());
-                    toMongoDb.write(clientPacket.getPayload());
-                    toMongoDb.flush();
+                    writeToMongoDb(clientPacket);
                     logClient.debug(cleanUp(clientPacket));
-                    readBytes(fromMongoDb,mongoHeaderBytes);
-                    var mongoPacket = readPacketsFromStream(fromMongoDb, mongoHeaderBytes);
+                    MongoPacket mongoPacket = readFromMongo();
+
                     logServer.debug(cleanUp(mongoPacket));
                     logClient.debug("===================");
                     if(mongoPacket.isFinale()){
@@ -118,13 +119,18 @@ public class MongoClientHandler implements Runnable {
                     System.out.println("===================");
 
                     headerBytes = new byte[16];
-                    mongoHeaderBytes = new byte[16];
                 }
             }
         }
     }
 
-    private MongoPacket readPacketsFromStream(InputStream inputStream, byte[] headerBytes) throws IOException {
+    protected abstract MongoPacket readFromMongo();
+
+    protected abstract void writeToMongoDb(MongoPacket clientPacket);
+
+    protected abstract void connectToClient();
+
+    protected MongoPacket readPacketsFromStream(InputStream inputStream, byte[] headerBytes) throws IOException {
         ByteBufferBsonInput headerInput = new ByteBufferBsonInput(
                 ByteBufNIOcreate(headerBytes, ByteOrder.LITTLE_ENDIAN));
         int messageLength = headerInput.readInt32();

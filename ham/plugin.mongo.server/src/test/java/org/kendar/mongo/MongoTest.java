@@ -51,7 +51,7 @@ public class MongoTest {
             try {
                 Socket client = server.accept();
                 logger.debug("++++++++++++++ACCEPTED CONNECTION");
-                subClientThread = new Thread(new MongoClientHandler(client,msgHandlers,compressionHandlers,loggerBuilder));
+                subClientThread = new Thread(new DirectMongoClientHandler(client,msgHandlers,compressionHandlers,loggerBuilder));
                 subClientThread.start();
             }catch (SocketException se){
 

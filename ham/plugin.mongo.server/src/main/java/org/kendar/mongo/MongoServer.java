@@ -32,7 +32,7 @@ public class MongoServer {
                 Socket client = server.accept();
                 System.out.println("New client connected: " + client.getInetAddress().getHostAddress());
                 // Handle the client connection in a separate thread
-                Thread clientThread = new Thread(new MongoClientHandler(client, msgHandlers, compressionHandlers, loggerBuilder));
+                Thread clientThread = new Thread(new HamMongoClientHandler(client, msgHandlers, compressionHandlers, loggerBuilder));
                 clientThread.start();
             }
         }
