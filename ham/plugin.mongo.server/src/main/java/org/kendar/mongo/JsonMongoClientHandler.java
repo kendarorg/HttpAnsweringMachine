@@ -5,15 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.bson.BsonDocument;
-import org.bson.BsonInt64;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.kendar.mongo.compressor.CompressionHandler;
 import org.kendar.mongo.handlers.MsgHandler;
 import org.kendar.mongo.handlers.OpCodes;
-import org.kendar.mongo.model.BaseMsgPayload;
 import org.kendar.mongo.model.MongoPacket;
-import org.kendar.mongo.model.MsgDocumentPayload;
+import org.kendar.mongo.model.payloads.MsgDocumentPayload;
 import org.kendar.mongo.model.MsgPacket;
 import org.kendar.utils.LoggerBuilder;
 

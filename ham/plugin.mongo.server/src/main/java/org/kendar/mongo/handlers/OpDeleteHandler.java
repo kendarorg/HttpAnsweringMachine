@@ -21,7 +21,7 @@ public class OpDeleteHandler implements MsgHandler{
     }
 
     @Override
-    public MongoPacket<?> handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(int requestId,int responseTo,ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
             System.out.println("======HANDLE DELETE");
             bsonInput.readInt32(); // skip ZERO

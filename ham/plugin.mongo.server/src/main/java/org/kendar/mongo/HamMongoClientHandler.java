@@ -10,7 +10,7 @@ import org.kendar.mongo.compressor.CompressionHandler;
 import org.kendar.mongo.handlers.MsgHandler;
 import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.mongo.model.MongoPacket;
-import org.kendar.mongo.model.MsgDocumentPayload;
+import org.kendar.mongo.model.payloads.MsgDocumentPayload;
 import org.kendar.mongo.model.MsgPacket;
 import org.kendar.mongo.model.QueryPacket;
 import org.kendar.servers.http.Request;

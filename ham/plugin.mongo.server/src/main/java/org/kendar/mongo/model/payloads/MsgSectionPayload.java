@@ -1,4 +1,4 @@
-package org.kendar.mongo.model;
+package org.kendar.mongo.model.payloads;
 
 import org.kendar.janus.serialization.TypedSerializable;
 import org.kendar.janus.serialization.TypedSerializer;

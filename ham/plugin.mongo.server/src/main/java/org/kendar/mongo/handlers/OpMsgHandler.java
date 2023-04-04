@@ -10,9 +10,9 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.io.ByteBufferBsonInput;
 import org.kendar.mongo.model.MongoPacket;
-import org.kendar.mongo.model.MsgDocumentPayload;
+import org.kendar.mongo.model.payloads.MsgDocumentPayload;
 import org.kendar.mongo.model.MsgPacket;
-import org.kendar.mongo.model.MsgSectionPayload;
+import org.kendar.mongo.model.payloads.MsgSectionPayload;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,13 +23,15 @@ public class OpMsgHandler implements MsgHandler {
     }
 
     @Override
-    public MongoPacket<?> handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(int requestId,int responseTo,ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
 
             var realPacket = new MsgPacket();
             realPacket.setPayload(packet.getPayload());
             realPacket.setHeader(packet.getHeader());
             realPacket.setOpCode(OpCodes.OP_MSG);
+            realPacket.setRequestId(requestId);
+            realPacket.setResponseTo(responseTo);
             int flagBits = bsonInput.readInt32();
             realPacket.setFlagBits(flagBits);
 

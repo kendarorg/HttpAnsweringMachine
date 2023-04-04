@@ -22,12 +22,14 @@ public class OpQueryHandler implements MsgHandler{
     }
 
     @Override
-    public MongoPacket<?> handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(int requestId,int responseTo,ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
             var realPacket = new QueryPacket();
             realPacket.setPayload(packet.getPayload());
             realPacket.setHeader(packet.getHeader());
             realPacket.setOpCode(OpCodes.OP_QUERY);
+            realPacket.setRequestId(requestId);
+            realPacket.setResponseTo(responseTo);
             realPacket.setFlagBits(bsonInput.readInt32());
             String fullCollectionName = bsonInput.readCString();
             realPacket.setFullCollectionName(fullCollectionName);

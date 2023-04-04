@@ -21,7 +21,7 @@ public class OpReplyHandler implements MsgHandler{
     }
 
     @Override
-    public MongoPacket<?> handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(int requestId,int responseTo,ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
 
             int responseFlags = bsonInput.readInt32();

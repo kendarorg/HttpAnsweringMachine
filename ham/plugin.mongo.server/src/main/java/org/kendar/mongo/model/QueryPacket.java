@@ -57,6 +57,8 @@ public class QueryPacket extends MongoPacket<QueryPacket> {
         typedSerializer.write("numberToSkip",numberToSkip);
         typedSerializer.write("numberToReturn",numberToReturn);
         typedSerializer.write("json",json);
+        typedSerializer.write("requestId",requestId);
+        typedSerializer.write("responseTo",responseTo);
     }
 
     @Override
@@ -67,6 +69,27 @@ public class QueryPacket extends MongoPacket<QueryPacket> {
         numberToSkip = typedSerializer.read("numberToSkip");
         numberToReturn = typedSerializer.read("numberToReturn");
         json = typedSerializer.read("json");
+        requestId = typedSerializer.read("requestId");
+        responseTo = typedSerializer.read("responseTo");
         return this;
+    }
+
+    private int requestId;
+    private int responseTo;
+
+    public void setRequestId(Integer requestId) {
+        this.requestId = requestId;
+    }
+
+    public int getRequestId() {
+        return requestId;
+    }
+
+    public void setResponseTo(Integer responseTo) {
+        this.responseTo = responseTo;
+    }
+
+    public int getResponseTo() {
+        return responseTo;
     }
 }
