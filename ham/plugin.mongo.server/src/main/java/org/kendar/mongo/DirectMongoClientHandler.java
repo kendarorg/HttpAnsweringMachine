@@ -15,6 +15,8 @@ public class DirectMongoClientHandler extends MongoClientHandler {
     private Socket clientSocket;
     private OutputStream toMongoDb;
     private InputStream fromMongoDb;
+    private String targetIp;
+    private int targetPort;
 
     public DirectMongoClientHandler(Socket client,
                                     List<MsgHandler> msgHandlers,
@@ -23,8 +25,11 @@ public class DirectMongoClientHandler extends MongoClientHandler {
         super(client, msgHandlers, compressionHandlers, loggerBuilder);
     }
 
-    protected MongoPacket readFromMongo() {
+    protected MongoPacket mongoRoundTrip(MongoPacket clientPacket) {
         try {
+            toMongoDb.write(clientPacket.getHeader());
+            toMongoDb.write(clientPacket.getPayload());
+            toMongoDb.flush();
             byte[] mongoHeaderBytes = new byte[16];
             readBytes(fromMongoDb, mongoHeaderBytes);
             return readPacketsFromStream(fromMongoDb, mongoHeaderBytes);
@@ -33,24 +38,19 @@ public class DirectMongoClientHandler extends MongoClientHandler {
         }
     }
 
-    protected void writeToMongoDb(MongoPacket clientPacket) {
-
-        try {
-            toMongoDb.write(clientPacket.getHeader());
-            toMongoDb.write(clientPacket.getPayload());
-            toMongoDb.flush();
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
     protected void connectToClient() {
         try {
-            clientSocket = new Socket("localhost", 27017);
+            clientSocket = new Socket(targetIp, targetPort);
             toMongoDb = clientSocket.getOutputStream();
             fromMongoDb = clientSocket.getInputStream();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public void setTarget(String targetIp, int targetPort) {
+
+        this.targetIp = targetIp;
+        this.targetPort = targetPort;
     }
 }

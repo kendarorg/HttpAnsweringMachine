@@ -3,6 +3,8 @@ package org.kendar.mongo;
 import org.kendar.events.EventQueue;
 import org.kendar.events.ServiceStarted;
 import org.kendar.mongo.config.MongoConfig;
+import org.kendar.mongo.logging.MongoLogClient;
+import org.kendar.mongo.logging.MongoLogServer;
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.PluginsInitializer;
@@ -47,6 +49,10 @@ public class AnsweringMongoServer implements AnsweringServer {
         try {
 
             eventQueue.handle(new ServiceStarted().withTye("mongo"));
+            for(var single : config.getProxies()){
+                var ms = mongoServer.clone();
+                ms.run(single.getExposedPort(),this);
+            }
             //TODO
             mongoServer.run(77777,this);
         } catch (Exception e) {

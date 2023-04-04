@@ -8,6 +8,8 @@ import org.bson.ByteBufNIO;
 import org.bson.io.ByteBufferBsonInput;
 import org.kendar.mongo.compressor.*;
 import org.kendar.mongo.handlers.*;
+import org.kendar.mongo.logging.MongoLogClient;
+import org.kendar.mongo.logging.MongoLogServer;
 import org.kendar.mongo.model.*;
 import org.kendar.mongo.model.packets.CompressedMongoPacket;
 import org.kendar.utils.LoggerBuilder;
@@ -104,9 +106,8 @@ public abstract class MongoClientHandler implements Runnable {
                     readBytes(fromClient,headerBytes);
                     logClient.debug("===================");
                     var clientPacket = readPacketsFromStream(fromClient, headerBytes);
-                    writeToMongoDb(clientPacket);
+                    MongoPacket mongoPacket = mongoRoundTrip(clientPacket);
                     logClient.debug(cleanUp(clientPacket));
-                    MongoPacket mongoPacket = readFromMongo();
 
                     logServer.debug(cleanUp(mongoPacket));
                     logClient.debug("===================");
@@ -124,9 +125,8 @@ public abstract class MongoClientHandler implements Runnable {
         }
     }
 
-    protected abstract MongoPacket readFromMongo();
 
-    protected abstract void writeToMongoDb(MongoPacket clientPacket);
+    protected abstract MongoPacket mongoRoundTrip(MongoPacket clientPacket);
 
     protected abstract void connectToClient();
 
@@ -168,7 +168,7 @@ public abstract class MongoClientHandler implements Runnable {
         return packet;
     }
 
-    private void handleOpCompressedCode(int requestId, int responseTo, MongoPacket packet, byte[] remainingBytes, ByteBufferBsonInput remainingInput) throws IOException {
+    private MongoPacket handleOpCompressedCode(int requestId, int responseTo, MongoPacket packet, byte[] remainingBytes, ByteBufferBsonInput remainingInput) throws IOException {
         // Handle OP_COMPRESSED
         var originalOpCode = OpCodes.of(remainingInput.readInt32());
         int uncompressedSize = remainingInput.readInt32();
@@ -185,6 +185,7 @@ public abstract class MongoClientHandler implements Runnable {
         ByteBufferBsonInput decompressedInput = new ByteBufferBsonInput(byteBuffer);
 
         handleOpCode(originalOpCode, decompressedInput, byteBuffer, cpacket,decompressedBytes.length);
+        return cpacket;
     }
 
 
@@ -222,7 +223,7 @@ public abstract class MongoClientHandler implements Runnable {
         if(handler==null){
             System.err.println("Unknown opCode: " + opCode);
         }
-        handler.handleMsg(bsonInput, byteBuffer, packet, length);
+         handler.handleMsg(bsonInput, byteBuffer, packet, length);
     }
 
 

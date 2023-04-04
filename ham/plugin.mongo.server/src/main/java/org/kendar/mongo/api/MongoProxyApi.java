@@ -43,7 +43,30 @@ public class MongoProxyApi implements FilteringClass {
             responses = @HamResponse(
                     body = String.class
             ))
-    public boolean handleGeneral(Request req, Response res) throws Exception {
+    public boolean handleCommands(Request req, Response res) throws Exception {
+        return true;
+    }
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/mongo/{port}",
+            method = "POST")
+    @HamDoc(
+            tags = {"base/proxymongo"},
+            description = "Proxies mongo-not on connections",
+            header = {
+                    @Header(key = "X-Connection-Id", description = "The connection id")
+            },
+            path = {
+                    @PathParameter(
+                            key = "port",
+                            description = "The the port",
+                            example = "27077"),
+            },
+            responses = @HamResponse(
+                    body = String.class
+            ))
+    public boolean handleConnection(Request req, Response res) throws Exception {
         return true;
     }
 }

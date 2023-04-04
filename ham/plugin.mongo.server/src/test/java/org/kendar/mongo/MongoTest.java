@@ -28,12 +28,16 @@ import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MongoTest {
 
     private Thread subClientThread;
     private ServerSocket server;
     private Thread clientThread;
+    private String targetIp;
+    private int targetPort;
+    private String connectionString;
 
     public void server(int port) throws IOException {
         server = new ServerSocket(port);
@@ -51,7 +55,9 @@ public class MongoTest {
             try {
                 Socket client = server.accept();
                 logger.debug("++++++++++++++ACCEPTED CONNECTION");
-                subClientThread = new Thread(new DirectMongoClientHandler(client,msgHandlers,compressionHandlers,loggerBuilder));
+                var handler = new DirectMongoClientHandler(client,msgHandlers,compressionHandlers,loggerBuilder);
+                handler.setTarget(targetIp, targetPort);
+                subClientThread = new Thread(handler);
                 subClientThread.start();
             }catch (SocketException se){
 
@@ -61,6 +67,9 @@ public class MongoTest {
 
     @BeforeEach
     void beforeEach() {
+
+        targetIp = "localhost";//spl[0];
+        targetPort = 27017;//Integer.parseInt(spl[1]);
         clientThread = new Thread(()->{
             try {
                 server(27917);
@@ -85,7 +94,7 @@ public class MongoTest {
 
     @Test
     void test_ping_on_real_mongo() {
-        String uri = "mongodb://127.0.0.1:27917/?maxPoolSize=20&w=majority";
+        String uri = "mongodb://127.0.0.1:27917";///?maxPoolSize=20&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("admin");
             try {
@@ -102,11 +111,11 @@ public class MongoTest {
 
     @Test
     void test_insert_select_on_real_mongo() {
-        String uri = "mongodb://127.0.0.1:27917/?maxPoolSize=1&w=majority";
+        String uri = "mongodb://127.0.0.1:27917";///?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             Sleeper.sleep(1000);
-            MongoDatabase database = mongoClient.getDatabase("admin");
+            MongoDatabase database = mongoClient.getDatabase("basicdb");
             Sleeper.sleep(1000);
             MongoCollection<Document> collection = database.getCollection("movies");
             try {
@@ -118,6 +127,7 @@ public class MongoTest {
                 System.out.println("Success! Inserted document id: " + result.getInsertedId());
                 Document doc = collection.find(eq("title", "Ski Bloopers"))
                         .first();
+                assertNotNull(doc);
                 System.out.println(doc);
             } catch (MongoException me) {
                 me.printStackTrace();

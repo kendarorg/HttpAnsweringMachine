@@ -1,9 +1,11 @@
 package org.kendar.mongo.model;
 
+import org.kendar.janus.serialization.TypedSerializable;
+import org.kendar.janus.serialization.TypedSerializer;
 import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.mongo.model.packets.BaseMongoPacket;
 
-public class MongoPacket {
+public class MongoPacket implements TypedSerializable<MongoPacket> {
     private OpCodes opCode;
 
     public BaseMongoPacket getMessage() {
@@ -52,5 +54,22 @@ public class MongoPacket {
 
     public OpCodes getOpCode() {
         return opCode;
+    }
+
+    @Override
+    public void serialize(TypedSerializer typedSerializer) {
+        typedSerializer.write("opCode",opCode);
+        typedSerializer.write("message",message);
+        typedSerializer.write("header",header);
+        typedSerializer.write("payload",payload);
+    }
+
+    @Override
+    public MongoPacket deserialize(TypedSerializer typedSerializer) {
+        opCode = typedSerializer.read("opCode");
+        message = typedSerializer.read("message");
+        header = typedSerializer.read("header");
+        payload = typedSerializer.read("payload");
+        return this;
     }
 }

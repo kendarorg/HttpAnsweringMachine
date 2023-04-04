@@ -31,7 +31,6 @@ public class MongoConfig extends BaseJsonConfig<MongoConfig> implements SpecialJ
         this.active = active;
     }
 
-
     @Override
     public MongoConfig copy() {
         var result = new MongoConfig();

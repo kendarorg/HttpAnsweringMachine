@@ -1,9 +1,12 @@
 package org.kendar.mongo.model;
 
+import org.kendar.janus.serialization.TypedSerializable;
+import org.kendar.janus.serialization.TypedSerializer;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MsgSectionPayload implements BaseMsgPayload{
+public class MsgSectionPayload implements BaseMsgPayload, TypedSerializable<MsgSectionPayload> {
     public List<MsgDocumentPayload> getDocuments() {
         return documents;
     }
@@ -30,5 +33,20 @@ public class MsgSectionPayload implements BaseMsgPayload{
 
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public void serialize(TypedSerializer typedSerializer) {
+        typedSerializer.write("title",title);
+        typedSerializer.write("length",length);
+        typedSerializer.write("documents",documents);
+    }
+
+    @Override
+    public MsgSectionPayload deserialize(TypedSerializer typedSerializer) {
+        title = typedSerializer.read("title");
+        length = typedSerializer.read("length");
+        documents = typedSerializer.read("documents");
+        return this;
     }
 }

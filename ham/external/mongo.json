@@ -6,7 +6,6 @@
       "id": "1",
       "active": true,
       "exposedPort": 27097,
-      "exposedIp": "*",
       "remote": {
         "ip": "localhost",
         "port": 27027,

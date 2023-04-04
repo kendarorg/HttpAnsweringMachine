@@ -3,6 +3,7 @@ package org.kendar.mongo;
 import org.kendar.mongo.compressor.CompressionHandler;
 import org.kendar.mongo.handlers.MsgHandler;
 import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.List;
 @Component
 public class MongoServer {
     public static final int DEFAULT_PORT = 27017;
+    private final Logger logger;
     private List<MsgHandler> msgHandlers;
     private List<CompressionHandler> compressionHandlers;
     private LoggerBuilder loggerBuilder;
@@ -22,15 +24,20 @@ public class MongoServer {
         this.msgHandlers = msgHandlers;
         this.compressionHandlers = compressionHandlers;
         this.loggerBuilder = loggerBuilder;
+        this.logger = loggerBuilder.build(MongoServer.class);
+    }
+
+    public MongoServer clone(){
+        return new MongoServer(msgHandlers,compressionHandlers,loggerBuilder);
     }
 
     public void run(int port,AnsweringMongoServer answeringMongoServer) throws IOException {
         try(ServerSocket server = new ServerSocket(port)) {
-            System.out.println("MongoDB server started on port " + port);
+            logger.info("MongoDB server started on port " + port);
 
             while (answeringMongoServer.shouldRun()) {
                 Socket client = server.accept();
-                System.out.println("New client connected: " + client.getInetAddress().getHostAddress());
+                logger.debug("New client connected: " + client.getInetAddress().getHostAddress());
                 // Handle the client connection in a separate thread
                 Thread clientThread = new Thread(new HamMongoClientHandler(client, msgHandlers, compressionHandlers, loggerBuilder));
                 clientThread.start();

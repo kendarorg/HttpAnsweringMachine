@@ -1,6 +1,10 @@
 package org.kendar.mongo.model.packets;
 
-public class QueryMongoPacket implements BaseMongoPacket {
+import org.kendar.janus.serialization.TypedSerializable;
+import org.kendar.janus.serialization.TypedSerializer;
+import org.kendar.mongo.model.MongoPacket;
+
+public class QueryMongoPacket implements BaseMongoPacket, TypedSerializable<QueryMongoPacket> {
     private int flagBits;
     private String fullCollectionName;
     private int numberToSkip;
@@ -45,5 +49,24 @@ public class QueryMongoPacket implements BaseMongoPacket {
 
     public String getJson() {
         return json;
+    }
+
+    @Override
+    public void serialize(TypedSerializer typedSerializer) {
+        typedSerializer.write("flagBits",flagBits);
+        typedSerializer.write("fullCollectionName",fullCollectionName);
+        typedSerializer.write("numberToSkip",numberToSkip);
+        typedSerializer.write("numberToReturn",numberToReturn);
+        typedSerializer.write("json",json);
+    }
+
+    @Override
+    public QueryMongoPacket deserialize(TypedSerializer typedSerializer) {
+        flagBits = typedSerializer.read("flagBits");
+        fullCollectionName = typedSerializer.read("fullCollectionName");
+        numberToSkip = typedSerializer.read("numberToSkip");
+        numberToReturn = typedSerializer.read("numberToReturn");
+        json = typedSerializer.read("json");
+        return this;
     }
 }

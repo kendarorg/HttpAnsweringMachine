@@ -17,7 +17,6 @@ public class MongoProxy {
     }
 
     private int exposedPort;
-    private String exposedIp;
 
     public int getExposedPort() {
         return exposedPort;
@@ -25,14 +24,6 @@ public class MongoProxy {
 
     public void setExposedPort(int exposedPort) {
         this.exposedPort = exposedPort;
-    }
-
-    public String getExposedIp() {
-        return exposedIp;
-    }
-
-    public void setExposedIp(String exposedIp) {
-        this.exposedIp = exposedIp;
     }
 
     private MongoDescriptor remote;
@@ -59,7 +50,6 @@ public class MongoProxy {
         var result = new MongoProxy();
         result.setActive(this.active);
         result.setId(this.id);
-        result.setExposedIp(this.exposedIp);
         result.setExposedPort(this.exposedPort);
         result.setRemote(this.remote.copy());
         return result;
