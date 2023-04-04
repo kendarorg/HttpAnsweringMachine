@@ -21,7 +21,7 @@ public class OpInsertHandler implements MsgHandler{
     }
 
     @Override
-    public void handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         System.out.println("======HANDLE INSERT");
         int flagBits = bsonInput.readInt32();
         String fullCollectionName = bsonInput.readCString();
@@ -39,5 +39,6 @@ public class OpInsertHandler implements MsgHandler{
             String json = document.toJson();
             System.out.println("Insert JSON: " + json);
         }
+        return packet;
     }
 }

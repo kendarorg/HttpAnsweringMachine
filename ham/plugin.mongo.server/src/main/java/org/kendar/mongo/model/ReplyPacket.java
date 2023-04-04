@@ -1,13 +1,11 @@
-package org.kendar.mongo.model.packets;
+package org.kendar.mongo.model;
 
-import org.kendar.janus.serialization.TypedSerializable;
 import org.kendar.janus.serialization.TypedSerializer;
-import org.kendar.mongo.model.packets.BaseMongoPacket;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReplyPacket implements BaseMongoPacket, TypedSerializable<ReplyPacket> {
+public class ReplyPacket extends MongoPacket<ReplyPacket> {
     private List<String> jsons = new ArrayList<>();
     private int responseFlags;
     private long cursorId;
@@ -56,6 +54,7 @@ public class ReplyPacket implements BaseMongoPacket, TypedSerializable<ReplyPack
 
     @Override
     public void serialize(TypedSerializer typedSerializer) {
+        super.serialize(typedSerializer);
         typedSerializer.write("jsons",jsons);
         typedSerializer.write("numberReturned",numberReturned);
         typedSerializer.write("startingFrom",startingFrom);
@@ -65,6 +64,7 @@ public class ReplyPacket implements BaseMongoPacket, TypedSerializable<ReplyPack
 
     @Override
     public ReplyPacket deserialize(TypedSerializer typedSerializer) {
+        super.deserialize(typedSerializer);
         jsons = typedSerializer.read("jsons");
         numberReturned = typedSerializer.read("numberReturned");
         startingFrom = typedSerializer.read("startingFrom");

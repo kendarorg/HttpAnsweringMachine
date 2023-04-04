@@ -48,7 +48,7 @@ public class JsonMongoClientHandler extends MongoClientHandler {
                 mongoClient = MongoClients.create("mongodb://127.0.0.1:27017");
             }
             if(clientPacket.getOpCode()== OpCodes.OP_MSG){
-                var msgPacket = (MsgPacket)clientPacket.getMessage();
+                var msgPacket = (MsgPacket)clientPacket;
                 var db= getDb(msgPacket);
                 var database = mongoClient.getDatabase(db);
                 var docPayload = (MsgDocumentPayload)msgPacket.getPayloads().get(0);
@@ -62,11 +62,11 @@ public class JsonMongoClientHandler extends MongoClientHandler {
                 var  responseDocPayload = new MsgDocumentPayload();
                 responseDocPayload.setJson(commandResult.toJson());
                 result.getPayloads().add(responseDocPayload);
-                var packet =new MongoPacket();
-                packet.setMessage(result);
-                otherResult = packet;
-                header = (byte[]) createHeader(packet);
-                payload = (byte[]) createPayload(packet);
+                //var packet =new MongoPacket();
+                //packet.setMessage(result);
+                otherResult = result;
+                header = (byte[]) createHeader(result);
+                payload = (byte[]) createPayload(result);
                 System.out.println("test");
             }else {
                 header = clientPacket.getHeader();// (byte[]) createHeader(clientPacket);

@@ -10,7 +10,7 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.io.ByteBufferBsonInput;
 import org.kendar.mongo.model.MongoPacket;
-import org.kendar.mongo.model.packets.ReplyPacket;
+import org.kendar.mongo.model.ReplyPacket;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,7 +21,7 @@ public class OpReplyHandler implements MsgHandler{
     }
 
     @Override
-    public void handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
 
             int responseFlags = bsonInput.readInt32();
@@ -33,7 +33,9 @@ public class OpReplyHandler implements MsgHandler{
             replyPacket.setCursorId(cursorId);
             replyPacket.setStartingFrom(startingFrom);
             replyPacket.setNumberReturned(numberReturned);
-            packet.setMessage(replyPacket);
+            replyPacket.setPayload(packet.getPayload());
+            replyPacket.setHeader(packet.getHeader());
+            replyPacket.setOpCode(OpCodes.OP_REPLY);
 
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
@@ -47,8 +49,9 @@ public class OpReplyHandler implements MsgHandler{
                 String json = document.toJson();
                 replyPacket.getJsons().add(json);
             }
+            return replyPacket;
         } catch (Exception e) {
-            System.err.println("Error decoding BSON reply message: " + e.getMessage());
+            throw new RuntimeException("Error decoding BSON reply message",e);
         }
     }
 }

@@ -11,7 +11,7 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.io.ByteBufferBsonInput;
 import org.kendar.mongo.model.MongoPacket;
-import org.kendar.mongo.model.packets.QueryMongoPacket;
+import org.kendar.mongo.model.QueryPacket;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,14 +22,17 @@ public class OpQueryHandler implements MsgHandler{
     }
 
     @Override
-    public void handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
-            var payload = new QueryMongoPacket();
-            payload.setFlagBits(bsonInput.readInt32());
+            var realPacket = new QueryPacket();
+            realPacket.setPayload(packet.getPayload());
+            realPacket.setHeader(packet.getHeader());
+            realPacket.setOpCode(OpCodes.OP_QUERY);
+            realPacket.setFlagBits(bsonInput.readInt32());
             String fullCollectionName = bsonInput.readCString();
-            payload.setFullCollectionName(fullCollectionName);
-            payload.setNumberToSkip(bsonInput.readInt32());
-            payload.setNumberToReturn(bsonInput.readInt32());
+            realPacket.setFullCollectionName(fullCollectionName);
+            realPacket.setNumberToSkip(bsonInput.readInt32());
+            realPacket.setNumberToReturn(bsonInput.readInt32());
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
             BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
@@ -40,10 +43,10 @@ public class OpQueryHandler implements MsgHandler{
 
             // Convert BSON document to JSON
             String json = query.toJson();
-            payload.setJson(json);
-            packet.setMessage(payload);
+            realPacket.setJson(json);
+            return realPacket;
         } catch (Exception e) {
-            System.err.println("Error decoding BSON query message: " + e.getMessage());
+            throw new RuntimeException("Error decoding BSON query message ",e);
         }
     }
 }

@@ -3,14 +3,9 @@ package org.kendar.mongo.model;
 import org.kendar.janus.serialization.TypedSerializable;
 import org.kendar.janus.serialization.TypedSerializer;
 import org.kendar.mongo.handlers.OpCodes;
-import org.kendar.mongo.model.packets.BaseMongoPacket;
 
-public class MongoPacket implements TypedSerializable<MongoPacket> {
+public class MongoPacket<T> implements TypedSerializable<T> {
     private OpCodes opCode;
-
-    public BaseMongoPacket getMessage() {
-        return message;
-    }
 
     public boolean isFinale(){
         for(var i=0;i<header.length;i++){
@@ -18,12 +13,6 @@ public class MongoPacket implements TypedSerializable<MongoPacket> {
         }
         return true;
     }
-
-    public void setMessage(BaseMongoPacket message) {
-        this.message = message;
-    }
-
-    private BaseMongoPacket message;
     private byte[] payload;
 
     public byte[] getPayload() {
@@ -59,17 +48,15 @@ public class MongoPacket implements TypedSerializable<MongoPacket> {
     @Override
     public void serialize(TypedSerializer typedSerializer) {
         typedSerializer.write("opCode",opCode);
-        typedSerializer.write("message",message);
         typedSerializer.write("header",header);
         typedSerializer.write("payload",payload);
     }
 
     @Override
-    public MongoPacket deserialize(TypedSerializer typedSerializer) {
+    public T deserialize(TypedSerializer typedSerializer) {
         opCode = typedSerializer.read("opCode");
-        message = typedSerializer.read("message");
         header = typedSerializer.read("header");
         payload = typedSerializer.read("payload");
-        return this;
+        return (T)this;
     }
 }

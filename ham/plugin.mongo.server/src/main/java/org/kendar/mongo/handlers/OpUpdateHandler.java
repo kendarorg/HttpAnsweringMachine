@@ -21,7 +21,7 @@ public class OpUpdateHandler implements MsgHandler{
     }
 
     @Override
-    public void handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
             System.out.println("======HANDLE UPDATE");
             bsonInput.readInt32(); // skip ZERO
@@ -45,8 +45,9 @@ public class OpUpdateHandler implements MsgHandler{
             System.out.println("Namespace: " + namespace);
             System.out.println("Selector JSON: " + selectorJson);
             System.out.println("Update JSON: " + updateJson);
+            return packet;
         } catch (Exception e) {
-            System.err.println("Error decoding BSON update message: " + e.getMessage());
+            throw new RuntimeException("Error decoding BSON update message",e);
         }
     }
 }

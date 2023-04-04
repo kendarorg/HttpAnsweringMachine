@@ -12,7 +12,7 @@ import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.mongo.model.MongoPacket;
 import org.kendar.mongo.model.MsgDocumentPayload;
 import org.kendar.mongo.model.MsgPacket;
-import org.kendar.mongo.model.packets.QueryMongoPacket;
+import org.kendar.mongo.model.QueryPacket;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
@@ -49,7 +49,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
             String db = null;
             var isHelloPacket = isHelloPacket(clientPacket);
             if(clientPacket.getOpCode()==OpCodes.OP_MSG){
-                db = getDb((MsgPacket)clientPacket.getMessage());
+                db = getDb((MsgPacket)clientPacket);
             }
 
             //Find the destination port
@@ -106,7 +106,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
     private boolean isHelloPacket(MongoPacket clientPacket) {
         try {
             if (clientPacket.getOpCode() == OpCodes.OP_QUERY) {
-                var opQuery = (QueryMongoPacket) clientPacket.getMessage();
+                var opQuery = (QueryPacket) clientPacket;
                 if(opQuery.getFullCollectionName().equalsIgnoreCase("admin.$cmd")){
                     var jsonTree = mapper.readTree(opQuery.getJson());
                     var helloOk = (JsonValue)jsonTree.get("helloOk");

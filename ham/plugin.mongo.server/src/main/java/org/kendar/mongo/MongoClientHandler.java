@@ -11,7 +11,7 @@ import org.kendar.mongo.handlers.*;
 import org.kendar.mongo.logging.MongoLogClient;
 import org.kendar.mongo.logging.MongoLogServer;
 import org.kendar.mongo.model.*;
-import org.kendar.mongo.model.packets.CompressedMongoPacket;
+import org.kendar.mongo.model.CompressedMongoPacket;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
@@ -167,33 +167,38 @@ public abstract class MongoClientHandler implements Runnable {
             ByteBufferBsonInput remainingInput = new ByteBufferBsonInput(uncompressedByteBuffer);
 
             if (opCode == OpCodes.OP_COMPRESSED) {
-                handleOpCompressedCode(requestId, responseTo, packet, remainingBytes, remainingInput);
+                return handleOpCompressedCode(requestId, responseTo, packet, remainingBytes, remainingInput);
             } else {
-                handleOpCode(opCode, remainingInput, uncompressedByteBuffer, packet,remainingBytes.length);
+                return handleOpCode(opCode, remainingInput, uncompressedByteBuffer, packet,remainingBytes.length);
             }
         }catch(Exception ex){
-            ex.printStackTrace();
+            throw new RuntimeException(ex);
         }
-        return packet;
     }
 
     private MongoPacket handleOpCompressedCode(int requestId, int responseTo, MongoPacket packet, byte[] remainingBytes, ByteBufferBsonInput remainingInput) throws IOException {
         // Handle OP_COMPRESSED
-        var originalOpCode = OpCodes.of(remainingInput.readInt32());
+        var cpacket = new CompressedMongoPacket();
+        cpacket.setHeader(packet.getHeader());
+        cpacket.setPayload(packet.getPayload());
+        cpacket.setOpCode(OpCodes.OP_COMPRESSED);
+        cpacket.setOriginalOpCode(OpCodes.of(remainingInput.readInt32()));
+
+        //var originalOpCode = ;
         int uncompressedSize = remainingInput.readInt32();
         byte compressorId = remainingInput.readByte();
 
         // Decompress remaining bytes using the appropriate compressor (e.g., Snappy, Zlib, etc.)
         byte[] decompressedBytes = decompress(remainingInput, compressorId, remainingBytes.length - 9);
 
-        var cpacket = new CompressedMongoPacket();
-        cpacket.setHeader(buildHeader(uncompressedSize + 16, requestId, responseTo, originalOpCode));
-        cpacket.setPayload(decompressedBytes);
-        packet.setMessage(cpacket);
+        var mongoPacket = new MongoPacket<>();
+        mongoPacket.setHeader(buildHeader(uncompressedSize + 16, requestId, responseTo, cpacket.getOriginalOpCode()));
+        mongoPacket.setPayload(decompressedBytes);
         var byteBuffer = ByteBufNIOcreate(decompressedBytes, ByteOrder.LITTLE_ENDIAN);
         ByteBufferBsonInput decompressedInput = new ByteBufferBsonInput(byteBuffer);
 
-        handleOpCode(originalOpCode, decompressedInput, byteBuffer, cpacket,decompressedBytes.length);
+        var decompresedPacket = handleOpCode(cpacket.getOriginalOpCode(), decompressedInput, byteBuffer, mongoPacket,decompressedBytes.length);
+        cpacket.setCompressed(decompresedPacket);
         return cpacket;
     }
 
@@ -226,13 +231,13 @@ public abstract class MongoClientHandler implements Runnable {
         return new ByteBufNIO(bb);
     }
 
-    private void handleOpCode(OpCodes opCode, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet,
+    private MongoPacket<?> handleOpCode(OpCodes opCode, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet,
                                      int length) {
         var handler = this.msgHandlers.get(opCode);
         if(handler==null){
             System.err.println("Unknown opCode: " + opCode);
         }
-         handler.handleMsg(bsonInput, byteBuffer, packet, length);
+        return handler.handleMsg(bsonInput, byteBuffer, packet, length);
     }
 
 

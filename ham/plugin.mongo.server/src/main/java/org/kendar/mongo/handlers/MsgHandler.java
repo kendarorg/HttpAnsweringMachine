@@ -6,6 +6,6 @@ import org.kendar.mongo.model.MongoPacket;
 
 public interface MsgHandler {
     OpCodes getOpCode();
-    void handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length);
+    MongoPacket<?> handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length);
 
 }

@@ -23,20 +23,22 @@ public class OpMsgHandler implements MsgHandler {
     }
 
     @Override
-    public void handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
 
-            var subPacket = new MsgPacket();
-            packet.setMessage(subPacket);
+            var realPacket = new MsgPacket();
+            realPacket.setPayload(packet.getPayload());
+            realPacket.setHeader(packet.getHeader());
+            realPacket.setOpCode(OpCodes.OP_MSG);
             int flagBits = bsonInput.readInt32();
-            subPacket.setFlagBits(flagBits);
+            realPacket.setFlagBits(flagBits);
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
 
             while (byteBuffer.position()<length) {
                 var remaining = length - byteBuffer.position();
                 if(remaining==4){
-                    subPacket.setChecksum(bsonInput.readInt32());
+                    realPacket.setChecksum(bsonInput.readInt32());
                     //Only checksum
                     break;
                 }else {
@@ -49,10 +51,10 @@ public class OpMsgHandler implements MsgHandler {
                         String json = document.toJson();
                         var pl = new MsgDocumentPayload();
                         pl.setJson(json);
-                        subPacket.getPayloads().add(pl);
+                        realPacket.getPayloads().add(pl);
                     } else if (payloadType == 1) {
                         var pl = new MsgSectionPayload();
-                        subPacket.getPayloads().add(pl);
+                        realPacket.getPayloads().add(pl);
 
                         pl.setLength(bsonInput.readInt32());
 
@@ -73,9 +75,9 @@ public class OpMsgHandler implements MsgHandler {
                 //String title = bsonInput.readCString();
 
             }
+            return realPacket;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error decoding BSON message: " + e.getMessage());
+            throw new RuntimeException("Error decoding BSON message",e);
         }
     }
 }

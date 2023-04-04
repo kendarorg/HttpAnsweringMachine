@@ -21,7 +21,7 @@ public class OpDeleteHandler implements MsgHandler{
     }
 
     @Override
-    public void handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
             System.out.println("======HANDLE DELETE");
             bsonInput.readInt32(); // skip ZERO
@@ -42,8 +42,9 @@ public class OpDeleteHandler implements MsgHandler{
             // Print out the JSON representation of the message
             System.out.println("Namespace: " + namespace);
             System.out.println("Delete JSON: " + selectorJson);
+            return packet;
         } catch (Exception e) {
-            System.err.println("Error decoding BSON delete message: " + e.getMessage());
+            throw new RuntimeException("Error decoding BSON delete message",e);
         }
     }
 }
