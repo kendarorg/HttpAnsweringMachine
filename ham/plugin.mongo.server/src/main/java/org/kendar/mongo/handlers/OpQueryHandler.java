@@ -41,7 +41,6 @@ public class OpQueryHandler implements MsgHandler{
             BsonBinaryReader bsonReader = new BsonBinaryReader(bsonInput);
             BsonDocument query = documentCodec.decode(bsonReader, DecoderContext.builder().build());
 
-            MongoNamespace namespace = new MongoNamespace(fullCollectionName);
 
             // Convert BSON document to JSON
             String json = query.toJson();

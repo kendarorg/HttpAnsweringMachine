@@ -1,10 +1,16 @@
 package org.kendar.mongo.model.payloads;
 
+import org.bson.BsonDocument;
 import org.kendar.janus.serialization.TypedSerializable;
 import org.kendar.janus.serialization.TypedSerializer;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.kendar.mongo.model.MongoPacket.toBytes;
+import static org.kendar.mongo.model.MongoPacket.writeCString;
 
 public class MsgSectionPayload implements BaseMsgPayload, TypedSerializable<MsgSectionPayload> {
     public List<MsgDocumentPayload> getDocuments() {
@@ -48,5 +54,22 @@ public class MsgSectionPayload implements BaseMsgPayload, TypedSerializable<MsgS
         length = typedSerializer.read("length");
         documents = typedSerializer.read("documents");
         return this;
+    }
+
+    @Override
+    public byte[] serialize() {
+        ByteBuffer responseBuffer = ByteBuffer.allocate(64000);
+        responseBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        responseBuffer.putInt(0);//Length
+        writeCString(responseBuffer,title);
+        for(var document:documents){
+            responseBuffer.put(document.serialize());
+        }
+        var length = responseBuffer.position();
+        responseBuffer.position(0);
+        responseBuffer.putInt(length);
+        var res = new byte[length];
+        responseBuffer.get(res,0,length);
+        return res;
     }
 }

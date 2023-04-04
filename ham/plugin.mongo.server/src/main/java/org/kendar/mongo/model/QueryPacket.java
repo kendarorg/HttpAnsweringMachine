@@ -1,6 +1,11 @@
 package org.kendar.mongo.model;
 
+import org.bson.BsonDocument;
 import org.kendar.janus.serialization.TypedSerializer;
+import org.kendar.mongo.handlers.OpCodes;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public class QueryPacket extends MongoPacket<QueryPacket> {
     private int flagBits;
@@ -73,7 +78,9 @@ public class QueryPacket extends MongoPacket<QueryPacket> {
         responseTo = typedSerializer.read("responseTo");
         return this;
     }
-
+    public QueryPacket(){
+        setOpCode(OpCodes.OP_QUERY);
+    }
     private int requestId;
     private int responseTo;
 
@@ -91,5 +98,30 @@ public class QueryPacket extends MongoPacket<QueryPacket> {
 
     public int getResponseTo() {
         return responseTo;
+    }
+
+    public byte[] serialize(){
+        var msgLength = 16;
+        ByteBuffer responseBuffer = ByteBuffer.allocate(64000);
+        responseBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        responseBuffer.putInt(flagBits);
+        writeCString(responseBuffer,fullCollectionName);
+        responseBuffer.putInt(numberToSkip);
+        responseBuffer.putInt(numberToReturn);
+
+        byte[] query = toBytes(BsonDocument.parse(json));
+        responseBuffer.put(query);
+        msgLength += responseBuffer.position();
+
+        responseBuffer.flip();
+        var length = responseBuffer.position();
+        var res = new byte[msgLength];
+        responseBuffer.get(res,16,length);
+
+        var header = buildHeader(msgLength,requestId,responseTo, OpCodes.OP_QUERY);
+        for(var i =0;i<16;i++){
+            res[i]=header[i];
+        }
+        return res;
     }
 }

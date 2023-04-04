@@ -1,12 +1,20 @@
 package org.kendar.mongo.model;
 
+import org.bson.BsonDocument;
 import org.kendar.janus.serialization.TypedSerializer;
+import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.mongo.model.payloads.BaseMsgPayload;
+import org.kendar.mongo.model.payloads.MsgDocumentPayload;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MsgPacket extends MongoPacket<MsgPacket> {
+    public MsgPacket(){
+        setOpCode(OpCodes.OP_MSG);
+    }
 
     public List<BaseMsgPayload> getPayloads() {
         return payloads;
@@ -74,5 +82,27 @@ public class MsgPacket extends MongoPacket<MsgPacket> {
 
     public int getResponseTo() {
         return responseTo;
+    }
+
+    public byte[] serialize(){
+        var msgLength = 16;
+        ByteBuffer responseBuffer = ByteBuffer.allocate(64000);
+        responseBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        responseBuffer.putInt(flagBits);
+        for(var payload:this.payloads){
+            responseBuffer.put(payload.serialize());
+        }
+        msgLength += responseBuffer.position();
+
+        responseBuffer.flip();
+        var length = responseBuffer.position();
+        var res = new byte[msgLength];
+        responseBuffer.get(res,16,length);
+
+        var header = buildHeader(msgLength,requestId,responseTo, OpCodes.OP_MSG);
+        for(var i =0;i<16;i++){
+            res[i]=header[i];
+        }
+        return res;
     }
 }

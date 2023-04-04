@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MongoTest {
-    private static boolean USE_JSON=false;
+    private static boolean USE_JSON=true;
 
     private Thread subClientThread;
     private ServerSocket server;

@@ -29,6 +29,8 @@ public class OpReplyHandler implements MsgHandler{
             int startingFrom = bsonInput.readInt32();
             int numberReturned = bsonInput.readInt32();
             var replyPacket = new ReplyPacket();
+            replyPacket.setRequestId(requestId);
+            replyPacket.setResponseTo(responseTo);
             replyPacket.setResponseFlags(responseFlags);
             replyPacket.setCursorId(cursorId);
             replyPacket.setStartingFrom(startingFrom);
