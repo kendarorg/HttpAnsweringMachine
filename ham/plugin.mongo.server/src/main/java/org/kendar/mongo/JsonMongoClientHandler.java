@@ -12,6 +12,7 @@ import org.kendar.mongo.compressor.CompressionHandler;
 import org.kendar.mongo.handlers.MsgHandler;
 import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.mongo.model.MongoPacket;
+import org.kendar.mongo.model.QueryPacket;
 import org.kendar.mongo.model.payloads.MsgDocumentPayload;
 import org.kendar.mongo.model.MsgPacket;
 import org.kendar.mongo.model.payloads.MsgSectionPayload;
@@ -46,9 +47,11 @@ public class JsonMongoClientHandler extends MongoClientHandler {
             if(mongoClient==null){
                 mongoClient = MongoClients.create("mongodb://127.0.0.1:27017");
             }
-             if(clientPacket.getOpCode()== OpCodes.OP_MSG){
-                 return translateOpMsg((MsgPacket) clientPacket);
-             }else {
+            if(clientPacket.getOpCode()== OpCodes.OP_MSG){
+                return translateOpMsg((MsgPacket) clientPacket);
+            }else if(clientPacket.getOpCode()== OpCodes.OP_QUERY){
+                return translateOpQuery((QueryPacket) clientPacket);
+            }else {
                 var header = clientPacket.getHeader();// (byte[]) createHeader(clientPacket);
                 var payload = clientPacket.getPayload();//byte[]) createPayload(clientPacket);
                 toMongoDb.write(header);
@@ -60,6 +63,29 @@ public class JsonMongoClientHandler extends MongoClientHandler {
             var result = readPacketsFromStream(fromMongoDb, mongoHeaderBytes);
             return result;
         } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private MongoPacket translateOpQuery(QueryPacket clientPacket) {
+        var msgPacket = clientPacket;
+        var db= getDb(msgPacket);
+        var database = mongoClient.getDatabase(db);
+        var command = (BsonDocument)BsonDocument.parse(clientPacket.getJson());
+        Document commandResult = database.runCommand(command);
+        return null;
+    }
+
+    private String getDb(QueryPacket msgPacket)
+    {
+        try {
+            var jsonTree = mapper.readTree(
+                    msgPacket.getJson());
+            var db = (JsonNode) jsonTree.get("$db");
+            if(db==null)return "admin";
+            return db.asText();
+
+        }catch (Exception ex){
             throw new RuntimeException(ex);
         }
     }
