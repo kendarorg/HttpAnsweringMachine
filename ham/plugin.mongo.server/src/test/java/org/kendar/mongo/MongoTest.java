@@ -1,5 +1,6 @@
 package org.kendar.mongo;
 
+import ch.qos.logback.classic.Level;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -31,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MongoTest {
+    private static boolean USE_JSON=false;
 
     private Thread subClientThread;
     private ServerSocket server;
@@ -40,6 +42,7 @@ public class MongoTest {
     private String connectionString;
 
     public void server(int port) throws IOException {
+
         server = new ServerSocket(port);
         var msgHandlers = (List<MsgHandler>)List.of(
           new OpDeleteHandler(), new OpInsertHandler(),
@@ -51,14 +54,22 @@ public class MongoTest {
         );
         var loggerBuilder = (LoggerBuilder)new LocalLoggerBuilderImpl();
         Logger logger = loggerBuilder.build(MongoTest.class);
+        loggerBuilder.setLevel("org.mongodb.driver", Level.OFF);
         while(true) {
             try {
                 Socket client = server.accept();
                 logger.debug("++++++++++++++ACCEPTED CONNECTION");
-                var handler = new DirectMongoClientHandler(client,msgHandlers,compressionHandlers,loggerBuilder);
-                handler.setTarget(targetIp, targetPort);
-                subClientThread = new Thread(handler);
-                subClientThread.start();
+                if(USE_JSON) {
+                    var handler = new JsonMongoClientHandler(client, msgHandlers, compressionHandlers, loggerBuilder);
+                    handler.setTarget(targetIp, targetPort);
+                    subClientThread = new Thread(handler);
+                    subClientThread.start();
+                }else {
+                    var handler = new DirectMongoClientHandler(client, msgHandlers, compressionHandlers, loggerBuilder);
+                    handler.setTarget(targetIp, targetPort);
+                    subClientThread = new Thread(handler);
+                    subClientThread.start();
+                }
             }catch (SocketException se){
 
             }
@@ -132,6 +143,32 @@ public class MongoTest {
             } catch (MongoException me) {
                 me.printStackTrace();
             }
+        }
+    }
+
+    @Test
+    void test_stats__real_mongo() {
+        String uri = "mongodb://127.0.0.1:27917";///?maxPoolSize=1&w=majority";
+        // Create a new client and connect to the server
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            Sleeper.sleep(1000);
+            MongoDatabase database = mongoClient.getDatabase("basicdb");
+            Sleeper.sleep(1000);
+
+            Bson command = new BsonDocument("dbStats", new BsonInt64(1));
+            Document commandResult = database.runCommand(command);
+            System.out.println("dbStats: " + commandResult.toJson());
+        }
+    }
+
+    @Test
+    void test_db_real_mongo() {
+        String uri = "mongodb://127.0.0.1:27917";///?maxPoolSize=1&w=majority";
+        // Create a new client and connect to the server
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            Sleeper.sleep(1000);
+            MongoDatabase database = mongoClient.getDatabase("basicdb");
+            System.out.println("dbStats: " + database);
         }
     }
 }

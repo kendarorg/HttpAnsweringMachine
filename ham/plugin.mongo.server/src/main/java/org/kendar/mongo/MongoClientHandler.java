@@ -13,6 +13,7 @@ import org.kendar.mongo.logging.MongoLogServer;
 import org.kendar.mongo.model.*;
 import org.kendar.mongo.model.packets.CompressedMongoPacket;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -45,12 +46,17 @@ public abstract class MongoClientHandler implements Runnable {
                 .collect(Collectors.toMap(CompressionHandler::getId, Function.identity()));
     }
 
-    public static void readBytes(InputStream stream,byte[] buffer) throws IOException {
+    public static boolean readBytes(InputStream stream,byte[] buffer) throws IOException {
         int offset = 0;
         int bytesRead = 0;
         while (offset < buffer.length && (bytesRead = stream.read(buffer, offset, buffer.length - offset)) != -1) {
             offset += bytesRead;
         }
+        var res = offset>0;
+        if(res==false){
+            return false;
+        }
+        return true;
     }
 
 
@@ -103,7 +109,10 @@ public abstract class MongoClientHandler implements Runnable {
                 byte[] headerBytes = new byte[16];
 
                 while (true) {
-                    readBytes(fromClient,headerBytes);
+                    if(!readBytes(fromClient,headerBytes)){
+                        Sleeper.sleep(100);
+                        continue;
+                    }
                     logClient.debug("===================");
                     var clientPacket = readPacketsFromStream(fromClient, headerBytes);
                     MongoPacket mongoPacket = mongoRoundTrip(clientPacket);

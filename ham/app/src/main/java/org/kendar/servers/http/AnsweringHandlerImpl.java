@@ -7,7 +7,7 @@ import org.apache.http.conn.HttpClientConnectionManager;
 import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClassesHandler;
 import org.kendar.http.HttpFilterType;
-import org.kendar.remote.ExecuteLocalRequest;
+import org.kendar.events.ExecuteLocalRequest;
 import org.kendar.remote.ExecuteRemoteRequest;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;

@@ -2,6 +2,7 @@ package org.kendar.remote;
 
 import org.apache.commons.codec.binary.Base64;
 import org.kendar.events.EventQueue;
+import org.kendar.events.ExecuteLocalRequest;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;

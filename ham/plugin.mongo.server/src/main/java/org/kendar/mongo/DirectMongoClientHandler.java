@@ -4,6 +4,7 @@ import org.kendar.mongo.compressor.CompressionHandler;
 import org.kendar.mongo.handlers.MsgHandler;
 import org.kendar.mongo.model.MongoPacket;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.Sleeper;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,7 +32,9 @@ public class DirectMongoClientHandler extends MongoClientHandler {
             toMongoDb.write(clientPacket.getPayload());
             toMongoDb.flush();
             byte[] mongoHeaderBytes = new byte[16];
-            readBytes(fromMongoDb, mongoHeaderBytes);
+            while(!readBytes(fromMongoDb, mongoHeaderBytes)){
+                Sleeper.sleep(100);
+            }
             return readPacketsFromStream(fromMongoDb, mongoHeaderBytes);
         } catch (Exception ex) {
             throw new RuntimeException(ex);

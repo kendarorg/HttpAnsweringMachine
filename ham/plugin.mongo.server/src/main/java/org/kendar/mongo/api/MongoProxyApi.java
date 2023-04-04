@@ -1,5 +1,6 @@
 package org.kendar.mongo.api;
 
+import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
@@ -8,6 +9,8 @@ import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.Header;
 import org.kendar.http.annotations.multi.PathParameter;
+import org.kendar.janus.serialization.JsonTypedSerializer;
+import org.kendar.mongo.model.MongoPacket;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
@@ -16,6 +19,8 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "*",
         blocking = false)
 public class MongoProxyApi implements FilteringClass {
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
+
     @Override
     public String getId() {
         return MongoProxyApi.class.getName();
@@ -33,7 +38,7 @@ public class MongoProxyApi implements FilteringClass {
             path = {
                     @PathParameter(
                             key = "dbName",
-                            description = "DbName on confix",
+                            description = "DbName for mongo",
                             example = "local"),
                     @PathParameter(
                             key = "port",
@@ -44,7 +49,7 @@ public class MongoProxyApi implements FilteringClass {
                     body = String.class
             ))
     public boolean handleCommands(Request req, Response res) throws Exception {
-        return true;
+        return handleMongoCommand(req, res);
     }
 
     @HttpMethodFilter(
@@ -67,6 +72,23 @@ public class MongoProxyApi implements FilteringClass {
                     body = String.class
             ))
     public boolean handleConnection(Request req, Response res) throws Exception {
+        return handleMongoCommand(req, res);
+    }
+
+
+
+    private boolean handleMongoCommand(Request req, Response res) {
+        var deser = serializer.newInstance();
+        deser.read(req.getRequestText());
+        var fromClient = (MongoPacket)deser.read("data");
+        //Call real server
+        MongoPacket serverResponse = new MongoPacket();
+        var ser = serializer.newInstance();
+        ser.write("data",serverResponse);
+        var toSend = (String)ser.getSerialized();
+        res.setResponseText(toSend);
+        res.getHeaders().put("content-type","application-json");
+        res.setStatusCode(200);
         return true;
     }
 }

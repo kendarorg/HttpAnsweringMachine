@@ -8,7 +8,7 @@
       "exposedPort": 27097,
       "remote": {
         "ip": "localhost",
-        "port": 27027,
+        "port": 27017,
         "login": "sa",
         "password": "sa"
       }
