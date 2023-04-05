@@ -192,6 +192,10 @@
                                     <includes>
                                         <include>*.jar</include>
                                     </includes>
+                                    <excludes>
+                                        <exclude>*junit*.*</exclude>
+                                        <exclude>*spring*.*</exclude>
+                                    </excludes>
                                 </resource>
                             </resources>
                         </configuration>
