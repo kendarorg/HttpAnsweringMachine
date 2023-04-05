@@ -58,7 +58,9 @@ public class JsonConfigurationImpl implements JsonConfiguration {
             }
             var founded = deserializedConfigurations.get(sanitizedId);
             if (founded == null || founded.deserialized == null) {
-                return handleMissing(aClass);
+                var fake = handleMissing(aClass);
+                setConfiguration(fake);
+                return fake;
             }
             return (T) founded.deserialized;
         } catch (Exception e) {
