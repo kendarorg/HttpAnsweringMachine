@@ -80,6 +80,12 @@
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
+            <artifactId>plugin.replayer.mongo</artifactId>
+            <version>${ham.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
             <artifactId>plugin.replayer.http</artifactId>
             <version>${ham.version}</version>
             <scope>test</scope>

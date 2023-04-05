@@ -1,4 +1,4 @@
-package org.kendar.replayer.engine.http;
+package org.kendar.replayer.engine.mongo;
 
 import org.kendar.http.StaticWebFilter;
 import org.kendar.http.annotations.HttpTypeFilter;
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}")
-public class HttpReplayerWeb extends StaticWebFilter {
+public class MongoReplayerWeb extends StaticWebFilter {
 
     @Override
     public String getDescription() {
-        return "Replayer web=Http extension";
+        return "Replayer web=Mongo extension";
     }
 
     @Override
@@ -22,10 +22,10 @@ public class HttpReplayerWeb extends StaticWebFilter {
     }
 
 
-    public HttpReplayerWeb(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
+    public MongoReplayerWeb(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
         super(fileResourcesUtils);
-        Logger logger = loggerBuilder.build(HttpReplayerWeb.class);
-        logger.info("Replayer server=Http Extension LOADED");
+        Logger logger = loggerBuilder.build(MongoReplayerWeb.class);
+        logger.info("Replayer server=Mongo Extension LOADED");
     }
 
     @Override

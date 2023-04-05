@@ -101,6 +101,7 @@
         <module>plugin.replayer.jdbc</module>
         <module>plugin.replayer.http</module>
         <module>plugin.mongo.server</module>
+        <module>plugin.replayer.mongo</module>
     </modules>
     <build>
         <extensions>

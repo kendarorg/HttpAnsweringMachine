@@ -88,6 +88,11 @@
             <artifactId>plugin.mongo.server</artifactId>
             <version>${ham.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>plugin.replayer.mongo</artifactId>
+            <version>${ham.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -209,6 +214,9 @@
                                             <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.replayer.jdbc/target">
+                                            <include name="*.exec"/>
+                                        </fileset>
+                                        <fileset dir="${basedir}/../plugin.replayer.mongo/target">
                                             <include name="*.exec"/>
                                         </fileset>
                                         <fileset dir="${basedir}/../plugin.socks5.server/target">

@@ -19,15 +19,14 @@ import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @HttpTypeFilter(hostAddress = "*",
         blocking = false)
 public class MongoProxyApi implements FilteringClass {
+    private final Timer timer;
     private List<MsgHandler> msgHandlers;
     private List<CompressionHandler> compressionHandlers;
     private LoggerBuilder loggerBuilder;
@@ -42,9 +41,31 @@ public class MongoProxyApi implements FilteringClass {
         this.compressionHandlers = compressionHandlers;
         this.loggerBuilder = loggerBuilder;
         this.responders = responders;
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                expireConnections();
+            }
+        }, 0, 500);
     }
+
+    private void expireConnections() {
+        long time = Calendar.getInstance().getTimeInMillis();
+        for(var timeouts:mongoClientHandlersTimeout.entrySet()){
+
+            if(timeouts.getValue() < time){
+                mongoClientHandlersTimeout.remove(timeouts.getKey());
+                mongoClientHandlers.remove(timeouts.getKey()).close();
+            }
+        }
+    }
+
     private final JsonTypedSerializer serializer = new JsonTypedSerializer();
-    private Map<String,JsonMongoClientHandler> mongoClientHandlers = new HashMap<>();
+    private Map<String,JsonMongoClientHandler> mongoClientHandlers = new ConcurrentHashMap<>();
+    private Map<String,Long> mongoClientHandlersTimeout = new ConcurrentHashMap<>();
+
+
 
     @Override
     public String getId() {
@@ -115,15 +136,21 @@ public class MongoProxyApi implements FilteringClass {
             mongoClientHandlers.put(globalConnectionId,new JsonMongoClientHandler(
                     null,msgHandlers,compressionHandlers,
                     loggerBuilder,responders));
+
         }
 
         var handler = mongoClientHandlers.get(globalConnectionId);
+        long time = Calendar.getInstance().getTimeInMillis()+2000;
+        mongoClientHandlersTimeout.put(globalConnectionId,time);
         var serverResponse = handler.mongoRoundTrip(fromClient,connectionId);
-
+        if(serverResponse.isFinalMessage()){
+            handler.close();
+            mongoClientHandlers.remove(globalConnectionId);
+        }
 
         //Call real server
         var ser = serializer.newInstance();
-        ser.write("data",serverResponse);
+        ser.write("data",serverResponse.getResult());
         var toSend = (String)ser.getSerialized();
         res.setResponseText(toSend);
         res.getHeaders().put("content-type","application-json");

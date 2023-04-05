@@ -28,9 +28,10 @@ public class JDbcReplayerWeb extends StaticWebFilter {
         logger.info("Replayer server=Jdbc Extension LOADED");
     }
 
+
     @Override
     public String getId() {
-        return "org.kendar.replayer.ReplayerWeb";
+        return this.getClass().getName();
     }
 
     @Override

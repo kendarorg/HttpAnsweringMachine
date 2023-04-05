@@ -43,7 +43,7 @@ public class MongoServer {
         try(ServerSocket server = new ServerSocket(port)) {
             logger.info("MongoDB server started on port " + port);
 
-            while (answeringMongoServer.shouldRun()) {
+            while (answeringMongoServer.isActive()) {
                 Socket client = server.accept();
                 logger.debug("New client connected: " + client.getInetAddress().getHostAddress());
                 // Handle the client connection in a separate thread

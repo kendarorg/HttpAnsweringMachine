@@ -57,6 +57,7 @@ public class JsonMongoClientHandler extends MongoClientHandler {
                     if(res!=null){
                         if(res.isFinalMessage()){
                             mongoClient.close();
+                            mongoClient = null;
                         }
                         return res;
                     }
@@ -90,5 +91,11 @@ public class JsonMongoClientHandler extends MongoClientHandler {
 
         this.targetIp = targetIp;
         this.targetPort = targetPort;
+    }
+
+    public void close() {
+        if(mongoClient!=null){
+            mongoClient.close();
+        }
     }
 }

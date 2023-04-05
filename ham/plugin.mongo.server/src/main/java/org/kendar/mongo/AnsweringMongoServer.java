@@ -54,7 +54,7 @@ public class AnsweringMongoServer implements AnsweringServer {
                 ms.run(single.getExposedPort(),this);
             }
             //TODO
-            mongoServer.run(77777,this);
+            //mongoServer.run(77777,this);
         } catch (Exception e) {
             logger.error("Error running Mongo server", e);
         } finally {
@@ -66,5 +66,10 @@ public class AnsweringMongoServer implements AnsweringServer {
     public boolean shouldRun() {
         var localConfig = configuration.getConfiguration(MongoConfig.class);
         return localConfig.isActive() && !running;
+    }
+
+    public boolean isActive() {
+        var localConfig = configuration.getConfiguration(MongoConfig.class);
+        return localConfig.isActive();
     }
 }
