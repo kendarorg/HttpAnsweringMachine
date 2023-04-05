@@ -141,7 +141,6 @@ public abstract class MongoClientHandler implements Runnable {
                     toClient.write(generalResponse.getResult().serialize());
 
                     toClient.flush();
-                    System.out.println("===================");
                     if(generalResponse.isFinalMessage()){
                         break;
                     }

@@ -113,7 +113,10 @@
         "org.kendar.servers.http.DynamicRequest": "OFF",
         "org.kendar.dns.DnsQueries": "OFF",
         "org.kendar.servers.http.InternalRequest": "OFF",
-        "org.hibernate": "OFF"
+        "org.hibernate": "OFF",
+        "org.kendar.mongo.logging.MongoLogClient": "OFF",
+        "org.kendar.mongo.logging.MongoLogServer": "OFF",
+        "org.mongodb.driver": "OFF"
       }
     },
     "filters": {

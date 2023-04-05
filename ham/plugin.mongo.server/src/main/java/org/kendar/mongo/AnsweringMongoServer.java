@@ -1,5 +1,6 @@
 package org.kendar.mongo;
 
+import ch.qos.logback.classic.Level;
 import org.kendar.events.EventQueue;
 import org.kendar.events.ServiceStarted;
 import org.kendar.mongo.config.MongoConfig;
