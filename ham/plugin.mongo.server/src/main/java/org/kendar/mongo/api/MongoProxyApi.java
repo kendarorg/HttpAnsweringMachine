@@ -13,6 +13,7 @@ import org.kendar.mongo.JsonMongoClientHandler;
 import org.kendar.mongo.compressor.CompressionHandler;
 import org.kendar.mongo.handlers.MsgHandler;
 import org.kendar.mongo.model.MongoPacket;
+import org.kendar.mongo.model.QueryPacket;
 import org.kendar.mongo.responder.MongoResponder;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
@@ -48,6 +49,12 @@ public class MongoProxyApi implements FilteringClass {
                 expireConnections();
             }
         }, 0, 500);
+        try {
+            var res = new QueryPacket();
+            System.out.println(res);
+        }catch (Exception ex){
+            System.out.println("AAA");
+        }
     }
 
     private void expireConnections() {
@@ -125,7 +132,8 @@ public class MongoProxyApi implements FilteringClass {
 
     private boolean handleMongoCommand(Request req, Response res) {
         var deser = serializer.newInstance();
-        deser.read(req.getRequestText());
+        var test = new org.kendar.mongo.model.QueryPacket();
+        deser.deserialize(req.getRequestText());
         var port = Integer.parseInt(req.getPathParameter("port"));
         var db = Integer.parseInt(req.getPathParameter("port"));
         var fromClient = (MongoPacket)deser.read("data");

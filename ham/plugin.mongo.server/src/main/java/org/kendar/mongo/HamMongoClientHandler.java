@@ -19,6 +19,7 @@ import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
 
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,6 +53,8 @@ public class HamMongoClientHandler extends MongoClientHandler {
             if(clientPacket.getOpCode()==OpCodes.OP_MSG){
                 db = getDb((MsgPacket)clientPacket);
             }
+            clientPacket.setPayload(null);
+            clientPacket.setHeader(null);
 
 
             //Find the destination port
@@ -65,6 +68,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
             req.setRequestText(toSend);
             req.setMethod("POST");
             req.setHost("127.0.0.1");
+            req.setHeaders(new HashMap<>());
             req.getHeaders().put("X-CONNECTION-ID", this.connectionId);
             req.getHeaders().put("X-MONGO-ID", ""+connectionId);
             req.setPort(80);

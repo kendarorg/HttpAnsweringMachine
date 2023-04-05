@@ -90,33 +90,33 @@ public class MongoTest {
     @BeforeEach
     void beforeEach() {
 
-        targetIp = "localhost";//spl[0];
-        targetPort = 27017;//Integer.parseInt(spl[1]);
-        clientThread = new Thread(()->{
-            try {
-                server(27917);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        clientThread.start();
-        Sleeper.sleep(1000);
+//        targetIp = "localhost";//spl[0];
+//        targetPort = 27017;//Integer.parseInt(spl[1]);
+//        clientThread = new Thread(()->{
+//            try {
+//                server(27917);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
+//        //clientThread.start();
+//        Sleeper.sleep(1000);
     }
 
     @AfterEach
     void afterEach(){
-        try {
-            server.close();
-        } catch (IOException e) {
-
-        }
-        subClientThread.interrupt();
-        clientThread.interrupt();
+//        try {
+//            server.close();
+//        } catch (IOException e) {
+//
+//        }
+//        subClientThread.interrupt();
+//        clientThread.interrupt();
     }
 
     @Test
     void test_ping_on_real_mongo() {
-        String uri = "mongodb://127.0.0.1:27917";///?maxPoolSize=20&w=majority";
+        String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=20&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("admin");
             try {
@@ -133,7 +133,7 @@ public class MongoTest {
 
     @Test
     void test_insert_select_on_real_mongo() {
-        String uri = "mongodb://127.0.0.1:27917";///?maxPoolSize=1&w=majority";
+        String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             Sleeper.sleep(1000);
@@ -160,7 +160,7 @@ public class MongoTest {
 
     @Test
     void test_stats__real_mongo() {
-        String uri = "mongodb://127.0.0.1:27917";///?maxPoolSize=1&w=majority";
+        String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             Sleeper.sleep(1000);
@@ -175,7 +175,7 @@ public class MongoTest {
 
     @Test
     void test_hostInfo_real_mongo() {
-        String uri = "mongodb://127.0.0.1:27917";///?maxPoolSize=1&w=majority";
+        String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             Sleeper.sleep(1000);
@@ -190,7 +190,7 @@ public class MongoTest {
 
     @Test
     void test_db_real_mongo() {
-        String uri = "mongodb://127.0.0.1:27917";///?maxPoolSize=1&w=majority";
+        String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             Sleeper.sleep(1000);
