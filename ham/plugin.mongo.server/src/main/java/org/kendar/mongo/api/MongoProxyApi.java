@@ -1,6 +1,5 @@
 package org.kendar.mongo.api;
 
-import org.kendar.events.EventQueue;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;

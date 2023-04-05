@@ -3,7 +3,6 @@ package org.kendar.mongo.config;
 import org.kendar.servers.BaseJsonConfig;
 import org.kendar.servers.SpecialJsonConfig;
 import org.kendar.servers.config.ConfigAttribute;
-import org.kendar.servers.dbproxy.DbProxy;
 
 import java.util.ArrayList;
 import java.util.List;

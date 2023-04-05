@@ -1,7 +1,6 @@
 package org.kendar.mongo.handlers;
 
 import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoNamespace;
 import org.bson.BsonBinaryReader;
 import org.bson.BsonDocument;
 import org.bson.ByteBuf;

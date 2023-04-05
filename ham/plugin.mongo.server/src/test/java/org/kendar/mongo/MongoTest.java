@@ -15,7 +15,10 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kendar.mongo.compressor.*;
+import org.kendar.mongo.compressor.NoopCompressionHandler;
+import org.kendar.mongo.compressor.SnappyCompressionHandler;
+import org.kendar.mongo.compressor.ZStdCompressionHandler;
+import org.kendar.mongo.compressor.ZlibCompressionHandler;
 import org.kendar.mongo.handlers.*;
 import org.kendar.mongo.responder.MongoResponder;
 import org.kendar.mongo.responder.OpMsgResponder;
@@ -29,11 +32,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MongoTest {
     private static boolean USE_JSON=true;

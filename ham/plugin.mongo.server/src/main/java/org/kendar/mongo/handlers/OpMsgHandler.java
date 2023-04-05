@@ -12,8 +12,8 @@ import org.bson.io.ByteBufferBsonInput;
 import org.bson.json.JsonMode;
 import org.bson.json.JsonWriterSettings;
 import org.kendar.mongo.model.MongoPacket;
-import org.kendar.mongo.model.payloads.MsgDocumentPayload;
 import org.kendar.mongo.model.MsgPacket;
+import org.kendar.mongo.model.payloads.MsgDocumentPayload;
 import org.kendar.mongo.model.payloads.MsgSectionPayload;
 import org.springframework.stereotype.Component;
 

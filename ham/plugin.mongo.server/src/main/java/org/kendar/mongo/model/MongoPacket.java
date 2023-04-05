@@ -1,7 +1,10 @@
 package org.kendar.mongo.model;
 
 import com.mongodb.MongoClientSettings;
-import org.bson.*;
+import org.bson.BsonBinaryWriter;
+import org.bson.BsonDocument;
+import org.bson.BsonSerializationException;
+import org.bson.Document;
 import org.bson.codecs.BsonDocumentCodec;
 import org.bson.codecs.Codec;
 import org.bson.codecs.DocumentCodec;
@@ -15,8 +18,6 @@ import org.kendar.mongo.handlers.OpCodes;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MongoPacket<T> implements TypedSerializable<T> {
     private OpCodes opCode;

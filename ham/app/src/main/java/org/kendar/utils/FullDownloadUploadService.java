@@ -1,6 +1,5 @@
 package org.kendar.utils;
 
-import org.apache.commons.logging.Log;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 

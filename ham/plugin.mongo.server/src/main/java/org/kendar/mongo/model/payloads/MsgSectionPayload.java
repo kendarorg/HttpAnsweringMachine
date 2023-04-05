@@ -1,6 +1,5 @@
 package org.kendar.mongo.model.payloads;
 
-import org.bson.BsonDocument;
 import org.kendar.janus.serialization.TypedSerializable;
 import org.kendar.janus.serialization.TypedSerializer;
 
@@ -9,7 +8,6 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.kendar.mongo.model.MongoPacket.toBytes;
 import static org.kendar.mongo.model.MongoPacket.writeCString;
 
 public class MsgSectionPayload implements BaseMsgPayload, TypedSerializable<MsgSectionPayload> {

@@ -1,6 +1,5 @@
 package org.kendar.events;
 
-import org.kendar.events.Event;
 import org.kendar.servers.http.Request;
 
 public class ExecuteLocalRequest implements Event {

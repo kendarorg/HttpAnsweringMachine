@@ -1,10 +1,8 @@
 package org.kendar.mongo.model;
 
-import org.bson.BsonDocument;
 import org.kendar.janus.serialization.TypedSerializer;
 import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.mongo.model.payloads.BaseMsgPayload;
-import org.kendar.mongo.model.payloads.MsgDocumentPayload;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
