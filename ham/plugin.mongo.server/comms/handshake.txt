@@ -1,0 +1,31 @@
+11:41:22.051 [Thread-0] DEBUG org.kendar.mongo.MongoTest - ++++++++++++++ACCEPTED CONNECTION
+11:41:22.059 [Thread-0] DEBUG org.kendar.mongo.MongoTest - ++++++++++++++ACCEPTED CONNECTION
+11:41:22.064 [Thread-2] DEBUG org.kendar.mongo.logging.MongoLogClient - ===================
+11:41:22.064 [Thread-1] DEBUG org.kendar.mongo.logging.MongoLogClient - ===================
+11:41:22.140 [Thread-1] DEBUG org.kendar.mongo.logging.MongoLogClient - {"opCode":"OP_QUERY","flagBits":0,"fullCollectionName":"admin.$cmd","numberToSkip":0,"numberToReturn":-1,"json":"{\"isMaster\": 1, \"helloOk\": true, \"client\": {\"driver\": {\"name\": \"mongo-java-driver|sync\", \"version\": \"4.9.0\"}, \"os\": {\"type\": \"Windows\", \"name\": \"Windows 10\", \"architecture\": \"amd64\", \"version\": \"10.0\"}, \"platform\": \"Java/ojdkbuild/11.0.13+8-LTS\"}}","requestId":2,"responseTo":0,"finale":false}
+11:41:22.140 [Thread-2] DEBUG org.kendar.mongo.logging.MongoLogClient - {"opCode":"OP_QUERY","flagBits":0,"fullCollectionName":"admin.$cmd","numberToSkip":0,"numberToReturn":-1,"json":"{\"isMaster\": 1, \"helloOk\": true, \"client\": {\"driver\": {\"name\": \"mongo-java-driver|sync\", \"version\": \"4.9.0\"}, \"os\": {\"type\": \"Windows\", \"name\": \"Windows 10\", \"architecture\": \"amd64\", \"version\": \"10.0\"}, \"platform\": \"Java/ojdkbuild/11.0.13+8-LTS\"}}","requestId":1,"responseTo":0,"finale":false}
+11:41:22.146 [Thread-2] DEBUG org.kendar.mongo.logging.MongoLogServer - {"opCode":"OP_REPLY","jsons":["{\"ismaster\": true, \"maxBsonObjectSize\": 16777216, \"maxMessageSizeBytes\": 48000000, \"maxWriteBatchSize\": 100000, \"localTime\": {\"$date\": \"2023-04-05T09:41:22.075Z\"}, \"logicalSessionTimeoutMinutes\": 30, \"connectionId\": 1464, \"minWireVersion\": 0, \"maxWireVersion\": 8, \"readOnly\": false, \"ok\": 1.0}"],"responseFlags":8,"cursorId":0,"startingFrom":0,"numberReturned":1,"requestId":1886,"responseTo":1,"finale":false}
+11:41:22.146 [Thread-1] DEBUG org.kendar.mongo.logging.MongoLogServer - {"opCode":"OP_REPLY","jsons":["{\"ismaster\": true, \"maxBsonObjectSize\": 16777216, \"maxMessageSizeBytes\": 48000000, \"maxWriteBatchSize\": 100000, \"localTime\": {\"$date\": \"2023-04-05T09:41:22.075Z\"}, \"logicalSessionTimeoutMinutes\": 30, \"connectionId\": 1463, \"minWireVersion\": 0, \"maxWireVersion\": 8, \"readOnly\": false, \"ok\": 1.0}"],"responseFlags":8,"cursorId":0,"startingFrom":0,"numberReturned":1,"requestId":1885,"responseTo":2,"finale":false}
+11:41:22.146 [Thread-2] DEBUG org.kendar.mongo.logging.MongoLogClient - ===================
+11:41:22.146 [Thread-1] DEBUG org.kendar.mongo.logging.MongoLogClient - ===================
+===================
+===================
+11:41:24.089 [Thread-0] DEBUG org.kendar.mongo.MongoTest - ++++++++++++++ACCEPTED CONNECTION
+11:41:24.090 [Thread-3] DEBUG org.kendar.mongo.logging.MongoLogClient - ===================
+11:41:24.091 [Thread-3] DEBUG org.kendar.mongo.logging.MongoLogClient - {"opCode":"OP_QUERY","flagBits":0,"fullCollectionName":"admin.$cmd","numberToSkip":0,"numberToReturn":-1,"json":"{\"isMaster\": 1, \"helloOk\": true, \"client\": {\"driver\": {\"name\": \"mongo-java-driver|sync\", \"version\": \"4.9.0\"}, \"os\": {\"type\": \"Windows\", \"name\": \"Windows 10\", \"architecture\": \"amd64\", \"version\": \"10.0\"}, \"platform\": \"Java/ojdkbuild/11.0.13+8-LTS\"}}","requestId":3,"responseTo":0,"finale":false}
+11:41:24.091 [Thread-3] DEBUG org.kendar.mongo.logging.MongoLogServer - {"opCode":"OP_REPLY","jsons":["{\"ismaster\": true, \"maxBsonObjectSize\": 16777216, \"maxMessageSizeBytes\": 48000000, \"maxWriteBatchSize\": 100000, \"localTime\": {\"$date\": \"2023-04-05T09:41:24.09Z\"}, \"logicalSessionTimeoutMinutes\": 30, \"connectionId\": 1465, \"minWireVersion\": 0, \"maxWireVersion\": 8, \"readOnly\": false, \"ok\": 1.0}"],"responseFlags":8,"cursorId":0,"startingFrom":0,"numberReturned":1,"requestId":1887,"responseTo":3,"finale":false}
+11:41:24.091 [Thread-3] DEBUG org.kendar.mongo.logging.MongoLogClient - ===================
+===================
+11:41:24.100 [Thread-3] DEBUG org.kendar.mongo.logging.MongoLogClient - ===================
+11:41:24.104 [Thread-3] DEBUG org.kendar.mongo.logging.MongoLogClient - {"opCode":"OP_MSG","payloads":[{"json":"{\"dbStats\": 1, \"$db\": \"basicdb\", \"lsid\": {\"id\": {\"$binary\": {\"base64\": \"oLgpYN+0QcO7tuIdN9HGaw==\", \"subType\": \"04\"}}}}"}],"flagBits":0,"checksum":0,"requestId":4,"responseTo":0,"finale":false}
+11:41:24.104 [Thread-3] DEBUG org.kendar.mongo.logging.MongoLogServer - {"opCode":"OP_MSG","payloads":[{"json":"{\"db\": \"basicdb\", \"collections\": 1, \"views\": 0, \"objects\": 16, \"avgObjSize\": 92.0, \"dataSize\": 1472.0, \"storageSize\": 36864.0, \"numExtents\": 0, \"indexes\": 1, \"indexSize\": 36864.0, \"scaleFactor\": 1.0, \"fsUsedSize\": 7.88069023744E11, \"fsTotalSize\": 1.002949308416E12, \"ok\": 1.0}"}],"flagBits":0,"checksum":0,"requestId":1888,"responseTo":4,"finale":false}
+11:41:24.104 [Thread-3] DEBUG org.kendar.mongo.logging.MongoLogClient - ===================
+===================
+dbStats: {"db": "basicdb", "collections": 1, "views": 0, "objects": 16, "avgObjSize": 92.0, "dataSize": 1472.0, "storageSize": 36864.0, "numExtents": 0, "indexes": 1, "indexSize": 36864.0, "scaleFactor": 1.0, "fsUsedSize": 7.88069023744E11, "fsTotalSize": 1.002949308416E12, "ok": 1.0}
+11:41:24.111 [Thread-3] DEBUG org.kendar.mongo.logging.MongoLogClient - ===================
+11:41:24.112 [Thread-3] DEBUG org.kendar.mongo.logging.MongoLogClient - {"opCode":"OP_MSG","payloads":[{"json":"{\"endSessions\": [{\"id\": {\"$binary\": {\"base64\": \"oLgpYN+0QcO7tuIdN9HGaw==\", \"subType\": \"04\"}}}], \"$db\": \"admin\", \"$readPreference\": {\"mode\": \"primaryPreferred\"}}"}],"flagBits":0,"checksum":0,"requestId":5,"responseTo":0,"finale":false}
+11:41:24.112 [Thread-3] DEBUG org.kendar.mongo.logging.MongoLogServer - {"opCode":"OP_MSG","payloads":[{"json":"{\"ok\": 1.0}"}],"flagBits":0,"checksum":0,"requestId":1889,"responseTo":5,"finale":false}
+11:41:24.112 [Thread-3] DEBUG org.kendar.mongo.logging.MongoLogClient - ===================
+===================
+
+Process finished with exit code 0

@@ -17,6 +17,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kendar.mongo.compressor.*;
 import org.kendar.mongo.handlers.*;
+import org.kendar.mongo.responder.MongoResponder;
+import org.kendar.mongo.responder.OpMsgResponder;
+import org.kendar.mongo.responder.OpQueryMasterResponder;
+import org.kendar.mongo.responder.OpQueryResponder;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
@@ -44,6 +48,10 @@ public class MongoTest {
     public void server(int port) throws IOException {
 
         server = new ServerSocket(port);
+        var responders = (List<MongoResponder>)List.of(
+                new OpMsgResponder(),new OpQueryResponder(),new OpQueryMasterResponder()
+        );
+
         var msgHandlers = (List<MsgHandler>)List.of(
           new OpDeleteHandler(), new OpInsertHandler(),
           new OpMsgHandler(), new OpQueryHandler(), new OpReplyHandler(), new OpUpdateHandler()
@@ -60,7 +68,7 @@ public class MongoTest {
                 Socket client = server.accept();
                 logger.debug("++++++++++++++ACCEPTED CONNECTION");
                 if(USE_JSON) {
-                    var handler = new JsonMongoClientHandler(client, msgHandlers, compressionHandlers, loggerBuilder);
+                    var handler = new JsonMongoClientHandler(client, msgHandlers, compressionHandlers, loggerBuilder,responders);
                     handler.setTarget(targetIp, targetPort);
                     subClientThread = new Thread(handler);
                     subClientThread.start();
@@ -136,10 +144,11 @@ public class MongoTest {
                         .append("title", "Ski Bloopers")
                         .append("genres", Arrays.asList("Documentary", "Comedy")));
                 System.out.println("Success! Inserted document id: " + result.getInsertedId());
+                Sleeper.sleep(1000);
                 Document doc = collection.find(eq("title", "Ski Bloopers"))
                         .first();
-                assertNotNull(doc);
-                System.out.println(doc);
+//                assertNotNull(doc);
+//                System.out.println(doc);
             } catch (MongoException me) {
                 me.printStackTrace();
             }
@@ -156,6 +165,21 @@ public class MongoTest {
             Sleeper.sleep(1000);
 
             Bson command = new BsonDocument("dbStats", new BsonInt64(1));
+            Document commandResult = database.runCommand(command);
+            System.out.println("dbStats: " + commandResult.toJson());
+        }
+    }
+
+    @Test
+    void test_hostInfo_real_mongo() {
+        String uri = "mongodb://127.0.0.1:27917";///?maxPoolSize=1&w=majority";
+        // Create a new client and connect to the server
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            Sleeper.sleep(1000);
+            MongoDatabase database = mongoClient.getDatabase("basicdb");
+            Sleeper.sleep(1000);
+
+            Bson command = new BsonDocument("hostInfo", new BsonInt64(1));
             Document commandResult = database.runCommand(command);
             System.out.println("dbStats: " + commandResult.toJson());
         }

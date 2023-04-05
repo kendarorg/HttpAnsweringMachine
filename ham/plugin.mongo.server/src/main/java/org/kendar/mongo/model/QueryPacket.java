@@ -115,8 +115,11 @@ public class QueryPacket extends MongoPacket<QueryPacket> {
 
         responseBuffer.flip();
         var length = responseBuffer.position();
+        responseBuffer.position(0);
         var res = new byte[msgLength];
-        responseBuffer.get(res,16,length);
+        for(var i=16;i<msgLength;i++){
+            res[i]=responseBuffer.get();
+        }
 
         var header = buildHeader(msgLength,requestId,responseTo, OpCodes.OP_QUERY);
         for(var i =0;i<16;i++){

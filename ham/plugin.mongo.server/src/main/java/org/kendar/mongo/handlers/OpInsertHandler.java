@@ -10,6 +10,8 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.io.ByteBufferBsonInput;
+import org.bson.json.JsonMode;
+import org.bson.json.JsonWriterSettings;
 import org.kendar.mongo.model.MongoPacket;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +38,7 @@ public class OpInsertHandler implements MsgHandler{
 
         while (byteBuffer.hasRemaining()) {
             BsonDocument document = documentCodec.decode(bsonReader, DecoderContext.builder().build());
-            String json = document.toJson();
+            String json =  document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
             System.out.println("Insert JSON: " + json);
         }
         return packet;

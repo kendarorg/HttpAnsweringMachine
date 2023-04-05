@@ -112,8 +112,8 @@ public class ReplyPacket extends MongoPacket<ReplyPacket> {
         responseBuffer.putInt(responseFlags);
         responseBuffer.putLong(cursorId);
         responseBuffer.putInt(startingFrom);
-        responseBuffer.putInt(numberReturned);
-        for (int i = 0; i < numberReturned; i++) {
+        responseBuffer.putInt(jsons.size());
+        for (int i = 0; i < jsons.size(); i++) {
             byte[] query = toBytes(BsonDocument.parse(jsons.get(i)));
             responseBuffer.put(query);
             msgLength += responseBuffer.position();
@@ -122,8 +122,12 @@ public class ReplyPacket extends MongoPacket<ReplyPacket> {
 
         responseBuffer.flip();
         var length = responseBuffer.position();
+        responseBuffer.position(0);
         var res = new byte[msgLength];
-        responseBuffer.get(res,16,length);
+        for(var i=16;i<msgLength;i++){
+            res[i]=responseBuffer.get();
+        }
+        //responseBuffer.get(res,16,length);
 
         var header = buildHeader(msgLength,requestId,responseTo, OpCodes.OP_REPLY);
         for(var i =0;i<16;i++){

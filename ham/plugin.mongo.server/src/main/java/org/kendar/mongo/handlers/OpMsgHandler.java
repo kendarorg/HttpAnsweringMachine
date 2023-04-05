@@ -9,6 +9,8 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.io.ByteBufferBsonInput;
+import org.bson.json.JsonMode;
+import org.bson.json.JsonWriterSettings;
 import org.kendar.mongo.model.MongoPacket;
 import org.kendar.mongo.model.payloads.MsgDocumentPayload;
 import org.kendar.mongo.model.MsgPacket;
@@ -50,7 +52,7 @@ public class OpMsgHandler implements MsgHandler {
                         BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
                         BsonBinaryReader bsonReader = new BsonBinaryReader(bsonInput);
                         BsonDocument document = documentCodec.decode(bsonReader, DecoderContext.builder().build());
-                        String json = document.toJson();
+                        String json = document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
                         var pl = new MsgDocumentPayload();
                         pl.setJson(json);
                         realPacket.getPayloads().add(pl);
@@ -67,7 +69,7 @@ public class OpMsgHandler implements MsgHandler {
                             BsonBinaryReader bsonReader = new BsonBinaryReader(bsonInput);
                             BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
                             BsonDocument document = documentCodec.decode(bsonReader, DecoderContext.builder().build());
-                            String json = document.toJson();
+                            String json =  document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
                             var doc = new MsgDocumentPayload();
                             doc.setJson(json);
                             pl.getDocuments().add(doc);

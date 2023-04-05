@@ -68,8 +68,11 @@ public class MsgSectionPayload implements BaseMsgPayload, TypedSerializable<MsgS
         var length = responseBuffer.position();
         responseBuffer.position(0);
         responseBuffer.putInt(length);
+        responseBuffer.position(0);
         var res = new byte[length];
-        responseBuffer.get(res,0,length);
+        for(var i=0;i<length;i++){
+            res[i]=responseBuffer.get();
+        }
         return res;
     }
 }

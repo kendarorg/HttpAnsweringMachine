@@ -10,6 +10,8 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.io.ByteBufferBsonInput;
+import org.bson.json.JsonMode;
+import org.bson.json.JsonWriterSettings;
 import org.kendar.mongo.model.MongoPacket;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +39,7 @@ public class OpDeleteHandler implements MsgHandler{
             MongoNamespace namespace = new MongoNamespace(fullCollectionName);
 
             // Convert BSON document to JSON
-            String selectorJson = selector.toJson();
+            String selectorJson = selector.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
 
             // Print out the JSON representation of the message
             System.out.println("Namespace: " + namespace);

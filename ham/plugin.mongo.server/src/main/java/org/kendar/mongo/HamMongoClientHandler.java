@@ -43,7 +43,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
     }
 
     @Override
-    protected MongoPacket mongoRoundTrip(MongoPacket clientPacket) {
+    protected MongoPacket mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
 
         try {
             String db = null;
@@ -63,7 +63,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
             req.setRequestText(toSend);
             req.setMethod("POST");
             req.setHost("127.0.0.1");
-            req.getHeaders().put("X-CONNECTION-ID",connectionId);
+            req.getHeaders().put("X-CONNECTION-ID", this.connectionId);
             req.setPort(80);
             if(isHelloPacket ||db ==null) {
                 req.setPath(

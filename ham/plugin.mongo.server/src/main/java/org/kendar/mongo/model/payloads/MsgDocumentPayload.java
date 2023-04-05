@@ -33,13 +33,17 @@ public class MsgDocumentPayload implements BaseMsgPayload, TypedSerializable<Msg
 
     @Override
     public byte[] serialize() {
+
         ByteBuffer responseBuffer = ByteBuffer.allocate(64000);
         responseBuffer.order(ByteOrder.LITTLE_ENDIAN);
         responseBuffer.put((byte) 0);
         responseBuffer.put(toBytes(BsonDocument.parse(json)));
         var length = responseBuffer.position();
+        responseBuffer.position(0);
         var res = new byte[length];
-        responseBuffer.get(res,0,length);
+        for(var i=0;i<length;i++){
+            res[i]=responseBuffer.get();
+        }
         return res;
     }
 }

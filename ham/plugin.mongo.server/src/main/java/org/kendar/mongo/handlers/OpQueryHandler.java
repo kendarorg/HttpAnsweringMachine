@@ -10,6 +10,8 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.io.ByteBufferBsonInput;
+import org.bson.json.JsonMode;
+import org.bson.json.JsonWriterSettings;
 import org.kendar.mongo.model.MongoPacket;
 import org.kendar.mongo.model.QueryPacket;
 import org.springframework.stereotype.Component;
@@ -43,7 +45,7 @@ public class OpQueryHandler implements MsgHandler{
 
 
             // Convert BSON document to JSON
-            String json = query.toJson();
+            String json = query.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
             realPacket.setJson(json);
             return realPacket;
         } catch (Exception e) {

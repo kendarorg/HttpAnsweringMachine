@@ -22,6 +22,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,7 @@ public abstract class MongoClientHandler implements Runnable {
     private final Socket client;
     private final Logger logClient;
     private final Logger logServer;
+    private final long connectionId;
     private Map<OpCodes, MsgHandler> msgHandlers;
     private Map<Integer, CompressionHandler> compressionHandlers;
 
@@ -44,6 +46,7 @@ public abstract class MongoClientHandler implements Runnable {
                 .collect(Collectors.toMap(MsgHandler::getOpCode, Function.identity()));
         this.compressionHandlers =  compressionHandlers.stream()
                 .collect(Collectors.toMap(CompressionHandler::getId, Function.identity()));
+        this.connectionId = connectionCounter.incrementAndGet();
     }
 
     public static boolean readBytes(InputStream stream,byte[] buffer) throws IOException {
@@ -83,6 +86,14 @@ public abstract class MongoClientHandler implements Runnable {
         }
     }
 
+    private static AtomicLong connectionCounter = new AtomicLong(1);
+
+    public static long getRequestCounter() {
+        return requestCounter.incrementAndGet();
+    }
+
+    private static AtomicLong requestCounter = new AtomicLong(1);
+
     private static String cleanUp(MongoPacket packet){
         var ser = mapper.valueToTree(packet);
         ((ObjectNode)ser).remove("payload");
@@ -102,7 +113,6 @@ public abstract class MongoClientHandler implements Runnable {
              OutputStream toClient = serverSocket.getOutputStream()) {
 
             connectToClient();
-            try (var clientSocket = new Socket("localhost", 27017)) {
 
 
 
@@ -113,9 +123,10 @@ public abstract class MongoClientHandler implements Runnable {
                         Sleeper.sleep(100);
                         continue;
                     }
+
                     logClient.debug("===================");
                     var clientPacket = readPacketsFromStream(fromClient, headerBytes);
-                    MongoPacket mongoPacket = mongoRoundTrip(clientPacket);
+                    MongoPacket mongoPacket = mongoRoundTrip(clientPacket,connectionId);
                     logClient.debug(cleanUp(clientPacket));
 
                     logServer.debug(cleanUp(mongoPacket));
@@ -123,19 +134,31 @@ public abstract class MongoClientHandler implements Runnable {
                     if(mongoPacket.isFinale()){
                         break;
                     }
-                    toClient.write(mongoPacket.getHeader());
+                    //var possible = mongoPacket.serialize();
+                    toClient.write(mongoPacket.serialize());
+
+                    /*toClient.write(mongoPacket.getHeader());
                     toClient.write(mongoPacket.getPayload());
+                    for(var i=0;i<16;i++){
+                        if(possible[i]!=mongoPacket.getHeader()[i]){
+                            System.out.println("AAAA");
+                        }
+                    }
+                    for(var i=0;i<mongoPacket.getPayload().length;i++){
+                        if(possible[i+16]!=mongoPacket.getPayload()[i]){
+                            System.out.println("AAAA");
+                        }
+                    }*/
                     toClient.flush();
                     System.out.println("===================");
 
                     headerBytes = new byte[16];
                 }
-            }
         }
     }
 
 
-    protected abstract MongoPacket mongoRoundTrip(MongoPacket clientPacket);
+    protected abstract MongoPacket mongoRoundTrip(MongoPacket clientPacket, long connectionId);
 
     protected abstract void connectToClient();
 
