@@ -1,8 +1,8 @@
 package org.kendar.mongo.model.payloads;
 
 import org.bson.BsonDocument;
-import org.kendar.janus.serialization.TypedSerializable;
-import org.kendar.janus.serialization.TypedSerializer;
+import org.kendar.typed.serializer.TypedSerializable;
+import org.kendar.typed.serializer.TypedSerializer;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

@@ -1,7 +1,7 @@
 package org.kendar.mongo.model;
 
 import org.bson.BsonDocument;
-import org.kendar.janus.serialization.TypedSerializer;
+import org.kendar.typed.serializer.TypedSerializer;
 import org.kendar.mongo.handlers.OpCodes;
 
 import java.nio.ByteBuffer;

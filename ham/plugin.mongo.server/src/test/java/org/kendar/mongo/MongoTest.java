@@ -37,6 +37,7 @@ import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MongoTest {
     private static boolean USE_JSON=true;
@@ -150,8 +151,8 @@ public class MongoTest {
                 Sleeper.sleep(1000);
                 Document doc = collection.find(eq("title", "Ski Bloopers"))
                         .first();
-//                assertNotNull(doc);
-//                System.out.println(doc);
+                assertNotNull(doc);
+                System.out.println(doc);
             } catch (MongoException me) {
                 me.printStackTrace();
             }
