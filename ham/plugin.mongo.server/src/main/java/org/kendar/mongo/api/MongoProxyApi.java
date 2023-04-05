@@ -8,7 +8,7 @@ import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.Header;
 import org.kendar.http.annotations.multi.PathParameter;
-import org.kendar.janus.serialization.JsonTypedSerializer;
+import org.kendar.typed.serializer.JsonTypedSerializer;
 import org.kendar.mongo.JsonMongoClientHandler;
 import org.kendar.mongo.compressor.CompressionHandler;
 import org.kendar.mongo.handlers.MsgHandler;

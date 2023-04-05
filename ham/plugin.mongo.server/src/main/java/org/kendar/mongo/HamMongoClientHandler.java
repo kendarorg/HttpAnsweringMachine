@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
 import org.kendar.events.ExecuteLocalRequest;
-import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.mongo.compressor.CompressionHandler;
 import org.kendar.mongo.handlers.MsgHandler;
 import org.kendar.mongo.handlers.OpCodes;
@@ -16,6 +15,7 @@ import org.kendar.mongo.model.payloads.MsgDocumentPayload;
 import org.kendar.mongo.responder.OpGeneralResponse;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.typed.serializer.JsonTypedSerializer;
 import org.kendar.utils.LoggerBuilder;
 
 import java.net.Socket;
