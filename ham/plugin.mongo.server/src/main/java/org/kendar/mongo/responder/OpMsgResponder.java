@@ -14,7 +14,9 @@ import org.kendar.mongo.model.MongoPacket;
 import org.kendar.mongo.model.MsgPacket;
 import org.kendar.mongo.model.payloads.MsgDocumentPayload;
 import org.kendar.mongo.model.payloads.MsgSectionPayload;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OpMsgResponder implements MongoResponder{
     @Override
     public OpCodes getOpCode() {

@@ -44,14 +44,15 @@ public class HamMongoClientHandler extends MongoClientHandler {
     }
 
     @Override
-    protected OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
+    public OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
 
         try {
-            String db = null;
+            String db = "admin";
             var isHelloPacket = isHelloPacket(clientPacket);
             if(clientPacket.getOpCode()==OpCodes.OP_MSG){
                 db = getDb((MsgPacket)clientPacket);
             }
+
 
             //Find the destination port
             //Find (eventually) the db
@@ -65,14 +66,10 @@ public class HamMongoClientHandler extends MongoClientHandler {
             req.setMethod("POST");
             req.setHost("127.0.0.1");
             req.getHeaders().put("X-CONNECTION-ID", this.connectionId);
+            req.getHeaders().put("X-MONGO-ID", ""+connectionId);
             req.setPort(80);
-            if(isHelloPacket ||db ==null) {
-                req.setPath(
-                        String.format("/api/mongo/%d", localPort));
-            }else{
-                req.setPath(
+            req.setPath(
                         String.format("/api/mongo/%d/%s", localPort,db));
-            }
 
             var event = new ExecuteLocalRequest();
             event.setRequest(req);
@@ -101,7 +98,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
         }catch (Exception ex){
 
         }
-        return null;
+        return "admin";
     }
 
     private boolean isHelloPacket(MongoPacket clientPacket) {

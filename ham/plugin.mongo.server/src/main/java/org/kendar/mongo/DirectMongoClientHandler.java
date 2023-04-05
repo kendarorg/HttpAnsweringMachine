@@ -27,7 +27,7 @@ public class DirectMongoClientHandler extends MongoClientHandler {
         super(client, msgHandlers, compressionHandlers, loggerBuilder);
     }
 
-    protected OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
+    public OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
         try {
             toMongoDb.write(clientPacket.getHeader());
             toMongoDb.write(clientPacket.getPayload());

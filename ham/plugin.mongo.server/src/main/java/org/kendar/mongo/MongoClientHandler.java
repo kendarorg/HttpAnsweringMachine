@@ -152,7 +152,7 @@ public abstract class MongoClientHandler implements Runnable {
     }
 
 
-    protected abstract OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId);
+    public abstract OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId);
 
     protected abstract void connectToClient();
 

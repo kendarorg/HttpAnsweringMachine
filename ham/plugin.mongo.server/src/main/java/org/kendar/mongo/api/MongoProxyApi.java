@@ -9,16 +9,42 @@ import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.Header;
 import org.kendar.http.annotations.multi.PathParameter;
 import org.kendar.janus.serialization.JsonTypedSerializer;
+import org.kendar.mongo.JsonMongoClientHandler;
+import org.kendar.mongo.compressor.CompressionHandler;
+import org.kendar.mongo.handlers.MsgHandler;
 import org.kendar.mongo.model.MongoPacket;
+import org.kendar.mongo.responder.MongoResponder;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.utils.LoggerBuilder;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @HttpTypeFilter(hostAddress = "*",
         blocking = false)
 public class MongoProxyApi implements FilteringClass {
+    private List<MsgHandler> msgHandlers;
+    private List<CompressionHandler> compressionHandlers;
+    private LoggerBuilder loggerBuilder;
+    private List<MongoResponder> responders;
+
+    public MongoProxyApi(List<MsgHandler> msgHandlers,
+                         List<CompressionHandler> compressionHandlers,
+                         LoggerBuilder loggerBuilder,
+                         List<MongoResponder> responders){
+
+        this.msgHandlers = msgHandlers;
+        this.compressionHandlers = compressionHandlers;
+        this.loggerBuilder = loggerBuilder;
+        this.responders = responders;
+    }
     private final JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private Map<String,JsonMongoClientHandler> mongoClientHandlers = new HashMap<>();
 
     @Override
     public String getId() {
@@ -79,9 +105,23 @@ public class MongoProxyApi implements FilteringClass {
     private boolean handleMongoCommand(Request req, Response res) {
         var deser = serializer.newInstance();
         deser.read(req.getRequestText());
+        var port = Integer.parseInt(req.getPathParameter("port"));
+        var db = Integer.parseInt(req.getPathParameter("port"));
         var fromClient = (MongoPacket)deser.read("data");
+        var globalConnectionId = req.getHeader("X-CONNECTION-ID");
+        var connectionId = Integer.parseInt(req.getHeader("X-MONGO-ID"));
+
+        if(!mongoClientHandlers.containsKey(globalConnectionId)){
+            mongoClientHandlers.put(globalConnectionId,new JsonMongoClientHandler(
+                    null,msgHandlers,compressionHandlers,
+                    loggerBuilder,responders));
+        }
+
+        var handler = mongoClientHandlers.get(globalConnectionId);
+        var serverResponse = handler.mongoRoundTrip(fromClient,connectionId);
+
+
         //Call real server
-        MongoPacket serverResponse = new MongoPacket();
         var ser = serializer.newInstance();
         ser.write("data",serverResponse);
         var toSend = (String)ser.getSerialized();

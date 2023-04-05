@@ -10,7 +10,9 @@ import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.mongo.model.MongoPacket;
 import org.kendar.mongo.model.QueryPacket;
 import org.kendar.mongo.model.ReplyPacket;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OpQueryResponder implements MongoResponder{
     @Override
     public OpCodes getOpCode() {

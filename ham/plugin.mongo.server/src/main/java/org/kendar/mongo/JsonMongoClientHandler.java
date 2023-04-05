@@ -44,7 +44,7 @@ public class JsonMongoClientHandler extends MongoClientHandler {
 
     private MongoClient mongoClient;
 
-    protected OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
+    public OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
         try {
             if(mongoClient==null){
                 mongoClient = MongoClients.create("mongodb://127.0.0.1:27017");
@@ -62,16 +62,17 @@ public class JsonMongoClientHandler extends MongoClientHandler {
                     }
                 }
             }
-            var header = clientPacket.getHeader();// (byte[]) createHeader(clientPacket);
-            var payload = clientPacket.getPayload();//byte[]) createPayload(clientPacket);
-            toMongoDb.write(header);
-            toMongoDb.write(payload);
-            toMongoDb.flush();
-
-            byte[] mongoHeaderBytes = new byte[16];
-            readBytes(fromMongoDb, mongoHeaderBytes);
-            var result = readPacketsFromStream(fromMongoDb, mongoHeaderBytes);
-            return new OpGeneralResponse(result,false);
+            throw new RuntimeException("Missing handler for opcode "+responderByOpCode);
+//            var header = clientPacket.getHeader();// (byte[]) createHeader(clientPacket);
+//            var payload = clientPacket.getPayload();//byte[]) createPayload(clientPacket);
+//            toMongoDb.write(header);
+//            toMongoDb.write(payload);
+//            toMongoDb.flush();
+//
+//            byte[] mongoHeaderBytes = new byte[16];
+//            readBytes(fromMongoDb, mongoHeaderBytes);
+//            var result = readPacketsFromStream(fromMongoDb, mongoHeaderBytes);
+//            return new OpGeneralResponse(result,false);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -82,13 +83,7 @@ public class JsonMongoClientHandler extends MongoClientHandler {
 
 
     protected void connectToClient() {
-        try {
-            clientSocket = new Socket(targetIp, targetPort);
-            toMongoDb = clientSocket.getOutputStream();
-            fromMongoDb = clientSocket.getInputStream();
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+
     }
 
     public void setTarget(String targetIp, int targetPort) {
