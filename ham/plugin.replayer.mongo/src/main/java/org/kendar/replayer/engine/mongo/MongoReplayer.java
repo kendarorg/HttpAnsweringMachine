@@ -47,7 +47,20 @@ public class MongoReplayer implements ReplayerEngine {
 
     @Override
     public boolean isValidRoundTrip(Request req, Response res, Map<String, String> specialParams) {
-        return true;
+        var ports = specialParams.get("ports") == null ? new String[]{"*"} :
+                specialParams.get("ports").trim().split(",");
+        var port = req.getPathParameter("port");
+        var portAllowed = false;
+        for (var allowedPort : ports) {
+            if (allowedPort.equalsIgnoreCase("*")) {
+                portAllowed = true;
+                break;
+            } else if (allowedPort.equalsIgnoreCase(port)) {
+                portAllowed = true;
+                break;
+            }
+        }
+        return portAllowed;
 
     }
 

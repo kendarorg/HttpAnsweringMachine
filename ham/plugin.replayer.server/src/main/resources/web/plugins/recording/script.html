@@ -70,7 +70,7 @@
             </button>&nbsp;
 
             <button id="recording-reload-status" v-on:click="updateButtons()" class="btn btn-primary btn-sm">Reload status</button>
-            <div>
+            <div id="accordion">
                 <dynamic-extension  id="recording-dynext"
                                     v-for="key in extensions"
                                    :path="'/plugins/recording/vcomponents'"

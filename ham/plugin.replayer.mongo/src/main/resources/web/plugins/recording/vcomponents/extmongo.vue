@@ -1,5 +1,7 @@
 <template>
   <div class="row boxed">
+    <div class="col-md-8">Mongo Filters
+    </div>
     <div class="col-md-8">
       <div class="form-group">
         <label for="exthttpname">Ports</label>
@@ -22,7 +24,7 @@ module.exports = {
   watch: {
     $props: {
       handler(val, oldVal) {
-        if (val.value.hosts) this.ports = val.value.ports;
+        if (val.value.ports) this.ports = val.value.ports;
         this.changePorts();
       },
       deep: true,
