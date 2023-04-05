@@ -38,7 +38,7 @@ public class OpQueryMasterResponder implements MongoResponder{
     }
 
     @Override
-    public MongoPacket canRespond(MongoPacket clientPacket, MongoClient mongoClient, long connectionId) {
+    public OpGeneralResponse canRespond(MongoPacket clientPacket, MongoClient mongoClient, long connectionId) {
         var msgPacket = (QueryPacket)clientPacket;
         var db= getDb(msgPacket);
         var database = mongoClient.getDatabase(db);
@@ -73,6 +73,6 @@ public class OpQueryMasterResponder implements MongoResponder{
             toret.getJsons().add(mapper.writeValueAsString(result));
         }catch (Exception ex){}
         //Document commandResult = database.runCommand(command);
-        return toret;
+        return new OpGeneralResponse(toret,false);
     }
 }

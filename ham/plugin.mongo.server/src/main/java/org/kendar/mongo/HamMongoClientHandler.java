@@ -13,6 +13,7 @@ import org.kendar.mongo.model.MongoPacket;
 import org.kendar.mongo.model.MsgPacket;
 import org.kendar.mongo.model.QueryPacket;
 import org.kendar.mongo.model.payloads.MsgDocumentPayload;
+import org.kendar.mongo.responder.OpGeneralResponse;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
@@ -43,7 +44,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
     }
 
     @Override
-    protected MongoPacket mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
+    protected OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
 
         try {
             String db = null;
@@ -80,7 +81,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
             var deser = serializer.newInstance();
             deser.deserialize(response);
             var serverPacket = (MongoPacket) deser.read("data");
-            return serverPacket;
+            return new OpGeneralResponse(serverPacket,false);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

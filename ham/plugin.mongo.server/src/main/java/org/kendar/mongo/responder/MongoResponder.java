@@ -6,5 +6,5 @@ import org.kendar.mongo.model.MongoPacket;
 
 public interface MongoResponder {
     OpCodes getOpCode();
-    MongoPacket canRespond(MongoPacket mongoPacket, MongoClient mongoClient, long connectionId);
+    OpGeneralResponse canRespond(MongoPacket mongoPacket, MongoClient mongoClient, long connectionId);
 }

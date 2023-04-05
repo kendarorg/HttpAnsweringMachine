@@ -13,6 +13,7 @@ import org.kendar.mongo.logging.MongoLogClient;
 import org.kendar.mongo.logging.MongoLogServer;
 import org.kendar.mongo.model.CompressedPacket;
 import org.kendar.mongo.model.MongoPacket;
+import org.kendar.mongo.responder.OpGeneralResponse;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
@@ -129,31 +130,21 @@ public abstract class MongoClientHandler implements Runnable {
 
                     logClient.debug("===================");
                     var clientPacket = readPacketsFromStream(fromClient, headerBytes);
-                    MongoPacket mongoPacket = mongoRoundTrip(clientPacket,connectionId);
+                    OpGeneralResponse generalResponse = mongoRoundTrip(clientPacket,connectionId);
                     logClient.debug(cleanUp(clientPacket));
 
-                    logServer.debug(cleanUp(mongoPacket));
+                    logServer.debug(cleanUp(generalResponse.getResult()));
                     logClient.debug("===================");
-                    if(mongoPacket.isFinale()){
+                    if(generalResponse.getResult().isFinale()){
                         break;
                     }
-                    //var possible = mongoPacket.serialize();
-                    toClient.write(mongoPacket.serialize());
+                    toClient.write(generalResponse.getResult().serialize());
 
-                    /*toClient.write(mongoPacket.getHeader());
-                    toClient.write(mongoPacket.getPayload());
-                    for(var i=0;i<16;i++){
-                        if(possible[i]!=mongoPacket.getHeader()[i]){
-                            System.out.println("AAAA");
-                        }
-                    }
-                    for(var i=0;i<mongoPacket.getPayload().length;i++){
-                        if(possible[i+16]!=mongoPacket.getPayload()[i]){
-                            System.out.println("AAAA");
-                        }
-                    }*/
                     toClient.flush();
                     System.out.println("===================");
+                    if(generalResponse.isFinalMessage()){
+                        break;
+                    }
 
                     headerBytes = new byte[16];
                 }
@@ -161,7 +152,7 @@ public abstract class MongoClientHandler implements Runnable {
     }
 
 
-    protected abstract MongoPacket mongoRoundTrip(MongoPacket clientPacket, long connectionId);
+    protected abstract OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId);
 
     protected abstract void connectToClient();
 

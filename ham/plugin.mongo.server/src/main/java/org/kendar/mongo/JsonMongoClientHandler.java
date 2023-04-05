@@ -7,6 +7,7 @@ import org.kendar.mongo.handlers.MsgHandler;
 import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.mongo.model.MongoPacket;
 import org.kendar.mongo.responder.MongoResponder;
+import org.kendar.mongo.responder.OpGeneralResponse;
 import org.kendar.utils.LoggerBuilder;
 
 import java.io.InputStream;
@@ -43,7 +44,7 @@ public class JsonMongoClientHandler extends MongoClientHandler {
 
     private MongoClient mongoClient;
 
-    protected MongoPacket mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
+    protected OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
         try {
             if(mongoClient==null){
                 mongoClient = MongoClients.create("mongodb://127.0.0.1:27017");
@@ -52,7 +53,11 @@ public class JsonMongoClientHandler extends MongoClientHandler {
             if(responderByOpCode!=null){
                 for(var responder: responderByOpCode ){
                     var res= responder.canRespond(clientPacket,mongoClient,connectionId);
+
                     if(res!=null){
+                        if(res.isFinalMessage()){
+                            mongoClient.close();
+                        }
                         return res;
                     }
                 }
@@ -66,7 +71,7 @@ public class JsonMongoClientHandler extends MongoClientHandler {
             byte[] mongoHeaderBytes = new byte[16];
             readBytes(fromMongoDb, mongoHeaderBytes);
             var result = readPacketsFromStream(fromMongoDb, mongoHeaderBytes);
-            return result;
+            return new OpGeneralResponse(result,false);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

@@ -41,14 +41,14 @@ public class OpMsgResponder implements MongoResponder{
     }
 
     @Override
-    public MongoPacket canRespond(MongoPacket clientPacket, MongoClient mongoClient, long connectionId) {
+    public OpGeneralResponse canRespond(MongoPacket clientPacket, MongoClient mongoClient, long connectionId) {
         var msgPacket = (MsgPacket)clientPacket;
         var db= getDb(msgPacket);
         var database = mongoClient.getDatabase(db);
         var docPayload = (MsgDocumentPayload)msgPacket.getPayloads().get(0);
-
-
         var command = (BsonDocument)BsonDocument.parse(docPayload.getJson());
+        var finalMessage = command.containsKey("endSession");
+
         if(msgPacket.getPayloads().size()>0) {
 
             for (var i = 1; i < msgPacket.getPayloads().size(); i++) {
@@ -81,6 +81,6 @@ public class OpMsgResponder implements MongoResponder{
         result.getPayloads().add(responseDocPayload);
         result.setResponseTo(msgPacket.getRequestId());
         result.setRequestId((int)MongoClientHandler.getRequestCounter());
-        return result;
+        return new OpGeneralResponse((MongoPacket)result,finalMessage);
     }
 }

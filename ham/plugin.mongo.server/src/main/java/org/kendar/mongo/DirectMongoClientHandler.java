@@ -3,6 +3,7 @@ package org.kendar.mongo;
 import org.kendar.mongo.compressor.CompressionHandler;
 import org.kendar.mongo.handlers.MsgHandler;
 import org.kendar.mongo.model.MongoPacket;
+import org.kendar.mongo.responder.OpGeneralResponse;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.Sleeper;
 
@@ -26,7 +27,7 @@ public class DirectMongoClientHandler extends MongoClientHandler {
         super(client, msgHandlers, compressionHandlers, loggerBuilder);
     }
 
-    protected MongoPacket mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
+    protected OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
         try {
             toMongoDb.write(clientPacket.getHeader());
             toMongoDb.write(clientPacket.getPayload());
@@ -35,7 +36,7 @@ public class DirectMongoClientHandler extends MongoClientHandler {
             while(!readBytes(fromMongoDb, mongoHeaderBytes)){
                 Sleeper.sleep(100);
             }
-            return readPacketsFromStream(fromMongoDb, mongoHeaderBytes);
+            return new OpGeneralResponse(readPacketsFromStream(fromMongoDb, mongoHeaderBytes),false);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
