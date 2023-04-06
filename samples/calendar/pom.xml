@@ -18,6 +18,7 @@
         <module>gateway</module>
         <module>fe</module>
         <module>be</module>
+        <module>bemongo</module>
     </modules>
     <packaging>pom</packaging>
 
