@@ -67,7 +67,7 @@ copy /y %SCRIPT_DIR%\templates\standalone\bedbham.application.properties %HAM_RE
 copy /y %SCRIPT_DIR%\templates\standalone\bedbhamnogen.application.properties %HAM_RELEASE_TARGET%\calendar\be\bedbhamnogen.application.properties 1>NUL
 copy /y %CALENDAR_DIR%\be\target\be-*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
 
-copy /y %ROOT_DIR%\ham\libs\janus-driver*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
+copy /y %ROOT_DIR%\ham\plugin.replayer.jdbc\target\classes\lib\janus-driver*.jar %HAM_RELEASE_TARGET%\calendar\be\  1>NUL
 
 echo #!/bin/bash > %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.sh

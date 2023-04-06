@@ -104,6 +104,43 @@
                                     <excludes>
                                         <exclude>*junit*.*</exclude>
                                         <exclude>*spring*.*</exclude>
+                                        <exclude>app.commons-*.*</exclude>
+                                        <exclude>app.http.standardfilters-*.*</exclude>
+                                        <exclude>app.http-*.*</exclude>
+                                        <exclude>javax-inject-*.*</exclude>
+                                        <exclude>antlr-*.*</exclude>
+                                        <exclude>cdi-api-*.*</exclude>
+                                        <exclude>classmate-*.*</exclude>
+                                        <exclude>commonmark-*.*</exclude>
+                                        <exclude>commons-codec-*.*</exclude>
+                                        <exclude>commons-fileupload-*.*</exclude>
+                                        <exclude>commons-io-*.*</exclude>
+                                        <exclude>commons-lang-*.*</exclude>
+                                        <exclude>dom4j-*.*</exclude>
+                                        <exclude>el-api-*.*</exclude>
+                                        <exclude>guava-*.*</exclude>
+                                        <exclude>hibernate-commons-annotations-*.*</exclude>
+                                        <exclude>hibernate-core-*.*</exclude>
+                                        <exclude>hibernate-jpa-*.*</exclude>
+                                        <exclude>httpclient-*.*</exclude>
+                                        <exclude>httpcore-*.*</exclude>
+                                        <exclude>httpmime-*.*</exclude>
+                                        <exclude>jackson-annotations-*.*</exclude>
+                                        <exclude>jackson-databind-*.*</exclude>
+                                        <exclude>jackson-core-*.*</exclude>
+                                        <exclude>jackson-dataformat-smile-*.*</exclude>
+                                        <exclude>jackson-datatype-jsr310-*.*</exclude>
+                                        <exclude>jandex-*.*</exclude>
+                                        <exclude>janus-driver-*.*</exclude>
+                                        <exclude>janus-engine-*.*</exclude>
+                                        <exclude>javassist-*.*</exclude>
+                                        <exclude>jboss-interceptors-api_*.*</exclude>
+                                        <exclude>jboss-logging-*.*</exclude>
+                                        <exclude>jsr250-api-*.*</exclude>
+                                        <exclude>jsr305-*.*</exclude>
+                                        <exclude>logback-classic-*.*</exclude>
+                                        <exclude>logback-core-*.*</exclude>
+                                        <exclude>swagger-models-*.*</exclude>
                                     </excludes>
                                 </resource>
                             </resources>

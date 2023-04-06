@@ -37,7 +37,7 @@ cp -f $SCRIPT_DIR/templates/releasebuild/samples/calendar/*.* $HAM_RELEASE_TARGE
 cp -f $SCRIPT_DIR/templates/releasebuild/samples/calendar/scripts/*.* $HAM_RELEASE_TARGET/calendar/scripts/ 2>&1 > /dev/null
 cp -f $SCRIPT_DIR/templates/standalone/calendar.external.json $HAM_RELEASE_TARGET/calendar/ 2>&1 > /dev/null
 
-cp -f $ROOT_DIR/ham/libs/janus-driver*.jar $HAM_RELEASE_TARGET/calendar/be/ 2>&1 > /dev/null
+cp -f $ROOT_DIR/ham/plugin.replayer.jdbc/target/classes/lib/janus-driver*.jar $HAM_RELEASE_TARGET/calendar/be/ 2>&1 > /dev/null
 
 
 echo [INFO] Setup gateway
