@@ -33,6 +33,7 @@ echo [INFO] Setup runner
 
 mkdir -p $HAM_RELEASE_TARGET/calendar/scripts
 mkdir -p $HAM_RELEASE_TARGET/calendar/be
+mkdir -p $HAM_RELEASE_TARGET/calendar/bemongo
 cp -f $SCRIPT_DIR/templates/releasebuild/samples/calendar/*.* $HAM_RELEASE_TARGET/calendar/ 2>&1 > /dev/null
 cp -f $SCRIPT_DIR/templates/releasebuild/samples/calendar/scripts/*.* $HAM_RELEASE_TARGET/calendar/scripts/ 2>&1 > /dev/null
 cp -f $SCRIPT_DIR/templates/standalone/calendar.external.json $HAM_RELEASE_TARGET/calendar/ 2>&1 > /dev/null
@@ -75,6 +76,17 @@ cp -f $CALENDAR_DIR/be/target/be-*.jar $HAM_RELEASE_TARGET/calendar/be/
 echo "#!/bin/bash" > $HAM_RELEASE_TARGET/calendar/be/run.sh
 echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/be/run.sh
 echo "call java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/be/run.bat
+
+echo [INFO] Setup bemongo
+mkdir -p $HAM_RELEASE_TARGET/calendar/bemongo
+cd $CALENDAR_DIR/bemongo/target/
+ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
+export JAR_NAME=$(head -1 tmp_txt)
+cp -f $SCRIPT_DIR/templates/standalone/bemongo.application.properties $HAM_RELEASE_TARGET/calendar/bemongo/application.properties
+cp -f $CALENDAR_DIR/bemongo/target/bemongo-*.jar $HAM_RELEASE_TARGET/calendar/bemongo/
+echo "#!/bin/bash" > $HAM_RELEASE_TARGET/calendar/bemongo/run.sh
+echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/bemongo/run.sh
+echo "call java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/bemongo/run.bat
 
 # Prepare the compressed file
 echo [INFO] Compress release file
