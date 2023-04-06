@@ -96,7 +96,9 @@ public class MongoTest {
 
     @BeforeEach
     void beforeEach() {
-
+        var loggerBuilder = (LoggerBuilder)new LocalLoggerBuilderImpl();
+        Logger logger = loggerBuilder.build(MongoTest.class);
+        loggerBuilder.setLevel("org.mongodb.driver", Level.OFF);
 //        targetIp = "localhost";//spl[0];
 //        targetPort = 27017;//Integer.parseInt(spl[1]);
 //        clientThread = new Thread(()->{
@@ -204,7 +206,7 @@ public class MongoTest {
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             Sleeper.sleep(1000);
             MongoDatabase database = mongoClient.getDatabase("basicdb");
-            System.out.println("dbStats: " + database);
+            assertNotNull(database);
         }
     }
 }
