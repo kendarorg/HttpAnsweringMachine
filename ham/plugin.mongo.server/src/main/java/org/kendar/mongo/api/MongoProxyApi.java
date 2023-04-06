@@ -103,12 +103,6 @@ public class MongoProxyApi implements FilteringClass {
                     body = String.class
             ))
     public boolean handleCommands(Request req, Response res) throws Exception {
-        return handleMongoCommand(req, res);
-    }
-
-
-
-    private boolean handleMongoCommand(Request req, Response res) {
         var port = Integer.parseInt(req.getPathParameter("port"));
         var db = req.getPathParameter("dbName");
         var deser = serializer.newInstance();

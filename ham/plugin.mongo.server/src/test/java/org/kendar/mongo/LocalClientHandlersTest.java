@@ -7,6 +7,8 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.InsertOneResult;
+import de.bwaldvogel.mongo.MongoServer;
+import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
 import org.bson.BsonDocument;
 import org.bson.BsonInt64;
 import org.bson.Document;
@@ -14,7 +16,8 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.kendar.mongo.compressor.NoopCompressionHandler;
 import org.kendar.mongo.compressor.SnappyCompressionHandler;
 import org.kendar.mongo.compressor.ZStdCompressionHandler;
@@ -22,6 +25,8 @@ import org.kendar.mongo.compressor.ZlibCompressionHandler;
 import org.kendar.mongo.config.MongoDescriptor;
 import org.kendar.mongo.config.MongoProxy;
 import org.kendar.mongo.handlers.*;
+import org.kendar.mongo.logging.MongoLogClient;
+import org.kendar.mongo.logging.MongoLogServer;
 import org.kendar.mongo.responder.MongoResponder;
 import org.kendar.mongo.responder.OpMsgResponder;
 import org.kendar.mongo.responder.OpQueryMasterResponder;
@@ -41,7 +46,7 @@ import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class MongoTest {
+public class LocalClientHandlersTest {
     private static boolean USE_JSON=true;
 
     private Thread subClientThread;
@@ -50,8 +55,9 @@ public class MongoTest {
     private String targetIp;
     private int targetPort;
     private String connectionString;
+    private MongoServer mongoServer;
 
-    public void server(int port) throws IOException {
+    public void server(int port,boolean useJson) throws IOException {
 
         server = new ServerSocket(port);
         var responders = (List<MongoResponder>)List.of(
@@ -67,19 +73,19 @@ public class MongoTest {
                 new ZlibCompressionHandler(), new ZStdCompressionHandler()
         );
         var loggerBuilder = (LoggerBuilder)new LocalLoggerBuilderImpl();
-        Logger logger = loggerBuilder.build(MongoTest.class);
+        Logger logger = loggerBuilder.build(LocalClientHandlersTest.class);
         loggerBuilder.setLevel("org.mongodb.driver", Level.OFF);
         while(true) {
             try {
                 Socket client = server.accept();
                 logger.debug("++++++++++++++ACCEPTED CONNECTION");
-                if(USE_JSON) {
+                if(useJson) {
                     var proxy = new MongoProxy();
                     proxy.setExposedPort(27097);
                     MongoDescriptor md = new MongoDescriptor();
                     md.setConnectionString("mongodb://127.0.0.1:27017");
                     proxy.setRemote(md);
-                    var handler = new JsonMongoClientHandler(proxy, msgHandlers, compressionHandlers, loggerBuilder,responders);
+                    var handler = new JsonMongoClientHandler(client,proxy, msgHandlers, compressionHandlers, loggerBuilder,responders);
                     subClientThread = new Thread(handler);
                     subClientThread.start();
                 }else {
@@ -97,34 +103,49 @@ public class MongoTest {
     @BeforeEach
     void beforeEach() {
         var loggerBuilder = (LoggerBuilder)new LocalLoggerBuilderImpl();
-        Logger logger = loggerBuilder.build(MongoTest.class);
+        Logger logger = loggerBuilder.build(LocalClientHandlersTest.class);
         loggerBuilder.setLevel("org.mongodb.driver", Level.OFF);
-//        targetIp = "localhost";//spl[0];
-//        targetPort = 27017;//Integer.parseInt(spl[1]);
-//        clientThread = new Thread(()->{
-//            try {
-//                server(27917);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//        //clientThread.start();
-//        Sleeper.sleep(1000);
+        loggerBuilder.setLevel("io.netty", Level.OFF);
+        loggerBuilder.setLevel("de.bwaldvogel.mongo", Level.OFF);
+        loggerBuilder.setLevel(MongoLogClient.class.getName(), Level.DEBUG);
+        loggerBuilder.setLevel(MongoLogServer.class.getName(), Level.DEBUG);
+        mongoServer = new MongoServer(new MemoryBackend());
+        mongoServer.bind("127.0.0.1",27017);
+        targetIp = "127.0.0.1";
+        targetPort = 27017;
+    }
+
+    private void startServer(boolean useJson) {
+        clientThread = new Thread(()->{
+            try {
+                server(27097,useJson);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        clientThread.start();
+        Sleeper.sleep(1000);
     }
 
     @AfterEach
     void afterEach(){
-//        try {
-//            server.close();
-//        } catch (IOException e) {
-//
-//        }
-//        subClientThread.interrupt();
-//        clientThread.interrupt();
+        mongoServer.shutdown();
+        try {
+            server.close();
+        } catch (IOException e) {
+
+        }
+        if(subClientThread!=null) {
+            subClientThread.interrupt();
+        }
+        clientThread.interrupt();
     }
 
-    @Test
-    void test_ping_on_real_mongo() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true,false})
+    void test_ping_on_real_mongo(boolean useJsonServer) {
+
+        startServer(useJsonServer);
         String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=20&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("admin");
@@ -140,8 +161,11 @@ public class MongoTest {
         }
     }
 
-    @Test
-    void test_insert_select_on_real_mongo() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true,false})
+    void test_insert_select_on_real_mongo(boolean useJsonServer) {
+
+        startServer(useJsonServer);
         String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
@@ -160,15 +184,19 @@ public class MongoTest {
                 Document doc = collection.find(eq("title", "Ski Bloopers"))
                         .first();
                 assertNotNull(doc);
-                System.out.println(doc);
+                System.out.println("RETURNED :"+doc.toJson());
             } catch (MongoException me) {
                 me.printStackTrace();
             }
         }
     }
 
-    @Test
-    void test_stats__real_mongo() {
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true,false})
+    void test_stats__real_mongo(boolean useJsonServer) {
+
+        startServer(useJsonServer);
         String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
@@ -183,24 +211,11 @@ public class MongoTest {
         }
     }
 
-    @Test
-    void test_hostInfo_real_mongo() {
-        String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=1&w=majority";
-        // Create a new client and connect to the server
-        try (MongoClient mongoClient = MongoClients.create(uri)) {
-            Sleeper.sleep(1000);
-            MongoDatabase database = mongoClient.getDatabase("basicdb");
-            Sleeper.sleep(1000);
+    @ParameterizedTest
+    @ValueSource(booleans = {true,false})
+    void test_db_real_mongo(boolean useJsonServer) {
 
-            Bson command = new BsonDocument("hostInfo", new BsonInt64(1));
-            Document commandResult = database.runCommand(command);
-            assertNotNull(commandResult);
-            System.out.println("hostInfo: " + commandResult.toJson());
-        }
-    }
-
-    @Test
-    void test_db_real_mongo() {
+        startServer(useJsonServer);
         String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {

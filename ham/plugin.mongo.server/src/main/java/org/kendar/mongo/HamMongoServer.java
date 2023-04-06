@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.util.List;
 
 @Component
-public class MongoServer {
+public class HamMongoServer {
     public static final int DEFAULT_PORT = 27017;
     private final Logger logger;
     private EventQueue eventQueue;
@@ -21,20 +21,20 @@ public class MongoServer {
     private List<CompressionHandler> compressionHandlers;
     private LoggerBuilder loggerBuilder;
 
-    public MongoServer(List<MsgHandler> msgHandlers,
-                       List<CompressionHandler> compressionHandlers,
-                       LoggerBuilder loggerBuilder,
-                       EventQueue eventQueue){
+    public HamMongoServer(List<MsgHandler> msgHandlers,
+                          List<CompressionHandler> compressionHandlers,
+                          LoggerBuilder loggerBuilder,
+                          EventQueue eventQueue){
 
         this.msgHandlers = msgHandlers;
         this.compressionHandlers = compressionHandlers;
         this.loggerBuilder = loggerBuilder;
-        this.logger = loggerBuilder.build(MongoServer.class);
+        this.logger = loggerBuilder.build(HamMongoServer.class);
         this.eventQueue = eventQueue;
     }
 
-    public MongoServer clone(){
-        return new MongoServer(
+    public HamMongoServer clone(){
+        return new HamMongoServer(
                 msgHandlers,compressionHandlers,loggerBuilder,
                 eventQueue);
     }

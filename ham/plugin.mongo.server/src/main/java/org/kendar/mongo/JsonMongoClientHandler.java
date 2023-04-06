@@ -41,6 +41,22 @@ public class JsonMongoClientHandler extends MongoClientHandler {
         }
     }
 
+    public JsonMongoClientHandler(Socket client,MongoProxy proxy,
+                                  List<MsgHandler> msgHandlers,
+                                  List<CompressionHandler> compressionHandlers,
+                                  LoggerBuilder loggerBuilder,
+                                  List<MongoResponder> responders) {
+        super(client, msgHandlers, compressionHandlers, loggerBuilder);
+        this.proxy = proxy;
+        this.responders = new HashMap<>();
+        for(var responder:responders){
+            if(!this.responders.containsKey(responder.getOpCode())){
+                this.responders.put(responder.getOpCode(),new ArrayList<>());
+            }
+            this.responders.get(responder.getOpCode()).add(responder);
+        }
+    }
+
     private MongoClient mongoClient;
 
     public OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {

@@ -1,7 +1,5 @@
 package org.kendar.mongo;
 
-import ch.qos.logback.classic.Level;
-import org.kendar.events.Event;
 import org.kendar.events.EventQueue;
 import org.kendar.events.ServiceStarted;
 import org.kendar.mongo.config.MongoConfig;
@@ -11,9 +9,7 @@ import org.kendar.mongo.logging.MongoLogServer;
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.PluginsInitializer;
-import org.kendar.servers.proxy.ProxyConfigChanged;
 import org.kendar.utils.LoggerBuilder;
-import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -25,17 +21,17 @@ public class AnsweringMongoServer implements AnsweringServer {
     private final JsonConfiguration configuration;
     private final EventQueue eventQueue;
     private final Logger logger;
-    private final MongoServer mongoServer;
+    private final HamMongoServer hamMongoServer;
     private boolean running = false;
 
     public AnsweringMongoServer(
             LoggerBuilder loggerBuilder,
-            MongoServer mongoServer,
+            HamMongoServer hamMongoServer,
             JsonConfiguration configuration,
             PluginsInitializer pluginsInitializer,
             EventQueue eventQueue) {
         this.logger = loggerBuilder.build(AnsweringMongoServer.class);
-        this.mongoServer = mongoServer;
+        this.hamMongoServer = hamMongoServer;
         this.configuration = configuration;
         this.eventQueue = eventQueue;
 
@@ -52,7 +48,7 @@ public class AnsweringMongoServer implements AnsweringServer {
         //To check if is system class
     }
 
-    private Map<Integer,MongoServer> activeServers = new ConcurrentHashMap<>();
+    private Map<Integer, HamMongoServer> activeServers = new ConcurrentHashMap<>();
 
     @Override
     public void run() {
@@ -65,7 +61,7 @@ public class AnsweringMongoServer implements AnsweringServer {
             activeServers.clear();
             eventQueue.handle(new ServiceStarted().withTye("mongo"));
             for(var single : config.getProxies()){
-                var ms = mongoServer.clone();
+                var ms = hamMongoServer.clone();
                 ms.run(single.getExposedPort(),this);
                 activeServers.put(single.getExposedPort(),ms);
 
