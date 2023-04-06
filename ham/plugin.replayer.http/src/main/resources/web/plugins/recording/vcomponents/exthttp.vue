@@ -1,11 +1,11 @@
 <template>
   <div class="row boxed">
+    <div class="col-md-8">Http Filters
+    </div>
     <div class="col-md-8">
-      <div class="form-group">
-        <label for="exthttpname">Hosts</label>
+        <label style="font-size: 1em;" for="exthttpname">Hosts</label>
         <input @change="changeHosts" class="form-control" type="text" name="exthttpname" id="exthttpname" v-model="hosts"/>
       </div>
-    </div>
   </div>
 </template>
 <script>

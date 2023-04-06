@@ -7,7 +7,6 @@ import org.kendar.utils.Sleeper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
     private ObjectMapper mapper = new ObjectMapper();

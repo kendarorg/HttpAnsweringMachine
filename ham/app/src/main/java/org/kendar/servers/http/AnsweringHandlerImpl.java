@@ -1,13 +1,14 @@
 package org.kendar.servers.http;
 
+import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpsExchange;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.kendar.events.EventQueue;
+import org.kendar.events.ExecuteLocalRequest;
 import org.kendar.http.FilteringClassesHandler;
 import org.kendar.http.HttpFilterType;
-import org.kendar.remote.ExecuteLocalRequest;
 import org.kendar.remote.ExecuteRemoteRequest;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.GlobalConfig;

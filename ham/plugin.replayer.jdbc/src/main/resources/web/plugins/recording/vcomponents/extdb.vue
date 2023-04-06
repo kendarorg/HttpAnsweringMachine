@@ -1,5 +1,7 @@
 <template>
   <div class="row boxed">
+    <div class="col-md-8">Db Filters
+      </div>
     <div class="col-md-8">
       <input class="form-check-input" type="checkbox" value="" id="recordVoidDbCalls" name="recordVoidDbCalls"
              v-model="recordVoidDbCalls" @change="changeRecordVoidDbCalls">

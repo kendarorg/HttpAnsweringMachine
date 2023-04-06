@@ -6,7 +6,6 @@ import org.junit.jupiter.api.function.Executable;
 import org.kendar.xml.model.DiffPath;
 import org.kendar.xml.model.XmlElement;
 import org.kendar.xml.parser.XmlBuilder;
-import org.opentest4j.AssertionFailedError;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -70,18 +69,18 @@ public class BaseUtils {
             if (e.getClass().equals(expected)) {
                 if (message != null) {
                     if (!message.equals(e.getMessage())) {
-                        throw new AssertionFailedError(
+                        throw new RuntimeException(
                                 "Message was " + e.getMessage() + " instead of " + message, e);
                     }
                     assertEquals(message, e.getMessage());
                     return;
                 }
             } else {
-                throw new AssertionFailedError(
+                throw new RuntimeException(
                         "Exception was " + e.getClass().getName() + " instead of " + expected.getName(), e);
             }
         }
-        throw new AssertionFailedError(
+        throw new RuntimeException(
                 "Exception " + expected.getName() + " was expected", null);
     }
 }

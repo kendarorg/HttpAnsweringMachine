@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ham</artifactId>
         <groupId>org.kendar</groupId>
-        <version>4.2.1</version>
+        <version>4.2.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -75,6 +75,12 @@
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>plugin.replayer.jdbc</artifactId>
+            <version>${ham.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>plugin.replayer.mongo</artifactId>
             <version>${ham.version}</version>
             <scope>test</scope>
         </dependency>

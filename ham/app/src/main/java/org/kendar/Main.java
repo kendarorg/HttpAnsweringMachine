@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoReactiveAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Arrays;
@@ -23,7 +26,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.System.exit;
 
-@SpringBootApplication
+@SpringBootApplication(
+        exclude = {
+                MongoAutoConfiguration.class,
+                MongoDataAutoConfiguration.class,
+                MongoReactiveAutoConfiguration.class
+        }
+)
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 public class Main implements CommandLineRunner {
     private static final int MAX_THREADS = 10;

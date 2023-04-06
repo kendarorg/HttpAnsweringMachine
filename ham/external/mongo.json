@@ -1,0 +1,16 @@
+{
+  "id": "mongo",
+  "active": true,
+  "proxies": [
+    {
+      "id": "1",
+      "active": true,
+      "exposedPort": 27097,
+      "remote": {
+        "connectionString": "mongodb://127.0.0.1:27017",
+        "login": "",
+        "password": ""
+      }
+    }
+  ]
+}

@@ -1,7 +1,5 @@
 package org.kendar.ham;
 
-import java.util.regex.Pattern;
-
 public class ScriptMatcherBuilder {
 
 

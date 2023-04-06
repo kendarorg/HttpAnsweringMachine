@@ -30,7 +30,7 @@ public class HttpReplayerWeb extends StaticWebFilter {
 
     @Override
     public String getId() {
-        return "org.kendar.replayer.ReplayerWeb";
+        return this.getClass().getName();
     }
 
     @Override

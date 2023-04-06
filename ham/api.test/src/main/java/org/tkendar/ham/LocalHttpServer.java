@@ -6,8 +6,6 @@ import org.apache.commons.io.IOUtils;
 import org.kendar.servers.http.RequestUtils;
 import org.kendar.utils.Sleeper;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;

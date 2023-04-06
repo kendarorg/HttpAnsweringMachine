@@ -1,21 +1,17 @@
 package org.tkendar.ham;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.kendar.globaltest.HttpChecker;
-import org.kendar.globaltest.LocalFileUtils;
 import org.kendar.globaltest.ProcessRunner;
 import org.kendar.globaltest.ProcessUtils;
-import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class HamStarter {
