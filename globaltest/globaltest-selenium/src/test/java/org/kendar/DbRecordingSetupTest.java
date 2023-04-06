@@ -394,7 +394,7 @@ public class DbRecordingSetupTest {
         driver.get("http://www.local.test/index.html");
         setupSize(driver);
         Sleeper.sleep(2000);
-        showMessage(driver,"Started gateway, fe and h2 db");
+        showMessage(driver,"Started gateway, fe and fake mongo db");
         doClick(() -> driver.findElement(By.linkText("Url/Db Rewrites")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("webprx-gird-add")));
