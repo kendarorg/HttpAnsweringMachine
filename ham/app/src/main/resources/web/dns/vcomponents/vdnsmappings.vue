@@ -34,7 +34,7 @@ module.exports = {
       modalData: null,
       modalShow: false,
       columns: [
-        {id: "id", template: "string", index: true},
+        {id: "id", template: "string", index: true, visible:false},
         {id: "ip", template: "string"},
         {id: "dns", template: "string"}
       ],

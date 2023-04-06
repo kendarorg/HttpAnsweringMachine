@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/libs/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/libs/icons/bootstrap-icons.css" rel="stylesheet"/>
+    <script src="/libs/vue.js"></script>
+    <script src="/libs/httpVueLoader.js"></script>
+    <script src="/libs/axios.min.js"></script>
+    <script src="/libs/utils.js"></script>
+    <link rel="stylesheet" type="text/css" href="/vcss/style.css"/>
+</head>
+<body>
+<div id="spinnerObject" style="display:none;" class="spinner-loader-wrapper spinner-overlay">
+    <div class="spinner-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <p class="spinner-p" id="spinnerText" name="spinnerText"></p>
+</div>
+<div id="messageObject"></div>
+<div class="container-fluid" id="app">
+    <simple-modal v-if="modalShow"
+                  :modal-data="modalData"
+                  @close="modalShow = false">
+        <span slot="header">Mongo Rewrite</span>
+        <span slot="body"><change-mongo-rewrite :data="modalData.data"/></span>
+    </simple-modal>
+    <div class="row">
+        <div class="col-md-8">
+            <br>
+            <a href='../index.html'>Main</a>&gt;
+        </div>
+        <br>
+        <br>
+        <button id="mongoprx-gird-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
+        <button id="mongoprx-gird-add" v-on:click="addNew(false,[])" class="bi bi-plus-square" title="Add new"></button>
+        <br><br>
+        <simple-grid id="mongoprx-gird"
+                     v-on:gridclicked="gridClicked"
+                     ref="grid"
+                     :columns="columns"
+                     :extra="extraColumns"
+                     :retrieve-data="retrieveData"
+        >
+        </simple-grid>
+
+    </div>
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        components: {
+            'change-mongo-rewrite': httpVueLoader('/plugins/mongo/veditmongorewrite.vue'),
+            'simple-grid': httpVueLoader('/vcomponents/testgrid.vue'),
+            'simple-modal': httpVueLoader('/vcomponents/tmodal.vue')
+        },
+
+        data: function () {
+            return {
+                modalData: null,
+                modalShow: false,
+                columns: [
+                    {id: "id", template: "string", index: true, visible:false},
+                    {id: "active", template: "bool", size:4},
+                    {id: "exposedPort", template: "string"},
+                    {
+                        id: "local", template: "string", func: function (e) {
+                            return "mongodb://[thisip]:"+e.exposedPort;
+                        }
+                    },
+                    {
+                        id: "remote", template: "string", func: function (e) {
+                            return e.remote.connectionString;
+                        }
+                    }
+                ],
+                extraColumns: [
+                    {
+                        id: "_edit",
+                        template: "iconbutton",
+                        default: false,
+                        searchable: false,
+                        sortable: false,
+                        properties: {
+                            name: "Edit", style: "bi bi-pen-fill"
+                        }
+                    }, {
+                        id: "_test",
+                        template: "iconbutton",
+                        default: false,
+                        searchable: false,
+                        sortable: false,
+                        properties: {
+                            name: "Edit", style: "bi bi-file-check"
+                        }
+                    },
+                    {
+                        id: "_delete",
+                        template: "iconbutton",
+                        default: false,
+                        searchable: false,
+                        sortable: false,
+                        properties: {
+                            name: "Delete", style: "bi bi-trash"
+                        }
+                    }
+                ]
+            }
+        },
+        methods: {
+
+            retrieveData: async function () {
+                var result = await axiosHandle(axios.get("/api/mongoproxies"));
+                return result;
+            },
+            gridClicked: async function (evt) {
+                var row = this.$refs.grid.getById(evt.index);
+
+                if (evt.buttonid == "_edit") {
+                    this.addNew(true, evt.index)
+                } else if (evt.buttonid == "_delete") {
+                    await axiosHandle(axios.delete("/api/mongoproxies/" + row['id']), axiosOk);
+                    this.reload();
+                } else if (evt.buttonid == "_test") {
+                    await axiosHandle(
+                        axios.get("/api/mongoproxies/" + row['id'] + "?test=true"), (data) => {
+                            if (data.status == 200) addMessage("OK");
+                            else addMessage("ERROR CONNECTING!", "error")
+                        }, (error) => {
+                            addMessage(error.response.data, "error");
+                        });
+                }
+            },
+            reload: function () {
+                this.$refs.grid.reload();
+            },
+            addNew: function (shouldEdit, rowId) {
+                var row = null;
+                if (shouldEdit) {
+                    row = this.$refs.grid.getById(rowId);
+                } else {
+                    row = {
+                        id: URL.createObjectURL(new Blob([])).substr(-36)
+                    }
+                }
+                this.modalData = {
+                    data: row,
+                    edit: shouldEdit,
+                    save: this.save
+                };
+                this.modalShow = true;
+            },
+            save: async function () {
+                if (this.modalData.edit) {
+                    await axiosHandle(axios.put('/api/mongoproxies/' + this.modalData.data.id, this.modalData.data), () => {
+                        this.modalShow = false;
+                        this.reload();
+                        axiosOk()
+                    });
+                } else {
+                    await axiosHandle(axios.post('/api/mongoproxies', this.modalData.data), () => {
+                        this.modalShow = false;
+                        this.reload();
+                        axiosOk()
+                    });
+                }
+            }
+        }
+
+    });
+</script>
+</body>
+</html>

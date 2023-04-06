@@ -11,7 +11,6 @@ import java.util.List;
 @ConfigAttribute(id = "mongo")
 public class MongoConfig extends BaseJsonConfig<MongoConfig> implements SpecialJsonConfig {
     private boolean active;
-    private int port;
 
     public List<MongoProxy> getProxies() {
         return proxies;
