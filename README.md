@@ -83,6 +83,8 @@ The AnsweringMachine is built to overcome this troubles
 * Internal events system
 * Support for brotli encoding and jackson-smile
 * Multiple server ports configurable
+* Proxy/recording/replaying/filtering of JDBC communications
+* Proxy/recording/replaying/filtering of MongoDb communications
 
 ### Docker for development
 
@@ -164,6 +166,7 @@ In case of arrays "ssl.domains[1].address=local.test" means the following
 * [Replayer](docs/plugins/replayer/replayer.md)
 * [Js filters](docs/plugins/js.md)
 * [Socks5/http/https Proxy](docs/plugins/socks5.md)
+* [MongoDb](docs/plugins/mongo.md)
 * [Custom Java plugins](docs/plugins/java.md)
   * [Java filters](docs/plugins/java/jfilters.md)
   * [Java pages](docs/plugins/java/jstatic.md)
