@@ -73,6 +73,50 @@ public class DbRecordingSetupTest {
         return result;
     }
 
+    public static String startRecordingMongo(ChromeDriver driver, String idRecording) throws Exception {
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.linkText("Replayer web")));
+        Sleeper.sleep(1000);
+
+        doClick(() -> driver.findElement(By.id("main-recording-addnew")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("createScriptName")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("createScriptName")).sendKeys(idRecording);
+        Sleeper.sleep(1000);
+        scrollFind(driver,() -> driver.findElement(By.id("createScriptBt"))).click();
+        Sleeper.sleep(2000);
+
+        driver.get("http://www.local.test/plugins/recording/script.html?id=1");
+
+        try {
+            Sleeper.sleep(1000);
+            scrollFind(driver, () -> driver.findElement(By.id("scriptstab_0"))).click();
+        }catch (Exception ex){
+
+        }
+        Sleeper.sleep(1000);
+
+        doClick(() -> driver.findElement(By.id("description")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("description")).sendKeys("Full recording sample");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("recording-saverglobscriptdata")));
+        Sleeper.sleep(1000);
+        showMessage(driver,"Starting recording");
+        doClick(() -> driver.findElement(By.id("recording-startrecord")));
+        Sleeper.sleep(1000);
+        showMessage(driver,"Starting be without db initialisation");
+        //start the "nogen" and wait for its start
+        var root = getRootPath(DbRecordingSetupTest.class);
+        Map<String, String> env = new HashMap<>();
+        run(root, env, "bemongo");
+        HttpChecker.checkForSite(120, "http://127.0.0.1:8100/api/v1/health")
+                .noError().run();
+        var result = driver.findElement(By.id("id")).getAttribute("value");
+        return result;
+    }
+
 
     public static void stopAction(ChromeDriver driver, String idRecording) throws InterruptedException {
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + idRecording);

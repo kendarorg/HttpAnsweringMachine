@@ -83,7 +83,7 @@ public class SeleniumTest extends SeleniumBase {
 
 
         //Create recording
-        String mainId = DbRecordingSetupTest.startRecording(driver, "Main");
+        String mainId = DbRecordingSetupTest.startRecordingMongo(driver, "Main");
         DbRecordingUiActions.fullNavigation(driver);
         DbRecordingSetupTest.stopAction(driver, mainId);
         DbRecordingSetupTest.stopMongo(driver);
