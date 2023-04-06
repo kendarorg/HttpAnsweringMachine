@@ -41,7 +41,26 @@ public class AnsweringMongoServer implements AnsweringServer {
     }
 
     private void handleConfigChange(MongoConfigChanged t) {
+        for(var single : activeServers.values()){
+            single.close();
+
+        }
         activeServers.clear();
+        var config = configuration.getConfiguration(MongoConfig.class);
+        if (!config.isActive()) {
+            running = false;
+            return;
+        }
+        try{
+            for(var single : config.getProxies()){
+                var ms = hamMongoServer.clone();
+                ms.run(single.getExposedPort(),this);
+                activeServers.put(single.getExposedPort(),ms);
+
+            }
+        }catch (Exception ex){
+            logger.error("Error restarting mongo",ex);
+        }
     }
 
     public void isSystem() {

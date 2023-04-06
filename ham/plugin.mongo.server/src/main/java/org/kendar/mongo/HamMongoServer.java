@@ -20,6 +20,7 @@ public class HamMongoServer {
     private List<MsgHandler> msgHandlers;
     private List<CompressionHandler> compressionHandlers;
     private LoggerBuilder loggerBuilder;
+    private ServerSocket thisServer;
 
     public HamMongoServer(List<MsgHandler> msgHandlers,
                           List<CompressionHandler> compressionHandlers,
@@ -41,6 +42,7 @@ public class HamMongoServer {
 
     public void run(int port,AnsweringMongoServer answeringMongoServer) throws IOException {
         try(ServerSocket server = new ServerSocket(port)) {
+            thisServer = server;
             logger.info("MongoDB server started on port " + port);
 
             while (answeringMongoServer.isActive()) {
@@ -53,6 +55,16 @@ public class HamMongoServer {
                                 eventQueue,port));
                 clientThread.start();
             }
+        }catch (Exception ex){
+            logger.warn("Disconnected server "+port);
+        }
+    }
+
+    public void close() {
+        try{
+            thisServer.close();
+        }catch (Exception ex){
+
         }
     }
 }
