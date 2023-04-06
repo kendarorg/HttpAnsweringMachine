@@ -3,6 +3,7 @@ package org.kendar.mongo;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.kendar.mongo.compressor.CompressionHandler;
+import org.kendar.mongo.config.MongoProxy;
 import org.kendar.mongo.handlers.MsgHandler;
 import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.mongo.model.MongoPacket;
@@ -20,19 +21,17 @@ import java.util.Map;
 
 public class JsonMongoClientHandler extends MongoClientHandler {
 
-    private Socket clientSocket;
-    private OutputStream toMongoDb;
-    private InputStream fromMongoDb;
-    private String targetIp;
-    private int targetPort;
-    private Map<OpCodes,List<MongoResponder>> responders;
 
-    public JsonMongoClientHandler(Socket client,
+    private Map<OpCodes,List<MongoResponder>> responders;
+    private MongoProxy proxy;
+
+    public JsonMongoClientHandler(MongoProxy proxy,
                                   List<MsgHandler> msgHandlers,
                                   List<CompressionHandler> compressionHandlers,
                                   LoggerBuilder loggerBuilder,
                                   List<MongoResponder> responders) {
-        super(client, msgHandlers, compressionHandlers, loggerBuilder);
+        super(null, msgHandlers, compressionHandlers, loggerBuilder);
+        this.proxy = proxy;
         this.responders = new HashMap<>();
         for(var responder:responders){
             if(!this.responders.containsKey(responder.getOpCode())){
@@ -47,7 +46,8 @@ public class JsonMongoClientHandler extends MongoClientHandler {
     public OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
         try {
             if(mongoClient==null){
-                mongoClient = MongoClients.create("mongodb://127.0.0.1:27017");
+                var remote = proxy.getRemote();
+                mongoClient = MongoClients.create(remote.getConnectionString());
             }
             var responderByOpCode = this.responders.get(clientPacket.getOpCode());
             if(responderByOpCode!=null){
@@ -87,11 +87,7 @@ public class JsonMongoClientHandler extends MongoClientHandler {
 
     }
 
-    public void setTarget(String targetIp, int targetPort) {
 
-        this.targetIp = targetIp;
-        this.targetPort = targetPort;
-    }
 
     public void close() {
         if(mongoClient!=null){

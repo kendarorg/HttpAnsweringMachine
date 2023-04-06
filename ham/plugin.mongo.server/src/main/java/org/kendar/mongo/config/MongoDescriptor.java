@@ -1,25 +1,16 @@
 package org.kendar.mongo.config;
 
 public class MongoDescriptor {
-    private String ip;
-
-    public String getIp() {
-        return ip;
+    public String getConnectionString() {
+        return connectionString;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setConnectionString(String connectionString) {
+        this.connectionString = connectionString;
     }
 
-    public int getPort() {
-        return port;
-    }
+    private String connectionString;
 
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    private int port;
     private String login;
     private String password;
 
@@ -44,8 +35,7 @@ public class MongoDescriptor {
         var result = new MongoDescriptor();
         result.setLogin(this.login);
         result.setPassword(this.password);
-        result.setIp(this.ip);
-        result.setPort(this.port);
+        result.setConnectionString(this.connectionString);
         return result;
     }
 }

@@ -8,6 +8,10 @@ import org.kendar.http.annotations.HttpTypeFilter;
 import org.kendar.http.annotations.multi.HamResponse;
 import org.kendar.http.annotations.multi.Header;
 import org.kendar.http.annotations.multi.PathParameter;
+import org.kendar.mongo.config.MongoConfig;
+import org.kendar.mongo.config.MongoDescriptor;
+import org.kendar.mongo.config.MongoProxy;
+import org.kendar.servers.JsonConfiguration;
 import org.kendar.typed.serializer.JsonTypedSerializer;
 import org.kendar.mongo.JsonMongoClientHandler;
 import org.kendar.mongo.compressor.CompressionHandler;
@@ -32,16 +36,19 @@ public class MongoProxyApi implements FilteringClass {
     private List<CompressionHandler> compressionHandlers;
     private LoggerBuilder loggerBuilder;
     private List<MongoResponder> responders;
+    private JsonConfiguration configuration;
 
     public MongoProxyApi(List<MsgHandler> msgHandlers,
                          List<CompressionHandler> compressionHandlers,
                          LoggerBuilder loggerBuilder,
-                         List<MongoResponder> responders){
+                         List<MongoResponder> responders,
+                         JsonConfiguration configuration){
 
         this.msgHandlers = msgHandlers;
         this.compressionHandlers = compressionHandlers;
         this.loggerBuilder = loggerBuilder;
         this.responders = responders;
+        this.configuration = configuration;
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -49,12 +56,6 @@ public class MongoProxyApi implements FilteringClass {
                 expireConnections();
             }
         }, 0, 500);
-        try {
-            var res = new QueryPacket();
-            System.out.println(res);
-        }catch (Exception ex){
-            System.out.println("AAA");
-        }
     }
 
     private void expireConnections() {
@@ -105,44 +106,31 @@ public class MongoProxyApi implements FilteringClass {
         return handleMongoCommand(req, res);
     }
 
-    @HttpMethodFilter(
-            phase = HttpFilterType.API,
-            pathAddress = "/api/mongo/{port}",
-            method = "POST")
-    @HamDoc(
-            tags = {"base/proxymongo"},
-            description = "Proxies mongo-not on connections",
-            header = {
-                    @Header(key = "X-Connection-Id", description = "The connection id")
-            },
-            path = {
-                    @PathParameter(
-                            key = "port",
-                            description = "The the port",
-                            example = "27077"),
-            },
-            responses = @HamResponse(
-                    body = String.class
-            ))
-    public boolean handleConnection(Request req, Response res) throws Exception {
-        return handleMongoCommand(req, res);
-    }
-
 
 
     private boolean handleMongoCommand(Request req, Response res) {
-        var deser = serializer.newInstance();
-        var test = new org.kendar.mongo.model.QueryPacket();
-        deser.deserialize(req.getRequestText());
         var port = Integer.parseInt(req.getPathParameter("port"));
-        var db = Integer.parseInt(req.getPathParameter("port"));
+        var db = req.getPathParameter("dbName");
+        var deser = serializer.newInstance();
+        deser.deserialize(req.getRequestText());
+        var config = configuration.getConfiguration(MongoConfig.class);
+        MongoProxy founded = null;
+        for(var pr:config.getProxies()){
+            if(pr.getExposedPort()==port){
+                founded = pr;
+            }
+        }
+        if(founded==null){
+            res.setStatusCode(404);
+            return true;
+        }
         var fromClient = (MongoPacket)deser.read("data");
         var globalConnectionId = req.getHeader("X-CONNECTION-ID");
         var connectionId = Integer.parseInt(req.getHeader("X-MONGO-ID"));
 
         if(!mongoClientHandlers.containsKey(globalConnectionId)){
             mongoClientHandlers.put(globalConnectionId,new JsonMongoClientHandler(
-                    null,msgHandlers,compressionHandlers,
+                    founded,msgHandlers,compressionHandlers,
                     loggerBuilder,responders));
 
         }

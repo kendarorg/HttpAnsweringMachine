@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
 import org.kendar.events.ExecuteLocalRequest;
 import org.kendar.mongo.compressor.CompressionHandler;
+import org.kendar.mongo.config.MongoConfig;
+import org.kendar.mongo.events.MongoConfigChanged;
 import org.kendar.mongo.handlers.MsgHandler;
 import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.mongo.model.MongoPacket;
@@ -42,6 +44,11 @@ public class HamMongoClientHandler extends MongoClientHandler {
         this.localPort = localPort;
         this.serializer = new JsonTypedSerializer();
         this.connectionId = UUID.randomUUID().toString();
+        eventQueue.register(this::handleConfigChange, MongoConfigChanged.class);
+    }
+
+    private void handleConfigChange(MongoConfigChanged t) {
+        this.close();
     }
 
     @Override

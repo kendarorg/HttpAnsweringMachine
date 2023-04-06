@@ -1,17 +1,24 @@
 package org.kendar.mongo;
 
 import ch.qos.logback.classic.Level;
+import org.kendar.events.Event;
 import org.kendar.events.EventQueue;
 import org.kendar.events.ServiceStarted;
 import org.kendar.mongo.config.MongoConfig;
+import org.kendar.mongo.events.MongoConfigChanged;
 import org.kendar.mongo.logging.MongoLogClient;
 import org.kendar.mongo.logging.MongoLogServer;
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.PluginsInitializer;
+import org.kendar.servers.proxy.ProxyConfigChanged;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class AnsweringMongoServer implements AnsweringServer {
@@ -34,11 +41,18 @@ public class AnsweringMongoServer implements AnsweringServer {
 
         pluginsInitializer.addSpecialLogger(MongoLogClient.class.getName(), "MongoDb Client Logging (DEBUG,TRACE)");
         pluginsInitializer.addSpecialLogger(MongoLogServer.class.getName(), "MongoDb Server Logging (DEBUG,TRACE)");
+        eventQueue.register(this::handleConfigChange, MongoConfigChanged.class);
+    }
+
+    private void handleConfigChange(MongoConfigChanged t) {
+        activeServers.clear();
     }
 
     public void isSystem() {
         //To check if is system class
     }
+
+    private Map<Integer,MongoServer> activeServers = new ConcurrentHashMap<>();
 
     @Override
     public void run() {
@@ -48,11 +62,13 @@ public class AnsweringMongoServer implements AnsweringServer {
         running = true;
 
         try {
-
+            activeServers.clear();
             eventQueue.handle(new ServiceStarted().withTye("mongo"));
             for(var single : config.getProxies()){
                 var ms = mongoServer.clone();
                 ms.run(single.getExposedPort(),this);
+                activeServers.put(single.getExposedPort(),ms);
+
             }
             //TODO
             //mongoServer.run(77777,this);

@@ -19,6 +19,8 @@ import org.kendar.mongo.compressor.NoopCompressionHandler;
 import org.kendar.mongo.compressor.SnappyCompressionHandler;
 import org.kendar.mongo.compressor.ZStdCompressionHandler;
 import org.kendar.mongo.compressor.ZlibCompressionHandler;
+import org.kendar.mongo.config.MongoDescriptor;
+import org.kendar.mongo.config.MongoProxy;
 import org.kendar.mongo.handlers.*;
 import org.kendar.mongo.responder.MongoResponder;
 import org.kendar.mongo.responder.OpMsgResponder;
@@ -72,8 +74,12 @@ public class MongoTest {
                 Socket client = server.accept();
                 logger.debug("++++++++++++++ACCEPTED CONNECTION");
                 if(USE_JSON) {
-                    var handler = new JsonMongoClientHandler(client, msgHandlers, compressionHandlers, loggerBuilder,responders);
-                    handler.setTarget(targetIp, targetPort);
+                    var proxy = new MongoProxy();
+                    proxy.setExposedPort(27097);
+                    MongoDescriptor md = new MongoDescriptor();
+                    md.setConnectionString("mongodb://127.0.0.1:27017");
+                    proxy.setRemote(md);
+                    var handler = new JsonMongoClientHandler(proxy, msgHandlers, compressionHandlers, loggerBuilder,responders);
                     subClientThread = new Thread(handler);
                     subClientThread.start();
                 }else {
@@ -170,6 +176,7 @@ public class MongoTest {
 
             Bson command = new BsonDocument("dbStats", new BsonInt64(1));
             Document commandResult = database.runCommand(command);
+            assertNotNull(commandResult);
             System.out.println("dbStats: " + commandResult.toJson());
         }
     }
@@ -185,7 +192,8 @@ public class MongoTest {
 
             Bson command = new BsonDocument("hostInfo", new BsonInt64(1));
             Document commandResult = database.runCommand(command);
-            System.out.println("dbStats: " + commandResult.toJson());
+            assertNotNull(commandResult);
+            System.out.println("hostInfo: " + commandResult.toJson());
         }
     }
 

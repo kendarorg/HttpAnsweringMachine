@@ -7,10 +7,9 @@
       "active": true,
       "exposedPort": 27097,
       "remote": {
-        "ip": "localhost",
-        "port": 27017,
-        "login": "sa",
-        "password": "sa"
+        "connectionString": "mongodb://127.0.0.1:27017",
+        "login": "",
+        "password": ""
       }
     }
   ]

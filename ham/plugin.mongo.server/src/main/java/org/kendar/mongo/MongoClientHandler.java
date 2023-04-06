@@ -32,6 +32,13 @@ import java.util.stream.Collectors;
 
 public abstract class MongoClientHandler implements Runnable {
 
+    public void close(){
+        try {
+            client.close();
+        } catch (Exception e) {
+
+        }
+    }
     private final Socket client;
     private final Logger logClient;
     private final Logger logServer;
