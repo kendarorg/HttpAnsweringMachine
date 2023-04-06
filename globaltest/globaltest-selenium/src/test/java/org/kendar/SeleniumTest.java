@@ -1,13 +1,8 @@
 package org.kendar;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.kendar.globaltest.ProcessUtils;
-
-import java.util.HashMap;
 
 // [\t ]+(driver.findElement)([\(a-zA-Z0-9\.\":\-\ )]+)(.click\(\))
 // doClick(()->$1$1)
@@ -35,7 +30,7 @@ public class SeleniumTest extends SeleniumBase {
     }
 
     @Test
-    void dbRecording() throws Throwable {
+    void dbRecordingJdbc() throws Throwable {
         runHamJar(SeleniumTest.class);
         var driver = SeleniumBase.getDriver();
         DbRecordingSetupTest.startup(driver);
@@ -72,6 +67,34 @@ public class SeleniumTest extends SeleniumBase {
         String dbNullTest = DbRecordingPrepareTest.cloneTo(driver, mainId, "DbNullTest");
         DbRecordingPrepareTest.prepareDbNullTest(driver, dbNullTest);
         DbRecordingSetupTest.initializeNullPlayingDb(driver, dbNullTest);
+        DbRecordingSetupTest.startNullPlaying(driver, dbNullTest);
+        DbRecordingSetupTest.loadResults(driver, dbNullTest,true);
+
+        close();
+    }
+
+
+
+    @Test
+    void dbRecordingMongo() throws Throwable {
+        runHamJar(SeleniumTest.class);
+        var driver = SeleniumBase.getDriver();
+        DbRecordingSetupTest.startupAsMongo(driver);
+
+
+        //Create recording
+        String mainId = DbRecordingSetupTest.startRecording(driver, "Main");
+        DbRecordingUiActions.fullNavigation(driver);
+        DbRecordingSetupTest.stopAction(driver, mainId);
+        DbRecordingSetupTest.stopMongo(driver);
+
+
+        //Do Be fake db test
+        String dbNullTest = DbRecordingPrepareTest.cloneTo(driver, mainId, "DbNullTest");
+        DbRecordingPrepareTest.prepareDbNullTest(driver, dbNullTest);
+
+        DbRecordingSetupTest.initializeNullPlayingDbMongo(driver, dbNullTest);
+
         DbRecordingSetupTest.startNullPlaying(driver, dbNullTest);
         DbRecordingSetupTest.loadResults(driver, dbNullTest,true);
 

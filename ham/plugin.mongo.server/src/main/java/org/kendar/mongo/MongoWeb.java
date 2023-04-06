@@ -13,7 +13,7 @@ public class MongoWeb extends StaticWebFilter {
 
     @Override
     public String getDescription() {
-        return "Mongo web";
+        return "Mongo proxy";
     }
 
     @Override

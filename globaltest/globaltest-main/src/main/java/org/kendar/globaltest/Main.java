@@ -105,6 +105,11 @@ public class Main {
         HttpChecker.checkForSite(60, "http://127.0.0.1:8100/api/v1/health").onError(()->doExit(1)).run();
         _processUtils.killProcesses(findHamProcesses);
 
+        LogWriter.info("Testing calendar/scripts/bemongo");
+        start(pathOf(calendarPath, "scripts"), "bemongo").runBackground();
+        HttpChecker.checkForSite(60, "http://127.0.0.1:8100/api/v1/health").onError(()->doExit(1)).run();
+        _processUtils.killProcesses(findHamProcesses);
+
         LogWriter.info("Testing calendar/scripts/fe");
         start(pathOf(calendarPath, "scripts"), "fe").runBackground();
         HttpChecker.checkForSite(60, "http://127.0.0.1:8080/api/v1/health").onError(()->doExit(1)).run();

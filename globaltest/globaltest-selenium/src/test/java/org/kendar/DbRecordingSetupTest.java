@@ -1,5 +1,7 @@
 package org.kendar;
 
+import de.bwaldvogel.mongo.MongoServer;
+import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
 import org.kendar.globaltest.*;
 import org.kendar.ham.HamException;
 import org.openqa.selenium.By;
@@ -20,7 +22,144 @@ import static org.kendar.globaltest.LocalFileUtils.pathOf;
 
 public class DbRecordingSetupTest {
     private static ProcessUtils _processUtils = new ProcessUtils(new HashMap<>());
+    private static MongoServer mongoServer;
 
+
+    public static String startRecording(ChromeDriver driver, String idRecording) throws Exception {
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.linkText("Replayer web")));
+        Sleeper.sleep(1000);
+
+        doClick(() -> driver.findElement(By.id("main-recording-addnew")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("createScriptName")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("createScriptName")).sendKeys(idRecording);
+        Sleeper.sleep(1000);
+        scrollFind(driver,() -> driver.findElement(By.id("createScriptBt"))).click();
+        Sleeper.sleep(2000);
+
+        driver.get("http://www.local.test/plugins/recording/script.html?id=1");
+
+        try {
+            Sleeper.sleep(1000);
+            scrollFind(driver, () -> driver.findElement(By.id("scriptstab_0"))).click();
+        }catch (Exception ex){
+
+        }
+        Sleeper.sleep(1000);
+        scrollFind(driver,() -> driver.findElement(By.id("extdbname"))).click();
+        driver.findElement(By.id("extdbname")).clear();
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("extdbname")).sendKeys("be");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("description")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("description")).sendKeys("Full recording sample");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("recording-saverglobscriptdata")));
+        Sleeper.sleep(1000);
+        showMessage(driver,"Starting recording");
+        doClick(() -> driver.findElement(By.id("recording-startrecord")));
+        Sleeper.sleep(1000);
+        showMessage(driver,"Starting be without db initialisation");
+        //start the "nogen" and wait for its start
+        var root = getRootPath(DbRecordingSetupTest.class);
+        Map<String, String> env = new HashMap<>();
+        run(root, env, "benogen");
+        HttpChecker.checkForSite(120, "http://127.0.0.1:8100/api/v1/health")
+                .noError().run();
+        var result = driver.findElement(By.id("id")).getAttribute("value");
+        return result;
+    }
+
+
+    public static void stopAction(ChromeDriver driver, String idRecording) throws InterruptedException {
+        driver.get("http://www.local.test/plugins/recording/script.html?id=" + idRecording);
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("recording-stop")));
+        Sleeper.sleep(3000);
+        doClick(() -> driver.findElement(By.id("recording-list-reload")));
+        Sleeper.sleep(1000);
+    }
+
+
+
+
+
+    public static void startPlaying(ChromeDriver driver, String idRecording) throws InterruptedException {
+        showMessage(driver,"Starting replay");
+        doClick(() -> driver.findElement(By.id("recording-play")));
+        Sleeper.sleep(1000);
+    }
+
+    public static void startNullPlaying(ChromeDriver driver, String idRecording) throws Exception {
+        showMessage(driver,"Starting replay with self-test");
+        scrollFind(driver, () -> driver.findElement(By.id("recording-playstim"))).click();
+        Sleeper.sleep(1000);
+    }
+
+    public static void loadResults(ChromeDriver driver, String idRecording, boolean success) throws Exception {
+        doClick(() -> driver.findElement(By.linkText("RESULTS")));
+        Sleeper.sleep(1000);
+        var builder = HamBuilder
+                .newHam("www.local.test")
+                .withSocksProxy("127.0.0.1", 1080)
+                .withDns("127.0.0.1");
+        var replayer = builder.pluginBuilder(HamReplayerBuilder.class);
+        int count = 10;
+        while(count>10) {
+            if(replayer.retrieveRecordings().stream().anyMatch(l-> {
+                try {
+                    return !l.isCompleted();
+                } catch (HamException e) {
+                    return false;
+                }
+            })){
+                Sleeper.sleep(1000);
+            }
+            count--;
+        }
+        scrollFind(driver,() -> driver.findElement(By.id("recording-grid-result-reload")),100).click();
+        Sleeper.sleep(1000);
+
+        replayer = builder.pluginBuilder(HamReplayerBuilder.class);
+        var results = replayer.retrieveResults(Integer.parseInt(idRecording));
+        var result = results.get(0);
+        var resultIndex = result.getFileId();
+        Sleeper.sleep(1000);
+        showMessage(driver,"Sucess would be "+success);
+        driver.get("http://www.local.test/api/plugins/replayer/results/" + resultIndex);
+        String source = driver.getPageSource();
+        assertTrue(source.contains("successful\":"+(success?"true":"false")));
+        Sleeper.sleep(2000);
+    }
+
+    public static void initializeNullPlayingDb(ChromeDriver driver, String dbNullTest) throws Exception {
+        //Setup the application
+        doClick(() -> driver.findElement(By.id("recording-play")));
+        Sleeper.sleep(1000);
+        var root = getRootPath(DbRecordingSetupTest.class);
+        showMessage(driver,"Starting be without initializing db");
+        Map<String, String> env = new HashMap<>();
+        run(root, env, "benogen");
+        HttpChecker.checkForSite(120, "http://127.0.0.1:8100/api/v1/health")
+                .noError().run();
+        stopAction(driver, dbNullTest);
+    }
+
+    public static void initializeNullPlayingDbMongo(ChromeDriver driver, String dbNullTest) throws Exception {
+        //Setup the application
+        doClick(() -> driver.findElement(By.id("recording-play")));
+        Sleeper.sleep(1000);
+        var root = getRootPath(DbRecordingSetupTest.class);
+        showMessage(driver,"Starting mongobe");
+        Map<String, String> env = new HashMap<>();
+        run(root, env, "bemongo");
+        HttpChecker.checkForSite(120, "http://127.0.0.1:8100/api/v1/health")
+                .noError().run();
+        stopAction(driver, dbNullTest);
+    }
 
     public static void startup(ChromeDriver driver) throws Exception {
         var root = getRootPath(DbRecordingSetupTest.class);
@@ -187,130 +326,170 @@ public class DbRecordingSetupTest {
                 psLine.contains("java") &&
                         (psLine.contains("httpanswering") &&
                                 (psLine.contains("be-" + version))) &&
-                                !psLine.contains("globaltest"));
+                        !psLine.contains("globaltest"));
 
     }
 
-    public static String startRecording(ChromeDriver driver, String idRecording) throws Exception {
-        Sleeper.sleep(1000);
-        doClick(() -> driver.findElement(By.linkText("Replayer web")));
-        Sleeper.sleep(1000);
+    public static int MONGO_PORT = 27077;
 
-        doClick(() -> driver.findElement(By.id("main-recording-addnew")));
-        Sleeper.sleep(1000);
-        doClick(() -> driver.findElement(By.id("createScriptName")));
-        Sleeper.sleep(1000);
-        driver.findElement(By.id("createScriptName")).sendKeys(idRecording);
-        Sleeper.sleep(1000);
-        scrollFind(driver,() -> driver.findElement(By.id("createScriptBt"))).click();
-        Sleeper.sleep(2000);
-
-        driver.get("http://www.local.test/plugins/recording/script.html?id=1");
-
-        try {
-            Sleeper.sleep(1000);
-            scrollFind(driver, () -> driver.findElement(By.id("scriptstab_0"))).click();
-        }catch (Exception ex){
-
-        }
-        Sleeper.sleep(1000);
-        scrollFind(driver,() -> driver.findElement(By.id("extdbname"))).click();
-        driver.findElement(By.id("extdbname")).clear();
-        Sleeper.sleep(1000);
-        driver.findElement(By.id("extdbname")).sendKeys("be");
-        Sleeper.sleep(1000);
-        doClick(() -> driver.findElement(By.id("description")));
-        Sleeper.sleep(1000);
-        driver.findElement(By.id("description")).sendKeys("Full recording sample");
-        Sleeper.sleep(1000);
-        doClick(() -> driver.findElement(By.id("recording-saverglobscriptdata")));
-        Sleeper.sleep(1000);
-        showMessage(driver,"Starting recording");
-        doClick(() -> driver.findElement(By.id("recording-startrecord")));
-        Sleeper.sleep(1000);
-        showMessage(driver,"Starting be without db initialisation");
-        //start the "nogen" and wait for its start
+    public static void startupAsMongo(ChromeDriver driver) throws Exception {
         var root = getRootPath(DbRecordingSetupTest.class);
         Map<String, String> env = new HashMap<>();
-        run(root, env, "benogen");
-        HttpChecker.checkForSite(120, "http://127.0.0.1:8100/api/v1/health")
-                .noError().run();
-        var result = driver.findElement(By.id("id")).getAttribute("value");
-        return result;
-    }
+        mongoServer = new MongoServer(new MemoryBackend());
+        mongoServer.bind("127.0.0.1",MONGO_PORT);
 
-
-    public static void stopAction(ChromeDriver driver, String idRecording) throws InterruptedException {
-        driver.get("http://www.local.test/plugins/recording/script.html?id=" + idRecording);
-        Sleeper.sleep(1000);
-        doClick(() -> driver.findElement(By.id("recording-stop")));
-        Sleeper.sleep(3000);
-        doClick(() -> driver.findElement(By.id("recording-list-reload")));
-        Sleeper.sleep(1000);
-    }
-
-
-
-
-
-    public static void startPlaying(ChromeDriver driver, String idRecording) throws InterruptedException {
-        showMessage(driver,"Starting replay");
-        doClick(() -> driver.findElement(By.id("recording-play")));
-        Sleeper.sleep(1000);
-    }
-
-    public static void startNullPlaying(ChromeDriver driver, String idRecording) throws Exception {
-        showMessage(driver,"Starting replay with self-test");
-        scrollFind(driver, () -> driver.findElement(By.id("recording-playstim"))).click();
-        Sleeper.sleep(1000);
-    }
-
-    public static void loadResults(ChromeDriver driver, String idRecording, boolean success) throws Exception {
-        doClick(() -> driver.findElement(By.linkText("RESULTS")));
-        Sleeper.sleep(1000);
-        var builder = HamBuilder
-                .newHam("www.local.test")
-                .withSocksProxy("127.0.0.1", 1080)
-                .withDns("127.0.0.1");
-        var replayer = builder.pluginBuilder(HamReplayerBuilder.class);
-        int count = 10;
-        while(count>10) {
-            if(replayer.retrieveRecordings().stream().anyMatch(l-> {
-                try {
-                    return !l.isCompleted();
-                } catch (HamException e) {
-                    return false;
-                }
-            })){
-                Sleeper.sleep(1000);
-            }
-            count--;
-        }
-        scrollFind(driver,() -> driver.findElement(By.id("recording-grid-result-reload")),100).click();
+        var js = (JavascriptExecutor)driver;
         Sleeper.sleep(1000);
 
-        replayer = builder.pluginBuilder(HamReplayerBuilder.class);
-        var results = replayer.retrieveResults(Integer.parseInt(idRecording));
-        var result = results.get(0);
-        var resultIndex = result.getFileId();
+
+        run(root, env, "gateway");
+        run(root, env, "fe");
+
+
         Sleeper.sleep(1000);
-        showMessage(driver,"Sucess would be "+success);
-        driver.get("http://www.local.test/api/plugins/replayer/results/" + resultIndex);
-        String source = driver.getPageSource();
-        assertTrue(source.contains("successful\":"+(success?"true":"false")));
+        driver.get("http://www.local.test/index.html");
+        setupSize(driver);
         Sleeper.sleep(2000);
-    }
-
-    public static void initializeNullPlayingDb(ChromeDriver driver, String dbNullTest) throws Exception {
-        //Setup the application
-        doClick(() -> driver.findElement(By.id("recording-play")));
+        showMessage(driver,"Started gateway, fe and h2 db");
+        doClick(() -> driver.findElement(By.linkText("Url/Db Rewrites")));
         Sleeper.sleep(1000);
-        var root = getRootPath(DbRecordingSetupTest.class);
-        showMessage(driver,"Starting be without initializing db");
-        Map<String, String> env = new HashMap<>();
-        run(root, env, "benogen");
+        doClick(() -> driver.findElement(By.id("webprx-gird-add")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("when")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("when")).sendKeys("http://localhost/int/gateway.sample.test");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("where")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("where")).sendKeys("http://127.0.0.1:8090");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("test")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("test")).sendKeys("127.0.0.1:8090");
+        Sleeper.sleep(1000);
+        checkCheckBox(driver,() -> driver.findElement(By.id("force")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("mod-save")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("webprx-gird-add")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("when")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("when")).sendKeys("http://localhost/int/be.sample.test");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("where")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("where")).sendKeys("http://127.0.0.1:8100");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("test")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("test")).sendKeys("127.0.0.1:8100");
+        Sleeper.sleep(1000);
+        checkCheckBox(driver,() -> driver.findElement(By.id("force")));
+        doClick(() -> driver.findElement(By.id("mod-save")));
+        doClick(() -> driver.findElement(By.id("webprx-gird-add")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("when")));
+        driver.findElement(By.id("when")).sendKeys("http://www.sample.test");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("where")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("where")).sendKeys("http://127.0.0.1:8080");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("test")));
+        driver.findElement(By.id("test")).sendKeys("127.0.0.1:8080");
+        Sleeper.sleep(1000);
+        checkCheckBox(driver,() -> driver.findElement(By.id("force")));
+        doClick(() -> driver.findElement(By.id("mod-save")));
+        Sleeper.sleep(1000);
+
+
+        driver.get("http://www.local.test/index.html");
+        Sleeper.sleep(1000);
+
+        doClick(() ->driver.findElement(By.linkText("Mongo proxy")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("mongoprx-gird-add")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("connectionStringR")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("connectionStringR")).sendKeys("mongodb://127.0.0.1:27077");
+        Sleeper.sleep(1000);
+        checkCheckBox(driver,() -> driver.findElement(By.id("active")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("exposedPort")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("exposedPort")).sendKeys("27078");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("mod-save")));
+        Sleeper.sleep(1000);
+        run(root, env, "bemongo");
+
+        showMessage(driver,"Started be-MongoDb");
+
+        doClick(() -> driver.findElement(By.linkText("Main")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.linkText("Dns")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.linkText("MAPPINGS")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("dns-mappings-add")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("dns")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("dns")).sendKeys("www.sample.test");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("mod-save")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("dns-mappings-add")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("dns")));
+        driver.findElement(By.id("dns")).sendKeys("gateway.sample.test");
+        doClick(() -> driver.findElement(By.id("mod-save")));
+        doClick(() -> driver.findElement(By.id("dns-mappings-add")));
+        doClick(() -> driver.findElement(By.id("dns")));
+        driver.findElement(By.id("dns")).sendKeys("be.sample.test");
+        doClick(() -> driver.findElement(By.id("mod-save")));
+        doClick(() -> driver.findElement(By.linkText("Main")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.linkText("SSL/Certificates")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("ssl-sites-add")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("address")));
+        driver.findElement(By.id("address")).sendKeys("*.sample.test");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("mod-save")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("ssl-sites-add")));
+        doClick(() -> driver.findElement(By.id("address")));
+        Sleeper.sleep(1000);
+        driver.findElement(By.id("address")).sendKeys("sample.test");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("mod-save")));
+        Sleeper.sleep(1000);
+
+        doClick(() -> driver.findElement(By.linkText("Main")));
+
         HttpChecker.checkForSite(120, "http://127.0.0.1:8100/api/v1/health")
                 .noError().run();
-        stopAction(driver, dbNullTest);
+
+        showMessage(driver,"Stopping be-MongoDb");
+        //Kill the be that initialized the system
+        var version = SeleniumBase.getVersion();
+        _processUtils.killProcesses((psLine) ->
+                psLine.contains("java") &&
+                        (psLine.contains("httpanswering") &&
+                                (psLine.contains("be-" + version))) &&
+                        !psLine.contains("globaltest"));
+    }
+
+    public static void stopMongo(ChromeDriver driver) {
+        mongoServer.shutdown();
+    }
+
+    public static void startMongo(ChromeDriver driver) {
+        mongoServer = new MongoServer(new MemoryBackend());
+        mongoServer.bind("127.0.0.1",MONGO_PORT);
     }
 }
