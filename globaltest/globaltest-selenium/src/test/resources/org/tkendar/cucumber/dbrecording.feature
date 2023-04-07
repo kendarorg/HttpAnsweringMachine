@@ -5,7 +5,9 @@ Feature: DbRecording
     Given Cache initialized
     And Ham started
     And Selenium initialized
-    And Start h2 db
+
+  Scenario: Record db interaction
+    Given Start h2 db
     And Start applications 'gateway,fe'
     And Initialized calendar rewrite url and H2 Db
     And Start applications 'be'
@@ -16,10 +18,10 @@ Feature: DbRecording
     And Adding ssl for 'sample.test'
     And Wait for 'be' to be ready calling 'http://127.0.0.1:8100/api/v1/health' for '120' seconds
     And Stop applications 'be'
-    And Start calendar recording 'Main'
+    When Start calendar recording 'Main'
     And Start applications 'benogen'
     And Wait for 'benogen' to be ready calling 'http://127.0.0.1:8100/api/v1/health' for '120' seconds
-    And Navigate calendar ui
+    Then Navigate calendar ui
     And Stop recording 'Main'
 
   Scenario: Run the ui test
