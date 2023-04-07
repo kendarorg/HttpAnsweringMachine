@@ -46,6 +46,9 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <cucumber.version>7.3.4</cucumber.version>
+
+        <junit.platform.version>1.8.0</junit.platform.version>
     </properties>
 
     <dependencies>

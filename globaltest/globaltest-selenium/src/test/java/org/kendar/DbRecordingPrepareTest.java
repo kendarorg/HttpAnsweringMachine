@@ -10,12 +10,14 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.kendar.MongoRecordingSetupTest.stopMongo;
 import static org.kendar.SeleniumBase.*;
 
 public class DbRecordingPrepareTest {
     private static ProcessUtils _processUtils = new ProcessUtils(new HashMap<>());
 
     public static void prepareUiTest(ChromeDriver driver, String uiTestId) throws Exception {
+        System.out.println("******* DbRecordingPrepareTest::prepareUiTest");
         var js = (JavascriptExecutor) driver;
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + uiTestId);
         Sleeper.sleep(1000);
@@ -61,11 +63,13 @@ public class DbRecordingPrepareTest {
                                 (psLine.contains("be-" + version) || psLine.contains("gateway-" + version))) ||
                         psLine.contains("org.h2.tools.Server") &&
                                 !psLine.contains("globaltest"));
+        stopMongo();
     }
 
 
     public static String cloneTo(ChromeDriver driver, String sourceId, String destName) throws InterruptedException {
 
+        System.out.println("******* DbRecordingPrepareTest::cloneTo");
         Sleeper.sleep(1000);
         driver.get("http://www.local.test/plugins/recording/index.html");
         Sleeper.sleep(1000);
@@ -100,6 +104,7 @@ public class DbRecordingPrepareTest {
     }
 
     public static void prepareGatewayNullTest(ChromeDriver driver, String gatewayTestId) throws Exception {
+        System.out.println("******* DbRecordingPrepareTest::prepareGatewayNullTest");
         var js = (JavascriptExecutor) driver;
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + gatewayTestId);
         Sleeper.sleep(1000);
@@ -111,7 +116,7 @@ public class DbRecordingPrepareTest {
                 psLine.contains("java") &&
                         psLine.contains("org.h2.tools.Server") &&
                                 !psLine.contains("globaltest"));
-
+        stopMongo();
         _processUtils.killProcesses((psLine) ->
                 psLine.contains("java") &&
                         (psLine.contains("httpanswering") &&
@@ -190,6 +195,7 @@ public class DbRecordingPrepareTest {
     }
 
     public static void prepareDbNullTest(ChromeDriver driver, String dbNullTest) throws Exception {
+        System.out.println("******* DbRecordingPrepareTest::prepareDbNullTest");
         var js = (JavascriptExecutor) driver;
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + dbNullTest);
         Sleeper.sleep(1000);
@@ -201,7 +207,7 @@ public class DbRecordingPrepareTest {
                                 (psLine.contains("gateway-" + version))) ||
                         psLine.contains("org.h2.tools.Server") &&
                                 !psLine.contains("globaltest"));
-
+        stopMongo();
         scrollFind(driver,()->driver.findElement(By.id("scriptstab_0"))).click();
         Sleeper.sleep(1000);
         scrollFind(driver, () -> driver.findElement(By.id("grid-visibility"))).click();
@@ -241,6 +247,7 @@ public class DbRecordingPrepareTest {
     }
 
     public static void prepareGatewayNullTestFail(ChromeDriver driver, String gatewayFailTestId) throws Exception {
+        System.out.println("******* DbRecordingPrepareTest::prepareGatewayNullTestFail");
         showMessage(driver, "Setup a fail changing the expected data");
         doClick(() -> driver.findElement(By.id("grid-rowe-5-1")));
         Sleeper.sleep(1000);

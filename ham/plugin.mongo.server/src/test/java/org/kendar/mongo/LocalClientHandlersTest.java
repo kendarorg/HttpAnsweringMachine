@@ -59,9 +59,10 @@ public class LocalClientHandlersTest {
 
     public void server(int port,boolean useJson) throws IOException {
 
+        var loggerBuilder = (LoggerBuilder)new LocalLoggerBuilderImpl();
         server = new ServerSocket(port);
         var responders = (List<MongoResponder>)List.of(
-                new OpMsgResponder(),new OpQueryResponder(),new OpQueryMasterResponder()
+                new OpMsgResponder(loggerBuilder),new OpQueryResponder(),new OpQueryMasterResponder()
         );
 
         var msgHandlers = (List<MsgHandler>)List.of(
@@ -72,7 +73,6 @@ public class LocalClientHandlersTest {
                 new NoopCompressionHandler(), new SnappyCompressionHandler(),
                 new ZlibCompressionHandler(), new ZStdCompressionHandler()
         );
-        var loggerBuilder = (LoggerBuilder)new LocalLoggerBuilderImpl();
         Logger logger = loggerBuilder.build(LocalClientHandlersTest.class);
         loggerBuilder.setLevel("org.mongodb.driver", Level.OFF);
         while(true) {

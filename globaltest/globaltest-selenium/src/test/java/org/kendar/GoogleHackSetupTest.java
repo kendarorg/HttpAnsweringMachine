@@ -14,6 +14,7 @@ public class GoogleHackSetupTest {
 
     public static void verify(ChromeDriver driver) throws InterruptedException {
 
+        System.out.println("******* GoogleHackSetupTest::verify");
 
         driver.get("https://www.google.com");
         Sleeper.sleep(2000);
@@ -27,6 +28,7 @@ public class GoogleHackSetupTest {
 
 
     public static void setup(ChromeDriver driver) throws InterruptedException {
+        System.out.println("******* GoogleHackSetupTest::setup");
         driver.get("https://www.google.com");
 
         Sleeper.sleep(2000);
@@ -127,6 +129,7 @@ public class GoogleHackSetupTest {
     }
 
     private static void acceptCookies(ChromeDriver driver) {
+        System.out.println("******* GoogleHackSetupTest::acceptCookies");
         try {
             WebElement el = null;
             try {

@@ -1,5 +1,6 @@
 package org.kendar.mongo.responder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
@@ -14,10 +15,18 @@ import org.kendar.mongo.model.MongoPacket;
 import org.kendar.mongo.model.MsgPacket;
 import org.kendar.mongo.model.payloads.MsgDocumentPayload;
 import org.kendar.mongo.model.payloads.MsgSectionPayload;
+import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OpMsgResponder implements MongoResponder{
+    private final Logger logger;
+
+    public OpMsgResponder(LoggerBuilder loggerBuilder) {
+        logger = loggerBuilder.build(OpMsgResponder.class);
+    }
+
     @Override
     public OpCodes getOpCode() {
         return OpCodes.OP_MSG;
@@ -47,6 +56,14 @@ public class OpMsgResponder implements MongoResponder{
         var msgPacket = (MsgPacket)clientPacket;
         var db= getDb(msgPacket);
         var database = mongoClient.getDatabase(db);
+        if(database==null){
+            try {
+                logger.error("Unable to find db for "+mapper.writeValueAsString(msgPacket));
+            } catch (JsonProcessingException e) {
+
+            }
+            return null;
+        }
         var docPayload = (MsgDocumentPayload)msgPacket.getPayloads().get(0);
         var command = (BsonDocument)BsonDocument.parse(docPayload.getJson());
         var finalMessage = command.containsKey("endSession");

@@ -11,6 +11,7 @@ import static org.kendar.SeleniumBase.setupSize;
 public class DbRecordingUiActions {
 
     public static void fullNavigation(ChromeDriver driver) throws InterruptedException {
+        System.out.println("******* DbRecordingUiActions::fullNavigation");
         Sleeper.sleep(1000);
         driver.get("http://www.sample.test/");
         Sleeper.sleep(2000);

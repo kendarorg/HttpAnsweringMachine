@@ -79,21 +79,20 @@ public class SeleniumTest extends SeleniumBase {
     void dbRecordingMongo() throws Throwable {
         runHamJar(SeleniumTest.class);
         var driver = SeleniumBase.getDriver();
-        DbRecordingSetupTest.startupAsMongo(driver);
+        MongoRecordingSetupTest.startup(driver);
 
 
         //Create recording
-        String mainId = DbRecordingSetupTest.startRecordingMongo(driver, "Main");
+        String mainId = MongoRecordingSetupTest.startRecording(driver, "MainMongo");
         DbRecordingUiActions.fullNavigation(driver);
         DbRecordingSetupTest.stopAction(driver, mainId);
-        DbRecordingSetupTest.stopMongo(driver);
 
 
         //Do Be fake db test
-        String dbNullTest = DbRecordingPrepareTest.cloneTo(driver, mainId, "DbNullTest");
+        String dbNullTest = DbRecordingPrepareTest.cloneTo(driver, mainId, "DbNullTestMongo");
         DbRecordingPrepareTest.prepareDbNullTest(driver, dbNullTest);
 
-        DbRecordingSetupTest.initializeNullPlayingDbMongo(driver, dbNullTest);
+        MongoRecordingSetupTest.initializeNullPlayingDb(driver, dbNullTest);
 
         DbRecordingSetupTest.startNullPlaying(driver, dbNullTest);
         DbRecordingSetupTest.loadResults(driver, dbNullTest,true);
