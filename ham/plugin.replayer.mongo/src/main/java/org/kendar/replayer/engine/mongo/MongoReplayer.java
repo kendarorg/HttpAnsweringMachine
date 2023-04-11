@@ -1,5 +1,8 @@
 package org.kendar.replayer.engine.mongo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.ClassUtils;
+import org.kendar.mongo.model.MongoReqResPacket;
 import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DbRecording;
@@ -9,6 +12,7 @@ import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.db.HibernateSessionFactory;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
+import org.kendar.typed.serializer.JsonTypedSerializer;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -197,6 +201,8 @@ public class MongoReplayer implements ReplayerEngine {
         return hasRows;
     }
 
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private final ObjectMapper mapper = new ObjectMapper();
     @Override
     public Response findRequestMatch(Request req, String contentHash, Map<String, String> params) throws Exception {
 
@@ -204,6 +210,22 @@ public class MongoReplayer implements ReplayerEngine {
         Response founded = findRequestMatch(req, contentHash, true);
         if (founded == null) {
             founded = findRequestMatch(req, contentHash, false);
+        }
+        if(founded!=null){
+            var receivedDeserializer = serializer.newInstance();
+            receivedDeserializer.deserialize(req.getRequestText());
+            var receivedDeserialized = receivedDeserializer.read("data");
+            if(ClassUtils.isAssignable(receivedDeserialized.getClass(), MongoReqResPacket.class)){
+                var toSendSerializer = serializer.newInstance();
+                toSendSerializer.deserialize(founded.getResponseText());
+                var toSendDeserialized = toSendSerializer.read("data");
+                if(ClassUtils.isAssignable(toSendDeserialized.getClass(), MongoReqResPacket.class)){
+                    var tss = (MongoReqResPacket)toSendDeserialized;
+                    var rcv = (MongoReqResPacket)receivedDeserialized;
+                    tss.setResponseTo(rcv.getRequestId());
+                }
+            }
+
         }
         return founded;
     }

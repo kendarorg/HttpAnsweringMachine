@@ -53,7 +53,7 @@ public class MongoProxyHandlerApi implements FilteringClass {
             public void run() {
                 expireConnections();
             }
-        }, 0, 500);
+        }, 0, 30000);
     }
 
     private void expireConnections() {

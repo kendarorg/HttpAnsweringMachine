@@ -9,7 +9,7 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MsgPacket extends MongoPacket<MsgPacket> {
+public class MsgPacket extends MongoPacket<MsgPacket> implements MongoReqResPacket {
     public MsgPacket(){
         setOpCode(OpCodes.OP_MSG);
     }

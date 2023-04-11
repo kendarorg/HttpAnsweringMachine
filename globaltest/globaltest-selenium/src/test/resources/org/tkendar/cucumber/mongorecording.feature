@@ -11,12 +11,10 @@ Feature: MongoRecording
     Given Start mongodb
     And Prepare HAM setup
     And Prepare mongo proxy
-    And Start applications 'gateway,fe'
-    And Wait '5' seconds
+    And Start applications 'gateway,fe,bemongo'
+    And Wait '10' seconds
+    # And Wait for 'bemongo' to be ready calling 'http://127.0.0.1:8100/api/v1/health' for '60' seconds
     When Start calendar recording 'MainMongo'
-    # Start the backend waiting for the db to be completely started
-    And Start applications 'bemongo'
-    And Wait for 'bemongo' to be ready calling 'http://127.0.0.1:8100/api/v1/health' for '60' seconds
     # Navigate the application
     Then Navigate calendar ui
     And Stop action 'MainMongo'
@@ -28,14 +26,14 @@ Feature: MongoRecording
   Scenario: Run the be fake mongo test
     Given Prepare HAM setup
     And Prepare mongo proxy
-    And Upload recording 'Main'
-    And Clone recording 'Main' into 'DbMongoNullTest'
+    And Upload recording 'MainMongo'
+    And Clone recording 'MainMongo' into 'DbMongoNullTest'
     And Prepare db null test 'DbMongoNullTest'
     # To allow the initialisation of an existing database
     Then Start replaying 'DbMongoNullTest'
     # Does not create the db and tables, just use them
-    Given Start applications 'benogen'
-    And Wait for 'benogen' to be ready calling 'http://127.0.0.1:8100/api/v1/health' for '120' seconds
+    Given Start applications 'bemongo'
+    And Wait for 'bemongo' to be ready calling 'http://127.0.0.1:8100/api/v1/health' for '60' seconds
     # Now the db is initialized
     And Stop action 'DbMongoNullTest'
     # Automatic test of the failing gateway

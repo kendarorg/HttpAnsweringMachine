@@ -15,9 +15,5 @@ import static io.cucumber.core.options.Constants.GLUE_PROPERTY_NAME;
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "org.kendar.ham")*/
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "org.kendar.cucumber")
 public class CucumberTest {
-    @BeforeStep
-    public void beforeStep() {
-        var driver = (WebDriver) Utils.getCache("driver");
-        var js = (JavascriptExecutor)driver;
-    }
+
 }

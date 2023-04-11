@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
 import org.bson.BsonArray;
 import org.bson.BsonDocument;
+import org.bson.BsonInt64;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.json.JsonMode;
 import org.bson.json.JsonWriterSettings;
 import org.kendar.mongo.MongoClientHandler;
@@ -19,12 +21,14 @@ import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+
 @Component
-public class OpMsgResponder implements MongoResponder{
+public class OpMsgMasterResponder implements MongoResponder{
     private final Logger logger;
 
-    public OpMsgResponder(LoggerBuilder loggerBuilder) {
-        logger = loggerBuilder.build(OpMsgResponder.class);
+    public OpMsgMasterResponder(LoggerBuilder loggerBuilder) {
+        logger = loggerBuilder.build(OpMsgMasterResponder.class);
     }
 
     @Override
@@ -67,38 +71,32 @@ public class OpMsgResponder implements MongoResponder{
         var docPayload = (MsgDocumentPayload)msgPacket.getPayloads().get(0);
         var command = (BsonDocument)BsonDocument.parse(docPayload.getJson());
         var finalMessage = command.containsKey("endSession");
-        if(command.get("isMaster")!=null){
+        if(command.get("isMaster")==null){
             return null;
         }
-        if(msgPacket.getPayloads().size()>0) {
 
-            for (var i = 1; i < msgPacket.getPayloads().size(); i++) {
-                var pack = msgPacket.getPayloads().get(i);
-                if(pack instanceof MsgDocumentPayload) {
-                    throw new RuntimeException("MISSING MsgDocumentPayload");
-//                    var tl = new BsonArray();
-//                    var doc = (MsgDocumentPayload) pack;
-//                    var bdoc = (BsonDocument) BsonDocument.parse(doc.getJson());
-//                    tl.add(bdoc);
-                }else{
-                    var doc = (MsgSectionPayload) pack;
-                    var tl = new BsonArray();
-                    for(var j=0;j<doc.getDocuments().size();j++){
-                        var bdoc = (BsonDocument) BsonDocument.parse(doc.getDocuments().get(j).getJson());
-                        tl.add(bdoc);
-                    }
-                    command.put(doc.getTitle(),tl);
-                    //tl.add(bdoc);
-                }
-            }
-        }
+        var serverDescription = mongoClient.getClusterDescription().getServerDescriptions().get(0);
 
-        command.remove("$db");
-        command.remove("lsid");
-        Document commandResult = database.runCommand(command);
+        Bson findCommand = new BsonDocument("hostInfo", new BsonInt64(1));
+        Document commandResult = database.runCommand(findCommand);
+
+        var resultMap =new Document();
+        resultMap.put("ismaster",true);
+        resultMap.put("maxBsonObjectSize",serverDescription.getMaxDocumentSize());
+        resultMap.put("maxMessageSizeBytes",48000000);
+        resultMap.put("maxWriteBatchSize",100000);
+        resultMap.put("localTime",((Document)commandResult.get("system")).get("currentTime"));
+        resultMap.put("logicalSessionTimeoutMinutes",mongoClient.getClusterDescription().getLogicalSessionTimeoutMinutes());
+        resultMap.put("connectionId",(int)connectionId);
+        resultMap.put("minWireVersion",0);
+        resultMap.put("maxWireVersion",8);
+        resultMap.put("readOnly",false);
+        resultMap.put("ok",1.0);
+
+
         var result = new MsgPacket();
         var  responseDocPayload = new MsgDocumentPayload();
-        responseDocPayload.setJson(commandResult.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build()));
+        responseDocPayload.setJson(resultMap.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build()));
         result.getPayloads().add(responseDocPayload);
         result.setResponseTo(msgPacket.getRequestId());
         result.setRequestId((int)MongoClientHandler.getRequestCounter());

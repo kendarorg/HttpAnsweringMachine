@@ -7,7 +7,7 @@ import org.kendar.mongo.handlers.OpCodes;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class QueryPacket extends MongoPacket<QueryPacket> {
+public class QueryPacket extends MongoPacket<QueryPacket> implements MongoReqResPacket{
     private int flagBits;
     private String fullCollectionName;
     private int numberToSkip;

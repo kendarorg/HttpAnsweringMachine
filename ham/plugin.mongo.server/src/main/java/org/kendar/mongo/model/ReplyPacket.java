@@ -9,7 +9,7 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReplyPacket extends MongoPacket<ReplyPacket> {
+public class ReplyPacket extends MongoPacket<ReplyPacket> implements MongoReqResPacket {
     private List<String> jsons = new ArrayList<>();
     private int responseFlags;
     private long cursorId;

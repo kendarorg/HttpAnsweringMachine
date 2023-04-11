@@ -7,7 +7,7 @@
       "active": true,
       "exposedPort": 27097,
       "remote": {
-        "connectionString": "mongodb://127.0.0.1:27017",
+        "connectionString": "mongodb://127.0.0.1:27077",
         "login": "",
         "password": ""
       }

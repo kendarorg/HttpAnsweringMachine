@@ -27,10 +27,7 @@ import org.kendar.mongo.config.MongoProxy;
 import org.kendar.mongo.handlers.*;
 import org.kendar.mongo.logging.MongoLogClient;
 import org.kendar.mongo.logging.MongoLogServer;
-import org.kendar.mongo.responder.MongoResponder;
-import org.kendar.mongo.responder.OpMsgResponder;
-import org.kendar.mongo.responder.OpQueryMasterResponder;
-import org.kendar.mongo.responder.OpQueryResponder;
+import org.kendar.mongo.responder.*;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
@@ -62,7 +59,8 @@ public class LocalClientHandlersTest {
         var loggerBuilder = (LoggerBuilder)new LocalLoggerBuilderImpl();
         server = new ServerSocket(port);
         var responders = (List<MongoResponder>)List.of(
-                new OpMsgResponder(loggerBuilder),new OpQueryResponder(),new OpQueryMasterResponder()
+                new OpMsgResponder(loggerBuilder), new OpMsgMasterResponder(loggerBuilder),
+                new OpQueryResponder(),new OpQueryMasterResponder()
         );
 
         var msgHandlers = (List<MsgHandler>)List.of(

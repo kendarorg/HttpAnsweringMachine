@@ -77,6 +77,8 @@ echo "#!/bin/bash" > $HAM_RELEASE_TARGET/calendar/be/run.sh
 echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/be/run.sh
 echo "call java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/be/run.bat
 
+
+
 echo [INFO] Setup bemongo
 mkdir -p $HAM_RELEASE_TARGET/calendar/bemongo
 cd $CALENDAR_DIR/bemongo/target/

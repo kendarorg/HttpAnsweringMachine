@@ -49,7 +49,6 @@
             <groupId>org.kendar</groupId>
             <artifactId>typedserializer</artifactId>
             <version>1.1.12-snapshot</version>
-
         </dependency>
         <dependency>
             <!--  Only bundled with java 1.6+ -->
