@@ -80,16 +80,6 @@ public class JsonMongoClientHandler extends MongoClientHandler {
                 }
             }
             throw new RuntimeException("Missing handler for opcode "+responderByOpCode);
-//            var header = clientPacket.getHeader();// (byte[]) createHeader(clientPacket);
-//            var payload = clientPacket.getPayload();//byte[]) createPayload(clientPacket);
-//            toMongoDb.write(header);
-//            toMongoDb.write(payload);
-//            toMongoDb.flush();
-//
-//            byte[] mongoHeaderBytes = new byte[16];
-//            readBytes(fromMongoDb, mongoHeaderBytes);
-//            var result = readPacketsFromStream(fromMongoDb, mongoHeaderBytes);
-//            return new OpGeneralResponse(result,false);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

@@ -3,6 +3,7 @@ package org.kendar.mongo;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ValueNode;
 import org.kendar.events.EventQueue;
 import org.kendar.events.ExecuteLocalRequest;
 import org.kendar.mongo.compressor.CompressionHandler;
@@ -21,9 +22,7 @@ import org.kendar.typed.serializer.JsonTypedSerializer;
 import org.kendar.utils.LoggerBuilder;
 
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class HamMongoClientHandler extends MongoClientHandler {
     private static ObjectMapper mapper = new ObjectMapper();
@@ -80,8 +79,24 @@ public class HamMongoClientHandler extends MongoClientHandler {
             req.getHeaders().put("X-CONNECTION-ID", this.connectionId);
             req.getHeaders().put("X-MONGO-ID", ""+connectionId);
             req.setPort(80);
-            req.setPath(
-                        String.format("/api/mongo/%d/%s", localPort,db));
+            if(clientPacket instanceof MsgPacket){
+                var msg = (MsgPacket)clientPacket;
+                var payload = (MsgDocumentPayload)msg.getPayloads().get(0);
+                System.out.println(payload.getJson());
+                var jsonPayload = mapper.readTree(payload.getJson());
+                List<String> keys = new ArrayList<>();
+                Iterator<String> iterator = jsonPayload.fieldNames();
+                iterator.forEachRemaining(e -> keys.add(e));
+                var command = keys.get(0);
+                req.setPath(
+                        String.format("/api/mongo/%d/%s/%s/%s", localPort, db,
+                                clientPacket.getOpCode(),command));
+
+            }else {
+                req.setPath(
+                        String.format("/api/mongo/%d/%s/%s", localPort, db,
+                                clientPacket.getOpCode()));
+            }
 
             var event = new ExecuteLocalRequest();
             event.setRequest(req);

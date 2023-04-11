@@ -79,7 +79,7 @@ public class MongoProxyHandlerApi implements FilteringClass {
     }
     @HttpMethodFilter(
             phase = HttpFilterType.API,
-            pathAddress = "/api/mongo/{port}/{dbName}",
+            pathAddress = "/api/mongo/{port}/{dbName}/{opcode}",
             method = "POST")
     @HamDoc(
             tags = {"base/proxymongo"},
@@ -94,13 +94,57 @@ public class MongoProxyHandlerApi implements FilteringClass {
                             example = "local"),
                     @PathParameter(
                             key = "port",
-                            description = "The the port",
+                            description = "The port",
                             example = "27077"),
+                    @PathParameter(
+                            key = "opcode",
+                            description = "The op code",
+                            example = "OP_MSG")
             },
             responses = @HamResponse(
                     body = String.class
             ))
-    public boolean handleCommands(Request req, Response res) throws Exception {
+    public boolean handleRequests(Request req, Response res) throws Exception {
+        return handleMongoRequest(req, res);
+    }
+
+
+    @HttpMethodFilter(
+            phase = HttpFilterType.API,
+            pathAddress = "/api/mongo/{port}/{dbName}/{opcode}/{operation}",
+            method = "POST")
+    @HamDoc(
+            tags = {"base/proxymongo"},
+            description = "Proxies mongo-not on connections",
+            header = {
+                    @Header(key = "X-Connection-Id", description = "The connection id")
+            },
+            path = {
+                    @PathParameter(
+                            key = "dbName",
+                            description = "DbName for mongo",
+                            example = "local"),
+                    @PathParameter(
+                            key = "port",
+                            description = "The port",
+                            example = "27077"),
+                    @PathParameter(
+                            key = "opcode",
+                            description = "The op code",
+                            example = "OP_MSG"),
+                    @PathParameter(
+                            key = "operation",
+                            description = "The operation",
+                            example = "insert")
+            },
+            responses = @HamResponse(
+                    body = String.class
+            ))
+    public boolean handleOpMsgRequests(Request req, Response res) throws Exception {
+        return handleMongoRequest(req, res);
+    }
+
+    private boolean handleMongoRequest(Request req, Response res) {
         var port = Integer.parseInt(req.getPathParameter("port"));
         var db = req.getPathParameter("dbName");
         var deser = serializer.newInstance();
