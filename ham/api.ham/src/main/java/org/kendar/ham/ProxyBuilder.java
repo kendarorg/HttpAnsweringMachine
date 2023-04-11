@@ -77,6 +77,17 @@ public interface ProxyBuilder {
     String addProxy(String when, String where, String test) throws HamException;
 
     /**
+     * Add a proxy
+     *
+     * @param when  the matching "address bar"
+     * @param where the when will be replaced with where
+     * @param test  the domain/domain:port that will be inspected to check. If it's running the proxy will be used
+     * @return the id of the added proxy
+     * @throws HamException
+     */
+    String addForcedProxy(String when, String where, String test) throws HamException;
+
+    /**
      * Retrieve proxy by id
      * @param id
      * @return

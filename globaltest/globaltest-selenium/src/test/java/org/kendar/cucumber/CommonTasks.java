@@ -34,9 +34,7 @@ public class CommonTasks {
     @When("^Adding ssl for '(.+)'$")
     public void addingSslFor(String toAdd){
         var driver = (WebDriver)Utils.getCache("driver");
-        driver.get("http://www.local.test/index.html");
-        org.kendar.globaltest.Sleeper.sleep(1000);
-        doClick(() -> driver.findElement(By.id("grid-rowc-2-0")));
+        navigateTo("http://www.local.test/certificates/index.html");
         org.kendar.globaltest.Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("ssl-sites-add")));
         org.kendar.globaltest.Sleeper.sleep(1000);
@@ -52,10 +50,7 @@ public class CommonTasks {
     @When("^Adding dns for '(.+)'$")
     public void addingDnsFor(String toAdd){
         var driver = (WebDriver)Utils.getCache("driver");
-        driver.get("http://www.local.test/index.html");
-        Sleeper.sleep(1000);
-        doClick(() -> driver.findElement(By.id("grid-rowc-0-0")));
-        Sleeper.sleep(1000);
+        navigateTo("http://www.local.test/dns/index.html");
         doClick(() -> driver.findElement(By.linkText("MAPPINGS")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("dns-mappings-add")));
@@ -105,6 +100,7 @@ public class CommonTasks {
 
     @And("^Stop applications '(.+)'$")
     public void stopApplications(String applications) throws Exception {
+        var driver = (WebDriver)Utils.getCache("driver");
         var apps = applications.split(",");
         var version = getVersion();
         for(var app:apps){
@@ -113,7 +109,8 @@ public class CommonTasks {
                             (psLine.contains("httpanswering") &&
                                     (psLine.contains(app+"-" + version))) &&
                             !psLine.contains("globaltest"));
-            showMessage("Terminated "+app);
+
+            if(driver!=null)showMessage("Terminated "+app);
         }
         Sleeper.sleep(1000);
     }

@@ -61,7 +61,7 @@ module.exports = {
       columns: [
         {id: "id", template: "long", index: true, size: 4, sortable: true},
         {id: "type", template: "string", label: "Type", size: 4, sortable: true},
-        {id: "stimulatorTest", template: "boolw", label: "Stimulator", sortable: true, visible: false},
+        {id: "stimulatorTest", template: "boolw", label: "Stimulator", sortable: true},
         {id: "requestMethod", template: "string", label: "Method", size: 7, sortable: true},
         {id: "requestHost", template: "string", label: "Host", sortable: true, size: 15, visible: false},
         {id: "requestPath", template: "string", label: "Path", sortable: true, size: 15},

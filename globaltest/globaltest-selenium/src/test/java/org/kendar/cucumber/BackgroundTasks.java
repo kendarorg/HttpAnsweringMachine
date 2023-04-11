@@ -6,6 +6,7 @@ import org.kendar.globaltest.ProcessRunner;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,6 +24,7 @@ public class BackgroundTasks {
     }
     @Given("^Ham started$")
     public void hamStarted() throws Exception {
+        Utils.initShutdownHook();
         var caller = BackgroundTasks.class;
         try {
             if (HttpChecker.checkForSite(5, "http://127.0.0.1/api/dns/lookup/test").noError().run()) {
@@ -32,8 +34,10 @@ public class BackgroundTasks {
             throw new Exception(e);
         }
 
-        deleteDirectory(Path.of(getRootPath(caller), "data", "tmp").toFile());
+        deleteDirectory(Path.of(getRootPath(caller), "release","data").toFile());
         deleteDirectory(Path.of(getRootPath(caller), "release", "calendar", "data").toFile());
+        Files.deleteIfExists(Path.of(getRootPath(caller), "release", "calendar", "be.mv.db"));
+        Files.deleteIfExists(Path.of(getRootPath(caller), "release", "data", "ham.mv.db"));
         var java = "java";
         var agentPath = Path.of(getRootPath(caller), "ham", "api.test", "org.jacoco.agent-0.8.8-runtime.jar");
         var jacocoExecPath = Path.of(getRootPath(caller), "ham", "api.test", "target", "jacoco_selenium.exec");
@@ -57,7 +61,7 @@ public class BackgroundTasks {
                 withCommand(java).
                 withParameter("-Djsonconfig=" + externalJsonPath).
                 withParameter("-Dloader.path=" + libsPath).
-                withParameter("-Dham.tempdb=data/tmp").
+                withParameter("-Dham.tempdb="+Path.of(getRootPath(caller), "release","data","tmp")).
                 withParameter("-Dperformance.watcher.interval=0").
                 withParameter("-Dloader.main=org.kendar.Main").
                 withParameter("-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**").

@@ -2,6 +2,7 @@ package org.kendar;
 
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
+import io.cucumber.java.en.When;
 import org.kendar.globaltest.*;
 import org.kendar.ham.HamException;
 import org.openqa.selenium.By;

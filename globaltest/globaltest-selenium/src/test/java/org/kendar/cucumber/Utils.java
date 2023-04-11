@@ -1,6 +1,8 @@
 package org.kendar.cucumber;
 
 import org.kendar.SeleniumBase;
+import org.kendar.globaltest.HttpChecker;
+import org.kendar.globaltest.ProcessUtils;
 import org.kendar.globaltest.Sleeper;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -12,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Utils {
@@ -155,5 +158,48 @@ public class Utils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static boolean shutdownHookInitialized = false;
+    public static void initShutdownHook() {
+        if (shutdownHookInitialized) return;
+        shutdownHookInitialized = true;
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+
+            @Override
+            public void run() {
+
+                try {
+                    var driver = (WebDriver)getCache("driver");
+                    if(driver!=null){
+                        try {
+                            driver.close();
+                        }catch (Exception ex){}
+                    }
+                    var pu = new ProcessUtils(new HashMap<>());
+                    HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").noError().run();
+                    pu.sigtermProcesses((str) -> str.contains("-Dloader.main=org.kendar.Main"));
+                    pu.killProcesses( (psLine) ->
+                            psLine.contains("java") &&
+                                    psLine.contains("httpanswering") &&
+                                    !psLine.contains("globaltest"));
+                    pu.killProcesses( (psLine) ->
+                            psLine.contains("java") &&
+                                    psLine.contains("org.h2.tools.Server") &&
+                                    !psLine.contains("globaltest"));
+                } catch (Exception e) {
+
+                }
+            }
+
+        });
+    }
+
+    public static boolean navigateTo(String url){
+        var driver = (WebDriver)Utils.getCache("driver");
+        var current = driver.getCurrentUrl();
+        if(current.equalsIgnoreCase(url)) return true;
+        driver.get(url);
+        return false;
     }
 }

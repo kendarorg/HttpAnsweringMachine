@@ -37,7 +37,8 @@
         "org.kendar.mongo.logging.MongoLogClient": "OFF",
         "org.kendar.mongo.logging.MongoLogServer": "OFF",
         "org.mongodb.driver": "OFF",
-        "com.sun.net.httpserver": "ERROR"
+        "com.sun.net.httpserver": "ERROR",
+        "sockslib.server": "ERROR"
       }
     },
     "filters": {

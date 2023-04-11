@@ -12,7 +12,7 @@ public class RecordingBackgroundTasks {
     @And("^Initialized calendar rewrite url and H2 Db$")
     public void initializeRewrites() throws Exception {
         var driver = (WebDriver)Utils.getCache("driver");
-        driver.get("http://www.local.test/index.html");
+        navigateTo("http://www.local.test/index.html");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.linkText("Url/Db Rewrites")));
         Sleeper.sleep(1000);
