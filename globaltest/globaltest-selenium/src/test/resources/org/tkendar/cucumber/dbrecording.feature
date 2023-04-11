@@ -3,7 +3,7 @@ Feature: DbRecording
 
   Background:
     Given Cache initialized
-    And Stop applications 'fe,app,be,gateway'
+    And Stop applications 'fe,app,be,gateway,bemongo'
     And Ham started
     And Selenium initialized
 
@@ -15,7 +15,7 @@ Feature: DbRecording
     And Adding ssl for '*.sample.test'
     And Adding ssl for 'sample.test'
 
-  Scenario: Record db interaction
+  Scenario: Record interaction
     Given Start h2 db
     And Prepare HAM setup
     And Start applications 'gateway,fe'

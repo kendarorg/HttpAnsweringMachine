@@ -127,7 +127,7 @@ public class RecordingTasks {
         doClick(() -> driver.findElement(By.id("recording-startrecord")));
         Sleeper.sleep(1000);
         var result = driver.findElement(By.id("id")).getAttribute("value");
-        Utils.setCache("recording_Main",result);
+        Utils.setCache("recording_"+recordingName,result);
     }
 
     private static ObjectMapper mapper = new ObjectMapper();

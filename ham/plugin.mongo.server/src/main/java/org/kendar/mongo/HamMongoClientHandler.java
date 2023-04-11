@@ -73,6 +73,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
             //Send it via webApi
             var req = new Request();
             req.setRequestText(toSend);
+            req.setProtocol("http");
             req.setMethod("POST");
             req.setHost("127.0.0.1");
             req.setHeaders(new HashMap<>());
