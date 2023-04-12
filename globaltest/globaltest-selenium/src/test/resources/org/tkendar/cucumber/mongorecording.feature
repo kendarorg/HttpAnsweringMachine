@@ -63,5 +63,5 @@ Feature: MongoRecording
     # Expect successful result
     Then Load results 'true' for 'DbMongoNullTest'
     And Download recording 'DbMongoNullTest'
-    And Stop applications 'be,app'
+    And Stop applications 'be,bemongo,app'
     And Quit selenium
