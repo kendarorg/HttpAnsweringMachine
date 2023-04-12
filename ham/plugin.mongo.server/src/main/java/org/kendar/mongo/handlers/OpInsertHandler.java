@@ -24,7 +24,7 @@ public class OpInsertHandler implements MsgHandler{
 
     @Override
     public MongoPacket<?> handleMsg(int requestId,int responseTo,ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
-        System.out.println("======HANDLE INSERT");
+        //System.out.println("======HANDLE INSERT");
         int flagBits = bsonInput.readInt32();
         String fullCollectionName = bsonInput.readCString();
 
@@ -34,12 +34,12 @@ public class OpInsertHandler implements MsgHandler{
 
         MongoNamespace namespace = new MongoNamespace(fullCollectionName);
 
-        System.out.println("Namespace: " + namespace);
+        //System.out.println("Namespace: " + namespace);
 
         while (byteBuffer.hasRemaining()) {
             BsonDocument document = documentCodec.decode(bsonReader, DecoderContext.builder().build());
             String json =  document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
-            System.out.println("Insert JSON: " + json);
+            //System.out.println("Insert JSON: " + json);
         }
         return packet;
     }

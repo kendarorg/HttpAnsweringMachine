@@ -1,7 +1,9 @@
 package org.kendar.be.api.v1;
 
 
+import org.kendar.be.data.CountersRepository;
 import org.kendar.be.data.EmployeeRepository;
+import org.kendar.be.data.entities.Counter;
 import org.kendar.be.data.entities.Employee;
 import org.kendar.be.data.exceptions.ItemNotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +15,12 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeRepository repository;
+    private CountersRepository countersRepository;
 
-    EmployeeController(EmployeeRepository repository) {
+    EmployeeController(EmployeeRepository repository,
+                       CountersRepository countersRepository) {
         this.repository = repository;
+        this.countersRepository = countersRepository;
     }
 
 
@@ -29,6 +34,16 @@ public class EmployeeController {
 
     @PostMapping(value ="",produces = "application/json")
     Employee newEmployee(@RequestBody Employee newEmployee) {
+        var counter = countersRepository.findByCollection("employee");
+        if(counter==null){
+            counter = new Counter();
+            counter.setTable("employee");
+            counter.setCounter(1);
+            countersRepository.save(counter);
+        }else{
+            counter.setCounter(counter.getCounter()+1);
+            countersRepository.save(counter);
+        }
         return repository.save(newEmployee);
     }
 

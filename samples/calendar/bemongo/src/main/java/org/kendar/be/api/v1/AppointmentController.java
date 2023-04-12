@@ -1,9 +1,11 @@
 package org.kendar.be.api.v1;
 
 import org.kendar.be.data.AppointmentRepository;
+import org.kendar.be.data.CountersRepository;
 import org.kendar.be.data.EmployeeRepository;
 import org.kendar.be.data.entities.Appointment;
 import org.kendar.be.data.entities.AppointmentStatus;
+import org.kendar.be.data.entities.Counter;
 import org.kendar.be.data.exceptions.ItemNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +17,14 @@ import java.util.stream.Collectors;
 public class AppointmentController {
     private final AppointmentRepository appointmentRepository;
     private EmployeeRepository employeeRepository;
+    private CountersRepository countersRepository;
 
-    AppointmentController(AppointmentRepository appointmentRepository, EmployeeRepository employeeRepository) {
+    AppointmentController(AppointmentRepository appointmentRepository,
+                          EmployeeRepository employeeRepository,
+                          CountersRepository countersRepository) {
         this.appointmentRepository = appointmentRepository;
         this.employeeRepository = employeeRepository;
+        this.countersRepository = countersRepository;
     }
 
 
@@ -35,6 +41,16 @@ public class AppointmentController {
     @PostMapping(value ="/{employeeId}",produces = "application/json")
     AppointmentDto newAppointment(@RequestBody AppointmentDto newAppointment,@PathVariable Long employeeId) {
         var employee = employeeRepository.findById(employeeId);
+        var counter = countersRepository.findByCollection("appointment");
+        if(counter==null){
+            counter = new Counter();
+            counter.setTable("appointment");
+            counter.setCounter(1);
+            countersRepository.save(counter);
+        }else{
+            counter.setCounter(counter.getCounter()+1);
+            countersRepository.save(counter);
+        }
         if(employee==null){
             throw new ItemNotFoundException(employeeId.toString());
         }

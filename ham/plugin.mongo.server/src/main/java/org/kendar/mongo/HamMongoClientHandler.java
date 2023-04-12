@@ -82,8 +82,19 @@ public class HamMongoClientHandler extends MongoClientHandler {
             if(clientPacket instanceof MsgPacket){
                 var msg = (MsgPacket)clientPacket;
                 var payload = (MsgDocumentPayload)msg.getPayloads().get(0);
-                System.out.println(payload.getJson());
+                //System.out.println(payload.getJson());
                 var jsonPayload = mapper.readTree(payload.getJson());
+                List<String> keys = new ArrayList<>();
+                Iterator<String> iterator = jsonPayload.fieldNames();
+                iterator.forEachRemaining(e -> keys.add(e));
+                var command = keys.get(0);
+                req.setPath(
+                        String.format("/api/mongo/%d/%s/%s/%s", localPort, db,
+                                clientPacket.getOpCode(),command));
+
+            }else if(clientPacket instanceof QueryPacket){
+                var msg = (QueryPacket)clientPacket;
+                var jsonPayload = mapper.readTree(msg.getJson());
                 List<String> keys = new ArrayList<>();
                 Iterator<String> iterator = jsonPayload.fieldNames();
                 iterator.forEachRemaining(e -> keys.add(e));

@@ -223,6 +223,11 @@ public class MongoReplayer implements ReplayerEngine {
                     var tss = (MongoReqResPacket)toSendDeserialized;
                     var rcv = (MongoReqResPacket)receivedDeserialized;
                     tss.setResponseTo(rcv.getRequestId());
+                    toSendSerializer = serializer.newInstance();
+                    toSendSerializer.write("data",tss);
+                    var responseReal = founded.copy();
+                    responseReal.setResponseText((String)toSendSerializer.getSerialized());
+                    founded =responseReal;
                 }
             }
 
@@ -235,6 +240,8 @@ public class MongoReplayer implements ReplayerEngine {
         var matchingQuery = -1;
         ReplayerRow founded = null;
         var staticRequests = new ArrayList<ReplayerRow>();
+        var sreqPath = sreq.getPath();
+
 
         sessionFactory.query(em -> {
             var query = em.createQuery("SELECT e FROM ReplayerRow  e,CallIndex c WHERE " +
@@ -303,7 +310,9 @@ public class MongoReplayer implements ReplayerEngine {
         }
 
         if (founded != null) {
-            states.put(founded.getId(), "");
+            if(!sreqPath.toLowerCase().endsWith("/ismaster")) {
+                states.put(founded.getId(), "");
+            }
         } else {
             return null;
         }
