@@ -7,7 +7,17 @@ import java.util.Calendar;
 
 @Document("appointment")
 public class Appointment {
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
     @Id
+    private String objectId;
+
     private Long id;
 
     private Long employeeId;

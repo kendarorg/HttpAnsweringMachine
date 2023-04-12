@@ -78,6 +78,7 @@
         <h2.version>2.1.214</h2.version>
         <!-- This is old for a reason :( -->
         <hibernate.version>5.2.6.Final</hibernate.version>
+        <mongodb.version>4.9.0</mongodb.version>
     </properties>
 
     <modules>

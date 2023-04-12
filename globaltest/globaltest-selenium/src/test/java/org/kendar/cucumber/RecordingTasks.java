@@ -35,7 +35,7 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         driver.findElement(By.id("name")).sendKeys("John Doe");
         doClick(() -> driver.findElement(By.id("mod-save")));
-        Sleeper.sleep(1000);
+        Sleeper.sleep(5000);
         doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("appoint-add")));
@@ -44,7 +44,7 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         driver.findElement(By.id("description")).sendKeys("Visit");
         doClick(() -> driver.findElement(By.id("mod-save")));
-        Sleeper.sleep(1000);
+        Sleeper.sleep(2000);
         doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
@@ -310,7 +310,18 @@ public class RecordingTasks {
 
     @And("^Wait for termination$")
     public void waitForTermination() throws Exception{
-        Sleeper.sleep(3000);
+        var builder = HamBuilder
+                .newHam("www.local.test")
+                .withSocksProxy("127.0.0.1", 1080)
+                .withDns("127.0.0.1");
+        var replayer = builder.pluginBuilder(HamReplayerBuilder.class);
+        while(true) {
+            var res = replayer.retrieveRecordings().stream().findFirst();
+            if (res.get().isCompleted()) {
+                break;
+            }
+        }
+        Sleeper.sleep(1000);
     }
 
 }

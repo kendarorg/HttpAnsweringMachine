@@ -18,7 +18,7 @@ public class Counter {
 
     private String table;
 
-    private int counter;
+    private long counter;
 
     public String getId() {
         return id;
@@ -28,11 +28,11 @@ public class Counter {
         this.id = id;
     }
 
-    public int getCounter() {
+    public long getCounter() {
         return counter;
     }
 
-    public void setCounter(int counter) {
+    public void setCounter(long counter) {
         this.counter = counter;
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 import java.util.Optional;
 
-public interface AppointmentRepository extends MongoRepository<Appointment, Long> {
+public interface AppointmentRepository extends MongoRepository<Appointment, String> {
 
     @Query("{$and :[{employeeId:?1},{id:?0}]}")
     Optional<Appointment> findById(Long appointmentId, Long employeeId);

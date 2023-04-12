@@ -23,6 +23,26 @@ Feature: MongoRecording
     And Quit selenium
     And Stop mongodb
 
+  Scenario: Run the ui test
+    Given Start applications 'gateway,fe'
+    Given Prepare HAM setup
+    And Prepare mongo proxy
+    And Wait for 'fe' to be ready calling 'http://127.0.0.1:8080/api/v1/health' for '120' seconds
+    And Upload recording 'MainMongo'
+    And Clone recording 'MainMongo' into 'DbMongoUiTest'
+    # Remove the calls not relative to the ui (fe, be, db)
+    And Prepare db only test 'DbMongoUiTest'
+    # Play, just respond to any matching request
+    Then Start replaying 'DbMongoUiTest'
+    And Start applications 'bemongo'
+    And Wait for 'bemongo' to be ready calling 'http://127.0.0.1:8100/api/v1/health' for '120' seconds
+    # Navigate a ui without any gateway
+    And Navigate calendar ui
+    And Stop action 'DbMongoUiTest'
+    And Download recording 'DbMongoUiTest'
+    And Stop applications 'gateway,fe,bemongo,app'
+    And Quit selenium
+
   Scenario: Run the be fake mongo test
     Given Prepare HAM setup
     And Prepare mongo proxy
@@ -39,6 +59,7 @@ Feature: MongoRecording
     # Automatic test of the failing gateway
     When Start null playing 'DbMongoNullTest'
     And Wait for termination
+    And Stop applications 'bemongo'
     # Expect successful result
     Then Load results 'true' for 'DbMongoNullTest'
     And Download recording 'DbMongoNullTest'

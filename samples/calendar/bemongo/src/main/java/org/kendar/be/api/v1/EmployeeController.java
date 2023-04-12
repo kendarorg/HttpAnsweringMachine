@@ -1,6 +1,7 @@
 package org.kendar.be.api.v1;
 
 
+import org.kendar.be.data.CounterService;
 import org.kendar.be.data.CountersRepository;
 import org.kendar.be.data.EmployeeRepository;
 import org.kendar.be.data.entities.Counter;
@@ -9,16 +10,17 @@ import org.kendar.be.data.exceptions.ItemNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController()
 @RequestMapping("/api/v1/employees")
 public class EmployeeController {
 
     private final EmployeeRepository repository;
-    private CountersRepository countersRepository;
+    private CounterService countersRepository;
 
     EmployeeController(EmployeeRepository repository,
-                       CountersRepository countersRepository) {
+                       CounterService countersRepository) {
         this.repository = repository;
         this.countersRepository = countersRepository;
     }
@@ -27,47 +29,40 @@ public class EmployeeController {
     // Aggregate root
     // tag::get-aggregate-root[]
     @GetMapping(value ="",produces = "application/json")
-    List<Employee> all() {
-        return repository.findAll();
+    List<EmployeeDto> all() {
+        return repository.findAll()
+                .stream().map(app->EmployeeDto.convert(app)).
+                collect(Collectors.toList());
     }
     // end::get-aggregate-root[]
 
     @PostMapping(value ="",produces = "application/json")
-    Employee newEmployee(@RequestBody Employee newEmployee) {
-        var counter = countersRepository.findByCollection("employee");
-        if(counter==null){
-            counter = new Counter();
-            counter.setTable("employee");
-            counter.setCounter(1);
-            countersRepository.save(counter);
-        }else{
-            counter.setCounter(counter.getCounter()+1);
-            countersRepository.save(counter);
-        }
-        return repository.save(newEmployee);
+    EmployeeDto newEmployee(@RequestBody EmployeeDto newEmployee) {
+        newEmployee.setId(countersRepository.getNextValue("employee"));
+        var newEmployeeEntity = EmployeeDto.convert(newEmployee);
+        return EmployeeDto.convert(repository.save(newEmployeeEntity));
     }
 
     // Single item
 
     @GetMapping(value ="/{id}",produces = "application/json")
-    Employee one(@PathVariable Long id) {
-
-        return repository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id.toString()));
+    EmployeeDto one(@PathVariable Long id) {
+        return EmployeeDto.convert(repository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(""+id)));
     }
 
     @PutMapping(value ="/{id}",produces = "application/json")
-    Employee replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
+    EmployeeDto replaceEmployee(@RequestBody EmployeeDto newEmployee, @PathVariable Long id) {
 
         return repository.findById(id)
                 .map(employee -> {
                     employee.setName(newEmployee.getName());
                     employee.setRole(newEmployee.getRole());
-                    return repository.save(employee);
+                    return EmployeeDto.convert(repository.save(employee));
                 })
                 .orElseGet(() -> {
                     newEmployee.setId(id);
-                    return repository.save(newEmployee);
+                    return EmployeeDto.convert(repository.save(EmployeeDto.convert(newEmployee)));
                 });
     }
 

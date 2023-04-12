@@ -202,4 +202,9 @@ public class Utils {
         driver.get(url);
         return false;
     }
+
+    public static void setTitle(String title){
+        var driver = (JavascriptExecutor)Utils.getCache("driver");
+        driver.executeScript("document.title = '"+title+"'");
+    }
 }

@@ -2,6 +2,7 @@ package org.kendar.replayer.engine.mongo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.kendar.mongo.model.MongoReqResPacket;
 import org.kendar.replayer.engine.ReplayerEngine;
 import org.kendar.replayer.storage.CallIndex;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Component
@@ -201,6 +203,8 @@ public class MongoReplayer implements ReplayerEngine {
         return hasRows;
     }
 
+    private AtomicInteger responseRequestId = new AtomicInteger(1);
+
     private final JsonTypedSerializer serializer = new JsonTypedSerializer();
     private final ObjectMapper mapper = new ObjectMapper();
     @Override
@@ -215,6 +219,8 @@ public class MongoReplayer implements ReplayerEngine {
             var receivedDeserializer = serializer.newInstance();
             receivedDeserializer.deserialize(req.getRequestText());
             var receivedDeserialized = receivedDeserializer.read("data");
+
+            System.out.println(mapper.writeValueAsString(receivedDeserialized));
             if(ClassUtils.isAssignable(receivedDeserialized.getClass(), MongoReqResPacket.class)){
                 var toSendSerializer = serializer.newInstance();
                 toSendSerializer.deserialize(founded.getResponseText());
@@ -223,8 +229,10 @@ public class MongoReplayer implements ReplayerEngine {
                     var tss = (MongoReqResPacket)toSendDeserialized;
                     var rcv = (MongoReqResPacket)receivedDeserialized;
                     tss.setResponseTo(rcv.getRequestId());
+                    tss.setRequestId(responseRequestId.incrementAndGet());
                     toSendSerializer = serializer.newInstance();
                     toSendSerializer.write("data",tss);
+                    System.out.println(mapper.writeValueAsString(tss));
                     var responseReal = founded.copy();
                     responseReal.setResponseText((String)toSendSerializer.getSerialized());
                     founded =responseReal;
@@ -257,11 +265,11 @@ public class MongoReplayer implements ReplayerEngine {
             query.setParameter("recordingId", name);
             query.setParameter("path", sreq.getPath());
             query.setParameter("host", sreq.getHost());
-            var res = query.getResultList();
+            var res = (List<ReplayerRow>)query.getResultList().stream().collect(Collectors.toList());
             for (var rr : res) {
                 em.detach(rr);
+                staticRequests.add(rr);
             }
-            staticRequests.addAll(res);
         });
 
         var indexesIds = staticRequests.stream().map(r -> r.getIndex().toString()).collect(Collectors.toList());
@@ -299,6 +307,12 @@ public class MongoReplayer implements ReplayerEngine {
             if (rreq.isBinaryRequest() == sreq.isBinaryRequest()) {
                 if (row.getRequestHash().equalsIgnoreCase(contentHash)) {
                     matchedQuery += 20;
+                }else {
+                    if (!rreq.isBinaryRequest()) {
+                        matchedQuery += Levenshtein.normalized(
+                                rreq.getRequestText(),
+                                sreq.getRequestText(),20);
+                    }
                 }
             }
 
