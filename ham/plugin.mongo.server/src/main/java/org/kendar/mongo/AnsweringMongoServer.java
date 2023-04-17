@@ -10,9 +10,11 @@ import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.PluginsInitializer;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -54,7 +56,13 @@ public class AnsweringMongoServer implements AnsweringServer {
         try{
             for(var single : config.getProxies()){
                 var ms = hamMongoServer.clone();
-                ms.run(single.getExposedPort(),this);
+                new Thread(()->{
+                    try {
+                        ms.run(single.getExposedPort(),this);
+                    } catch (IOException e) {
+
+                    }
+                }).start();
                 activeServers.put(single.getExposedPort(),ms);
 
             }
@@ -81,9 +89,19 @@ public class AnsweringMongoServer implements AnsweringServer {
             eventQueue.handle(new ServiceStarted().withTye("mongo"));
             for(var single : config.getProxies()){
                 var ms = hamMongoServer.clone();
-                ms.run(single.getExposedPort(),this);
+                new Thread(()->{
+                    try {
+                        ms.run(single.getExposedPort(),this);
+                    } catch (IOException e) {
+
+                    }
+                }).start();
+
                 activeServers.put(single.getExposedPort(),ms);
 
+            }
+            while(running){
+                Sleeper.sleep(1000);
             }
             //TODO
             //mongoServer.run(77777,this);
