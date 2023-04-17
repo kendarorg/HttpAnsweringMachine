@@ -17,6 +17,27 @@ const downloadFile = function (urlToSend, proposedName) {
     req.send();
 };
 
+const downloadFilePost = function (urlToSend, proposedName, jsonPost) {
+    const req = new XMLHttpRequest();
+    req.open("POST", urlToSend, true);
+    req.setRequestHeader("Content-Type", "application/json");
+    req.send(JSON.stringify(jsonPost));
+    req.responseType = "blob";
+    req.onload = function (event) {
+        const blob = req.response;
+        let fileName = req.getResponseHeader("fileName"); //if you have the fileName header available
+        if (proposedName != "" && typeof proposedName != "undefined") {
+            fileName = proposedName;
+        }
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+    };
+
+    req.send();
+};
+
 const getUrlParameter = function (sParam, defaultVal) {
     if (defaultVal === undefined) defaultVal = false;
     const sPageURL = window.location.search.substring(1),

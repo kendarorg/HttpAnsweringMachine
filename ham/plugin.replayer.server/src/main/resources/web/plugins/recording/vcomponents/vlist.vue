@@ -15,6 +15,7 @@
     <Br><br>
     <button id="recording-list-gendns" v-on:click="generateDns()" class="btn btn-default" title="Toggle">Gnerate DNS for selected</button>
     <button id="recording-list-genssl" v-on:click="generateSSL()" class="btn btn-default" title="Toggle">Gnerate SSL for selected</button>
+    <button id="recording-list-genssl" v-on:click="generateCurl()" class="btn btn-default" title="Toggle">Gnerate CURL for selected</button>
     <button id="recording-list-setscript" v-on:click="setScript()" class="btn btn-default" title="Toggle">Set SCript for selected</button>
     <Br><br>
     <button id="recording-list-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
@@ -210,6 +211,35 @@ module.exports = {
       var toUpload = JSON.stringify(allHosts);
       const headers = {'Content-Type': 'application/json'};
       axiosHandle(axios.post('/api/ssl', toUpload, {headers}), axiosOk);
+    },
+    generateCurl: function () {
+      var allIds = [];
+      this.$refs.grid.onSelected(function (row) {
+        allIds.push(row['id']);
+      })
+      var id = getUrlParameter("id");
+      var toUpload = JSON.stringify(allIds);
+      downloadFilePost(
+          '/api/plugins/replayer/generator/'+id+'/curl',
+          'test.zip',
+          allIds
+      );
+      /*const headers = {'Content-Type': 'application/json',responseType: 'blob'};
+      axiosHandle(axios.post('/api/plugins/replayer/generator/'+id+'/curl', toUpload, {headers}), (response) => {
+        // create file link in browser's memory
+        const href = URL.createObjectURL(new Blob([response.data], { type: "application/zip" }))
+
+        // create "a" HTML element with href to file & click
+        const link = document.createElement('a');
+        link.href = href;
+        link.setAttribute('download', 'curls.zip'); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+
+        // clean up "a" element & remove ObjectURL
+        document.body.removeChild(link);
+        //URL.revokeObjectURL(href);
+      });*/
     }
   }
 }
