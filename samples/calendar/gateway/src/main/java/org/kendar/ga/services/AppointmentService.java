@@ -70,10 +70,12 @@ public class AppointmentService {
         var httpResponse = httpClient.execute(request);
     }
 
-    public Appointment replaceAppointment(Appointment newAppointment, Long employeeId,Long appointmentId) {
+    public Appointment replaceAppointment(Appointment newAppointment) {
         try {
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            var request = new HttpPut(employeeLocation + "/api/v1/appointments/"+ employeeId+"/"+appointmentId);
+            var request = new HttpPut(employeeLocation + "/api/v1/appointments/"+
+                    newAppointment.getEmployeeId()+"/"+
+                    newAppointment.getId());
             var entity = new StringEntity(mapper.writeValueAsString(newAppointment));
             request.setEntity(entity);
             request.setHeader("content-type", "application/json");

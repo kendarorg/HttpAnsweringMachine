@@ -64,7 +64,7 @@ public class AppointmentController {
                 .map(appointment -> {
                     appointment.setDate(newAppointment.getDate());
                     appointment.setDescription(newAppointment.getDescription());
-                    return appointmentService.save(appointment);
+                    return appointmentService.replaceAppointment(appointment);
                 })
                 .orElseGet(() -> {
                     newAppointment.setId(appointmentId);
@@ -87,7 +87,7 @@ public class AppointmentController {
                     }else if(appointment.getStatus()==AppointmentStatus.DRAFT){
                         appointment.setStatus(AppointmentStatus.CONFIRMED);
                     }
-                    return appointmentService.save(appointment);
+                    return appointmentService.replaceAppointment(appointment);
                 })
                 .orElseThrow(() -> {
                     throw new ItemNotFoundException(employeeId.toString()+":"+appointmentId.toString());
