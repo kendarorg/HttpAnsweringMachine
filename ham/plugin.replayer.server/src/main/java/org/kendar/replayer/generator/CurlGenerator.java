@@ -39,7 +39,14 @@ public class CurlGenerator implements SelectedGenerator{
 
 
 
-        var curls = new ArrayList<String>();
+        var unixCurl = new ArrayList<String>();
+        unixCurl.add("#/bin/sh");
+        unixCurl.add("");
+        unixCurl.add("function pause {\n" +
+                " read -s -n 1 -p \"Press any key to continue . . .\"\n" +
+                " echo \"\"\n" +
+                "}");
+        var winCurl = new ArrayList<String>();
         for (var id :ids) {
             var callIndex = (CallIndex)sessionFactory.queryResult((em) -> {
                 return em.createQuery("SELECT e FROM CallIndex e WHERE " +
@@ -53,7 +60,7 @@ public class CurlGenerator implements SelectedGenerator{
             });
             var requ = replayerRow.getRequest();
 
-            var singleCurl = "curl ";
+            var singleCurl = "curl -v ";
 
             if(requ.bodyExists()){
                 singleCurl+=" -d @"+id+".data.bin ";
@@ -84,18 +91,34 @@ public class CurlGenerator implements SelectedGenerator{
                 continue;
             }
 
-            singleCurl+=" "+requ.getProtocol()+"://"+requ.getHost()+":"+requ.getPort()+requ.getPath();
+            if(requ.getPort()>0) {
+                singleCurl += " " + requ.getProtocol() + "://" + requ.getHost() + ":" + requ.getPort() + requ.getPath();
+            }else{
+                singleCurl += " " + requ.getProtocol() + "://" + requ.getHost()  + requ.getPath();
+            }
             for(var h:requ.getHeaders().entrySet()){
                 singleCurl+=" -H \""+h.getKey()+":"+h.getValue()+"\" ";
             }
-            curls.add("# Request "+id);
-            curls.add(singleCurl);
+            unixCurl.add("# Request "+id);
+            unixCurl.add(singleCurl);
+            unixCurl.add("pause");
+            winCurl.add("REM Request "+id);
+            winCurl.add(singleCurl);
+            winCurl.add("pause");
 
         }
 
-        var full = String.join("\r\n",curls);
+        var full = String.join("\r\n",unixCurl);
         var result = full.getBytes(StandardCharsets.UTF_8);
-        ZipEntry entry = new ZipEntry("curls.txt");
+        ZipEntry entry = new ZipEntry("curls.sh");
+        //entry.setSize(result.length);
+        zos.putNextEntry(entry);
+        zos.write(result);
+        zos.closeEntry();
+
+        full = String.join("\r\n",winCurl);
+        result = full.getBytes(StandardCharsets.UTF_8);
+        entry = new ZipEntry("curls.bat");
         //entry.setSize(result.length);
         zos.putNextEntry(entry);
         zos.write(result);
