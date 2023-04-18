@@ -132,7 +132,7 @@ public abstract class MongoClientHandler implements Runnable {
 
                 while (true) {
                     if(!readBytes(fromClient,headerBytes)){
-                        Sleeper.sleep(100);
+                        Sleeper.sleep(1);
                         continue;
                     }
 
