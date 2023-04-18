@@ -77,6 +77,7 @@ public class AppointmentController {
                 .map(appointment -> {
                     appointment.setDate(newAppointment.getDate());
                     appointment.setDescription(newAppointment.getDescription());
+                    appointment.setStatus(newAppointment.getStatus().toString());
                     return appointmentRepository.save(appointment);
                 })
                 .orElseGet(() -> {
@@ -95,10 +96,10 @@ public class AppointmentController {
     Appointment changeState(@PathVariable Long employeeId,@PathVariable Long appointmentId) {
         return appointmentRepository.findById(appointmentId,employeeId)
                 .map(appointment -> {
-                    if(appointment.getStatus()== AppointmentStatus.CREATED){
-                        appointment.setStatus(AppointmentStatus.DRAFT);
-                    }else if(appointment.getStatus()==AppointmentStatus.DRAFT){
-                        appointment.setStatus(AppointmentStatus.CONFIRMED);
+                    if(appointment.getStatus().equalsIgnoreCase(AppointmentStatus.CREATED.toString())){
+                        appointment.setStatus(AppointmentStatus.DRAFT.toString());
+                    }else if(appointment.getStatus().equalsIgnoreCase(AppointmentStatus.DRAFT.toString())){
+                        appointment.setStatus(AppointmentStatus.CONFIRMED.toString());
                     }
                     return appointmentRepository.save(appointment);
                 })

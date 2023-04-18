@@ -88,4 +88,21 @@ public class AppointmentService {
             return null;
         }
     }
+
+    public Object setState(Long employeeId, Long appointmentId) {
+        try {
+            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            var request = new HttpPut(employeeLocation + "/api/v1/appointments/"+
+                    employeeId+"/"+
+                    appointmentId+"/state");
+            request.setHeader("content-type", "application/json");
+            var httpResponse = httpClient.execute(request);
+            HttpEntity responseEntity = httpResponse.getEntity();
+            var in = EntityUtils.toString(responseEntity, "UTF-8");
+            return mapper.readValue(in, new TypeReference<>() {
+            });
+        }catch (Exception ex){
+            return null;
+        }
+    }
 }

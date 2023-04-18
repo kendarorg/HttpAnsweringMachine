@@ -87,7 +87,8 @@ public class AppointmentController {
                     }else if(appointment.getStatus()==AppointmentStatus.DRAFT){
                         appointment.setStatus(AppointmentStatus.CONFIRMED);
                     }
-                    return appointmentService.replaceAppointment(appointment);
+                    appointmentService.setState(employeeId,appointmentId);
+                    return appointment;
                 })
                 .orElseThrow(() -> {
                     throw new ItemNotFoundException(employeeId.toString()+":"+appointmentId.toString());

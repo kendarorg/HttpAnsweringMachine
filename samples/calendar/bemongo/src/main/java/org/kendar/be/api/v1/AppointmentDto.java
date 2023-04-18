@@ -12,7 +12,7 @@ public class AppointmentDto {
         result.setId(entity.getId());
         result.setEmployeeId(entity.getEmployeeId());
         result.setDate(entity.getDate());
-        result.setStatus(entity.getStatus());
+        result.setStatus(AppointmentStatus.toEnum(entity.getStatus()));
         result.setDescription(entity.getDescription());
         return result;
     }
@@ -23,7 +23,7 @@ public class AppointmentDto {
         result.setId(entity.getId());
         result.setEmployeeId(entity.getEmployeeId());
         result.setDate(entity.getDate());
-        result.setStatus(entity.getStatus());
+        result.setStatus(entity.getStatus().toString());
         result.setDescription(entity.getDescription());
         return result;
     }

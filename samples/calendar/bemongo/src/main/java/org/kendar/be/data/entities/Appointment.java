@@ -1,5 +1,7 @@
 package org.kendar.be.data.entities;
 
+import org.bson.BsonType;
+import org.bson.codecs.pojo.annotations.BsonRepresentation;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,7 +24,8 @@ public class Appointment {
 
     private Long employeeId;
 
-    private AppointmentStatus status = AppointmentStatus.CREATED;
+
+    private String status = AppointmentStatus.CREATED.toString();
     private Calendar date;
     private String description;
 
@@ -58,11 +61,11 @@ public class Appointment {
         this.description = description;
     }
 
-    public AppointmentStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(AppointmentStatus state) {
+    public void setStatus(String state) {
         this.status = state;
     }
 }
