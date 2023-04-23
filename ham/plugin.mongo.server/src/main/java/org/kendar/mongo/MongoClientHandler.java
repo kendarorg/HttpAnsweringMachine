@@ -33,13 +33,14 @@ import java.util.stream.Collectors;
 
 public abstract class MongoClientHandler implements Runnable {
 
-    public void close(){
+    public void close() {
         try {
             client.close();
         } catch (Exception e) {
 
         }
     }
+
     private final Socket client;
     private final Logger logClient;
     private final Logger logServer;
@@ -56,19 +57,19 @@ public abstract class MongoClientHandler implements Runnable {
         this.logServer = loggerBuilder.build(MongoLogServer.class);
         this.msgHandlers = msgHandlers.stream()
                 .collect(Collectors.toMap(MsgHandler::getOpCode, Function.identity()));
-        this.compressionHandlers =  compressionHandlers.stream()
+        this.compressionHandlers = compressionHandlers.stream()
                 .collect(Collectors.toMap(CompressionHandler::getId, Function.identity()));
         this.connectionId = connectionCounter.incrementAndGet();
     }
 
-    public static boolean readBytes(InputStream stream,byte[] buffer) throws IOException {
+    public static boolean readBytes(InputStream stream, byte[] buffer) throws IOException {
         int offset = 0;
         int bytesRead = 0;
         while (offset < buffer.length && (bytesRead = stream.read(buffer, offset, buffer.length - offset)) != -1) {
             offset += bytesRead;
         }
-        var res = offset>0;
-        if(res==false){
+        var res = offset > 0;
+        if (res == false) {
             return false;
         }
         return true;
@@ -106,10 +107,10 @@ public abstract class MongoClientHandler implements Runnable {
 
     private static AtomicLong requestCounter = new AtomicLong(1);
 
-    private static String cleanUp(MongoPacket packet){
+    private static String cleanUp(MongoPacket packet) {
         var ser = mapper.valueToTree(packet);
-        ((ObjectNode)ser).remove("payload");
-        ((ObjectNode)ser).remove("header");
+        ((ObjectNode) ser).remove("payload");
+        ((ObjectNode) ser).remove("header");
 
         try {
             return mapper.writeValueAsString(ser);
@@ -127,35 +128,44 @@ public abstract class MongoClientHandler implements Runnable {
             connectToClient();
 
 
+            byte[] headerBytes = new byte[16];
 
-                byte[] headerBytes = new byte[16];
-
-                while (true) {
-                    if(!readBytes(fromClient,headerBytes)){
-                        Sleeper.sleep(1);
-                        continue;
+            while (true) {
+                int max=10000;
+                if (!readBytes(fromClient, headerBytes)) {
+                    Sleeper.sleep(100);
+                    max-=(100+serverSocket.getSoTimeout());
+                    if(max<0){
+                        close();
+                        return;
                     }
-
-                    logClient.debug("===================");
-                    var clientPacket = readPacketsFromStream(fromClient, headerBytes);
-                    OpGeneralResponse generalResponse = mongoRoundTrip(clientPacket,connectionId);
-                    logClient.debug(cleanUp(clientPacket));
-
-                    logServer.debug(cleanUp(generalResponse.getResult()));
-                    logClient.debug("===================");
-                    if(generalResponse.getResult().isFinale()){
-                        break;
-                    }
-                    toClient.write(generalResponse.getResult().serialize());
-
-                    toClient.flush();
-                    if(generalResponse.isFinalMessage()){
-                        break;
-                    }
-
-                    headerBytes = new byte[16];
+                    continue;
                 }
-        }catch(SocketException ex){
+
+                logClient.debug("===================");
+                var clientPacket = readPacketsFromStream(fromClient, headerBytes);
+                OpGeneralResponse generalResponse = mongoRoundTrip(clientPacket, connectionId);
+
+                if(logClient.isDebugEnabled()) {
+                    logClient.debug(cleanUp(clientPacket));
+                    logClient.debug("===================");
+                    logServer.debug(cleanUp(generalResponse.getResult()));
+                }
+
+                logClient.debug("===================");
+                if (generalResponse.getResult().isFinale()) {
+                    break;
+                }
+                toClient.write(generalResponse.getResult().serialize());
+
+                toClient.flush();
+                if (generalResponse.isFinalMessage()) {
+                    break;
+                }
+
+                headerBytes = new byte[16];
+            }
+        } catch (SocketException ex) {
 
         }
     }
@@ -174,7 +184,7 @@ public abstract class MongoClientHandler implements Runnable {
         OpCodes opCode = OpCodes.of(headerInput.readInt32());
         var packet = new MongoPacket();
         packet.setOpCode(opCode);
-        if(messageLength==0 && opCode==OpCodes.OP_NONE && requestId==0 && responseTo==0){
+        if (messageLength == 0 && opCode == OpCodes.OP_NONE && requestId == 0 && responseTo == 0) {
             packet.setHeader(headerBytes);
             packet.setPayload(new byte[]{});
             return packet;
@@ -182,7 +192,7 @@ public abstract class MongoClientHandler implements Runnable {
 
         byte[] remainingBytes = new byte[messageLength - 16];
 
-        readBytes(inputStream,remainingBytes);
+        readBytes(inputStream, remainingBytes);
         //inputStream.read(remainingBytes);
         packet.setHeader(headerBytes);
         packet.setPayload(remainingBytes);
@@ -195,9 +205,9 @@ public abstract class MongoClientHandler implements Runnable {
             if (opCode == OpCodes.OP_COMPRESSED) {
                 return handleOpCompressedCode(requestId, responseTo, packet, remainingBytes, remainingInput);
             } else {
-                return handleOpCode(requestId, responseTo, opCode, remainingInput, uncompressedByteBuffer, packet,remainingBytes.length);
+                return handleOpCode(requestId, responseTo, opCode, remainingInput, uncompressedByteBuffer, packet, remainingBytes.length);
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -225,7 +235,7 @@ public abstract class MongoClientHandler implements Runnable {
         var byteBuffer = byteBufNIOcreate(decompressedBytes, ByteOrder.LITTLE_ENDIAN);
         ByteBufferBsonInput decompressedInput = new ByteBufferBsonInput(byteBuffer);
 
-        var decompresedPacket = handleOpCode(requestId,responseTo,cpacket.getOriginalOpCode(), decompressedInput, byteBuffer, mongoPacket,decompressedBytes.length);
+        var decompresedPacket = handleOpCode(requestId, responseTo, cpacket.getOriginalOpCode(), decompressedInput, byteBuffer, mongoPacket, decompressedBytes.length);
         cpacket.setCompressed(decompresedPacket);
         return cpacket;
     }
@@ -247,9 +257,9 @@ public abstract class MongoClientHandler implements Runnable {
     private byte[] decompress(ByteBufferBsonInput bsonInput, byte compressorId, int compressedLength) throws IOException {
         var bb = new byte[compressedLength];
         bsonInput.readBytes(bb);
-        var compressor= this.compressionHandlers.get(compressorId);
-        if(compressor==null){
-            System.err.println("Unknow compression "+compressorId);
+        var compressor = this.compressionHandlers.get(compressorId);
+        if (compressor == null) {
+            System.err.println("Unknow compression " + compressorId);
         }
         return compressor.decompress(bb);
     }
@@ -259,15 +269,14 @@ public abstract class MongoClientHandler implements Runnable {
         return new ByteBufNIO(bb);
     }
 
-    private MongoPacket<?> handleOpCode(int requestId,int responseTo,OpCodes opCode, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet,
-                                     int length) {
+    private MongoPacket<?> handleOpCode(int requestId, int responseTo, OpCodes opCode, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet,
+                                        int length) {
         var handler = this.msgHandlers.get(opCode);
-        if(handler==null){
+        if (handler == null) {
             System.err.println("Unknown opCode: " + opCode);
         }
-        return handler.handleMsg( requestId, responseTo,bsonInput, byteBuffer, packet, length);
+        return handler.handleMsg(requestId, responseTo, bsonInput, byteBuffer, packet, length);
     }
-
 
 
 }

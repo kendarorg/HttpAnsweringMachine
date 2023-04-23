@@ -81,7 +81,8 @@ public class DbReplayerTest {
         if (connectionId != null) {
             req.getHeaders().put("x-connection-id", connectionId);
         }
-        var res = target.findRequestMatch(req, "XXX", new HashMap<>());
+        var requestMatch = target.findRequestMatch(req, "XXX", new HashMap<>());
+        var res = requestMatch.getFoundedRes();
         Object item = new ObjectResult();
         if (res.getResponseText() != null) {
             var dser = serializer.newInstance();

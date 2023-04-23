@@ -31,6 +31,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
     private int localPort;
 
     private final JsonTypedSerializer serializer;
+    private long longConnectionId;
 
     public HamMongoClientHandler(Socket client,
                                  List<MsgHandler> msgHandlers,
@@ -51,9 +52,23 @@ public class HamMongoClientHandler extends MongoClientHandler {
     }
 
     @Override
+    public void close() {
+        try {
+            var ser = serializer.newInstance();
+            var mp = new MongoPacket<>();
+            mp.setOpCode(OpCodes.OP_NONE);
+            mongoRoundTrip(mp,this.longConnectionId);
+        } catch (Exception e) {
+
+        }
+    }
+
+
+    @Override
     public OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
 
         try {
+            longConnectionId = connectionId;
             String db = "admin";
             var isHelloPacket = isHelloPacket(clientPacket);
             if(clientPacket.getOpCode()==OpCodes.OP_MSG){
@@ -79,6 +94,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
             req.getHeaders().put("X-CONNECTION-ID", this.connectionId);
             req.getHeaders().put("X-MONGO-ID", ""+connectionId);
             req.setPort(80);
+            String command = "NONE";
             if(clientPacket instanceof MsgPacket){
                 var msg = (MsgPacket)clientPacket;
                 var payload = (MsgDocumentPayload)msg.getPayloads().get(0);
@@ -87,7 +103,8 @@ public class HamMongoClientHandler extends MongoClientHandler {
                 List<String> keys = new ArrayList<>();
                 Iterator<String> iterator = jsonPayload.fieldNames();
                 iterator.forEachRemaining(e -> keys.add(e));
-                var command = keys.get(0);
+                command = keys.get(0);
+                //System.out.println("SENDING "+command);
                 req.setPath(
                         String.format("/api/mongo/%d/%s/%s/%s", localPort, db,
                                 clientPacket.getOpCode(),command));
@@ -98,12 +115,15 @@ public class HamMongoClientHandler extends MongoClientHandler {
                 List<String> keys = new ArrayList<>();
                 Iterator<String> iterator = jsonPayload.fieldNames();
                 iterator.forEachRemaining(e -> keys.add(e));
-                var command = keys.get(0);
+                command = keys.get(0);
+                //System.out.println("SENDING "+command);
                 req.setPath(
                         String.format("/api/mongo/%d/%s/%s/%s", localPort, db,
                                 clientPacket.getOpCode(),command));
 
             }else {
+                command = clientPacket.getClass().getName();
+                //System.out.println("SENDING UNKNOWN "+command);
                 req.setPath(
                         String.format("/api/mongo/%d/%s/%s", localPort, db,
                                 clientPacket.getOpCode()));
@@ -113,6 +133,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
             event.setRequest(req);
             var result = eventQueue.execute(event, Response.class);
             var response = result.getResponseText();
+            //System.out.println("RECEIVED "+command);
             var deser = serializer.newInstance();
             deser.deserialize(response);
             var serverPacket = (MongoPacket) deser.read("data");

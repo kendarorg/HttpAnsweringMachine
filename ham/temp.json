@@ -2,25 +2,7 @@
   "system" : false,
   "id" : "mongo",
   "active" : true,
-  "proxies" : [ {
-    "id" : "1",
-    "exposedPort" : 27097,
-    "remote" : {
-      "connectionString" : "mongodb://127.0.0.1:27077",
-      "login" : "",
-      "password" : ""
-    },
-    "active" : true
-  }, {
-    "id" : "654769b0-4eae-478a-a181-861818efa97f",
-    "exposedPort" : 27078,
-    "remote" : {
-      "connectionString" : "mongodb://127.0.0.1:27077",
-      "login" : "",
-      "password" : ""
-    },
-    "active" : true
-  } ]
+  "proxies" : [  ]
 }, {
   "id" : "oidc.server",
   "tokenExpiration" : 86400,
@@ -141,42 +123,7 @@
 }, {
   "system" : true,
   "id" : "proxy",
-  "proxies" : [ {
-    "id" : "72d370b5-fb38-4632-b45f-3cd3325abecf",
-    "when" : "http://localhost/int/prova001",
-    "where" : "http://fake1.forced",
-    "test" : "fake1",
-    "running" : true,
-    "force" : true
-  }, {
-    "id" : "f9669eb8-11dd-4c0f-ab1a-345fdce32311",
-    "when" : "http://localhost/int/prova002",
-    "where" : "http://fake2.noforced",
-    "test" : "fake2",
-    "running" : false,
-    "force" : false
-  }, {
-    "id" : "2cb7560d-3b92-402e-8a17-e180e60571a5",
-    "when" : "http://localhost/int/gateway.sample.test",
-    "where" : "http://127.0.0.1:8090",
-    "test" : "127.0.0.1:8090",
-    "running" : true,
-    "force" : true
-  }, {
-    "id" : "b973f846-eb5d-4229-b1ae-608eb42f2cef",
-    "when" : "http://localhost/int/be.sample.test",
-    "where" : "http://127.0.0.1:8100",
-    "test" : "127.0.0.1:8100",
-    "running" : true,
-    "force" : true
-  }, {
-    "id" : "fb182c3e-628e-475b-b882-150b03994bbc",
-    "when" : "http://www.sample.test",
-    "where" : "http://127.0.0.1:8080",
-    "test" : "127.0.0.1:8080",
-    "running" : true,
-    "force" : true
-  } ]
+  "proxies" : [  ]
 }, {
   "system" : true,
   "id" : "dbproxy",

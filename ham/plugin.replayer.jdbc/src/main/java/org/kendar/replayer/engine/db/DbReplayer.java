@@ -10,6 +10,7 @@ import org.kendar.janus.results.ObjectResult;
 import org.kendar.janus.results.VoidResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.replayer.engine.ReplayerEngine;
+import org.kendar.replayer.engine.RequestMatch;
 import org.kendar.replayer.engine.db.sqlsim.SqlSimulator;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DbRecording;
@@ -201,7 +202,7 @@ public class DbReplayer implements ReplayerEngine {
     private AtomicLong atomicLong = new AtomicLong(Long.MAX_VALUE);
 
     @Override
-    public Response findRequestMatch(Request req, String contentHash, Map<String, String> specialParams) throws Exception {
+    public RequestMatch findRequestMatch(Request req, String contentHash, Map<String, String> specialParams) throws Exception {
         if (!hasRows) return null;
         var fullPath = req.getPath().substring(1).split("/");
         if (req.getPath().startsWith("/api/db")) {
@@ -243,7 +244,8 @@ public class DbReplayer implements ReplayerEngine {
         var dbName = req.getPathParameter("dbName").toLowerCase(Locale.ROOT);
 
         //return getTreeMatch(req, command, dbName);
-        return getStraightMatch(req, command, dbName);
+        var result= getStraightMatch(req, command, dbName);
+        return new RequestMatch(req,null,result);
     }
 
     private Response getStraightMatch(Request req, JdbcCommand command, String dbName) {

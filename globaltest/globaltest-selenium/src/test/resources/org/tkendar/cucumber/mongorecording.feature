@@ -49,6 +49,7 @@ Feature: MongoRecording
     And Upload recording 'MainMongo'
     And Clone recording 'MainMongo' into 'DbMongoNullTest'
     And Prepare db null test 'DbMongoNullTest'
+    And Set NullGateway verification script for 'DbMongoNullTest'
     # To allow the initialisation of an existing database
     Then Start replaying 'DbMongoNullTest'
     # Does not create the db and tables, just use them

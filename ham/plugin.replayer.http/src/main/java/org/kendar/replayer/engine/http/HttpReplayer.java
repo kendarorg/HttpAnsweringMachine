@@ -1,6 +1,7 @@
 package org.kendar.replayer.engine.http;
 
 import org.kendar.replayer.engine.ReplayerEngine;
+import org.kendar.replayer.engine.RequestMatch;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DbRecording;
 import org.kendar.replayer.storage.ReplayerRow;
@@ -210,10 +211,10 @@ public class HttpReplayer implements ReplayerEngine {
     }
 
     @Override
-    public Response findRequestMatch(Request req, String contentHash, Map<String, String> params) throws Exception {
+    public RequestMatch findRequestMatch(Request req, String contentHash, Map<String, String> params) throws Exception {
 
         if (!hasRows) return null;
-        Response founded = findRequestMatch(req, contentHash, true);
+        RequestMatch founded = findRequestMatch(req, contentHash, true);
         if (founded == null) {
             founded = findRequestMatch(req, contentHash, false);
         }
@@ -221,7 +222,7 @@ public class HttpReplayer implements ReplayerEngine {
     }
 
 
-    private Response findRequestMatch(Request sreq, String contentHash, boolean staticRequest) throws Exception {
+    private RequestMatch findRequestMatch(Request sreq, String contentHash, boolean staticRequest) throws Exception {
         var matchingQuery = -1;
         ReplayerRow founded = null;
         var staticRequests = new ArrayList<ReplayerRow>();
@@ -297,7 +298,7 @@ public class HttpReplayer implements ReplayerEngine {
         } else {
             return null;
         }
-        return founded.getResponse();
+        return new RequestMatch(sreq, founded.getRequest(),founded.getResponse());
     }
 
     private int matchQuery(Map<String, String> left, Map<String, String> right) {

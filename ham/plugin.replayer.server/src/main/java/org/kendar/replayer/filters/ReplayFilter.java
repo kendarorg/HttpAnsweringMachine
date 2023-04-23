@@ -55,9 +55,9 @@ public class ReplayFilter implements FilteringClass {
                 req.getHost() +
                 req.getPath();
         var result = replayerStatus.replay(req, res);
-        if (result) {
+        if (result.isPresent()) {
             logger.info(toReplay);
         }
-        return result;
+        return result.isPresent();
     }
 }

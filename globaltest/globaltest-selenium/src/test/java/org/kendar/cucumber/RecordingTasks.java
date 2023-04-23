@@ -156,16 +156,13 @@ public class RecordingTasks {
         var root = getRootPath(RecordingTasks.class);
         var toUploadPath = Path.of(root,"release",recordingName+".json");
         var result ="";
-        if(!Files.exists(toUploadPath)){
+        //if(!Files.exists(toUploadPath)){
             var in = this.getClass().getResourceAsStream("/recordings/"+recordingName+".json");
             var streamReader = new InputStreamReader(in, StandardCharsets.UTF_8);
             var reader = new BufferedReader(streamReader);
             for(String line ;(line = reader.readLine())!=null;){
                 result+=line;
             }
-        }else{
-            result = Files.readString(toUploadPath);
-        }
         var builder = HamBuilder
                 .newHam("www.local.test")
                 .withSocksProxy("127.0.0.1", 1080)

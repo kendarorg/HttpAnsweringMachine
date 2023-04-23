@@ -42,6 +42,7 @@ public class RecordFilter implements FilteringClass {
 
     @HttpMethodFilter(phase = HttpFilterType.POST_RENDER, pathAddress = "*", method = "*", id = "9000daa6-277f-11ec-9621-0242ac1afe002")
     public boolean record(Request reqArrived, Response res) {
+        if (replayerStatus.getStatus() != ReplayerState.RECORDING) return false;
         var req = reqArrived.retrieveOriginal();
         if (req.getPath().contains("api/dns/lookup")) return false;
         var validAddress = false;
@@ -49,7 +50,7 @@ public class RecordFilter implements FilteringClass {
             validAddress = replayerEngines.get(i).isValidPath(req) || validAddress;
         }
         if (!validAddress) return false;
-        if (replayerStatus.getStatus() != ReplayerState.RECORDING) return false;
+
         try {
 
             if (replayerStatus.addRequest(req, res)) {

@@ -1,5 +1,7 @@
 package org.kendar.mongo.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.http.FilteringClass;
 import org.kendar.http.HttpFilterType;
 import org.kendar.http.annotations.HamDoc;
@@ -20,6 +22,7 @@ import org.kendar.mongo.responder.MongoResponder;
 import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -30,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
         blocking = false)
 public class MongoProxyHandlerApi implements FilteringClass {
     private final Timer timer;
+    private final Logger logger;
     private List<MsgHandler> msgHandlers;
     private List<CompressionHandler> compressionHandlers;
     private LoggerBuilder loggerBuilder;
@@ -45,6 +49,7 @@ public class MongoProxyHandlerApi implements FilteringClass {
         this.msgHandlers = msgHandlers;
         this.compressionHandlers = compressionHandlers;
         this.loggerBuilder = loggerBuilder;
+        this.logger = loggerBuilder.build(MongoProxyHandlerApi.class);
         this.responders = responders;
         this.configuration = configuration;
         timer = new Timer();
@@ -144,9 +149,13 @@ public class MongoProxyHandlerApi implements FilteringClass {
         return handleMongoRequest(req, res);
     }
 
+    private ObjectMapper mapper = new ObjectMapper();
+
     private boolean handleMongoRequest(Request req, Response res) {
         var port = Integer.parseInt(req.getPathParameter("port"));
         var db = req.getPathParameter("dbName");
+        var opcode = req.getPathParameter("opcode");
+
         var deser = serializer.newInstance();
         deser.deserialize(req.getRequestText());
         var config = configuration.getConfiguration(MongoConfig.class);
@@ -164,6 +173,18 @@ public class MongoProxyHandlerApi implements FilteringClass {
         var globalConnectionId = req.getHeader("X-CONNECTION-ID");
         var connectionId = Integer.parseInt(req.getHeader("X-MONGO-ID"));
 
+//        try {
+//            System.out.println("FROM CLIENT "+mapper.writeValueAsString(fromClient));
+//        } catch (JsonProcessingException e) {
+//            throw new RuntimeException(e);
+//        }
+
+        if(opcode.equalsIgnoreCase("CLOSE")){
+            var handler = mongoClientHandlers.get(globalConnectionId);
+            handler.close();
+            return true;
+        }
+
         if(!mongoClientHandlers.containsKey(globalConnectionId)){
             mongoClientHandlers.put(globalConnectionId,new JsonMongoClientHandler(
                     founded,msgHandlers,compressionHandlers,
@@ -178,6 +199,12 @@ public class MongoProxyHandlerApi implements FilteringClass {
         if(serverResponse.isFinalMessage()){
             handler.close();
             mongoClientHandlers.remove(globalConnectionId);
+        }
+
+        try {
+            System.out.println("TO CLIENT "+mapper.writeValueAsString(serverResponse));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
 
         //Call real server

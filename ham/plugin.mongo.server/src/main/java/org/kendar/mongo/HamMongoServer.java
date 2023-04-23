@@ -47,6 +47,7 @@ public class HamMongoServer {
 
             while (answeringMongoServer.isActive()) {
                 Socket client = server.accept();
+                //client.setSoTimeout(5000);
                 logger.debug("New client connected: " + client.getInetAddress().getHostAddress());
                 // Handle the client connection in a separate thread
                 Thread clientThread = new Thread(

@@ -230,7 +230,7 @@ public class ReplayerDataset implements BaseDataset {
     }
 
 
-    public Response findResponse(Request req) {
+    public RequestMatch findResponse(Request req) {
         try {
 
             String contentHash;
