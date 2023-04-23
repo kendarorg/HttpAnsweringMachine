@@ -504,7 +504,7 @@ public class MongoReplayer implements ReplayerEngine {
             if(!sreqPath.toLowerCase().endsWith("/ismaster")) {
                 states.put(founded.getId(), "");
             }else{
-
+                System.out.println(founded.getResponse().getResponseText());
 
             }
         } else {

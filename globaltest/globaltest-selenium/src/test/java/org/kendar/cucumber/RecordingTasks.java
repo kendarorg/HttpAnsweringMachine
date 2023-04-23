@@ -50,7 +50,6 @@ public class RecordingTasks {
         doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("grid-rowe-0-1")));
-        doClick(() -> driver.findElement(By.cssSelector(".row")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.linkText("Employees")));
         Sleeper.sleep(1000);
