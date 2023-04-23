@@ -25,8 +25,8 @@ Feature: MongoRecording
 
   Scenario: Run the ui test
     Given Start applications 'gateway,fe'
-    Given Prepare HAM setup
-    And Prepare mongo proxy
+    #Given Prepare HAM setup
+    #And Prepare mongo proxy
     And Wait for 'fe' to be ready calling 'http://127.0.0.1:8080/api/v1/health' for '120' seconds
     And Upload recording 'MainMongo'
     And Clone recording 'MainMongo' into 'DbMongoUiTest'

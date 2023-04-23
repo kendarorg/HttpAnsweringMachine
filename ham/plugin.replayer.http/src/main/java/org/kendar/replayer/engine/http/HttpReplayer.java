@@ -248,6 +248,7 @@ public class HttpReplayer implements ReplayerEngine {
             staticRequests.addAll(res);
         });
 
+        System.out.println(sreq.getPath());
         var indexesIds = staticRequests.stream().map(r -> r.getIndex().toString()).collect(Collectors.toList());
         var indexes = " e.reference=" + String.join(" OR e.reference=", indexesIds);
         var callIndexes = new ArrayList<CallIndex>();
