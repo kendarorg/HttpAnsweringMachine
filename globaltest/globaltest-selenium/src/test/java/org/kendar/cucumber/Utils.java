@@ -89,6 +89,15 @@ public class Utils {
         throw new RuntimeException("Unable to find item!");
     }
 
+    public static void waitForText(Supplier<WebElement> el){
+        for (var i = 0; i < 10; i++) {
+            var res = el.get();
+            if (res == null) {
+                Sleeper.sleep(1000);
+                continue;
+            }
+        }
+    }
     public static void doClick(Supplier<WebElement> el) {
         for (var i = 0; i < 10; i++) {
             var res = el.get();
