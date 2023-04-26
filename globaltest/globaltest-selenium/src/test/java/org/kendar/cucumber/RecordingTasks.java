@@ -13,8 +13,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kendar.cucumber.Utils.*;
@@ -44,14 +42,26 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         driver.findElement(By.id("description")).sendKeys("Visit");
         doClick(() -> driver.findElement(By.id("mod-save")));
-        //Sleeper.sleep(2000);
-        waitForText(()->driver.findElement (By.xpath ("//*[contains(text(),'CREATED')]")));
+        Sleeper.sleep(2000);
+        waitForItem(()->driver.findElement (By.id ("grid-rowc-0-1")),
+                (item)->{
+            Sleeper.sleep(1000);
+            return item.getText().contains("CREATED");});
+
         doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
-        //Sleeper.sleep(2000);
-        waitForText(()->driver.findElement (By.xpath ("//*[contains(text(),'DRAFT')]")));
+        Sleeper.sleep(2000);
+        waitForItem(()->driver.findElement (By.id ("grid-rowc-0-1")),
+                (item)->{
+                    Sleeper.sleep(1000);
+                    return item.getText().contains("DRAFT");});
         doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
-        //Sleeper.sleep(2000);
-        waitForText(()->driver.findElement (By.xpath ("//*[contains(text(),'CONFIRMED')]")));
+        Sleeper.sleep(2000);
+
+
+        waitForItem(()->driver.findElement (By.id ("grid-rowc-0-1")),
+                (item)->{
+                    Sleeper.sleep(1000);
+                    return item.getText().contains("CONFIRMED");});
         doClick(() -> driver.findElement(By.id("grid-rowe-0-1")));
         Sleeper.sleep(2000);
         doClick(() -> driver.findElement(By.linkText("Employees")));

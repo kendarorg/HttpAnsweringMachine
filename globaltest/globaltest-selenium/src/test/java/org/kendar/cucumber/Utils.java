@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -89,37 +90,55 @@ public class Utils {
         throw new RuntimeException("Unable to find item!");
     }
 
-    public static void waitForText(Supplier<WebElement> el){
-        for (var i = 0; i < 10; i++) {
-            var res = el.get();
-            if (res == null) {
-                Sleeper.sleep(1000);
-                continue;
+    public static WebElement waitForItem(Supplier<WebElement> el, Function<WebElement,Boolean> c){
+        for (var i = 0; i < 30; i++) {
+            try {
+                var res = el.get();
+                if (res == null) {
+                    Sleeper.sleep(1000);
+                    continue;
+                } else {
+                    if(c!=null){
+                        Sleeper.sleep(1000);
+                        if(c.apply(res)){
+                            return res;
+                        }
+                    }else {
+                        return res;
+                    }
+                }
+            }catch (Exception ex){
+
             }
         }
+        return null;
     }
     public static void doClick(Supplier<WebElement> el) {
         for (var i = 0; i < 10; i++) {
-            var res = el.get();
-            if (res == null) {
-                Sleeper.sleep(1000);
-
-                continue;
-            }
             try {
-                res.click();
-                Sleeper.sleep(500);
-                try {
-                    res = el.get();
-                    if (res != null) {
-                        res.click();
-                    }
-                } catch (Exception ex) {
-                    return;
+                var res = el.get();
+                if (res == null) {
+                    Sleeper.sleep(1000);
+
+                    continue;
                 }
-                return;
-            } catch (Exception e) {
-                System.out.println(e);
+                try {
+                    //res.click();
+                    Sleeper.sleep(500);
+                    try {
+                        res = el.get();
+                        if (res != null) {
+                            res.click();
+                        }
+                    } catch (Exception ex) {
+                        return;
+                    }
+                    return;
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }catch (Exception ex){
+                
             }
 
             Sleeper.sleep(1000);
