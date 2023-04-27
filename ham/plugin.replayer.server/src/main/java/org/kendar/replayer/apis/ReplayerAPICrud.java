@@ -334,7 +334,7 @@ public class ReplayerAPICrud implements FilteringClass {
     )
     public void deleteLines(Request req, Response res) throws Exception {
         List<Long> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Long[].class)).collect(Collectors.toList());
-        var id = Long.valueOf(req.getPathParameter("id"));
+        var id = Long.parseLong(req.getPathParameter("id"));
         sessionFactory.transactional(em -> {
             for (var itemId : jsonFileData) {
                 em.createQuery("DELETE FROM CallIndex WHERE reference=" + itemId + " AND recordingId=" + id).executeUpdate();
@@ -358,7 +358,7 @@ public class ReplayerAPICrud implements FilteringClass {
     public void clone(Request req, Response res) throws Exception {
         Set<Long> jsonFileData = new HashSet<>(
                 Arrays.stream(mapper.readValue(req.getRequestText(), Long[].class)).collect(Collectors.toList()));
-        var id = Long.valueOf(req.getPathParameter("id"));
+        var id = Long.parseLong(req.getPathParameter("id"));
         AtomicLong recordingId = new AtomicLong();
         sessionFactory.query(em -> {
             DbRecording recording = (DbRecording) em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id).getResultList().get(0);

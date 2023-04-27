@@ -36,9 +36,7 @@ public class QueryMatcher implements FilterMatcher {
         }
         if (ClassUtils.isAssignable(cmd.getClass(), JdbcSqlCommand.class)) {
             var sql = ((JdbcSqlCommand) cmd).getSql();
-            if (!sql.trim().equalsIgnoreCase(sql.trim())) {
-                return false;
-            }
+
 
             return true;
         }

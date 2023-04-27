@@ -82,9 +82,9 @@ public class RestClientApi implements FilteringClass {
         event.setRequest(call);
         var result = eventQueue.execute(event, Response.class);
         var stringResult = new StringBuffer();
-        stringResult.append(result.getStatusCode() + "\n");
+        stringResult.append(result.getStatusCode()).append("\n");
         for (var head : result.getHeaders().entrySet()) {
-            stringResult.append(head.getKey() + ":" + head.getValue() + "\n");
+            stringResult.append(head.getKey()).append(":").append(head.getValue()).append("\n");
         }
         stringResult.append("\n");
         if (result.isBinaryResponse()) {

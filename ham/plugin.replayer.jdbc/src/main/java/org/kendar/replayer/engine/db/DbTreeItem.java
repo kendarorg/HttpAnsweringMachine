@@ -55,52 +55,52 @@ public class DbTreeItem {
     }
 
     private String toString(int level) {
-        var pad = "";
+        StringBuilder pad = new StringBuilder();
         for (var i = 0; i < level; i++) {
-            pad += "  ";
+            pad.append("  ");
         }
 
-        var result = "";
-        result += pad + "{\n";
-        result += pad + " " + initiator + "\n";
+        StringBuilder result = new StringBuilder();
+        result.append(pad).append("{\n");
+        result.append(pad).append(" ").append(initiator).append("\n");
 
         if (targets.size() > 0) {
-            result += pad + " targets:[\n";
+            result.append(pad).append(" targets:[\n");
             for (int i = 0; i < targets.size(); i++) {
                 DbRow target = targets.get(i);
-                result += addPad(target.getRequest(), pad + "  ");
+                result.append(addPad(target.getRequest(), pad + "  "));
                 if (i < (targets.size() - 1)) {
-                    result += "\n";
+                    result.append("\n");
                 }
             }
-            result += pad + " ],\n";
+            result.append(pad).append(" ],\n");
         }
         if (children.size() > 0) {
-            result += pad + " children:[\n";
+            result.append(pad).append(" children:[\n");
             for (int i = 0; i < children.size(); i++) {
                 DbTreeItem child = children.get(i);
-                result += child.toString(level + 1);
+                result.append(child.toString(level + 1));
                 if (i < (children.size() - 1)) {
-                    result += "\n";
+                    result.append("\n");
                 }
             }
-            result += pad + " ]\n";
+            result.append(pad).append(" ]\n");
         }
-        result += pad + "}\n";
+        result.append(pad).append("}\n");
 
-        return result;
+        return result.toString();
     }
 
     private String addPad(JdbcCommand request, String level) {
         var splitted = request.toString().split("\n");
-        var result = "";
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < splitted.length; i++) {
             String sp = splitted[i];
             while (sp.startsWith("\t")) sp = sp.substring(1);
             while (sp.startsWith(" ")) sp = sp.substring(1);
-            if (i > 0) result += " ";
-            result += level + sp + "\n";
+            if (i > 0) result.append(" ");
+            result.append(level).append(sp).append("\n");
         }
-        return result;
+        return result.toString();
     }
 }

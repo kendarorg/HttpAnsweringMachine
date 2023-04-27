@@ -21,6 +21,7 @@ import java.sql.Date;
 import java.sql.*;
 import java.util.*;
 
+@SuppressWarnings("MagicConstant")
 public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResultSetImpl> {
     public JdbcResultsetMetaData metadata;
     public Map<String, Integer> labelsToId;
@@ -193,7 +194,7 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
             StringBuffer buffer = new StringBuffer();
             int ch;
             while ((ch = r.read()) != -1) {
-                buffer.append("" + (char) ch);
+                buffer.append("").append((char) ch);
             }
             return buffer.toString();
         } catch (Exception ex) {
@@ -208,7 +209,7 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
             StringBuffer buffer = new StringBuffer();
             int ch;
             while ((ch = r.read()) != -1) {
-                buffer.append("" + (char) ch);
+                buffer.append("").append((char) ch);
             }
             return buffer.toString();
         } catch (Exception ex) {

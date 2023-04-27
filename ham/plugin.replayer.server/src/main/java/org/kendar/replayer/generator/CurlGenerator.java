@@ -55,10 +55,10 @@ public class CurlGenerator implements SelectedGenerator {
                     " e.id=" + callIndex.getReference()).getResultList().get(0));
             var requ = replayerRow.getRequest();
 
-            var singleCurl = "curl -v ";
+            StringBuilder singleCurl = new StringBuilder("curl -v ");
 
             if (requ.bodyExists()) {
-                singleCurl += " -d @" + id + ".data.bin ";
+                singleCurl.append(" -d @").append(id).append(".data.bin ");
 
                 byte[] result;
                 if (requ.isBinaryRequest()) {
@@ -75,30 +75,28 @@ public class CurlGenerator implements SelectedGenerator {
 
 
             if (requ.getMethod().equalsIgnoreCase("post")) {
-                singleCurl += " -X POST ";
+                singleCurl.append(" -X POST ");
             } else if (requ.getMethod().equalsIgnoreCase("put")) {
-                singleCurl += " -X PUT ";
+                singleCurl.append(" -X PUT ");
             } else if (requ.getMethod().equalsIgnoreCase("delete")) {
-                singleCurl += " -X DELETE ";
-            } else if (requ.getMethod().equalsIgnoreCase("get")) {
-
-            } else {
+                singleCurl.append(" -X DELETE ");
+            } else if (!requ.getMethod().equalsIgnoreCase("get")) {
                 continue;
             }
 
             if (requ.getPort() > 0) {
-                singleCurl += " " + requ.getProtocol() + "://" + requ.getHost() + ":" + requ.getPort() + requ.getPath();
+                singleCurl.append(" ").append(requ.getProtocol()).append("://").append(requ.getHost()).append(":").append(requ.getPort()).append(requ.getPath());
             } else {
-                singleCurl += " " + requ.getProtocol() + "://" + requ.getHost() + requ.getPath();
+                singleCurl.append(" ").append(requ.getProtocol()).append("://").append(requ.getHost()).append(requ.getPath());
             }
             for (var h : requ.getHeaders().entrySet()) {
-                singleCurl += " -H \"" + h.getKey() + ":" + h.getValue() + "\" ";
+                singleCurl.append(" -H \"").append(h.getKey()).append(":").append(h.getValue()).append("\" ");
             }
             unixCurl.add("# Request " + id);
-            unixCurl.add(singleCurl);
+            unixCurl.add(singleCurl.toString());
             unixCurl.add("pause");
             winCurl.add("REM Request " + id);
-            winCurl.add(singleCurl);
+            winCurl.add(singleCurl.toString());
             winCurl.add("pause");
 
         }

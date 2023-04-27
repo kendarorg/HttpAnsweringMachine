@@ -138,16 +138,12 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
         result.setMethod(exchange.getRequestMethod().toUpperCase(Locale.ROOT));
         result.setHeaders(RequestUtils.headersToMap(exchange.getRequestHeaders()));
         var headerContentType = result.getHeader(ConstantsHeader.CONTENT_TYPE);
-        if (headerContentType == null) {
-            //result.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.STREAM);
-        }
+
         result.setSoapRequest(result.getHeader(H_SOAP_ACTION) != null);
         setupAuthHeaders(result);
 
         result.setBinaryRequest(MimeChecker.isBinary(headerContentType, ""));
-        result.setStaticRequest(MimeChecker.isStatic(headerContentType, result.getPath())
-                // && result.getQuery().size()==0
-        );
+        result.setStaticRequest(MimeChecker.isStatic(headerContentType, result.getPath()));
         setupOptionalBody(exchange, result);
         // result.sanitizedPath = RequestUtils.sanitizePath(result);
         return result;

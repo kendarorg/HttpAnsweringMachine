@@ -186,7 +186,7 @@ public class DbProxyApi implements FilteringClass {
     }
 
     private boolean preparedStatement(Request req, Response res) {
-        var result = "";
+        StringBuilder result = new StringBuilder();
         try {
             var id = req.getPathParameter("dBname");
             if (id == null || !janusEngines.containsKey(id) || !janusEngines.get(id).isActive()) {
@@ -199,37 +199,37 @@ public class DbProxyApi implements FilteringClass {
                     "SELECT * FROM REPLAYER_RECORDING WHERE ID>?");
             statement.setInt(1, 0);
             var resultset = statement.executeQuery();
-            result += "[";
+            result.append("[");
             var count = 1;
             while (resultset.next()) {
-                if (count > 1) result += ",";
-                var partial = "{";
+                if (count > 1) result.append(",");
+                StringBuilder partial = new StringBuilder("{");
                 for (int i = 1; i <= 100; i++) {
                     try {
                         String columnValue = resultset.getString(i);
-                        if (i > 1) partial += ",";
-                        partial += ("'col" + i + "'='" + columnValue + "'");
+                        if (i > 1) partial.append(",");
+                        partial.append("'col").append(i).append("'='").append(columnValue).append("'");
                     } catch (Exception ex) {
 
                     }
                 }
-                partial += "}";
-                result += partial;
+                partial.append("}");
+                result.append(partial);
             }
-            result += "]";
+            result.append("]");
             connection.close();
             res.getHeaders().put("content-type", "application/json");
         } catch (Exception ex) {
-            result = ex.getMessage();
+            result = new StringBuilder(ex.getMessage());
             logger.error("Error", ex);
         }
 
-        res.setResponseText(result);
+        res.setResponseText(result.toString());
         return true;
     }
 
     private boolean simpleExecution(Request req, Response res) {
-        var result = "";
+        StringBuilder result = new StringBuilder();
         try {
             var id = req.getPathParameter("dBname");
             if (id == null || !janusEngines.containsKey(id) || !janusEngines.get(id).isActive()) {
@@ -243,32 +243,32 @@ public class DbProxyApi implements FilteringClass {
             var connection = DriverManager.getConnection("jdbc:janus:http://localhost/api/db/" + id);
             var statement = connection.createStatement();
             var resultset = statement.executeQuery(query);
-            result += "[";
+            result.append("[");
             var count = 1;
             while (resultset.next()) {
-                if (count > 1) result += ",";
-                var partial = "{";
+                if (count > 1) result.append(",");
+                StringBuilder partial = new StringBuilder("{");
                 for (int i = 1; i <= 100; i++) {
                     try {
                         String columnValue = resultset.getString(i);
-                        if (i > 1) partial += ",";
-                        partial += ("'col" + i + "'='" + columnValue + "'");
+                        if (i > 1) partial.append(",");
+                        partial.append("'col").append(i).append("'='").append(columnValue).append("'");
                     } catch (Exception ex) {
 
                     }
                 }
-                partial += "}";
-                result += partial;
+                partial.append("}");
+                result.append(partial);
             }
-            result += "]";
+            result.append("]");
             connection.close();
             res.getHeaders().put("content-type", "application/json");
         } catch (Exception ex) {
-            result = ex.getMessage();
+            result = new StringBuilder(ex.getMessage());
             logger.error("Error", ex);
         }
 
-        res.setResponseText(result);
+        res.setResponseText(result.toString());
         return true;
     }
 
