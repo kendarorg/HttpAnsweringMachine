@@ -3,6 +3,7 @@ Feature: Google Hack Example
 
   Background:
     Given Cache initialized
+    And Stop applications 'fe,app,be,gateway,bemongo'
     And Ham started
     And Selenium initialized
 
