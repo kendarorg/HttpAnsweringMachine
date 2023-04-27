@@ -30,7 +30,7 @@ import java.util.Map;
 public class ResultsAPI implements FilteringClass {
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private HibernateSessionFactory sessionFactory;
+    private final HibernateSessionFactory sessionFactory;
 
     public ResultsAPI(JsonConfiguration configuration, HibernateSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;

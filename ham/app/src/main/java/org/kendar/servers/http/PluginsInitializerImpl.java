@@ -12,13 +12,11 @@ import java.util.stream.Collectors;
 public class PluginsInitializerImpl implements PluginsInitializer {
 
     private final LoggerBuilder loggerBuilder;
-
+    private final HashMap<String, String> plugins = new HashMap<>();
+    private final HashMap<String, String> specialLoggers = new HashMap<>();
     public PluginsInitializerImpl(LoggerBuilder loggerBuilder) {
         this.loggerBuilder = loggerBuilder;
     }
-
-    private final HashMap<String, String> plugins = new HashMap<>();
-    private final HashMap<String, String> specialLoggers = new HashMap<>();
 
     @Override
     public void addPluginAddress(String address, String description) {

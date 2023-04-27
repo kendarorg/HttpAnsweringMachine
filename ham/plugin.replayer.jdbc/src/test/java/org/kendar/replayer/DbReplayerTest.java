@@ -30,15 +30,14 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DbReplayerTest {
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
+    ObjectMapper mapper = new ObjectMapper();
+
     protected ObjectResult newObjectResult(Object val) {
         var result = new ObjectResult();
         result.setResult(val);
         return result;
     }
-
-    ObjectMapper mapper = new ObjectMapper();
-
-    private JsonTypedSerializer serializer = new JsonTypedSerializer();
 
     private ReplayerResult extractRecordingFromFile(FakeDbReplayer target, String path) throws IOException {
         var data = new String(getClass()
@@ -81,7 +80,8 @@ public class DbReplayerTest {
         if (connectionId != null) {
             req.getHeaders().put("x-connection-id", connectionId);
         }
-        var res = target.findRequestMatch(req, "XXX", new HashMap<>());
+        var requestMatch = target.findRequestMatch(req, "XXX", new HashMap<>());
+        var res = requestMatch.getFoundedRes();
         Object item = new ObjectResult();
         if (res.getResponseText() != null) {
             var dser = serializer.newInstance();

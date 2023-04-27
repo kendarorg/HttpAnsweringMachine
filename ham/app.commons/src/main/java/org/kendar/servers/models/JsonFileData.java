@@ -7,6 +7,8 @@ public class JsonFileData {
     private String name;
     private String data;
     private String type;
+    private byte[] byteData;
+    private String stringData;
 
     public String getName() {
         return name;
@@ -31,9 +33,6 @@ public class JsonFileData {
     public void setType(String type) {
         this.type = type;
     }
-
-    private byte[] byteData;
-    private String stringData;
 
     public byte[] readAsByte() {
         if (byteData == null) {

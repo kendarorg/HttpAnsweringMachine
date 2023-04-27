@@ -15,8 +15,8 @@ import sockslib.server.SocksServerBuilder;
 @Component
 public class Socks5Proxy implements AnsweringServer {
     private final Logger logger;
-    private JsonConfiguration configuration;
-    private DnsMultiResolver multiResolver;
+    private final JsonConfiguration configuration;
+    private final DnsMultiResolver multiResolver;
     private boolean running = false;
 
     public Socks5Proxy(DnsMultiResolver multiResolver, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {

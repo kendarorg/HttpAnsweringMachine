@@ -22,7 +22,10 @@ public class JsDownloadUpload implements FullDownloadUpload {
     private final JsonConfiguration configuration;
     private final EventQueue eventQueue;
     private final HibernateSessionFactory sessionFactory;
-
+    final TypeReference<HashMap<String, String>> typeRef
+            = new TypeReference<>() {
+    };
+    final ObjectMapper mapper = new ObjectMapper();
     public JsDownloadUpload(JsonConfiguration configuration,
                             EventQueue eventQueue,
                             HibernateSessionFactory sessionFactory) {
@@ -31,11 +34,6 @@ public class JsDownloadUpload implements FullDownloadUpload {
         this.eventQueue = eventQueue;
         this.sessionFactory = sessionFactory;
     }
-
-    TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<HashMap<String, String>>() {
-    };
-    ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public Map<String, byte[]> retrieveItems() throws Exception {

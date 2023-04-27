@@ -42,13 +42,12 @@ public class JsHttpFilterDescriptor {
         this.priority = priority;
     }
 
+    public Script getScript() {
+        return this.compiledScript;
+    }
 
     public void setScript(Script compiledScript) {
         this.compiledScript = compiledScript;
-    }
-
-    public Script getScript() {
-        return this.compiledScript;
     }
 
     public boolean isBlocking() {
@@ -76,11 +75,11 @@ public class JsHttpFilterDescriptor {
         return jsQueueHandler;
     }
 
-    public void setAction(JsHttpAction action) {
-        this.action = action;
-    }
-
     public JsHttpAction getAction() {
         return action;
+    }
+
+    public void setAction(JsHttpAction action) {
+        this.action = action;
     }
 }

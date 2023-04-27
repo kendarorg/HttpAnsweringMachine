@@ -25,7 +25,7 @@ public class FullDownloadUploadService {
     public FullDownloadUploadService(List<FullDownloadUpload> downloadUploadList, LoggerBuilder builder) {
 
         this.downloadUploadList = downloadUploadList;
-        this.logger= builder.build(FullDownloadUploadService.class);
+        this.logger = builder.build(FullDownloadUploadService.class);
     }
 
     public byte[] retrieveItems() throws Exception {

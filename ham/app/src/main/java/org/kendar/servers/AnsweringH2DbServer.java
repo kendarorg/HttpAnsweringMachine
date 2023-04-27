@@ -24,21 +24,19 @@ import java.util.List;
 public class AnsweringH2DbServer implements AnsweringServer {
 
     private final Logger logger;
-    private final AnsweringHandler handler;
     private final JsonConfiguration configuration;
-    private List<DbTable> dbTableList;
-    private HibernateSessionFactory sessionFactory;
-    private EventQueue eventQueue;
+    private final List<DbTable> dbTableList;
+    private final HibernateSessionFactory sessionFactory;
+    private final EventQueue eventQueue;
 
     private boolean running = false;
     private boolean initialized = false;
     private Server server;
 
     public AnsweringH2DbServer(
-            LoggerBuilder loggerBuilder, AnsweringHandler handler, JsonConfiguration configuration,
+            LoggerBuilder loggerBuilder,  JsonConfiguration configuration,
             List<DbTable> dbTableList, HibernateSessionFactory sessionFactory, EventQueue eventQueue) {
         this.logger = loggerBuilder.build(AnsweringH2DbServer.class);
-        this.handler = handler;
         this.configuration = configuration;
         this.dbTableList = dbTableList;
         this.sessionFactory = sessionFactory;

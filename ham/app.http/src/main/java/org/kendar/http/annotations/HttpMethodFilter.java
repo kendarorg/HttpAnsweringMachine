@@ -42,7 +42,5 @@ public @interface HttpMethodFilter {
 
     String id() default "";
 
-    ;
-
     HamMatcher[] matcher() default {};
 }

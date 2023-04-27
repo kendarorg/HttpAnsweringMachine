@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <div class="col-md-8">
     <ul class="nav nav-tabs tabs-width">

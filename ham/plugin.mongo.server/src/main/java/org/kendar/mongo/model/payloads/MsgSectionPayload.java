@@ -11,6 +11,10 @@ import java.util.List;
 import static org.kendar.mongo.model.MongoPacket.writeCString;
 
 public class MsgSectionPayload implements BaseMsgPayload, TypedSerializable<MsgSectionPayload> {
+    private List<MsgDocumentPayload> documents = new ArrayList<>();
+    private int length;
+    private String title;
+
     public List<MsgDocumentPayload> getDocuments() {
         return documents;
     }
@@ -19,31 +23,27 @@ public class MsgSectionPayload implements BaseMsgPayload, TypedSerializable<MsgS
         this.documents = documents;
     }
 
-    private List<MsgDocumentPayload> documents = new ArrayList<>();
-    private int length;
-    private String title;
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
     public int getLength() {
         return length;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setLength(int length) {
+        this.length = length;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     @Override
     public void serialize(TypedSerializer typedSerializer) {
-        typedSerializer.write("title",title);
-        typedSerializer.write("length",length);
-        typedSerializer.write("documents",documents);
+        typedSerializer.write("title", title);
+        typedSerializer.write("length", length);
+        typedSerializer.write("documents", documents);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class MsgSectionPayload implements BaseMsgPayload, TypedSerializable<MsgS
         ByteBuffer responseBuffer = ByteBuffer.allocate(64000);
         responseBuffer.order(ByteOrder.LITTLE_ENDIAN);
         responseBuffer.putInt(0);//Length
-        writeCString(responseBuffer,title);
-        for(var document:documents){
+        writeCString(responseBuffer, title);
+        for (var document : documents) {
             responseBuffer.put(document.serialize());
         }
         var length = responseBuffer.position();
@@ -68,8 +68,8 @@ public class MsgSectionPayload implements BaseMsgPayload, TypedSerializable<MsgS
         responseBuffer.putInt(length);
         responseBuffer.position(0);
         var res = new byte[length];
-        for(var i=0;i<length;i++){
-            res[i]=responseBuffer.get();
+        for (var i = 0; i < length; i++) {
+            res[i] = responseBuffer.get();
         }
         return res;
     }

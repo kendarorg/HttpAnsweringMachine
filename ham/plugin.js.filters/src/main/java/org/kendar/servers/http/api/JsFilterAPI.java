@@ -38,12 +38,15 @@ import java.util.Optional;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class JsFilterAPI implements FilteringClass {
+    final ObjectMapper mapper = new ObjectMapper();
     private final JsonConfiguration configuration;
     private final Logger logger;
     private final FileResourcesUtils fileResourcesUtils;
     private final EventQueue eventQueue;
-    private HibernateSessionFactory sessionFactory;
-    final ObjectMapper mapper = new ObjectMapper();
+    private final HibernateSessionFactory sessionFactory;
+    final TypeReference<HashMap<String, String>> typeRef
+            = new TypeReference<>() {
+    };
 
     public JsFilterAPI(JsonConfiguration configuration,
                        FileResourcesUtils fileResourcesUtils,
@@ -62,10 +65,6 @@ public class JsFilterAPI implements FilteringClass {
     public String getId() {
         return this.getClass().getName();
     }
-
-    TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<HashMap<String, String>>() {
-    };
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
@@ -111,16 +110,16 @@ public class JsFilterAPI implements FilteringClass {
                         "true".equalsIgnoreCase(req.getQuery("full"));
 
         DbFilter dbFilter = null;
-        Optional<DbFilter> dbFilterOpt =  sessionFactory.querySingle(em ->
+        Optional<DbFilter> dbFilterOpt = sessionFactory.querySingle(em ->
                 em.createQuery("SELECT e FROM DbFilter e WHERE e.id=" + jsFilterDescriptor + " ORDER BY e.id ASC"));
 
-        if(dbFilterOpt.isPresent()){
+        if (dbFilterOpt.isPresent()) {
             dbFilter = dbFilterOpt.get();
-        }else{
+        } else {
             res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
             return;
         }
-        var id=dbFilter.getId();
+        var id = dbFilter.getId();
         var rf = new RestFilter();
         rf.setId(dbFilter.getId());
         rf.setPhase(dbFilter.getPhase());
@@ -235,9 +234,7 @@ public class JsFilterAPI implements FilteringClass {
         dbFilter.setType(jsonFileData.getType());
         dbFilter.setBlocking(jsonFileData.isBlocking());
 
-        sessionFactory.transactional(em -> {
-            em.persist(dbFilter);
-        });
+        sessionFactory.transactional(em -> em.persist(dbFilter));
         res.setResponseText(dbFilter.getId().toString());
         res.setStatusCode(200);
         eventQueue.handle(new ScriptsModified());

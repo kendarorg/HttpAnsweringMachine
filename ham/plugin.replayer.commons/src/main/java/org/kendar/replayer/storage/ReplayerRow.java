@@ -17,8 +17,43 @@ import java.util.Calendar;
 @Table(name = "REPLAYER_ROW")
 public class ReplayerRow implements DbTable {
 
+    private static ObjectMapper mapper = new ObjectMapper();
     @Column(name = "type")
     private String type;
+    @Column(name = "binaryRequest")
+    private boolean binaryRequest;
+    @Column(name = "path", length = 6400)
+    private String path;
+    //FIXME SHOULD ADD A DECENT ID
+    @Column(name = "host", length = 6400)
+    private String host;
+    @Column(name = "query", length = 6400)
+    private String query;
+    @Column(name = "timestamp")
+    private long timestamp = Calendar.getInstance().getTimeInMillis();
+    @Column(name = "requestSerialized", columnDefinition = "CLOB")
+    @JsonIgnore
+    private String requestSerialized;
+    @Column(name = "responsSerialized", columnDefinition = "CLOB")
+    @Lob
+    @JsonIgnore
+    private String responsSerialized;
+    @Column(name = "requestHash")
+    private String requestHash;
+    @Column(name = "recordingId")
+    private long recordingId;
+    @Column(name = "responseHash")
+    private String responseHash;
+    @Column(name = "id")
+    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "index")
+    private Long index;
+    @Column(name = "staticRequest")
+    private boolean staticRequest;
+    @Column(name = "done")
+    private boolean done = false;
 
     public boolean isBinaryRequest() {
         return binaryRequest;
@@ -27,10 +62,6 @@ public class ReplayerRow implements DbTable {
     public void setBinaryRequest(boolean binaryRequest) {
         this.binaryRequest = binaryRequest;
     }
-
-    @Column(name = "binaryRequest")
-    private boolean binaryRequest;
-    //FIXME SHOULD ADD A DECENT ID
 
     public String getPath() {
         return path;
@@ -48,17 +79,6 @@ public class ReplayerRow implements DbTable {
         this.host = host;
     }
 
-    @Column(name = "path", length = 6400)
-    private String path;
-
-    @Column(name = "host", length = 6400)
-    private String host;
-
-    @Column(name = "query", length = 6400)
-    private String query;
-
-    private static ObjectMapper mapper = new ObjectMapper();
-
     public Long getIndex() {
         return index;
     }
@@ -66,9 +86,6 @@ public class ReplayerRow implements DbTable {
     public void setIndex(Long index) {
         this.index = index;
     }
-
-    @Column(name = "timestamp")
-    private long timestamp = Calendar.getInstance().getTimeInMillis();
 
     public String getRequestSerialized() {
         return requestSerialized;
@@ -78,10 +95,6 @@ public class ReplayerRow implements DbTable {
         this.requestSerialized = requestSerialized;
     }
 
-    @Column(name = "requestSerialized", columnDefinition = "CLOB")
-    @JsonIgnore
-    private String requestSerialized;
-
     public String getResponsSerialized() {
         return responsSerialized;
     }
@@ -90,15 +103,6 @@ public class ReplayerRow implements DbTable {
         this.responsSerialized = responsSerialized;
     }
 
-    @Column(name = "responsSerialized", columnDefinition = "CLOB")
-    @Lob
-    @JsonIgnore
-    private String responsSerialized;
-
-
-    @Column(name = "requestHash")
-    private String requestHash;
-
     public long getRecordingId() {
         return recordingId;
     }
@@ -106,22 +110,6 @@ public class ReplayerRow implements DbTable {
     public void setRecordingId(long recordingId) {
         this.recordingId = recordingId;
     }
-
-    @Column(name = "recordingId")
-    private long recordingId;
-
-
-    @Column(name = "responseHash")
-    private String responseHash;
-
-
-    @Column(name = "id")
-    private long id;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "index")
-    private Long index;
 
     public boolean isStaticRequest() {
         return staticRequest;
@@ -138,10 +126,6 @@ public class ReplayerRow implements DbTable {
     public void setDone(boolean done) {
         this.done = done;
     }
-
-
-    @Column(name = "staticRequest")
-    private boolean staticRequest;
 
     public long getTimestamp() {
         return timestamp;
@@ -186,12 +170,12 @@ public class ReplayerRow implements DbTable {
         }
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getRequestHash() {
@@ -209,9 +193,6 @@ public class ReplayerRow implements DbTable {
     public void setResponseHash(String responseHash) {
         this.responseHash = responseHash;
     }
-
-    @Column(name = "done")
-    private boolean done = false;
 
     public void markAsDone() {
         done = true;

@@ -16,37 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class JsBuilderTest {
+    public static final String HTTP_SIMPLE_TEST_TEST_THING = "http://simple.test/test/thing";
+    public static final String HTTP_SIMPLE_TOAST_TEST_THONG = "http://simple.toast/test/thong";
+    public static final String HTTP_SIMPLE_TEST_TEST_FUFFA = "http://simple.test/wetheaver/fuffa";
+    ObjectMapper mapper = new ObjectMapper();
+
     @BeforeAll
     public static void beforeAll() throws HamTestException {
         HamStarter.runHamJar(JsBuilderTest.class);
     }
-
-    public static final String HTTP_SIMPLE_TEST_TEST_THING = "http://simple.test/test/thing";
-    public static final String HTTP_SIMPLE_TOAST_TEST_THONG = "http://simple.toast/test/thong";
-    public static final String HTTP_SIMPLE_TEST_TEST_FUFFA = "http://simple.test/wetheaver/fuffa";
-
-    public static class ValueDate {
-        private String value;
-        private String date;
-
-        public String getValue() {
-            return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-        }
-
-        public String getDate() {
-            return date;
-        }
-
-        public void setDate(String date) {
-            this.date = date;
-        }
-    }
-
-    ObjectMapper mapper = new ObjectMapper();
 
     @Test
     public void testFilterWithoutRegexp() throws HamException, IOException, InterruptedException {
@@ -88,7 +66,6 @@ public class JsBuilderTest {
         var result = mapper.readValue(data, ValueDate.class);
         return result;
     }
-
 
     @Test
     public void testFilterWithRegexp() throws HamException, IOException, InterruptedException {
@@ -162,5 +139,26 @@ public class JsBuilderTest {
 
         hamBuilder.dns().removeDnsName(dnsNameId);
         jsBuilder.deleteFilter(realid);
+    }
+
+    public static class ValueDate {
+        private String value;
+        private String date;
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
     }
 }

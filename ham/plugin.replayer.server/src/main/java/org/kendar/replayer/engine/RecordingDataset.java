@@ -20,15 +20,27 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class RecordingDataset implements BaseDataset {
+    private static final Map<String, Long> staticRequests = new HashMap<>();
+    private static DbRecording recording;
     private final ConcurrentLinkedQueue<String> errors = new ConcurrentLinkedQueue<>();
     private final AtomicLong counter = new AtomicLong(0L);
     private final Md5Tester md5Tester;
     private final Logger logger;
-    private HibernateSessionFactory sessionFactory;
-    private List<ReplayerEngine> replayerEngines;
+    private final HibernateSessionFactory sessionFactory;
+    private final List<ReplayerEngine> replayerEngines;
     private Long name;
     private String description;
     private Map<String, String> specialParams;
+
+    public RecordingDataset(
+            LoggerBuilder loggerBuilder,
+            Md5Tester md5Tester, HibernateSessionFactory sessionFactory,
+            List<ReplayerEngine> replayerEngines) {
+        this.md5Tester = md5Tester;
+        this.logger = loggerBuilder.build(RecordingDataset.class);
+        this.sessionFactory = sessionFactory;
+        this.replayerEngines = replayerEngines;
+    }
 
     public Long getName() {
         return this.name;
@@ -55,27 +67,10 @@ public class RecordingDataset implements BaseDataset {
 
     }
 
-    public RecordingDataset(
-            LoggerBuilder loggerBuilder,
-            Md5Tester md5Tester, HibernateSessionFactory sessionFactory,
-            List<ReplayerEngine> replayerEngines) {
-        this.md5Tester = md5Tester;
-        this.logger = loggerBuilder.build(RecordingDataset.class);
-        this.sessionFactory = sessionFactory;
-        this.replayerEngines = replayerEngines;
-    }
-
     public void save() throws Exception {
-//        for (int i = 0; i < replayerEngines.size(); i++) {
-//            var engine = replayerEngines.get(i);
-//            engine.setupStaticCalls(recording);
-//        }
         staticRequests.clear();
         recording = null;
     }
-
-    private static Map<String, Long> staticRequests = new HashMap<>();
-    private static DbRecording recording;
 
     public boolean add(Request req, Response res) throws Exception {
         if (name == null) {
@@ -87,9 +82,7 @@ public class RecordingDataset implements BaseDataset {
             });
         }
         if (recording == null) {
-            recording = sessionFactory.queryResult((em) -> {
-                return em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + name).getResultList().get(0);
-            });
+            recording = sessionFactory.queryResult((em) -> em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + name).getResultList().get(0));
         }
         var path = req.getHost() + req.getPath();
         try {

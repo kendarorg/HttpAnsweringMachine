@@ -1,6 +1,10 @@
 package org.kendar.mongo.config;
 
 public class MongoDescriptor {
+    private String connectionString;
+    private String login;
+    private String password;
+
     public String getConnectionString() {
         return connectionString;
     }
@@ -8,12 +12,6 @@ public class MongoDescriptor {
     public void setConnectionString(String connectionString) {
         this.connectionString = connectionString;
     }
-
-    private String connectionString;
-
-    private String login;
-    private String password;
-
 
     public String getLogin() {
         return login;

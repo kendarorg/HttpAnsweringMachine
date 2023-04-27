@@ -12,17 +12,17 @@ import static org.kendar.mongo.model.MongoPacket.toBytes;
 public class MsgDocumentPayload implements BaseMsgPayload, TypedSerializable<MsgDocumentPayload> {
     private String json;
 
-    public void setJson(String json) {
-        this.json = json;
-    }
-
     public String getJson() {
         return json;
     }
 
+    public void setJson(String json) {
+        this.json = json;
+    }
+
     @Override
     public void serialize(TypedSerializer typedSerializer) {
-        typedSerializer.write("json",json);
+        typedSerializer.write("json", json);
     }
 
     @Override
@@ -41,8 +41,8 @@ public class MsgDocumentPayload implements BaseMsgPayload, TypedSerializable<Msg
         var length = responseBuffer.position();
         responseBuffer.position(0);
         var res = new byte[length];
-        for(var i=0;i<length;i++){
-            res[i]=responseBuffer.get();
+        for (var i = 0; i < length; i++) {
+            res[i] = responseBuffer.get();
         }
         return res;
     }

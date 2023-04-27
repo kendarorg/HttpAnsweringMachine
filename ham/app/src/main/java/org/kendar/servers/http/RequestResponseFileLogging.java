@@ -30,7 +30,7 @@ public class RequestResponseFileLogging implements FilteringClass {
     private final FileResourcesUtils fileResourcesUtils;
     private final JsonConfiguration configuration;
     private final Logger logger;
-    private HibernateSessionFactory sessionFactory;
+    private final HibernateSessionFactory sessionFactory;
     private final Logger internalLogger;
     private String localAddress;
 
@@ -79,16 +79,14 @@ public class RequestResponseFileLogging implements FilteringClass {
     public boolean doLog(Request serReq, Response serRes) {
         var staticEnabled = isDebugOrMore(staticLogger) && serReq.isStaticRequest();
         var dynamicEnabled = isDebugOrMore(dynamicLogger) && !serReq.isStaticRequest();
-        var internalEnabled = isDebugOrMore(internalLogger)&&localAddress.equalsIgnoreCase(serReq.getHost());
+        var internalEnabled = isDebugOrMore(internalLogger) && localAddress.equalsIgnoreCase(serReq.getHost());
         var requestEnabled = isInfoOrMore(requestLogger);
         var responseEnabled = isInfoOrMore(requestLogger);
 
-        if(!staticEnabled && !dynamicEnabled &&
-            !internalEnabled && !requestEnabled && !responseEnabled){
+        if (!staticEnabled && !dynamicEnabled &&
+                !internalEnabled && !requestEnabled && !responseEnabled) {
             return false;
         }
-
-
 
 
         if (!staticEnabled) return false;
@@ -103,18 +101,18 @@ public class RequestResponseFileLogging implements FilteringClass {
         var sb = serRes.getResponseBytes();
 
         if (isDebugOrMore(requestLogger) && serReq.getRequestText() != null) {
-            if(serReq.getRequestText().length() > 100 && requestLogger.isDebugEnabled()) {
+            if (serReq.getRequestText().length() > 100 && requestLogger.isDebugEnabled()) {
                 serReq.setRequestText(serReq.getRequestText().substring(0, 100));
             }
-        }else if(requestLogger.isInfoEnabled()){
+        } else if (requestLogger.isInfoEnabled()) {
             serReq.setRequestText(null);
         }
 
         if (isDebugOrMore(responseLogger) && serRes.getResponseText() != null) {
-            if(serRes.getResponseText().length() > 100 && responseLogger.isDebugEnabled()) {
+            if (serRes.getResponseText().length() > 100 && responseLogger.isDebugEnabled()) {
                 serRes.setResponseText(serRes.getResponseText().substring(0, 100));
             }
-        }else if(responseLogger.isInfoEnabled()){
+        } else if (responseLogger.isInfoEnabled()) {
             serRes.setResponseText(null);
         }
         serReq.setRequestBytes(null);

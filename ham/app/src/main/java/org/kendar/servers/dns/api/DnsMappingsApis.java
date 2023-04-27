@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 @HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class DnsMappingsApis implements FilteringClass {
-    private final JsonConfiguration configuration;
     final ObjectMapper mapper = new ObjectMapper();
+    private final JsonConfiguration configuration;
 
     public DnsMappingsApis(JsonConfiguration configuration, DnsMultiResolver dnsMultiResolver) {
 

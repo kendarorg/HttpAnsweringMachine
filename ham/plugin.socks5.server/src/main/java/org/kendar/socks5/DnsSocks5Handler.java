@@ -1,6 +1,7 @@
 package org.kendar.socks5;
 
 import org.kendar.servers.dns.DnsMultiResolver;
+import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sockslib.client.SocksProxy;
@@ -25,6 +26,7 @@ import java.util.List;
 public class DnsSocks5Handler implements SocksHandler {
     protected static final Logger logger = LoggerFactory.getLogger(Socks5Handler.class);
     private static final int VERSION = 5;
+    public static DnsMultiResolver multiResolver;
     private Session session;
     private MethodSelector methodSelector;
     private int bufferSize;
@@ -35,8 +37,6 @@ public class DnsSocks5Handler implements SocksHandler {
 
     public DnsSocks5Handler() {
     }
-
-    public static DnsMultiResolver multiResolver;
 
     public void handle(Session session) throws Exception {
         this.sessionManager = this.getSocksProxyServer().getSessionManager();
@@ -79,7 +79,7 @@ public class DnsSocks5Handler implements SocksHandler {
         }
     }
 
-    public void doConnect(Session session, CommandMessage commandMessage) throws SocksException, IOException {
+    public void doConnect(Session session, CommandMessage commandMessage) throws IOException {
         ServerReply reply = null;
         Socket socket = null;
         InetAddress bindAddress = null;
@@ -140,19 +140,13 @@ public class DnsSocks5Handler implements SocksHandler {
             ((Pipe) pipe).start();
 
             while (((Pipe) pipe).isRunning()) {
-                try {
-                    Thread.sleep((long) this.idleTime);
-                } catch (InterruptedException var13) {
-                    ((Pipe) pipe).stop();
-                    session.close();
-                    logger.info("SESSION[{}] closed", session.getId());
-                }
+                    Sleeper.sleep((long) this.idleTime);
             }
 
         }
     }
 
-    public void doBind(Session session, CommandMessage commandMessage) throws SocksException, IOException {
+    public void doBind(Session session, CommandMessage commandMessage) throws IOException {
         ServerSocket serverSocket = new ServerSocket(commandMessage.getPort());
         int bindPort = serverSocket.getLocalPort();
         Socket socket = null;
@@ -165,31 +159,20 @@ public class DnsSocks5Handler implements SocksHandler {
         pipe.start();
 
         while (pipe.isRunning()) {
-            try {
-                Thread.sleep((long) this.idleTime);
-            } catch (InterruptedException var8) {
-                pipe.stop();
-                session.close();
-                logger.info("Session[{}] closed", session.getId());
-            }
+                Sleeper.sleep((long) this.idleTime);
         }
 
         serverSocket.close();
     }
 
-    public void doUDPAssociate(Session session, CommandMessage commandMessage) throws SocksException, IOException {
+    public void doUDPAssociate(Session session, CommandMessage commandMessage) throws IOException {
         UDPRelayServer udpRelayServer = new UDPRelayServer(((InetSocketAddress) session.getClientAddress()).getAddress(), commandMessage.getPort());
         InetSocketAddress socketAddress = (InetSocketAddress) udpRelayServer.start();
         logger.info("Create UDP relay server at[{}] for {}", socketAddress, commandMessage.getSocketAddress());
         session.write(new CommandResponseMessage(5, ServerReply.SUCCEEDED, InetAddress.getLocalHost(), socketAddress.getPort()));
 
         while (udpRelayServer.isRunning()) {
-            try {
-                Thread.sleep((long) this.idleTime);
-            } catch (InterruptedException var6) {
-                session.close();
-                logger.info("Session[{}] closed", session.getId());
-            }
+                Sleeper.sleep((long) this.idleTime);
 
             if (session.isClose()) {
                 udpRelayServer.stop();

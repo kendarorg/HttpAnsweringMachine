@@ -69,10 +69,9 @@ public class SSLController implements FilteringClass {
             tags = {"base/ssl"},
             description = "Retrieve the list of ssl registrations",
             responses = {@HamResponse(
-                    code = 200,
                     description = "SSL Domains",
-                    body = SSLDomain[].class,
-                    content = ConstantsMime.JSON)})
+                    body = SSLDomain[].class
+            )})
     public void getExtraServers(Request req, Response res) throws JsonProcessingException {
         var domains = configuration.getConfiguration(SSLConfig.class).getDomains();
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);

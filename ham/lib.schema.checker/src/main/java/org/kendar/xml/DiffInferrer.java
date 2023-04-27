@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class DiffInferrer {
 
@@ -42,11 +43,11 @@ public class DiffInferrer {
 
         var first = xmls[0].trim();
         if (first == null) {
-            if (!Arrays.stream(xmls).skip(1).allMatch(a -> a == null)) {
+            if (!Arrays.stream(xmls).skip(1).allMatch(Objects::isNull)) {
                 throw new XmlException("Expected:null Found content instead");
             }
         } else {
-            if (Arrays.stream(xmls).skip(1).anyMatch(a -> a == null)) {
+            if (Arrays.stream(xmls).skip(1).anyMatch(Objects::isNull)) {
                 throw new XmlException("Expected not nulls Found nulls instead");
             }
         }

@@ -13,6 +13,10 @@ public class DbFilterFiles implements DbTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "name")
+    private String name;
+    @Column(name = "content", columnDefinition = "CLOB")
+    private String content;
 
     public Long getId() {
         return id;
@@ -37,10 +41,4 @@ public class DbFilterFiles implements DbTable {
     public void setContent(String content) {
         this.content = content;
     }
-
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "content", columnDefinition = "CLOB")
-    private String content;
 }

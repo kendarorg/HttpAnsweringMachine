@@ -16,7 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HamConverterTest {
-    private static JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private static final JsonTypedSerializer serializer = new JsonTypedSerializer();
 
     public ArrayList<Object> fill(Object... pars) {
         var result = new ArrayList<Object>();

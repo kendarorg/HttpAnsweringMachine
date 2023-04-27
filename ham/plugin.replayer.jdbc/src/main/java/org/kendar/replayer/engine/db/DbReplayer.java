@@ -10,6 +10,7 @@ import org.kendar.janus.results.ObjectResult;
 import org.kendar.janus.results.VoidResult;
 import org.kendar.janus.serialization.JsonTypedSerializer;
 import org.kendar.replayer.engine.ReplayerEngine;
+import org.kendar.replayer.engine.RequestMatch;
 import org.kendar.replayer.engine.db.sqlsim.SqlSimulator;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DbRecording;
@@ -33,8 +34,20 @@ import java.util.stream.Collectors;
 public class DbReplayer implements ReplayerEngine {
 
 
-    private SqlSimulator simulator = new SqlSimulator();
+    private final SqlSimulator simulator = new SqlSimulator();
+    private final HibernateSessionFactory sessionFactory;
+    private final Map<String, List<DbRow>> straightDatabase = new HashMap<>();
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private final Logger logger;
+    private final Map<Long, Long> connectionShadow = new HashMap<>();
+    private final Map<Long, List<DbTreeItem>> connectionRealPath = new HashMap<>();
+    private final AtomicLong atomicLong = new AtomicLong(Long.MAX_VALUE);
+    protected boolean hasRows = false;
     private boolean useSimEngine;
+    public DbReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
+        this.sessionFactory = sessionFactory;
+        this.logger = loggerBuilder.build(DbReplayer.class);
+    }
 
     @Override
     public ReplayerEngine create(LoggerBuilder loggerBuilder) {
@@ -63,16 +76,7 @@ public class DbReplayer implements ReplayerEngine {
                 result = false;
             }
         }
-        var dbNameAllowed = false;
-        for (var dbName : dbNames) {
-            if (dbName.equalsIgnoreCase("*")) {
-                dbNameAllowed = true;
-                break;
-            } else if (dbName.equalsIgnoreCase(req.getPathParameter("dbName"))) {
-                dbNameAllowed = true;
-                break;
-            }
-        }
+        boolean dbNameAllowed = isDbNameAllowed(req, dbNames);
         if (!dbNameAllowed) {
             result = false;
         }
@@ -91,25 +95,29 @@ public class DbReplayer implements ReplayerEngine {
         return result;
     }
 
+    private boolean isDbNameAllowed(Request req, String[] dbNames) {
+        var dbNameAllowed = false;
+        for (var dbName : dbNames) {
+            if (dbName.equalsIgnoreCase("*")) {
+                dbNameAllowed = true;
+                break;
+            } else if (dbName.equalsIgnoreCase(req.getPathParameter("dbName"))) {
+                dbNameAllowed = true;
+                break;
+            }
+        }
+        return dbNameAllowed;
+    }
+
     @Override
     public void setParams(Map<String, String> specialParams) {
         useSimEngine = specialParams.get("useSimEngine") == null ? false :
                 Boolean.parseBoolean(specialParams.get("useSimEngine"));
     }
 
-    public DbReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
-        this.sessionFactory = sessionFactory;
-        this.logger = loggerBuilder.build(DbReplayer.class);
-    }
-
     public String getId() {
         return "db";
     }
-
-
-    private HibernateSessionFactory sessionFactory;
-    private Map<String, List<DbRow>> straightDatabase = new HashMap<>();
-    private JsonTypedSerializer serializer = new JsonTypedSerializer();
 
     public void loadDb(Long recordingId) throws Exception {
 
@@ -147,20 +155,14 @@ public class DbReplayer implements ReplayerEngine {
         }
     }
 
-    protected boolean hasRows = false;
-
     protected boolean hasDbRows(Long recordingId) throws Exception {
-        hasRows = (Long) sessionFactory.queryResult(e -> {
-            return (Long) e.createQuery("SELECT count(*) FROM ReplayerRow e " +
-                            " WHERE " +
-                            " e.type='db'" +
-                            "AND e.recordingId=" + recordingId)
-                    .getResultList().get(0);
-        }) > 0;
+        hasRows = (Long) sessionFactory.queryResult(e -> (Long) e.createQuery("SELECT count(*) FROM ReplayerRow e " +
+                        " WHERE " +
+                        " e.type='db'" +
+                        "AND e.recordingId=" + recordingId)
+                .getResultList().get(0)) > 0;
         return hasRows;
     }
-
-    private final Logger logger;
 
     protected ReplayerRow getReplayerRow(Long recordingId, CallIndex index, EntityManager e) {
         List<ReplayerRow> rs = e.createQuery("SELECT e FROM ReplayerRow e " +
@@ -175,9 +177,7 @@ public class DbReplayer implements ReplayerEngine {
     }
 
     protected void loadIndexes(Long recordingId, ArrayList<CallIndex> indexes) throws Exception {
-        sessionFactory.query(e -> {
-            addAllIndexes(recordingId, indexes, e);
-        });
+        sessionFactory.query(e -> addAllIndexes(recordingId, indexes, e));
     }
 
     protected void addAllIndexes(Long recordingId, ArrayList<CallIndex> indexes, EntityManager e) {
@@ -196,12 +196,8 @@ public class DbReplayer implements ReplayerEngine {
         }
     }
 
-    private Map<Long, Long> connectionShadow = new HashMap<>();
-    private Map<Long, List<DbTreeItem>> connectionRealPath = new HashMap<>();
-    private AtomicLong atomicLong = new AtomicLong(Long.MAX_VALUE);
-
     @Override
-    public Response findRequestMatch(Request req, String contentHash, Map<String, String> specialParams) throws Exception {
+    public RequestMatch findRequestMatch(Request req, String contentHash, Map<String, String> specialParams) throws Exception {
         if (!hasRows) return null;
         var fullPath = req.getPath().substring(1).split("/");
         if (req.getPath().startsWith("/api/db")) {
@@ -224,16 +220,7 @@ public class DbReplayer implements ReplayerEngine {
         var dbNames = specialParams.get("dbNames") == null ? new String[]{"*"} :
                 specialParams.get("dbNames").trim().split(",");
 
-        var dbNameAllowed = false;
-        for (var dbName : dbNames) {
-            if (dbName.equalsIgnoreCase("*")) {
-                dbNameAllowed = true;
-                break;
-            } else if (dbName.equalsIgnoreCase(req.getPathParameter("dbName"))) {
-                dbNameAllowed = true;
-                break;
-            }
-        }
+        boolean dbNameAllowed = isDbNameAllowed(req, dbNames);
         if (!dbNameAllowed) {
             return null;
         }
@@ -243,7 +230,8 @@ public class DbReplayer implements ReplayerEngine {
         var dbName = req.getPathParameter("dbName").toLowerCase(Locale.ROOT);
 
         //return getTreeMatch(req, command, dbName);
-        return getStraightMatch(req, command, dbName);
+        var result = getStraightMatch(req, command, dbName);
+        return new RequestMatch(req, null, result);
     }
 
     private Response getStraightMatch(Request req, JdbcCommand command, String dbName) {
@@ -363,7 +351,6 @@ public class DbReplayer implements ReplayerEngine {
 
     private boolean matchSql(String possible, String real) {
         if (possible.equalsIgnoreCase(real)) return true;
-        if (possible.length() != real.length()) return false;
         return false;
     }
 
@@ -405,7 +392,7 @@ public class DbReplayer implements ReplayerEngine {
                     var first = mappingIndex.getValue().get(0);
 
                     var callIndexesToRemove = mappingIndex.getValue().stream().skip(1)
-                            .map(a -> a.toString())
+                            .map(Object::toString)
                             .collect(Collectors.toList());
                     var callIndex = (CallIndex) e.createQuery("SELECT e FROM CallIndex e " +
                             " WHERE " +
@@ -425,7 +412,7 @@ public class DbReplayer implements ReplayerEngine {
                             " WHERE " +
                             " e.recordingId=" + recording.getId() +
                             " AND e.id IN (" + String.join(",", callIndexesToRemove) + ")").getResultList())
-                            .stream().map(a -> a.toString()).collect(Collectors.toList());
+                            .stream().map(Object::toString).collect(Collectors.toList());
                     e.createQuery("DELETE FROM  ReplayerRow e " +
                             " WHERE " +
                             " e.recordingId=" + recording.getId() +

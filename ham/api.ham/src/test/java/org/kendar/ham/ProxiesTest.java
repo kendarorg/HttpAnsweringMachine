@@ -9,12 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ProxiesTest {
+    private final HamBasicBuilder hamBuilder = GlobalSettings.builder();
+
     @BeforeAll
     public static void beforeAll() throws HamTestException {
         HamStarter.runHamJar(ProxiesTest.class);
     }
-
-    private HamBasicBuilder hamBuilder = GlobalSettings.builder();
 
     @Test
     public void testAddingProxy() throws HamException, InterruptedException {
@@ -24,18 +24,18 @@ public class ProxiesTest {
 
         assertNotNull(proxyId);
         var proxy = hamBuilder.proxies().retrieveProxy(proxyId);
-        assertEquals("http://www.microsoft.com",proxy.getWhen());
-        assertEquals("http://www.local.test/api/health",proxy.getWhere());
-        assertEquals("www.local.test:80",proxy.getTest());
+        assertEquals("http://www.microsoft.com", proxy.getWhen());
+        assertEquals("http://www.local.test/api/health", proxy.getWhere());
+        assertEquals("www.local.test:80", proxy.getTest());
 
         var newProxyId = hamBuilder
                 .proxies()
                 .addProxy("http://www.microsoft.com", "http://www.api.test/api/health", "www.api.test:80");
-        assertEquals(newProxyId,proxyId);
+        assertEquals(newProxyId, proxyId);
         proxy = hamBuilder.proxies().retrieveProxy(proxyId);
-        assertEquals("http://www.microsoft.com",proxy.getWhen());
-        assertEquals("http://www.api.test/api/health",proxy.getWhere());
-        assertEquals("www.api.test:80",proxy.getTest());
+        assertEquals("http://www.microsoft.com", proxy.getWhen());
+        assertEquals("http://www.api.test/api/health", proxy.getWhere());
+        assertEquals("www.api.test:80", proxy.getTest());
 
         hamBuilder.proxies().removeProxy(proxyId);
     }

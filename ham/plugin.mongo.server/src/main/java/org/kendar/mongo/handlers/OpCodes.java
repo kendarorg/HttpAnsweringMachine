@@ -12,23 +12,26 @@ public enum OpCodes {
     OP_UPDATE(2001),
     OP_INSERT(2002),
     OP_DELETE(2006);
-    private int value;
     private static final Map<Integer, OpCodes> BY_INT = new HashMap<>();
+
     static {
-        for (OpCodes e: values()) {
+        for (OpCodes e : values()) {
             BY_INT.put(e.value, e);
         }
     }
-    public int getValue() {
-        return value;
-    }
+
+    private final int value;
 
     OpCodes(int value) {
 
         this.value = value;
     }
 
-    public static OpCodes of(int value){
+    public static OpCodes of(int value) {
         return BY_INT.get(value);
+    }
+
+    public int getValue() {
+        return value;
     }
 }

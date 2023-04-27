@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-HAM_VERSION=4.2.2
+HAM_VERSION=4.3.0
 START_LOCATION=$(pwd)
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR

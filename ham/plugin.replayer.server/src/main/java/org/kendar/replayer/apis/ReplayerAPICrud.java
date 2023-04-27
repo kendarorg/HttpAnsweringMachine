@@ -38,19 +38,17 @@ import java.util.stream.Collectors;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class ReplayerAPICrud implements FilteringClass {
+    private static final TypeReference<HashMap<String, String>> typeRef
+            = new TypeReference<>() {
+    };
     final ObjectMapper mapper = new ObjectMapper();
     private final Logger logger;
     private final ReplayerStatus replayerStatus;
     private final Md5Tester md5Tester;
-    private HibernateSessionFactory sessionFactory;
-    private List<ReplayerEngine> replayerEngines;
-
+    private final HibernateSessionFactory sessionFactory;
+    private final List<ReplayerEngine> replayerEngines;
     private final FileResourcesUtils fileResourcesUtils;
     private final LoggerBuilder loggerBuilder;
-
-    private static TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<>() {
-    };
 
     public ReplayerAPICrud(
             FileResourcesUtils fileResourcesUtils,
@@ -336,7 +334,7 @@ public class ReplayerAPICrud implements FilteringClass {
     )
     public void deleteLines(Request req, Response res) throws Exception {
         List<Long> jsonFileData = Arrays.stream(mapper.readValue(req.getRequestText(), Long[].class)).collect(Collectors.toList());
-        var id = Long.valueOf(req.getPathParameter("id"));
+        var id = Long.parseLong(req.getPathParameter("id"));
         sessionFactory.transactional(em -> {
             for (var itemId : jsonFileData) {
                 em.createQuery("DELETE FROM CallIndex WHERE reference=" + itemId + " AND recordingId=" + id).executeUpdate();
@@ -358,9 +356,9 @@ public class ReplayerAPICrud implements FilteringClass {
                     examples = @Example(example = "[1,2,3]"))
     )
     public void clone(Request req, Response res) throws Exception {
-        Set<Long> jsonFileData = new HashSet<Long>(
+        Set<Long> jsonFileData = new HashSet<>(
                 Arrays.stream(mapper.readValue(req.getRequestText(), Long[].class)).collect(Collectors.toList()));
-        var id = Long.valueOf(req.getPathParameter("id"));
+        var id = Long.parseLong(req.getPathParameter("id"));
         AtomicLong recordingId = new AtomicLong();
         sessionFactory.query(em -> {
             DbRecording recording = (DbRecording) em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id).getResultList().get(0);
@@ -442,7 +440,7 @@ public class ReplayerAPICrud implements FilteringClass {
                                         add = true;
                                     }
                                 }
-                                if (add == false && rs.getResponseText() != null) {
+                                if (!add && rs.getResponseText() != null) {
                                     if (queryParams.stream().anyMatch((v) -> rs.getResponseText().contains(v))) {
                                         add = true;
                                     }
@@ -502,9 +500,7 @@ public class ReplayerAPICrud implements FilteringClass {
 
         var id = Long.parseLong(req.getPathParameter("id"));
         var type = req.getQuery("type") == null ? "*" : req.getQuery("type");
-        Optional<DbRecording> recording = sessionFactory.querySingle(em -> {
-            return em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id);
-        });
+        Optional<DbRecording> recording = sessionFactory.querySingle(em -> em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id));
         var rec = recording.get();
         for (var eng : replayerEngines) {
             if (type.equalsIgnoreCase("*") || type.equalsIgnoreCase(eng.getId())) {
@@ -525,7 +521,7 @@ public class ReplayerAPICrud implements FilteringClass {
         CloneRecording jsonFileData = mapper.readValue(req.getRequestText(), CloneRecording.class);
         var id = req.getPathParameter("id");
         ReplayerResult result = getReplayerResult(id);
-        DbRecording recording = saveRecording(jsonFileData.getNewname(),result);
+        DbRecording recording = saveRecording(jsonFileData.getNewname(), result);
 
         logger.info("Uploaded replayer binary script ");
         res.setResponseText(String.valueOf(recording.getId()));

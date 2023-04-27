@@ -14,46 +14,45 @@ public class RestFilter {
     private HashMap<String, String> matchers;
     private List<RestFilterRequire> require;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getId() {
         return id;
     }
 
-    public void setPhase(String phase) {
-        this.phase = phase;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getPhase() {
         return phase;
     }
 
-    public void setPriority(int priority) {
-        this.priority = priority;
+    public void setPhase(String phase) {
+        this.phase = phase;
     }
 
     public int getPriority() {
         return priority;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSource() {
         return source;
     }
 
+    public void setSource(String source) {
+        this.source = source;
+    }
 
     public HashMap<String, String> getMatchers() {
         return matchers;
@@ -64,12 +63,12 @@ public class RestFilter {
         this.matchers = matchers;
     }
 
-    public void setRequire(List<RestFilterRequire> require) {
-        this.require = require;
-    }
-
     public List<RestFilterRequire> getRequire() {
         return require;
+    }
+
+    public void setRequire(List<RestFilterRequire> require) {
+        this.require = require;
     }
 
     public String getType() {

@@ -14,7 +14,7 @@ import java.util.function.Function;
 @Component
 public class QueryMatcher implements FilterMatcher {
 
-    private static JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private static final JsonTypedSerializer serializer = new JsonTypedSerializer();
     private String dbName;
     private String sql;
 
@@ -36,9 +36,7 @@ public class QueryMatcher implements FilterMatcher {
         }
         if (ClassUtils.isAssignable(cmd.getClass(), JdbcSqlCommand.class)) {
             var sql = ((JdbcSqlCommand) cmd).getSql();
-            if (!sql.trim().equalsIgnoreCase(sql.trim())) {
-                return false;
-            }
+
 
             return true;
         }

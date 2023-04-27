@@ -42,10 +42,11 @@ public class AnsweringHttpsServer implements AnsweringServer {
     public static final String PASSPHRASE = "passphrase";
     public static final String PRIVATE_CERT = "privateCert";
     private final JsonConfiguration configuration;
-    private EventQueue eventQueue;
+    private final EventQueue eventQueue;
     private final Logger logger;
     private final AnsweringHandler handler;
     private final CertificatesManager certificatesManager;
+    boolean restart = false;
     private boolean running = false;
     private HashMap<String, HttpsServer> httpsServers = new HashMap<>();
 
@@ -62,8 +63,6 @@ public class AnsweringHttpsServer implements AnsweringServer {
         this.eventQueue = eventQueue;
         eventQueue.register(this::handleCertificateChange, SSLChangedEvent.class);
     }
-
-    boolean restart = false;
 
     public void handleCertificateChange(SSLChangedEvent t) {
         restart = true;
@@ -134,7 +133,6 @@ public class AnsweringHttpsServer implements AnsweringServer {
     }
 
     private void setupSll(SSLContext sslContextInt, String port) {
-        var context = sslContextInt;
         httpsServers.get(port).setHttpsConfigurator(
                 new HttpsConfigurator(sslContextInt) {
                     @Override
@@ -142,13 +140,13 @@ public class AnsweringHttpsServer implements AnsweringServer {
                         try {
                             // initialise the SSL context
 
-                            SSLEngine engine = context.createSSLEngine();
+                            SSLEngine engine = sslContextInt.createSSLEngine();
                             params.setNeedClientAuth(false);
                             params.setCipherSuites(engine.getEnabledCipherSuites());
                             params.setProtocols(engine.getEnabledProtocols());
 
                             // Set the SSL parameters
-                            SSLParameters sslParameters = context.getSupportedSSLParameters();
+                            SSLParameters sslParameters = sslContextInt.getSupportedSSLParameters();
                             params.setSSLParameters(sslParameters);
 
                         } catch (Exception ex) {

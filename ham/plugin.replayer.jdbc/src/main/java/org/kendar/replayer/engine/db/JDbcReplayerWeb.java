@@ -11,6 +11,12 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "${global.localAddress}")
 public class JDbcReplayerWeb extends StaticWebFilter {
 
+    public JDbcReplayerWeb(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
+        super(fileResourcesUtils);
+        Logger logger = loggerBuilder.build(JDbcReplayerWeb.class);
+        logger.info("Replayer server=Jdbc Extension LOADED");
+    }
+
     @Override
     public String getDescription() {
         return "Replayer web=Jdbc extension";
@@ -20,14 +26,6 @@ public class JDbcReplayerWeb extends StaticWebFilter {
     public String getAddress() {
         return null;
     }
-
-
-    public JDbcReplayerWeb(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
-        super(fileResourcesUtils);
-        Logger logger = loggerBuilder.build(JDbcReplayerWeb.class);
-        logger.info("Replayer server=Jdbc Extension LOADED");
-    }
-
 
     @Override
     public String getId() {

@@ -21,6 +21,12 @@ public enum ExtraParam {
         }
     }
 
+    private final String text;
+
+    ExtraParam(final String text) {
+        this.text = text;
+    }
+
     public static ExtraParam fromString(String value) {
         var type = typesMap.get(value);
         if (type == null) {
@@ -33,12 +39,6 @@ public enum ExtraParam {
 
     public boolean is(String text) {
         return text.equalsIgnoreCase(this.text);
-    }
-
-    private final String text;
-
-    ExtraParam(final String text) {
-        this.text = text;
     }
 
     /* (non-Javadoc)

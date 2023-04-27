@@ -5,8 +5,9 @@ import org.kendar.http.annotations.multi.*;
 
 import java.lang.annotation.Annotation;
 
+@SuppressWarnings("ClassExplicitlyAnnotation")
 public class HamDocConcrete implements HamDoc {
-    private HamDoc doc;
+    private final HamDoc doc;
 
     public HamDocConcrete(HamDoc doc) {
 

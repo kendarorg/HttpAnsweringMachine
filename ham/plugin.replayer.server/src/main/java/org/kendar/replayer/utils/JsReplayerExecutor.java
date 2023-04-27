@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 
 public class JsReplayerExecutor {
     private static final Pattern LINE_SEP_PATTERN = Pattern.compile("\\R");
-    private ScriptableObject globalScope;
     private final ObjectMapper mapper = new ObjectMapper();
+    private ScriptableObject globalScope;
 
     protected Scriptable getNewScope(Context cx) {
         // global scope lazy initialization

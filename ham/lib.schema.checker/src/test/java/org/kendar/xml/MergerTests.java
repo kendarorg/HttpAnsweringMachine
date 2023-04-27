@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MergerTests extends BaseUtils {
 
 
+    private final String SUB_NULLABLE = "{\"type\":\"XmlElement\", \"tag\":\"a\", \"constraint\":\"MANDATORY_VALUE\", \"value\":\"null\", \"valueConstraint\":\"NULLABLE_VALUE\", \"attributes\":[], \"children\":[{\"type\":\"XmlElementGroup\", \"tag\":\"b\", \"constraint\":\"MANDATORY_VALUE\", \"items\":[{\"type\":\"XmlElement\", \"tag\":\"b\", \"constraint\":\"MANDATORY_VALUE\", \"value\":\"null\", \"valueConstraint\":\"NULLABLE_VALUE\", \"attributes\":[], \"children\":[{\"type\":\"XmlElementGroup\", \"tag\":\"c\", \"constraint\":\"NULLABLE_VALUE\", \"items\":[{\"type\":\"XmlElement\", \"tag\":\"c\", \"constraint\":\"MANDATORY_VALUE\", \"value\":\"null\", \"valueConstraint\":\"NULLABLE_VALUE\", \"attributes\":[], \"children\":[]}]}]}]}]}";
+
     @Test
     public void shouldMergeSimple() {
         var toMerge = new ArrayList<XmlElement>();
@@ -35,8 +37,6 @@ public class MergerTests extends BaseUtils {
                 "{\"type\":\"XmlElement\", \"tag\":\"a\", \"constraint\":\"MANDATORY_VALUE\", \"value\":\"null\", \"valueConstraint\":\"NULLABLE_VALUE\", \"attributes\":[], \"children\":[{\"type\":\"XmlElementGroup\", \"tag\":\"b\", \"constraint\":\"NULLABLE_VALUE\", \"items\":[{\"type\":\"XmlElement\", \"tag\":\"b\", \"constraint\":\"MANDATORY_VALUE\", \"value\":\"null\", \"valueConstraint\":\"NULLABLE_VALUE\", \"attributes\":[], \"children\":[]}]}]}",
                 result.toString());
     }
-
-    private final String SUB_NULLABLE = "{\"type\":\"XmlElement\", \"tag\":\"a\", \"constraint\":\"MANDATORY_VALUE\", \"value\":\"null\", \"valueConstraint\":\"NULLABLE_VALUE\", \"attributes\":[], \"children\":[{\"type\":\"XmlElementGroup\", \"tag\":\"b\", \"constraint\":\"MANDATORY_VALUE\", \"items\":[{\"type\":\"XmlElement\", \"tag\":\"b\", \"constraint\":\"MANDATORY_VALUE\", \"value\":\"null\", \"valueConstraint\":\"NULLABLE_VALUE\", \"attributes\":[], \"children\":[{\"type\":\"XmlElementGroup\", \"tag\":\"c\", \"constraint\":\"NULLABLE_VALUE\", \"items\":[{\"type\":\"XmlElement\", \"tag\":\"c\", \"constraint\":\"MANDATORY_VALUE\", \"value\":\"null\", \"valueConstraint\":\"NULLABLE_VALUE\", \"attributes\":[], \"children\":[]}]}]}]}]}";
 
     @Test
     public void shouldMergeInternally() {

@@ -105,27 +105,27 @@ public class SingleScriptLine {
         this.responseStatusCode = responseStatusCode;
     }
 
-    public void setReference(long reference) {
-        this.reference = reference;
-    }
-
     public long getReference() {
         return reference;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setReference(long reference) {
+        this.reference = reference;
     }
 
     public String getType() {
         return type;
     }
 
-    public void setCalls(long calls) {
-        this.calls = calls;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public long getCalls() {
         return calls;
+    }
+
+    public void setCalls(long calls) {
+        this.calls = calls;
     }
 }

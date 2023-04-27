@@ -27,14 +27,16 @@ import java.util.function.Function;
 
 @Component
 public class DnsServer {
+    static final short QR_RESPONSE = (short) (1 << 15);
+    static final short AA_BIT = 1 << 10;
     private static final int UDP_SIZE = 512;
-
     private final int dnsPort;
     private final Logger logger;
     private final DnsMultiResolver multiResolver;
     private final ConcurrentHashMap<String, Integer> loopBlocker = new ConcurrentHashMap<>();
+    private final ExecutorService executorService = Executors.newFixedThreadPool(20);
+    private final AtomicBoolean running = new AtomicBoolean(false);
     private Function<String, String> blocker;
-
 
     public DnsServer(
             LoggerBuilder loggerBuilder,
@@ -96,11 +98,6 @@ public class DnsServer {
         }
     }
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(20);
-
-
-    private final AtomicBoolean running = new AtomicBoolean(false);
-
     private void runUdp() {
         try (DatagramSocket socket = new DatagramSocket(null)) {
             socket.setReuseAddress(true);
@@ -131,7 +128,6 @@ public class DnsServer {
         }
     }
 
-
     private void resolveAll(InetAddress inAddress, int inPort, DatagramSocket socket, byte[] in) {
         try {
             // Build the response
@@ -144,7 +140,6 @@ public class DnsServer {
             e.printStackTrace();
         }
     }
-
 
     public void run() throws IOException, InterruptedException {
         var udpThread = new Thread(this::runUdp);
@@ -193,10 +188,6 @@ public class DnsServer {
     public byte[] errorMessage(Message query, int rcode) {
         return buildErrorMessage(query.getHeader(), rcode, query.getQuestion());
     }
-
-
-    static final short QR_RESPONSE = (short) (1 << 15);
-    static final short AA_BIT = 1 << 10;
 
     private byte[] buildResponse(byte[] in) throws IOException {
         Message request;

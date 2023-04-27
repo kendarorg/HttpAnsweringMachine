@@ -1,6 +1,7 @@
 package org.kendar.replayer.engine.http;
 
 import org.kendar.replayer.engine.ReplayerEngine;
+import org.kendar.replayer.engine.RequestMatch;
 import org.kendar.replayer.storage.CallIndex;
 import org.kendar.replayer.storage.DbRecording;
 import org.kendar.replayer.storage.ReplayerRow;
@@ -25,20 +26,26 @@ public class HttpReplayer implements ReplayerEngine {
 
     private final HibernateSessionFactory sessionFactory;
     private final Logger logger;
-    private String localAddress;
-    private JsonConfiguration configuration;
+    private final String localAddress;
+    private final JsonConfiguration configuration;
     private long name;
+    private boolean hasRows = false;
+
+    public HttpReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
+        this.sessionFactory = sessionFactory;
+        this.logger = loggerBuilder.build(HttpReplayer.class);
+        this.localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
+        this.configuration = configuration;
+    }
 
     public ReplayerEngine create(LoggerBuilder loggerBuilder) {
-        var es = new HttpReplayer(sessionFactory, loggerBuilder, configuration);
-        return es;
+        return new HttpReplayer(sessionFactory, loggerBuilder, configuration);
     }
 
     @Override
     public boolean isValidPath(Request req) {
-        var isValid = (!isLocalhost(req)) ||
+        return (!isLocalhost(req)) ||
                 (req.getPath().startsWith("/int/") && isLocalhost(req));
-        return isValid;
     }
 
     private boolean isLocalhost(Request req) {
@@ -82,9 +89,7 @@ public class HttpReplayer implements ReplayerEngine {
     }
 
     protected void loadIndexes(Long recordingId, ArrayList<CallIndex> indexes) throws Exception {
-        sessionFactory.query(e -> {
-            addAllIndexes(recordingId, indexes, e);
-        });
+        sessionFactory.query(e -> addAllIndexes(recordingId, indexes, e));
     }
 
     protected void addAllIndexes(Long recordingId, ArrayList<CallIndex> indexes, EntityManager e) {
@@ -136,7 +141,7 @@ public class HttpReplayer implements ReplayerEngine {
                     var first = mappingIndex.getValue().get(0);
 
                     var callIndexesToRemove = mappingIndex.getValue().stream().skip(1)
-                            .map(a -> a.toString())
+                            .map(Object::toString)
                             .collect(Collectors.toList());
                     var callIndex = (CallIndex) e.createQuery("SELECT e FROM CallIndex e " +
                             " WHERE " +
@@ -156,7 +161,7 @@ public class HttpReplayer implements ReplayerEngine {
                             " WHERE " +
                             " e.recordingId=" + recording.getId() +
                             " AND e.id IN (" + String.join(",", callIndexesToRemove) + ")").getResultList())
-                            .stream().map(a -> a.toString()).collect(Collectors.toList());
+                            .stream().map(Object::toString).collect(Collectors.toList());
                     e.createQuery("DELETE FROM  ReplayerRow e " +
                             " WHERE " +
                             " e.recordingId=" + recording.getId() +
@@ -178,13 +183,6 @@ public class HttpReplayer implements ReplayerEngine {
 
     }
 
-    public HttpReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
-        this.sessionFactory = sessionFactory;
-        this.logger = loggerBuilder.build(HttpReplayer.class);
-        this.localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
-        this.configuration = configuration;
-    }
-
     @Override
     public String getId() {
         return "http";
@@ -196,24 +194,20 @@ public class HttpReplayer implements ReplayerEngine {
         if (!hasHttpRows(recordingId)) return;
     }
 
-    private boolean hasRows = false;
-
     private boolean hasHttpRows(Long recordingId) throws Exception {
-        hasRows = (Long) sessionFactory.queryResult(e -> {
-            return (Long) e.createQuery("SELECT count(*) FROM ReplayerRow e " +
-                            " WHERE " +
-                            " e.type='http'" +
-                            "AND e.recordingId=" + recordingId)
-                    .getResultList().get(0);
-        }) > 0;
+        hasRows = (Long) sessionFactory.queryResult(e -> (Long) e.createQuery("SELECT count(*) FROM ReplayerRow e " +
+                        " WHERE " +
+                        " e.type='http'" +
+                        "AND e.recordingId=" + recordingId)
+                .getResultList().get(0)) > 0;
         return hasRows;
     }
 
     @Override
-    public Response findRequestMatch(Request req, String contentHash, Map<String, String> params) throws Exception {
+    public RequestMatch findRequestMatch(Request req, String contentHash, Map<String, String> params) throws Exception {
 
         if (!hasRows) return null;
-        Response founded = findRequestMatch(req, contentHash, true);
+        RequestMatch founded = findRequestMatch(req, contentHash, true);
         if (founded == null) {
             founded = findRequestMatch(req, contentHash, false);
         }
@@ -221,7 +215,7 @@ public class HttpReplayer implements ReplayerEngine {
     }
 
 
-    private Response findRequestMatch(Request sreq, String contentHash, boolean staticRequest) throws Exception {
+    private RequestMatch findRequestMatch(Request sreq, String contentHash, boolean staticRequest) throws Exception {
         var matchingQuery = -1;
         ReplayerRow founded = null;
         var staticRequests = new ArrayList<ReplayerRow>();
@@ -247,7 +241,8 @@ public class HttpReplayer implements ReplayerEngine {
             staticRequests.addAll(res);
         });
 
-        var indexesIds = staticRequests.stream().map(r -> r.getIndex().toString()).collect(Collectors.toList());
+
+        var indexesIds = staticRequests.stream().map(r -> String.valueOf(r.getIndex())).collect(Collectors.toList());
         var indexes = " e.reference=" + String.join(" OR e.reference=", indexesIds);
         var callIndexes = new ArrayList<CallIndex>();
         var baseQueryString = "SELECT e FROM CallIndex  e WHERE " +
@@ -297,7 +292,7 @@ public class HttpReplayer implements ReplayerEngine {
         } else {
             return null;
         }
-        return founded.getResponse();
+        return new RequestMatch(sreq, founded.getRequest(), founded.getResponse());
     }
 
     private int matchQuery(Map<String, String> left, Map<String, String> right) {

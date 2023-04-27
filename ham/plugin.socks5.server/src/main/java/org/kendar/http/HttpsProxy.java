@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 public class HttpsProxy implements AnsweringServer {
     private final Logger logger;
     private final LoggerBuilder loggerBuilder;
-    private JsonConfiguration configuration;
-    private DnsMultiResolver multiResolver;
+    private final JsonConfiguration configuration;
+    private final DnsMultiResolver multiResolver;
     private boolean running = false;
 
     public HttpsProxy(DnsMultiResolver multiResolver, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {

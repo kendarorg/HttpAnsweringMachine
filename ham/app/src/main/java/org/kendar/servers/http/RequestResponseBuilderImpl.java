@@ -22,16 +22,14 @@ import java.util.zip.GZIPInputStream;
 @Component
 public class RequestResponseBuilderImpl implements RequestResponseBuilder {
 
-    private static Logger logger;
-
-    public RequestResponseBuilderImpl(LoggerBuilder loggerBuilder) {
-        this.logger = loggerBuilder.build(RequestResponseBuilderImpl.class);
-    }
-
     private static final String H_SOAP_ACTION = "SOAPAction";
     private static final String H_AUTHORIZATION = "Authorization";
     private static final String BASIC_AUTH_MARKER = "basic";
     private static final String BASIC_AUTH_SEPARATOR = ":";
+    private static Logger logger;
+    public RequestResponseBuilderImpl(LoggerBuilder loggerBuilder) {
+        logger = loggerBuilder.build(RequestResponseBuilderImpl.class);
+    }
 
     private static void setupRequestHost(HttpExchange exchange, Request result) {
         result.setHost(exchange.getRequestURI().getHost());
@@ -140,16 +138,12 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
         result.setMethod(exchange.getRequestMethod().toUpperCase(Locale.ROOT));
         result.setHeaders(RequestUtils.headersToMap(exchange.getRequestHeaders()));
         var headerContentType = result.getHeader(ConstantsHeader.CONTENT_TYPE);
-        if (headerContentType == null) {
-            //result.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.STREAM);
-        }
+
         result.setSoapRequest(result.getHeader(H_SOAP_ACTION) != null);
         setupAuthHeaders(result);
 
         result.setBinaryRequest(MimeChecker.isBinary(headerContentType, ""));
-        result.setStaticRequest(MimeChecker.isStatic(headerContentType, result.getPath())
-                // && result.getQuery().size()==0
-        );
+        result.setStaticRequest(MimeChecker.isStatic(headerContentType, result.getPath()));
         setupOptionalBody(exchange, result);
         // result.sanitizedPath = RequestUtils.sanitizePath(result);
         return result;

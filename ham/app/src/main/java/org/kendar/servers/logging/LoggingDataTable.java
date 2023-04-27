@@ -11,6 +11,16 @@ import javax.persistence.*;
 @Entity
 @Table(name = "LOGS_DATA")
 public class LoggingDataTable implements DbTable {
+    @Id
+    @Column(name = "id")
+    private long id;
+    @Column(name = "response")
+    @Lob
+    private String response;
+    @Column(name = "request")
+    @Lob
+    private String request;
+
     public long getId() {
         return id;
     }
@@ -26,16 +36,6 @@ public class LoggingDataTable implements DbTable {
     public void setResponse(String content) {
         this.response = content;
     }
-
-    @Id
-    @Column(name = "id")
-    private long id;
-    @Column(name = "response")
-    @Lob
-    private String response;
-    @Column(name = "request")
-    @Lob
-    private String request;
 
     public String getRequest() {
         return request;

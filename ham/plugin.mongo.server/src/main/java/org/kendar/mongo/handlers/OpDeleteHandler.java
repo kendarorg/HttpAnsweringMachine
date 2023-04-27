@@ -16,16 +16,16 @@ import org.kendar.mongo.model.MongoPacket;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OpDeleteHandler implements MsgHandler{
+public class OpDeleteHandler implements MsgHandler {
     @Override
     public OpCodes getOpCode() {
         return OpCodes.OP_DELETE;
     }
 
     @Override
-    public MongoPacket<?> handleMsg(int requestId,int responseTo,ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(int requestId, int responseTo, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
-            System.out.println("======HANDLE DELETE");
+            //System.out.println("======HANDLE DELETE");
             bsonInput.readInt32(); // skip ZERO
             String fullCollectionName = bsonInput.readCString();
             int flagBits = bsonInput.readInt32();
@@ -42,11 +42,11 @@ public class OpDeleteHandler implements MsgHandler{
             String selectorJson = selector.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
 
             // Print out the JSON representation of the message
-            System.out.println("Namespace: " + namespace);
-            System.out.println("Delete JSON: " + selectorJson);
+            //System.out.println("Namespace: " + namespace);
+            //System.out.println("Delete JSON: " + selectorJson);
             return packet;
         } catch (Exception e) {
-            throw new RuntimeException("Error decoding BSON delete message",e);
+            throw new RuntimeException("Error decoding BSON delete message", e);
         }
     }
 }

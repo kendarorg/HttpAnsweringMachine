@@ -14,9 +14,9 @@ public interface JsonConfiguration {
 
     String getConfigurationAsString() throws Exception;
 
+    void setConfigurationAsString(String body);
+
     String getValue(String varName);
 
     long getConfigurationTimestamp(Class aClass);
-
-    void setConfigurationAsString(String body);
 }

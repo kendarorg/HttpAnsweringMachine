@@ -1,0 +1,230 @@
+[ {
+  "system" : false,
+  "id" : "mongo",
+  "active" : true,
+  "proxies" : [ {
+    "id" : "1",
+    "exposedPort" : 27097,
+    "remote" : {
+      "connectionString" : "mongodb://127.0.0.1:27077",
+      "login" : "",
+      "password" : ""
+    },
+    "active" : true
+  }, {
+    "id" : "654769b0-4eae-478a-a181-861818efa97f",
+    "exposedPort" : 27078,
+    "remote" : {
+      "connectionString" : "mongodb://127.0.0.1:27077",
+      "login" : "",
+      "password" : ""
+    },
+    "active" : true
+  } ]
+}, {
+  "id" : "oidc.server",
+  "tokenExpiration" : 86400,
+  "active" : false
+}, {
+  "id" : "replayer.server",
+  "path" : "replayerdata",
+  "active" : true
+}, {
+  "id" : "staticPage",
+  "system" : true,
+  "staticPages" : [ ]
+}, {
+  "system" : true,
+  "id" : "dns",
+  "active" : true,
+  "port" : 53,
+  "forceLocalAddress" : "127.0.0.1",
+  "extraServers" : [ {
+    "id" : "1",
+    "address" : "8.8.8.8",
+    "resolved" : "8.8.8.8",
+    "enabled" : true,
+    "env" : false
+  }, {
+    "id" : "5",
+    "address" : "8.8.4.4",
+    "resolved" : "8.8.4.4",
+    "enabled" : true,
+    "env" : false
+  } ],
+  "blocked" : [ "wpad.*", "*.trafficmanager.net" ],
+  "resolved" : [ {
+    "id" : "8979c618-ef2f-4c3b-811e-70d477cdc96b",
+    "dns" : "gateway.sample.test",
+    "ip" : "127.0.0.1"
+  }, {
+    "id" : "6700c92f-2b84-4844-82f2-96dd56445496",
+    "dns" : "be.sample.test",
+    "ip" : "127.0.0.1"
+  }, {
+    "id" : "70c1c857-052e-4128-a081-7b602a76bca4",
+    "dns" : "www.sample.test",
+    "ip" : "127.0.0.1"
+  }, {
+    "id" : "0",
+    "dns" : "www.local.test",
+    "ip" : "127.0.0.1"
+  }, {
+    "id" : "1",
+    "dns" : "reqbin.com",
+    "ip" : "127.0.0.1"
+  }, {
+    "id" : "2",
+    "dns" : "www.reqbin.com",
+    "ip" : "127.0.0.1"
+  } ]
+}, {
+  "id" : "socks5.server",
+  "port" : 1080,
+  "httpProxyPort" : 1081,
+  "active" : true
+}, {
+  "id" : "global",
+  "system" : true,
+  "localAddress" : "www.local.test",
+  "db" : {
+    "url" : "jdbc:h2:tcp://localhost/ham;MODE=MYSQL;",
+    "login" : "sa",
+    "password" : "sa",
+    "startInternalH2" : true,
+    "driver" : "org.h2.Driver",
+    "hibernateDialect" : "org.hibernate.dialect.MySQLDialect"
+  },
+  "logging" : {
+    "logLevel" : "INFO",
+    "loggers" : {
+      "org.kendar.servers.http.Request" : "OFF",
+      "org.kendar.servers.http.Response" : "OFF",
+      "org.kendar.servers.http.StaticRequest" : "OFF",
+      "org.kendar.servers.http.DynamicRequest" : "OFF",
+      "org.kendar.dns.DnsQueries" : "OFF",
+      "org.kendar.servers.http.InternalRequest" : "OFF",
+      "org.hibernate" : "OFF",
+      "org.kendar.mongo.logging.MongoLogClient" : "OFF",
+      "org.kendar.mongo.logging.MongoLogServer" : "OFF",
+      "org.mongodb.driver" : "OFF",
+      "com.sun.net.httpserver" : "ERROR",
+      "sockslib.server" : "ERROR"
+    }
+  },
+  "filters" : {
+    "12363272" : false
+  }
+}, {
+  "system" : true,
+  "id" : "ssl",
+  "cname" : "C=US,O=Local Development,CN=local.org",
+  "domains" : [ {
+    "id" : "dda3aaba-53d5-46c4-ba85-72487bc01378",
+    "address" : "*.sample.test"
+  }, {
+    "id" : "b28fcc33-c2d4-4986-ba0e-4fd112be9b49",
+    "address" : "sample.test"
+  }, {
+    "id" : "0",
+    "address" : "*.local.test"
+  }, {
+    "id" : "1",
+    "address" : "local.test"
+  }, {
+    "id" : "2",
+    "address" : "reqbin.com"
+  }, {
+    "id" : "3",
+    "address" : "www.reqbin.com"
+  } ]
+}, {
+  "system" : true,
+  "id" : "proxy",
+  "proxies" : [ {
+    "id" : "72d370b5-fb38-4632-b45f-3cd3325abecf",
+    "when" : "http://localhost/int/prova001",
+    "where" : "http://fake1.forced",
+    "test" : "fake1",
+    "running" : true,
+    "force" : true
+  }, {
+    "id" : "f9669eb8-11dd-4c0f-ab1a-345fdce32311",
+    "when" : "http://localhost/int/prova002",
+    "where" : "http://fake2.noforced",
+    "test" : "fake2",
+    "running" : false,
+    "force" : false
+  }, {
+    "id" : "2cb7560d-3b92-402e-8a17-e180e60571a5",
+    "when" : "http://localhost/int/gateway.sample.test",
+    "where" : "http://127.0.0.1:8090",
+    "test" : "127.0.0.1:8090",
+    "running" : true,
+    "force" : true
+  }, {
+    "id" : "b973f846-eb5d-4229-b1ae-608eb42f2cef",
+    "when" : "http://localhost/int/be.sample.test",
+    "where" : "http://127.0.0.1:8100",
+    "test" : "127.0.0.1:8100",
+    "running" : true,
+    "force" : true
+  }, {
+    "id" : "fb182c3e-628e-475b-b882-150b03994bbc",
+    "when" : "http://www.sample.test",
+    "where" : "http://127.0.0.1:8080",
+    "test" : "127.0.0.1:8080",
+    "running" : true,
+    "force" : true
+  } ]
+}, {
+  "system" : true,
+  "id" : "dbproxy",
+  "proxies" : [ {
+    "id" : "1",
+    "driver" : "org.h2.Driver",
+    "exposed" : {
+      "connectionString" : "local",
+      "login" : "login",
+      "password" : "password"
+    },
+    "remote" : {
+      "connectionString" : "jdbc:h2:tcp://localhost/ham;MODE=MYSQL;",
+      "login" : "sa",
+      "password" : "sa"
+    },
+    "active" : true
+  }, {
+    "id" : "6a05b560-121b-4e1c-b4b5-2a2b53a12533",
+    "driver" : "org.h2.Driver",
+    "exposed" : {
+      "connectionString" : "be",
+      "login" : "login",
+      "password" : "password"
+    },
+    "remote" : {
+      "connectionString" : "jdbc:h2:tcp://localhost:9123/./data/be;MODE=MYSQL;",
+      "login" : "sa",
+      "password" : "sa"
+    },
+    "active" : true
+  } ]
+}, {
+  "id" : "http",
+  "system" : true,
+  "active" : true,
+  "port" : "80",
+  "backlog" : 50,
+  "useCachedExecutor" : true
+}, {
+  "id" : "https",
+  "system" : true,
+  "active" : true,
+  "port" : "443",
+  "backlog" : 50,
+  "useCachedExecutor" : true
+}, {
+  "id" : "js.filters",
+  "path" : "jsplugins",
+  "active" : true
+} ]

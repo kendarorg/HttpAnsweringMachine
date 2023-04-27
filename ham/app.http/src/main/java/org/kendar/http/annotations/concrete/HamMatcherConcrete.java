@@ -6,8 +6,9 @@ import org.kendar.http.annotations.MatcherType;
 
 import java.lang.annotation.Annotation;
 
+@SuppressWarnings("ClassExplicitlyAnnotation")
 public class HamMatcherConcrete implements HamMatcher {
-    private HamMatcher matcher;
+    private final HamMatcher matcher;
 
     public HamMatcherConcrete(HamMatcher matcher) {
 

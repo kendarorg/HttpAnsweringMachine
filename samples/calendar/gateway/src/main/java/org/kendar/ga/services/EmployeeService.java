@@ -26,7 +26,7 @@ public class EmployeeService {
 
 
     public List<Employee> findAll() throws IOException {
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        CloseableHttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
         var request = new HttpGet(employeeLocation+"/api/v1/employees");
         var httpResponse = httpClient.execute(request);
         HttpEntity responseEntity = httpResponse.getEntity();
@@ -36,7 +36,7 @@ public class EmployeeService {
 
     public Employee save(Employee newEmployee) {
         try {
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            CloseableHttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
             var request = new HttpPost(employeeLocation + "/api/v1/employees");
             var entity = new StringEntity(mapper.writeValueAsString(newEmployee));
             request.setEntity(entity);
@@ -53,7 +53,7 @@ public class EmployeeService {
 
     public Optional<Employee> findById(Long id) throws IOException {
         try {
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            CloseableHttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
             var request = new HttpGet(employeeLocation + "/api/v1/employees/" + id);
             var httpResponse = httpClient.execute(request);
             HttpEntity responseEntity = httpResponse.getEntity();
@@ -65,14 +65,14 @@ public class EmployeeService {
     }
 
     public void deleteById(Long id) throws IOException {
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        CloseableHttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
         var request = new HttpDelete(employeeLocation+"/api/v1/employees/"+id);
         var httpResponse = httpClient.execute(request);
     }
 
     public Employee replaceEmployee(Employee newEmployee, Long id) {
         try {
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            CloseableHttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
             var request = new HttpPut(employeeLocation + "/api/v1/employees/"+id);
             var entity = new StringEntity(mapper.writeValueAsString(newEmployee));
             request.setEntity(entity);

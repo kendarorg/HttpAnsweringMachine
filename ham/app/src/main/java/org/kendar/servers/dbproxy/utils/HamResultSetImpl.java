@@ -21,6 +21,7 @@ import java.sql.Date;
 import java.sql.*;
 import java.util.*;
 
+@SuppressWarnings("MagicConstant")
 public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResultSetImpl> {
     public JdbcResultsetMetaData metadata;
     public Map<String, Integer> labelsToId;
@@ -32,11 +33,6 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     public JdbcConnection connection;
     public int columnCount;
     public boolean closed;
-
-    public HamResultSetImpl() {
-
-    }
-
     public long traceId;
     public ResultSetType type;
     public ResultSetHoldability holdability;
@@ -44,8 +40,11 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     public boolean prefetchMetadata;
     public String charset;
     public ResultSetConcurrency concurrency;
-
     public List<List<Object>> rows;
+
+    public HamResultSetImpl() {
+
+    }
 
     public static Class<?> getTypeFromSqlType(int type) throws Exception {
         Class<?> value = null;
@@ -123,7 +122,7 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     public void fromSerializable(List<List<Object>> source) throws Exception {
         rows = new ArrayList<>();
         for (var row : source) {
-            var newRow = new ArrayList<Object>();
+            var newRow = new ArrayList<>();
             for (int i = 0; i < row.size(); i++) {
                 var cd = columnDescriptors.get(i);
                 var realType = getTypeFromSqlType(cd.getType());
@@ -143,7 +142,7 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     public List<List<Object>> toSerializable() throws SQLException {
         var result = new ArrayList<List<Object>>();
         for (var row : rows) {
-            var newRow = new ArrayList<Object>();
+            var newRow = new ArrayList<>();
             for (var field : row) {
                 if (field == null) {
                     newRow.add(null);
@@ -189,13 +188,17 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     }
 
     private String toString(Clob clob) throws SQLException {
+        return lobToString(clob.getCharacterStream());
+    }
+
+    private String lobToString(Reader clob) throws SQLException {
         try {
             int j = 0;
-            Reader r = clob.getCharacterStream();
+            Reader r = clob;
             StringBuffer buffer = new StringBuffer();
             int ch;
             while ((ch = r.read()) != -1) {
-                buffer.append("" + (char) ch);
+                buffer.append("").append((char) ch);
             }
             return buffer.toString();
         } catch (Exception ex) {
@@ -204,18 +207,7 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     }
 
     private String toString(SQLXML clob) throws SQLException {
-        try {
-            int j = 0;
-            Reader r = clob.getCharacterStream();
-            StringBuffer buffer = new StringBuffer();
-            int ch;
-            while ((ch = r.read()) != -1) {
-                buffer.append("" + (char) ch);
-            }
-            return buffer.toString();
-        } catch (Exception ex) {
-            throw new SQLException(ex);
-        }
+        return lobToString(clob.getCharacterStream());
     }
 
     public void serialize(TypedSerializer builder) {
@@ -564,23 +556,23 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     }
 
     @Override
-    public void setFetchDirection(int direction) throws SQLException {
-
-    }
-
-    @Override
     public int getFetchDirection() throws SQLException {
         return 0;
     }
 
     @Override
-    public void setFetchSize(int rows) throws SQLException {
+    public void setFetchDirection(int direction) throws SQLException {
 
     }
 
     @Override
     public int getFetchSize() throws SQLException {
         return 0;
+    }
+
+    @Override
+    public void setFetchSize(int rows) throws SQLException {
+
     }
 
     @Override

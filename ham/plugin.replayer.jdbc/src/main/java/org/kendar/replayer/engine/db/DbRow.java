@@ -6,31 +6,12 @@ import org.kendar.replayer.storage.ReplayerRow;
 
 public class DbRow {
     private final String initiator;
-    private long connectionId;
-
-    public long getConnectionId() {
-        return connectionId;
-    }
-
-    public long getTraceId() {
-        return traceId;
-    }
-
+    private final long connectionId;
     private long traceId;
     private ReplayerRow row;
     private JdbcCommand request;
     private JdbcResult response;
-
-    public boolean isVisited() {
-        return visited;
-    }
-
-    public void setVisited(boolean visited) {
-        this.visited = visited;
-    }
-
     private boolean visited = false;
-
     public DbRow(ReplayerRow row, JdbcCommand request, JdbcResult response) {
         this.row = row;
         this.request = request;
@@ -42,6 +23,22 @@ public class DbRow {
         if (httpRequest.getPathParameter("targetId") != null) {
             this.traceId = Long.parseLong(httpRequest.getPathParameter("targetId"));
         }
+    }
+
+    public long getConnectionId() {
+        return connectionId;
+    }
+
+    public long getTraceId() {
+        return traceId;
+    }
+
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
     }
 
     public ReplayerRow getRow() {

@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 
 @Component
 public class ResultSetConverterImpl implements ResultSetConverter {
-    private static JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private static final JsonTypedSerializer serializer = new JsonTypedSerializer();
 
 
     public HamResultSet toHam(ResultSet resultSet) throws Exception {

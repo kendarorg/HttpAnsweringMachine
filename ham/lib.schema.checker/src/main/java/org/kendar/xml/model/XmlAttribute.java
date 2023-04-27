@@ -3,6 +3,8 @@ package org.kendar.xml.model;
 public class XmlAttribute {
     private String name;
     private String value;
+    private XmlConstraint constraint = XmlConstraint.NONE;
+    private XmlConstraint valueConstraint = XmlConstraint.NONE;
 
     @Override
     public String toString() {
@@ -13,9 +15,6 @@ public class XmlAttribute {
                 ", \"valueConstraint\":\"" + valueConstraint + "\"" +
                 "}";
     }
-
-    private XmlConstraint constraint = XmlConstraint.NONE;
-    private XmlConstraint valueConstraint = XmlConstraint.NONE;
 
     public String getName() {
         return name;

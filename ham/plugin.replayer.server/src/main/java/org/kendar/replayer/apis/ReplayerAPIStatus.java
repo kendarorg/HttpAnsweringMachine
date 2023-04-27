@@ -20,15 +20,15 @@ import java.io.IOException;
 @HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class ReplayerAPIStatus implements FilteringClass {
-    @Override
-    public String getId() {
-        return this.getClass().getName();
-    }
-
     private final ReplayerStatus replayerStatus;
 
     public ReplayerAPIStatus(ReplayerStatus replayerStatus) {
         this.replayerStatus = replayerStatus;
+    }
+
+    @Override
+    public String getId() {
+        return this.getClass().getName();
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,

@@ -19,10 +19,10 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class StaticWebFilter implements FilteringClass {
-    private final FileResourcesUtils fileResourcesUtils;
     final Parser parser = Parser.builder().build();
-    private HashMap<String, Object> resourceFiles = new HashMap<>();
+    private final FileResourcesUtils fileResourcesUtils;
     private final ConcurrentHashMap<String, String> markdownCache = new ConcurrentHashMap<>();
+    private HashMap<String, Object> resourceFiles = new HashMap<>();
 
     public StaticWebFilter(FileResourcesUtils fileResourcesUtils) {
         this.fileResourcesUtils = fileResourcesUtils;

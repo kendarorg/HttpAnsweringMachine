@@ -21,7 +21,7 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
     private final Environment environment;
     private final FilterConfig filtersConfiguration;
     private final Logger logger;
-    private WaitForService waitForService;
+    private final WaitForService waitForService;
 
     public FilteringClassesHandlerImpl(
             List<CustomFiltersLoader> customFilterLoaders,
@@ -84,7 +84,7 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
             }
             for (var kvp : config.filters.entrySet()) {
                 var list = kvp.getValue();
-                Collections.sort(list, Comparator.comparingInt(FilterDescriptor::getPriority).reversed());
+                list.sort(Comparator.comparingInt(FilterDescriptor::getPriority).reversed());
             }
             filtersConfiguration.set(config);
         });

@@ -5,12 +5,13 @@ import org.kendar.http.annotations.HttpTypeFilter;
 import java.lang.annotation.Annotation;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("ClassExplicitlyAnnotation")
 public class HttpTypeFilterConcrete implements HttpTypeFilter {
 
-    private String hostAddress;
-    private boolean blocking;
-    private int priority;
-    private Pattern hostPattern;
+    private final String hostAddress;
+    private final boolean blocking;
+    private final int priority;
+    private final Pattern hostPattern;
 
     public HttpTypeFilterConcrete(String hostAddress, boolean blocking, int priority, Pattern hostPattern) {
 

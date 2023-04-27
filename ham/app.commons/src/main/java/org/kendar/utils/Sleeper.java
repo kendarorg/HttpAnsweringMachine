@@ -3,6 +3,7 @@ package org.kendar.utils;
 /**
  * Utility class for a "safer" sleep
  */
+@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 public class Sleeper {
     /**
      * Runs a synchronized based wait mechanism instead of sleep

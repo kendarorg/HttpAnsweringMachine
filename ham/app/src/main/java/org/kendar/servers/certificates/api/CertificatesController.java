@@ -101,12 +101,10 @@ public class CertificatesController implements FilteringClass {
             tags = {"base/certificates"},
             description = "Retrieve the certificate",
             responses = {@HamResponse(
-                    code = 200,
                     description = "Certificate",
                     body = String.class,
                     content = "text/plain"),
                     @HamResponse(
-                            code = 200,
                             body = byte[].class,
                             description = "Zip with certificate",
                             content = "application/zip")},

@@ -2,11 +2,14 @@ package org.kendar.servers.dbproxy;
 
 public class DbProxy {
 
+    private String id;
+    private String driver;
+    private DbDescriptor exposed;
+    private DbDescriptor remote;
+    private boolean active;
     public DbProxy() {
 
     }
-
-    private String id;
 
     public String getId() {
         return id;
@@ -15,11 +18,6 @@ public class DbProxy {
     public void setId(String id) {
         this.id = id;
     }
-
-    private String driver;
-    private DbDescriptor exposed;
-    private DbDescriptor remote;
-    private boolean active;
 
     public boolean isActive() {
         return active;

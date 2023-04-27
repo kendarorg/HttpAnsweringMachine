@@ -21,8 +21,8 @@ import java.util.jar.JarFile;
 
 @Component
 public class FileResourcesUtilsImpl implements FileResourcesUtils {
-    private final Logger logger;
     private static final String JAR_PATH_DELIMITER = "/";
+    private final Logger logger;
 
     public FileResourcesUtilsImpl(LoggerBuilder loggerBuilder) {
         logger = loggerBuilder.build(FileResourcesUtilsImpl.class);

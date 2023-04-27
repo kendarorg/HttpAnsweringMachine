@@ -33,8 +33,8 @@ module.exports = {
       modalData: null,
       modalShow: false,
       columns: [
-        {id: "id", template: "string", index: true},
-        {id: "active", template: "bool"},
+        {id: "id", template: "string", index: true, visible:false},
+        {id: "active", template: "bool", size:4},
         {id: "driver", template: "string"},
         {
           id: "remote", template: "string", func: function (e) {

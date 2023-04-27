@@ -26,7 +26,7 @@ public class AppointmentService {
 
 
     public List<Appointment> findAll() throws IOException {
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        CloseableHttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
         var request = new HttpGet(employeeLocation+"/api/v1/appointments");
         var httpResponse = httpClient.execute(request);
         HttpEntity responseEntity = httpResponse.getEntity();
@@ -36,7 +36,7 @@ public class AppointmentService {
 
     public Appointment save(Appointment newAppointment) {
         try {
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            CloseableHttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
             var request = new HttpPost(employeeLocation + "/api/v1/appointments/"+newAppointment.getEmployeeId());
             var entity = new StringEntity(mapper.writeValueAsString(newAppointment));
             request.setEntity(entity);
@@ -53,7 +53,7 @@ public class AppointmentService {
 
     public Optional<Appointment> findById(Long employeeId,Long appointmentId) throws IOException {
         try {
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            CloseableHttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
             var request = new HttpGet(employeeLocation + "/api/v1/appointments/" + employeeId+"/"+appointmentId);
             var httpResponse = httpClient.execute(request);
             HttpEntity responseEntity = httpResponse.getEntity();
@@ -65,17 +65,36 @@ public class AppointmentService {
     }
 
     public void deleteById(Long employeeId,Long appointmentId) throws IOException {
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        CloseableHttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
         var request = new HttpDelete(employeeLocation+"/api/v1/appointments/"+ employeeId+"/"+appointmentId);
         var httpResponse = httpClient.execute(request);
     }
 
-    public Appointment replaceAppointment(Appointment newAppointment, Long employeeId,Long appointmentId) {
+    public Appointment replaceAppointment(Appointment newAppointment) {
         try {
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            var request = new HttpPut(employeeLocation + "/api/v1/appointments/"+ employeeId+"/"+appointmentId);
+            CloseableHttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
+            var request = new HttpPut(employeeLocation + "/api/v1/appointments/"+
+                    newAppointment.getEmployeeId()+"/"+
+                    newAppointment.getId());
             var entity = new StringEntity(mapper.writeValueAsString(newAppointment));
             request.setEntity(entity);
+            request.setHeader("content-type", "application/json");
+            var httpResponse = httpClient.execute(request);
+            HttpEntity responseEntity = httpResponse.getEntity();
+            var in = EntityUtils.toString(responseEntity, "UTF-8");
+            return mapper.readValue(in, new TypeReference<>() {
+            });
+        }catch (Exception ex){
+            return null;
+        }
+    }
+
+    public Object setState(Long employeeId, Long appointmentId) {
+        try {
+            CloseableHttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
+            var request = new HttpPut(employeeLocation + "/api/v1/appointments/"+
+                    employeeId+"/"+
+                    appointmentId+"/state");
             request.setHeader("content-type", "application/json");
             var httpResponse = httpClient.execute(request);
             HttpEntity responseEntity = httpResponse.getEntity();

@@ -11,6 +11,7 @@ public class RecordingItem {
     private Long fileId;
     private boolean successful = false;
     private String error;
+    private List<TestResultsLine> result;
 
     public boolean isSuccessful() {
         return successful;
@@ -23,8 +24,6 @@ public class RecordingItem {
     public void setResult(List<TestResultsLine> result) {
         this.result = result;
     }
-
-    private List<TestResultsLine> result;
 
     public String getTestType() {
         return testType;

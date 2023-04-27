@@ -73,6 +73,21 @@ echo #!/bin/bash > %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.sh
 echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\be\run.bat
 
+
+
+
+echo [INFO] Setup bemongo
+call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\bemongo
+call %UTILS_LIB% mkdir_p %HAM_RELEASE_TARGET%\calendar\bemongo\libs
+cd %CALENDAR_DIR%\bemongo\target\
+call %UTILS_LIB% get_jar_name JAR_NAME
+copy /y %SCRIPT_DIR%\templates\standalone\bemongo.application.properties %HAM_RELEASE_TARGET%\calendar\bemongo\application.properties 1>NUL
+copy /y %CALENDAR_DIR%\bemongo\target\bemongo-*.jar %HAM_RELEASE_TARGET%\calendar\bemongo\  1>NUL
+
+echo #!/bin/bash > %HAM_RELEASE_TARGET%\calendar\bemongo\run.sh
+echo java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\bemongo\run.sh
+echo call java -jar %JAR_NAME% >> %HAM_RELEASE_TARGET%\calendar\bemongo\run.bat
+
 REM Prepare the compressed file
 echo [INFO] Compress release file
 cd %ROOT_DIR%\release\%HAM_VERSION%

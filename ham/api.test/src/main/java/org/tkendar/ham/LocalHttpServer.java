@@ -13,35 +13,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class LocalHttpServer {
-    public static class SimpleRequest {
-        public byte[] data;
-        public String path;
-        public String method;
-        public Map<String, String> headers;
-        public Map<String, String> query;
-
-        public String getStringData() {
-            return new String(data);
-        }
-
-        public HttpExchange httpExchange;
-    }
-
-    public static class LocalHandler {
-        public String path;
-        public Consumer<SimpleRequest> consumer;
-
-        private LocalHandler() {
-        }
-
-        public LocalHandler(String path, Consumer<SimpleRequest> consumer) {
-
-            this.path = path;
-            this.consumer = consumer;
-        }
-
-    }
-
     public static HttpServer startServer(int port, LocalHandler... handlers) throws HamTestException {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
@@ -50,10 +21,10 @@ public class LocalHttpServer {
                 server.createContext(handler.path, exchange -> {
                     var sr = new SimpleRequest();
                     sr.httpExchange = exchange;
-                    sr.data=new byte[]{};
+                    sr.data = new byte[]{};
                     try {
                         sr.data = IOUtils.toByteArray(exchange.getRequestBody());
-                    }catch (Exception ex){
+                    } catch (Exception ex) {
                         //ex.printStackTrace();
                     }
                     sr.path = exchange.getRequestURI().toString();
@@ -70,7 +41,6 @@ public class LocalHttpServer {
             throw new HamTestException(ex);
         }
     }
-
 
     public static void sendResponse(HttpExchange exchange, int code, String data, Map<String, String> headers) throws HamTestException {
         sendResponse(exchange, code, data.getBytes(StandardCharsets.UTF_8), headers);
@@ -98,5 +68,33 @@ public class LocalHttpServer {
         } catch (Exception ex) {
             throw new HamTestException(ex);
         }
+    }
+
+    public static class SimpleRequest {
+        public byte[] data;
+        public String path;
+        public String method;
+        public Map<String, String> headers;
+        public Map<String, String> query;
+        public HttpExchange httpExchange;
+
+        public String getStringData() {
+            return new String(data);
+        }
+    }
+
+    public static class LocalHandler {
+        public String path;
+        public Consumer<SimpleRequest> consumer;
+
+        private LocalHandler() {
+        }
+
+        public LocalHandler(String path, Consumer<SimpleRequest> consumer) {
+
+            this.path = path;
+            this.consumer = consumer;
+        }
+
     }
 }

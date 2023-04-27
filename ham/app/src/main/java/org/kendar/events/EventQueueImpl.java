@@ -20,16 +20,13 @@ public class EventQueueImpl implements EventQueue {
     private final Logger logger;
     private final ObjectMapper mapper = new ObjectMapper();
     private final ExecutorService executorService = Executors.newFixedThreadPool(20);
-
-    public EventQueueImpl(LoggerBuilder loggerBuilder) {
-        this.logger = loggerBuilder.build(EventQueue.class);
-    }
-
     private final HashMap<String, List<Consumer<Event>>> eventHandlers = new HashMap<>();
     @SuppressWarnings("rawtypes")
     private final HashMap<String, Class> conversions = new HashMap<>();
     private final HashMap<String, Function<Event, Object>> commandHandlers = new HashMap<>();
-
+    public EventQueueImpl(LoggerBuilder loggerBuilder) {
+        this.logger = loggerBuilder.build(EventQueue.class);
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -111,7 +108,7 @@ public class EventQueueImpl implements EventQueue {
     }
 
     @Override
-    public <T extends Object> T execute(Event event, Class<T> clazz) throws Exception {
+    public <T> T execute(Event event, Class<T> clazz) throws Exception {
         var eventName = event.getClass().getSimpleName().toLowerCase(Locale.ROOT);
         if (!commandHandlers.containsKey(eventName)) return null;
         var handler = commandHandlers.get(eventName);

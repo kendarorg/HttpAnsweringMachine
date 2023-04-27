@@ -1,4 +1,5 @@
 $bootstrap-icons-font: "bootstrap-icons" !default;
+//noinspection CssInvalidFunction
 $bootstrap-icons-font-src: url("./fonts/bootstrap-icons.woff2?524846017b983fc8ded9325d94ed40f3") format("woff2"),
 url("./fonts/bootstrap-icons.woff?524846017b983fc8ded9325d94ed40f3") format("woff") !default;
 
@@ -3149,7 +3150,11 @@ $bootstrap-icons-map: (
 .bi-list-columns-reverse::before { content: map-get($bootstrap-icons-map, "list-columns-reverse"); }
 .bi-list-columns::before { content: map-get($bootstrap-icons-map, "list-columns"); }
 .bi-meta::before { content: map-get($bootstrap-icons-map, "meta"); }
+
+//noinspection CssUnusedSymbol
 .bi-mortorboard-fill::before { content: map-get($bootstrap-icons-map, "mortorboard-fill"); }
+
+//noinspection CssUnusedSymbol
 .bi-mortorboard::before { content: map-get($bootstrap-icons-map, "mortorboard"); }
 .bi-nintendo-switch::before { content: map-get($bootstrap-icons-map, "nintendo-switch"); }
 .bi-pc-display-horizontal::before { content: map-get($bootstrap-icons-map, "pc-display-horizontal"); }

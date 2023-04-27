@@ -28,7 +28,7 @@ import java.util.regex.PatternSyntaxException;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class RegexpAPI implements FilteringClass {
-    ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public String getId() {

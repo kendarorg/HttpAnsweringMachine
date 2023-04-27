@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerRecordingBuilder {
 
-    HamInternalBuilder hamBuilder;
+    final HamInternalBuilder hamBuilder;
     private String name;
 
     public HamReplayerRecorderBuilderImpl(HamInternalBuilder hamBuilder) {
@@ -91,7 +91,7 @@ class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerR
     @Override
     public List<RecordingResult> retrieveResults(long id) throws HamException {
         var request = hamBuilder.newRequest()
-                .withPath("/api/plugins/replayer/results?id="+id);
+                .withPath("/api/plugins/replayer/results?id=" + id);
         return hamBuilder.callJsonList(request.build(), RecordingResult.class).stream().collect(Collectors.toList());
     }
 

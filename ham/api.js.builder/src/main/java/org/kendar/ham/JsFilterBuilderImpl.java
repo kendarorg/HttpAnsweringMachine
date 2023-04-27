@@ -9,26 +9,21 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 
 public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    private HamInternalBuilder hamBuilder;
-    private String name;
+    private final HamInternalBuilder hamBuilder;
+    private final String name;
     private String type = "body";
     private Matcher matcher;
     private String matcherType;
-
+    private FilterPhase phase;
+    private boolean blocking = false;
+    private String source;
     JsFilterBuilderImpl(HamInternalBuilder hamBuilder, String name) {
 
         this.hamBuilder = hamBuilder;
         this.name = name;
     }
-
-
-    private FilterPhase phase;
-    private boolean blocking = false;
-    private String source;
-
-
 
     @Override
     public JsFilterBuilder inPhase(FilterPhase method) {
@@ -37,15 +32,11 @@ public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
     }
 
 
-
-
-
     @Override
     public JsFilterBuilder withType(ScriptType type) {
         this.type = type.toString();
         return this;
     }
-
 
 
     @Override

@@ -10,7 +10,7 @@ public class PathSimpleMatcher {
     private List<String> pathSimpleMatchers = new ArrayList<>();
 
     public void setupPathSimpleMatchers(String pathAddress) {
-        pathSimpleMatchers = new ArrayList<String>();
+        pathSimpleMatchers = new ArrayList<>();
         if (pathAddress != null && pathAddress.contains("{")) {
             var explTemplate = pathAddress.split("/");
             for (var i = 0; i < explTemplate.length; i++) {

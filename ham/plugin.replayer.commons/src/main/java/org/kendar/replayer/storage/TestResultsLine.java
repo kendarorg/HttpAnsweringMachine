@@ -15,6 +15,18 @@ public class TestResultsLine implements DbTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "stimulator")
+    private boolean stimulator;
+    @Column(name = "resultId")
+    private Long resultId;
+    @Column(name = "recordingId")
+    private Long recordingId;
+    @Column(name = "expected", length = 64000)
+    private String expectedResponse;
+    @Column(name = "actual", length = 64000)
+    private String actualResponse;
+    @Column(name = "executedLine")
+    private Long executedLine;
 
     public boolean isStimulator() {
         return stimulator;
@@ -24,9 +36,6 @@ public class TestResultsLine implements DbTable {
         this.stimulator = stimulator;
     }
 
-    @Column(name = "stimulator")
-    private boolean stimulator;
-
     public Long getRecordingId() {
         return recordingId;
     }
@@ -34,17 +43,6 @@ public class TestResultsLine implements DbTable {
     public void setRecordingId(Long recordingId) {
         this.recordingId = recordingId;
     }
-
-    @Column(name = "resultId")
-    private Long resultId;
-    @Column(name = "recordingId")
-    private Long recordingId;
-
-    @Column(name = "expected", length = 64000)
-    private String expectedResponse;
-
-    @Column(name = "actual", length = 64000)
-    private String actualResponse;
 
     public String getExpectedResponse() {
         return expectedResponse;
@@ -85,7 +83,4 @@ public class TestResultsLine implements DbTable {
     public void setExecutedLine(Long executedLine) {
         this.executedLine = executedLine;
     }
-
-    @Column(name = "executedLine")
-    private Long executedLine;
 }

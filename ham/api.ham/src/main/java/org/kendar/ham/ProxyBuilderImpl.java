@@ -9,8 +9,9 @@ import java.util.UUID;
 import static org.kendar.ham.HamBuilder.pathId;
 import static org.kendar.ham.HamBuilder.updateMethod;
 
+@SuppressWarnings("HttpUrlsUsage")
 class ProxyBuilderImpl implements ProxyBuilder, DbProxyBuilder {
-    private HamBuilder hamBuilder;
+    private final HamBuilder hamBuilder;
     private DbProxy dbProxy;
 
     public ProxyBuilderImpl(HamBuilder hamBuilder) {
@@ -50,6 +51,38 @@ class ProxyBuilderImpl implements ProxyBuilder, DbProxyBuilder {
         throw new HamException("Missing id");
     }
 
+    @Override
+    public String addForcedProxy(String when, String where, String test) throws HamException {
+        var proxy = new Proxy();
+        var alreadyExisting = retrieveProxies()
+                .stream().filter(d -> d.getWhen().equalsIgnoreCase(when)).findAny();
+        proxy.setId(alreadyExisting.isPresent() ? alreadyExisting.get().getId() : UUID.randomUUID().toString());
+        proxy.setTest(test);
+        proxy.setWhen(when);
+        proxy.setWhere(where);
+        proxy.setForce(true);
+        var request = hamBuilder.newRequest()
+                .withMethod(updateMethod(alreadyExisting))
+                .withPath(pathId(
+                        "/api/proxies",
+                        alreadyExisting,
+                        () -> alreadyExisting.get().getId()))
+                .withJsonBody(proxy);
+
+        hamBuilder.call(request.build());
+        var inserted = retrieveProxies()
+                .stream().filter(d -> d.getWhen().equalsIgnoreCase(when)).findAny();
+        if (inserted.isPresent()) {
+            return inserted.get().getId();
+        }
+        inserted = retrieveProxies()
+                .stream().filter(d -> d.getWhere().equalsIgnoreCase(where)).findAny();
+        if (inserted.isPresent()) {
+
+            return inserted.get().getId();
+        }
+        throw new HamException("Missing id");
+    }
 
 
     @Override
@@ -85,7 +118,7 @@ class ProxyBuilderImpl implements ProxyBuilder, DbProxyBuilder {
     @Override
     public Proxy retrieveProxy(String id) throws HamException {
         var request = hamBuilder.newRequest()
-                .withPath("/api/proxies/"+id);
+                .withPath("/api/proxies/" + id);
         return hamBuilder.callJson(request.build(), Proxy.class);
     }
 

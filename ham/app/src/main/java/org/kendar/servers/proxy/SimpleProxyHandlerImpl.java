@@ -33,6 +33,8 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     private final Logger logger;
     private final DnsMultiResolver multiResolver;
     private final JsonConfiguration configuration;
+    private final ConcurrentHashMap<String, ProxyPollTiming> pollTiming = new ConcurrentHashMap<>();
+    private final AtomicBoolean running = new AtomicBoolean(false);
     private boolean startedOnce = false;
 
     public SimpleProxyHandlerImpl(
@@ -65,16 +67,6 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
         logger.info("Simple proxies LOADED");
     }
 
-    private class ProxyPollTiming {
-        public long lastTimeCheck;
-        public String id;
-        public boolean lastStatus;
-    }
-
-    private ConcurrentHashMap<String, ProxyPollTiming> pollTiming = new ConcurrentHashMap<>();
-
-    private AtomicBoolean running = new AtomicBoolean(false);
-
     private void verifyProxyConfiguration() {
         if (running.get()) return;
         running.set(true);
@@ -97,14 +89,14 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
                     pollTiming.put(currentProxy.getId(), pt);
                 }
                 var pt = pollTiming.get(currentProxy.getId());
-                if (pt.lastTimeCheck < (now - 1000) && currentProxy.isRunning() == false) {
+                if (pt.lastTimeCheck < (now - 1000) && !currentProxy.isRunning()) {
                     changed = checkRemoteMachines(currentProxy) || changed;
                     if (pt.lastStatus != currentProxy.isRunning()) {
                         logger.info("Proxy {} now active", currentProxy.getWhen());
                     }
                     pt.lastStatus = currentProxy.isRunning();
                     pt.lastTimeCheck = now;
-                } else if (pt.lastTimeCheck < (now - 60000) && currentProxy.isRunning() == true) {
+                } else if (pt.lastTimeCheck < (now - 60000) && currentProxy.isRunning()) {
                     changed = checkRemoteMachines(currentProxy) || changed;
 
                     if (pt.lastStatus != currentProxy.isRunning()) {
@@ -227,5 +219,11 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
             }
         }
         return oriSource;
+    }
+
+    private static class ProxyPollTiming {
+        public long lastTimeCheck;
+        public String id;
+        public boolean lastStatus;
     }
 }

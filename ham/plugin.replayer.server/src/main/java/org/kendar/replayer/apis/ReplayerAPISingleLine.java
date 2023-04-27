@@ -26,11 +26,11 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class ReplayerAPISingleLine implements FilteringClass {
 
+    final ObjectMapper mapper = new ObjectMapper();
     private final FileResourcesUtils fileResourcesUtils;
     private final LoggerBuilder loggerBuilder;
-    final ObjectMapper mapper = new ObjectMapper();
     private final Md5Tester md5Tester;
-    private HibernateSessionFactory sessionFactory;
+    private final HibernateSessionFactory sessionFactory;
 
     public ReplayerAPISingleLine(
             FileResourcesUtils fileResourcesUtils,

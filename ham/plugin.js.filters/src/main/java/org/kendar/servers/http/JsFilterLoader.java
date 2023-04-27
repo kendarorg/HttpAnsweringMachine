@@ -40,11 +40,14 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class JsFilterLoader implements CustomFiltersLoader {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final SandboxClassShutter sandboxClassShutter = new SandboxClassShutter();
+    private static final TypeReference<HashMap<String, String>> typeRef
+            = new TypeReference<>() {
+    };
     private final JsonConfiguration configuration;
     private final EventQueue eventQueue;
     private final ExternalRequester externalRequester;
-    private HibernateSessionFactory sessionFactory;
-    private MatchersRegistry matchersRegistry;
+    private final HibernateSessionFactory sessionFactory;
+    private final MatchersRegistry matchersRegistry;
     private final Environment environment;
     private final Logger logger;
     private final LoggerBuilder loggerBuilder;
@@ -79,7 +82,6 @@ public class JsFilterLoader implements CustomFiltersLoader {
         return cx.newObject(globalScope);
     }
 
-
     public List<FilterDescriptor> loadFilters() {
         var result = new ArrayList<FilterDescriptor>();
         List<DbFilter> dbFilters = new ArrayList<>();
@@ -98,10 +100,6 @@ public class JsFilterLoader implements CustomFiltersLoader {
         }
         return result;
     }
-
-    private static TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<HashMap<String, String>>() {
-    };
 
     private void loadSinglePlugin(ArrayList<FilterDescriptor> result, DbFilter dbFilter) throws Exception {
         //if(dbFilter.getMatcherType().equalsIgnoreCase("http")){

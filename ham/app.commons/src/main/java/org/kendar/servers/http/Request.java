@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 public class Request {
-    private static AtomicLong counter = new AtomicLong(0);
+    private static final AtomicLong counter = new AtomicLong(0);
 
     private long id = counter.incrementAndGet();
     private long ms = Calendar.getInstance().getTimeInMillis();
@@ -206,12 +206,12 @@ public class Request {
         return RequestUtils.getFromMap(this.postParameters, id);
     }
 
-    public void setRemoteHost(String remoteHost) {
-        this.remoteHost = remoteHost;
-    }
-
     public String getRemoteHost() {
         return remoteHost;
+    }
+
+    public void setRemoteHost(String remoteHost) {
+        this.remoteHost = remoteHost;
     }
 
     public String extractRemoteHostName() {
@@ -256,7 +256,7 @@ public class Request {
         r.host = this.host;
         r.method = this.method;
         if (multipartData != null) {
-            r.multipartData = this.multipartData.stream().map(multipartPart -> multipartPart.copy()).collect(Collectors.toList());
+            r.multipartData = this.multipartData.stream().map(MultipartPart::copy).collect(Collectors.toList());
         }
         r.port = this.port;
         if (postParameters != null) {

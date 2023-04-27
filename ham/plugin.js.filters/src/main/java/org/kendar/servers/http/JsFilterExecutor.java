@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JsFilterExecutor extends GenericFilterExecutor {
+    private static final JsFilterLoader.SandboxClassShutter sandboxClassShutter = new JsFilterLoader.SandboxClassShutter();
+    private static final ObjectMapper mapper = new ObjectMapper();
     private final Logger logger;
     private final JsHttpFilterDescriptor filterDescriptor;
     private final JsFilterLoader jsFilterLoader;
@@ -29,8 +31,6 @@ public class JsFilterExecutor extends GenericFilterExecutor {
         this.filterDescriptor = filterDescriptor;
         this.jsFilterLoader = jsFilterLoader;
     }
-
-    private static final JsFilterLoader.SandboxClassShutter sandboxClassShutter = new JsFilterLoader.SandboxClassShutter();
 
     @Override
     public boolean run(Request request, Response response) {
@@ -69,8 +69,6 @@ public class JsFilterExecutor extends GenericFilterExecutor {
             Context.exit();
         }
     }
-
-    private static final ObjectMapper mapper = new ObjectMapper();
 
 
 }

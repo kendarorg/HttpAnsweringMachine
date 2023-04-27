@@ -13,6 +13,17 @@ public class PatternItem implements Copyable<PatternItem> {
     private String matcher;
     private boolean initialized = false;
 
+    public PatternItem() {
+
+    }
+
+    public PatternItem(String id, String dns, String ip) {
+        this.id = id;
+        this.dns = dns;
+        this.ip = ip;
+        initialize();
+    }
+
     public void initialize() {
         if (!initialized) {
             if (dns.startsWith("@")) {
@@ -24,17 +35,6 @@ public class PatternItem implements Copyable<PatternItem> {
             }
             initialized = true;
         }
-    }
-
-    public PatternItem() {
-
-    }
-
-    public PatternItem(String id, String dns, String ip) {
-        this.id = id;
-        this.dns = dns;
-        this.ip = ip;
-        initialize();
     }
 
     public boolean match(String domain) {
@@ -49,6 +49,11 @@ public class PatternItem implements Copyable<PatternItem> {
 
     public String getIp() {
         return ip;
+    }
+
+    public void setIp(String ip) {
+        initialized = false;
+        this.ip = ip;
     }
 
     public String writeHostsLine() {
@@ -66,11 +71,6 @@ public class PatternItem implements Copyable<PatternItem> {
     public void setDns(String dns) {
         initialized = false;
         this.dns = dns;
-    }
-
-    public void setIp(String ip) {
-        initialized = false;
-        this.ip = ip;
     }
 
     public PatternItem copy() {

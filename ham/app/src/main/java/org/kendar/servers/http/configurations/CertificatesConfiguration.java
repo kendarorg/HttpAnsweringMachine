@@ -5,8 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 
 public class CertificatesConfiguration {
-    public String cname;
     public final List<String> extraDomains = new ArrayList<>();
+    public String cname;
     public long timestamp = Calendar.getInstance().getTimeInMillis();
 
     public CertificatesConfiguration copy() {

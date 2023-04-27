@@ -71,6 +71,7 @@ public class AppointmentController {
                 .map(appointment -> {
                     appointment.setDate(newAppointment.getDate());
                     appointment.setDescription(newAppointment.getDescription());
+                    appointment.setStatus(newAppointment.getStatus());
                     return appointmentRepository.save(appointment);
                 })
                 .orElseGet(() -> {

@@ -33,11 +33,7 @@ public class FilterDescriptor {
     private final List<String> pathSimpleMatchers = new ArrayList<>();
     private final JsonConfiguration jsonConfiguration;
     private final CustomFiltersLoader loader;
-
-    public List<FilterMatcher> getMatchers() {
-        return matchers;
-    }
-
+    private final List<String> pathMatchers = new ArrayList<>();
     private List<FilterMatcher> matchers = new ArrayList<>();
     private HamMatcher[] extraMatches;
     private String description;
@@ -47,9 +43,7 @@ public class FilterDescriptor {
 
     private HamDoc doc;
     private Method callback;
-    private List<String> pathMatchers = new ArrayList<>();
     private String id;
-
     public FilterDescriptor(
             CustomFiltersLoader loader,
             HttpTypeFilter typeFilter,
@@ -123,6 +117,10 @@ public class FilterDescriptor {
             matchedGroups.add(m.group(1));
         }
         return new ArrayList<>(matchedGroups);
+    }
+
+    public List<FilterMatcher> getMatchers() {
+        return matchers;
     }
 
     public String getId() {

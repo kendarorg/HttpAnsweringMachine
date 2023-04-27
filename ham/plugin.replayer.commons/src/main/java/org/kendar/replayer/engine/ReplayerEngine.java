@@ -12,7 +12,7 @@ public interface ReplayerEngine {
 
     void loadDb(Long recordingId) throws Exception;
 
-    Response findRequestMatch(Request req, String contentHash, Map<String, String> params) throws Exception;
+    RequestMatch findRequestMatch(Request req, String contentHash, Map<String, String> params) throws Exception;
 
     ReplayerEngine create(LoggerBuilder logger);
 

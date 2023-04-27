@@ -25,18 +25,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AgainstRealHamTest {
-    private static boolean DO_RUN=false;
+    private static final boolean DO_RUN = false;
 
     @BeforeEach
     void beforeEach() {
-        var loggerBuilder = (LoggerBuilder)new LocalLoggerBuilderImpl();
+        var loggerBuilder = (LoggerBuilder) new LocalLoggerBuilderImpl();
         Logger logger = loggerBuilder.build(AgainstRealHamTest.class);
         loggerBuilder.setLevel("org.mongodb.driver", Level.OFF);
     }
 
     @Test
     void test_ping_on_real_mongo() {
-        if(!DO_RUN)return;
+        if (!DO_RUN) return;
         String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=20&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("admin");
@@ -44,7 +44,7 @@ public class AgainstRealHamTest {
                 // Send a ping to confirm a successful connection
                 Bson command = new BsonDocument("ping", new BsonInt64(1));
                 Document commandResult = database.runCommand(command);
-                assertEquals(1.0,commandResult.get("ok"));
+                assertEquals(1.0, commandResult.get("ok"));
                 System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
             } catch (MongoException me) {
                 me.printStackTrace();
@@ -54,7 +54,7 @@ public class AgainstRealHamTest {
 
     @Test
     void test_insert_select_on_real_mongo() {
-        if(!DO_RUN)return;
+        if (!DO_RUN) return;
         String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
@@ -82,7 +82,7 @@ public class AgainstRealHamTest {
 
     @Test
     void test_stats__real_mongo() {
-        if(!DO_RUN)return;
+        if (!DO_RUN) return;
         String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
@@ -99,7 +99,7 @@ public class AgainstRealHamTest {
 
     @Test
     void test_hostInfo_real_mongo() {
-        if(!DO_RUN)return;
+        if (!DO_RUN) return;
         String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {
@@ -116,7 +116,7 @@ public class AgainstRealHamTest {
 
     @Test
     void test_db_real_mongo() {
-        if(!DO_RUN)return;
+        if (!DO_RUN) return;
         String uri = "mongodb://127.0.0.1:27097";///?maxPoolSize=1&w=majority";
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(uri)) {

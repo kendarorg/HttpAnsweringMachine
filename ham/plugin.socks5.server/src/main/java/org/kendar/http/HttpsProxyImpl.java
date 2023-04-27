@@ -38,31 +38,11 @@ import java.util.Scanner;
  * written to a file and are loaded back in when the proxy is started once more, meaning that cached and blocked
  * sites are maintained.
  * <p>
- * export http_proxy="http://127.0.0.1:1081"
- * export https_proxy="http://127.0.0.1:1081"
- * curl  "https://httpbin.org/anything"
+ * export http_proxy="<a href="http://127.0.0.1:1081">...</a>"
+ * ex<a href="port">https_proxy="htt</<a href="a>p://127.0.0.1:1081"
+ ">* cur</a>l  "https://httpbin.org/anything"
  */
 public class HttpsProxyImpl implements Runnable {
-
-
-    private final boolean useCache;
-    private final DnsMultiResolver resolver;
-    private final Logger log;
-
-    // Main method for the program
-    /*public static void main(String[] args) {
-        // Create an instance of Proxy and begin listening for connections
-        HttpsProxyImpl myProxy = new HttpsProxyImpl(8085,true);
-        myProxy.listen();
-    }*/
-
-
-    private ServerSocket serverSocket;
-
-    /**
-     * Semaphore for Proxy and Consolee Management System.
-     */
-    private volatile boolean running = true;
 
 
     /**
@@ -71,19 +51,26 @@ public class HttpsProxyImpl implements Runnable {
      * Value: File in storage associated with this key.
      */
     static HashMap<String, File> cache;
-
     /**
      * Data structure for constant order lookup of blocked sites.
      * Key: URL of page/image requested.
      * Value: URL of page/image requested.
      */
     static HashMap<String, String> blockedSites;
-
     /**
      * ArrayList of threads that are currently running and servicing requests.
      * This list is required in order to join all threads on closing of server
      */
     static ArrayList<Thread> servicingThreads;
+
+    private final boolean useCache;
+    private final DnsMultiResolver resolver;
+    private final Logger log;
+    private ServerSocket serverSocket;
+    /**
+     * Semaphore for Proxy and Consolee Management System.
+     */
+    private volatile boolean running = true;
 
 
     /**
@@ -124,6 +111,40 @@ public class HttpsProxyImpl implements Runnable {
         }
     }
 
+    /**
+     * Looks for File in cache
+     *
+     * @param url of requested file
+     * @return File if file is cached, null otherwise
+     */
+    public static File getCachedPage(String url) {
+        return cache.get(url);
+    }
+
+    /**
+     * Adds a new page to the cache
+     *
+     * @param urlString   URL of webpage to cache
+     * @param fileToCache File Object pointing to File put in cache
+     */
+    public static void addCachedPage(String urlString, File fileToCache) {
+        cache.put(urlString, fileToCache);
+    }
+
+    /**
+     * Check if a URL is blocked by the proxy
+     *
+     * @param url URL to check
+     * @return true if URL is blocked, false otherwise
+     */
+    public static boolean isBlocked(String url) {
+        if (blockedSites.get(url) != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void setupCacheAndBlocks() {
         if (!useCache) return;
         try {
@@ -159,7 +180,6 @@ public class HttpsProxyImpl implements Runnable {
         }
     }
 
-
     /**
      * Listens to port and accepts new socket connections.
      * Creates a new thread to handle the request and passes it the socket connection and continues listening.
@@ -186,7 +206,6 @@ public class HttpsProxyImpl implements Runnable {
             }
         }
     }
-
 
     /**
      * Saves the blocked and cached sites to a file so they can be re loaded at a later time.
@@ -241,43 +260,6 @@ public class HttpsProxyImpl implements Runnable {
             log.debug("Error saving cache/blocked sites", e);
         }
     }
-
-
-    /**
-     * Looks for File in cache
-     *
-     * @param url of requested file
-     * @return File if file is cached, null otherwise
-     */
-    public static File getCachedPage(String url) {
-        return cache.get(url);
-    }
-
-
-    /**
-     * Adds a new page to the cache
-     *
-     * @param urlString   URL of webpage to cache
-     * @param fileToCache File Object pointing to File put in cache
-     */
-    public static void addCachedPage(String urlString, File fileToCache) {
-        cache.put(urlString, fileToCache);
-    }
-
-    /**
-     * Check if a URL is blocked by the proxy
-     *
-     * @param url URL to check
-     * @return true if URL is blocked, false otherwise
-     */
-    public static boolean isBlocked(String url) {
-        if (blockedSites.get(url) != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 
     /**
      * Creates a management interface which can dynamically update the proxy configurations

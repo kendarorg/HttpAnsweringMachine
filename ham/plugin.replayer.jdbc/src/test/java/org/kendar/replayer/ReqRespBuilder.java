@@ -11,11 +11,7 @@ import org.kendar.servers.http.Response;
 import java.util.HashMap;
 
 public class ReqRespBuilder {
-    public static ReqRespBuilder create(String db) {
-        return new ReqRespBuilder().withDb(db);
-    }
-
-    private static JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private static final JsonTypedSerializer serializer = new JsonTypedSerializer();
     private String db;
     private JdbcCommand command;
     private JdbcResult result;
@@ -23,6 +19,10 @@ public class ReqRespBuilder {
     private long traceId;
     private boolean isstatic;
     private boolean isstimulator;
+
+    public static ReqRespBuilder create(String db) {
+        return new ReqRespBuilder().withDb(db);
+    }
 
     public ReqRespBuilder withDb(String db) {
         this.db = db;

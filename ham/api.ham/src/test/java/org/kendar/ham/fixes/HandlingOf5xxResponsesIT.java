@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class HandlingOf5xxResponsesIT {
-    private static HamBuilder hamBuilder = (HamBuilder) GlobalSettings.builder();
+    private static final HamBuilder hamBuilder = (HamBuilder) GlobalSettings.builder();
     private static String proxyId;
     private static HttpServer server;
 
@@ -38,28 +38,6 @@ public class HandlingOf5xxResponsesIT {
         hamBuilder.proxies().removeProxy(proxyId);
         server.stop(0);
 
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {200, 201, 401, 404, 500, 501, 304})
-    public void doTestA(int code) throws HamTestException, HamException {
-        System.out.println("Proposed " + code);
-        var httpGet = new HttpGet("http://www.local.test/testError?code=" + code);
-        var clientResponse = hamBuilder.execute(httpGet);
-        assertEquals(code, clientResponse.getStatusLine().getStatusCode());
-    }
-
-
-    @ParameterizedTest
-    @ValueSource(ints = {301, 302})
-    public void doTestB(int code) throws HamTestException, HamException {
-        System.out.println("Proposed " + code);
-        var hd = new HashMap<String, String>();
-        hd.put("Location", "https://www.facebook.com");
-        var httpGet = new HttpGet("http://www.local.test/testError?code=" + code +
-                "&location=http://www.local.test");
-        var clientResponse = hamBuilder.execute(httpGet);
-        assertNotEquals(code, clientResponse.getStatusLine().getStatusCode());
     }
 
     private static Map<String, String> queryToMap(String query) {
@@ -97,5 +75,26 @@ public class HandlingOf5xxResponsesIT {
                     }
                 }));
         return server;
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {200, 201, 401, 404, 500, 501, 304})
+    public void doTestA(int code) throws HamTestException, HamException {
+        System.out.println("Proposed " + code);
+        var httpGet = new HttpGet("http://www.local.test/testError?code=" + code);
+        var clientResponse = hamBuilder.execute(httpGet);
+        assertEquals(code, clientResponse.getStatusLine().getStatusCode());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {301, 302})
+    public void doTestB(int code) throws HamTestException, HamException {
+        System.out.println("Proposed " + code);
+        var hd = new HashMap<String, String>();
+        hd.put("Location", "https://www.facebook.com");
+        var httpGet = new HttpGet("http://www.local.test/testError?code=" + code +
+                "&location=http://www.local.test");
+        var clientResponse = hamBuilder.execute(httpGet);
+        assertNotEquals(code, clientResponse.getStatusLine().getStatusCode());
     }
 }

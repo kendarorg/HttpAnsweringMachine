@@ -33,10 +33,10 @@ public class DirectMongoClientHandler extends MongoClientHandler {
             toMongoDb.write(clientPacket.getPayload());
             toMongoDb.flush();
             byte[] mongoHeaderBytes = new byte[16];
-            while(!readBytes(fromMongoDb, mongoHeaderBytes)){
-                Sleeper.sleep(100);
+            while (!readBytes(fromMongoDb, mongoHeaderBytes)) {
+                Sleeper.sleep(1);
             }
-            return new OpGeneralResponse(readPacketsFromStream(fromMongoDb, mongoHeaderBytes),false);
+            return new OpGeneralResponse(readPacketsFromStream(fromMongoDb, mongoHeaderBytes), false);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

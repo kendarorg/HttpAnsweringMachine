@@ -31,13 +31,9 @@ public class XmlBuilder {
                 //result.getChildren().get(elTag).setConstraint(XmlConstraint.MANDATORY_VALUE);
                 result.getChildren().get(elTag).getItems().add(load(el, depth + 1, diffResult));
             } else if (childNode instanceof Node) {
-                var el = (Node) childNode;
-                var val = el.getNodeValue();
+                var val = ((Node) childNode).getNodeValue();
                 //result.setConstraint(XmlConstraint.MANDATORY_VALUE);
-                if (Utils.stringIsEmptyOrNull(val)) {
-                    //result.setValueConstraint(XmlConstraint.NULLABLE_VALUE);
-                } else {
-                    //result.setValueConstraint(XmlConstraint.MANDATORY_VALUE);
+                if (!Utils.stringIsEmptyOrNull(val)) {
                     result.setValue(val);
                 }
             }
@@ -53,10 +49,7 @@ public class XmlBuilder {
             var val = new XmlAttribute();
             //val.setConstraint(XmlConstraint.MANDATORY_VALUE);
             val.setName(att.getNodeName());
-            if (Utils.stringIsEmptyOrNull(att.getNodeValue())) {
-                //val.setValueConstraint(XmlConstraint.NULLABLE_VALUE);
-            } else {
-                //val.setValueConstraint(XmlConstraint.MANDATORY_VALUE);
+            if (!Utils.stringIsEmptyOrNull(att.getNodeValue())) {
                 val.setValue(att.getNodeValue());
             }
             result.put(val.getName(), val);

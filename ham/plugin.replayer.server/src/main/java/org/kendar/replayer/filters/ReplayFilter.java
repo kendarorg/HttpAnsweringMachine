@@ -23,7 +23,7 @@ public class ReplayFilter implements FilteringClass {
     private final ReplayerStatus replayerStatus;
     private final String localAddress;
     private final Logger logger;
-    private List<ReplayerEngine> replayerEngines;
+    private final List<ReplayerEngine> replayerEngines;
 
     public ReplayFilter(ReplayerStatus replayerStatus, JsonConfiguration configuration, LoggerBuilder loggerBuilder,
                         List<ReplayerEngine> replayerEngines) {
@@ -55,9 +55,9 @@ public class ReplayFilter implements FilteringClass {
                 req.getHost() +
                 req.getPath();
         var result = replayerStatus.replay(req, res);
-        if (result) {
+        if (result.isPresent()) {
             logger.info(toReplay);
         }
-        return result;
+        return result.isPresent();
     }
 }

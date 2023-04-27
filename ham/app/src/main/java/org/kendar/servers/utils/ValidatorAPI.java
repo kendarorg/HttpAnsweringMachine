@@ -42,8 +42,8 @@ import java.util.Set;
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class ValidatorAPI implements FilteringClass {
 
-    ObjectMapper mapper = new ObjectMapper();
-    DiffInferrer diffInferrer = new DiffInferrer();
+    final ObjectMapper mapper = new ObjectMapper();
+    final DiffInferrer diffInferrer = new DiffInferrer();
 
     @Override
     public String getId() {

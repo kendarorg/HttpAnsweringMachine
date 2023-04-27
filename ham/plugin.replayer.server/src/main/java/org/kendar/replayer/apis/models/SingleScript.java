@@ -11,20 +11,20 @@ public class SingleScript {
     private String description;
     private String name;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getId() {
         return id;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<SingleScriptLine> getLines() {

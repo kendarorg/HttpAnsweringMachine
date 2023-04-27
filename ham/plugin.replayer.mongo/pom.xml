@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ham</artifactId>
         <groupId>org.kendar</groupId>
-        <version>4.2.2</version>
+        <version>4.3.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,6 +17,11 @@
     </properties>
     <dependencies>
 
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>typedserializer</artifactId>
+            <version>1.1.12-snapshot</version>
+        </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>app.commons</artifactId>
@@ -45,7 +50,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.kendar</groupId>
+            <artifactId>plugin.mongo.server</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -139,6 +149,9 @@
                                         <exclude>logback-classic-*.*</exclude>
                                         <exclude>logback-core-*.*</exclude>
                                         <exclude>swagger-models-*.*</exclude>
+                                        <exclude>plugin.mongo.server-*.*</exclude>
+
+
                                     </excludes>
                                 </resource>
                             </resources>

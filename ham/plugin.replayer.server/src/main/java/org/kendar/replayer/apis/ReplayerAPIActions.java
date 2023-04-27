@@ -20,17 +20,16 @@ import org.springframework.stereotype.Component;
 public class ReplayerAPIActions implements FilteringClass {
 
     private final Logger logger;
-
-    @Override
-    public String getId() {
-        return "org.kendar.replayer.apis.ReplayerAPIActions";
-    }
-
     private final ReplayerStatus replayerStatus;
 
     public ReplayerAPIActions(ReplayerStatus replayerStatus, LoggerBuilder loggerBuilder) {
         this.replayerStatus = replayerStatus;
         this.logger = loggerBuilder.build(ReplayerAPIActions.class);
+    }
+
+    @Override
+    public String getId() {
+        return "org.kendar.replayer.apis.ReplayerAPIActions";
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
@@ -40,8 +39,6 @@ public class ReplayerAPIActions implements FilteringClass {
             path = {
                     @PathParameter(key = "id"),
                     @PathParameter(key = "action", description = "start/pause/stop")
-            },
-            query = {
             }
     )
     public void recording(Request req, Response res) throws Exception {
@@ -50,8 +47,6 @@ public class ReplayerAPIActions implements FilteringClass {
 
         if (action.equalsIgnoreCase("start") && replayerStatus.getStatus() == ReplayerState.NONE) {
             var description = req.getQuery("description");
-//            var recordVoidDbCalls=Boolean.parseBoolean(req.getQuery("recordVoidDbCalls"));
-//            var recordDbCalls=Boolean.parseBoolean(req.getQuery("recordDbCalls"));
             replayerStatus.startRecording(id, description, req.getQuery());
         } else if (action.equalsIgnoreCase("start") && replayerStatus.getStatus() == ReplayerState.PAUSED_RECORDING) {
             replayerStatus.restartRecording();

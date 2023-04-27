@@ -32,11 +32,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GenericUsageTest {
 
-    private static String proxyHttp;
-    private static String proxyHttps;
-    ObjectMapper smileMapper = new ObjectMapper(new SmileFactory());
     public static final String LOCAL_STARTING_ADDRESS = "http://www.local.test/gut";
     public static final String HTTPS_LOCAL_STARTING_ADDRESS = "https://www.local.test/gut";
+    private static final HamBuilder hamBuilder = (HamBuilder) GlobalSettings.builder();
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private static String proxyHttp;
+    private static String proxyHttps;
+    private static HttpServer server;
+    ObjectMapper smileMapper = new ObjectMapper(new SmileFactory());
+    //private static HamBuilder hamBuilderHttpProxy = (HamBuilder)GlobalSettings.builderHttpProxy();
 
     private static Map<String, Object> parseQuery(String query)
             throws UnsupportedEncodingException {
@@ -76,13 +80,10 @@ public class GenericUsageTest {
         }
         return parameters;
     }
-    private static HttpServer server;
-    private static HamBuilder hamBuilder = (HamBuilder)GlobalSettings.builder();
-    //private static HamBuilder hamBuilderHttpProxy = (HamBuilder)GlobalSettings.builderHttpProxy();
 
     @BeforeAll
     static void beforeAll() throws HamTestException, HamException {
-         server = getHttpServer(5983);
+        server = getHttpServer(5983);
         HamStarter.runHamJar(DnsTest.class);
         proxyHttp = hamBuilder
                 .proxies()
@@ -97,6 +98,7 @@ public class GenericUsageTest {
         }
 
     }
+
     @AfterAll
     static void afterAll() throws HamException {
         hamBuilder
@@ -105,7 +107,7 @@ public class GenericUsageTest {
                 .proxies().removeProxy(proxyHttps);
         server.stop(0);
     }
-    private static ObjectMapper mapper = new ObjectMapper();
+
     private static HttpServer getHttpServer(int gatewayPort) throws HamTestException {
         var server = LocalHttpServer.startServer(gatewayPort,
                 handleStandardBodyPost(),
@@ -132,6 +134,7 @@ public class GenericUsageTest {
             }
         });
     }
+
     private static LocalHttpServer.LocalHandler handleStandardBodyPost() {
         return new LocalHttpServer.LocalHandler("/request/post/body", (call) -> {
             try {
@@ -167,20 +170,20 @@ public class GenericUsageTest {
 
     @Test
     public void testPostBody() throws HamException, IOException {
-        var httpPost = new HttpPost(LOCAL_STARTING_ADDRESS+"/request/post/body");
+        var httpPost = new HttpPost(LOCAL_STARTING_ADDRESS + "/request/post/body");
         httpPost.setEntity(new StringEntity("testString"));
         var clientResponse = hamBuilder.execute(httpPost, true);
         var resultData = IOUtils.toString(clientResponse.getEntity().getContent(), StandardCharsets.UTF_8);
-        assertEquals("testString",resultData);
+        assertEquals("testString", resultData);
     }
 
     @Test
     public void testPostBodyHttps() throws HamException, IOException {
-        var httpPost = new HttpPost(HTTPS_LOCAL_STARTING_ADDRESS+"/request/post/body");
+        var httpPost = new HttpPost(HTTPS_LOCAL_STARTING_ADDRESS + "/request/post/body");
         httpPost.setEntity(new StringEntity("testString"));
         var clientResponse = hamBuilder.execute(httpPost, true);
         var resultData = IOUtils.toString(clientResponse.getEntity().getContent(), StandardCharsets.UTF_8);
-        assertEquals("testString",resultData);
+        assertEquals("testString", resultData);
     }
 
     //@Test
@@ -194,7 +197,7 @@ public class GenericUsageTest {
 
     @Test
     public void testPostParameters() throws HamException, IOException {
-        var httpPost = new HttpPost(LOCAL_STARTING_ADDRESS +"/request/post/params");
+        var httpPost = new HttpPost(LOCAL_STARTING_ADDRESS + "/request/post/params");
 
         var params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("username", "@username"));
@@ -209,11 +212,11 @@ public class GenericUsageTest {
 
     @Test
     public void testPostBodySmile() throws HamException, IOException {
-        var httpPost = new HttpPost(LOCAL_STARTING_ADDRESS+"/request/post/smile");
-        var map = new HashMap<String,String>();
-        map.put("a","b");
+        var httpPost = new HttpPost(LOCAL_STARTING_ADDRESS + "/request/post/smile");
+        var map = new HashMap<String, String>();
+        map.put("a", "b");
         var smileMap = smileMapper.writeValueAsBytes(map);
-        httpPost.addHeader("content-type","application/x-jackson-smile");
+        httpPost.addHeader("content-type", "application/x-jackson-smile");
         httpPost.setEntity(new ByteArrayEntity(smileMap));
         var clientResponse = hamBuilder.execute(httpPost, true);
         var resultData = IOUtils.toByteArray(clientResponse.getEntity().getContent());

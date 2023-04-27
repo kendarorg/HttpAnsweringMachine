@@ -20,6 +20,25 @@ public class CallIndex implements DbTable {
 
     @Column(name = "id")
     private Long id;
+    @Column(name = "recordingId")
+    private long recordingId;
+    @Column(name = "reference")
+    private long reference;
+    @Column(name = "calls")
+    @JsonSetter(nulls = Nulls.SKIP)
+    private long calls = 1;
+    @Column(name = "description", length = 1024)
+    private String description;
+    @Column(name = "preScript")
+    @Lob
+    private String preScript;
+    @Column(name = "postScript")
+    @Lob
+    private String postScript;
+    @Column(name = "stimulatorTest")
+    private boolean stimulatorTest;
+    @Column(name = "timestamp")
+    private long timestamp = Calendar.getInstance().getTimeInMillis();
 
     public long getRecordingId() {
         return recordingId;
@@ -28,24 +47,6 @@ public class CallIndex implements DbTable {
     public void setRecordingId(long recordingId) {
         this.recordingId = recordingId;
     }
-
-    @Column(name = "recordingId")
-    private long recordingId;
-
-    @Column(name = "reference")
-    private long reference;
-
-    @Column(name = "calls")
-    @JsonSetter(nulls = Nulls.SKIP)
-    private long calls = 1;
-
-    @Column(name = "description", length = 1024)
-    private String description;
-
-
-    @Column(name = "preScript")
-    @Lob
-    private String preScript;
 
     public String getPreScript() {
         return preScript;
@@ -62,18 +63,6 @@ public class CallIndex implements DbTable {
     public void setPostScript(String postScript) {
         this.postScript = postScript;
     }
-
-    @Column(name = "postScript")
-    @Lob
-    private String postScript;
-
-
-    @Column(name = "stimulatorTest")
-    private boolean stimulatorTest;
-
-
-    @Column(name = "timestamp")
-    private long timestamp = Calendar.getInstance().getTimeInMillis();
 
     public Long getId() {
         return id;

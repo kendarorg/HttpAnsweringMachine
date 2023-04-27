@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 public class XmlElementGroup {
     private List<XmlElement> items;
     private String tag;
+    private XmlConstraint constraint = XmlConstraint.NONE;
 
     public XmlElementGroup() {
         items = new ArrayList<>();
@@ -22,8 +23,6 @@ public class XmlElementGroup {
                 .sorted(Comparator.comparing(XmlElement::getTag)).map(XmlElement::toString).collect(Collectors.toList())) + "]" +
                 '}';
     }
-
-    private XmlConstraint constraint = XmlConstraint.NONE;
 
     public List<XmlElement> getItems() {
         return items;

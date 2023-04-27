@@ -105,10 +105,7 @@ public class JsonBuilder {
             var val = new XmlAttribute();
             //val.setConstraint(XmlConstraint.MANDATORY_VALUE);
             val.setName(att.getNodeName());
-            if (Utils.stringIsEmptyOrNull(att.getNodeValue())) {
-                //val.setValueConstraint(XmlConstraint.NULLABLE_VALUE);
-            } else {
-                //val.setValueConstraint(XmlConstraint.MANDATORY_VALUE);
+            if (!Utils.stringIsEmptyOrNull(att.getNodeValue())) {
                 val.setValue(att.getNodeValue());
             }
             result.put(val.getName(), val);

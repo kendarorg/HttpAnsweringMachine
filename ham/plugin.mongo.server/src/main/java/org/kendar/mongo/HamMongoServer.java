@@ -16,15 +16,16 @@ import java.util.List;
 public class HamMongoServer {
     public static final int DEFAULT_PORT = 27017;
     private final Logger logger;
-    private EventQueue eventQueue;
-    private List<MsgHandler> msgHandlers;
-    private List<CompressionHandler> compressionHandlers;
-    private LoggerBuilder loggerBuilder;
+    private final EventQueue eventQueue;
+    private final List<MsgHandler> msgHandlers;
+    private final List<CompressionHandler> compressionHandlers;
+    private final LoggerBuilder loggerBuilder;
+    private ServerSocket thisServer;
 
     public HamMongoServer(List<MsgHandler> msgHandlers,
                           List<CompressionHandler> compressionHandlers,
                           LoggerBuilder loggerBuilder,
-                          EventQueue eventQueue){
+                          EventQueue eventQueue) {
 
         this.msgHandlers = msgHandlers;
         this.compressionHandlers = compressionHandlers;
@@ -33,26 +34,38 @@ public class HamMongoServer {
         this.eventQueue = eventQueue;
     }
 
-    public HamMongoServer clone(){
+    public HamMongoServer clone() {
         return new HamMongoServer(
-                msgHandlers,compressionHandlers,loggerBuilder,
+                msgHandlers, compressionHandlers, loggerBuilder,
                 eventQueue);
     }
 
-    public void run(int port,AnsweringMongoServer answeringMongoServer) throws IOException {
-        try(ServerSocket server = new ServerSocket(port)) {
+    public void run(int port, AnsweringMongoServer answeringMongoServer) throws IOException {
+        try (ServerSocket server = new ServerSocket(port)) {
+            thisServer = server;
             logger.info("MongoDB server started on port " + port);
 
             while (answeringMongoServer.isActive()) {
                 Socket client = server.accept();
+                //client.setSoTimeout(5000);
                 logger.debug("New client connected: " + client.getInetAddress().getHostAddress());
                 // Handle the client connection in a separate thread
                 Thread clientThread = new Thread(
                         new HamMongoClientHandler(client,
                                 msgHandlers, compressionHandlers, loggerBuilder,
-                                eventQueue,port));
+                                eventQueue, port));
                 clientThread.start();
             }
+        } catch (Exception ex) {
+            logger.warn("Disconnected server " + port);
+        }
+    }
+
+    public void close() {
+        try {
+            thisServer.close();
+        } catch (Exception ex) {
+
         }
     }
 }

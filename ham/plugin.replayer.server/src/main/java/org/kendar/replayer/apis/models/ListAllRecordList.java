@@ -12,6 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ListAllRecordList {
+    private static final TypeReference<HashMap<String, String>> typeRef
+            = new TypeReference<>() {
+    };
+    private static final ObjectMapper mapper = new ObjectMapper();
     private List<CallIndex> callIndex;
     private List<ReplayerRow> replayerRows;
     private Long id;
@@ -19,14 +23,7 @@ public class ListAllRecordList {
     private List<ReplayerRow> lines = new ArrayList<>();
     private List<CallIndex> indexes = new ArrayList<>();
     private HashMap<String, String> filters;
-
     private DbRecording recording;
-
-    private static TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<>() {
-    };
-
-    private static ObjectMapper mapper = new ObjectMapper();
 
     public ListAllRecordList(HibernateSessionFactory sessionFactory, Long id, boolean cleanJs) throws Exception {
 

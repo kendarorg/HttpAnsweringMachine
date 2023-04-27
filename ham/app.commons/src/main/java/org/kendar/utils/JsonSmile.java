@@ -8,8 +8,8 @@ import com.fasterxml.jackson.dataformat.smile.SmileFactory;
 import java.io.IOException;
 
 public class JsonSmile {
-    private static ObjectMapper smileMapper = new ObjectMapper(new SmileFactory());
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper smileMapper = new ObjectMapper(new SmileFactory());
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     public static byte[] jsonToSmile(String jsonValue) throws JsonProcessingException {
         JsonNode actualObj = mapper.readTree(jsonValue);

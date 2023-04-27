@@ -13,35 +13,34 @@ import org.kendar.mongo.model.ReplyPacket;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OpQueryResponder implements MongoResponder{
+public class OpQueryResponder implements MongoResponder {
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Override
     public OpCodes getOpCode() {
         return OpCodes.OP_QUERY;
     }
 
-    private ObjectMapper mapper = new ObjectMapper();
-
-    private String getDb(QueryPacket msgPacket)
-    {
+    private String getDb(QueryPacket msgPacket) {
         try {
             var jsonTree = mapper.readTree(
                     msgPacket.getJson());
             var db = (JsonNode) jsonTree.get("$db");
-            if(db==null)return "admin";
+            if (db == null) return "admin";
             return db.asText();
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
 
     @Override
     public OpGeneralResponse canRespond(MongoPacket clientPacket, MongoClient mongoClient, long connectionId) {
-        var msgPacket = (QueryPacket)clientPacket;
-        var db= getDb(msgPacket);
+        var msgPacket = (QueryPacket) clientPacket;
+        var db = getDb(msgPacket);
         var database = mongoClient.getDatabase(db);
-        var command = (BsonDocument)BsonDocument.parse(msgPacket.getJson());
-        if(command.containsKey("isMaster"))return null;
+        var command = (BsonDocument) BsonDocument.parse(msgPacket.getJson());
+        if (command.containsKey("isMaster")) return null;
         Document result = database.runCommand(command);
         var toret = new ReplyPacket();
         toret.setResponseFlags(8);
@@ -52,9 +51,10 @@ public class OpQueryResponder implements MongoResponder{
         toret.setResponseTo(msgPacket.getRequestId());
         try {
             toret.getJsons().add(mapper.writeValueAsString(result));
-        }catch (Exception ex){}
+        } catch (Exception ex) {
+        }
         //Document commandResult = database.runCommand(command);
 
-        return new OpGeneralResponse(toret,false);
+        return new OpGeneralResponse(toret, false);
     }
 }

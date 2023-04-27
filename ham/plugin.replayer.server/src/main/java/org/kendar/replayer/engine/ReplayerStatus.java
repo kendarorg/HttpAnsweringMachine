@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Component
@@ -37,13 +38,12 @@ public class ReplayerStatus {
     private final InternalRequester internalRequester;
     private final SimpleProxyHandler simpleProxyHandler;
     private final String localAddress;
-    private HibernateSessionFactory sessionFactory;
-    private List<ReplayerEngine> replayerEngines;
+    private final HibernateSessionFactory sessionFactory;
+    private final List<ReplayerEngine> replayerEngines;
+    private final AtomicReference<ReplayerState> state = new AtomicReference<>(ReplayerState.NONE);
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
     private BaseDataset dataset;
-    private AtomicReference<ReplayerState> state = new AtomicReference<>(ReplayerState.NONE);
     private Map<String, String> query;
-//    private boolean recordDbCalls;
-//    private boolean recordVoidDbCalls;
 
     public ReplayerStatus(
             LoggerBuilder loggerBuilder,
@@ -91,12 +91,11 @@ public class ReplayerStatus {
         return ((RecordingDataset) dataset).add(req, res);
     }
 
-    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
-
-    public boolean replay(Request req, Response res) {
-        if (state.get() != ReplayerState.REPLAYING) return false;
-        Response response = ((ReplayerDataset) dataset).findResponse(req);
-        if (response != null) {
+    public Optional<RequestMatch> replay(Request req, Response res) {
+        if (state.get() != ReplayerState.REPLAYING) return Optional.empty();
+        var requestMatch = ((ReplayerDataset) dataset).findResponse(req);
+        if (requestMatch != null) {
+            var response = requestMatch.getFoundedRes();
             res.setBinaryResponse(response.isBinaryResponse());
             if (response.isBinaryResponse()) {
                 res.setResponseBytes(response.getResponseBytes());
@@ -105,10 +104,10 @@ public class ReplayerStatus {
             }
             res.setHeaders(response.getHeaders());
             res.setStatusCode(response.getStatusCode());
-            return true;
+            return Optional.of(requestMatch);
         }
 
-        return false;
+        return Optional.empty();
     }
 
     public ReplayerState getStatus() {

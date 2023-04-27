@@ -15,6 +15,7 @@
     <Br><br>
     <button id="recording-list-gendns" v-on:click="generateDns()" class="btn btn-default" title="Toggle">Gnerate DNS for selected</button>
     <button id="recording-list-genssl" v-on:click="generateSSL()" class="btn btn-default" title="Toggle">Gnerate SSL for selected</button>
+    <button id="recording-list-genssl" v-on:click="generateCurl()" class="btn btn-default" title="Toggle">Gnerate CURL for selected</button>
     <button id="recording-list-setscript" v-on:click="setScript()" class="btn btn-default" title="Toggle">Set SCript for selected</button>
     <Br><br>
     <button id="recording-list-reload" v-on:click="reload()" class="bi bi-arrow-clockwise" title="Reload"></button>
@@ -61,7 +62,7 @@ module.exports = {
       columns: [
         {id: "id", template: "long", index: true, size: 4, sortable: true},
         {id: "type", template: "string", label: "Type", size: 4, sortable: true},
-        {id: "stimulatorTest", template: "boolw", label: "Stimulator", sortable: true, visible: false},
+        {id: "stimulatorTest", template: "boolw", label: "Stimulator", sortable: true},
         {id: "requestMethod", template: "string", label: "Method", size: 7, sortable: true},
         {id: "requestHost", template: "string", label: "Host", sortable: true, size: 15, visible: false},
         {id: "requestPath", template: "string", label: "Path", sortable: true, size: 15},
@@ -210,6 +211,18 @@ module.exports = {
       var toUpload = JSON.stringify(allHosts);
       const headers = {'Content-Type': 'application/json'};
       axiosHandle(axios.post('/api/ssl', toUpload, {headers}), axiosOk);
+    },
+    generateCurl: function () {
+      var allIds = [];
+      this.$refs.grid.onSelected(function (row) {
+        allIds.push(row['id']);
+      })
+      var id = getUrlParameter("id");
+      downloadFilePost(
+          '/api/plugins/replayer/generator/'+id+'/curl',
+          'recording.'+id+'.curls.zip',
+          allIds
+      );
     }
   }
 }

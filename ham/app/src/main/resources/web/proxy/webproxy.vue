@@ -41,7 +41,7 @@ module.exports = {
       modalData: null,
       modalShow: false,
       columns: [
-        {id: "id", template: "string", index: true},
+        {id: "id", template: "string", index: true, visible:false},
         {id: "when", template: "string"},
         {id: "where", template: "string"},
         {id: "test", template: "string"},

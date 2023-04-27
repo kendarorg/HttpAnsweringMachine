@@ -8,6 +8,10 @@ import java.util.stream.Collectors;
 public class XmlElement {
     private Map<String, XmlAttribute> attributes = new HashMap<>();
     private String value;
+    private String tag;
+    private Map<String, XmlElementGroup> children = new HashMap<>();
+    private XmlConstraint constraint = XmlConstraint.NONE;
+    private XmlConstraint valueConstraint = XmlConstraint.NONE;
 
     @Override
     public String toString() {
@@ -18,16 +22,11 @@ public class XmlElement {
                 ", \"valueConstraint\":\"" + valueConstraint + "\"" +
                 ", \"attributes\":[" + String.join(",", attributes.values().stream()
                 .sorted(Comparator.comparing(XmlAttribute::getName))
-                .map(a -> a.toString()).collect(Collectors.toList())) + "]" +
+                .map(XmlAttribute::toString).collect(Collectors.toList())) + "]" +
                 ", \"children\":[" + String.join(",", children.values().stream()
-                .sorted(Comparator.comparing(XmlElementGroup::getTag)).map(a -> a.toString()).collect(Collectors.toList())) + "]" +
+                .sorted(Comparator.comparing(XmlElementGroup::getTag)).map(XmlElementGroup::toString).collect(Collectors.toList())) + "]" +
                 "}";
     }
-
-    private String tag;
-    private Map<String, XmlElementGroup> children = new HashMap<>();
-    private XmlConstraint constraint = XmlConstraint.NONE;
-    private XmlConstraint valueConstraint = XmlConstraint.NONE;
 
     public Map<String, XmlAttribute> getAttributes() {
         return attributes;

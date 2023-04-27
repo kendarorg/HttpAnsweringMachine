@@ -10,9 +10,11 @@ import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.http.PluginsInitializer;
 import org.kendar.utils.LoggerBuilder;
+import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,6 +24,7 @@ public class AnsweringMongoServer implements AnsweringServer {
     private final EventQueue eventQueue;
     private final Logger logger;
     private final HamMongoServer hamMongoServer;
+    private final Map<Integer, HamMongoServer> activeServers = new ConcurrentHashMap<>();
     private boolean running = false;
 
     public AnsweringMongoServer(
@@ -41,14 +44,26 @@ public class AnsweringMongoServer implements AnsweringServer {
     }
 
     private void handleConfigChange(MongoConfigChanged t) {
+        for (var single : activeServers.values()) {
+            single.close();
+
+        }
         activeServers.clear();
+        var config = configuration.getConfiguration(MongoConfig.class);
+        if (!config.isActive()) {
+            running = false;
+            return;
+        }
+        try {
+            loadMongoServers(config);
+        } catch (Exception ex) {
+            logger.error("Error restarting mongo", ex);
+        }
     }
 
     public void isSystem() {
         //To check if is system class
     }
-
-    private Map<Integer, HamMongoServer> activeServers = new ConcurrentHashMap<>();
 
     @Override
     public void run() {
@@ -60,11 +75,9 @@ public class AnsweringMongoServer implements AnsweringServer {
         try {
             activeServers.clear();
             eventQueue.handle(new ServiceStarted().withTye("mongo"));
-            for(var single : config.getProxies()){
-                var ms = hamMongoServer.clone();
-                ms.run(single.getExposedPort(),this);
-                activeServers.put(single.getExposedPort(),ms);
-
+            loadMongoServers(config);
+            while (running) {
+                Sleeper.sleep(1000);
             }
             //TODO
             //mongoServer.run(77777,this);
@@ -72,6 +85,22 @@ public class AnsweringMongoServer implements AnsweringServer {
             logger.error("Error running Mongo server", e);
         } finally {
             running = false;
+        }
+    }
+
+    private void loadMongoServers(MongoConfig config) {
+        for (var single : config.getProxies()) {
+            var ms = hamMongoServer.clone();
+            new Thread(() -> {
+                try {
+                    ms.run(single.getExposedPort(), this);
+                } catch (IOException e) {
+
+                }
+            }).start();
+
+            activeServers.put(single.getExposedPort(), ms);
+
         }
     }
 

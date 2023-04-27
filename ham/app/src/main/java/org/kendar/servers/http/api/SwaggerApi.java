@@ -40,14 +40,15 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("HttpUrlsUsage")
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class SwaggerApi implements FilteringClass {
     private final String localAddress;
     private final List<SwaggerEnricher> enrichers;
-    private FilterConfig filtersConfiguration;
-    private JsonConfiguration jsonConfiguration;
+    private final FilterConfig filtersConfiguration;
+    private final JsonConfiguration jsonConfiguration;
 
     public SwaggerApi(FilterConfig filtersConfiguration, JsonConfiguration jsonConfiguration,
                       List<SwaggerEnricher> enrichers) {
@@ -56,13 +57,6 @@ public class SwaggerApi implements FilteringClass {
         this.jsonConfiguration = jsonConfiguration;
         this.localAddress = jsonConfiguration.getValue("global.localAddress");
         this.enrichers = enrichers;
-    }
-
-    class mt {
-        public String content;
-        public MediaType mediaType;
-        public String description;
-        public Map<String, Header> headers = new HashMap<>();
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
@@ -379,9 +373,7 @@ public class SwaggerApi implements FilteringClass {
         }
         if (Collection.class.isAssignableFrom(bodyRequest)) return true;
         var request = ModelConverters.getInstance().readAll(bodyRequest);
-        for (var req : request.entrySet()) {
-            schemas.put(req.getKey(), req.getValue());
-        }
+        schemas.putAll(request);
         return true;
     }
 
@@ -421,5 +413,12 @@ public class SwaggerApi implements FilteringClass {
     @Override
     public String getId() {
         return this.getClass().getName();
+    }
+
+    static class mt {
+        public String content;
+        public MediaType mediaType;
+        public String description;
+        public final Map<String, Header> headers = new HashMap<>();
     }
 }

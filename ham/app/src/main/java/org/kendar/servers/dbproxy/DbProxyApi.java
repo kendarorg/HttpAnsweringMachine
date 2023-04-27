@@ -36,30 +36,28 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@HttpTypeFilter(hostAddress = "*",
-        blocking = false)
+@HttpTypeFilter(hostAddress = "*"
+)
 public class DbProxyApi implements FilteringClass {
     private final JsonTypedSerializer serializer;
     private final Logger logger;
     private final Logger specialLogger;
-    private JsonConfiguration configuration;
-    private EventQueue eventQueue;
-    private ResultSetConverter resultSetConverter;
-    private ConcurrentHashMap<String, ServerData> janusEngines = new ConcurrentHashMap<>();
+    private final JsonConfiguration configuration;
+    private final ResultSetConverter resultSetConverter;
+    private final ConcurrentHashMap<String, ServerData> janusEngines = new ConcurrentHashMap<>();
+    private final Object syncObject = new Object();
+    final ObjectMapper mapper = new ObjectMapper();
 
     public DbProxyApi(JsonConfiguration configuration, EventQueue eventQueue, LoggerBuilder loggerBuilder,
                       PluginsInitializer pluginsInitializer, ResultSetConverter resultSetConverter) {
         this.logger = loggerBuilder.build(DbProxyApi.class);
         this.specialLogger = loggerBuilder.build(ProxyDb.class);
         this.configuration = configuration;
-        this.eventQueue = eventQueue;
         this.resultSetConverter = resultSetConverter;
         this.serializer = new JsonTypedSerializer();
         eventQueue.register(this::handleConfigChange, DbProxyConfigChanged.class);
         pluginsInitializer.addSpecialLogger(ProxyDb.class.getName(), "Basic db logging (DEBUG)");
     }
-
-    private Object syncObject = new Object();
 
     private void handleConfigChange(DbProxyConfigChanged t) {
         synchronized (syncObject) {
@@ -136,8 +134,6 @@ public class DbProxyApi implements FilteringClass {
         return simpleExecution(req, res);
     }
 
-    ObjectMapper mapper = new ObjectMapper();
-
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/jdbcproxies/utils/modifyresultset",
@@ -160,7 +156,7 @@ public class DbProxyApi implements FilteringClass {
         var toChangeTo = new ArrayList<List<Object>>();
         ArrayNode tree = (ArrayNode) mapper.readTree(newData.getData());
         for (var sub : tree) {
-            var newLine = new ArrayList<Object>();
+            var newLine = new ArrayList<>();
             toChangeTo.add(newLine);
             var suba = (ArrayNode) sub;
             for (var fld : suba) {
@@ -190,7 +186,7 @@ public class DbProxyApi implements FilteringClass {
     }
 
     private boolean preparedStatement(Request req, Response res) {
-        var result = "";
+        StringBuilder result = new StringBuilder();
         try {
             var id = req.getPathParameter("dBname");
             if (id == null || !janusEngines.containsKey(id) || !janusEngines.get(id).isActive()) {
@@ -203,37 +199,41 @@ public class DbProxyApi implements FilteringClass {
                     "SELECT * FROM REPLAYER_RECORDING WHERE ID>?");
             statement.setInt(1, 0);
             var resultset = statement.executeQuery();
-            result += "[";
-            var count = 1;
-            while (resultset.next()) {
-                if (count > 1) result += ",";
-                var partial = "{";
-                for (int i = 1; i <= 100; i++) {
-                    try {
-                        String columnValue = resultset.getString(i);
-                        if (i > 1) partial += ",";
-                        partial += ("'col" + i + "'='" + columnValue + "'");
-                    } catch (Exception ex) {
-
-                    }
-                }
-                partial += "}";
-                result += partial;
-            }
-            result += "]";
+            setupResultData(result, resultset);
             connection.close();
             res.getHeaders().put("content-type", "application/json");
         } catch (Exception ex) {
-            result = ex.getMessage();
+            result = new StringBuilder(ex.getMessage());
             logger.error("Error", ex);
         }
 
-        res.setResponseText(result);
+        res.setResponseText(result.toString());
         return true;
     }
 
+    private void setupResultData(StringBuilder result, ResultSet resultset) throws SQLException {
+        result.append("[");
+        var count = 1;
+        while (resultset.next()) {
+            if (count > 1) result.append(",");
+            StringBuilder partial = new StringBuilder("{");
+            for (int i = 1; i <= 100; i++) {
+                try {
+                    String columnValue = resultset.getString(i);
+                    if (i > 1) partial.append(",");
+                    partial.append("'col").append(i).append("'='").append(columnValue).append("'");
+                } catch (Exception ex) {
+
+                }
+            }
+            partial.append("}");
+            result.append(partial);
+        }
+        result.append("]");
+    }
+
     private boolean simpleExecution(Request req, Response res) {
-        var result = "";
+        StringBuilder result = new StringBuilder();
         try {
             var id = req.getPathParameter("dBname");
             if (id == null || !janusEngines.containsKey(id) || !janusEngines.get(id).isActive()) {
@@ -247,32 +247,15 @@ public class DbProxyApi implements FilteringClass {
             var connection = DriverManager.getConnection("jdbc:janus:http://localhost/api/db/" + id);
             var statement = connection.createStatement();
             var resultset = statement.executeQuery(query);
-            result += "[";
-            var count = 1;
-            while (resultset.next()) {
-                if (count > 1) result += ",";
-                var partial = "{";
-                for (int i = 1; i <= 100; i++) {
-                    try {
-                        String columnValue = resultset.getString(i);
-                        if (i > 1) partial += ",";
-                        partial += ("'col" + i + "'='" + columnValue + "'");
-                    } catch (Exception ex) {
-
-                    }
-                }
-                partial += "}";
-                result += partial;
-            }
-            result += "]";
+            setupResultData(result, resultset);
             connection.close();
             res.getHeaders().put("content-type", "application/json");
         } catch (Exception ex) {
-            result = ex.getMessage();
+            result = new StringBuilder(ex.getMessage());
             logger.error("Error", ex);
         }
 
-        res.setResponseText(result);
+        res.setResponseText(result.toString());
         return true;
     }
 

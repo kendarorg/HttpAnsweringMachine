@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class CertificatesBuilderImpl implements CertificatesBuilder {
-    private HamBuilder hamBuilder;
+    private final HamBuilder hamBuilder;
 
     public CertificatesBuilderImpl(HamBuilder hamBuilder) {
         this.hamBuilder = hamBuilder;
@@ -26,7 +26,7 @@ class CertificatesBuilderImpl implements CertificatesBuilder {
         Sleeper.sleep(1000);
         return retrieveAltNames().stream()
                 .filter(inserted -> Arrays.stream(addresses).anyMatch(add -> add.equalsIgnoreCase(inserted.getAddress())))
-                .map(add -> add.getId())
+                .map(SubjectAltName::getId)
                 .collect(Collectors.toList());
     }
 

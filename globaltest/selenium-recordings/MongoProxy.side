@@ -1,0 +1,173 @@
+{
+  "id": "cc0749f2-8c37-41bb-9287-2cd69b498c89",
+  "version": "2.0",
+  "name": "MongoProxy",
+  "url": "http://localhost",
+  "tests": [{
+    "id": "c63e6350-d2ec-42d8-bade-5a64edea85be",
+    "name": "MongoDb",
+    "commands": [{
+      "id": "0ca969f2-2336-49bf-bfb8-4a6f6dddef43",
+      "comment": "",
+      "command": "open",
+      "target": "/index.html",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "73c5a317-b7ad-4d70-a48d-06c72cbabe7b",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "812x783",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "7694508f-5c67-4893-9a42-b051a687dd8e",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Mongo proxy",
+      "targets": [
+        ["linkText=Mongo proxy", "linkText"],
+        ["css=#index05 #grid-rowc-3-0", "css:finder"],
+        ["xpath=//a[contains(text(),'Mongo proxy')]", "xpath:link"],
+        ["xpath=(//a[@id='grid-rowc-3-0'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='index05']/table/tbody/tr[5]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, 'plugins/mongo/index.html')]", "xpath:href"],
+        ["xpath=//div[2]/div/table/tbody/tr[5]/td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Mongo proxy')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "860b90e9-0eb9-4647-88ea-6e107ab17e74",
+      "comment": "",
+      "command": "click",
+      "target": "id=mongoprx-gird-add",
+      "targets": [
+        ["id=mongoprx-gird-add", "id"],
+        ["css=#mongoprx-gird-add", "css:finder"],
+        ["xpath=//button[@id='mongoprx-gird-add']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1200e66b-26b8-4f13-84b9-3af165a78352",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=mongoprx-gird-add",
+      "targets": [
+        ["id=mongoprx-gird-add", "id"],
+        ["css=#mongoprx-gird-add", "css:finder"],
+        ["xpath=//button[@id='mongoprx-gird-add']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a3f789bd-37c2-4ac7-8cca-4bdcd7b72f90",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "id=mongoprx-gird-add",
+      "targets": [
+        ["id=mongoprx-gird-add", "id"],
+        ["css=#mongoprx-gird-add", "css:finder"],
+        ["xpath=//button[@id='mongoprx-gird-add']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div[2]/button[2]", "xpath:idRelative"],
+        ["xpath=//div[2]/button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "50aa7ff6-9719-46bc-a8d4-f8ecb035d3d6",
+      "comment": "",
+      "command": "click",
+      "target": "id=connectionStringR",
+      "targets": [
+        ["id=connectionStringR", "id"],
+        ["name=connectionStringR", "name"],
+        ["css=#connectionStringR", "css:finder"],
+        ["xpath=//input[@id='connectionStringR']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/div/div[2]/span/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c18b7ee7-328b-4d22-ba96-b9e4652e0685",
+      "comment": "",
+      "command": "type",
+      "target": "id=connectionStringR",
+      "targets": [
+        ["id=connectionStringR", "id"],
+        ["name=connectionStringR", "name"],
+        ["css=#connectionStringR", "css:finder"],
+        ["xpath=//input[@id='connectionStringR']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/div/div[2]/span/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/div/input", "xpath:position"]
+      ],
+      "value": "mongodb://127.0.0.1:27077"
+    }, {
+      "id": "7e6fa8eb-3b30-43ee-b1b0-f6bd22e68f81",
+      "comment": "",
+      "command": "click",
+      "target": "id=active",
+      "targets": [
+        ["id=active", "id"],
+        ["name=active", "name"],
+        ["css=#active", "css:finder"],
+        ["xpath=//input[@id='active']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/div/div[2]/span/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f5e00f09-f725-4546-9ff9-db6dca6bdba3",
+      "comment": "",
+      "command": "click",
+      "target": "id=exposedPort",
+      "targets": [
+        ["id=exposedPort", "id"],
+        ["name=exposedPort", "name"],
+        ["css=#exposedPort", "css:finder"],
+        ["xpath=//input[@id='exposedPort']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/div/div[2]/span/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "e42baba5-e914-47e1-bc88-81715f9863b5",
+      "comment": "",
+      "command": "type",
+      "target": "id=exposedPort",
+      "targets": [
+        ["id=exposedPort", "id"],
+        ["name=exposedPort", "name"],
+        ["css=#exposedPort", "css:finder"],
+        ["xpath=//input[@id='exposedPort']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/div/div[2]/span/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "27078"
+    }, {
+      "id": "dcc7654c-492f-4e81-9bf5-a5a24e6f6b0b",
+      "comment": "",
+      "command": "click",
+      "target": "id=mod-save",
+      "targets": [
+        ["id=mod-save", "id"],
+        ["css=#mod-save", "css:finder"],
+        ["xpath=//button[@id='mod-save']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/div/div[3]/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "01189b81-580a-4bd4-a0fc-5a595182ef47",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["c63e6350-d2ec-42d8-bade-5a64edea85be"]
+  }],
+  "urls": ["http://localhost/"],
+  "plugins": []
+}

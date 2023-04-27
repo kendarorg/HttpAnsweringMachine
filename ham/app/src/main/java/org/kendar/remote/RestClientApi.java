@@ -15,22 +15,22 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
 
+@SuppressWarnings("HttpUrlsUsage")
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class RestClientApi implements FilteringClass {
-    private EventQueue eventQueue;
-
-    @Override
-    public String getId() {
-        return this.getClass().getName();
-    }
+    private final EventQueue eventQueue;
 
     public RestClientApi(EventQueue eventQueue) {
 
         this.eventQueue = eventQueue;
     }
 
+    @Override
+    public String getId() {
+        return this.getClass().getName();
+    }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/remote/restclient",
@@ -82,9 +82,9 @@ public class RestClientApi implements FilteringClass {
         event.setRequest(call);
         var result = eventQueue.execute(event, Response.class);
         var stringResult = new StringBuffer();
-        stringResult.append(result.getStatusCode() + "\n");
+        stringResult.append(result.getStatusCode()).append("\n");
         for (var head : result.getHeaders().entrySet()) {
-            stringResult.append(head.getKey() + ":" + head.getValue() + "\n");
+            stringResult.append(head.getKey()).append(":").append(head.getValue()).append("\n");
         }
         stringResult.append("\n");
         if (result.isBinaryResponse()) {

@@ -1,6 +1,5 @@
 package org.kendar.servers.http;
 
-import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpsExchange;
@@ -77,12 +76,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
                 "org.hibernate", "Log hibernate");
 
 
-        eventQueue.registerCommand(e -> {
-            return remoteRequest(e);
-        }, ExecuteRemoteRequest.class);
-        eventQueue.registerCommand(e -> {
-            return localRequest(e);
-        }, ExecuteLocalRequest.class);
+        eventQueue.registerCommand(this::remoteRequest, ExecuteRemoteRequest.class);
+        eventQueue.registerCommand(this::localRequest, ExecuteLocalRequest.class);
     }
 
 
@@ -143,11 +138,15 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     }
 
     private Response remoteRequest(ExecuteRemoteRequest e) {
-        try {
             var connManager = connectionBuilder.getConnectionManger(true, true);
+        return prepareRequest(e.getRequest(), connManager);
+    }
+
+    private Response prepareRequest(Request e, HttpClientConnectionManager connManager) {
+        try {
             var config = configuration.getConfiguration(GlobalConfig.class);
             var response = new Response();
-            var request = e.getRequest();
+            var request = e;
             try {
                 handleInternal(request, response, config, connManager);
 
@@ -164,24 +163,9 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     }
 
     private Response localRequest(ExecuteLocalRequest e) {
-        try {
             var connManager = connectionBuilder.getConnectionManger(false, true);
-            var config = configuration.getConfiguration(GlobalConfig.class);
-            var response = new Response();
-            var request = e.getRequest();
-            try {
-                handleInternal(request, response, config, connManager);
 
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            } finally {
-                filteringClassesHandler.handle(
-                        config, HttpFilterType.POST_RENDER, request, response, connManager);
-            }
-            return response;
-        } catch (InvocationTargetException | IllegalAccessException ex) {
-            return null;
-        }
+        return prepareRequest(e.getRequest(), connManager);
     }
 
     private void handleInternal(Request request, Response response, GlobalConfig config, HttpClientConnectionManager connManager) throws Exception {
