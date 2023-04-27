@@ -7,7 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 @Component
-public class ZStdCompressionHandler implements CompressionHandler{
+public class ZStdCompressionHandler implements CompressionHandler {
     @Override
     public byte[] decompress(byte[] bb) {
         try {
@@ -21,7 +21,7 @@ public class ZStdCompressionHandler implements CompressionHandler{
             }
 
             return zstdOutputStream.toByteArray();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }

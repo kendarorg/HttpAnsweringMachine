@@ -32,11 +32,6 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     public JdbcConnection connection;
     public int columnCount;
     public boolean closed;
-
-    public HamResultSetImpl() {
-
-    }
-
     public long traceId;
     public ResultSetType type;
     public ResultSetHoldability holdability;
@@ -44,8 +39,11 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     public boolean prefetchMetadata;
     public String charset;
     public ResultSetConcurrency concurrency;
-
     public List<List<Object>> rows;
+
+    public HamResultSetImpl() {
+
+    }
 
     public static Class<?> getTypeFromSqlType(int type) throws Exception {
         Class<?> value = null;
@@ -564,23 +562,23 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     }
 
     @Override
-    public void setFetchDirection(int direction) throws SQLException {
-
-    }
-
-    @Override
     public int getFetchDirection() throws SQLException {
         return 0;
     }
 
     @Override
-    public void setFetchSize(int rows) throws SQLException {
+    public void setFetchDirection(int direction) throws SQLException {
 
     }
 
     @Override
     public int getFetchSize() throws SQLException {
         return 0;
+    }
+
+    @Override
+    public void setFetchSize(int rows) throws SQLException {
+
     }
 
     @Override

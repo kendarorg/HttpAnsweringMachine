@@ -57,17 +57,17 @@ public class ReplayerAPIGenerator implements FilteringClass {
         var type = req.getPathParameter("type");
         List<Long> ids = Arrays.stream(mapper.readValue(req.getRequestText(), Long[].class)).collect(Collectors.toList());
         SelectedGenerator generator = null;
-        for(var i=0;i<this.generators.size();i++){
-            if(this.generators.get(i).getId().equalsIgnoreCase(type)){
+        for (var i = 0; i < this.generators.size(); i++) {
+            if (this.generators.get(i).getId().equalsIgnoreCase(type)) {
                 generator = this.generators.get(i);
                 break;
             }
         }
-        if(generator==null){
+        if (generator == null) {
             return;
         }
 
-        generator.generate(id,req,res,ids);
+        generator.generate(id, req, res, ids);
     }
 
 }

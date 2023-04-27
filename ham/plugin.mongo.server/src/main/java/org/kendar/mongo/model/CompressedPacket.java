@@ -7,30 +7,33 @@ public class CompressedPacket extends MongoPacket<CompressedPacket> {
 
 
     private MongoPacket<?> compressed;
-    public void setCompressed(MongoPacket<?> compressed) {
-        this.compressed = compressed;
-    }
+    private OpCodes originalOpCode;
+    private int requestId;
+    private int responseTo;
 
     public MongoPacket<?> getCompressed() {
         return compressed;
     }
-    private OpCodes originalOpCode;
 
-    public void setOriginalOpCode(OpCodes originalOpCode) {
-        this.originalOpCode = originalOpCode;
+    public void setCompressed(MongoPacket<?> compressed) {
+        this.compressed = compressed;
     }
 
     public OpCodes getOriginalOpCode() {
         return originalOpCode;
     }
 
+    public void setOriginalOpCode(OpCodes originalOpCode) {
+        this.originalOpCode = originalOpCode;
+    }
+
     @Override
     public void serialize(TypedSerializer typedSerializer) {
         super.serialize(typedSerializer);
-        typedSerializer.write("originalOpCode",originalOpCode);
-        typedSerializer.write("compressed",compressed);
-        typedSerializer.write("requestId",requestId);
-        typedSerializer.write("responseTo",responseTo);
+        typedSerializer.write("originalOpCode", originalOpCode);
+        typedSerializer.write("compressed", compressed);
+        typedSerializer.write("requestId", requestId);
+        typedSerializer.write("responseTo", responseTo);
     }
 
     @Override
@@ -43,22 +46,19 @@ public class CompressedPacket extends MongoPacket<CompressedPacket> {
         return this;
     }
 
-    private int requestId;
-    private int responseTo;
+    public int getRequestId() {
+        return requestId;
+    }
 
     public void setRequestId(Integer requestId) {
         this.requestId = requestId;
     }
 
-    public int getRequestId() {
-        return requestId;
+    public int getResponseTo() {
+        return responseTo;
     }
 
     public void setResponseTo(Integer responseTo) {
         this.responseTo = responseTo;
-    }
-
-    public int getResponseTo() {
-        return responseTo;
     }
 }

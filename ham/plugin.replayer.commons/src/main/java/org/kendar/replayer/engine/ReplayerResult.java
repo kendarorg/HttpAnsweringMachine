@@ -17,7 +17,7 @@ public class ReplayerResult {
     private String name;
 
     private String description;
-    private HashMap<String,String> filter;
+    private HashMap<String, String> filter;
 
     public void add(ReplayerRow row) {
         getStaticRequests().add(row);
@@ -59,12 +59,12 @@ public class ReplayerResult {
         this.dynamicRequests = dynamicRequests;
     }
 
-    public void setFilter(HashMap<String,String> filter) {
-        this.filter = filter;
+    public HashMap<String, String> getFilter() {
+        return filter;
     }
 
-    public HashMap<String,String> getFilter() {
-        return filter;
+    public void setFilter(HashMap<String, String> filter) {
+        this.filter = filter;
     }
 
     public List<CallIndex> getIndexes() {

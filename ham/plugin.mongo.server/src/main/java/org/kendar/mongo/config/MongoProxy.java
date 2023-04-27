@@ -2,11 +2,14 @@ package org.kendar.mongo.config;
 
 public class MongoProxy {
 
+    private String id;
+    private int exposedPort;
+    private MongoDescriptor remote;
+    private boolean active;
+
     public MongoProxy() {
 
     }
-
-    private String id;
 
     public String getId() {
         return id;
@@ -16,8 +19,6 @@ public class MongoProxy {
         this.id = id;
     }
 
-    private int exposedPort;
-
     public int getExposedPort() {
         return exposedPort;
     }
@@ -25,9 +26,6 @@ public class MongoProxy {
     public void setExposedPort(int exposedPort) {
         this.exposedPort = exposedPort;
     }
-
-    private MongoDescriptor remote;
-    private boolean active;
 
     public boolean isActive() {
         return active;

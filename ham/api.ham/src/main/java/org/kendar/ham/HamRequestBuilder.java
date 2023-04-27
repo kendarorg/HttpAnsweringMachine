@@ -14,6 +14,21 @@ import java.nio.charset.StandardCharsets;
 public class HamRequestBuilder {
 
 
+    ObjectMapper mapper = new ObjectMapper();
+    private Request request;
+
+    private HamRequestBuilder() {
+    }
+
+    public static HamRequestBuilder newRequest(String protocol, String host) {
+        var result = new HamRequestBuilder();
+        result.request = new Request();
+        result.request.setProtocol(protocol);
+        result.request.setHost(host);
+        result.request.setMethod("get");
+        return result;
+    }
+
     public String getHost() {
         return this.request.getHost();
     }
@@ -28,21 +43,6 @@ public class HamRequestBuilder {
         return this;
     }
 
-    private HamRequestBuilder() {
-    }
-
-    private Request request;
-
-    public static HamRequestBuilder newRequest(String protocol, String host) {
-        var result = new HamRequestBuilder();
-        result.request = new Request();
-        result.request.setProtocol(protocol);
-        result.request.setHost(host);
-        result.request.setMethod("get");
-        return result;
-    }
-
-
     public HamRequestBuilder withPort(int port) {
         request.setPort(port);
         return this;
@@ -52,8 +52,6 @@ public class HamRequestBuilder {
         request.setMethod(method);
         return this;
     }
-
-    ObjectMapper mapper = new ObjectMapper();
 
     public HamRequestBuilder withJsonBody(Object body) {
         String text = null;
@@ -70,36 +68,6 @@ public class HamRequestBuilder {
     public HamRequestBuilder withPost() {
         request.setMethod("POST");
         return this;
-    }
-
-    public static class FileRequest {
-        private String name;
-        private String data;
-        private String type;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getData() {
-            return data;
-        }
-
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
     }
 
     public HamRequestBuilder withHamFile(String fileName, byte[] data, String mime) {
@@ -136,24 +104,20 @@ public class HamRequestBuilder {
         return this;
     }
 
-
     public HamRequestBuilder withBasicAuth(String user, String pass) {
         request.setBasicPassword(pass);
         request.setBasicUsername(user);
         return this;
     }
 
-
     public HamRequestBuilder withQuery(String id, String value) {
         request.addQuery(id, value);
         return this;
     }
 
-
     public HamRequestBuilder withContentType(String value) {
         return withHeader(ConstantsHeader.CONTENT_TYPE, value);
     }
-
 
     public HamRequestBuilder withText(String text) {
         request.setRequestText(text);
@@ -167,13 +131,11 @@ public class HamRequestBuilder {
         return this;
     }
 
-
     public HamRequestBuilder withBytes(byte[] data) {
         request.setRequestBytes(data);
         request.setBinaryRequest(true);
         return this;
     }
-
 
     public HamRequestBuilder withBytes(InputStream data) throws IOException {
         request.setRequestBytes(data.readAllBytes());
@@ -183,6 +145,36 @@ public class HamRequestBuilder {
 
     public Request build() {
         return request;
+    }
+
+    public static class FileRequest {
+        private String name;
+        private String data;
+        private String type;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
     }
 
 }

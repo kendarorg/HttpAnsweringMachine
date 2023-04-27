@@ -35,8 +35,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectionBuilderImpl implements ConnectionBuilder {
     private static final HttpRequestRetryHandler requestRetryHandler =
             (exception, executionCount, context) -> executionCount != 3;
-    private final DnsMultiResolver multiResolver;
     protected final ConcurrentHashMap<String, ResolvedDomain> domains = new ConcurrentHashMap<>();
+    private final DnsMultiResolver multiResolver;
     private final Logger logger;
     private SystemDefaultDnsResolver remoteDnsResolver;
     private SystemDefaultDnsResolver fullDnsResolver;

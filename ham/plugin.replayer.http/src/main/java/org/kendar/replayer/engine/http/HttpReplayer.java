@@ -29,6 +29,14 @@ public class HttpReplayer implements ReplayerEngine {
     private final String localAddress;
     private final JsonConfiguration configuration;
     private long name;
+    private boolean hasRows = false;
+
+    public HttpReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
+        this.sessionFactory = sessionFactory;
+        this.logger = loggerBuilder.build(HttpReplayer.class);
+        this.localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
+        this.configuration = configuration;
+    }
 
     public ReplayerEngine create(LoggerBuilder loggerBuilder) {
         var es = new HttpReplayer(sessionFactory, loggerBuilder, configuration);
@@ -179,13 +187,6 @@ public class HttpReplayer implements ReplayerEngine {
 
     }
 
-    public HttpReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
-        this.sessionFactory = sessionFactory;
-        this.logger = loggerBuilder.build(HttpReplayer.class);
-        this.localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
-        this.configuration = configuration;
-    }
-
     @Override
     public String getId() {
         return "http";
@@ -196,8 +197,6 @@ public class HttpReplayer implements ReplayerEngine {
         this.name = recordingId;
         if (!hasHttpRows(recordingId)) return;
     }
-
-    private boolean hasRows = false;
 
     private boolean hasHttpRows(Long recordingId) throws Exception {
         hasRows = (Long) sessionFactory.queryResult(e -> {
@@ -299,7 +298,7 @@ public class HttpReplayer implements ReplayerEngine {
         } else {
             return null;
         }
-        return new RequestMatch(sreq, founded.getRequest(),founded.getResponse());
+        return new RequestMatch(sreq, founded.getRequest(), founded.getResponse());
     }
 
     private int matchQuery(Map<String, String> left, Map<String, String> right) {

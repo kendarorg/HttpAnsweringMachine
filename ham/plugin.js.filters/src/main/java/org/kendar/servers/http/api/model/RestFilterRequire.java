@@ -21,11 +21,11 @@ public class RestFilterRequire {
         this.name = name;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     public String getContent() {
         return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

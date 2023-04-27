@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GlobalConfig extends BaseJsonConfig<GlobalConfig> {
     private String localAddress;
     private GlobalConfigLogging logging;
+    private GlobalConfigDb db;
+    private ConcurrentHashMap<String, Boolean> filters = new ConcurrentHashMap<>();
 
     public GlobalConfigDb getDb() {
         return db;
@@ -17,9 +19,6 @@ public class GlobalConfig extends BaseJsonConfig<GlobalConfig> {
     public void setDb(GlobalConfigDb db) {
         this.db = db;
     }
-
-    private GlobalConfigDb db;
-    private ConcurrentHashMap<String, Boolean> filters = new ConcurrentHashMap<>();
 
     @Override
     public boolean isSystem() {

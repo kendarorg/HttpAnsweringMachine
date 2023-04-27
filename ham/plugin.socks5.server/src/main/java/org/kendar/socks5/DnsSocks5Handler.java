@@ -25,6 +25,7 @@ import java.util.List;
 public class DnsSocks5Handler implements SocksHandler {
     protected static final Logger logger = LoggerFactory.getLogger(Socks5Handler.class);
     private static final int VERSION = 5;
+    public static DnsMultiResolver multiResolver;
     private Session session;
     private MethodSelector methodSelector;
     private int bufferSize;
@@ -35,8 +36,6 @@ public class DnsSocks5Handler implements SocksHandler {
 
     public DnsSocks5Handler() {
     }
-
-    public static DnsMultiResolver multiResolver;
 
     public void handle(Session session) throws Exception {
         this.sessionManager = this.getSocksProxyServer().getSessionManager();

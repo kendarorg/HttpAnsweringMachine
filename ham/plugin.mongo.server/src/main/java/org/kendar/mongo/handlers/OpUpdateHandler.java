@@ -16,14 +16,14 @@ import org.kendar.mongo.model.MongoPacket;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OpUpdateHandler implements MsgHandler{
+public class OpUpdateHandler implements MsgHandler {
     @Override
     public OpCodes getOpCode() {
         return OpCodes.OP_UPDATE;
     }
 
     @Override
-    public MongoPacket<?> handleMsg(int requestId,int responseTo,ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(int requestId, int responseTo, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
             //System.out.println("======HANDLE UPDATE");
             bsonInput.readInt32(); // skip ZERO
@@ -49,7 +49,7 @@ public class OpUpdateHandler implements MsgHandler{
             //System.out.println("Update JSON: " + updateJson);
             return packet;
         } catch (Exception e) {
-            throw new RuntimeException("Error decoding BSON update message",e);
+            throw new RuntimeException("Error decoding BSON update message", e);
         }
     }
 }

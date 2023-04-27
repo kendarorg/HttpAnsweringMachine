@@ -10,7 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MsgPacket extends MongoPacket<MsgPacket> implements MongoReqResPacket {
-    public MsgPacket(){
+    private List<BaseMsgPayload> payloads = new ArrayList<>();
+    private int flagBits;
+    private int checksum;
+    private int requestId;
+    private int responseTo;
+    public MsgPacket() {
         setOpCode(OpCodes.OP_MSG);
     }
 
@@ -22,34 +27,30 @@ public class MsgPacket extends MongoPacket<MsgPacket> implements MongoReqResPack
         this.payloads = payloads;
     }
 
-    private List<BaseMsgPayload> payloads = new ArrayList<>();
-    private int flagBits;
-    private int checksum;
-
-    public void setFlagBits(int flagBits) {
-        this.flagBits = flagBits;
-    }
-
     public int getFlagBits() {
         return flagBits;
     }
 
-    public void setChecksum(int checksum) {
-        this.checksum = checksum;
+    public void setFlagBits(int flagBits) {
+        this.flagBits = flagBits;
     }
 
     public int getChecksum() {
         return checksum;
     }
 
+    public void setChecksum(int checksum) {
+        this.checksum = checksum;
+    }
+
     @Override
     public void serialize(TypedSerializer typedSerializer) {
         super.serialize(typedSerializer);
-        typedSerializer.write("flagBits",flagBits);
-        typedSerializer.write("checksum",checksum);
-        typedSerializer.write("payloads",payloads);
-        typedSerializer.write("requestId",requestId);
-        typedSerializer.write("responseTo",responseTo);
+        typedSerializer.write("flagBits", flagBits);
+        typedSerializer.write("checksum", checksum);
+        typedSerializer.write("payloads", payloads);
+        typedSerializer.write("requestId", requestId);
+        typedSerializer.write("responseTo", responseTo);
     }
 
     @Override
@@ -63,31 +64,28 @@ public class MsgPacket extends MongoPacket<MsgPacket> implements MongoReqResPack
         return this;
     }
 
-    private int requestId;
-    private int responseTo;
-
-    public void setRequestId(Integer requestId) {
-        this.requestId = requestId;
-    }
-
     public int getRequestId() {
         return requestId;
     }
 
-    public void setResponseTo(Integer responseTo) {
-        this.responseTo = responseTo;
+    public void setRequestId(Integer requestId) {
+        this.requestId = requestId;
     }
 
     public int getResponseTo() {
         return responseTo;
     }
 
-    public byte[] serialize(){
+    public void setResponseTo(Integer responseTo) {
+        this.responseTo = responseTo;
+    }
+
+    public byte[] serialize() {
         var msgLength = 16;
         ByteBuffer responseBuffer = ByteBuffer.allocate(64000);
         responseBuffer.order(ByteOrder.LITTLE_ENDIAN);
         responseBuffer.putInt(flagBits);
-        for(var payload:this.payloads){
+        for (var payload : this.payloads) {
             responseBuffer.put(payload.serialize());
         }
         msgLength += responseBuffer.position();
@@ -96,13 +94,13 @@ public class MsgPacket extends MongoPacket<MsgPacket> implements MongoReqResPack
         var length = responseBuffer.position();
         responseBuffer.position(0);
         var res = new byte[msgLength];
-        for(var i=16;i<msgLength;i++){
-            res[i]=responseBuffer.get();
+        for (var i = 16; i < msgLength; i++) {
+            res[i] = responseBuffer.get();
         }
 
-        var header = buildHeader(msgLength,requestId,responseTo, OpCodes.OP_MSG);
-        for(var i =0;i<16;i++){
-            res[i]=header[i];
+        var header = buildHeader(msgLength, requestId, responseTo, OpCodes.OP_MSG);
+        for (var i = 0; i < 16; i++) {
+            res[i] = header[i];
         }
         return res;
     }

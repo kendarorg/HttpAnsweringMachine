@@ -18,11 +18,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Component
-public class CurlGenerator implements SelectedGenerator{
+public class CurlGenerator implements SelectedGenerator {
     private final ObjectMapper mapper = new ObjectMapper();
     private final HibernateSessionFactory sessionFactory;
 
-    public CurlGenerator(HibernateSessionFactory sessionFactory){
+    public CurlGenerator(HibernateSessionFactory sessionFactory) {
 
         this.sessionFactory = sessionFactory;
     }
@@ -33,10 +33,9 @@ public class CurlGenerator implements SelectedGenerator{
     }
 
     @Override
-    public void generate(int recordingId, Request req, Response res, List<Long> ids) throws Exception{
+    public void generate(int recordingId, Request req, Response res, List<Long> ids) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ZipOutputStream zos = new ZipOutputStream(baos);
-
 
 
         var unixCurl = new ArrayList<String>();
@@ -47,31 +46,31 @@ public class CurlGenerator implements SelectedGenerator{
                 " echo \"\"\n" +
                 "}");
         var winCurl = new ArrayList<String>();
-        for (var id :ids) {
-            var callIndex = (CallIndex)sessionFactory.queryResult((em) -> {
+        for (var id : ids) {
+            var callIndex = (CallIndex) sessionFactory.queryResult((em) -> {
                 return em.createQuery("SELECT e FROM CallIndex e WHERE " +
-                        " e.recordingId=" + recordingId+" AND "+
-                        " e.id="+id).getResultList().get(0);
+                        " e.recordingId=" + recordingId + " AND " +
+                        " e.id=" + id).getResultList().get(0);
             });
-            var replayerRow = (ReplayerRow)sessionFactory.queryResult((em) -> {
+            var replayerRow = (ReplayerRow) sessionFactory.queryResult((em) -> {
                 return em.createQuery("SELECT e FROM ReplayerRow e WHERE " +
-                        " e.recordingId=" + recordingId+" AND "+
-                        " e.id="+callIndex.getReference()).getResultList().get(0);
+                        " e.recordingId=" + recordingId + " AND " +
+                        " e.id=" + callIndex.getReference()).getResultList().get(0);
             });
             var requ = replayerRow.getRequest();
 
             var singleCurl = "curl -v ";
 
-            if(requ.bodyExists()){
-                singleCurl+=" -d @"+id+".data.bin ";
+            if (requ.bodyExists()) {
+                singleCurl += " -d @" + id + ".data.bin ";
 
                 byte[] result;
-                if(requ.isBinaryRequest()){
-                    result=requ.getRequestBytes();
-                }else{
-                    result=requ.getRequestText().getBytes(StandardCharsets.UTF_8);
+                if (requ.isBinaryRequest()) {
+                    result = requ.getRequestBytes();
+                } else {
+                    result = requ.getRequestText().getBytes(StandardCharsets.UTF_8);
                 }
-                ZipEntry entry = new ZipEntry(id+".data.bin");
+                ZipEntry entry = new ZipEntry(id + ".data.bin");
                 //entry.setSize(result.length);
                 zos.putNextEntry(entry);
                 zos.write(result);
@@ -79,36 +78,36 @@ public class CurlGenerator implements SelectedGenerator{
             }
 
 
-            if(requ.getMethod().equalsIgnoreCase("post")){
-                singleCurl+=" -X POST ";
-            }else if(requ.getMethod().equalsIgnoreCase("put")){
-                singleCurl+=" -X PUT ";
-            }else if(requ.getMethod().equalsIgnoreCase("delete")){
-                singleCurl+=" -X DELETE ";
-            }else if(requ.getMethod().equalsIgnoreCase("get")){
+            if (requ.getMethod().equalsIgnoreCase("post")) {
+                singleCurl += " -X POST ";
+            } else if (requ.getMethod().equalsIgnoreCase("put")) {
+                singleCurl += " -X PUT ";
+            } else if (requ.getMethod().equalsIgnoreCase("delete")) {
+                singleCurl += " -X DELETE ";
+            } else if (requ.getMethod().equalsIgnoreCase("get")) {
 
-            }else{
+            } else {
                 continue;
             }
 
-            if(requ.getPort()>0) {
+            if (requ.getPort() > 0) {
                 singleCurl += " " + requ.getProtocol() + "://" + requ.getHost() + ":" + requ.getPort() + requ.getPath();
-            }else{
-                singleCurl += " " + requ.getProtocol() + "://" + requ.getHost()  + requ.getPath();
+            } else {
+                singleCurl += " " + requ.getProtocol() + "://" + requ.getHost() + requ.getPath();
             }
-            for(var h:requ.getHeaders().entrySet()){
-                singleCurl+=" -H \""+h.getKey()+":"+h.getValue()+"\" ";
+            for (var h : requ.getHeaders().entrySet()) {
+                singleCurl += " -H \"" + h.getKey() + ":" + h.getValue() + "\" ";
             }
-            unixCurl.add("# Request "+id);
+            unixCurl.add("# Request " + id);
             unixCurl.add(singleCurl);
             unixCurl.add("pause");
-            winCurl.add("REM Request "+id);
+            winCurl.add("REM Request " + id);
             winCurl.add(singleCurl);
             winCurl.add("pause");
 
         }
 
-        var full = String.join("\r\n",unixCurl);
+        var full = String.join("\r\n", unixCurl);
         var result = full.getBytes(StandardCharsets.UTF_8);
         ZipEntry entry = new ZipEntry("curls.sh");
         //entry.setSize(result.length);
@@ -116,7 +115,7 @@ public class CurlGenerator implements SelectedGenerator{
         zos.write(result);
         zos.closeEntry();
 
-        full = String.join("\r\n",winCurl);
+        full = String.join("\r\n", winCurl);
         result = full.getBytes(StandardCharsets.UTF_8);
         entry = new ZipEntry("curls.bat");
         //entry.setSize(result.length);

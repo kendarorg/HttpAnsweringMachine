@@ -8,12 +8,12 @@ import org.tkendar.ham.HamTestException;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ExtraTests {
+    private final HamBasicBuilder hamBuilder = GlobalSettings.builder();
+
     @BeforeAll
     public static void beforeAll() throws HamTestException {
         HamStarter.runHamJar(DnsTest.class);
     }
-
-    private final HamBasicBuilder hamBuilder = GlobalSettings.builder();
 
     @Test
     void testSwagger() throws HamException {

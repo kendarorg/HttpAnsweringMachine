@@ -40,11 +40,12 @@ public class ReplayerStatus {
     private final String localAddress;
     private final HibernateSessionFactory sessionFactory;
     private final List<ReplayerEngine> replayerEngines;
-    private BaseDataset dataset;
     private final AtomicReference<ReplayerState> state = new AtomicReference<>(ReplayerState.NONE);
-    private Map<String, String> query;
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private BaseDataset dataset;
 //    private boolean recordDbCalls;
 //    private boolean recordVoidDbCalls;
+    private Map<String, String> query;
 
     public ReplayerStatus(
             LoggerBuilder loggerBuilder,
@@ -91,8 +92,6 @@ public class ReplayerStatus {
         if (state.get() != ReplayerState.RECORDING) return false;
         return ((RecordingDataset) dataset).add(req, res);
     }
-
-    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
 
     public Optional<RequestMatch> replay(Request req, Response res) {
         if (state.get() != ReplayerState.REPLAYING) return Optional.empty();

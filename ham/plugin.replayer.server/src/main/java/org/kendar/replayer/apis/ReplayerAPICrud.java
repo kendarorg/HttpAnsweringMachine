@@ -38,19 +38,17 @@ import java.util.stream.Collectors;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class ReplayerAPICrud implements FilteringClass {
+    private static final TypeReference<HashMap<String, String>> typeRef
+            = new TypeReference<>() {
+    };
     final ObjectMapper mapper = new ObjectMapper();
     private final Logger logger;
     private final ReplayerStatus replayerStatus;
     private final Md5Tester md5Tester;
     private final HibernateSessionFactory sessionFactory;
     private final List<ReplayerEngine> replayerEngines;
-
     private final FileResourcesUtils fileResourcesUtils;
     private final LoggerBuilder loggerBuilder;
-
-    private static final TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<>() {
-    };
 
     public ReplayerAPICrud(
             FileResourcesUtils fileResourcesUtils,
@@ -525,7 +523,7 @@ public class ReplayerAPICrud implements FilteringClass {
         CloneRecording jsonFileData = mapper.readValue(req.getRequestText(), CloneRecording.class);
         var id = req.getPathParameter("id");
         ReplayerResult result = getReplayerResult(id);
-        DbRecording recording = saveRecording(jsonFileData.getNewname(),result);
+        DbRecording recording = saveRecording(jsonFileData.getNewname(), result);
 
         logger.info("Uploaded replayer binary script ");
         res.setResponseText(String.valueOf(recording.getId()));

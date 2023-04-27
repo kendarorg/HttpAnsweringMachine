@@ -5,7 +5,22 @@ import java.util.List;
 
 public interface JsBuilder {
 
-    public class ApiMatcher  implements Matcher{
+    /**
+     * /api/plugins/jsfilter/filters
+     *
+     * @return
+     */
+    List<String> filterIds() throws HamException;
+
+    FilterDescriptor filterById(Long id) throws HamException;
+
+    JsFilterBuilder addFilter(String name);
+
+    void deleteFilter(Long id) throws HamException;
+
+    JsBuilderImpl init();
+
+    public class ApiMatcher implements Matcher {
         private Methods method;
         private String hostAddress;
         private String hostPattern;
@@ -105,74 +120,58 @@ public interface JsBuilder {
             this.source = source;
         }
 
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
         public String getType() {
             return type;
         }
 
-        public void setMatchers(HashMap<String, String> matchers) {
-            this.matchers = matchers;
+        public void setType(String type) {
+            this.type = type;
         }
 
         public HashMap<String, String> getMatchers() {
             return matchers;
         }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setMatchers(HashMap<String, String> matchers) {
+            this.matchers = matchers;
         }
 
         public String getName() {
             return name;
         }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
-
-    /**
-     * /api/plugins/jsfilter/filters
-     *
-     * @return
-     */
-    List<String> filterIds() throws HamException;
-
-    FilterDescriptor filterById(Long id) throws HamException;
-
-    JsFilterBuilder addFilter(String name);
-
-    void deleteFilter(Long id) throws HamException;
-
-    JsBuilderImpl init();
 
     public class ScriptMatcher implements Matcher {
         private String script;
         private String hostAddress;
         private String pathAddress;
 
-        public void setScript(String script) {
-            this.script = script;
-        }
-
         public String getScript() {
             return script;
         }
 
-        public void setHostAddress(String hostAddress) {
-            this.hostAddress = hostAddress;
+        public void setScript(String script) {
+            this.script = script;
         }
 
         public String getHostAddress() {
             return hostAddress;
         }
 
-        public void setPathAddress(String pathAddress) {
-            this.pathAddress = pathAddress;
+        public void setHostAddress(String hostAddress) {
+            this.hostAddress = hostAddress;
         }
 
         public String getPathAddress() {
             return pathAddress;
+        }
+
+        public void setPathAddress(String pathAddress) {
+            this.pathAddress = pathAddress;
         }
     }
 }

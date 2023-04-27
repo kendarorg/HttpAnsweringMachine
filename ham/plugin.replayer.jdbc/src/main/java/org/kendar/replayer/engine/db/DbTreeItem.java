@@ -8,16 +8,16 @@ import java.util.List;
 
 public class DbTreeItem {
 
+    private final List<DbRow> targets = new ArrayList<>();
+    private final List<DbTreeItem> children = new ArrayList<>();
     private String initiator;
-
-
-    public String getInitiator() {
-        return initiator;
-    }
-
     private DbTreeItem parent;
 
     public DbTreeItem() {
+    }
+
+    public String getInitiator() {
+        return initiator;
     }
 
     public void addTarget(DbRow target) {
@@ -27,25 +27,21 @@ public class DbTreeItem {
 
     }
 
-    private final List<DbRow> targets = new ArrayList<>();
-
     public List<DbTreeItem> getChildren() {
         return children;
     }
-
-    private final List<DbTreeItem> children = new ArrayList<>();
 
     public void addChild(DbTreeItem item) {
         item.setParent(this);
         children.add(item);
     }
 
-    public void setParent(DbTreeItem parent) {
-        this.parent = parent;
-    }
-
     public DbTreeItem getParent() {
         return parent;
+    }
+
+    public void setParent(DbTreeItem parent) {
+        this.parent = parent;
     }
 
     public List<DbRow> getTargets() {

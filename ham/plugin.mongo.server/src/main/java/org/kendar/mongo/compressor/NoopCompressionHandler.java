@@ -3,7 +3,7 @@ package org.kendar.mongo.compressor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NoopCompressionHandler implements CompressionHandler{
+public class NoopCompressionHandler implements CompressionHandler {
     @Override
     public byte[] decompress(byte[] bb) {
         return bb;

@@ -85,11 +85,6 @@ public class JsonConfigurationImpl implements JsonConfiguration {
         return item.timestamp;
     }
 
-    @Override
-    public void setConfigurationAsString(String body) {
-        //NOOP simpledns will not save configs
-    }
-
     @SuppressWarnings("rawtypes")
     public void setConfiguration(Object data, Runnable runnable) {
         try {
@@ -138,6 +133,11 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     @Override
     public String getConfigurationAsString() throws Exception {
         throw new RuntimeException("NOT IMPLEMENTED");
+    }
+
+    @Override
+    public void setConfigurationAsString(String body) {
+        //NOOP simpledns will not save configs
     }
 
     @Override

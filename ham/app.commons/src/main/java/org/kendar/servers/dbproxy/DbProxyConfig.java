@@ -8,12 +8,12 @@ import java.util.List;
 
 @ConfigAttribute(id = "dbproxy")
 public class DbProxyConfig extends BaseJsonConfig<DbProxyConfig> {
+    private List<DbProxy> proxies = new ArrayList<>();
+
     @Override
     public boolean isSystem() {
         return true;
     }
-
-    private List<DbProxy> proxies = new ArrayList<>();
 
     public List<DbProxy> getProxies() {
         return proxies;

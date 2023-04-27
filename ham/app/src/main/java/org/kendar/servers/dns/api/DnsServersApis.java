@@ -27,10 +27,10 @@ import java.util.regex.Pattern;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class DnsServersApis implements FilteringClass {
+    final ObjectMapper mapper = new ObjectMapper();
     private final JsonConfiguration configuration;
     private final Pattern ipPattern =
             Pattern.compile("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
-    final ObjectMapper mapper = new ObjectMapper();
     private final DnsMultiResolver dnsMultiResolver;
 
     public DnsServersApis(JsonConfiguration configuration, DnsMultiResolver dnsMultiResolver) {

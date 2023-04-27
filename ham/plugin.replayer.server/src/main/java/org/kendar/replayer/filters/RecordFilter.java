@@ -21,16 +21,9 @@ import java.util.List;
 @HttpTypeFilter(hostAddress = "*", priority = 200)
 public class RecordFilter implements FilteringClass {
     private final String localAddress;
-
-    @Override
-    public String getId() {
-        return "org.kendar.replayer.filters.RecordFilter";
-    }
-
     private final Logger logger;
     private final List<ReplayerEngine> replayerEngines;
     private final ReplayerStatus replayerStatus;
-
     public RecordFilter(ReplayerStatus replayerStatus, LoggerBuilder loggerBuilder, JsonConfiguration configuration,
                         List<ReplayerEngine> replayerEngines) {
         this.replayerStatus = replayerStatus;
@@ -38,6 +31,11 @@ public class RecordFilter implements FilteringClass {
         this.replayerEngines = replayerEngines;
         var config = configuration.getConfiguration(GlobalConfig.class);
         localAddress = config.getLocalAddress();
+    }
+
+    @Override
+    public String getId() {
+        return "org.kendar.replayer.filters.RecordFilter";
     }
 
     @HttpMethodFilter(phase = HttpFilterType.POST_RENDER, pathAddress = "*", method = "*", id = "9000daa6-277f-11ec-9621-0242ac1afe002")

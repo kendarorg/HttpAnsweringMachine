@@ -46,6 +46,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
     private final Logger logger;
     private final AnsweringHandler handler;
     private final CertificatesManager certificatesManager;
+    boolean restart = false;
     private boolean running = false;
     private HashMap<String, HttpsServer> httpsServers = new HashMap<>();
 
@@ -62,8 +63,6 @@ public class AnsweringHttpsServer implements AnsweringServer {
         this.eventQueue = eventQueue;
         eventQueue.register(this::handleCertificateChange, SSLChangedEvent.class);
     }
-
-    boolean restart = false;
 
     public void handleCertificateChange(SSLChangedEvent t) {
         restart = true;

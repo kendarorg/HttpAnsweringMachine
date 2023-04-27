@@ -18,9 +18,8 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BaseUtils {
-    protected ObjectMapper mapper = new ObjectMapper();
-
     private final XmlBuilder builder = new XmlBuilder();
+    protected ObjectMapper mapper = new ObjectMapper();
 
     protected XmlElement toXmlElement(String xml) {
         return builder.load(toXml(xml).getDocumentElement(), 0, new DiffPath());

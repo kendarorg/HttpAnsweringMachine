@@ -8,6 +8,10 @@ import java.util.stream.Collectors;
 public class XmlElement {
     private Map<String, XmlAttribute> attributes = new HashMap<>();
     private String value;
+    private String tag;
+    private Map<String, XmlElementGroup> children = new HashMap<>();
+    private XmlConstraint constraint = XmlConstraint.NONE;
+    private XmlConstraint valueConstraint = XmlConstraint.NONE;
 
     @Override
     public String toString() {
@@ -23,11 +27,6 @@ public class XmlElement {
                 .sorted(Comparator.comparing(XmlElementGroup::getTag)).map(a -> a.toString()).collect(Collectors.toList())) + "]" +
                 "}";
     }
-
-    private String tag;
-    private Map<String, XmlElementGroup> children = new HashMap<>();
-    private XmlConstraint constraint = XmlConstraint.NONE;
-    private XmlConstraint valueConstraint = XmlConstraint.NONE;
 
     public Map<String, XmlAttribute> getAttributes() {
         return attributes;

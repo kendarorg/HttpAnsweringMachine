@@ -33,6 +33,8 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
     private final Logger logger;
     private final DnsMultiResolver multiResolver;
     private final JsonConfiguration configuration;
+    private final ConcurrentHashMap<String, ProxyPollTiming> pollTiming = new ConcurrentHashMap<>();
+    private final AtomicBoolean running = new AtomicBoolean(false);
     private boolean startedOnce = false;
 
     public SimpleProxyHandlerImpl(
@@ -64,16 +66,6 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
 
         logger.info("Simple proxies LOADED");
     }
-
-    private class ProxyPollTiming {
-        public long lastTimeCheck;
-        public String id;
-        public boolean lastStatus;
-    }
-
-    private final ConcurrentHashMap<String, ProxyPollTiming> pollTiming = new ConcurrentHashMap<>();
-
-    private final AtomicBoolean running = new AtomicBoolean(false);
 
     private void verifyProxyConfiguration() {
         if (running.get()) return;
@@ -227,5 +219,11 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
             }
         }
         return oriSource;
+    }
+
+    private class ProxyPollTiming {
+        public long lastTimeCheck;
+        public String id;
+        public boolean lastStatus;
     }
 }

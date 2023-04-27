@@ -11,6 +11,12 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "${global.localAddress}")
 public class JsFilterWeb extends StaticWebFilter {
 
+    public JsFilterWeb(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
+        super(fileResourcesUtils);
+        Logger logger = loggerBuilder.build(JsFilterWeb.class);
+        logger.info("JsFilter server LOADED");
+    }
+
     @Override
     public String getDescription() {
         return "JsFilter web";
@@ -29,12 +35,5 @@ public class JsFilterWeb extends StaticWebFilter {
     @Override
     protected String getPath() {
         return "*web";
-    }
-
-
-    public JsFilterWeb(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
-        super(fileResourcesUtils);
-        Logger logger = loggerBuilder.build(JsFilterWeb.class);
-        logger.info("JsFilter server LOADED");
     }
 }

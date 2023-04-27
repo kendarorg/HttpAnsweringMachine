@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class LocalClientHandlersTest {
-    private static final boolean USE_JSON=true;
+    private static final boolean USE_JSON = true;
 
     private Thread subClientThread;
     private ServerSocket server;
@@ -54,18 +54,18 @@ public class LocalClientHandlersTest {
     private String connectionString;
     private MongoServer mongoServer;
 
-    public void server(int port,boolean useJson) throws IOException {
+    public void server(int port, boolean useJson) throws IOException {
 
-        var loggerBuilder = (LoggerBuilder)new LocalLoggerBuilderImpl();
+        var loggerBuilder = (LoggerBuilder) new LocalLoggerBuilderImpl();
         server = new ServerSocket(port);
-        var responders = (List<MongoResponder>)List.of(
+        var responders = (List<MongoResponder>) List.of(
                 new OpMsgResponder(loggerBuilder), new OpMsgMasterResponder(loggerBuilder),
-                new OpQueryResponder(),new OpQueryMasterResponder()
+                new OpQueryResponder(), new OpQueryMasterResponder()
         );
 
-        var msgHandlers = (List<MsgHandler>)List.of(
-          new OpDeleteHandler(), new OpInsertHandler(),
-          new OpMsgHandler(), new OpQueryHandler(), new OpReplyHandler(), new OpUpdateHandler()
+        var msgHandlers = (List<MsgHandler>) List.of(
+                new OpDeleteHandler(), new OpInsertHandler(),
+                new OpMsgHandler(), new OpQueryHandler(), new OpReplyHandler(), new OpUpdateHandler()
         );
         var compressionHandlers = List.of(
                 new NoopCompressionHandler(), new SnappyCompressionHandler(),
@@ -73,26 +73,26 @@ public class LocalClientHandlersTest {
         );
         Logger logger = loggerBuilder.build(LocalClientHandlersTest.class);
         loggerBuilder.setLevel("org.mongodb.driver", Level.OFF);
-        while(true) {
+        while (true) {
             try {
                 Socket client = server.accept();
                 logger.debug("++++++++++++++ACCEPTED CONNECTION");
-                if(useJson) {
+                if (useJson) {
                     var proxy = new MongoProxy();
                     proxy.setExposedPort(27097);
                     MongoDescriptor md = new MongoDescriptor();
                     md.setConnectionString("mongodb://127.0.0.1:27017");
                     proxy.setRemote(md);
-                    var handler = new JsonMongoClientHandler(client,proxy, msgHandlers, compressionHandlers, loggerBuilder,responders);
+                    var handler = new JsonMongoClientHandler(client, proxy, msgHandlers, compressionHandlers, loggerBuilder, responders);
                     subClientThread = new Thread(handler);
                     subClientThread.start();
-                }else {
+                } else {
                     var handler = new DirectMongoClientHandler(client, msgHandlers, compressionHandlers, loggerBuilder);
                     handler.setTarget(targetIp, targetPort);
                     subClientThread = new Thread(handler);
                     subClientThread.start();
                 }
-            }catch (SocketException se){
+            } catch (SocketException se) {
 
             }
         }
@@ -100,7 +100,7 @@ public class LocalClientHandlersTest {
 
     @BeforeEach
     void beforeEach() {
-        var loggerBuilder = (LoggerBuilder)new LocalLoggerBuilderImpl();
+        var loggerBuilder = (LoggerBuilder) new LocalLoggerBuilderImpl();
         Logger logger = loggerBuilder.build(LocalClientHandlersTest.class);
         loggerBuilder.setLevel("org.mongodb.driver", Level.OFF);
         loggerBuilder.setLevel("io.netty", Level.OFF);
@@ -108,15 +108,15 @@ public class LocalClientHandlersTest {
         loggerBuilder.setLevel(MongoLogClient.class.getName(), Level.DEBUG);
         loggerBuilder.setLevel(MongoLogServer.class.getName(), Level.DEBUG);
         mongoServer = new MongoServer(new MemoryBackend());
-        mongoServer.bind("127.0.0.1",27017);
+        mongoServer.bind("127.0.0.1", 27017);
         targetIp = "127.0.0.1";
         targetPort = 27017;
     }
 
     private void startServer(boolean useJson) {
-        clientThread = new Thread(()->{
+        clientThread = new Thread(() -> {
             try {
-                server(27097,useJson);
+                server(27097, useJson);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -126,21 +126,21 @@ public class LocalClientHandlersTest {
     }
 
     @AfterEach
-    void afterEach(){
+    void afterEach() {
         mongoServer.shutdown();
         try {
             server.close();
         } catch (IOException e) {
 
         }
-        if(subClientThread!=null) {
+        if (subClientThread != null) {
             subClientThread.interrupt();
         }
         clientThread.interrupt();
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = {true,false})
+    @ValueSource(booleans = {true, false})
     void test_ping_on_real_mongo(boolean useJsonServer) {
 
         startServer(useJsonServer);
@@ -151,7 +151,7 @@ public class LocalClientHandlersTest {
                 // Send a ping to confirm a successful connection
                 Bson command = new BsonDocument("ping", new BsonInt64(1));
                 Document commandResult = database.runCommand(command);
-                assertEquals(1.0,commandResult.get("ok"));
+                assertEquals(1.0, commandResult.get("ok"));
                 System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
             } catch (MongoException me) {
                 me.printStackTrace();
@@ -160,7 +160,7 @@ public class LocalClientHandlersTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = {true,false})
+    @ValueSource(booleans = {true, false})
     void test_insert_select_on_real_mongo(boolean useJsonServer) {
 
         startServer(useJsonServer);
@@ -182,7 +182,7 @@ public class LocalClientHandlersTest {
                 Document doc = collection.find(eq("title", "Ski Bloopers"))
                         .first();
                 assertNotNull(doc);
-                System.out.println("RETURNED :"+doc.toJson());
+                System.out.println("RETURNED :" + doc.toJson());
             } catch (MongoException me) {
                 me.printStackTrace();
             }
@@ -191,7 +191,7 @@ public class LocalClientHandlersTest {
 
 
     @ParameterizedTest
-    @ValueSource(booleans = {true,false})
+    @ValueSource(booleans = {true, false})
     void test_stats__real_mongo(boolean useJsonServer) {
 
         startServer(useJsonServer);
@@ -210,7 +210,7 @@ public class LocalClientHandlersTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = {true,false})
+    @ValueSource(booleans = {true, false})
     void test_db_real_mongo(boolean useJsonServer) {
 
         startServer(useJsonServer);

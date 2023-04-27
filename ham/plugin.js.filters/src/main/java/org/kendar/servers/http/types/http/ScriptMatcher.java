@@ -19,11 +19,13 @@ import java.util.function.Function;
 @Component
 public class ScriptMatcher implements FilterMatcher, PathMatcher, HostMatcher {
 
+    private static ScriptableObject globalScope;
     private final PathSimpleMatcher pathSimpleMatchers = new PathSimpleMatcher();
-
     private String pathAddress;
     private String hostAddress;
     private String script;
+    private JsUtils jsUtils;
+    private Script js;
 
     @Override
     public String getPathAddress() {
@@ -43,10 +45,6 @@ public class ScriptMatcher implements FilterMatcher, PathMatcher, HostMatcher {
     public void setHostAddress(String hostAddress) {
         this.hostAddress = hostAddress;
     }
-
-    private JsUtils jsUtils;
-    private Script js;
-    private static ScriptableObject globalScope;
 
     public String getScript() {
         return script;

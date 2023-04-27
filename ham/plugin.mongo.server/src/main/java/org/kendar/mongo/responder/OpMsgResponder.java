@@ -20,8 +20,9 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OpMsgResponder implements MongoResponder{
+public class OpMsgResponder implements MongoResponder {
     private final Logger logger;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public OpMsgResponder(LoggerBuilder loggerBuilder) {
         logger = loggerBuilder.build(OpMsgResponder.class);
@@ -32,20 +33,18 @@ public class OpMsgResponder implements MongoResponder{
         return OpCodes.OP_MSG;
     }
 
-    private final ObjectMapper mapper = new ObjectMapper();
-
     private String getDb(MsgPacket message) {
         try {
             for (var payload : message.getPayloads()) {
                 if (payload instanceof MsgDocumentPayload) {
                     var jsonTree = mapper.readTree(
                             ((MsgDocumentPayload) payload).getJson());
-                    var db = (JsonNode)jsonTree.get("$db");
+                    var db = (JsonNode) jsonTree.get("$db");
                     return db.asText();
                 }
 
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
         return "admin";
@@ -53,41 +52,41 @@ public class OpMsgResponder implements MongoResponder{
 
     @Override
     public OpGeneralResponse canRespond(MongoPacket clientPacket, MongoClient mongoClient, long connectionId) {
-        var msgPacket = (MsgPacket)clientPacket;
-        var db= getDb(msgPacket);
+        var msgPacket = (MsgPacket) clientPacket;
+        var db = getDb(msgPacket);
         var database = mongoClient.getDatabase(db);
-        if(database==null){
+        if (database == null) {
             try {
-                logger.error("Unable to find db for "+mapper.writeValueAsString(msgPacket));
+                logger.error("Unable to find db for " + mapper.writeValueAsString(msgPacket));
             } catch (JsonProcessingException e) {
 
             }
             return null;
         }
-        var docPayload = (MsgDocumentPayload)msgPacket.getPayloads().get(0);
-        var command = (BsonDocument)BsonDocument.parse(docPayload.getJson());
+        var docPayload = (MsgDocumentPayload) msgPacket.getPayloads().get(0);
+        var command = (BsonDocument) BsonDocument.parse(docPayload.getJson());
         var finalMessage = command.containsKey("endSession");
-        if(command.get("isMaster")!=null){
+        if (command.get("isMaster") != null) {
             return null;
         }
-        if(msgPacket.getPayloads().size()>0) {
+        if (msgPacket.getPayloads().size() > 0) {
 
             for (var i = 1; i < msgPacket.getPayloads().size(); i++) {
                 var pack = msgPacket.getPayloads().get(i);
-                if(pack instanceof MsgDocumentPayload) {
+                if (pack instanceof MsgDocumentPayload) {
                     throw new RuntimeException("MISSING MsgDocumentPayload");
 //                    var tl = new BsonArray();
 //                    var doc = (MsgDocumentPayload) pack;
 //                    var bdoc = (BsonDocument) BsonDocument.parse(doc.getJson());
 //                    tl.add(bdoc);
-                }else{
+                } else {
                     var doc = (MsgSectionPayload) pack;
                     var tl = new BsonArray();
-                    for(var j=0;j<doc.getDocuments().size();j++){
+                    for (var j = 0; j < doc.getDocuments().size(); j++) {
                         var bdoc = (BsonDocument) BsonDocument.parse(doc.getDocuments().get(j).getJson());
                         tl.add(bdoc);
                     }
-                    command.put(doc.getTitle(),tl);
+                    command.put(doc.getTitle(), tl);
                     //tl.add(bdoc);
                 }
             }
@@ -97,11 +96,11 @@ public class OpMsgResponder implements MongoResponder{
         command.remove("lsid");
         Document commandResult = database.runCommand(command);
         var result = new MsgPacket();
-        var  responseDocPayload = new MsgDocumentPayload();
+        var responseDocPayload = new MsgDocumentPayload();
         responseDocPayload.setJson(commandResult.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build()));
         result.getPayloads().add(responseDocPayload);
         result.setResponseTo(msgPacket.getRequestId());
-        result.setRequestId((int)MongoClientHandler.getRequestCounter());
-        return new OpGeneralResponse((MongoPacket)result,finalMessage);
+        result.setRequestId((int) MongoClientHandler.getRequestCounter());
+        return new OpGeneralResponse((MongoPacket) result, finalMessage);
     }
 }

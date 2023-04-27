@@ -10,9 +10,22 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class LocalRecording implements HamReplayerRecorderStop, HamReplayerWait {
+    private static final TypeReference<HashMap<String, String>> typeRef
+            = new TypeReference<>() {
+    };
+    private static final ObjectMapper mapper = new ObjectMapper();
     private HamReplayerRecorderBuilderImpl builder;
     private String lastUsedType;
     private long lastUsedId;
+    private String parameters;
+    private HashMap<String, String> parametersMap = new HashMap<>();
+    private long id;
+    private ReplayerState state;
+    private String name;
+
+    private static String toQuery(Map.Entry<String, String> entry) {
+        return entry.getKey() + "=" + entry.getValue();
+    }
 
     public String getParameters() {
         return parameters;
@@ -21,12 +34,6 @@ public class LocalRecording implements HamReplayerRecorderStop, HamReplayerWait 
     public void setParameters(String parameters) {
         this.parameters = parameters;
     }
-
-    private String parameters;
-    private HashMap<String, String> parametersMap = new HashMap<>();
-    private long id;
-    private ReplayerState state;
-    private String name;
 
     public long getId() {
         return id;
@@ -44,17 +51,13 @@ public class LocalRecording implements HamReplayerRecorderStop, HamReplayerWait 
         this.state = state;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
     }
 
-    private static final TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<>() {
-    };
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public LocalRecording withParameter(ExtraParam name, Object value) {
         parametersMap.put(name.toString(), value.toString());
@@ -70,8 +73,6 @@ public class LocalRecording implements HamReplayerRecorderStop, HamReplayerWait 
         parametersMap.clear();
         return this;
     }
-
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     LocalRecording init(HamReplayerRecorderBuilderImpl builder) throws HamException {
         this.builder = builder;
@@ -107,10 +108,6 @@ public class LocalRecording implements HamReplayerRecorderStop, HamReplayerWait 
 
     public HamReplayerWait startAutoTest() throws HamException {
         return executeAct("start", "auto");
-    }
-
-    private static String toQuery(Map.Entry<String, String> entry) {
-        return entry.getKey() + "=" + entry.getValue();
     }
 
     private LocalRecording executeAct(String action, String usedType) throws HamException {

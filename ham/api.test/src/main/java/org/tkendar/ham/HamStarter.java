@@ -17,18 +17,13 @@ import java.util.function.Supplier;
 public class HamStarter {
 
     private static final Logger logger = LoggerFactory.getLogger(HamStarter.class);
-
+    private static final ConcurrentHashMap<String, ThreadAndProc> processes = new ConcurrentHashMap<>();
+    public static boolean shutdownHookInitialized = false;
     private static boolean showTrace = false;
     private static Thread realThread;
 
     public static void showTrace() {
         showTrace = true;
-    }
-
-    public static class ThreadAndProc {
-        public Thread thread;
-        public Process process;
-        public ArrayList<Supplier<Boolean>> trace;
     }
 
     private static String getRootPath(Class<?> caller) {
@@ -59,13 +54,6 @@ public class HamStarter {
 
     }
 
-    private static final ConcurrentHashMap<String, ThreadAndProc> processes = new ConcurrentHashMap<>();
-
-
-    public static boolean shutdownHookInitialized = false;
-
-
-
     private static void initShutdownHook() {
         if (shutdownHookInitialized) return;
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -76,7 +64,7 @@ public class HamStarter {
                 try {
 
                     HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").noError().run();
-                    pu.sigtermProcesses((str)-> str.contains("-Dloader.main=org.kendar.Main"));
+                    pu.sigtermProcesses((str) -> str.contains("-Dloader.main=org.kendar.Main"));
                 } catch (Exception e) {
 
                 }
@@ -85,7 +73,7 @@ public class HamStarter {
         });
     }
 
-    public static void killHam(Class<?> caller){
+    public static void killHam(Class<?> caller) {
         var pu = new ProcessUtils(new HashMap<>());
         try {
 
@@ -98,7 +86,7 @@ public class HamStarter {
 
     public static void runHamJar(Class<?> caller) throws HamTestException {
         try {
-            if(HttpChecker.checkForSite(5, "http://127.0.0.1/api/dns/lookup/test").noError().run()){
+            if (HttpChecker.checkForSite(5, "http://127.0.0.1/api/dns/lookup/test").noError().run()) {
                 return;
             }
         } catch (Exception e) {
@@ -106,7 +94,7 @@ public class HamStarter {
         }
         var commandLine = new ArrayList<String>();
 
-        deleteDirectory(Path.of(getRootPath(caller),"data","tmp").toFile());
+        deleteDirectory(Path.of(getRootPath(caller), "data", "tmp").toFile());
         var java = findJava();
         var agentPath = Path.of(getRootPath(caller), "ham", "api.test", "org.jacoco.agent-0.8.8-runtime.jar");
         var jacocoExecPath = Path.of(getRootPath(caller), "ham", "api.test", "target", "jacoco_starter.exec");
@@ -139,12 +127,18 @@ public class HamStarter {
                 withParameter(appPathRoot);
         try {
             pr.runBackground();
-            if(!HttpChecker.checkForSite(60, "http://127.0.0.1/api/dns/lookup/test").run()){
+            if (!HttpChecker.checkForSite(60, "http://127.0.0.1/api/dns/lookup/test").run()) {
                 throw new Exception("NOT STARTED");
             }
         } catch (Exception e) {
             throw new HamTestException(e);
         }
 
+    }
+
+    public static class ThreadAndProc {
+        public Thread thread;
+        public Process process;
+        public ArrayList<Supplier<Boolean>> trace;
     }
 }

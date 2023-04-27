@@ -206,12 +206,12 @@ public class Request {
         return RequestUtils.getFromMap(this.postParameters, id);
     }
 
-    public void setRemoteHost(String remoteHost) {
-        this.remoteHost = remoteHost;
-    }
-
     public String getRemoteHost() {
         return remoteHost;
+    }
+
+    public void setRemoteHost(String remoteHost) {
+        this.remoteHost = remoteHost;
     }
 
     public String extractRemoteHostName() {

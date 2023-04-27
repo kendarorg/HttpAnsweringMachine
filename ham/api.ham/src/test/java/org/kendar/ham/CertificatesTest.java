@@ -8,12 +8,12 @@ import org.tkendar.ham.HamTestException;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CertificatesTest {
+    private final HamBasicBuilder hamBuilder = GlobalSettings.builder();
+
     @BeforeAll
     public static void beforeAll() throws HamTestException {
         HamStarter.runHamJar(CertificatesTest.class);
     }
-
-    private final HamBasicBuilder hamBuilder = GlobalSettings.builder();
 
     @Test
     public void testAddingCertificate() throws HamException, InterruptedException {

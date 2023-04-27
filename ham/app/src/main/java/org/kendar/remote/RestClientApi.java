@@ -21,16 +21,15 @@ import org.springframework.stereotype.Component;
 public class RestClientApi implements FilteringClass {
     private final EventQueue eventQueue;
 
-    @Override
-    public String getId() {
-        return this.getClass().getName();
-    }
-
     public RestClientApi(EventQueue eventQueue) {
 
         this.eventQueue = eventQueue;
     }
 
+    @Override
+    public String getId() {
+        return this.getClass().getName();
+    }
 
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/remote/restclient",

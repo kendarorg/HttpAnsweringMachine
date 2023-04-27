@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class ReplayerAPIScripts implements FilteringClass {
 
+    final ObjectMapper mapper = new ObjectMapper();
     private final FileResourcesUtils fileResourcesUtils;
     private final LoggerBuilder loggerBuilder;
-    final ObjectMapper mapper = new ObjectMapper();
     private final Md5Tester md5Tester;
     private final List<ReplayerEngine> engineList;
     private final HibernateSessionFactory sessionFactory;

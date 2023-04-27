@@ -37,12 +37,14 @@ public class MongoProxyHandlerApi implements FilteringClass {
     private final LoggerBuilder loggerBuilder;
     private final List<MongoResponder> responders;
     private final JsonConfiguration configuration;
-
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private final Map<String, JsonMongoClientHandler> mongoClientHandlers = new ConcurrentHashMap<>();
+    private final Map<String, Long> mongoClientHandlersTimeout = new ConcurrentHashMap<>();
     public MongoProxyHandlerApi(List<MsgHandler> msgHandlers,
                                 List<CompressionHandler> compressionHandlers,
                                 LoggerBuilder loggerBuilder,
                                 List<MongoResponder> responders,
-                                JsonConfiguration configuration){
+                                JsonConfiguration configuration) {
 
         this.msgHandlers = msgHandlers;
         this.compressionHandlers = compressionHandlers;
@@ -61,25 +63,20 @@ public class MongoProxyHandlerApi implements FilteringClass {
 
     private void expireConnections() {
         long time = Calendar.getInstance().getTimeInMillis();
-        for(var timeouts:mongoClientHandlersTimeout.entrySet()){
+        for (var timeouts : mongoClientHandlersTimeout.entrySet()) {
 
-            if(timeouts.getValue() < time){
+            if (timeouts.getValue() < time) {
                 mongoClientHandlersTimeout.remove(timeouts.getKey());
                 mongoClientHandlers.remove(timeouts.getKey()).close();
             }
         }
     }
 
-    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
-    private final Map<String,JsonMongoClientHandler> mongoClientHandlers = new ConcurrentHashMap<>();
-    private final Map<String,Long> mongoClientHandlersTimeout = new ConcurrentHashMap<>();
-
-
-
     @Override
     public String getId() {
         return MongoProxyHandlerApi.class.getName();
     }
+
     @HttpMethodFilter(
             phase = HttpFilterType.API,
             pathAddress = "/api/mongo/{port}/{dbName}/{opcode}",
@@ -157,38 +154,38 @@ public class MongoProxyHandlerApi implements FilteringClass {
         deser.deserialize(req.getRequestText());
         var config = configuration.getConfiguration(MongoConfig.class);
         MongoProxy founded = null;
-        for(var pr:config.getProxies()){
-            if(pr.getExposedPort()==port){
+        for (var pr : config.getProxies()) {
+            if (pr.getExposedPort() == port) {
                 founded = pr;
             }
         }
-        if(founded==null){
+        if (founded == null) {
             res.setStatusCode(404);
             return true;
         }
-        var fromClient = (MongoPacket)deser.read("data");
+        var fromClient = (MongoPacket) deser.read("data");
         var globalConnectionId = req.getHeader("X-CONNECTION-ID");
         var connectionId = Integer.parseInt(req.getHeader("X-MONGO-ID"));
 
 
-        if(opcode.equalsIgnoreCase("CLOSE")){
+        if (opcode.equalsIgnoreCase("CLOSE")) {
             var handler = mongoClientHandlers.get(globalConnectionId);
             handler.close();
             return true;
         }
 
-        if(!mongoClientHandlers.containsKey(globalConnectionId)){
-            mongoClientHandlers.put(globalConnectionId,new JsonMongoClientHandler(
-                    founded,msgHandlers,compressionHandlers,
-                    loggerBuilder,responders));
+        if (!mongoClientHandlers.containsKey(globalConnectionId)) {
+            mongoClientHandlers.put(globalConnectionId, new JsonMongoClientHandler(
+                    founded, msgHandlers, compressionHandlers,
+                    loggerBuilder, responders));
 
         }
 
         var handler = mongoClientHandlers.get(globalConnectionId);
-        long time = Calendar.getInstance().getTimeInMillis()+2000;
-        mongoClientHandlersTimeout.put(globalConnectionId,time);
-        var serverResponse = handler.mongoRoundTrip(fromClient,connectionId);
-        if(serverResponse.isFinalMessage()) {
+        long time = Calendar.getInstance().getTimeInMillis() + 2000;
+        mongoClientHandlersTimeout.put(globalConnectionId, time);
+        var serverResponse = handler.mongoRoundTrip(fromClient, connectionId);
+        if (serverResponse.isFinalMessage()) {
             handler.close();
             mongoClientHandlers.remove(globalConnectionId);
         }
@@ -196,10 +193,10 @@ public class MongoProxyHandlerApi implements FilteringClass {
 
         //Call real server
         var ser = serializer.newInstance();
-        ser.write("data",serverResponse.getResult());
-        var toSend = (String)ser.getSerialized();
+        ser.write("data", serverResponse.getResult());
+        var toSend = (String) ser.getSerialized();
         res.setResponseText(toSend);
-        res.getHeaders().put("content-type","application-json");
+        res.getHeaders().put("content-type", "application-json");
         res.setStatusCode(200);
         return true;
     }

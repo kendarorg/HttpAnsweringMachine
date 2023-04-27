@@ -12,14 +12,13 @@ import java.util.Locale;
 public class RequestHandler implements Runnable {
 
     public static final int READ_BUFFER_SIZE = 8192;
+    private final boolean useCache;
+    private final Logger log;
+    private final DnsMultiResolver multiResolver;
     /**
      * Socket connected to client passed by Proxy server
      */
     Socket clientSocket;
-    private final boolean useCache;
-    private final Logger log;
-    private final DnsMultiResolver multiResolver;
-
     /**
      * Read data client sends to proxy
      */
@@ -486,53 +485,6 @@ public class RequestHandler implements Runnable {
         }
     }
 
-
-    /**
-     * Listen to data from client and transmits it to server.
-     * This is done on a separate thread as must be done
-     * asynchronously to reading data from server and transmitting
-     * that data to the client.
-     */
-    class ClientToServerHttpsTransmit implements Runnable {
-
-        InputStream proxyToClientIS;
-        OutputStream proxyToServerOS;
-
-        /**
-         * Creates Object to Listen to Client and Transmit that data to the server
-         *
-         * @param proxyToClientIS Stream that proxy uses to receive data from client
-         * @param proxyToServerOS Stream that proxy uses to transmit data to remote server
-         */
-        public ClientToServerHttpsTransmit(InputStream proxyToClientIS, OutputStream proxyToServerOS) {
-            this.proxyToClientIS = proxyToClientIS;
-            this.proxyToServerOS = proxyToServerOS;
-        }
-
-        @Override
-        public void run() {
-            try {
-                // Read byte by byte from client and send directly to server
-                byte[] buffer = new byte[4096];
-                int read;
-                do {
-                    read = proxyToClientIS.read(buffer);
-                    if (read > 0) {
-                        proxyToServerOS.write(buffer, 0, read);
-                        if (proxyToClientIS.available() < 1) {
-                            proxyToServerOS.flush();
-                        }
-                    }
-                } while (read >= 0);
-            } catch (SocketTimeoutException ste) {
-                log.trace("Socket timeout", ste);
-            } catch (IOException e) {
-                log.trace("Proxy to client HTTPS read timed out", e);
-            }
-        }
-    }
-
-
     /**
      * This method is called when user requests a page that is blocked by the proxy.
      * Sends an access forbidden message back to the client
@@ -550,7 +502,6 @@ public class RequestHandler implements Runnable {
         }
     }
 
-
     private void invalidSiteRequested(String substring) {
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
@@ -560,7 +511,6 @@ public class RequestHandler implements Runnable {
             log.error("Error writing to client when requested a blocked site");
         }
     }
-
 
     private void handleHTTPRequest(String origAddress, String originalRequest) throws URISyntaxException {
         // Extract the URL and port of remote
@@ -679,6 +629,51 @@ public class RequestHandler implements Runnable {
             }
         } catch (Exception e) {
             log.error("Error on HTTP : " + origAddress, e);
+        }
+    }
+
+    /**
+     * Listen to data from client and transmits it to server.
+     * This is done on a separate thread as must be done
+     * asynchronously to reading data from server and transmitting
+     * that data to the client.
+     */
+    class ClientToServerHttpsTransmit implements Runnable {
+
+        InputStream proxyToClientIS;
+        OutputStream proxyToServerOS;
+
+        /**
+         * Creates Object to Listen to Client and Transmit that data to the server
+         *
+         * @param proxyToClientIS Stream that proxy uses to receive data from client
+         * @param proxyToServerOS Stream that proxy uses to transmit data to remote server
+         */
+        public ClientToServerHttpsTransmit(InputStream proxyToClientIS, OutputStream proxyToServerOS) {
+            this.proxyToClientIS = proxyToClientIS;
+            this.proxyToServerOS = proxyToServerOS;
+        }
+
+        @Override
+        public void run() {
+            try {
+                // Read byte by byte from client and send directly to server
+                byte[] buffer = new byte[4096];
+                int read;
+                do {
+                    read = proxyToClientIS.read(buffer);
+                    if (read > 0) {
+                        proxyToServerOS.write(buffer, 0, read);
+                        if (proxyToClientIS.available() < 1) {
+                            proxyToServerOS.flush();
+                        }
+                    }
+                } while (read >= 0);
+            } catch (SocketTimeoutException ste) {
+                log.trace("Socket timeout", ste);
+            } catch (IOException e) {
+                log.trace("Proxy to client HTTPS read timed out", e);
+            }
         }
     }
 }

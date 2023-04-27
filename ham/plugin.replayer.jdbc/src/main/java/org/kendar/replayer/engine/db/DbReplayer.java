@@ -35,7 +35,19 @@ public class DbReplayer implements ReplayerEngine {
 
 
     private final SqlSimulator simulator = new SqlSimulator();
+    private final HibernateSessionFactory sessionFactory;
+    private final Map<String, List<DbRow>> straightDatabase = new HashMap<>();
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private final Logger logger;
+    private final Map<Long, Long> connectionShadow = new HashMap<>();
+    private final Map<Long, List<DbTreeItem>> connectionRealPath = new HashMap<>();
+    private final AtomicLong atomicLong = new AtomicLong(Long.MAX_VALUE);
+    protected boolean hasRows = false;
     private boolean useSimEngine;
+    public DbReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
+        this.sessionFactory = sessionFactory;
+        this.logger = loggerBuilder.build(DbReplayer.class);
+    }
 
     @Override
     public ReplayerEngine create(LoggerBuilder loggerBuilder) {
@@ -98,19 +110,9 @@ public class DbReplayer implements ReplayerEngine {
                 Boolean.parseBoolean(specialParams.get("useSimEngine"));
     }
 
-    public DbReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
-        this.sessionFactory = sessionFactory;
-        this.logger = loggerBuilder.build(DbReplayer.class);
-    }
-
     public String getId() {
         return "db";
     }
-
-
-    private final HibernateSessionFactory sessionFactory;
-    private final Map<String, List<DbRow>> straightDatabase = new HashMap<>();
-    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
 
     public void loadDb(Long recordingId) throws Exception {
 
@@ -148,8 +150,6 @@ public class DbReplayer implements ReplayerEngine {
         }
     }
 
-    protected boolean hasRows = false;
-
     protected boolean hasDbRows(Long recordingId) throws Exception {
         hasRows = (Long) sessionFactory.queryResult(e -> {
             return (Long) e.createQuery("SELECT count(*) FROM ReplayerRow e " +
@@ -160,8 +160,6 @@ public class DbReplayer implements ReplayerEngine {
         }) > 0;
         return hasRows;
     }
-
-    private final Logger logger;
 
     protected ReplayerRow getReplayerRow(Long recordingId, CallIndex index, EntityManager e) {
         List<ReplayerRow> rs = e.createQuery("SELECT e FROM ReplayerRow e " +
@@ -196,10 +194,6 @@ public class DbReplayer implements ReplayerEngine {
             founded.add(index.getIndex());
         }
     }
-
-    private final Map<Long, Long> connectionShadow = new HashMap<>();
-    private final Map<Long, List<DbTreeItem>> connectionRealPath = new HashMap<>();
-    private final AtomicLong atomicLong = new AtomicLong(Long.MAX_VALUE);
 
     @Override
     public RequestMatch findRequestMatch(Request req, String contentHash, Map<String, String> specialParams) throws Exception {
@@ -244,8 +238,8 @@ public class DbReplayer implements ReplayerEngine {
         var dbName = req.getPathParameter("dbName").toLowerCase(Locale.ROOT);
 
         //return getTreeMatch(req, command, dbName);
-        var result= getStraightMatch(req, command, dbName);
-        return new RequestMatch(req,null,result);
+        var result = getStraightMatch(req, command, dbName);
+        return new RequestMatch(req, null, result);
     }
 
     private Response getStraightMatch(Request req, JdbcCommand command, String dbName) {

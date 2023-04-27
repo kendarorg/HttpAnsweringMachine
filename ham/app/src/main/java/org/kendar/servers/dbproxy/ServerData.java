@@ -3,6 +3,10 @@ package org.kendar.servers.dbproxy;
 import org.kendar.janus.engine.Engine;
 
 public class ServerData {
+    private boolean active;
+    private Engine serverEngine;
+    private DbDescriptor local;
+
     public boolean isActive() {
         return active;
     }
@@ -10,10 +14,6 @@ public class ServerData {
     public void setActive(boolean active) {
         this.active = active;
     }
-
-    private boolean active;
-    private Engine serverEngine;
-    private DbDescriptor local;
 
     public DbDescriptor getLocal() {
         return local;

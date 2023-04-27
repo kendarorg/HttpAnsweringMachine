@@ -6,6 +6,10 @@ import org.kendar.servers.Copyable;
 public class GlobalConfigDb implements Copyable<GlobalConfigDb> {
     private String url;
     private String login;
+    private String hibernateDialect;
+    private String driver;
+    private boolean startInternalH2;
+    private String password;
 
     public String getHibernateDialect() {
         return hibernateDialect;
@@ -15,8 +19,6 @@ public class GlobalConfigDb implements Copyable<GlobalConfigDb> {
         this.hibernateDialect = hibernateDialect;
     }
 
-    private String hibernateDialect;
-
     public String getDriver() {
         return driver;
     }
@@ -24,10 +26,6 @@ public class GlobalConfigDb implements Copyable<GlobalConfigDb> {
     public void setDriver(String driver) {
         this.driver = driver;
     }
-
-    private String driver;
-
-    private boolean startInternalH2;
 
     public String getUrl() {
         return url;
@@ -52,8 +50,6 @@ public class GlobalConfigDb implements Copyable<GlobalConfigDb> {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    private String password;
 
     @Override
     public GlobalConfigDb copy() {

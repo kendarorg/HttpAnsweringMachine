@@ -20,8 +20,9 @@ import java.util.Map;
 public class JsonMongoClientHandler extends MongoClientHandler {
 
 
-    private final Map<OpCodes,List<MongoResponder>> responders;
+    private final Map<OpCodes, List<MongoResponder>> responders;
     private final MongoProxy proxy;
+    private MongoClient mongoClient;
 
     public JsonMongoClientHandler(MongoProxy proxy,
                                   List<MsgHandler> msgHandlers,
@@ -31,15 +32,15 @@ public class JsonMongoClientHandler extends MongoClientHandler {
         super(null, msgHandlers, compressionHandlers, loggerBuilder);
         this.proxy = proxy;
         this.responders = new HashMap<>();
-        for(var responder:responders){
-            if(!this.responders.containsKey(responder.getOpCode())){
-                this.responders.put(responder.getOpCode(),new ArrayList<>());
+        for (var responder : responders) {
+            if (!this.responders.containsKey(responder.getOpCode())) {
+                this.responders.put(responder.getOpCode(), new ArrayList<>());
             }
             this.responders.get(responder.getOpCode()).add(responder);
         }
     }
 
-    public JsonMongoClientHandler(Socket client,MongoProxy proxy,
+    public JsonMongoClientHandler(Socket client, MongoProxy proxy,
                                   List<MsgHandler> msgHandlers,
                                   List<CompressionHandler> compressionHandlers,
                                   LoggerBuilder loggerBuilder,
@@ -47,29 +48,27 @@ public class JsonMongoClientHandler extends MongoClientHandler {
         super(client, msgHandlers, compressionHandlers, loggerBuilder);
         this.proxy = proxy;
         this.responders = new HashMap<>();
-        for(var responder:responders){
-            if(!this.responders.containsKey(responder.getOpCode())){
-                this.responders.put(responder.getOpCode(),new ArrayList<>());
+        for (var responder : responders) {
+            if (!this.responders.containsKey(responder.getOpCode())) {
+                this.responders.put(responder.getOpCode(), new ArrayList<>());
             }
             this.responders.get(responder.getOpCode()).add(responder);
         }
     }
 
-    private MongoClient mongoClient;
-
     public OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId) {
         try {
-            if(mongoClient==null){
+            if (mongoClient == null) {
                 var remote = proxy.getRemote();
                 mongoClient = MongoClients.create(remote.getConnectionString());
             }
             var responderByOpCode = this.responders.get(clientPacket.getOpCode());
-            if(responderByOpCode!=null){
-                for(var responder: responderByOpCode ){
-                    var res= responder.canRespond(clientPacket,mongoClient,connectionId);
+            if (responderByOpCode != null) {
+                for (var responder : responderByOpCode) {
+                    var res = responder.canRespond(clientPacket, mongoClient, connectionId);
 
-                    if(res!=null){
-                        if(res.isFinalMessage()){
+                    if (res != null) {
+                        if (res.isFinalMessage()) {
                             mongoClient.close();
                             mongoClient = null;
                         }
@@ -77,14 +76,11 @@ public class JsonMongoClientHandler extends MongoClientHandler {
                     }
                 }
             }
-            throw new RuntimeException("Missing handler for opcode "+responderByOpCode);
+            throw new RuntimeException("Missing handler for opcode " + responderByOpCode);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
-
-
-
 
 
     protected void connectToClient() {
@@ -92,9 +88,8 @@ public class JsonMongoClientHandler extends MongoClientHandler {
     }
 
 
-
     public void close() {
-        if(mongoClient!=null){
+        if (mongoClient != null) {
             mongoClient.close();
         }
     }

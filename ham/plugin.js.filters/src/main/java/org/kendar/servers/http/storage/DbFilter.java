@@ -13,6 +13,20 @@ public class DbFilter implements DbTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "blocking")
+    private boolean blocking;
+    @Column(name = "name")
+    private String name;
+    @Column(name = "matcher", columnDefinition = "CLOB")
+    private String matcher;
+    @Column(name = "source", columnDefinition = "CLOB")
+    private String source;
+    @Column(name = "phase")
+    private String phase;
+    @Column(name = "priority")
+    private int priority;
+    @Column(name = "type")
+    private String type;
 
     public boolean isBlocking() {
         return blocking;
@@ -21,26 +35,6 @@ public class DbFilter implements DbTable {
     public void setBlocking(boolean blocking) {
         this.blocking = blocking;
     }
-
-    @Column(name = "blocking")
-    private boolean blocking;
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "matcher", columnDefinition = "CLOB")
-    private String matcher;
-
-    @Column(name = "source", columnDefinition = "CLOB")
-    private String source;
-
-    @Column(name = "phase")
-    private String phase;
-
-    @Column(name = "priority")
-    private int priority;
-
-    @Column(name = "type")
-    private String type;
 
     public String getName() {
         return name;

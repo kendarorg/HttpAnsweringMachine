@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.zip.InflaterInputStream;
 
 @Component
-public class ZlibCompressionHandler implements CompressionHandler{
+public class ZlibCompressionHandler implements CompressionHandler {
     @Override
     public byte[] decompress(byte[] bb) {
         try {

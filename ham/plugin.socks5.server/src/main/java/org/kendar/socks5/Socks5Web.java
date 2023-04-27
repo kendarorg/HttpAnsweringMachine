@@ -10,6 +10,11 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "${global.localAddress}")
 public class Socks5Web extends StaticWebFilter {
 
+    public Socks5Web(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
+        super(fileResourcesUtils);
+        //Logger logger = loggerBuilder.build(Socks5Web.class);
+    }
+
     @Override
     public String getDescription() {
         return "Socks5 proxy";
@@ -18,11 +23,6 @@ public class Socks5Web extends StaticWebFilter {
     @Override
     public String getAddress() {
         return "plugins/socks5/index.html";
-    }
-
-    public Socks5Web(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
-        super(fileResourcesUtils);
-        //Logger logger = loggerBuilder.build(Socks5Web.class);
     }
 
     @Override

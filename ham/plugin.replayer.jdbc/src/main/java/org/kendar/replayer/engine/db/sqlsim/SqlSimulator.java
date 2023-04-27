@@ -114,6 +114,10 @@ public class SqlSimulator {
         return result;
     }
 
+    static Object handleInternal(Object request, Long connectionId) {
+        return fakes.get(request.getClass()).apply(request, connectionId);
+    }
+
     public SqlSimResponse handle(Object request, long connectionId) {
         if (request == null || !fakes.containsKey(request.getClass())) return new SqlSimResponse();
         var resultCall = fakes.get(request.getClass()).apply(request, connectionId);
@@ -124,9 +128,5 @@ public class SqlSimulator {
         result.setResponse(resultCall);
         result.setHasResponse(true);
         return result;
-    }
-
-    static Object handleInternal(Object request, Long connectionId) {
-        return fakes.get(request.getClass()).apply(request, connectionId);
     }
 }

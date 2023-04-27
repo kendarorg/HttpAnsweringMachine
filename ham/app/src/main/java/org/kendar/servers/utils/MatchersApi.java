@@ -20,13 +20,12 @@ import org.springframework.stereotype.Component;
 public class MatchersApi implements FilteringClass {
 
     private final MatchersRegistry matchersRegistry;
+    ObjectMapper mapper = new ObjectMapper();
 
     public MatchersApi(MatchersRegistry matchersRegistry) {
 
         this.matchersRegistry = matchersRegistry;
     }
-
-    ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public String getId() {

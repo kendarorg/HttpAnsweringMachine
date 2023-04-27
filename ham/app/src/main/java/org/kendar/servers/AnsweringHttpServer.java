@@ -21,8 +21,8 @@ public class AnsweringHttpServer implements AnsweringServer {
     private final AnsweringHandler handler;
     private final JsonConfiguration configuration;
     private final EventQueue eventQueue;
-    private boolean running = false;
     private final HashMap<String, HttpServer> httpServers = new HashMap<>();
+    private boolean running = false;
 
     public AnsweringHttpServer(
             LoggerBuilder loggerBuilder, AnsweringHandler handler, JsonConfiguration configuration, EventQueue eventQueue) {

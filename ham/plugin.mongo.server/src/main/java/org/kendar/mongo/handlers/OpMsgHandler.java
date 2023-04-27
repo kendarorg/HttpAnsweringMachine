@@ -25,7 +25,7 @@ public class OpMsgHandler implements MsgHandler {
     }
 
     @Override
-    public MongoPacket<?> handleMsg(int requestId,int responseTo,ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(int requestId, int responseTo, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
 
             var realPacket = new MsgPacket();
@@ -39,13 +39,13 @@ public class OpMsgHandler implements MsgHandler {
 
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
 
-            while (byteBuffer.position()<length) {
+            while (byteBuffer.position() < length) {
                 var remaining = length - byteBuffer.position();
-                if(remaining==4){
+                if (remaining == 4) {
                     realPacket.setChecksum(bsonInput.readInt32());
                     //Only checksum
                     break;
-                }else {
+                } else {
                     int payloadType = bsonInput.readByte();
                     //int payloadType2 = bsonInput.readByte();
                     if (payloadType == 0) {
@@ -62,14 +62,14 @@ public class OpMsgHandler implements MsgHandler {
 
                         pl.setLength(bsonInput.readInt32());
 
-                        var end = byteBuffer.position()+pl.getLength() - 4;
+                        var end = byteBuffer.position() + pl.getLength() - 4;
                         pl.setTitle(bsonInput.readCString());
 
-                        while(byteBuffer.position()<end) {
+                        while (byteBuffer.position() < end) {
                             BsonBinaryReader bsonReader = new BsonBinaryReader(bsonInput);
                             BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
                             BsonDocument document = documentCodec.decode(bsonReader, DecoderContext.builder().build());
-                            String json =  document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
+                            String json = document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
                             var doc = new MsgDocumentPayload();
                             doc.setJson(json);
                             pl.getDocuments().add(doc);
@@ -81,7 +81,7 @@ public class OpMsgHandler implements MsgHandler {
             }
             return realPacket;
         } catch (Exception e) {
-            throw new RuntimeException("Error decoding BSON message",e);
+            throw new RuntimeException("Error decoding BSON message", e);
         }
     }
 }

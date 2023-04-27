@@ -25,7 +25,7 @@ public class HamMongoServer {
     public HamMongoServer(List<MsgHandler> msgHandlers,
                           List<CompressionHandler> compressionHandlers,
                           LoggerBuilder loggerBuilder,
-                          EventQueue eventQueue){
+                          EventQueue eventQueue) {
 
         this.msgHandlers = msgHandlers;
         this.compressionHandlers = compressionHandlers;
@@ -34,14 +34,14 @@ public class HamMongoServer {
         this.eventQueue = eventQueue;
     }
 
-    public HamMongoServer clone(){
+    public HamMongoServer clone() {
         return new HamMongoServer(
-                msgHandlers,compressionHandlers,loggerBuilder,
+                msgHandlers, compressionHandlers, loggerBuilder,
                 eventQueue);
     }
 
-    public void run(int port,AnsweringMongoServer answeringMongoServer) throws IOException {
-        try(ServerSocket server = new ServerSocket(port)) {
+    public void run(int port, AnsweringMongoServer answeringMongoServer) throws IOException {
+        try (ServerSocket server = new ServerSocket(port)) {
             thisServer = server;
             logger.info("MongoDB server started on port " + port);
 
@@ -53,18 +53,18 @@ public class HamMongoServer {
                 Thread clientThread = new Thread(
                         new HamMongoClientHandler(client,
                                 msgHandlers, compressionHandlers, loggerBuilder,
-                                eventQueue,port));
+                                eventQueue, port));
                 clientThread.start();
             }
-        }catch (Exception ex){
-            logger.warn("Disconnected server "+port);
+        } catch (Exception ex) {
+            logger.warn("Disconnected server " + port);
         }
     }
 
     public void close() {
-        try{
+        try {
             thisServer.close();
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
     }

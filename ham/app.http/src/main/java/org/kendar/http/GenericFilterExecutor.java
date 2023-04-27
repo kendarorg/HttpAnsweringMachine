@@ -14,22 +14,10 @@ public abstract class GenericFilterExecutor {
     private final boolean typeBlocking;
 
     private final HttpFilterType phase;
-
-    private List<FilterMatcher> matchers = new ArrayList<>();
     private final Method callback;
     private final FilteringClass filterClass;
-
-    public abstract boolean run(Request request, Response response);
-
+    private List<FilterMatcher> matchers = new ArrayList<>();
     private String id;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public GenericFilterExecutor(int priority, boolean methodBlocking,
                                  boolean typeBlocking, HttpFilterType phase,
@@ -46,6 +34,16 @@ public abstract class GenericFilterExecutor {
         this.phase = phase;
         this.callback = callback;
         this.filterClass = filterClass;
+    }
+
+    public abstract boolean run(Request request, Response response);
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public int getPriority() {

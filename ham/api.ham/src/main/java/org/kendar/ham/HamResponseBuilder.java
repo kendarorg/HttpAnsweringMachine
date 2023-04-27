@@ -8,10 +8,10 @@ import java.io.InputStream;
 
 public class HamResponseBuilder {
 
+    private Response response;
+
     private HamResponseBuilder() {
     }
-
-    private Response response;
 
     public static HamResponseBuilder newResponse() {
         var result = new HamResponseBuilder();

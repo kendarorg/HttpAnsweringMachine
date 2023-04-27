@@ -84,7 +84,6 @@ class ProxyBuilderImpl implements ProxyBuilder, DbProxyBuilder {
     }
 
 
-
     @Override
     public DbProxyBuilder addRemoteDbProxy(String dbName, String login, String password, String dbDriver) throws HamException {
 
@@ -118,7 +117,7 @@ class ProxyBuilderImpl implements ProxyBuilder, DbProxyBuilder {
     @Override
     public Proxy retrieveProxy(String id) throws HamException {
         var request = hamBuilder.newRequest()
-                .withPath("/api/proxies/"+id);
+                .withPath("/api/proxies/" + id);
         return hamBuilder.callJson(request.build(), Proxy.class);
     }
 

@@ -13,13 +13,13 @@ public class Levenshtein {
                 .min().orElse(Integer.MAX_VALUE);
     }
 
-    public static int normalized(String x,String y,int maxValue){
+    public static int normalized(String x, String y, int maxValue) {
         var max = Math.max(x.length(), y.length());
         var res = Levenshtein.calculate(
-                x,y);
-        var real = (maxValue * res )/ max;
+                x, y);
+        var real = (maxValue * res) / max;
 
-        return (maxValue-real);
+        return (maxValue - real);
     }
 
     public static int calculate(String x, String y) {
@@ -29,11 +29,9 @@ public class Levenshtein {
             for (int j = 0; j <= y.length(); j++) {
                 if (i == 0) {
                     dp[i][j] = j;
-                }
-                else if (j == 0) {
+                } else if (j == 0) {
                     dp[i][j] = i;
-                }
-                else {
+                } else {
                     dp[i][j] = min(dp[i - 1][j - 1]
                                     + costOfSubstitution(x.charAt(i - 1), y.charAt(j - 1)),
                             dp[i - 1][j] + 1,

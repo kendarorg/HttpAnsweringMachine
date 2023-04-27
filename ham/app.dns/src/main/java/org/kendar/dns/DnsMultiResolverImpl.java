@@ -33,6 +33,8 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
     private final ConcurrentHashMap<String, HashSet<String>> localDomains = new ConcurrentHashMap<>();
     private final LoggerBuilder loggerBuilder;
     private PatternItem localDns;
+    private ThreeParamsFunction<String, String, LoggerBuilder, Callable<List<String>>> runnable = DnsRunnable::new;
+    private boolean cacheResponses = true;
 
     public DnsMultiResolverImpl(LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
         this.logger = loggerBuilder.build(DnsMultiResolverImpl.class);
@@ -314,14 +316,10 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
         return result;
     }
 
-    private ThreeParamsFunction<String, String, LoggerBuilder, Callable<List<String>>> runnable = DnsRunnable::new;
-
     @Override
     public void setRunnable(ThreeParamsFunction<String, String, LoggerBuilder, Callable<List<String>>> runnable) {
         this.runnable = runnable;
     }
-
-    private boolean cacheResponses = true;
 
     @Override
     public void noResponseCaching() {

@@ -24,6 +24,7 @@ public class AnsweringMongoServer implements AnsweringServer {
     private final EventQueue eventQueue;
     private final Logger logger;
     private final HamMongoServer hamMongoServer;
+    private final Map<Integer, HamMongoServer> activeServers = new ConcurrentHashMap<>();
     private boolean running = false;
 
     public AnsweringMongoServer(
@@ -43,7 +44,7 @@ public class AnsweringMongoServer implements AnsweringServer {
     }
 
     private void handleConfigChange(MongoConfigChanged t) {
-        for(var single : activeServers.values()){
+        for (var single : activeServers.values()) {
             single.close();
 
         }
@@ -53,29 +54,27 @@ public class AnsweringMongoServer implements AnsweringServer {
             running = false;
             return;
         }
-        try{
-            for(var single : config.getProxies()){
+        try {
+            for (var single : config.getProxies()) {
                 var ms = hamMongoServer.clone();
-                new Thread(()->{
+                new Thread(() -> {
                     try {
-                        ms.run(single.getExposedPort(),this);
+                        ms.run(single.getExposedPort(), this);
                     } catch (IOException e) {
 
                     }
                 }).start();
-                activeServers.put(single.getExposedPort(),ms);
+                activeServers.put(single.getExposedPort(), ms);
 
             }
-        }catch (Exception ex){
-            logger.error("Error restarting mongo",ex);
+        } catch (Exception ex) {
+            logger.error("Error restarting mongo", ex);
         }
     }
 
     public void isSystem() {
         //To check if is system class
     }
-
-    private final Map<Integer, HamMongoServer> activeServers = new ConcurrentHashMap<>();
 
     @Override
     public void run() {
@@ -87,20 +86,20 @@ public class AnsweringMongoServer implements AnsweringServer {
         try {
             activeServers.clear();
             eventQueue.handle(new ServiceStarted().withTye("mongo"));
-            for(var single : config.getProxies()){
+            for (var single : config.getProxies()) {
                 var ms = hamMongoServer.clone();
-                new Thread(()->{
+                new Thread(() -> {
                     try {
-                        ms.run(single.getExposedPort(),this);
+                        ms.run(single.getExposedPort(), this);
                     } catch (IOException e) {
 
                     }
                 }).start();
 
-                activeServers.put(single.getExposedPort(),ms);
+                activeServers.put(single.getExposedPort(), ms);
 
             }
-            while(running){
+            while (running) {
                 Sleeper.sleep(1000);
             }
             //TODO

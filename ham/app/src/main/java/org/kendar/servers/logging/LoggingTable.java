@@ -12,6 +12,26 @@ import java.sql.Timestamp;
 public class LoggingTable implements DbTable {
     @Column(name = "method")
     private String method;
+    @Column(name = "timestamp")
+    private Timestamp timestamp;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private long id;
+    @Column(name = "protocol")
+    private String protocol;
+    @Column(name = "host", length = 512)
+    private String host;
+    @Column(name = "path", length = 64000)
+    private String path;
+    @Column(name = "query", length = 64000)
+    private String query;
+    @Column(name = "contentType")
+    private String contentType;
+    @Column(name = "requestBody")
+    private boolean requestBody;
+    @Column(name = "responseBody")
+    private boolean responseBody;
 
     public Timestamp getTimestamp() {
         return timestamp;
@@ -20,9 +40,6 @@ public class LoggingTable implements DbTable {
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
-
-    @Column(name = "timestamp")
-    private Timestamp timestamp;
 
     public long getId() {
         return id;
@@ -88,31 +105,11 @@ public class LoggingTable implements DbTable {
         this.responseBody = responseBody;
     }
 
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private long id;
-    @Column(name = "protocol")
-    private String protocol;
-    @Column(name = "host", length = 512)
-    private String host;
-    @Column(name = "path", length = 64000)
-    private String path;
-    @Column(name = "query", length = 64000)
-    private String query;
-    @Column(name = "contentType")
-    private String contentType;
-    @Column(name = "requestBody")
-    private boolean requestBody;
-    @Column(name = "responseBody")
-    private boolean responseBody;
+    public String getMethod() {
+        return method;
+    }
 
     public void setMethod(String method) {
         this.method = method;
-    }
-
-    public String getMethod() {
-        return method;
     }
 }

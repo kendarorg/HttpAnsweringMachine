@@ -20,6 +20,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class RecordingDataset implements BaseDataset {
+    private static final Map<String, Long> staticRequests = new HashMap<>();
+    private static DbRecording recording;
     private final ConcurrentLinkedQueue<String> errors = new ConcurrentLinkedQueue<>();
     private final AtomicLong counter = new AtomicLong(0L);
     private final Md5Tester md5Tester;
@@ -29,6 +31,16 @@ public class RecordingDataset implements BaseDataset {
     private Long name;
     private String description;
     private Map<String, String> specialParams;
+
+    public RecordingDataset(
+            LoggerBuilder loggerBuilder,
+            Md5Tester md5Tester, HibernateSessionFactory sessionFactory,
+            List<ReplayerEngine> replayerEngines) {
+        this.md5Tester = md5Tester;
+        this.logger = loggerBuilder.build(RecordingDataset.class);
+        this.sessionFactory = sessionFactory;
+        this.replayerEngines = replayerEngines;
+    }
 
     public Long getName() {
         return this.name;
@@ -55,16 +67,6 @@ public class RecordingDataset implements BaseDataset {
 
     }
 
-    public RecordingDataset(
-            LoggerBuilder loggerBuilder,
-            Md5Tester md5Tester, HibernateSessionFactory sessionFactory,
-            List<ReplayerEngine> replayerEngines) {
-        this.md5Tester = md5Tester;
-        this.logger = loggerBuilder.build(RecordingDataset.class);
-        this.sessionFactory = sessionFactory;
-        this.replayerEngines = replayerEngines;
-    }
-
     public void save() throws Exception {
 //        for (int i = 0; i < replayerEngines.size(); i++) {
 //            var engine = replayerEngines.get(i);
@@ -73,9 +75,6 @@ public class RecordingDataset implements BaseDataset {
         staticRequests.clear();
         recording = null;
     }
-
-    private static final Map<String, Long> staticRequests = new HashMap<>();
-    private static DbRecording recording;
 
     public boolean add(Request req, Response res) throws Exception {
         if (name == null) {

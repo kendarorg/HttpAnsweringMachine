@@ -635,8 +635,8 @@ public class OidcController implements FilteringClass {
         final String redirect_uri;
         final User user;
         final String iss;
-        String scope;
         final String nonce;
+        String scope;
 
         public CodeInfo(
                 String codeChallenge,

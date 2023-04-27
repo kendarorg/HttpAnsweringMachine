@@ -58,13 +58,6 @@ public class SwaggerApi implements FilteringClass {
         this.enrichers = enrichers;
     }
 
-    class mt {
-        public String content;
-        public MediaType mediaType;
-        public String description;
-        public Map<String, Header> headers = new HashMap<>();
-    }
-
     @HttpMethodFilter(phase = HttpFilterType.API,
             pathAddress = "/api/swagger/map.json",
             method = "GET", id = "GET /api/swagger/map.json")
@@ -421,5 +414,12 @@ public class SwaggerApi implements FilteringClass {
     @Override
     public String getId() {
         return this.getClass().getName();
+    }
+
+    class mt {
+        public String content;
+        public MediaType mediaType;
+        public String description;
+        public Map<String, Header> headers = new HashMap<>();
     }
 }

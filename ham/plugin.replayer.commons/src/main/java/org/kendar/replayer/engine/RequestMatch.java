@@ -4,8 +4,17 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 
 public class RequestMatch {
+    private final Request originalReq;
+    private final Request foundedReq;
     private long callIndex;
     private long rowIndex;
+    private Response foundedRes;
+
+    public RequestMatch(Request originalReq, Request foundedReq, Response foundedRes) {
+        this.originalReq = originalReq;
+        this.foundedReq = foundedReq;
+        this.foundedRes = foundedRes;
+    }
 
     public long getCallIndex() {
         return callIndex;
@@ -23,19 +32,6 @@ public class RequestMatch {
         this.rowIndex = rowIndex;
     }
 
-    private final Request originalReq;
-    private final Request foundedReq;
-
-    public void setFoundedRes(Response foundedRes) {
-        this.foundedRes = foundedRes;
-    }
-
-    public RequestMatch(Request originalReq, Request foundedReq, Response foundedRes) {
-        this.originalReq = originalReq;
-        this.foundedReq = foundedReq;
-        this.foundedRes = foundedRes;
-    }
-
     public Request getOriginalReq() {
         return originalReq;
     }
@@ -48,5 +44,7 @@ public class RequestMatch {
         return foundedRes;
     }
 
-    private Response foundedRes;
+    public void setFoundedRes(Response foundedRes) {
+        this.foundedRes = foundedRes;
+    }
 }

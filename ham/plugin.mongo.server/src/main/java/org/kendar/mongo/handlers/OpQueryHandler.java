@@ -16,14 +16,14 @@ import org.kendar.mongo.model.QueryPacket;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OpQueryHandler implements MsgHandler{
+public class OpQueryHandler implements MsgHandler {
     @Override
     public OpCodes getOpCode() {
         return OpCodes.OP_QUERY;
     }
 
     @Override
-    public MongoPacket<?> handleMsg(int requestId,int responseTo,ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(int requestId, int responseTo, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
             var realPacket = new QueryPacket();
             realPacket.setPayload(packet.getPayload());
@@ -48,7 +48,7 @@ public class OpQueryHandler implements MsgHandler{
             realPacket.setJson(json);
             return realPacket;
         } catch (Exception e) {
-            throw new RuntimeException("Error decoding BSON query message ",e);
+            throw new RuntimeException("Error decoding BSON query message ", e);
         }
     }
 }

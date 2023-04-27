@@ -46,6 +46,8 @@ public class DbProxyApi implements FilteringClass {
     private final EventQueue eventQueue;
     private final ResultSetConverter resultSetConverter;
     private final ConcurrentHashMap<String, ServerData> janusEngines = new ConcurrentHashMap<>();
+    private final Object syncObject = new Object();
+    ObjectMapper mapper = new ObjectMapper();
 
     public DbProxyApi(JsonConfiguration configuration, EventQueue eventQueue, LoggerBuilder loggerBuilder,
                       PluginsInitializer pluginsInitializer, ResultSetConverter resultSetConverter) {
@@ -58,8 +60,6 @@ public class DbProxyApi implements FilteringClass {
         eventQueue.register(this::handleConfigChange, DbProxyConfigChanged.class);
         pluginsInitializer.addSpecialLogger(ProxyDb.class.getName(), "Basic db logging (DEBUG)");
     }
-
-    private final Object syncObject = new Object();
 
     private void handleConfigChange(DbProxyConfigChanged t) {
         synchronized (syncObject) {
@@ -135,8 +135,6 @@ public class DbProxyApi implements FilteringClass {
         }
         return simpleExecution(req, res);
     }
-
-    ObjectMapper mapper = new ObjectMapper();
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,

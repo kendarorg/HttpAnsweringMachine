@@ -7,70 +7,19 @@ import java.util.regex.Pattern;
 
 public class ApiMatcher implements FilterMatcher, PathMatcher, HostMatcher {
 
-    public ApiMatcher() {
-
-    }
-
+    private final PathSimpleMatcher pathSimpleMatchers = new PathSimpleMatcher();
+    private final PathRegexpMatcher pathMatchers = new PathRegexpMatcher();
     private String hostAddress;
     private String hostPattern;
     private String method;
     private Pattern hostPatternReal;
-
-    private final PathSimpleMatcher pathSimpleMatchers = new PathSimpleMatcher();
-    private final PathRegexpMatcher pathMatchers = new PathRegexpMatcher();
-
-    public Pattern getHostPatternReal() {
-        return hostPatternReal;
-    }
-
-    public Pattern getPathPatternReal() {
-        return pathPatternReal;
-    }
-
     private Pattern pathPatternReal;
-
-    public void setHostAddress(String hostAddress) {
-        this.hostAddress = hostAddress;
-    }
-
-    public void setHostPattern(String hostPattern) {
-        this.hostPattern = hostPattern;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
-    public void setPathPattern(String pathPattern) {
-        this.pathPattern = pathPattern;
-    }
-
-    public void setPathAddress(String pathAddress) {
-        this.pathAddress = pathAddress;
-    }
-
-    public String getHostAddress() {
-        return hostAddress;
-    }
-
-    public String getHostPattern() {
-        return hostPattern;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public String getPathPattern() {
-        return pathPattern;
-    }
-
-    public String getPathAddress() {
-        return pathAddress;
-    }
-
     private String pathPattern;
     private String pathAddress;
+
+    public ApiMatcher() {
+
+    }
 
     public ApiMatcher(String hostAddress, String hostPattern, String method, String pathPattern, String pathAddress) {
         this.hostAddress = hostAddress;
@@ -80,6 +29,53 @@ public class ApiMatcher implements FilterMatcher, PathMatcher, HostMatcher {
         this.pathAddress = pathAddress;
     }
 
+    public Pattern getHostPatternReal() {
+        return hostPatternReal;
+    }
+
+    public Pattern getPathPatternReal() {
+        return pathPatternReal;
+    }
+
+    public String getHostAddress() {
+        return hostAddress;
+    }
+
+    public void setHostAddress(String hostAddress) {
+        this.hostAddress = hostAddress;
+    }
+
+    public String getHostPattern() {
+        return hostPattern;
+    }
+
+    public void setHostPattern(String hostPattern) {
+        this.hostPattern = hostPattern;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public String getPathPattern() {
+        return pathPattern;
+    }
+
+    public void setPathPattern(String pathPattern) {
+        this.pathPattern = pathPattern;
+    }
+
+    public String getPathAddress() {
+        return pathAddress;
+    }
+
+    public void setPathAddress(String pathAddress) {
+        this.pathAddress = pathAddress;
+    }
 
     @Override
     public boolean matches(Request req) {

@@ -20,17 +20,16 @@ import org.springframework.stereotype.Component;
 public class ReplayerAPIActions implements FilteringClass {
 
     private final Logger logger;
-
-    @Override
-    public String getId() {
-        return "org.kendar.replayer.apis.ReplayerAPIActions";
-    }
-
     private final ReplayerStatus replayerStatus;
 
     public ReplayerAPIActions(ReplayerStatus replayerStatus, LoggerBuilder loggerBuilder) {
         this.replayerStatus = replayerStatus;
         this.logger = loggerBuilder.build(ReplayerAPIActions.class);
+    }
+
+    @Override
+    public String getId() {
+        return "org.kendar.replayer.apis.ReplayerAPIActions";
     }
 
     @HttpMethodFilter(phase = HttpFilterType.API,

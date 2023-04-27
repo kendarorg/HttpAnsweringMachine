@@ -11,6 +11,12 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "${global.localAddress}")
 public class MongoReplayerWeb extends StaticWebFilter {
 
+    public MongoReplayerWeb(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
+        super(fileResourcesUtils);
+        Logger logger = loggerBuilder.build(MongoReplayerWeb.class);
+        logger.info("Replayer server=Mongo Extension LOADED");
+    }
+
     @Override
     public String getDescription() {
         return "Replayer web=Mongo extension";
@@ -19,13 +25,6 @@ public class MongoReplayerWeb extends StaticWebFilter {
     @Override
     public String getAddress() {
         return null;
-    }
-
-
-    public MongoReplayerWeb(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
-        super(fileResourcesUtils);
-        Logger logger = loggerBuilder.build(MongoReplayerWeb.class);
-        logger.info("Replayer server=Mongo Extension LOADED");
     }
 
     @Override

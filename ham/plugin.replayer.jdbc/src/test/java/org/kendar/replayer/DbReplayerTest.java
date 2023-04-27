@@ -30,15 +30,14 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DbReplayerTest {
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
+    ObjectMapper mapper = new ObjectMapper();
+
     protected ObjectResult newObjectResult(Object val) {
         var result = new ObjectResult();
         result.setResult(val);
         return result;
     }
-
-    ObjectMapper mapper = new ObjectMapper();
-
-    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
 
     private ReplayerResult extractRecordingFromFile(FakeDbReplayer target, String path) throws IOException {
         var data = new String(getClass()

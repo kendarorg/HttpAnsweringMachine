@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class SettingsAPI implements FilteringClass {
+    static ObjectMapper mapper = new ObjectMapper();
     private final JsonConfiguration configuration;
     private final FullDownloadUploadService downloadUploadService;
 
@@ -70,6 +71,7 @@ public class SettingsAPI implements FilteringClass {
         res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.ZIP);
         res.setStatusCode(200);
     }
+    //curl -H "Content-Type:application/octet-stream" --data-binary "@full.zip" http://localhost/api/utils/settings/full
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,
@@ -85,9 +87,6 @@ public class SettingsAPI implements FilteringClass {
         downloadUploadService.uploadItems(req.getRequestBytes());
         res.setStatusCode(200);
     }
-    //curl -H "Content-Type:application/octet-stream" --data-binary "@full.zip" http://localhost/api/utils/settings/full
-
-    static ObjectMapper mapper = new ObjectMapper();
 
     @HttpMethodFilter(
             phase = HttpFilterType.API,

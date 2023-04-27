@@ -18,5 +18,6 @@ public interface JsFilterBuilder {
 
 
     JsFilterBuilder withApiMatcher(Consumer<ApiMatcherBuilder> matcher);
+
     JsFilterBuilder withScriptMatcher(Consumer<ScriptMatcherBuilder> matcher);
 }

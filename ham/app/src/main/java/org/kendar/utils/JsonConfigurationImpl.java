@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 
 @Component
 public class JsonConfigurationImpl implements JsonConfiguration {
+    private static final Object[] EMPTY_ARRAY = new Object[]{};
     private final ObjectMapper mapper = new ObjectMapper();
     private final ConcurrentHashMap<String, JsonNode> configurations = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, ParsedConfig> deserializedConfigurations =
             new ConcurrentHashMap<>();
-
     @SuppressWarnings("rawtypes")
     private final ConcurrentHashMap<Class, String> mappingStringClasses = new ConcurrentHashMap<>();
     private final EventQueue eventQueue;
@@ -67,8 +67,6 @@ public class JsonConfigurationImpl implements JsonConfiguration {
             return handleMissing(aClass);
         }
     }
-
-    private static final Object[] EMPTY_ARRAY = new Object[]{};
 
     private <T extends BaseJsonConfig> T handleMissing(Class<T> aClass) {
         logger.warn("Missing configuration {} going default", aClass.getName());
@@ -122,7 +120,7 @@ public class JsonConfigurationImpl implements JsonConfiguration {
             parsedConfig.deserialized = data;
             parsedConfig.timestamp = Calendar.getInstance().getTimeInMillis();
             deserializedConfigurations.put(sanitizedId, parsedConfig);
-            if(runnable!=null) {
+            if (runnable != null) {
                 runnable.run();
             }
             var evt = new ConfigChangedEvent();
@@ -203,6 +201,16 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     }
 
     @Override
+    public void setConfigurationAsString(String body) {
+        var filePath = Path.of(this.configurationPath);
+        try {
+            Files.writeString(filePath, body);
+        } catch (IOException e) {
+
+        }
+    }
+
+    @Override
     public String getValue(String varName) {
         var splitted = varName.split("\\.");
         var splittedIndex = 0;
@@ -222,16 +230,5 @@ public class JsonConfigurationImpl implements JsonConfiguration {
     static class ParsedConfig {
         private Object deserialized;
         private long timestamp;
-    }
-
-
-    @Override
-    public void setConfigurationAsString(String body) {
-        var filePath = Path.of(this.configurationPath);
-        try {
-            Files.writeString(filePath, body);
-        } catch (IOException e) {
-
-        }
     }
 }

@@ -16,6 +16,80 @@ public interface ProxyBuilder {
      */
     void removeDbProxy(String exposed) throws HamException;
 
+    /**
+     * Add a proxy
+     *
+     * @param when  the matching "address bar"
+     * @param where the when will be replaced with where
+     * @param test  the domain/domain:port that will be inspected to check. If it's running the proxy will be used
+     * @return the id of the added proxy
+     * @throws HamException
+     */
+    String addProxy(String when, String where, String test) throws HamException;
+
+    /**
+     * Add a proxy
+     *
+     * @param when  the matching "address bar"
+     * @param where the when will be replaced with where
+     * @param test  the domain/domain:port that will be inspected to check. If it's running the proxy will be used
+     * @return the id of the added proxy
+     * @throws HamException
+     */
+    String addForcedProxy(String when, String where, String test) throws HamException;
+
+    /**
+     * Retrieve proxy by id
+     *
+     * @param id
+     * @return
+     * @throws HamException
+     */
+    Proxy retrieveProxy(String id) throws HamException;
+
+    /**
+     * Add a db proxy, specify the db to be proxied
+     *
+     * @param connectionString
+     * @param login
+     * @param password
+     * @param dbDriver
+     * @return
+     * @throws HamException
+     */
+    DbProxyBuilder addRemoteDbProxy(String connectionString, String login, String password, String dbDriver) throws HamException;
+
+    /**
+     * Remove proxy by id
+     *
+     * @param id
+     * @throws HamException
+     */
+    void removeProxy(String id) throws HamException;
+
+    /**
+     * List all current proxies with their states
+     *
+     * @return
+     * @throws HamException
+     */
+    List<Proxy> retrieveProxies() throws HamException;
+
+    /**
+     * List all current db proxies
+     *
+     * @return
+     * @throws HamException
+     */
+    List<DbProxy> retrieveDbProxies() throws HamException;
+
+    /**
+     * Refresh proxy
+     *
+     * @throws HamException
+     */
+    void refresh() throws HamException;
+
     public class Proxy {
         private String id;
         private String when;
@@ -64,77 +138,4 @@ public interface ProxyBuilder {
             this.force = force;
         }
     }
-
-    /**
-     * Add a proxy
-     *
-     * @param when  the matching "address bar"
-     * @param where the when will be replaced with where
-     * @param test  the domain/domain:port that will be inspected to check. If it's running the proxy will be used
-     * @return the id of the added proxy
-     * @throws HamException
-     */
-    String addProxy(String when, String where, String test) throws HamException;
-
-    /**
-     * Add a proxy
-     *
-     * @param when  the matching "address bar"
-     * @param where the when will be replaced with where
-     * @param test  the domain/domain:port that will be inspected to check. If it's running the proxy will be used
-     * @return the id of the added proxy
-     * @throws HamException
-     */
-    String addForcedProxy(String when, String where, String test) throws HamException;
-
-    /**
-     * Retrieve proxy by id
-     * @param id
-     * @return
-     * @throws HamException
-     */
-    Proxy retrieveProxy(String id) throws HamException;
-
-    /**
-     * Add a db proxy, specify the db to be proxied
-     *
-     * @param dbName
-     * @param login
-     * @param password
-     * @param dbDriver
-     * @return
-     * @throws HamException
-     */
-    DbProxyBuilder addRemoteDbProxy(String connectionString, String login, String password, String dbDriver) throws HamException;
-
-    /**
-     * Remove proxy by id
-     *
-     * @param id
-     * @throws HamException
-     */
-    void removeProxy(String id) throws HamException;
-
-    /**
-     * List all current proxies with their states
-     *
-     * @return
-     * @throws HamException
-     */
-    List<Proxy> retrieveProxies() throws HamException;
-
-    /**
-     * List all current db proxies
-     *
-     * @return
-     * @throws HamException
-     */
-    List<DbProxy> retrieveDbProxies() throws HamException;
-
-    /**
-     * Refresh proxy
-     *
-     * @throws HamException
-     */
-    void refresh() throws HamException;
 }

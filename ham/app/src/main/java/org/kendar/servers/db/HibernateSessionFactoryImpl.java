@@ -11,10 +11,9 @@ import java.util.Optional;
 
 @Component
 public class HibernateSessionFactoryImpl implements HibernateSessionFactory {
-    private Configuration configuration;
-    private static SessionFactory sessionFactory;
-
     private static final Object syncObject = new Object();
+    private static SessionFactory sessionFactory;
+    private Configuration configuration;
 
     @Override
     public SessionFactory createSession() throws HibernateException {

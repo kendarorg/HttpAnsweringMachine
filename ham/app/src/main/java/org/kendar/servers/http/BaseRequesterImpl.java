@@ -35,12 +35,12 @@ public abstract class BaseRequesterImpl implements BaseRequester {
 
     private static final HttpRequestRetryHandler requestRetryHandler =
             (exception, executionCount, context) -> executionCount != 1;
-    private final Logger logger;
-    private PoolingHttpClientConnectionManager connManager;
-    private final RequestResponseBuilder requestResponseBuilder;
     protected final DnsMultiResolver multiResolver;
-    private final ConnectionBuilder connectionBuilder;
     protected final ConcurrentHashMap<String, ResolvedDomain> domains = new ConcurrentHashMap<>();
+    private final Logger logger;
+    private final RequestResponseBuilder requestResponseBuilder;
+    private final ConnectionBuilder connectionBuilder;
+    private PoolingHttpClientConnectionManager connManager;
     private SystemDefaultDnsResolver dnsResolver;
 
     public BaseRequesterImpl(RequestResponseBuilder requestResponseBuilder,

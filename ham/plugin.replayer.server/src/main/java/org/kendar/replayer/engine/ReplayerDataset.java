@@ -31,26 +31,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class ReplayerDataset implements BaseDataset {
-    protected Logger logger;
-    protected Md5Tester md5Tester;
-    protected HibernateSessionFactory sessionFactory;
-
+    protected final ObjectMapper mapper = new ObjectMapper();
+    protected final ConcurrentHashMap<Long, Object> states = new ConcurrentHashMap<>();
     private final EventQueue eventQueue;
     private final InternalRequester internalRequester;
     private final Cache cache;
     private final SimpleProxyHandler simpleProxyHandler;
-    private Long id;
     private final AtomicBoolean running = new AtomicBoolean(false);
     private final JsReplayerExecutor executor = new JsReplayerExecutor();
     private final List<ReplayerEngine> replayerEngines;
-
-    protected final ObjectMapper mapper = new ObjectMapper();
-
+    private final AtomicBoolean pause = new AtomicBoolean(false);
+    protected Logger logger;
+    protected Md5Tester md5Tester;
+    protected HibernateSessionFactory sessionFactory;
     protected Long name;
     protected String description;
-    protected final ConcurrentHashMap<Long, Object> states = new ConcurrentHashMap<>();
-
     protected ReplayerResult replayerResult;
+    private Long id;
     private Thread thread;
     private Map<String, String> params;
 
@@ -99,7 +96,6 @@ public class ReplayerDataset implements BaseDataset {
     public void setParams(Map<String, String> query) {
         this.params = query;
     }
-
 
     public Long start() throws Exception {
         var result = new TestResults();
@@ -229,7 +225,6 @@ public class ReplayerDataset implements BaseDataset {
         }
     }
 
-
     public RequestMatch findResponse(Request req) {
         try {
 
@@ -281,8 +276,6 @@ public class ReplayerDataset implements BaseDataset {
     public void restart() {
         pause.set(false);
     }
-
-    private final AtomicBoolean pause = new AtomicBoolean(false);
 
     public void pause() {
         pause.set(true);

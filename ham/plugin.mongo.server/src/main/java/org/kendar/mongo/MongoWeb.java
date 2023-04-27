@@ -11,6 +11,12 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "${global.localAddress}")
 public class MongoWeb extends StaticWebFilter {
 
+    public MongoWeb(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
+        super(fileResourcesUtils);
+        Logger logger = loggerBuilder.build(MongoWeb.class);
+        logger.info("Mongo server LOADED");
+    }
+
     @Override
     public String getDescription() {
         return "Mongo proxy";
@@ -19,13 +25,6 @@ public class MongoWeb extends StaticWebFilter {
     @Override
     public String getAddress() {
         return "plugins/mongo/index.html";
-    }
-
-
-    public MongoWeb(FileResourcesUtils fileResourcesUtils, LoggerBuilder loggerBuilder) {
-        super(fileResourcesUtils);
-        Logger logger = loggerBuilder.build(MongoWeb.class);
-        logger.info("Mongo server LOADED");
     }
 
     @Override

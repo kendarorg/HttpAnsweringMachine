@@ -6,7 +6,7 @@ import org.xerial.snappy.Snappy;
 import java.io.IOException;
 
 @Component
-public class SnappyCompressionHandler implements CompressionHandler{
+public class SnappyCompressionHandler implements CompressionHandler {
     @Override
     public byte[] decompress(byte[] bb) {
         try {

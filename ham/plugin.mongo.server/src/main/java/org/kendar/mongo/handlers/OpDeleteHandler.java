@@ -16,14 +16,14 @@ import org.kendar.mongo.model.MongoPacket;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OpDeleteHandler implements MsgHandler{
+public class OpDeleteHandler implements MsgHandler {
     @Override
     public OpCodes getOpCode() {
         return OpCodes.OP_DELETE;
     }
 
     @Override
-    public MongoPacket<?> handleMsg(int requestId,int responseTo,ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(int requestId, int responseTo, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
             //System.out.println("======HANDLE DELETE");
             bsonInput.readInt32(); // skip ZERO
@@ -46,7 +46,7 @@ public class OpDeleteHandler implements MsgHandler{
             //System.out.println("Delete JSON: " + selectorJson);
             return packet;
         } catch (Exception e) {
-            throw new RuntimeException("Error decoding BSON delete message",e);
+            throw new RuntimeException("Error decoding BSON delete message", e);
         }
     }
 }

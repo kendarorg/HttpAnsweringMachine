@@ -36,6 +36,8 @@ import static java.lang.System.exit;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 public class Main implements CommandLineRunner {
     private static final int MAX_THREADS = 10;
+    public static AtomicBoolean doRun = new AtomicBoolean(true);
+    private static Runnable shutdownHook;
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -48,10 +50,6 @@ public class Main implements CommandLineRunner {
         int exitCode = SpringApplication.exit(ctx, () -> 0);
         exit(exitCode);
     }
-
-
-    public static AtomicBoolean doRun = new AtomicBoolean(true);
-    private static Runnable shutdownHook;
 
     public static void shutdown() {
         shutdownHook.run();

@@ -33,7 +33,19 @@ public class MongoReplayer implements ReplayerEngine {
     private final Logger logger;
     private final String localAddress;
     private final JsonConfiguration configuration;
+    private final AtomicInteger responseRequestId = new AtomicInteger(1);
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final ConcurrentHashMap<String, String> connectionIds = new ConcurrentHashMap<>();
     private long name;
+    private boolean hasRows = false;
+
+    public MongoReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
+        this.sessionFactory = sessionFactory;
+        this.logger = loggerBuilder.build(MongoReplayer.class);
+        this.localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
+        this.configuration = configuration;
+    }
 
     public ReplayerEngine create(LoggerBuilder loggerBuilder) {
         var es = new MongoReplayer(sessionFactory, loggerBuilder, configuration);
@@ -173,13 +185,6 @@ public class MongoReplayer implements ReplayerEngine {
 
     }
 
-    public MongoReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
-        this.sessionFactory = sessionFactory;
-        this.logger = loggerBuilder.build(MongoReplayer.class);
-        this.localAddress = configuration.getConfiguration(GlobalConfig.class).getLocalAddress();
-        this.configuration = configuration;
-    }
-
     @Override
     public String getId() {
         return "mongo";
@@ -190,8 +195,6 @@ public class MongoReplayer implements ReplayerEngine {
         this.name = recordingId;
         if (!hasHttpRows(recordingId)) return;
     }
-
-    private boolean hasRows = false;
 
     private boolean hasHttpRows(Long recordingId) throws Exception {
         hasRows = (Long) sessionFactory.queryResult(e -> {
@@ -204,43 +207,39 @@ public class MongoReplayer implements ReplayerEngine {
         return hasRows;
     }
 
-    private final AtomicInteger responseRequestId = new AtomicInteger(1);
-
-    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
-    private final ObjectMapper mapper = new ObjectMapper();
     @Override
     public RequestMatch findRequestMatch(Request req, String contentHash, Map<String, String> params) throws Exception {
 
         if (!hasRows) return null;
         var foundedRes = findRequestMatch(req, contentHash, false);
 
-        if(foundedRes!=null){
+        if (foundedRes != null) {
             var founded = foundedRes.getFoundedRes();
             var receivedDeserializer = serializer.newInstance();
             receivedDeserializer.deserialize(req.getRequestText());
             var receivedDeserialized = receivedDeserializer.read("data");
 
-            var skipPrint = "ismaster".equalsIgnoreCase(req.getPathParameter("operation"))||
+            var skipPrint = "ismaster".equalsIgnoreCase(req.getPathParameter("operation")) ||
                     "hello".equalsIgnoreCase(req.getPathParameter("operation"));
-            if(!skipPrint) {
+            if (!skipPrint) {
                 logger.debug(mapper.writeValueAsString(receivedDeserialized));
             }
-            if(ClassUtils.isAssignable(receivedDeserialized.getClass(), MongoReqResPacket.class)){
+            if (ClassUtils.isAssignable(receivedDeserialized.getClass(), MongoReqResPacket.class)) {
                 var toSendSerializer = serializer.newInstance();
                 toSendSerializer.deserialize(founded.getResponseText());
                 var toSendDeserialized = toSendSerializer.read("data");
-                if(ClassUtils.isAssignable(toSendDeserialized.getClass(), MongoReqResPacket.class)){
-                    var tss = (MongoReqResPacket)toSendDeserialized;
-                    var rcv = (MongoReqResPacket)receivedDeserialized;
+                if (ClassUtils.isAssignable(toSendDeserialized.getClass(), MongoReqResPacket.class)) {
+                    var tss = (MongoReqResPacket) toSendDeserialized;
+                    var rcv = (MongoReqResPacket) receivedDeserialized;
                     tss.setResponseTo(rcv.getRequestId());
                     tss.setRequestId(responseRequestId.incrementAndGet());
                     toSendSerializer = serializer.newInstance();
-                    toSendSerializer.write("data",tss);
-                    if(!skipPrint) {
+                    toSendSerializer.write("data", tss);
+                    if (!skipPrint) {
                         logger.debug(mapper.writeValueAsString(tss));
                     }
                     var responseReal = founded.copy();
-                    responseReal.setResponseText((String)toSendSerializer.getSerialized());
+                    responseReal.setResponseText((String) toSendSerializer.getSerialized());
                     foundedRes.setFoundedRes(responseReal);
                 }
             }
@@ -249,21 +248,18 @@ public class MongoReplayer implements ReplayerEngine {
         return foundedRes;
     }
 
-    private final ConcurrentHashMap<String,String> connectionIds = new ConcurrentHashMap<>();
-
-
     private RequestMatch findRequestMatch4(Request sreq, String contentHash, boolean staticRequest) throws Exception {
         var matchingQuery = -10000;
         ReplayerRow founded = null;
         var staticRequests = new ArrayList<ReplayerRow>();
         var sreqPath = sreq.getPath();
-        if(!sreqPath.startsWith("http://127.0.0.1/api/mongo"))return null;
+        if (!sreqPath.startsWith("http://127.0.0.1/api/mongo")) return null;
 
         var connectionId = sreq.getHeader("X-CONNECTION-ID");
         String internalFlowId = null;
-        if(connectionId!=null && connectionIds.containsKey(connectionId) &&
+        if (connectionId != null && connectionIds.containsKey(connectionId) &&
                 !sreqPath.toLowerCase().endsWith("/ismaster")) {
-            internalFlowId=connectionIds.get(connectionId);
+            internalFlowId = connectionIds.get(connectionId);
         }
 
 
@@ -277,17 +273,17 @@ public class MongoReplayer implements ReplayerEngine {
                     " AND e.path=:path" +
                     " AND e.host=:host" +
                     " ORDER BY e.id ASC ");
-            if(sreqPath.toLowerCase().endsWith("/ismaster")){
+            if (sreqPath.toLowerCase().endsWith("/ismaster")) {
                 query.setMaxResults(1);
             }
             query.setParameter("sr", staticRequest);
             query.setParameter("recordingId", name);
             query.setParameter("path", sreq.getPath());
             query.setParameter("host", sreq.getHost());
-            var res = (List<ReplayerRow>)query.getResultList().stream().collect(Collectors.toList());
+            var res = (List<ReplayerRow>) query.getResultList().stream().collect(Collectors.toList());
             for (var rr : res) {
                 em.detach(rr);
-                if(states.containsKey(rr.getId()))continue;
+                if (states.containsKey(rr.getId())) continue;
                 staticRequests.add(rr);
             }
         });
@@ -332,7 +328,7 @@ public class MongoReplayer implements ReplayerEngine {
                         matchedQuery += 20;
                     } else {
                         if (!rreq.isBinaryRequest()) {
-                            if(rreq.getRequestText().length()==sreq.getRequestText().length()) {
+                            if (rreq.getRequestText().length() == sreq.getRequestText().length()) {
                                 matchedQuery += Math.abs(Levenshtein.normalized(
                                         rreq.getRequestText(),
                                         sreq.getRequestText(), 20));
@@ -342,8 +338,8 @@ public class MongoReplayer implements ReplayerEngine {
                 }
 
                 var rreqConnectionId = rreq.getHeader("X-CONNECTION-ID");
-                if(internalFlowId!=null && rreqConnectionId !=null && rreqConnectionId.equalsIgnoreCase(internalFlowId)){
-                    matchedQuery+=20;
+                if (internalFlowId != null && rreqConnectionId != null && rreqConnectionId.equalsIgnoreCase(internalFlowId)) {
+                    matchedQuery += 20;
                 }
                 //matchedQuery += matchQuery(rreq.getQuery(), sreq.getQuery());
                 if (matchedQuery > matchingQuery) {
@@ -351,24 +347,24 @@ public class MongoReplayer implements ReplayerEngine {
                     founded = row;
                 }
             }
-        }catch (Exception ex){
-            logger.error("error",ex);
+        } catch (Exception ex) {
+            logger.error("error", ex);
         }
 
 
         if (founded != null) {
-            if(!sreqPath.toLowerCase().endsWith("/ismaster")) {
+            if (!sreqPath.toLowerCase().endsWith("/ismaster")) {
                 states.put(founded.getId(), "");
             }
         } else {
             return null;
         }
 
-        if(connectionId!=null && internalFlowId==null && !sreqPath.toLowerCase().endsWith("/ismaster")){
-            connectionIds.put(connectionId,founded.getRequest().getHeader("X-CONNECTION-ID"));
+        if (connectionId != null && internalFlowId == null && !sreqPath.toLowerCase().endsWith("/ismaster")) {
+            connectionIds.put(connectionId, founded.getRequest().getHeader("X-CONNECTION-ID"));
         }
 
-        return new RequestMatch(sreq,founded.getRequest(),founded.getResponse());
+        return new RequestMatch(sreq, founded.getRequest(), founded.getResponse());
     }
 
     private int matchQuery(Map<String, String> left, Map<String, String> right) {
@@ -395,7 +391,7 @@ public class MongoReplayer implements ReplayerEngine {
         ReplayerRow founded = null;
         var staticRequests = new ArrayList<ReplayerRow>();
         var sreqPath = sreq.getPath();
-        if(!sreqPath.startsWith("/api/mongo"))return null;
+        if (!sreqPath.startsWith("/api/mongo")) return null;
 
         var connectionId = sreq.getHeader("X-CONNECTION-ID");
 
@@ -407,15 +403,15 @@ public class MongoReplayer implements ReplayerEngine {
                     " AND e.recordingId=:recordingId" +
                     " AND e.path=:path" +
                     " ORDER BY e.id ASC ");
-            if(sreqPath.toLowerCase().endsWith("/ismaster")){
+            if (sreqPath.toLowerCase().endsWith("/ismaster")) {
                 query.setMaxResults(1);
             }
             query.setParameter("recordingId", name);
             query.setParameter("path", sreq.getPath());
-            var res = (List<ReplayerRow>)query.getResultList().stream().collect(Collectors.toList());
+            var res = (List<ReplayerRow>) query.getResultList().stream().collect(Collectors.toList());
             for (var rr : res) {
                 em.detach(rr);
-                if(states.containsKey(rr.getId()))continue;
+                if (states.containsKey(rr.getId())) continue;
                 staticRequests.add(rr);
             }
         });
@@ -460,7 +456,7 @@ public class MongoReplayer implements ReplayerEngine {
                         matchedQuery += 20;
                     } else {
                         if (!rreq.isBinaryRequest()) {
-                            if(rreq.getRequestText().length()==sreq.getRequestText().length()) {
+                            if (rreq.getRequestText().length() == sreq.getRequestText().length()) {
                                 matchedQuery += Math.abs(Levenshtein.normalized(
                                         rreq.getRequestText(),
                                         sreq.getRequestText(), 20));
@@ -471,7 +467,7 @@ public class MongoReplayer implements ReplayerEngine {
 
                 var rreqConnectionId = rreq.getHeader("X-CONNECTION-ID");
                 //if(internalFlowId!=null && rreqConnectionId !=null && rreqConnectionId.equalsIgnoreCase(internalFlowId)){
-                 //   matchedQuery+=20;
+                //   matchedQuery+=20;
                 //}
                 //matchedQuery += matchQuery(rreq.getQuery(), sreq.getQuery());
                 if (matchedQuery > matchingQuery) {
@@ -479,12 +475,12 @@ public class MongoReplayer implements ReplayerEngine {
                     founded = row;
                 }
             }
-        }catch (Exception ex){
-            logger.error("error:",ex);
+        } catch (Exception ex) {
+            logger.error("error:", ex);
         }
 
         if (founded != null) {
-            if(!sreqPath.toLowerCase().endsWith("/ismaster")) {
+            if (!sreqPath.toLowerCase().endsWith("/ismaster")) {
                 states.put(founded.getId(), "");
             }
         } else {
@@ -492,7 +488,7 @@ public class MongoReplayer implements ReplayerEngine {
         }
 
 
-        return new RequestMatch(sreq,founded.getRequest(),founded.getResponse());
+        return new RequestMatch(sreq, founded.getRequest(), founded.getResponse());
     }
 
 }

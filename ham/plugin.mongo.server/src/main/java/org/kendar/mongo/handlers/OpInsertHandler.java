@@ -16,14 +16,14 @@ import org.kendar.mongo.model.MongoPacket;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OpInsertHandler implements MsgHandler{
+public class OpInsertHandler implements MsgHandler {
     @Override
     public OpCodes getOpCode() {
         return OpCodes.OP_INSERT;
     }
 
     @Override
-    public MongoPacket<?> handleMsg(int requestId,int responseTo,ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(int requestId, int responseTo, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         //System.out.println("======HANDLE INSERT");
         int flagBits = bsonInput.readInt32();
         String fullCollectionName = bsonInput.readCString();
@@ -38,7 +38,7 @@ public class OpInsertHandler implements MsgHandler{
 
         while (byteBuffer.hasRemaining()) {
             BsonDocument document = documentCodec.decode(bsonReader, DecoderContext.builder().build());
-            String json =  document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
+            String json = document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
             //System.out.println("Insert JSON: " + json);
         }
         return packet;

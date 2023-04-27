@@ -51,7 +51,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class HamBuilder implements HamInternalBuilder {
+    private static final HashMap<String, Function<HamInternalBuilder, Object>> pluginBuilders = new HashMap<>();
     static ObjectMapper mapper;
+    private static Path certificatePath;
 
     static {
         mapper = new ObjectMapper();
@@ -65,7 +67,7 @@ public class HamBuilder implements HamInternalBuilder {
     private int dnsPort;
     private int proxyPort;
     private String proxyIp;
-    private boolean proxyHttp =false;
+    private boolean proxyHttp = false;
 
     private HamBuilder() {
     }
@@ -80,14 +82,24 @@ public class HamBuilder implements HamInternalBuilder {
         return result;
     }
 
-    private static final HashMap<String, Function<HamInternalBuilder, Object>> pluginBuilders = new HashMap<>();
+    public static String updateMethod(Optional val) {
+        return val.isPresent() ? "PUT" : "POST";
+    }
 
+    public static String pathId(String path, Optional val, Supplier<String> idSupplier) {
+        return path + (val.isPresent() ? "/" + idSupplier.get() : "");
+    }
+
+    public static void queryId(Request request, Optional val, String name, Supplier<String> idSupplier) {
+        if (val.isPresent()) {
+            request.addQuery(name, idSupplier.get());
+        }
+    }
 
     public HamBasicBuilder withPort(int port) {
         this.port = port;
         return this;
     }
-
 
     @Override
     public HamBasicBuilder withDns(String ip, int port) {
@@ -100,7 +112,7 @@ public class HamBuilder implements HamInternalBuilder {
     public HamBasicBuilder withSocksProxy(String ip, int port) {
         this.proxyIp = ip;
         this.proxyPort = port;
-        this.proxyHttp=false;
+        this.proxyHttp = false;
         return this;
     }
 
@@ -133,7 +145,6 @@ public class HamBuilder implements HamInternalBuilder {
         return result;
     }
 
-
     public Response expectCode(Response response, int code, Supplier<String> getExceptionMessage) throws HamException {
         if (response.getStatusCode() != code) {
             throw new HamException(getExceptionMessage.get());
@@ -146,20 +157,6 @@ public class HamBuilder implements HamInternalBuilder {
             throw new HamException(getExceptionMessage);
         }
         return response;
-    }
-
-    public static String updateMethod(Optional val) {
-        return val.isPresent() ? "PUT" : "POST";
-    }
-
-    public static String pathId(String path, Optional val, Supplier<String> idSupplier) {
-        return path + (val.isPresent() ? "/" + idSupplier.get() : "");
-    }
-
-    public static void queryId(Request request, Optional val, String name, Supplier<String> idSupplier) {
-        if (val.isPresent()) {
-            request.addQuery(name, idSupplier.get());
-        }
     }
 
     public CertificatesBuilder certificates() {
@@ -193,7 +190,6 @@ public class HamBuilder implements HamInternalBuilder {
 
         return (T) pluginBuilders.get(clazz.getName().toLowerCase(Locale.ROOT)).apply(this);
     }
-
 
     public <T> T callJson(Request request, Class<T> clazz) throws HamException {
         try {
@@ -233,8 +229,8 @@ public class HamBuilder implements HamInternalBuilder {
             SSLConnectionSocketFactory ssfs = null;
 
             if (this.proxyIp != null) {
-                if(this.proxyHttp){
-                    HttpHost socksaddr = new HttpHost(this.proxyIp, this.proxyPort,"http");
+                if (this.proxyHttp) {
+                    HttpHost socksaddr = new HttpHost(this.proxyIp, this.proxyPort, "http");
                     var routePlanner = new DefaultProxyRoutePlanner(socksaddr);
                     HttpClientBuilder custom = getHttpClientBuilder(ignoreSSLCertificates, dnsResolver);
                     custom.setRoutePlanner(routePlanner);
@@ -244,7 +240,7 @@ public class HamBuilder implements HamInternalBuilder {
                     HttpClientContext context = HttpClientContext.create();
                     //context.setAttribute("http.route.default-proxy", socksaddr);
                     return httpclient.execute(request, context);
-                }else {
+                } else {
                     HttpClientBuilder custom = getHttpClientBuilder(ignoreSSLCertificates, dnsResolver);
 
                     CloseableHttpClient httpclient = custom.build();
@@ -363,31 +359,6 @@ public class HamBuilder implements HamInternalBuilder {
         return dnsResolver;
     }
 
-
-    /**
-     * https://stackoverflow.com/questions/2642777/trusting-all-certificates-using-httpclient-over-https
-     */
-    static class MyConnectionSocketFactory extends SSLConnectionSocketFactory {
-
-        public MyConnectionSocketFactory(final SSLContext sslContext) {
-            super(sslContext);
-        }
-
-        public MyConnectionSocketFactory(SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-            super(sslContext, hostnameVerifier);
-        }
-
-        @Override
-        public Socket createSocket(final HttpContext context) throws IOException {
-            InetSocketAddress socksaddr = (InetSocketAddress) context.getAttribute("socks.address");
-            Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
-            return new Socket(proxy);
-        }
-
-    }
-
-    private static Path certificatePath;
-
     public Response call(Request request) throws HamException {
        /* try {
             if (certificatePath == null) {
@@ -440,5 +411,27 @@ public class HamBuilder implements HamInternalBuilder {
             return protocol + "://" + host;
         }
         return protocol + "://" + host + ":" + port.toString();
+    }
+
+    /**
+     * https://stackoverflow.com/questions/2642777/trusting-all-certificates-using-httpclient-over-https
+     */
+    static class MyConnectionSocketFactory extends SSLConnectionSocketFactory {
+
+        public MyConnectionSocketFactory(final SSLContext sslContext) {
+            super(sslContext);
+        }
+
+        public MyConnectionSocketFactory(SSLContext sslContext, HostnameVerifier hostnameVerifier) {
+            super(sslContext, hostnameVerifier);
+        }
+
+        @Override
+        public Socket createSocket(final HttpContext context) throws IOException {
+            InetSocketAddress socksaddr = (InetSocketAddress) context.getAttribute("socks.address");
+            Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
+            return new Socket(proxy);
+        }
+
     }
 }

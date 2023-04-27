@@ -13,6 +13,23 @@ import java.util.Date;
 @Entity
 @Table(name = "REPLAYER_RESULT")
 public class TestResults implements DbTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "isoDate")
+    private String isoDate;
+    @Column(name = "recordingId")
+    private Long recordingId;
+    @Column(name = "timestamp")
+    private Timestamp timestamp;
+    @Column(name = "duration")
+    private long duration;
+    @Column(name = "errors", length = 64000)
+    private String errors;
+    @Column(name = "type")
+    private String type;
+
     public Long getId() {
         return id;
     }
@@ -28,30 +45,6 @@ public class TestResults implements DbTable {
     public void setErrors(String errors) {
         this.errors = errors;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
-
-    @Column(name = "isoDate")
-    private String isoDate;
-
-    @Column(name = "recordingId")
-    private Long recordingId;
-
-    @Column(name = "timestamp")
-    private Timestamp timestamp;
-
-    @Column(name = "duration")
-    private long duration;
-
-    @Column(name = "errors", length = 64000)
-    private String errors;
-
-    @Column(name = "type")
-    private String type;
 
     public Long getRecordingId() {
         return recordingId;

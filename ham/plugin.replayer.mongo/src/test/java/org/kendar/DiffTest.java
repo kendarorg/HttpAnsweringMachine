@@ -7,7 +7,7 @@ public class DiffTest {
 
 
     @Test
-    void testLevenshtein(){
+    void testLevenshtein() {
         var delta = Levenshtein.calculate(
                 "c'era una volta una capretta",
                 "era una una bella capretta");
@@ -28,35 +28,35 @@ public class DiffTest {
 
 
     @Test
-    void testNormalizedLevenshtein(){
+    void testNormalizedLevenshtein() {
         var delta = Levenshtein.normalized(
                 "c'era una volta una capretta",
-                "era una una bella capretta",100);
+                "era una una bella capretta", 100);
         System.out.println(delta);
 
         delta = Levenshtein.normalized(
                 "c'era una una bella capretta",
-                "c'era una volta una capretta",100
+                "c'era una volta una capretta", 100
         );
         System.out.println(delta);
 
         delta = Levenshtein.normalized(
                 "c'era una una bella capretta",
-                "c'era una una bella capretta",100
+                "c'era una una bella capretta", 100
         );
         System.out.println(delta);
         delta = Levenshtein.normalized(
                 "xxxx",
-                "c'era una una bella capretta",100
+                "c'era una una bella capretta", 100
         );
         System.out.println(delta);
     }
 
     @Test
-    void testNormalizedLevenshteinNone(){
+    void testNormalizedLevenshteinNone() {
         var delta = Levenshtein.normalized(
                 "xxxx",
-                "c'era una una bella capretta",100
+                "c'era una una bella capretta", 100
         );
         System.out.println(delta);
     }

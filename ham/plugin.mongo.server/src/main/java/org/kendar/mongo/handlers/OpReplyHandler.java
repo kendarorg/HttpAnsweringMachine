@@ -16,14 +16,14 @@ import org.kendar.mongo.model.ReplyPacket;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OpReplyHandler implements MsgHandler{
+public class OpReplyHandler implements MsgHandler {
     @Override
     public OpCodes getOpCode() {
         return OpCodes.OP_REPLY;
     }
 
     @Override
-    public MongoPacket<?> handleMsg(int requestId,int responseTo,ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
+    public MongoPacket<?> handleMsg(int requestId, int responseTo, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet, int length) {
         try {
 
             int responseFlags = bsonInput.readInt32();
@@ -45,17 +45,16 @@ public class OpReplyHandler implements MsgHandler{
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
 
 
-
             for (int i = 0; i < numberReturned; i++) {
                 BsonDocumentCodec documentCodec = new BsonDocumentCodec(codecRegistry);
                 BsonBinaryReader bsonReader = new BsonBinaryReader(bsonInput);
                 BsonDocument document = documentCodec.decode(bsonReader, DecoderContext.builder().build());
-                String json =  document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
+                String json = document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build());
                 replyPacket.getJsons().add(json);
             }
             return replyPacket;
         } catch (Exception e) {
-            throw new RuntimeException("Error decoding BSON reply message",e);
+            throw new RuntimeException("Error decoding BSON reply message", e);
         }
     }
 }

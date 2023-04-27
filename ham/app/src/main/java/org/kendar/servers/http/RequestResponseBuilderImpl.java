@@ -22,16 +22,14 @@ import java.util.zip.GZIPInputStream;
 @Component
 public class RequestResponseBuilderImpl implements RequestResponseBuilder {
 
-    private static Logger logger;
-
-    public RequestResponseBuilderImpl(LoggerBuilder loggerBuilder) {
-        this.logger = loggerBuilder.build(RequestResponseBuilderImpl.class);
-    }
-
     private static final String H_SOAP_ACTION = "SOAPAction";
     private static final String H_AUTHORIZATION = "Authorization";
     private static final String BASIC_AUTH_MARKER = "basic";
     private static final String BASIC_AUTH_SEPARATOR = ":";
+    private static Logger logger;
+    public RequestResponseBuilderImpl(LoggerBuilder loggerBuilder) {
+        this.logger = loggerBuilder.build(RequestResponseBuilderImpl.class);
+    }
 
     private static void setupRequestHost(HttpExchange exchange, Request result) {
         result.setHost(exchange.getRequestURI().getHost());

@@ -22,6 +22,9 @@ import java.util.stream.Collectors;
 @Component
 public class SingleRequestGenerator {
     private final ObjectMapper mapper = new ObjectMapper();
+    private final String[] bodyMethod = new String[]{
+            "post", "put", "patch"
+    };
 
     public SingleRequestGenerator(FileResourcesUtils fileResourcesUtils) {
 
@@ -155,7 +158,6 @@ public class SingleRequestGenerator {
 
     }
 
-
     private void retrieveTheData(SpecialStringBuilder a, String recordingId, CallIndex line, ReplayerRow row, String pack) {
         a
                 .add("int statusCode = httpResponse.getStatusLine().getStatusCode();")
@@ -172,10 +174,6 @@ public class SingleRequestGenerator {
                     .add("String result = IOUtils.toString(in, StandardCharsets.UTF_8);");
         }
     }
-
-    private final String[] bodyMethod = new String[]{
-            "post", "put", "patch"
-    };
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void makeTheCall(SpecialStringBuilder a, String recordingId, CallIndex line, ReplayerRow row, String pack) {

@@ -33,14 +33,9 @@ import java.util.stream.Collectors;
 
 public abstract class MongoClientHandler implements Runnable {
 
-    public void close() {
-        try {
-            client.close();
-        } catch (Exception e) {
-
-        }
-    }
-
+    private static final AtomicLong connectionCounter = new AtomicLong(1);
+    private static final AtomicLong requestCounter = new AtomicLong(1);
+    private static final ObjectMapper mapper = new ObjectMapper();
     private final Socket client;
     private final Logger logClient;
     private final Logger logServer;
@@ -75,6 +70,46 @@ public abstract class MongoClientHandler implements Runnable {
         return true;
     }
 
+    public static long getRequestCounter() {
+        return requestCounter.incrementAndGet();
+    }
+
+    private static String cleanUp(MongoPacket packet) {
+        var ser = mapper.valueToTree(packet);
+        ((ObjectNode) ser).remove("payload");
+        ((ObjectNode) ser).remove("header");
+
+        try {
+            return mapper.writeValueAsString(ser);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static byte[] buildHeader(int fullSize, int requestId, int responseTo, OpCodes originalOpCode) {
+        ByteBuffer responseBuffer = ByteBuffer.allocate(16);
+        responseBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        responseBuffer.putInt(fullSize); // messageLength
+        responseBuffer.putInt(requestId); // requestID
+        responseBuffer.putInt(responseTo); // responseTo
+        responseBuffer.putInt(originalOpCode.getValue()); // OP_REPLY
+        responseBuffer.flip();
+        responseBuffer.position(0);
+        return responseBuffer.array();
+    }
+
+    private static ByteBuf byteBufNIOcreate(byte[] headerBytes, ByteOrder byteOrder) {
+        var bb = ByteBuffer.wrap(headerBytes).order(byteOrder);
+        return new ByteBufNIO(bb);
+    }
+
+    public void close() {
+        try {
+            client.close();
+        } catch (Exception e) {
+
+        }
+    }
 
     //https://gist.github.com/rozza/9c94808ed5b4f1edca75
     @Override
@@ -99,28 +134,6 @@ public abstract class MongoClientHandler implements Runnable {
         }
     }
 
-    private static final AtomicLong connectionCounter = new AtomicLong(1);
-
-    public static long getRequestCounter() {
-        return requestCounter.incrementAndGet();
-    }
-
-    private static final AtomicLong requestCounter = new AtomicLong(1);
-
-    private static String cleanUp(MongoPacket packet) {
-        var ser = mapper.valueToTree(packet);
-        ((ObjectNode) ser).remove("payload");
-        ((ObjectNode) ser).remove("header");
-
-        try {
-            return mapper.writeValueAsString(ser);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static final ObjectMapper mapper = new ObjectMapper();
-
     private void processClient(Socket serverSocket) throws IOException {
         try (InputStream fromClient = serverSocket.getInputStream();
              OutputStream toClient = serverSocket.getOutputStream()) {
@@ -131,11 +144,11 @@ public abstract class MongoClientHandler implements Runnable {
             byte[] headerBytes = new byte[16];
 
             while (true) {
-                int max=10000;
+                int max = 10000;
                 if (!readBytes(fromClient, headerBytes)) {
                     Sleeper.sleep(100);
-                    max-=(100+serverSocket.getSoTimeout());
-                    if(max<0){
+                    max -= (100 + serverSocket.getSoTimeout());
+                    if (max < 0) {
                         close();
                         return;
                     }
@@ -146,7 +159,7 @@ public abstract class MongoClientHandler implements Runnable {
                 var clientPacket = readPacketsFromStream(fromClient, headerBytes);
                 OpGeneralResponse generalResponse = mongoRoundTrip(clientPacket, connectionId);
 
-                if(logClient.isDebugEnabled()) {
+                if (logClient.isDebugEnabled()) {
                     logClient.debug(cleanUp(clientPacket));
                     logClient.debug("===================");
                     logServer.debug(cleanUp(generalResponse.getResult()));
@@ -169,7 +182,6 @@ public abstract class MongoClientHandler implements Runnable {
 
         }
     }
-
 
     public abstract OpGeneralResponse mongoRoundTrip(MongoPacket clientPacket, long connectionId);
 
@@ -240,19 +252,6 @@ public abstract class MongoClientHandler implements Runnable {
         return cpacket;
     }
 
-
-    private static byte[] buildHeader(int fullSize, int requestId, int responseTo, OpCodes originalOpCode) {
-        ByteBuffer responseBuffer = ByteBuffer.allocate(16);
-        responseBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        responseBuffer.putInt(fullSize); // messageLength
-        responseBuffer.putInt(requestId); // requestID
-        responseBuffer.putInt(responseTo); // responseTo
-        responseBuffer.putInt(originalOpCode.getValue()); // OP_REPLY
-        responseBuffer.flip();
-        responseBuffer.position(0);
-        return responseBuffer.array();
-    }
-
     // Implement this method to decompress the remaining bytes using the appropriate compressor (e.g., Snappy, Zlib, etc.)
     private byte[] decompress(ByteBufferBsonInput bsonInput, byte compressorId, int compressedLength) throws IOException {
         var bb = new byte[compressedLength];
@@ -262,11 +261,6 @@ public abstract class MongoClientHandler implements Runnable {
             System.err.println("Unknow compression " + compressorId);
         }
         return compressor.decompress(bb);
-    }
-
-    private static ByteBuf byteBufNIOcreate(byte[] headerBytes, ByteOrder byteOrder) {
-        var bb = ByteBuffer.wrap(headerBytes).order(byteOrder);
-        return new ByteBufNIO(bb);
     }
 
     private MongoPacket<?> handleOpCode(int requestId, int responseTo, OpCodes opCode, ByteBufferBsonInput bsonInput, ByteBuf byteBuffer, MongoPacket packet,

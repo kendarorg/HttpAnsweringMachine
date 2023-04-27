@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
-public class MongoProxyApi  implements FilteringClass {
+public class MongoProxyApi implements FilteringClass {
     final ObjectMapper mapper = new ObjectMapper();
     private final JsonConfiguration configuration;
     private final EventQueue eventQueue;
@@ -43,7 +43,7 @@ public class MongoProxyApi  implements FilteringClass {
         this.configuration = configuration;
         this.eventQueue = eventQueue;
     }
-    
+
     @Override
     public String getId() {
         return this.getClass().getName();
@@ -102,13 +102,13 @@ public class MongoProxyApi  implements FilteringClass {
         res.setStatusCode(404);
     }
 
-    private void testConnection(MongoProxy item)  {
+    private void testConnection(MongoProxy item) {
         try (MongoClient mongoClient = MongoClients.create(item.getRemote().getConnectionString())) {
             MongoDatabase database = mongoClient.getDatabase("admin");
 
-                // Send a ping to confirm a successful connection
-                Bson command = new BsonDocument("ping", new BsonInt64(1));
-                Document commandResult = database.runCommand(command);
+            // Send a ping to confirm a successful connection
+            Bson command = new BsonDocument("ping", new BsonInt64(1));
+            Document commandResult = database.runCommand(command);
         }
     }
 

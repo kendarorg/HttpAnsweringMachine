@@ -3,6 +3,7 @@ package org.kendar.replayer.apis.models;
 public class CloneRecording {
     private String id;
     private String name;
+    private String newname;
 
     public String getId() {
         return id;
@@ -27,6 +28,4 @@ public class CloneRecording {
     public void setNewname(String newname) {
         this.newname = newname;
     }
-
-    private String newname;
 }

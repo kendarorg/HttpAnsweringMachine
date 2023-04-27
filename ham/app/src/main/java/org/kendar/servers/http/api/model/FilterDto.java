@@ -14,8 +14,8 @@ public class FilterDto {
     private final String pathPattern;
     private final HttpFilterType phase;
     private final boolean blocking;
-    private boolean enabled;
     private final String id;
+    private boolean enabled;
 
     public FilterDto(boolean enabled, HttpTypeFilter type, HttpMethodFilter method, String filterClass) {
         this.enabled = enabled;

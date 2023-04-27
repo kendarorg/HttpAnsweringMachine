@@ -16,19 +16,14 @@ public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
     private String type = "body";
     private Matcher matcher;
     private String matcherType;
-
+    private FilterPhase phase;
+    private boolean blocking = false;
+    private String source;
     JsFilterBuilderImpl(HamInternalBuilder hamBuilder, String name) {
 
         this.hamBuilder = hamBuilder;
         this.name = name;
     }
-
-
-    private FilterPhase phase;
-    private boolean blocking = false;
-    private String source;
-
-
 
     @Override
     public JsFilterBuilder inPhase(FilterPhase method) {
@@ -37,15 +32,11 @@ public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
     }
 
 
-
-
-
     @Override
     public JsFilterBuilder withType(ScriptType type) {
         this.type = type.toString();
         return this;
     }
-
 
 
     @Override
