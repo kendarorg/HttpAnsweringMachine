@@ -3,7 +3,7 @@ package org.kendar.cucumber;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.github.bonigarcia.wdm.managers.ChromeDriverManager;
-import org.kendar.utils.Sleeper;
+import org.kendar.globaltest.Sleeper;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Proxy;

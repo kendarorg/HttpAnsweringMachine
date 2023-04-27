@@ -2,7 +2,7 @@ package org.kendar.cucumber;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
-import org.kendar.utils.Sleeper;
+import org.kendar.globaltest.Sleeper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
