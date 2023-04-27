@@ -43,8 +43,8 @@ public class JsFilterLoader implements CustomFiltersLoader {
     private final JsonConfiguration configuration;
     private final EventQueue eventQueue;
     private final ExternalRequester externalRequester;
-    private HibernateSessionFactory sessionFactory;
-    private MatchersRegistry matchersRegistry;
+    private final HibernateSessionFactory sessionFactory;
+    private final MatchersRegistry matchersRegistry;
     private final Environment environment;
     private final Logger logger;
     private final LoggerBuilder loggerBuilder;
@@ -99,7 +99,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
         return result;
     }
 
-    private static TypeReference<HashMap<String, String>> typeRef
+    private static final TypeReference<HashMap<String, String>> typeRef
             = new TypeReference<HashMap<String, String>>() {
     };
 

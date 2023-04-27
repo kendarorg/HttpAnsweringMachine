@@ -52,7 +52,7 @@ public class LocalRecording implements HamReplayerRecorderStop, HamReplayerWait 
         return name;
     }
 
-    private static TypeReference<HashMap<String, String>> typeRef
+    private static final TypeReference<HashMap<String, String>> typeRef
             = new TypeReference<>() {
     };
 
@@ -71,7 +71,7 @@ public class LocalRecording implements HamReplayerRecorderStop, HamReplayerWait 
         return this;
     }
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     LocalRecording init(HamReplayerRecorderBuilderImpl builder) throws HamException {
         this.builder = builder;

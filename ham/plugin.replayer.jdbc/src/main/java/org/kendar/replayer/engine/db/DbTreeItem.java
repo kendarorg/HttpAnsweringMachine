@@ -27,13 +27,13 @@ public class DbTreeItem {
 
     }
 
-    private List<DbRow> targets = new ArrayList<>();
+    private final List<DbRow> targets = new ArrayList<>();
 
     public List<DbTreeItem> getChildren() {
         return children;
     }
 
-    private List<DbTreeItem> children = new ArrayList<>();
+    private final List<DbTreeItem> children = new ArrayList<>();
 
     public void addChild(DbTreeItem item) {
         item.setParent(this);

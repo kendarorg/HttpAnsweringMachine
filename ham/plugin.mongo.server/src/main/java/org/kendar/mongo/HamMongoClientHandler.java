@@ -23,10 +23,10 @@ import java.net.Socket;
 import java.util.*;
 
 public class HamMongoClientHandler extends MongoClientHandler {
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
     private final String connectionId;
-    private EventQueue eventQueue;
-    private int localPort;
+    private final EventQueue eventQueue;
+    private final int localPort;
 
     private final JsonTypedSerializer serializer;
     private long longConnectionId;

@@ -15,7 +15,7 @@ import java.io.IOException;
 @Component
 public class AnsweringDnsServer implements AnsweringServer {
     private final JsonConfiguration configuration;
-    private EventQueue eventQueue;
+    private final EventQueue eventQueue;
     private final Logger logger;
     private final DnsServer dnsServer;
     private boolean running = false;

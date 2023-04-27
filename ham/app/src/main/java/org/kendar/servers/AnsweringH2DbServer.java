@@ -26,9 +26,9 @@ public class AnsweringH2DbServer implements AnsweringServer {
     private final Logger logger;
     private final AnsweringHandler handler;
     private final JsonConfiguration configuration;
-    private List<DbTable> dbTableList;
-    private HibernateSessionFactory sessionFactory;
-    private EventQueue eventQueue;
+    private final List<DbTable> dbTableList;
+    private final HibernateSessionFactory sessionFactory;
+    private final EventQueue eventQueue;
 
     private boolean running = false;
     private boolean initialized = false;

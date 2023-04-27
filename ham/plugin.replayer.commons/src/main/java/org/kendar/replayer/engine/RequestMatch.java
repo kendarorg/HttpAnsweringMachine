@@ -23,8 +23,8 @@ public class RequestMatch {
         this.rowIndex = rowIndex;
     }
 
-    private Request originalReq;
-    private Request foundedReq;
+    private final Request originalReq;
+    private final Request foundedReq;
 
     public void setFoundedRes(Response foundedRes) {
         this.foundedRes = foundedRes;

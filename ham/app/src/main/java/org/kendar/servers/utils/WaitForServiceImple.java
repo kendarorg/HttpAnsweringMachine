@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class WaitForServiceImple implements WaitForService {
-    private ConcurrentHashMap<String, String> services = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, String> services = new ConcurrentHashMap<>();
 
     public WaitForServiceImple(EventQueue eventQueue) {
         eventQueue.register(this::handleServiceStarted, ServiceStarted.class);

@@ -19,8 +19,8 @@ import java.util.zip.ZipOutputStream;
 
 @Component
 public class CurlGenerator implements SelectedGenerator{
-    private ObjectMapper mapper = new ObjectMapper();
-    private HibernateSessionFactory sessionFactory;
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final HibernateSessionFactory sessionFactory;
 
     public CurlGenerator(HibernateSessionFactory sessionFactory){
 

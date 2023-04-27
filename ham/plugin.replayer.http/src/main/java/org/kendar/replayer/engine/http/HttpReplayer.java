@@ -26,8 +26,8 @@ public class HttpReplayer implements ReplayerEngine {
 
     private final HibernateSessionFactory sessionFactory;
     private final Logger logger;
-    private String localAddress;
-    private JsonConfiguration configuration;
+    private final String localAddress;
+    private final JsonConfiguration configuration;
     private long name;
 
     public ReplayerEngine create(LoggerBuilder loggerBuilder) {

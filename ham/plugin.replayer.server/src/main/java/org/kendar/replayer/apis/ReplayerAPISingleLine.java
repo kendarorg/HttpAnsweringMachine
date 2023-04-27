@@ -30,7 +30,7 @@ public class ReplayerAPISingleLine implements FilteringClass {
     private final LoggerBuilder loggerBuilder;
     final ObjectMapper mapper = new ObjectMapper();
     private final Md5Tester md5Tester;
-    private HibernateSessionFactory sessionFactory;
+    private final HibernateSessionFactory sessionFactory;
 
     public ReplayerAPISingleLine(
             FileResourcesUtils fileResourcesUtils,

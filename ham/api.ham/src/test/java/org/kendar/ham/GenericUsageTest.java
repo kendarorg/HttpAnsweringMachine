@@ -77,7 +77,7 @@ public class GenericUsageTest {
         return parameters;
     }
     private static HttpServer server;
-    private static HamBuilder hamBuilder = (HamBuilder)GlobalSettings.builder();
+    private static final HamBuilder hamBuilder = (HamBuilder)GlobalSettings.builder();
     //private static HamBuilder hamBuilderHttpProxy = (HamBuilder)GlobalSettings.builderHttpProxy();
 
     @BeforeAll
@@ -105,7 +105,7 @@ public class GenericUsageTest {
                 .proxies().removeProxy(proxyHttps);
         server.stop(0);
     }
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
     private static HttpServer getHttpServer(int gatewayPort) throws HamTestException {
         var server = LocalHttpServer.startServer(gatewayPort,
                 handleStandardBodyPost(),

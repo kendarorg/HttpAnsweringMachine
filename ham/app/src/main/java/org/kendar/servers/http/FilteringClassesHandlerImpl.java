@@ -21,7 +21,7 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
     private final Environment environment;
     private final FilterConfig filtersConfiguration;
     private final Logger logger;
-    private WaitForService waitForService;
+    private final WaitForService waitForService;
 
     public FilteringClassesHandlerImpl(
             List<CustomFiltersLoader> customFilterLoaders,

@@ -14,7 +14,7 @@ import java.util.function.Function;
 @Component
 public class QueryMatcher implements FilterMatcher {
 
-    private static JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private static final JsonTypedSerializer serializer = new JsonTypedSerializer();
     private String dbName;
     private String sql;
 

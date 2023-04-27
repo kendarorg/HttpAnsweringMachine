@@ -11,7 +11,7 @@ import static org.kendar.ham.HamBuilder.updateMethod;
 
 class DnsBuilderImpl implements DnsBuilder {
 
-    private HamBuilder hamBuilder;
+    private final HamBuilder hamBuilder;
     private ArrayList<ResolvedNames> toAddDnsAndOrTls;
     private boolean generateDns;
     private boolean generateTls;

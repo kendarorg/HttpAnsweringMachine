@@ -31,8 +31,8 @@ public class MongoReplayer implements ReplayerEngine {
 
     private final HibernateSessionFactory sessionFactory;
     private final Logger logger;
-    private String localAddress;
-    private JsonConfiguration configuration;
+    private final String localAddress;
+    private final JsonConfiguration configuration;
     private long name;
 
     public ReplayerEngine create(LoggerBuilder loggerBuilder) {
@@ -204,7 +204,7 @@ public class MongoReplayer implements ReplayerEngine {
         return hasRows;
     }
 
-    private AtomicInteger responseRequestId = new AtomicInteger(1);
+    private final AtomicInteger responseRequestId = new AtomicInteger(1);
 
     private final JsonTypedSerializer serializer = new JsonTypedSerializer();
     private final ObjectMapper mapper = new ObjectMapper();
@@ -249,7 +249,7 @@ public class MongoReplayer implements ReplayerEngine {
         return foundedRes;
     }
 
-    private ConcurrentHashMap<String,String> connectionIds = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,String> connectionIds = new ConcurrentHashMap<>();
 
 
     private RequestMatch findRequestMatch4(Request sreq, String contentHash, boolean staticRequest) throws Exception {

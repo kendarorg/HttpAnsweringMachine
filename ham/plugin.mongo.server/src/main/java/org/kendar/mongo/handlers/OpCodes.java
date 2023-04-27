@@ -12,7 +12,7 @@ public enum OpCodes {
     OP_UPDATE(2001),
     OP_INSERT(2002),
     OP_DELETE(2006);
-    private int value;
+    private final int value;
     private static final Map<Integer, OpCodes> BY_INT = new HashMap<>();
     static {
         for (OpCodes e: values()) {

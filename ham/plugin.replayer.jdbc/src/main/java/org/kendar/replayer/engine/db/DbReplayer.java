@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class DbReplayer implements ReplayerEngine {
 
 
-    private SqlSimulator simulator = new SqlSimulator();
+    private final SqlSimulator simulator = new SqlSimulator();
     private boolean useSimEngine;
 
     @Override
@@ -108,9 +108,9 @@ public class DbReplayer implements ReplayerEngine {
     }
 
 
-    private HibernateSessionFactory sessionFactory;
-    private Map<String, List<DbRow>> straightDatabase = new HashMap<>();
-    private JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private final HibernateSessionFactory sessionFactory;
+    private final Map<String, List<DbRow>> straightDatabase = new HashMap<>();
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
 
     public void loadDb(Long recordingId) throws Exception {
 
@@ -197,9 +197,9 @@ public class DbReplayer implements ReplayerEngine {
         }
     }
 
-    private Map<Long, Long> connectionShadow = new HashMap<>();
-    private Map<Long, List<DbTreeItem>> connectionRealPath = new HashMap<>();
-    private AtomicLong atomicLong = new AtomicLong(Long.MAX_VALUE);
+    private final Map<Long, Long> connectionShadow = new HashMap<>();
+    private final Map<Long, List<DbTreeItem>> connectionRealPath = new HashMap<>();
+    private final AtomicLong atomicLong = new AtomicLong(Long.MAX_VALUE);
 
     @Override
     public RequestMatch findRequestMatch(Request req, String contentHash, Map<String, String> specialParams) throws Exception {

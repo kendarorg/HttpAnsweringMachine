@@ -10,7 +10,7 @@ import static org.kendar.ham.HamBuilder.pathId;
 import static org.kendar.ham.HamBuilder.updateMethod;
 
 class ProxyBuilderImpl implements ProxyBuilder, DbProxyBuilder {
-    private HamBuilder hamBuilder;
+    private final HamBuilder hamBuilder;
     private DbProxy dbProxy;
 
     public ProxyBuilderImpl(HamBuilder hamBuilder) {

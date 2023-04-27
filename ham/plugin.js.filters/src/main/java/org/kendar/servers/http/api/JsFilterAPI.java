@@ -42,7 +42,7 @@ public class JsFilterAPI implements FilteringClass {
     private final Logger logger;
     private final FileResourcesUtils fileResourcesUtils;
     private final EventQueue eventQueue;
-    private HibernateSessionFactory sessionFactory;
+    private final HibernateSessionFactory sessionFactory;
     final ObjectMapper mapper = new ObjectMapper();
 
     public JsFilterAPI(JsonConfiguration configuration,

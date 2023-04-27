@@ -22,11 +22,11 @@ public class ListAllRecordList {
 
     private DbRecording recording;
 
-    private static TypeReference<HashMap<String, String>> typeRef
+    private static final TypeReference<HashMap<String, String>> typeRef
             = new TypeReference<>() {
     };
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     public ListAllRecordList(HibernateSessionFactory sessionFactory, Long id, boolean cleanJs) throws Exception {
 

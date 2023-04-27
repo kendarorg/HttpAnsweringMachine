@@ -34,8 +34,8 @@ public class ReplayerAPIScripts implements FilteringClass {
     private final LoggerBuilder loggerBuilder;
     final ObjectMapper mapper = new ObjectMapper();
     private final Md5Tester md5Tester;
-    private List<ReplayerEngine> engineList;
-    private HibernateSessionFactory sessionFactory;
+    private final List<ReplayerEngine> engineList;
+    private final HibernateSessionFactory sessionFactory;
 
     public ReplayerAPIScripts(
             FileResourcesUtils fileResourcesUtils,

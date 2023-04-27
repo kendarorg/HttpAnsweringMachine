@@ -42,13 +42,13 @@ public class ReplayerAPICrud implements FilteringClass {
     private final Logger logger;
     private final ReplayerStatus replayerStatus;
     private final Md5Tester md5Tester;
-    private HibernateSessionFactory sessionFactory;
-    private List<ReplayerEngine> replayerEngines;
+    private final HibernateSessionFactory sessionFactory;
+    private final List<ReplayerEngine> replayerEngines;
 
     private final FileResourcesUtils fileResourcesUtils;
     private final LoggerBuilder loggerBuilder;
 
-    private static TypeReference<HashMap<String, String>> typeRef
+    private static final TypeReference<HashMap<String, String>> typeRef
             = new TypeReference<>() {
     };
 

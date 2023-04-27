@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 
 public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    private HamInternalBuilder hamBuilder;
-    private String name;
+    private final HamInternalBuilder hamBuilder;
+    private final String name;
     private String type = "body";
     private Matcher matcher;
     private String matcherType;

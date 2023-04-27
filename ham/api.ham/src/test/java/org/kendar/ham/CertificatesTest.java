@@ -13,7 +13,7 @@ public class CertificatesTest {
         HamStarter.runHamJar(CertificatesTest.class);
     }
 
-    private HamBasicBuilder hamBuilder = GlobalSettings.builder();
+    private final HamBasicBuilder hamBuilder = GlobalSettings.builder();
 
     @Test
     public void testAddingCertificate() throws HamException, InterruptedException {

@@ -22,7 +22,7 @@ import java.util.HashMap;
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class RemoteAPI implements FilteringClass {
     ObjectMapper mapper = new ObjectMapper();
-    private EventQueue eventQueue;
+    private final EventQueue eventQueue;
 
     public RemoteAPI(EventQueue eventQueue) {
 

@@ -45,8 +45,8 @@ public abstract class MongoClientHandler implements Runnable {
     private final Logger logClient;
     private final Logger logServer;
     private final long connectionId;
-    private Map<OpCodes, MsgHandler> msgHandlers;
-    private Map<Integer, CompressionHandler> compressionHandlers;
+    private final Map<OpCodes, MsgHandler> msgHandlers;
+    private final Map<Integer, CompressionHandler> compressionHandlers;
 
 
     public MongoClientHandler(Socket client, List<MsgHandler> msgHandlers,
@@ -99,13 +99,13 @@ public abstract class MongoClientHandler implements Runnable {
         }
     }
 
-    private static AtomicLong connectionCounter = new AtomicLong(1);
+    private static final AtomicLong connectionCounter = new AtomicLong(1);
 
     public static long getRequestCounter() {
         return requestCounter.incrementAndGet();
     }
 
-    private static AtomicLong requestCounter = new AtomicLong(1);
+    private static final AtomicLong requestCounter = new AtomicLong(1);
 
     private static String cleanUp(MongoPacket packet) {
         var ser = mapper.valueToTree(packet);
@@ -119,7 +119,7 @@ public abstract class MongoClientHandler implements Runnable {
         }
     }
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     private void processClient(Socket serverSocket) throws IOException {
         try (InputStream fromClient = serverSocket.getInputStream();

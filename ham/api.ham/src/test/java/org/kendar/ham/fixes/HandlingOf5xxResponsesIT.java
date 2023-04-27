@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class HandlingOf5xxResponsesIT {
-    private static HamBuilder hamBuilder = (HamBuilder) GlobalSettings.builder();
+    private static final HamBuilder hamBuilder = (HamBuilder) GlobalSettings.builder();
     private static String proxyId;
     private static HttpServer server;
 

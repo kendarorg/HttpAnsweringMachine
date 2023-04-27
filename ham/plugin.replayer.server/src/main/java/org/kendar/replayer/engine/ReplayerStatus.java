@@ -38,10 +38,10 @@ public class ReplayerStatus {
     private final InternalRequester internalRequester;
     private final SimpleProxyHandler simpleProxyHandler;
     private final String localAddress;
-    private HibernateSessionFactory sessionFactory;
-    private List<ReplayerEngine> replayerEngines;
+    private final HibernateSessionFactory sessionFactory;
+    private final List<ReplayerEngine> replayerEngines;
     private BaseDataset dataset;
-    private AtomicReference<ReplayerState> state = new AtomicReference<>(ReplayerState.NONE);
+    private final AtomicReference<ReplayerState> state = new AtomicReference<>(ReplayerState.NONE);
     private Map<String, String> query;
 //    private boolean recordDbCalls;
 //    private boolean recordVoidDbCalls;

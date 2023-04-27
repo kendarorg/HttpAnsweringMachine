@@ -47,7 +47,7 @@ public class FilterDescriptor {
 
     private HamDoc doc;
     private Method callback;
-    private List<String> pathMatchers = new ArrayList<>();
+    private final List<String> pathMatchers = new ArrayList<>();
     private String id;
 
     public FilterDescriptor(

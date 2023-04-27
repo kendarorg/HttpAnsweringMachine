@@ -42,10 +42,10 @@ public class DbProxyApi implements FilteringClass {
     private final JsonTypedSerializer serializer;
     private final Logger logger;
     private final Logger specialLogger;
-    private JsonConfiguration configuration;
-    private EventQueue eventQueue;
-    private ResultSetConverter resultSetConverter;
-    private ConcurrentHashMap<String, ServerData> janusEngines = new ConcurrentHashMap<>();
+    private final JsonConfiguration configuration;
+    private final EventQueue eventQueue;
+    private final ResultSetConverter resultSetConverter;
+    private final ConcurrentHashMap<String, ServerData> janusEngines = new ConcurrentHashMap<>();
 
     public DbProxyApi(JsonConfiguration configuration, EventQueue eventQueue, LoggerBuilder loggerBuilder,
                       PluginsInitializer pluginsInitializer, ResultSetConverter resultSetConverter) {
@@ -59,7 +59,7 @@ public class DbProxyApi implements FilteringClass {
         pluginsInitializer.addSpecialLogger(ProxyDb.class.getName(), "Basic db logging (DEBUG)");
     }
 
-    private Object syncObject = new Object();
+    private final Object syncObject = new Object();
 
     private void handleConfigChange(DbProxyConfigChanged t) {
         synchronized (syncObject) {

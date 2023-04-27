@@ -71,9 +71,9 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
         public boolean lastStatus;
     }
 
-    private ConcurrentHashMap<String, ProxyPollTiming> pollTiming = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ProxyPollTiming> pollTiming = new ConcurrentHashMap<>();
 
-    private AtomicBoolean running = new AtomicBoolean(false);
+    private final AtomicBoolean running = new AtomicBoolean(false);
 
     private void verifyProxyConfiguration() {
         if (running.get()) return;

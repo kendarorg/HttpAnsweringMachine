@@ -80,7 +80,7 @@ public class HamBuilder implements HamInternalBuilder {
         return result;
     }
 
-    private static HashMap<String, Function<HamInternalBuilder, Object>> pluginBuilders = new HashMap<>();
+    private static final HashMap<String, Function<HamInternalBuilder, Object>> pluginBuilders = new HashMap<>();
 
 
     public HamBasicBuilder withPort(int port) {

@@ -6,7 +6,7 @@ import org.kendar.replayer.storage.ReplayerRow;
 
 public class DbRow {
     private final String initiator;
-    private long connectionId;
+    private final long connectionId;
 
     public long getConnectionId() {
         return connectionId;

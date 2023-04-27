@@ -4,7 +4,7 @@ public enum ScriptType {
     SCRIPT("script"),
     BODY("body");
 
-    private String text;
+    private final String text;
 
     ScriptType(String text) {
 

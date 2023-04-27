@@ -30,7 +30,7 @@ public class FileLogsApi implements FilteringClass {
     final ObjectMapper mapper = new ObjectMapper();
     private final JsonConfiguration configuration;
     private final LoggerBuilder loggerBuilder;
-    private HibernateSessionFactory sessionFactory;
+    private final HibernateSessionFactory sessionFactory;
 
     public FileLogsApi(JsonConfiguration configuration,
                        LoggerBuilder loggerBuilder,

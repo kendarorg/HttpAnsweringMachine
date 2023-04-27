@@ -13,7 +13,7 @@ public class DnsTest {
         HamStarter.runHamJar(DnsTest.class);
     }
 
-    private HamBasicBuilder hamBuilder = GlobalSettings.builder();
+    private final HamBasicBuilder hamBuilder = GlobalSettings.builder();
 
     @Test
     public void testAddingDnsFix() throws HamException {

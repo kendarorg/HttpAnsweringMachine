@@ -19,7 +19,7 @@ import java.util.function.Function;
 @Component
 public class ScriptMatcher implements FilterMatcher, PathMatcher, HostMatcher {
 
-    private PathSimpleMatcher pathSimpleMatchers = new PathSimpleMatcher();
+    private final PathSimpleMatcher pathSimpleMatchers = new PathSimpleMatcher();
 
     private String pathAddress;
     private String hostAddress;

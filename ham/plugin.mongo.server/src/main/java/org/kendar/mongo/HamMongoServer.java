@@ -16,10 +16,10 @@ import java.util.List;
 public class HamMongoServer {
     public static final int DEFAULT_PORT = 27017;
     private final Logger logger;
-    private EventQueue eventQueue;
-    private List<MsgHandler> msgHandlers;
-    private List<CompressionHandler> compressionHandlers;
-    private LoggerBuilder loggerBuilder;
+    private final EventQueue eventQueue;
+    private final List<MsgHandler> msgHandlers;
+    private final List<CompressionHandler> compressionHandlers;
+    private final LoggerBuilder loggerBuilder;
     private ServerSocket thisServer;
 
     public HamMongoServer(List<MsgHandler> msgHandlers,

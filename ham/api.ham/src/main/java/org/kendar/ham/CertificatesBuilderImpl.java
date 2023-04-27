@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class CertificatesBuilderImpl implements CertificatesBuilder {
-    private HamBuilder hamBuilder;
+    private final HamBuilder hamBuilder;
 
     public CertificatesBuilderImpl(HamBuilder hamBuilder) {
         this.hamBuilder = hamBuilder;

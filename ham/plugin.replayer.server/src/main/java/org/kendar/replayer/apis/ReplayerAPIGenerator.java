@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class ReplayerAPIGenerator implements FilteringClass {
 
     final ObjectMapper mapper = new ObjectMapper();
-    private List<SelectedGenerator> generators;
+    private final List<SelectedGenerator> generators;
 
     public ReplayerAPIGenerator(
             List<SelectedGenerator> generators,

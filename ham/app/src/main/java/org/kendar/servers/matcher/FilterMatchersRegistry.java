@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class FilterMatchersRegistry implements MatchersRegistry {
-    private Map<String, Class<?>> matcherList = new HashMap<>();
+    private final Map<String, Class<?>> matcherList = new HashMap<>();
 
     public FilterMatchersRegistry(List<FilterMatcher> matcherList) {
 

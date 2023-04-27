@@ -19,7 +19,7 @@ public class OpQueryResponder implements MongoResponder{
         return OpCodes.OP_QUERY;
     }
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     private String getDb(QueryPacket msgPacket)
     {

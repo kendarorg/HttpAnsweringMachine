@@ -20,8 +20,8 @@ import java.util.Map;
 public class JsonMongoClientHandler extends MongoClientHandler {
 
 
-    private Map<OpCodes,List<MongoResponder>> responders;
-    private MongoProxy proxy;
+    private final Map<OpCodes,List<MongoResponder>> responders;
+    private final MongoProxy proxy;
 
     public JsonMongoClientHandler(MongoProxy proxy,
                                   List<MsgHandler> msgHandlers,

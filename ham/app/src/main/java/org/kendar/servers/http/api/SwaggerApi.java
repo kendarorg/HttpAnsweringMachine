@@ -46,8 +46,8 @@ import java.util.stream.Collectors;
 public class SwaggerApi implements FilteringClass {
     private final String localAddress;
     private final List<SwaggerEnricher> enrichers;
-    private FilterConfig filtersConfiguration;
-    private JsonConfiguration jsonConfiguration;
+    private final FilterConfig filtersConfiguration;
+    private final JsonConfiguration jsonConfiguration;
 
     public SwaggerApi(FilterConfig filtersConfiguration, JsonConfiguration jsonConfiguration,
                       List<SwaggerEnricher> enrichers) {

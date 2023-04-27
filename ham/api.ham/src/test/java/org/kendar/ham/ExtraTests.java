@@ -13,7 +13,7 @@ public class ExtraTests {
         HamStarter.runHamJar(DnsTest.class);
     }
 
-    private HamBasicBuilder hamBuilder = GlobalSettings.builder();
+    private final HamBasicBuilder hamBuilder = GlobalSettings.builder();
 
     @Test
     void testSwagger() throws HamException {

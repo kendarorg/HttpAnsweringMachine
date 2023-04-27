@@ -38,7 +38,7 @@ public class DbReplayerTest {
 
     ObjectMapper mapper = new ObjectMapper();
 
-    private JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private final JsonTypedSerializer serializer = new JsonTypedSerializer();
 
     private ReplayerResult extractRecordingFromFile(FakeDbReplayer target, String path) throws IOException {
         var data = new String(getClass()

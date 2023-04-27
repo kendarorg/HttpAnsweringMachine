@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 public class Request {
-    private static AtomicLong counter = new AtomicLong(0);
+    private static final AtomicLong counter = new AtomicLong(0);
 
     private long id = counter.incrementAndGet();
     private long ms = Calendar.getInstance().getTimeInMillis();

@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class HttpMethodFilterConcrete implements HttpMethodFilter {
-    private HttpFilterType phase;
-    private boolean methodBlocking;
-    private String pathAddress;
-    private Pattern pathPattern;
-    private String method;
-    private String description;
-    private String id;
-    private HamMatcher[] extraMatches;
+    private final HttpFilterType phase;
+    private final boolean methodBlocking;
+    private final String pathAddress;
+    private final Pattern pathPattern;
+    private final String method;
+    private final String description;
+    private final String id;
+    private final HamMatcher[] extraMatches;
 
     public HttpMethodFilterConcrete(HttpFilterType phase, boolean methodBlocking,
                                     String pathAddress, Pattern pathPattern,

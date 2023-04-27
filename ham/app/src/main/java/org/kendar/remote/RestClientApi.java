@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
 public class RestClientApi implements FilteringClass {
-    private EventQueue eventQueue;
+    private final EventQueue eventQueue;
 
     @Override
     public String getId() {

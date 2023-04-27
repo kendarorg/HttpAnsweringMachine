@@ -30,7 +30,7 @@ public class RequestResponseFileLogging implements FilteringClass {
     private final FileResourcesUtils fileResourcesUtils;
     private final JsonConfiguration configuration;
     private final Logger logger;
-    private HibernateSessionFactory sessionFactory;
+    private final HibernateSessionFactory sessionFactory;
     private final Logger internalLogger;
     private String localAddress;
 

@@ -24,8 +24,8 @@ public class RecordingDataset implements BaseDataset {
     private final AtomicLong counter = new AtomicLong(0L);
     private final Md5Tester md5Tester;
     private final Logger logger;
-    private HibernateSessionFactory sessionFactory;
-    private List<ReplayerEngine> replayerEngines;
+    private final HibernateSessionFactory sessionFactory;
+    private final List<ReplayerEngine> replayerEngines;
     private Long name;
     private String description;
     private Map<String, String> specialParams;
@@ -74,7 +74,7 @@ public class RecordingDataset implements BaseDataset {
         recording = null;
     }
 
-    private static Map<String, Long> staticRequests = new HashMap<>();
+    private static final Map<String, Long> staticRequests = new HashMap<>();
     private static DbRecording recording;
 
     public boolean add(Request req, Response res) throws Exception {

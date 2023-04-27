@@ -32,7 +32,7 @@ public class OpMsgMasterResponder implements MongoResponder{
         return OpCodes.OP_MSG;
     }
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     private String getDb(MsgPacket message) {
         try {

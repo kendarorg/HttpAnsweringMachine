@@ -4,7 +4,7 @@ import org.kendar.events.EventQueue;
 import org.kendar.servers.db.HibernateSessionFactory;
 
 public class JsUtils {
-    private HibernateSessionFactory sessionFactory;
+    private final HibernateSessionFactory sessionFactory;
     private final EventQueue queue;
     private final ExternalRequester externalRequester;
     //private final String rootPath;

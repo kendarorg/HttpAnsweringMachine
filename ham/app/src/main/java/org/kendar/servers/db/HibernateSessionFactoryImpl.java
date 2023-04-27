@@ -14,7 +14,7 @@ public class HibernateSessionFactoryImpl implements HibernateSessionFactory {
     private Configuration configuration;
     private static SessionFactory sessionFactory;
 
-    private static Object syncObject = new Object();
+    private static final Object syncObject = new Object();
 
     @Override
     public SessionFactory createSession() throws HibernateException {

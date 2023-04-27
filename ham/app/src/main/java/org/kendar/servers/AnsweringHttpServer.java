@@ -20,7 +20,7 @@ public class AnsweringHttpServer implements AnsweringServer {
     private final Logger logger;
     private final AnsweringHandler handler;
     private final JsonConfiguration configuration;
-    private EventQueue eventQueue;
+    private final EventQueue eventQueue;
     private boolean running = false;
     private final HashMap<String, HttpServer> httpServers = new HashMap<>();
 

@@ -28,10 +28,10 @@ import java.util.function.BiFunction;
  * PreparedStatement/executeUpdate
  */
 public class SqlSimulator {
-    private static HashMap<Class<?>, BiFunction<Object, Long, Object>> fakes;
-    private static HashMap<String, BiFunction<Exec, Long, Object>> fakeExecs;
-    private static AtomicLong indexes = new AtomicLong();
-    private static Engine engine;
+    private static final HashMap<Class<?>, BiFunction<Object, Long, Object>> fakes;
+    private static final HashMap<String, BiFunction<Exec, Long, Object>> fakeExecs;
+    private static final AtomicLong indexes = new AtomicLong();
+    private static final Engine engine;
 
     static {
         engine = new SimEngine();

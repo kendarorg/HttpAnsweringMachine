@@ -23,7 +23,7 @@ public class ReplayFilter implements FilteringClass {
     private final ReplayerStatus replayerStatus;
     private final String localAddress;
     private final Logger logger;
-    private List<ReplayerEngine> replayerEngines;
+    private final List<ReplayerEngine> replayerEngines;
 
     public ReplayFilter(ReplayerStatus replayerStatus, JsonConfiguration configuration, LoggerBuilder loggerBuilder,
                         List<ReplayerEngine> replayerEngines) {

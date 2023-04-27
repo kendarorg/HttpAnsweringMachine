@@ -16,8 +16,8 @@ public class ApiMatcher implements FilterMatcher, PathMatcher, HostMatcher {
     private String method;
     private Pattern hostPatternReal;
 
-    private PathSimpleMatcher pathSimpleMatchers = new PathSimpleMatcher();
-    private PathRegexpMatcher pathMatchers = new PathRegexpMatcher();
+    private final PathSimpleMatcher pathSimpleMatchers = new PathSimpleMatcher();
+    private final PathRegexpMatcher pathMatchers = new PathRegexpMatcher();
 
     public Pattern getHostPatternReal() {
         return hostPatternReal;

@@ -42,7 +42,7 @@ public class ReplayerDataset implements BaseDataset {
     private Long id;
     private final AtomicBoolean running = new AtomicBoolean(false);
     private final JsReplayerExecutor executor = new JsReplayerExecutor();
-    private List<ReplayerEngine> replayerEngines;
+    private final List<ReplayerEngine> replayerEngines;
 
     protected final ObjectMapper mapper = new ObjectMapper();
 
@@ -282,7 +282,7 @@ public class ReplayerDataset implements BaseDataset {
         pause.set(false);
     }
 
-    private AtomicBoolean pause = new AtomicBoolean(false);
+    private final AtomicBoolean pause = new AtomicBoolean(false);
 
     public void pause() {
         pause.set(true);

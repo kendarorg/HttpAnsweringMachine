@@ -14,7 +14,7 @@ public class ProxiesTest {
         HamStarter.runHamJar(ProxiesTest.class);
     }
 
-    private HamBasicBuilder hamBuilder = GlobalSettings.builder();
+    private final HamBasicBuilder hamBuilder = GlobalSettings.builder();
 
     @Test
     public void testAddingProxy() throws HamException, InterruptedException {

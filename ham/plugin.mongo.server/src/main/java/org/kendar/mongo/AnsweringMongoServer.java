@@ -75,7 +75,7 @@ public class AnsweringMongoServer implements AnsweringServer {
         //To check if is system class
     }
 
-    private Map<Integer, HamMongoServer> activeServers = new ConcurrentHashMap<>();
+    private final Map<Integer, HamMongoServer> activeServers = new ConcurrentHashMap<>();
 
     @Override
     public void run() {

@@ -32,11 +32,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MongoProxyHandlerApi implements FilteringClass {
     private final Timer timer;
     private final Logger logger;
-    private List<MsgHandler> msgHandlers;
-    private List<CompressionHandler> compressionHandlers;
-    private LoggerBuilder loggerBuilder;
-    private List<MongoResponder> responders;
-    private JsonConfiguration configuration;
+    private final List<MsgHandler> msgHandlers;
+    private final List<CompressionHandler> compressionHandlers;
+    private final LoggerBuilder loggerBuilder;
+    private final List<MongoResponder> responders;
+    private final JsonConfiguration configuration;
 
     public MongoProxyHandlerApi(List<MsgHandler> msgHandlers,
                                 List<CompressionHandler> compressionHandlers,
@@ -71,8 +71,8 @@ public class MongoProxyHandlerApi implements FilteringClass {
     }
 
     private final JsonTypedSerializer serializer = new JsonTypedSerializer();
-    private Map<String,JsonMongoClientHandler> mongoClientHandlers = new ConcurrentHashMap<>();
-    private Map<String,Long> mongoClientHandlersTimeout = new ConcurrentHashMap<>();
+    private final Map<String,JsonMongoClientHandler> mongoClientHandlers = new ConcurrentHashMap<>();
+    private final Map<String,Long> mongoClientHandlersTimeout = new ConcurrentHashMap<>();
 
 
 

@@ -15,7 +15,7 @@ public class ReqRespBuilder {
         return new ReqRespBuilder().withDb(db);
     }
 
-    private static JsonTypedSerializer serializer = new JsonTypedSerializer();
+    private static final JsonTypedSerializer serializer = new JsonTypedSerializer();
     private String db;
     private JdbcCommand command;
     private JdbcResult result;

@@ -42,7 +42,7 @@ public class AnsweringHttpsServer implements AnsweringServer {
     public static final String PASSPHRASE = "passphrase";
     public static final String PRIVATE_CERT = "privateCert";
     private final JsonConfiguration configuration;
-    private EventQueue eventQueue;
+    private final EventQueue eventQueue;
     private final Logger logger;
     private final AnsweringHandler handler;
     private final CertificatesManager certificatesManager;
