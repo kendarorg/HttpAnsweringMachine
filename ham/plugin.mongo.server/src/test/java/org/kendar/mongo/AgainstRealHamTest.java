@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AgainstRealHamTest {
-    private static final boolean DO_RUN = true;
+    private static final boolean DO_RUN = false;
 
     @BeforeEach
     void beforeEach() {

@@ -3,7 +3,6 @@ package org.kendar.cucumber;
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
 import io.cucumber.java.en.Given;
-import org.kendar.DbRecordingSetupTest;
 import org.kendar.globaltest.LocalFileUtils;
 import org.kendar.globaltest.ProcessRunner;
 import org.kendar.globaltest.Sleeper;
@@ -23,7 +22,7 @@ public class DbTasks {
     @Given("^Start h2 db$")
     public void startH2Db() throws Exception {
         var driver = (WebDriver)Utils.getCache("driver");
-        var root = getRootPath(DbRecordingSetupTest.class);
+        var root = getRootPath(DbTasks.class);
         Map<String, String> env = new HashMap<>();
         new ProcessRunner(env).
                 asShell().

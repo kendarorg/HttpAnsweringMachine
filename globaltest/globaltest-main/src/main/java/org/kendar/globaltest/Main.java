@@ -214,7 +214,7 @@ public class Main {
     }
 
     private static void handleRunErrors(String a, Process process) {
-        if (a.toLowerCase(Locale.ROOT).startsWith("[error]") ||
+        if (a.toLowerCase(Locale.ROOT).contains("[error]") ||
                 a.toLowerCase(Locale.ROOT).contains("error starting applicationcontext")||
                 a.toLowerCase(Locale.ROOT).contains("build failure")) {
             LogWriter.errror("");

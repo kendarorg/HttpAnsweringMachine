@@ -1,6 +1,5 @@
 package org.kendar.cucumber;
 
-import org.kendar.SeleniumBase;
 import org.kendar.globaltest.HttpChecker;
 import org.kendar.globaltest.ProcessUtils;
 import org.kendar.globaltest.Sleeper;
@@ -180,7 +179,7 @@ public class Utils {
     }
 
     public static String getVersion() {
-        var path = Path.of(getRootPath(SeleniumBase.class), "scripts", "version.txt");
+        var path = Path.of(getRootPath(Utils.class), "scripts", "version.txt");
         try {
             return Files.readString(path);
         } catch (IOException e) {
