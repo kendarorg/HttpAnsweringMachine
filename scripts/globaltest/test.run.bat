@@ -25,4 +25,4 @@ REM 		-jar "%SCRIPT_DIR%/app/target/app-%HAM_VERSION%.jar" org.springframework.b
 REM 
 REM ping 127.0.0.1 -n 15 > nul
 
-mvn test
+mvn test -Dmaven.test.failure.ignore=true

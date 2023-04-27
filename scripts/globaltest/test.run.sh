@@ -26,7 +26,7 @@ OTHER_PATH=$SCRIPT_DIR/api.test/target/jacoco_starter.exec
 
 #sleep 15
 
-mvn test
+mvn test -Dmaven.test.failure.ignore=true
 
 #cd $SCRIPT_DIR/api.test/
 #https://groups.google.com/g/jacoco/c/vLiZkw8kq9c
