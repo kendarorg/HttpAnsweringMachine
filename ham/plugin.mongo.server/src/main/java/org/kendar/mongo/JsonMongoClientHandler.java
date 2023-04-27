@@ -11,8 +11,6 @@ import org.kendar.mongo.responder.MongoResponder;
 import org.kendar.mongo.responder.OpGeneralResponse;
 import org.kendar.utils.LoggerBuilder;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;

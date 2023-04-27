@@ -1,8 +1,8 @@
 package org.kendar.mongo.model;
 
-import org.kendar.typed.serializer.TypedSerializer;
 import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.mongo.model.payloads.BaseMsgPayload;
+import org.kendar.typed.serializer.TypedSerializer;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

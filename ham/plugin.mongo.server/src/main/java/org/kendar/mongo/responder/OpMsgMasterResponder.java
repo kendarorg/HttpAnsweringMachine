@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
-import org.bson.BsonArray;
 import org.bson.BsonDocument;
 import org.bson.BsonInt64;
 import org.bson.Document;
@@ -16,12 +15,9 @@ import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.mongo.model.MongoPacket;
 import org.kendar.mongo.model.MsgPacket;
 import org.kendar.mongo.model.payloads.MsgDocumentPayload;
-import org.kendar.mongo.model.payloads.MsgSectionPayload;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
 
 @Component
 public class OpMsgMasterResponder implements MongoResponder{

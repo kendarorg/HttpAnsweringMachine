@@ -2,7 +2,6 @@ package org.kendar.mongo.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -30,7 +29,6 @@ import org.kendar.utils.ConstantsHeader;
 import org.kendar.utils.ConstantsMime;
 import org.springframework.stereotype.Component;
 
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 

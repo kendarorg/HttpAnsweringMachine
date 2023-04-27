@@ -1,7 +1,6 @@
 package org.kendar.mongo.responder;
 
 import org.kendar.mongo.model.MongoPacket;
-import org.springframework.stereotype.Component;
 
 
 public class OpGeneralResponse {

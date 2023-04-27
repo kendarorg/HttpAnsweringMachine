@@ -1,7 +1,7 @@
 package org.kendar.mongo.model;
 
-import org.kendar.typed.serializer.TypedSerializer;
 import org.kendar.mongo.handlers.OpCodes;
+import org.kendar.typed.serializer.TypedSerializer;
 
 public class CompressedPacket extends MongoPacket<CompressedPacket> {
 

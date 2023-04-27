@@ -12,9 +12,9 @@ import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.io.BasicOutputBuffer;
+import org.kendar.mongo.handlers.OpCodes;
 import org.kendar.typed.serializer.TypedSerializable;
 import org.kendar.typed.serializer.TypedSerializer;
-import org.kendar.mongo.handlers.OpCodes;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
