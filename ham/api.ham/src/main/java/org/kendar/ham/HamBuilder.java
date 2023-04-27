@@ -181,8 +181,7 @@ public class HamBuilder implements HamInternalBuilder {
             pluginBuilders.put(clazz.getName().toLowerCase(Locale.ROOT), (h) -> {
                 try {
                     var constr = className.getConstructor(HamInternalBuilder.class);
-                    var result = constr.newInstance(h);
-                    return result;
+                    return constr.newInstance(h);
                 } catch (Exception ex) {
                     return null;
                 }

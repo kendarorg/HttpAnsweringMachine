@@ -89,14 +89,14 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
                     pollTiming.put(currentProxy.getId(), pt);
                 }
                 var pt = pollTiming.get(currentProxy.getId());
-                if (pt.lastTimeCheck < (now - 1000) && currentProxy.isRunning() == false) {
+                if (pt.lastTimeCheck < (now - 1000) && !currentProxy.isRunning()) {
                     changed = checkRemoteMachines(currentProxy) || changed;
                     if (pt.lastStatus != currentProxy.isRunning()) {
                         logger.info("Proxy {} now active", currentProxy.getWhen());
                     }
                     pt.lastStatus = currentProxy.isRunning();
                     pt.lastTimeCheck = now;
-                } else if (pt.lastTimeCheck < (now - 60000) && currentProxy.isRunning() == true) {
+                } else if (pt.lastTimeCheck < (now - 60000) && currentProxy.isRunning()) {
                     changed = checkRemoteMachines(currentProxy) || changed;
 
                     if (pt.lastStatus != currentProxy.isRunning()) {

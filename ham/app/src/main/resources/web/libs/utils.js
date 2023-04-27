@@ -1,6 +1,4 @@
-const downloadFile = function (urlToSend, proposedName) {
-    const req = new XMLHttpRequest();
-    req.open("GET", urlToSend, true);
+function sendFileToDownload(req, proposedName) {
     req.responseType = "blob";
     req.onload = function (event) {
         const blob = req.response;
@@ -15,6 +13,12 @@ const downloadFile = function (urlToSend, proposedName) {
     };
 
     req.send();
+}
+
+const downloadFile = function (urlToSend, proposedName) {
+    const req = new XMLHttpRequest();
+    req.open("GET", urlToSend, true);
+    sendFileToDownload(req, proposedName);
 };
 
 const downloadFilePost = function (urlToSend, proposedName, jsonPost) {
@@ -22,20 +26,7 @@ const downloadFilePost = function (urlToSend, proposedName, jsonPost) {
     req.open("POST", urlToSend, true);
     req.setRequestHeader("Content-Type", "application/json");
     req.send(JSON.stringify(jsonPost));
-    req.responseType = "blob";
-    req.onload = function (event) {
-        const blob = req.response;
-        let fileName = req.getResponseHeader("fileName"); //if you have the fileName header available
-        if (proposedName != "" && typeof proposedName != "undefined") {
-            fileName = proposedName;
-        }
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = fileName;
-        link.click();
-    };
-
-    req.send();
+    sendFileToDownload(req, proposedName);
 };
 
 const getUrlParameter = function (sParam, defaultVal) {

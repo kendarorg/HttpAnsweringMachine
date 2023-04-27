@@ -1,6 +1,7 @@
 package org.kendar.mongo;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kendar.events.EventQueue;
@@ -18,6 +19,7 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.kendar.typed.serializer.JsonTypedSerializer;
 import org.kendar.utils.LoggerBuilder;
+import org.slf4j.Logger;
 
 import java.net.Socket;
 import java.util.*;
@@ -29,6 +31,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
     private final int localPort;
 
     private final JsonTypedSerializer serializer;
+    private final Logger logger;
     private long longConnectionId;
 
     public HamMongoClientHandler(Socket client,
@@ -42,6 +45,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
         this.localPort = localPort;
         this.serializer = new JsonTypedSerializer();
         this.connectionId = UUID.randomUUID().toString();
+        this.logger = loggerBuilder.build(HamMongoClientHandler.class);
         eventQueue.register(this::handleConfigChange, MongoConfigChanged.class);
     }
 
@@ -52,12 +56,11 @@ public class HamMongoClientHandler extends MongoClientHandler {
     @Override
     public void close() {
         try {
-            var ser = serializer.newInstance();
             var mp = new MongoPacket<>();
             mp.setOpCode(OpCodes.OP_NONE);
             mongoRoundTrip(mp, this.longConnectionId);
         } catch (Exception e) {
-
+            //NOOP
         }
     }
 
@@ -92,32 +95,16 @@ public class HamMongoClientHandler extends MongoClientHandler {
             req.getHeaders().put("X-CONNECTION-ID", this.connectionId);
             req.getHeaders().put("X-MONGO-ID", "" + connectionId);
             req.setPort(80);
-            String command = "NONE";
+            String command;
             if (clientPacket instanceof MsgPacket) {
                 var msg = (MsgPacket) clientPacket;
                 var payload = (MsgDocumentPayload) msg.getPayloads().get(0);
                 //System.out.println(payload.getJson());
-                var jsonPayload = mapper.readTree(payload.getJson());
-                List<String> keys = new ArrayList<>();
-                Iterator<String> iterator = jsonPayload.fieldNames();
-                iterator.forEachRemaining(keys::add);
-                command = keys.get(0);
-                //System.out.println("SENDING "+command);
-                req.setPath(
-                        String.format("/api/mongo/%d/%s/%s/%s", localPort, db,
-                                clientPacket.getOpCode(), command));
+                command = setupPayload(payload.getJson(), req, db, clientPacket);
 
             } else if (clientPacket instanceof QueryPacket) {
                 var msg = (QueryPacket) clientPacket;
-                var jsonPayload = mapper.readTree(msg.getJson());
-                List<String> keys = new ArrayList<>();
-                Iterator<String> iterator = jsonPayload.fieldNames();
-                iterator.forEachRemaining(keys::add);
-                command = keys.get(0);
-                //System.out.println("SENDING "+command);
-                req.setPath(
-                        String.format("/api/mongo/%d/%s/%s/%s", localPort, db,
-                                clientPacket.getOpCode(), command));
+                command = setupPayload(msg.getJson(), req, db, clientPacket);
 
             } else {
                 command = clientPacket.getClass().getName();
@@ -131,7 +118,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
             event.setRequest(req);
             var result = eventQueue.execute(event, Response.class);
             var response = result.getResponseText();
-            //System.out.println("RECEIVED "+command);
+            logger.debug("RECEIVED "+command);
             var deser = serializer.newInstance();
             deser.deserialize(response);
             var serverPacket = (MongoPacket) deser.read("data");
@@ -139,6 +126,20 @@ public class HamMongoClientHandler extends MongoClientHandler {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String setupPayload(String payload, Request req, String db, MongoPacket clientPacket) throws JsonProcessingException {
+        String command = "NONE";
+        var jsonPayload = mapper.readTree(payload);
+        List<String> keys = new ArrayList<>();
+        Iterator<String> iterator = jsonPayload.fieldNames();
+        iterator.forEachRemaining(keys::add);
+        command = keys.get(0);
+        //System.out.println("SENDING "+command);
+        req.setPath(
+                String.format("/api/mongo/%d/%s/%s/%s", localPort, db,
+                        clientPacket.getOpCode(), command));
+        return command;
     }
 
     private String getDb(MsgPacket message) {

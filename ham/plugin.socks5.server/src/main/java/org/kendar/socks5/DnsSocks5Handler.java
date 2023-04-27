@@ -79,7 +79,7 @@ public class DnsSocks5Handler implements SocksHandler {
         }
     }
 
-    public void doConnect(Session session, CommandMessage commandMessage) throws SocksException, IOException {
+    public void doConnect(Session session, CommandMessage commandMessage) throws IOException {
         ServerReply reply = null;
         Socket socket = null;
         InetAddress bindAddress = null;
@@ -146,7 +146,7 @@ public class DnsSocks5Handler implements SocksHandler {
         }
     }
 
-    public void doBind(Session session, CommandMessage commandMessage) throws SocksException, IOException {
+    public void doBind(Session session, CommandMessage commandMessage) throws IOException {
         ServerSocket serverSocket = new ServerSocket(commandMessage.getPort());
         int bindPort = serverSocket.getLocalPort();
         Socket socket = null;
@@ -165,7 +165,7 @@ public class DnsSocks5Handler implements SocksHandler {
         serverSocket.close();
     }
 
-    public void doUDPAssociate(Session session, CommandMessage commandMessage) throws SocksException, IOException {
+    public void doUDPAssociate(Session session, CommandMessage commandMessage) throws IOException {
         UDPRelayServer udpRelayServer = new UDPRelayServer(((InetSocketAddress) session.getClientAddress()).getAddress(), commandMessage.getPort());
         InetSocketAddress socketAddress = (InetSocketAddress) udpRelayServer.start();
         logger.info("Create UDP relay server at[{}] for {}", socketAddress, commandMessage.getSocketAddress());

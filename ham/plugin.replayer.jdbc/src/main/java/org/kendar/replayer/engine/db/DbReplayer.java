@@ -76,16 +76,7 @@ public class DbReplayer implements ReplayerEngine {
                 result = false;
             }
         }
-        var dbNameAllowed = false;
-        for (var dbName : dbNames) {
-            if (dbName.equalsIgnoreCase("*")) {
-                dbNameAllowed = true;
-                break;
-            } else if (dbName.equalsIgnoreCase(req.getPathParameter("dbName"))) {
-                dbNameAllowed = true;
-                break;
-            }
-        }
+        boolean dbNameAllowed = isDbNameAllowed(req, dbNames);
         if (!dbNameAllowed) {
             result = false;
         }
@@ -102,6 +93,20 @@ public class DbReplayer implements ReplayerEngine {
             }
         }
         return result;
+    }
+
+    private boolean isDbNameAllowed(Request req, String[] dbNames) {
+        var dbNameAllowed = false;
+        for (var dbName : dbNames) {
+            if (dbName.equalsIgnoreCase("*")) {
+                dbNameAllowed = true;
+                break;
+            } else if (dbName.equalsIgnoreCase(req.getPathParameter("dbName"))) {
+                dbNameAllowed = true;
+                break;
+            }
+        }
+        return dbNameAllowed;
     }
 
     @Override
@@ -215,16 +220,7 @@ public class DbReplayer implements ReplayerEngine {
         var dbNames = specialParams.get("dbNames") == null ? new String[]{"*"} :
                 specialParams.get("dbNames").trim().split(",");
 
-        var dbNameAllowed = false;
-        for (var dbName : dbNames) {
-            if (dbName.equalsIgnoreCase("*")) {
-                dbNameAllowed = true;
-                break;
-            } else if (dbName.equalsIgnoreCase(req.getPathParameter("dbName"))) {
-                dbNameAllowed = true;
-                break;
-            }
-        }
+        boolean dbNameAllowed = isDbNameAllowed(req, dbNames);
         if (!dbNameAllowed) {
             return null;
         }

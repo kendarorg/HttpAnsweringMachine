@@ -27,8 +27,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@HttpTypeFilter(hostAddress = "*",
-        blocking = false)
+@HttpTypeFilter(hostAddress = "*"
+)
 public class MongoProxyHandlerApi implements FilteringClass {
     private final Timer timer;
     private final Logger logger;

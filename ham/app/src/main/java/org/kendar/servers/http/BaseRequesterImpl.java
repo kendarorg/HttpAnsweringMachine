@@ -206,29 +206,28 @@ public abstract class BaseRequesterImpl implements BaseRequester {
 
     private HttpRequestBase createFullRequest(Request request, String stringAdress) throws Exception {
         //var partialAddress= new URI(stringAdress).toString();
-        var fullAddress = stringAdress;//"/"+String.join("/", Arrays.stream(partialAddress.split("/"))
         //.skip(3).collect(Collectors.toList()));
 
         //var fullAddress =
         if (request.getMethod().equalsIgnoreCase("POST")) {
-            return new HttpPost(fullAddress);
+            return new HttpPost(stringAdress);
         } else if (request.getMethod().equalsIgnoreCase("PUT")) {
-            return new HttpPut(fullAddress);
+            return new HttpPut(stringAdress);
         } else if (request.getMethod().equalsIgnoreCase("PATCH")) {
-            return new HttpPatch(fullAddress);
+            return new HttpPatch(stringAdress);
         } else if (request.getMethod().equalsIgnoreCase("GET")) {
-            return new HttpGet(fullAddress);
+            return new HttpGet(stringAdress);
         } else if (request.getMethod().equalsIgnoreCase("DELETE")) {
-            return new HttpDelete(fullAddress);
+            return new HttpDelete(stringAdress);
         } else if (request.getMethod().equalsIgnoreCase("HEAD")) {
-            return new HttpHead(fullAddress);
+            return new HttpHead(stringAdress);
         } else if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
-            return new HttpOptions(fullAddress);
+            return new HttpOptions(stringAdress);
         } else if (request.getMethod().equalsIgnoreCase("TRACE")) {
-            return new HttpTrace(fullAddress);
+            return new HttpTrace(stringAdress);
         } else {
-            logger.error("MISSING METHOD " + request.getMethod() + " on " + fullAddress);
-            throw new Exception("MISSING METHOD " + request.getMethod() + " on " + fullAddress);
+            logger.error("MISSING METHOD " + request.getMethod() + " on " + stringAdress);
+            throw new Exception("MISSING METHOD " + request.getMethod() + " on " + stringAdress);
         }
     }
 }

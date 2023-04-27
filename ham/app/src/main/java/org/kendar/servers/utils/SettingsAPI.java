@@ -95,7 +95,6 @@ public class SettingsAPI implements FilteringClass {
     @HamDoc(description = "Set the settings",
 
             requests = @HamRequest(
-                    accept = ConstantsMime.JSON,
                     body = String.class
             ),
             tags = {"base/utils"}

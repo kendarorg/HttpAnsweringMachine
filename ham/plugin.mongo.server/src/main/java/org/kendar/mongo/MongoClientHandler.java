@@ -64,7 +64,7 @@ public abstract class MongoClientHandler implements Runnable {
             offset += bytesRead;
         }
         var res = offset > 0;
-        if (res == false) {
+        if (!res) {
             return false;
         }
         return true;

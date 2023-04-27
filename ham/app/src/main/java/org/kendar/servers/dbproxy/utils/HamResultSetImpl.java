@@ -188,9 +188,13 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     }
 
     private String toString(Clob clob) throws SQLException {
+        return lobToString(clob.getCharacterStream());
+    }
+
+    private String lobToString(Reader clob) throws SQLException {
         try {
             int j = 0;
-            Reader r = clob.getCharacterStream();
+            Reader r = clob;
             StringBuffer buffer = new StringBuffer();
             int ch;
             while ((ch = r.read()) != -1) {
@@ -203,18 +207,7 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     }
 
     private String toString(SQLXML clob) throws SQLException {
-        try {
-            int j = 0;
-            Reader r = clob.getCharacterStream();
-            StringBuffer buffer = new StringBuffer();
-            int ch;
-            while ((ch = r.read()) != -1) {
-                buffer.append("").append((char) ch);
-            }
-            return buffer.toString();
-        } catch (Exception ex) {
-            throw new SQLException(ex);
-        }
+        return lobToString(clob.getCharacterStream());
     }
 
     public void serialize(TypedSerializer builder) {

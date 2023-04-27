@@ -108,7 +108,7 @@ public class EventQueueImpl implements EventQueue {
     }
 
     @Override
-    public <T extends Object> T execute(Event event, Class<T> clazz) throws Exception {
+    public <T> T execute(Event event, Class<T> clazz) throws Exception {
         var eventName = event.getClass().getSimpleName().toLowerCase(Locale.ROOT);
         if (!commandHandlers.containsKey(eventName)) return null;
         var handler = commandHandlers.get(eventName);

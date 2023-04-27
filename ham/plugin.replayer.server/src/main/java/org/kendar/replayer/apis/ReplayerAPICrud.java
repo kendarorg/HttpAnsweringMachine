@@ -440,7 +440,7 @@ public class ReplayerAPICrud implements FilteringClass {
                                         add = true;
                                     }
                                 }
-                                if (add == false && rs.getResponseText() != null) {
+                                if (!add && rs.getResponseText() != null) {
                                     if (queryParams.stream().anyMatch((v) -> rs.getResponseText().contains(v))) {
                                         add = true;
                                     }

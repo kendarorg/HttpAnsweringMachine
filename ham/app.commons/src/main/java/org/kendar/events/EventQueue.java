@@ -12,5 +12,5 @@ public interface EventQueue {
 
     void handle(String eventType, String jsonEvent);
 
-    <T extends Object> T execute(Event event, Class<T> clazz) throws Exception;
+    <T> T execute(Event event, Class<T> clazz) throws Exception;
 }

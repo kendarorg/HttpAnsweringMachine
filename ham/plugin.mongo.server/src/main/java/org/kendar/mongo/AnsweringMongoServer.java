@@ -55,18 +55,7 @@ public class AnsweringMongoServer implements AnsweringServer {
             return;
         }
         try {
-            for (var single : config.getProxies()) {
-                var ms = hamMongoServer.clone();
-                new Thread(() -> {
-                    try {
-                        ms.run(single.getExposedPort(), this);
-                    } catch (IOException e) {
-
-                    }
-                }).start();
-                activeServers.put(single.getExposedPort(), ms);
-
-            }
+            loadMongoServers(config);
         } catch (Exception ex) {
             logger.error("Error restarting mongo", ex);
         }
@@ -86,19 +75,7 @@ public class AnsweringMongoServer implements AnsweringServer {
         try {
             activeServers.clear();
             eventQueue.handle(new ServiceStarted().withTye("mongo"));
-            for (var single : config.getProxies()) {
-                var ms = hamMongoServer.clone();
-                new Thread(() -> {
-                    try {
-                        ms.run(single.getExposedPort(), this);
-                    } catch (IOException e) {
-
-                    }
-                }).start();
-
-                activeServers.put(single.getExposedPort(), ms);
-
-            }
+            loadMongoServers(config);
             while (running) {
                 Sleeper.sleep(1000);
             }
@@ -108,6 +85,22 @@ public class AnsweringMongoServer implements AnsweringServer {
             logger.error("Error running Mongo server", e);
         } finally {
             running = false;
+        }
+    }
+
+    private void loadMongoServers(MongoConfig config) {
+        for (var single : config.getProxies()) {
+            var ms = hamMongoServer.clone();
+            new Thread(() -> {
+                try {
+                    ms.run(single.getExposedPort(), this);
+                } catch (IOException e) {
+
+                }
+            }).start();
+
+            activeServers.put(single.getExposedPort(), ms);
+
         }
     }
 

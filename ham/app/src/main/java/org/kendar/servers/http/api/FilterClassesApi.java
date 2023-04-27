@@ -198,6 +198,10 @@ public class FilterClassesApi implements FilteringClass {
         var config = filtersConfiguration.get();
         var item = config.filtersById.get(id);
 
+        writeFilterData(res, globalConfig, item);
+    }
+
+    private void writeFilterData(Response res, GlobalConfig globalConfig, FilterDescriptor item) throws JsonProcessingException {
         var enabled =
                 globalConfig.checkFilterEnabled(item.getId())
                         && globalConfig.checkFilterEnabled(item.getClassId());
@@ -344,12 +348,7 @@ public class FilterClassesApi implements FilteringClass {
         }
         filtersConfiguration.set(config);
 
-        var enabled =
-                globalConfig.checkFilterEnabled(item.getId())
-                        && globalConfig.checkFilterEnabled(item.getClassId());
-        var result = new FilterDto(enabled, item.getTypeFilter(), item.getMethodFilter(), item.getClassId());
-        res.addHeader(ConstantsHeader.CONTENT_TYPE, ConstantsMime.JSON);
-        res.setResponseText(mapper.writeValueAsString(result));
+        writeFilterData(res, globalConfig, item);
     }
 
     public static class FilterType {

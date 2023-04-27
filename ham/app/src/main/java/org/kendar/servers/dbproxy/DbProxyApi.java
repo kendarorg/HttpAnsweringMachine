@@ -36,8 +36,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@HttpTypeFilter(hostAddress = "*",
-        blocking = false)
+@HttpTypeFilter(hostAddress = "*"
+)
 public class DbProxyApi implements FilteringClass {
     private final JsonTypedSerializer serializer;
     private final Logger logger;
@@ -199,24 +199,7 @@ public class DbProxyApi implements FilteringClass {
                     "SELECT * FROM REPLAYER_RECORDING WHERE ID>?");
             statement.setInt(1, 0);
             var resultset = statement.executeQuery();
-            result.append("[");
-            var count = 1;
-            while (resultset.next()) {
-                if (count > 1) result.append(",");
-                StringBuilder partial = new StringBuilder("{");
-                for (int i = 1; i <= 100; i++) {
-                    try {
-                        String columnValue = resultset.getString(i);
-                        if (i > 1) partial.append(",");
-                        partial.append("'col").append(i).append("'='").append(columnValue).append("'");
-                    } catch (Exception ex) {
-
-                    }
-                }
-                partial.append("}");
-                result.append(partial);
-            }
-            result.append("]");
+            setupResultData(result, resultset);
             connection.close();
             res.getHeaders().put("content-type", "application/json");
         } catch (Exception ex) {
@@ -226,6 +209,27 @@ public class DbProxyApi implements FilteringClass {
 
         res.setResponseText(result.toString());
         return true;
+    }
+
+    private void setupResultData(StringBuilder result, ResultSet resultset) throws SQLException {
+        result.append("[");
+        var count = 1;
+        while (resultset.next()) {
+            if (count > 1) result.append(",");
+            StringBuilder partial = new StringBuilder("{");
+            for (int i = 1; i <= 100; i++) {
+                try {
+                    String columnValue = resultset.getString(i);
+                    if (i > 1) partial.append(",");
+                    partial.append("'col").append(i).append("'='").append(columnValue).append("'");
+                } catch (Exception ex) {
+
+                }
+            }
+            partial.append("}");
+            result.append(partial);
+        }
+        result.append("]");
     }
 
     private boolean simpleExecution(Request req, Response res) {
@@ -243,24 +247,7 @@ public class DbProxyApi implements FilteringClass {
             var connection = DriverManager.getConnection("jdbc:janus:http://localhost/api/db/" + id);
             var statement = connection.createStatement();
             var resultset = statement.executeQuery(query);
-            result.append("[");
-            var count = 1;
-            while (resultset.next()) {
-                if (count > 1) result.append(",");
-                StringBuilder partial = new StringBuilder("{");
-                for (int i = 1; i <= 100; i++) {
-                    try {
-                        String columnValue = resultset.getString(i);
-                        if (i > 1) partial.append(",");
-                        partial.append("'col").append(i).append("'='").append(columnValue).append("'");
-                    } catch (Exception ex) {
-
-                    }
-                }
-                partial.append("}");
-                result.append(partial);
-            }
-            result.append("]");
+            setupResultData(result, resultset);
             connection.close();
             res.getHeaders().put("content-type", "application/json");
         } catch (Exception ex) {

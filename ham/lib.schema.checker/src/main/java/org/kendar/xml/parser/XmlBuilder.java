@@ -31,8 +31,7 @@ public class XmlBuilder {
                 //result.getChildren().get(elTag).setConstraint(XmlConstraint.MANDATORY_VALUE);
                 result.getChildren().get(elTag).getItems().add(load(el, depth + 1, diffResult));
             } else if (childNode instanceof Node) {
-                var el = (Node) childNode;
-                var val = el.getNodeValue();
+                var val = ((Node) childNode).getNodeValue();
                 //result.setConstraint(XmlConstraint.MANDATORY_VALUE);
                 if (!Utils.stringIsEmptyOrNull(val)) {
                     result.setValue(val);

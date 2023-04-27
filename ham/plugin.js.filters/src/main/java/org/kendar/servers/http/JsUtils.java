@@ -22,11 +22,10 @@ public class JsUtils {
 
     public String loadFile(final String path, boolean binary) {
         try {
-            var content = (String) sessionFactory.queryResult(e -> (String) e.createQuery("SELECT e.content FROM DbFilterFiles e " +
+            return (String) sessionFactory.queryResult(e -> (String) e.createQuery("SELECT e.content FROM DbFilterFiles e " +
                             " WHERE " +
                             " e.name='" + path + "'")
                     .getResultList().get(0));
-            return content;
         } catch (Exception e) {
             return null;
         }

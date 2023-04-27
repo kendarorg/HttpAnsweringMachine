@@ -39,8 +39,6 @@ public class ReplayerAPIActions implements FilteringClass {
             path = {
                     @PathParameter(key = "id"),
                     @PathParameter(key = "action", description = "start/pause/stop")
-            },
-            query = {
             }
     )
     public void recording(Request req, Response res) throws Exception {

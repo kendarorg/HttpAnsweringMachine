@@ -8,7 +8,6 @@ public class ReplayerConfig extends BaseJsonConfig<ReplayerConfig> {
 
     @Override
     public ReplayerConfig copy() {
-        var result = new ReplayerConfig();
-        return result;
+        return new ReplayerConfig();
     }
 }

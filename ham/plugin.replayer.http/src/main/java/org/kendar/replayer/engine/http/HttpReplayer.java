@@ -39,15 +39,13 @@ public class HttpReplayer implements ReplayerEngine {
     }
 
     public ReplayerEngine create(LoggerBuilder loggerBuilder) {
-        var es = new HttpReplayer(sessionFactory, loggerBuilder, configuration);
-        return es;
+        return new HttpReplayer(sessionFactory, loggerBuilder, configuration);
     }
 
     @Override
     public boolean isValidPath(Request req) {
-        var isValid = (!isLocalhost(req)) ||
+        return (!isLocalhost(req)) ||
                 (req.getPath().startsWith("/int/") && isLocalhost(req));
-        return isValid;
     }
 
     private boolean isLocalhost(Request req) {

@@ -48,8 +48,7 @@ public class MongoReplayer implements ReplayerEngine {
     }
 
     public ReplayerEngine create(LoggerBuilder loggerBuilder) {
-        var es = new MongoReplayer(sessionFactory, loggerBuilder, configuration);
-        return es;
+        return new MongoReplayer(sessionFactory, loggerBuilder, configuration);
     }
 
     @Override

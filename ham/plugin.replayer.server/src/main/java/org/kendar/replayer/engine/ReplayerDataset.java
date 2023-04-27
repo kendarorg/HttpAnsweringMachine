@@ -126,7 +126,7 @@ public class ReplayerDataset implements BaseDataset {
             try {
                 for (var toCall : indexes) {
                     int maxWait = 60 * 1000;
-                    while (pause.get() == true && maxWait > 0) {
+                    while (pause.get() && maxWait > 0) {
                         Sleeper.sleep(1000);
                         maxWait -= 1000;
                     }

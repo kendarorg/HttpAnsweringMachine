@@ -133,7 +133,6 @@ public class AnsweringHttpsServer implements AnsweringServer {
     }
 
     private void setupSll(SSLContext sslContextInt, String port) {
-        var context = sslContextInt;
         httpsServers.get(port).setHttpsConfigurator(
                 new HttpsConfigurator(sslContextInt) {
                     @Override
@@ -141,13 +140,13 @@ public class AnsweringHttpsServer implements AnsweringServer {
                         try {
                             // initialise the SSL context
 
-                            SSLEngine engine = context.createSSLEngine();
+                            SSLEngine engine = sslContextInt.createSSLEngine();
                             params.setNeedClientAuth(false);
                             params.setCipherSuites(engine.getEnabledCipherSuites());
                             params.setProtocols(engine.getEnabledProtocols());
 
                             // Set the SSL parameters
-                            SSLParameters sslParameters = context.getSupportedSSLParameters();
+                            SSLParameters sslParameters = sslContextInt.getSupportedSSLParameters();
                             params.setSSLParameters(sslParameters);
 
                         } catch (Exception ex) {
