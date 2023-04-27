@@ -9,6 +9,7 @@ import java.util.UUID;
 import static org.kendar.ham.HamBuilder.pathId;
 import static org.kendar.ham.HamBuilder.updateMethod;
 
+@SuppressWarnings("HttpUrlsUsage")
 class ProxyBuilderImpl implements ProxyBuilder, DbProxyBuilder {
     private final HamBuilder hamBuilder;
     private DbProxy dbProxy;

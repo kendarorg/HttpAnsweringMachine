@@ -128,9 +128,7 @@ public class ReplyPacket extends MongoPacket<ReplyPacket> implements MongoReqRes
         //responseBuffer.get(res,16,length);
 
         var header = buildHeader(msgLength, requestId, responseTo, OpCodes.OP_REPLY);
-        for (var i = 0; i < 16; i++) {
-            res[i] = header[i];
-        }
+        System.arraycopy(header, 0, res, 0, 16);
         return res;
     }
 }

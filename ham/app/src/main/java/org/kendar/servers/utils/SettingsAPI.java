@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class SettingsAPI implements FilteringClass {
-    static ObjectMapper mapper = new ObjectMapper();
+    static final ObjectMapper mapper = new ObjectMapper();
     private final JsonConfiguration configuration;
     private final FullDownloadUploadService downloadUploadService;
 

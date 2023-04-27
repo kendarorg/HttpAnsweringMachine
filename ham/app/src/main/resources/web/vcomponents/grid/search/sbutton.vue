@@ -1,5 +1,5 @@
 <template>
-  <span>&nbsp;<span>
+  <span>&nbsp;</span>
 </template>
 <script>
 module.exports = {

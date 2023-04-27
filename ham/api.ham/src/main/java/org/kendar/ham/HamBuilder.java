@@ -50,9 +50,10 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@SuppressWarnings("resource")
 public class HamBuilder implements HamInternalBuilder {
     private static final HashMap<String, Function<HamInternalBuilder, Object>> pluginBuilders = new HashMap<>();
-    static ObjectMapper mapper;
+    static final ObjectMapper mapper;
     private static Path certificatePath;
 
     static {
@@ -410,11 +411,11 @@ public class HamBuilder implements HamInternalBuilder {
         if (port == null) {
             return protocol + "://" + host;
         }
-        return protocol + "://" + host + ":" + port.toString();
+        return protocol + "://" + host + ":" + port;
     }
 
     /**
-     * https://stackoverflow.com/questions/2642777/trusting-all-certificates-using-httpclient-over-https
+     * <a href="https://stackoverflow.com/questions/2642777/trusting-all-certificates-using-httpclient-over-https">...</a>
      */
     static class MyConnectionSocketFactory extends SSLConnectionSocketFactory {
 

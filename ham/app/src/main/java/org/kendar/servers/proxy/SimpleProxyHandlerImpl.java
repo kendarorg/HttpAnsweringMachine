@@ -221,7 +221,7 @@ public class SimpleProxyHandlerImpl implements SimpleProxyHandler {
         return oriSource;
     }
 
-    private class ProxyPollTiming {
+    private static class ProxyPollTiming {
         public long lastTimeCheck;
         public String id;
         public boolean lastStatus;

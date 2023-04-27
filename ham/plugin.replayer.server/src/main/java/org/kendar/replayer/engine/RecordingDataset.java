@@ -68,10 +68,6 @@ public class RecordingDataset implements BaseDataset {
     }
 
     public void save() throws Exception {
-//        for (int i = 0; i < replayerEngines.size(); i++) {
-//            var engine = replayerEngines.get(i);
-//            engine.setupStaticCalls(recording);
-//        }
         staticRequests.clear();
         recording = null;
     }
@@ -86,9 +82,7 @@ public class RecordingDataset implements BaseDataset {
             });
         }
         if (recording == null) {
-            recording = sessionFactory.queryResult((em) -> {
-                return em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + name).getResultList().get(0);
-            });
+            recording = sessionFactory.queryResult((em) -> em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + name).getResultList().get(0));
         }
         var path = req.getHost() + req.getPath();
         try {

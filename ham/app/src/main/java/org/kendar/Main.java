@@ -36,7 +36,7 @@ import static java.lang.System.exit;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 public class Main implements CommandLineRunner {
     private static final int MAX_THREADS = 10;
-    public static AtomicBoolean doRun = new AtomicBoolean(true);
+    public static final AtomicBoolean doRun = new AtomicBoolean(true);
     private static Runnable shutdownHook;
     @Autowired
     private ApplicationContext applicationContext;

@@ -91,9 +91,7 @@ public class HttpReplayer implements ReplayerEngine {
     }
 
     protected void loadIndexes(Long recordingId, ArrayList<CallIndex> indexes) throws Exception {
-        sessionFactory.query(e -> {
-            addAllIndexes(recordingId, indexes, e);
-        });
+        sessionFactory.query(e -> addAllIndexes(recordingId, indexes, e));
     }
 
     protected void addAllIndexes(Long recordingId, ArrayList<CallIndex> indexes, EntityManager e) {
@@ -145,7 +143,7 @@ public class HttpReplayer implements ReplayerEngine {
                     var first = mappingIndex.getValue().get(0);
 
                     var callIndexesToRemove = mappingIndex.getValue().stream().skip(1)
-                            .map(a -> a.toString())
+                            .map(Object::toString)
                             .collect(Collectors.toList());
                     var callIndex = (CallIndex) e.createQuery("SELECT e FROM CallIndex e " +
                             " WHERE " +
@@ -165,7 +163,7 @@ public class HttpReplayer implements ReplayerEngine {
                             " WHERE " +
                             " e.recordingId=" + recording.getId() +
                             " AND e.id IN (" + String.join(",", callIndexesToRemove) + ")").getResultList())
-                            .stream().map(a -> a.toString()).collect(Collectors.toList());
+                            .stream().map(Object::toString).collect(Collectors.toList());
                     e.createQuery("DELETE FROM  ReplayerRow e " +
                             " WHERE " +
                             " e.recordingId=" + recording.getId() +
@@ -199,13 +197,11 @@ public class HttpReplayer implements ReplayerEngine {
     }
 
     private boolean hasHttpRows(Long recordingId) throws Exception {
-        hasRows = (Long) sessionFactory.queryResult(e -> {
-            return (Long) e.createQuery("SELECT count(*) FROM ReplayerRow e " +
-                            " WHERE " +
-                            " e.type='http'" +
-                            "AND e.recordingId=" + recordingId)
-                    .getResultList().get(0);
-        }) > 0;
+        hasRows = (Long) sessionFactory.queryResult(e -> (Long) e.createQuery("SELECT count(*) FROM ReplayerRow e " +
+                        " WHERE " +
+                        " e.type='http'" +
+                        "AND e.recordingId=" + recordingId)
+                .getResultList().get(0)) > 0;
         return hasRows;
     }
 

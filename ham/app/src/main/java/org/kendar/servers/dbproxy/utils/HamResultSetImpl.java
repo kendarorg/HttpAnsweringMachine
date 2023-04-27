@@ -121,7 +121,7 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     public void fromSerializable(List<List<Object>> source) throws Exception {
         rows = new ArrayList<>();
         for (var row : source) {
-            var newRow = new ArrayList<Object>();
+            var newRow = new ArrayList<>();
             for (int i = 0; i < row.size(); i++) {
                 var cd = columnDescriptors.get(i);
                 var realType = getTypeFromSqlType(cd.getType());
@@ -141,7 +141,7 @@ public class HamResultSetImpl implements HamResultSet, TypedSerializable<HamResu
     public List<List<Object>> toSerializable() throws SQLException {
         var result = new ArrayList<List<Object>>();
         for (var row : rows) {
-            var newRow = new ArrayList<Object>();
+            var newRow = new ArrayList<>();
             for (var field : row) {
                 if (field == null) {
                     newRow.add(null);

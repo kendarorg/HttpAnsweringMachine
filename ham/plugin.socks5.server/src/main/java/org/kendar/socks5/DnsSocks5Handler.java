@@ -1,6 +1,7 @@
 package org.kendar.socks5;
 
 import org.kendar.servers.dns.DnsMultiResolver;
+import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sockslib.client.SocksProxy;
@@ -139,13 +140,7 @@ public class DnsSocks5Handler implements SocksHandler {
             ((Pipe) pipe).start();
 
             while (((Pipe) pipe).isRunning()) {
-                try {
-                    Thread.sleep((long) this.idleTime);
-                } catch (InterruptedException var13) {
-                    ((Pipe) pipe).stop();
-                    session.close();
-                    logger.info("SESSION[{}] closed", session.getId());
-                }
+                    Sleeper.sleep((long) this.idleTime);
             }
 
         }
@@ -164,13 +159,7 @@ public class DnsSocks5Handler implements SocksHandler {
         pipe.start();
 
         while (pipe.isRunning()) {
-            try {
-                Thread.sleep((long) this.idleTime);
-            } catch (InterruptedException var8) {
-                pipe.stop();
-                session.close();
-                logger.info("Session[{}] closed", session.getId());
-            }
+                Sleeper.sleep((long) this.idleTime);
         }
 
         serverSocket.close();
@@ -183,12 +172,7 @@ public class DnsSocks5Handler implements SocksHandler {
         session.write(new CommandResponseMessage(5, ServerReply.SUCCEEDED, InetAddress.getLocalHost(), socketAddress.getPort()));
 
         while (udpRelayServer.isRunning()) {
-            try {
-                Thread.sleep((long) this.idleTime);
-            } catch (InterruptedException var6) {
-                session.close();
-                logger.info("Session[{}] closed", session.getId());
-            }
+                Sleeper.sleep((long) this.idleTime);
 
             if (session.isClose()) {
                 udpRelayServer.stop();

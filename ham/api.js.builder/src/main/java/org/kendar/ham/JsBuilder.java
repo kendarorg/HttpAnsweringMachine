@@ -20,7 +20,7 @@ public interface JsBuilder {
 
     JsBuilderImpl init();
 
-    public class ApiMatcher implements Matcher {
+    class ApiMatcher implements Matcher {
         private Methods method;
         private String hostAddress;
         private String hostPattern;
@@ -68,7 +68,7 @@ public interface JsBuilder {
         }
     }
 
-    public class FilterDescriptor {
+    class FilterDescriptor {
 
         private FilterPhase phase;
         private List<String> require;
@@ -145,7 +145,7 @@ public interface JsBuilder {
         }
     }
 
-    public class ScriptMatcher implements Matcher {
+    class ScriptMatcher implements Matcher {
         private String script;
         private String hostAddress;
         private String pathAddress;

@@ -100,7 +100,7 @@ public interface DnsBuilder extends DnsCertsAndNamesBuilder {
      */
     DnsCertsAndNamesBuilder withResolvedNames(List<ResolvedNames> with);
 
-    public class DnsName {
+    class DnsName {
         private String id;
         private String ip;
         private String dns;
@@ -130,7 +130,7 @@ public interface DnsBuilder extends DnsCertsAndNamesBuilder {
         }
     }
 
-    public class ResolvedNames {
+    class ResolvedNames {
         private String ip;
         private String name;
 
@@ -151,7 +151,7 @@ public interface DnsBuilder extends DnsCertsAndNamesBuilder {
         }
     }
 
-    public class DnsServer {
+    class DnsServer {
         private String id;
         private String address;
 

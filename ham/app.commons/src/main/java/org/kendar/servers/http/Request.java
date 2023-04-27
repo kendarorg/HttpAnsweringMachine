@@ -256,7 +256,7 @@ public class Request {
         r.host = this.host;
         r.method = this.method;
         if (multipartData != null) {
-            r.multipartData = this.multipartData.stream().map(multipartPart -> multipartPart.copy()).collect(Collectors.toList());
+            r.multipartData = this.multipartData.stream().map(MultipartPart::copy).collect(Collectors.toList());
         }
         r.port = this.port;
         if (postParameters != null) {

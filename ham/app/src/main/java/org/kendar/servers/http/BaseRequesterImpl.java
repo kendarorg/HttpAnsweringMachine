@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings("resource")
 public abstract class BaseRequesterImpl implements BaseRequester {
     public static final String BLOCK_RECURSION = "X-BLOCK-RECURSIVE";
 

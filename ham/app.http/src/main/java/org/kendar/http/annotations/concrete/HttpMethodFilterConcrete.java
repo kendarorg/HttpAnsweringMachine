@@ -8,6 +8,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("ClassExplicitlyAnnotation")
 public class HttpMethodFilterConcrete implements HttpMethodFilter {
     private final HttpFilterType phase;
     private final boolean methodBlocking;

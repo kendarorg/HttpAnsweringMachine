@@ -84,7 +84,7 @@ public class FilteringClassesHandlerImpl implements FilteringClassesHandler {
             }
             for (var kvp : config.filters.entrySet()) {
                 var list = kvp.getValue();
-                Collections.sort(list, Comparator.comparingInt(FilterDescriptor::getPriority).reversed());
+                list.sort(Comparator.comparingInt(FilterDescriptor::getPriority).reversed());
             }
             filtersConfiguration.set(config);
         });

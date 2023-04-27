@@ -8,6 +8,7 @@ url("./fonts/bootstrap-icons.woff?524846017b983fc8ded9325d94ed40f3") format("wof
 [class^="bi-"]::before,
 [class*=" bi-"]::before {
   display: inline-block;
+  /*noinspection CssNoGenericFontName*/
   font-family: bootstrap-icons !important;
   font-style: normal;
   font-weight: normal !important;
@@ -1460,7 +1461,11 @@ url("./fonts/bootstrap-icons.woff?524846017b983fc8ded9325d94ed40f3") format("wof
 .bi-list-columns-reverse::before { content: "\f69f"; }
 .bi-list-columns::before { content: "\f6a0"; }
 .bi-meta::before { content: "\f6a1"; }
+
+/*noinspection CssUnusedSymbol*/
 .bi-mortorboard-fill::before { content: "\f6a2"; }
+
+/*noinspection CssUnusedSymbol*/
 .bi-mortorboard::before { content: "\f6a3"; }
 .bi-nintendo-switch::before { content: "\f6a4"; }
 .bi-pc-display-horizontal::before { content: "\f6a5"; }

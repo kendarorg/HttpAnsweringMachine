@@ -22,29 +22,11 @@ public class JsUtils {
 
     public String loadFile(final String path, boolean binary) {
         try {
-            var content = (String) sessionFactory.queryResult(e -> {
-                return (String) e.createQuery("SELECT e.content FROM DbFilterFiles e " +
-                                " WHERE " +
-                                " e.name='" + path + "'")
-                        .getResultList().get(0);
-            });
+            var content = (String) sessionFactory.queryResult(e -> (String) e.createQuery("SELECT e.content FROM DbFilterFiles e " +
+                            " WHERE " +
+                            " e.name='" + path + "'")
+                    .getResultList().get(0));
             return content;
-//            if (!binary) {
-//                return content;
-//            } else {
-//                var bytes = Files.readAllBytes(of);
-//                return Base64.encodeBase64String(bytes);
-//            }
-//            if (path.startsWith("/") || path.startsWith("\\")) {
-//                path = path.substring(1);
-//            }
-//            path = rootPath + File.separator + path;
-//
-//            String absolute = new File(path).getCanonicalPath();
-//            if (absolute.toLowerCase(Locale.ROOT).startsWith(rootPath.toLowerCase(Locale.ROOT))) {
-//                Path of = Path.of(absolute);
-//
-//            }
         } catch (Exception e) {
             return null;
         }

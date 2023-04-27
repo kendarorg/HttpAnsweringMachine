@@ -123,9 +123,7 @@ public class QueryPacket extends MongoPacket<QueryPacket> implements MongoReqRes
         }
 
         var header = buildHeader(msgLength, requestId, responseTo, OpCodes.OP_QUERY);
-        for (var i = 0; i < 16; i++) {
-            res[i] = header[i];
-        }
+        System.arraycopy(header, 0, res, 0, 16);
         return res;
     }
 }

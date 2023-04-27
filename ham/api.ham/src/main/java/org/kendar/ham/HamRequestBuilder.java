@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 public class HamRequestBuilder {
 
 
-    ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapper = new ObjectMapper();
     private Request request;
 
     private HamRequestBuilder() {

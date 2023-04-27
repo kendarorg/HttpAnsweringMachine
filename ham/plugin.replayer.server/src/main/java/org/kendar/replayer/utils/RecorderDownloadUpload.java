@@ -24,9 +24,9 @@ public class RecorderDownloadUpload implements FullDownloadUpload {
     private final EventQueue eventQueue;
     private final HibernateSessionFactory sessionFactory;
     TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<HashMap<String, String>>() {
+            = new TypeReference<>() {
     };
-    ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapper = new ObjectMapper();
     public RecorderDownloadUpload(JsonConfiguration configuration,
                                   EventQueue eventQueue,
                                   HibernateSessionFactory sessionFactory) {
@@ -103,29 +103,21 @@ public class RecorderDownloadUpload implements FullDownloadUpload {
             recording.setName(replayerResult.getName());
             recording.setFilter(mapper.writeValueAsString(replayerResult.getFilter()));
 
-            sessionFactory.transactional(em -> {
-                em.persist(recording);
-            });
+            sessionFactory.transactional(em -> em.persist(recording));
             for (var row : replayerResult.getDynamicRequests()) {
                 row.setIndex(null);
                 row.setRecordingId(recording.getId());
-                sessionFactory.transactional(em -> {
-                    em.persist(row);
-                });
+                sessionFactory.transactional(em -> em.persist(row));
             }
             for (var row : replayerResult.getStaticRequests()) {
                 row.setIndex(null);
                 row.setRecordingId(recording.getId());
-                sessionFactory.transactional(em -> {
-                    em.persist(row);
-                });
+                sessionFactory.transactional(em -> em.persist(row));
             }
             for (var row : replayerResult.getIndexes()) {
                 row.setIndex(null);
                 row.setRecordingId(recording.getId());
-                sessionFactory.transactional(em -> {
-                    em.persist(row);
-                });
+                sessionFactory.transactional(em -> em.persist(row));
             }
         }
 

@@ -38,9 +38,9 @@ import java.util.Scanner;
  * written to a file and are loaded back in when the proxy is started once more, meaning that cached and blocked
  * sites are maintained.
  * <p>
- * export http_proxy="http://127.0.0.1:1081"
- * export https_proxy="http://127.0.0.1:1081"
- * curl  "https://httpbin.org/anything"
+ * export http_proxy="<a href="http://127.0.0.1:1081">...</a>"
+ * ex<a href="port">https_proxy="htt</<a href="a>p://127.0.0.1:1081"
+ ">* cur</a>l  "https://httpbin.org/anything"
  */
 public class HttpsProxyImpl implements Runnable {
 
@@ -63,12 +63,6 @@ public class HttpsProxyImpl implements Runnable {
      */
     static ArrayList<Thread> servicingThreads;
 
-    // Main method for the program
-    /*public static void main(String[] args) {
-        // Create an instance of Proxy and begin listening for connections
-        HttpsProxyImpl myProxy = new HttpsProxyImpl(8085,true);
-        myProxy.listen();
-    }*/
     private final boolean useCache;
     private final DnsMultiResolver resolver;
     private final Logger log;

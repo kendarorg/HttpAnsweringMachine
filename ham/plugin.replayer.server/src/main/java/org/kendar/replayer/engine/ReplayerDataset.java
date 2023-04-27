@@ -41,9 +41,9 @@ public class ReplayerDataset implements BaseDataset {
     private final JsReplayerExecutor executor = new JsReplayerExecutor();
     private final List<ReplayerEngine> replayerEngines;
     private final AtomicBoolean pause = new AtomicBoolean(false);
-    protected Logger logger;
-    protected Md5Tester md5Tester;
-    protected HibernateSessionFactory sessionFactory;
+    protected final Logger logger;
+    protected final Md5Tester md5Tester;
+    protected final HibernateSessionFactory sessionFactory;
     protected Long name;
     protected String description;
     protected ReplayerResult replayerResult;
@@ -105,9 +105,7 @@ public class ReplayerDataset implements BaseDataset {
         result.setType("PLAY");
 
 
-        sessionFactory.transactional(em -> {
-            em.persist(result);
-        });
+        sessionFactory.transactional(em -> em.persist(result));
 
         id = result.getId();
 
@@ -136,11 +134,9 @@ public class ReplayerDataset implements BaseDataset {
 
                     currentIndex = toCall.getId();
                     if (!running.get()) break;
-                    ReplayerRow reqResp = sessionFactory.queryResult(e -> {
-                        return e.createQuery("SELECT e FROM ReplayerRow e WHERE " +
-                                " e.recordingId=" + testResult.getRecordingId() + " " +
-                                " AND e.id=" + toCall.getReference()).getResultList().get(0);
-                    });
+                    ReplayerRow reqResp = sessionFactory.queryResult(e -> e.createQuery("SELECT e FROM ReplayerRow e WHERE " +
+                            " e.recordingId=" + testResult.getRecordingId() + " " +
+                            " AND e.id=" + toCall.getReference()).getResultList().get(0));
                     obtainedResponse = new Response();
                     var request = reqResp.getRequest().copy();
                     logger.info("Stimulating " +
@@ -185,9 +181,7 @@ public class ReplayerDataset implements BaseDataset {
                     resultLine.setRecordingId(testResult.getRecordingId());
                     resultLine.setExecutedLine(toCall.getId());
                     resultLine.setStimulator(true);
-                    sessionFactory.transactional(em -> {
-                        em.persist(resultLine);
-                    });
+                    sessionFactory.transactional(em -> em.persist(resultLine));
                 }
             } catch (Exception ex) {
                 var extra = "Error calling index " + currentIndex + " running " + (onIndex ? "index script" : "optimized script. ");
@@ -217,9 +211,7 @@ public class ReplayerDataset implements BaseDataset {
             long timeElapsed = finish - start;
             testResult.setDuration(timeElapsed);
 
-            sessionFactory.transactional(em -> {
-                em.merge(testResult);
-            });
+            sessionFactory.transactional(em -> em.merge(testResult));
 
             this.eventQueue.handle(new ReplayCompleted());
         }
@@ -288,16 +280,11 @@ public class ReplayerDataset implements BaseDataset {
         }
         ArrayList<CallIndex> indexes = new ArrayList<>();
 
-        var result = (TestResults) sessionFactory.queryResult(em -> {
-            return (TestResults) em.createQuery("SELECT e FROM TestResults e WHERE e.id=" + id).getResultList().get(0);
-        });
+        var result = (TestResults) sessionFactory.queryResult(em -> (TestResults) em.createQuery("SELECT e FROM TestResults e WHERE e.id=" + id).getResultList().get(0));
 
-        sessionFactory.query(e -> {
-            indexes.addAll(e.createQuery("SELECT e FROM CallIndex e WHERE " +
-                    " e.recordingId=" + result.getRecordingId() +
-                    " AND e.stimulatorTest=true ORDER BY e.id ASC").getResultList());
-
-        });
+        sessionFactory.query(e -> indexes.addAll(e.createQuery("SELECT e FROM CallIndex e WHERE " +
+                " e.recordingId=" + result.getRecordingId() +
+                " AND e.stimulatorTest=true ORDER BY e.id ASC").getResultList()));
 
         if (indexes.size() > 0) {
             result.setType("AUTO");
@@ -305,9 +292,7 @@ public class ReplayerDataset implements BaseDataset {
             result.setType("PLAY");
             result.setDuration(System.currentTimeMillis());
         }
-        sessionFactory.transactional(em -> {
-            em.merge(result);
-        });
+        sessionFactory.transactional(em -> em.merge(result));
         thread = new Thread(() -> {
             try {
                 cache.set(id, "runid", id + "");

@@ -14,6 +14,7 @@ Feature: DbRecording
     And Adding dns for 'be.sample.test'
     And Adding ssl for '*.sample.test'
     And Adding ssl for 'sample.test'
+    And Quit selenium
 
   Scenario: Record interaction
     Given Start h2 db

@@ -28,7 +28,7 @@ public class RequestResponseBuilderImpl implements RequestResponseBuilder {
     private static final String BASIC_AUTH_SEPARATOR = ":";
     private static Logger logger;
     public RequestResponseBuilderImpl(LoggerBuilder loggerBuilder) {
-        this.logger = loggerBuilder.build(RequestResponseBuilderImpl.class);
+        logger = loggerBuilder.build(RequestResponseBuilderImpl.class);
     }
 
     private static void setupRequestHost(HttpExchange exchange, Request result) {

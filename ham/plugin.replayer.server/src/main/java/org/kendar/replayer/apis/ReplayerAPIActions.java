@@ -49,8 +49,6 @@ public class ReplayerAPIActions implements FilteringClass {
 
         if (action.equalsIgnoreCase("start") && replayerStatus.getStatus() == ReplayerState.NONE) {
             var description = req.getQuery("description");
-//            var recordVoidDbCalls=Boolean.parseBoolean(req.getQuery("recordVoidDbCalls"));
-//            var recordDbCalls=Boolean.parseBoolean(req.getQuery("recordDbCalls"));
             replayerStatus.startRecording(id, description, req.getQuery());
         } else if (action.equalsIgnoreCase("start") && replayerStatus.getStatus() == ReplayerState.PAUSED_RECORDING) {
             replayerStatus.restartRecording();

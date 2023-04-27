@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <div v-if="active" class="loader-wrapper overlay">
     <div class="loader">
@@ -72,27 +73,14 @@ p {
   }
 }
 
-.dimScreen {
-  position: fixed;
-  padding: 0;
-  margin: 0;
-
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 100%;
-  background: rgba(204, 204, 204, 0.75);
-}
-
 .overlay {
   opacity: 0.8;
   background-color: rgba(204, 204, 204, 0.75);
   position: fixed;
   width: 100%;
   height: 100%;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   z-index: 1000;
 }
 </style>

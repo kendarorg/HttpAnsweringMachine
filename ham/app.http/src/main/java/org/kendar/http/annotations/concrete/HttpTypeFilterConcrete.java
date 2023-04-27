@@ -5,6 +5,7 @@ import org.kendar.http.annotations.HttpTypeFilter;
 import java.lang.annotation.Annotation;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("ClassExplicitlyAnnotation")
 public class HttpTypeFilterConcrete implements HttpTypeFilter {
 
     private final String hostAddress;

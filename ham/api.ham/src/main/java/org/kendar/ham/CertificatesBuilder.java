@@ -35,7 +35,7 @@ public interface CertificatesBuilder {
      */
     List<SubjectAltName> retrieveAltNames() throws HamException;
 
-    public class SubjectAltName {
+    class SubjectAltName {
         private String id;
         private String address;
 

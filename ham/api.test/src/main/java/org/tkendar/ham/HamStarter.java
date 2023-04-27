@@ -18,7 +18,7 @@ public class HamStarter {
 
     private static final Logger logger = LoggerFactory.getLogger(HamStarter.class);
     private static final ConcurrentHashMap<String, ThreadAndProc> processes = new ConcurrentHashMap<>();
-    public static boolean shutdownHookInitialized = false;
+    public static final boolean shutdownHookInitialized = false;
     private static boolean showTrace = false;
     private static Thread realThread;
 
@@ -56,21 +56,16 @@ public class HamStarter {
 
     private static void initShutdownHook() {
         if (shutdownHookInitialized) return;
-        Runtime.getRuntime().addShutdownHook(new Thread() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            var pu = new ProcessUtils(new HashMap<>());
+            try {
 
-            @Override
-            public void run() {
-                var pu = new ProcessUtils(new HashMap<>());
-                try {
+                HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").noError().run();
+                pu.sigtermProcesses((str) -> str.contains("-Dloader.main=org.kendar.Main"));
+            } catch (Exception e) {
 
-                    HttpChecker.checkForSite(60, "http://127.0.0.1/api/shutdown").noError().run();
-                    pu.sigtermProcesses((str) -> str.contains("-Dloader.main=org.kendar.Main"));
-                } catch (Exception e) {
-
-                }
             }
-
-        });
+        }));
     }
 
     public static void killHam(Class<?> caller) {
@@ -105,11 +100,9 @@ public class HamStarter {
         if (!appPathRootPath.toFile().exists()) {
             throw new HamTestException("WRONG STARTING PATH " + appPathRootPath);
         }
-        File[] matchingFiles = appPathRootPath.toFile().listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                if (name == null) return false;
-                return name.startsWith("app-") && name.endsWith(".jar");
-            }
+        File[] matchingFiles = appPathRootPath.toFile().listFiles((dir, name) -> {
+            if (name == null) return false;
+            return name.startsWith("app-") && name.endsWith(".jar");
         });
         var appPathRoot = Path.of(matchingFiles[0].getAbsolutePath()).toString();
         initShutdownHook();

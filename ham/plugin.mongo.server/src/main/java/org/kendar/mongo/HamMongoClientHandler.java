@@ -100,7 +100,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
                 var jsonPayload = mapper.readTree(payload.getJson());
                 List<String> keys = new ArrayList<>();
                 Iterator<String> iterator = jsonPayload.fieldNames();
-                iterator.forEachRemaining(e -> keys.add(e));
+                iterator.forEachRemaining(keys::add);
                 command = keys.get(0);
                 //System.out.println("SENDING "+command);
                 req.setPath(
@@ -112,7 +112,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
                 var jsonPayload = mapper.readTree(msg.getJson());
                 List<String> keys = new ArrayList<>();
                 Iterator<String> iterator = jsonPayload.fieldNames();
-                iterator.forEachRemaining(e -> keys.add(e));
+                iterator.forEachRemaining(keys::add);
                 command = keys.get(0);
                 //System.out.println("SENDING "+command);
                 req.setPath(

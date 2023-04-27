@@ -75,10 +75,6 @@ public class OpMsgResponder implements MongoResponder {
                 var pack = msgPacket.getPayloads().get(i);
                 if (pack instanceof MsgDocumentPayload) {
                     throw new RuntimeException("MISSING MsgDocumentPayload");
-//                    var tl = new BsonArray();
-//                    var doc = (MsgDocumentPayload) pack;
-//                    var bdoc = (BsonDocument) BsonDocument.parse(doc.getJson());
-//                    tl.add(bdoc);
                 } else {
                     var doc = (MsgSectionPayload) pack;
                     var tl = new BsonArray();
@@ -87,7 +83,6 @@ public class OpMsgResponder implements MongoResponder {
                         tl.add(bdoc);
                     }
                     command.put(doc.getTitle(), tl);
-                    //tl.add(bdoc);
                 }
             }
         }

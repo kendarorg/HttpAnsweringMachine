@@ -9,6 +9,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Locale;
 
+@SuppressWarnings("HttpUrlsUsage")
 public class RequestHandler implements Runnable {
 
     public static final int READ_BUFFER_SIZE = 8192;
@@ -18,7 +19,7 @@ public class RequestHandler implements Runnable {
     /**
      * Socket connected to client passed by Proxy server
      */
-    Socket clientSocket;
+    final Socket clientSocket;
     /**
      * Read data client sends to proxy
      */
@@ -385,7 +386,7 @@ public class RequestHandler implements Runnable {
         if (url.toLowerCase(Locale.ROOT).startsWith("http://")) {
             url = url.substring(7);
         }
-        String pieces[] = url.split(":");
+        String[] pieces = url.split(":");
         url = pieces[0];
         int port = Integer.valueOf(pieces[1]);
 
@@ -640,8 +641,8 @@ public class RequestHandler implements Runnable {
      */
     class ClientToServerHttpsTransmit implements Runnable {
 
-        InputStream proxyToClientIS;
-        OutputStream proxyToServerOS;
+        final InputStream proxyToClientIS;
+        final OutputStream proxyToServerOS;
 
         /**
          * Creates Object to Listen to Client and Transmit that data to the server

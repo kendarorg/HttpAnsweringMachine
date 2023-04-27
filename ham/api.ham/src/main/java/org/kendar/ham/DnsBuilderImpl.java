@@ -93,7 +93,6 @@ class DnsBuilderImpl implements DnsBuilder {
                         alreadyExisting,
                         () -> alreadyExisting.get().getId()))
                 .withJsonBody(dnsServer);
-        ;
         hamBuilder.call(request.build());
         var inserted = retrieveDnsServers()
                 .stream().filter(d -> d.getAddress().equalsIgnoreCase(address) || d.getResolved().equalsIgnoreCase(address)).findAny();
@@ -127,15 +126,15 @@ class DnsBuilderImpl implements DnsBuilder {
 
     @Override
     public DnsCertsAndNamesBuilder withResolvedNames(Function<ResolvedNames, Boolean> filter) throws HamException {
-        toAddDnsAndOrTls = new ArrayList<ResolvedNames>();
+        toAddDnsAndOrTls = new ArrayList<>();
         toAddDnsAndOrTls.addAll(retrieveResolvedNames().stream()
-                .filter(f -> filter.apply(f)).collect(Collectors.toList()));
+                .filter(filter::apply).collect(Collectors.toList()));
         return this;
     }
 
     @Override
     public DnsCertsAndNamesBuilder withResolvedNames(List<ResolvedNames> with) {
-        toAddDnsAndOrTls = new ArrayList<ResolvedNames>();
+        toAddDnsAndOrTls = new ArrayList<>();
         toAddDnsAndOrTls.addAll(with);
         return this;
     }
@@ -156,12 +155,12 @@ class DnsBuilderImpl implements DnsBuilder {
     public void createDnsSslTls() throws HamException {
         if (generateDns) {
             new DnsBuilderImpl(hamBuilder)
-                    .addLocalDnsNames(toAddDnsAndOrTls.stream().map(d -> d.getName()).collect(Collectors.toList())
+                    .addLocalDnsNames(toAddDnsAndOrTls.stream().map(ResolvedNames::getName).collect(Collectors.toList())
                             .toArray(new String[]{}));
         }
         if (generateTls) {
             new CertificatesBuilderImpl(hamBuilder)
-                    .addAltName(toAddDnsAndOrTls.stream().map(d -> d.getName()).collect(Collectors.toList())
+                    .addAltName(toAddDnsAndOrTls.stream().map(ResolvedNames::getName).collect(Collectors.toList())
                             .toArray(new String[]{}));
         }
     }

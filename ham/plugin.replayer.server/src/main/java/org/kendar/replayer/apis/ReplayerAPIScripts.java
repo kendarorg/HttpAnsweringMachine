@@ -61,7 +61,7 @@ public class ReplayerAPIScripts implements FilteringClass {
             )
     )
     public void retrieveExtensions(Request req, Response res) throws Exception {
-        var result = engineList.stream().map(e -> e.getId()).collect(Collectors.toList());
+        var result = engineList.stream().map(ReplayerEngine::getId).collect(Collectors.toList());
         res.setStatusCode(200);
         res.setResponseText(mapper.writeValueAsString(result));
     }

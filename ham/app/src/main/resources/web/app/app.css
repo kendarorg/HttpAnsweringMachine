@@ -13,6 +13,7 @@ input, .modal {
     background-color: #34495e;
 }
 
+/*noinspection CssUnusedSymbol*/
 .row .alert {
     margin-top: 25px;
 }

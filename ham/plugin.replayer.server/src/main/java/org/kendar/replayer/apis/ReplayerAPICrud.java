@@ -356,7 +356,7 @@ public class ReplayerAPICrud implements FilteringClass {
                     examples = @Example(example = "[1,2,3]"))
     )
     public void clone(Request req, Response res) throws Exception {
-        Set<Long> jsonFileData = new HashSet<Long>(
+        Set<Long> jsonFileData = new HashSet<>(
                 Arrays.stream(mapper.readValue(req.getRequestText(), Long[].class)).collect(Collectors.toList()));
         var id = Long.valueOf(req.getPathParameter("id"));
         AtomicLong recordingId = new AtomicLong();
@@ -500,9 +500,7 @@ public class ReplayerAPICrud implements FilteringClass {
 
         var id = Long.parseLong(req.getPathParameter("id"));
         var type = req.getQuery("type") == null ? "*" : req.getQuery("type");
-        Optional<DbRecording> recording = sessionFactory.querySingle(em -> {
-            return em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id);
-        });
+        Optional<DbRecording> recording = sessionFactory.querySingle(em -> em.createQuery("SELECT e FROM DbRecording e WHERE e.id=" + id));
         var rec = recording.get();
         for (var eng : replayerEngines) {
             if (type.equalsIgnoreCase("*") || type.equalsIgnoreCase(eng.getId())) {

@@ -76,12 +76,8 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
                 "org.hibernate", "Log hibernate");
 
 
-        eventQueue.registerCommand(e -> {
-            return remoteRequest(e);
-        }, ExecuteRemoteRequest.class);
-        eventQueue.registerCommand(e -> {
-            return localRequest(e);
-        }, ExecuteLocalRequest.class);
+        eventQueue.registerCommand(this::remoteRequest, ExecuteRemoteRequest.class);
+        eventQueue.registerCommand(this::localRequest, ExecuteLocalRequest.class);
     }
 
 

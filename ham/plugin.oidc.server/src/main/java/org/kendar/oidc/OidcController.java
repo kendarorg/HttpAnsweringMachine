@@ -636,7 +636,7 @@ public class OidcController implements FilteringClass {
         final User user;
         final String iss;
         final String nonce;
-        String scope;
+        final String scope;
 
         public CodeInfo(
                 String codeChallenge,

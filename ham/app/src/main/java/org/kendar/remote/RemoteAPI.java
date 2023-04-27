@@ -16,13 +16,15 @@ import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
+@SuppressWarnings("HttpUrlsUsage")
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class RemoteAPI implements FilteringClass {
     private final EventQueue eventQueue;
-    ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapper = new ObjectMapper();
 
     public RemoteAPI(EventQueue eventQueue) {
 
@@ -54,7 +56,7 @@ public class RemoteAPI implements FilteringClass {
         realRequest.setPath(uri.getPath());
         var query = new HashMap<String, String>();
         for (var par : URLEncodedUtils.parse(uri,
-                Charset.forName("UTF-8"))) {
+                StandardCharsets.UTF_8)) {
             query.put(par.getName(), par.getValue());
         }
         realRequest.setQuery(query);

@@ -6,6 +6,7 @@ import org.kendar.servers.http.matchers.FilterMatcher;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class GenericFilterExecutor {
@@ -22,9 +23,7 @@ public abstract class GenericFilterExecutor {
     public GenericFilterExecutor(int priority, boolean methodBlocking,
                                  boolean typeBlocking, HttpFilterType phase,
                                  Method callback, FilteringClass filterClass, FilterMatcher... matcher) {
-        for (var match : matcher) {
-            this.matchers.add(match);
-        }
+        this.matchers.addAll(Arrays.asList(matcher));
         if (filterClass != null) {
             this.id = filterClass.getId();
         }

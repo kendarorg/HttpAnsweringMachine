@@ -41,7 +41,7 @@ public class JsFilterLoader implements CustomFiltersLoader {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final SandboxClassShutter sandboxClassShutter = new SandboxClassShutter();
     private static final TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<HashMap<String, String>>() {
+            = new TypeReference<>() {
     };
     private final JsonConfiguration configuration;
     private final EventQueue eventQueue;

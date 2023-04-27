@@ -44,8 +44,8 @@ public class JsFilterAPI implements FilteringClass {
     private final FileResourcesUtils fileResourcesUtils;
     private final EventQueue eventQueue;
     private final HibernateSessionFactory sessionFactory;
-    TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<HashMap<String, String>>() {
+    final TypeReference<HashMap<String, String>> typeRef
+            = new TypeReference<>() {
     };
 
     public JsFilterAPI(JsonConfiguration configuration,
@@ -234,9 +234,7 @@ public class JsFilterAPI implements FilteringClass {
         dbFilter.setType(jsonFileData.getType());
         dbFilter.setBlocking(jsonFileData.isBlocking());
 
-        sessionFactory.transactional(em -> {
-            em.persist(dbFilter);
-        });
+        sessionFactory.transactional(em -> em.persist(dbFilter));
         res.setResponseText(dbFilter.getId().toString());
         res.setStatusCode(200);
         eventQueue.handle(new ScriptsModified());

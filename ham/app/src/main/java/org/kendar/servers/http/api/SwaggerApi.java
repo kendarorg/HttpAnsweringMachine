@@ -40,6 +40,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("HttpUrlsUsage")
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)
@@ -372,9 +373,7 @@ public class SwaggerApi implements FilteringClass {
         }
         if (Collection.class.isAssignableFrom(bodyRequest)) return true;
         var request = ModelConverters.getInstance().readAll(bodyRequest);
-        for (var req : request.entrySet()) {
-            schemas.put(req.getKey(), req.getValue());
-        }
+        schemas.putAll(request);
         return true;
     }
 
@@ -416,10 +415,10 @@ public class SwaggerApi implements FilteringClass {
         return this.getClass().getName();
     }
 
-    class mt {
+    static class mt {
         public String content;
         public MediaType mediaType;
         public String description;
-        public Map<String, Header> headers = new HashMap<>();
+        public final Map<String, Header> headers = new HashMap<>();
     }
 }

@@ -35,7 +35,7 @@ public class ReplayerAPIContent implements FilteringClass {
     private final LoggerBuilder loggerBuilder;
     private final Md5Tester md5Tester;
     private final HibernateSessionFactory sessionFactory;
-    ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapper = new ObjectMapper();
 
     public ReplayerAPIContent(
             FileResourcesUtils fileResourcesUtils,

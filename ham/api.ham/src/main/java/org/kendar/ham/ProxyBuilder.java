@@ -90,7 +90,7 @@ public interface ProxyBuilder {
      */
     void refresh() throws HamException;
 
-    public class Proxy {
+    class Proxy {
         private String id;
         private String when;
         private String where;

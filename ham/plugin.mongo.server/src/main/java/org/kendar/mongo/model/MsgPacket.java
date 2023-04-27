@@ -99,9 +99,7 @@ public class MsgPacket extends MongoPacket<MsgPacket> implements MongoReqResPack
         }
 
         var header = buildHeader(msgLength, requestId, responseTo, OpCodes.OP_MSG);
-        for (var i = 0; i < 16; i++) {
-            res[i] = header[i];
-        }
+        System.arraycopy(header, 0, res, 0, 16);
         return res;
     }
 }

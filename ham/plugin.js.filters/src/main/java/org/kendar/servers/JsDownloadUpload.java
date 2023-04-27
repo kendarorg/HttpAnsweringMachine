@@ -22,10 +22,10 @@ public class JsDownloadUpload implements FullDownloadUpload {
     private final JsonConfiguration configuration;
     private final EventQueue eventQueue;
     private final HibernateSessionFactory sessionFactory;
-    TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<HashMap<String, String>>() {
+    final TypeReference<HashMap<String, String>> typeRef
+            = new TypeReference<>() {
     };
-    ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapper = new ObjectMapper();
     public JsDownloadUpload(JsonConfiguration configuration,
                             EventQueue eventQueue,
                             HibernateSessionFactory sessionFactory) {

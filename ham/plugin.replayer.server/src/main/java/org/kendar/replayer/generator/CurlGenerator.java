@@ -47,16 +47,12 @@ public class CurlGenerator implements SelectedGenerator {
                 "}");
         var winCurl = new ArrayList<String>();
         for (var id : ids) {
-            var callIndex = (CallIndex) sessionFactory.queryResult((em) -> {
-                return em.createQuery("SELECT e FROM CallIndex e WHERE " +
-                        " e.recordingId=" + recordingId + " AND " +
-                        " e.id=" + id).getResultList().get(0);
-            });
-            var replayerRow = (ReplayerRow) sessionFactory.queryResult((em) -> {
-                return em.createQuery("SELECT e FROM ReplayerRow e WHERE " +
-                        " e.recordingId=" + recordingId + " AND " +
-                        " e.id=" + callIndex.getReference()).getResultList().get(0);
-            });
+            var callIndex = (CallIndex) sessionFactory.queryResult((em) -> em.createQuery("SELECT e FROM CallIndex e WHERE " +
+                    " e.recordingId=" + recordingId + " AND " +
+                    " e.id=" + id).getResultList().get(0));
+            var replayerRow = (ReplayerRow) sessionFactory.queryResult((em) -> em.createQuery("SELECT e FROM ReplayerRow e WHERE " +
+                    " e.recordingId=" + recordingId + " AND " +
+                    " e.id=" + callIndex.getReference()).getResultList().get(0));
             var requ = replayerRow.getRequest();
 
             var singleCurl = "curl -v ";

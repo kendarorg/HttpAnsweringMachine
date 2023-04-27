@@ -22,9 +22,9 @@ public class XmlElement {
                 ", \"valueConstraint\":\"" + valueConstraint + "\"" +
                 ", \"attributes\":[" + String.join(",", attributes.values().stream()
                 .sorted(Comparator.comparing(XmlAttribute::getName))
-                .map(a -> a.toString()).collect(Collectors.toList())) + "]" +
+                .map(XmlAttribute::toString).collect(Collectors.toList())) + "]" +
                 ", \"children\":[" + String.join(",", children.values().stream()
-                .sorted(Comparator.comparing(XmlElementGroup::getTag)).map(a -> a.toString()).collect(Collectors.toList())) + "]" +
+                .sorted(Comparator.comparing(XmlElementGroup::getTag)).map(XmlElementGroup::toString).collect(Collectors.toList())) + "]" +
                 "}";
     }
 

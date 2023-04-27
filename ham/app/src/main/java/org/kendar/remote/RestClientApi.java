@@ -15,6 +15,7 @@ import org.kendar.servers.http.Request;
 import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
 
+@SuppressWarnings("HttpUrlsUsage")
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}",
         blocking = true)

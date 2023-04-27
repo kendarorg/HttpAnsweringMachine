@@ -43,18 +43,16 @@ public class DbProxyApi implements FilteringClass {
     private final Logger logger;
     private final Logger specialLogger;
     private final JsonConfiguration configuration;
-    private final EventQueue eventQueue;
     private final ResultSetConverter resultSetConverter;
     private final ConcurrentHashMap<String, ServerData> janusEngines = new ConcurrentHashMap<>();
     private final Object syncObject = new Object();
-    ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapper = new ObjectMapper();
 
     public DbProxyApi(JsonConfiguration configuration, EventQueue eventQueue, LoggerBuilder loggerBuilder,
                       PluginsInitializer pluginsInitializer, ResultSetConverter resultSetConverter) {
         this.logger = loggerBuilder.build(DbProxyApi.class);
         this.specialLogger = loggerBuilder.build(ProxyDb.class);
         this.configuration = configuration;
-        this.eventQueue = eventQueue;
         this.resultSetConverter = resultSetConverter;
         this.serializer = new JsonTypedSerializer();
         eventQueue.register(this::handleConfigChange, DbProxyConfigChanged.class);
@@ -158,7 +156,7 @@ public class DbProxyApi implements FilteringClass {
         var toChangeTo = new ArrayList<List<Object>>();
         ArrayNode tree = (ArrayNode) mapper.readTree(newData.getData());
         for (var sub : tree) {
-            var newLine = new ArrayList<Object>();
+            var newLine = new ArrayList<>();
             toChangeTo.add(newLine);
             var suba = (ArrayNode) sub;
             for (var fld : suba) {

@@ -43,8 +43,6 @@ public class ReplayerStatus {
     private final AtomicReference<ReplayerState> state = new AtomicReference<>(ReplayerState.NONE);
     private final JsonTypedSerializer serializer = new JsonTypedSerializer();
     private BaseDataset dataset;
-//    private boolean recordDbCalls;
-//    private boolean recordVoidDbCalls;
     private Map<String, String> query;
 
     public ReplayerStatus(

@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 class HamReplayerRecorderBuilderImpl implements HamReplayerBuilder, HamReplayerRecordingBuilder {
 
-    HamInternalBuilder hamBuilder;
+    final HamInternalBuilder hamBuilder;
     private String name;
 
     public HamReplayerRecorderBuilderImpl(HamInternalBuilder hamBuilder) {
