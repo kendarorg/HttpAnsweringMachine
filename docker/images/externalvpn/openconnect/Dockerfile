@@ -4,7 +4,7 @@ FROM ubuntu:latest
 RUN apt-get update
 RUN apt-get upgrade -y
 
-RUN echo ham.openconnect version-4.2.2
+RUN echo ham.openconnect version-4.3.0
 
 # Block timezone request prompt
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Rome"

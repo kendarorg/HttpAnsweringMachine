@@ -1,6 +1,6 @@
 FROM ham.base
 
-RUN echo ham.master version-4.2.2
+RUN echo ham.master version-4.3.0
 
 COPY data/ham.sh /etc/app/ham/
 COPY data/app /etc/app/ham/app/

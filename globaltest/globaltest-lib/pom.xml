@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.kendar</groupId>
         <artifactId>globaltest</artifactId>
-        <version>4.2.2</version>
+        <version>4.3.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.kendar</groupId>
     <artifactId>globaltest-lib</artifactId>
-    <version>4.2.2</version>
+    <version>4.3.0</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
