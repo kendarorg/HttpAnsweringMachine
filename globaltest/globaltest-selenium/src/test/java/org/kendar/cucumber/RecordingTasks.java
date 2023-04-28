@@ -343,6 +343,7 @@ public class RecordingTasks {
             if (res.get().isCompleted()) {
                 break;
             }
+            Sleeper.sleep(1000);
         }
         Sleeper.sleep(1000);
     }
