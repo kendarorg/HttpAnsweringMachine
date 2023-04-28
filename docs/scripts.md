@@ -13,6 +13,7 @@ To deploy docker stuffs should set the docker host. For me is
     * clean: Clean all projects
     * deploy_jar: Deploy on Kendar maven repo
     * init: Utility to initialize all scripts
+    * change_version: Change the version of the project in one click. Should edit it!
     * libs
       * copy_ham: Copy HAM data
       * copy_simpledns: Copy Simpledns data
