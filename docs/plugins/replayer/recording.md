@@ -68,6 +68,11 @@ the real database when doing the test. If you instead start the recording -befor
 application under test you will record even all the initialisations and you will not need
 <B>ANY DATABASE AT ALL</b>
 
+### Mongo Recording
+
+* Just create a Mongo proxy  [here](../mongo.md)
+* Use the standard mongo connection string as suggested in the proxy functionality
+
 ### Simpler recording 
 
 You can choose to simulate the "non data" related calls it's enough to check the flag during recording (AND REPLAYING)

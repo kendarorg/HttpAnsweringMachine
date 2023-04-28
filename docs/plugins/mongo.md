@@ -10,6 +10,7 @@ The exposed port is the one that will be used by the application to monitor.
 * The database will be mongodb://[HAM IP]:27097
 * The real mongodb will be the one in connectionstring
 
+<img src="../images/mongo.gif" width="500"/>
 
 At the moment you should specify login, password and auth method on the real
 mongodb connection string. The connection to the ham proxy is without password 
