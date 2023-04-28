@@ -76,6 +76,7 @@ public class CommonTasks {
         var driver = (JavascriptExecutor)Utils.getCache("driver");
         var text = driver.executeScript("return document.documentElement.outerHTML;").toString();
         assertTrue(text.contains(toFind));
+        takeSnapShot();
         org.kendar.utils.Sleeper.sleep(1000);
     }
 

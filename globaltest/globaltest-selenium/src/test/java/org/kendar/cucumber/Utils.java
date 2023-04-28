@@ -1,11 +1,10 @@
 package org.kendar.cucumber;
 
+import org.apache.commons.io.FileUtils;
 import org.kendar.globaltest.HttpChecker;
 import org.kendar.globaltest.ProcessUtils;
 import org.kendar.globaltest.Sleeper;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +31,21 @@ public class Utils {
         }else {
             cache.put(key.toLowerCase(Locale.ROOT), value);
         }
+    }
+
+    private static int counter=0;
+    public static void takeSnapShot() {
+        /*
+        try {
+            counter++;
+            TakesScreenshot scrShot = ((TakesScreenshot) getCache("driver"));
+            File srcFile = scrShot.getScreenshotAs(OutputType.FILE);
+            File destFile = new File("C:\\Temp\\snap\\snap_" + String.format("%03d", counter) + ".png");
+            FileUtils.copyFile(srcFile, destFile);
+            Files.delete(srcFile.getAbsoluteFile().toPath());
+        }catch (Exception ex){
+            System.out.println(ex);
+        }*/
     }
 
     private static HashMap<String,Object> cache = new HashMap<>();
@@ -84,6 +98,7 @@ public class Utils {
                 js.executeScript("arguments[0].scrollIntoView(true);window.scrollBy(0,-100);", we);
                 //js.executeScript("window.scrollTo(0," + (i+extraLength[0]) + ")");
             }
+            takeSnapShot();
             return we;
         }
         throw new RuntimeException("Unable to find item!");
@@ -100,6 +115,7 @@ public class Utils {
                     if(c!=null){
                         Sleeper.sleep(1000);
                         if(c.apply(res)){
+                            takeSnapShot();
                             return res;
                         }
                     }else {
@@ -132,6 +148,7 @@ public class Utils {
                     } catch (Exception ex) {
                         return;
                     }
+                    takeSnapShot();
                     return;
                 } catch (Exception e) {
                     System.out.println(e);
@@ -156,6 +173,8 @@ public class Utils {
             js.executeScript("arguments[0].click();", el);
             Thread.sleep(100);
         }
+
+        takeSnapShot();
         return el;
     }
 
@@ -175,6 +194,7 @@ public class Utils {
         var js = (JavascriptExecutor)driver;
         js.executeScript("alert(\""+message+"\");");
         Sleeper.sleep(5000);
+        takeSnapShot();
         driver.switchTo().alert().dismiss();
     }
 
