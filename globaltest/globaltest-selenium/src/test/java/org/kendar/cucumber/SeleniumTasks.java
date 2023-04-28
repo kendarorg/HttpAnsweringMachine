@@ -11,6 +11,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import static org.kendar.cucumber.Utils.takeMessageSnapshot;
+
 public class SeleniumTasks {
     private ChromeDriver driver;
     private JavascriptExecutor js;
@@ -69,5 +71,6 @@ public class SeleniumTasks {
         Utils.setCache("driver", null);
         Utils.setCache("js", null);
         Sleeper.sleep(1000);
+        takeMessageSnapshot("End of test");
     }
 }
