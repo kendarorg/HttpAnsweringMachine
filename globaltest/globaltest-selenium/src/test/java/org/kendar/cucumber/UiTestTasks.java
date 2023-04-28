@@ -19,7 +19,8 @@ public class UiTestTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("grid-visibility")));
         Sleeper.sleep(1000);
-        checkCheckBox(() -> driver.findElement(By.cssSelector("tr:nth-child(6) .form-check-input")));
+        scrollFind(() -> driver.findElement(By.id("show-key-requestHost")));
+        checkCheckBox(() -> driver.findElement(By.id("show-key-requestHost")));
         Sleeper.sleep(1000); //todo show-key-requestHost show-key-stimulatorTest
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(1000);

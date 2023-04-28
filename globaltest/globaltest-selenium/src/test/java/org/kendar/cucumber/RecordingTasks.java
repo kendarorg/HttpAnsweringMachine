@@ -108,7 +108,7 @@ public class RecordingTasks {
     }
 
     @And("^Start calendar recording '(.+)'$")
-    public void startCalendarRecording(String recordingName) throws Exception {
+    public void loadResultsFor(String recordingName) throws Exception {
         var driver = (WebDriver) Utils.getCache("driver");
 
         driver.get("http://www.local.test/index.html");
@@ -289,7 +289,7 @@ public class RecordingTasks {
 
 
     @And("^Load results '(.+)' for '(.+)'$")
-    public void startCalendarRecording(String trueFalse, String recordingName) throws Exception {
+    public void loadResultsFor(String trueFalse, String recordingName) throws Exception {
         var success = trueFalse.equalsIgnoreCase("true");
         var driver = (WebDriver) Utils.getCache("driver");
         var idRecording = (String) Utils.getCache("recording_" + recordingName);
@@ -324,9 +324,10 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         driver.get("http://www.local.test/api/plugins/replayer/results/" + resultIndex);
         String source = driver.getPageSource();
+        takeSnapShot();
         assertTrue(source.contains("successful\":" + (success ? "true" : "false")));
         Sleeper.sleep(2000);
-        takeSnapShot();
+
     }
 
 
@@ -342,6 +343,7 @@ public class RecordingTasks {
             if (res.get().isCompleted()) {
                 break;
             }
+            Sleeper.sleep(1000);
         }
         Sleeper.sleep(1000);
     }

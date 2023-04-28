@@ -102,13 +102,14 @@ Feature: DbRecording
     And Quit selenium
 
   Scenario: Run the be fake db test
-    When Set recording 'dbrecording.run_fake_db'
+    When Set recording 'dbrecording.fake_h2_test'
     Given Prepare HAM setup
     And Upload recording 'Main'
     And Clone recording 'Main' into 'DbNullTest'
     And Prepare db null test 'DbNullTest'
     # To allow the initialisation of an existing database
     Then Start replaying 'DbNullTest'
+    And Wait '5' seconds
     # Does not create the db and tables, just use them
     Given Start applications 'benogen'
     And Wait for 'benogen' to be ready calling 'http://127.0.0.1:8100/api/v1/health' for '120' seconds

@@ -19,9 +19,11 @@ public class NullGatewayTasks {
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("grid-visibility"))).click();
         Sleeper.sleep(1000);
-        scrollFind(() -> driver.findElement(By.cssSelector("tr:nth-child(6) .form-check-input"))).click();
+        scrollFind(() -> driver.findElement(By.id("show-key-requestHost")));
+        checkCheckBox(() -> driver.findElement(By.id("show-key-requestHost")));
         Sleeper.sleep(1000);
-        scrollFind(() -> driver.findElement(By.cssSelector("tr:nth-child(4) .form-check-input"))).click();
+        scrollFind(() -> driver.findElement(By.id("show-key-stimulatorTest")));
+        checkCheckBox(() -> driver.findElement(By.id("show-key-stimulatorTest")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(1000);
