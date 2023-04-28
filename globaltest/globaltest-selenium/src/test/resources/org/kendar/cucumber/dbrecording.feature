@@ -102,7 +102,7 @@ Feature: DbRecording
     And Quit selenium
 
   Scenario: Run the be fake db test
-    When Set recording 'dbrecording.run_fake_db'
+    When Set recording 'dbrecording.fake_h2_test'
     Given Prepare HAM setup
     And Upload recording 'Main'
     And Clone recording 'Main' into 'DbNullTest'
