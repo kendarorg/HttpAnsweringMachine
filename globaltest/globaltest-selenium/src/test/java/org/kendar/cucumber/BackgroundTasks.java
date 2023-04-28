@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.kendar.cucumber.Utils.deleteDirectory;
@@ -22,6 +21,7 @@ public class BackgroundTasks {
     public void cacheInitialized() throws Exception {
         Utils.getCache().clear();
     }
+
     @Given("^Ham started$")
     public void hamStarted() throws Exception {
         Utils.initShutdownHook();
@@ -34,7 +34,7 @@ public class BackgroundTasks {
             throw new Exception(e);
         }
 
-        deleteDirectory(Path.of(getRootPath(caller), "release","data").toFile());
+        deleteDirectory(Path.of(getRootPath(caller), "release", "data").toFile());
         deleteDirectory(Path.of(getRootPath(caller), "release", "calendar", "data").toFile());
         Files.deleteIfExists(Path.of(getRootPath(caller), "release", "calendar", "be.mv.db"));
         Files.deleteIfExists(Path.of(getRootPath(caller), "release", "data", "ham.mv.db"));
@@ -61,7 +61,7 @@ public class BackgroundTasks {
                 withCommand(java).
                 withParameter("-Djsonconfig=" + externalJsonPath).
                 withParameter("-Dloader.path=" + libsPath).
-                withParameter("-Dham.tempdb="+Path.of(getRootPath(caller), "release","data","tmp")).
+                withParameter("-Dham.tempdb=" + Path.of(getRootPath(caller), "release", "data", "tmp")).
                 withParameter("-Dperformance.watcher.interval=0").
                 withParameter("-Dloader.main=org.kendar.Main").
                 withParameter("-javaagent:" + agentPath + "=destfile=" + jacocoExecPath + ",includes=org.kendar.**").

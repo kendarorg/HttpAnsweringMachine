@@ -8,6 +8,7 @@ Feature: Google Hack Example
     And Selenium initialized
 
   Scenario: Intercept google and change the logo
+    When Set recording 'googlehack.change_logo'
     Given The google home page
     And The page does not contains 'Bing_logo'
     And Wait '3' seconds

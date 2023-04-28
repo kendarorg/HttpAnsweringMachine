@@ -8,7 +8,6 @@ public class CheckSudo {
     private static final String CRLF = "\r\n";
 
 
-
     public static boolean isSudo() {
         return executeCommand("sudo", "-n", "true").length() == 0;
     }

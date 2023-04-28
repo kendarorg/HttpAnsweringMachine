@@ -17,7 +17,7 @@ public class StreamGobbler implements Runnable {
     public void run() {
         try {
             new BufferedReader(new InputStreamReader(inputStream)).lines().forEach(consumeInputLine);
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
     }

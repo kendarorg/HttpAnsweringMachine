@@ -12,42 +12,19 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class LogWriter {
 
-    private static String getCurrentLocalDateTimeStamp() {
-        return LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
-    }
-    public static void info(String data,Object ... pars){
-        if(pars.length>0){
-            System.out.println("[INFO] "+String.format(data,pars));
-        }else{
-            System.out.println("[INFO] "+data);
-        }
-    }
-    public static void warn(String data,Object ... pars){
-        if(pars.length>0){
-            System.out.println("[WARN] "+String.format(data,pars));
-        }else{
-            System.out.println("[WARN] "+data);
-        }
-    }
-    public static void errror(String data,Object ... pars){
-        if(pars.length>0){
-            System.err.println("[ERROR] "+String.format(data,pars));
-        }else{
-            System.err.println("[ERROR] "+data);
-        }
-    }
     private static final Path path;
-    private static final Thread logWriter ;
+    private static final Thread logWriter;
+    private static final LinkedBlockingQueue<String> logs = new LinkedBlockingQueue<>();
+
     static {
         var startingPath = System.getenv("LOG_PATH");
-        path = Path.of(startingPath,"globaltest."+(new Date().getTime())+".log");
+        path = Path.of(startingPath, "globaltest." + (new Date().getTime()) + ".log");
         try {
             var logOnSystemOut = false;
-            if(System.getenv("GLOBAL_LOG_ON_CONSOLE")!=null){
+            if (System.getenv("GLOBAL_LOG_ON_CONSOLE") != null) {
                 logOnSystemOut = Boolean.parseBoolean(System.getenv("GLOBAL_LOG_ON_CONSOLE"));
             }
-            if(!logOnSystemOut) {
+            if (!logOnSystemOut) {
                 Files.writeString(path, "STARTING");
             }
         } catch (IOException e) {
@@ -57,32 +34,60 @@ public class LogWriter {
         logWriter.start();
     }
 
-    private static final LinkedBlockingQueue<String> logs = new LinkedBlockingQueue<>();
+    private static String getCurrentLocalDateTimeStamp() {
+        return LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+    }
 
-    public static void writeProcess(String data){
+    public static void info(String data, Object... pars) {
+        if (pars.length > 0) {
+            System.out.println("[INFO] " + String.format(data, pars));
+        } else {
+            System.out.println("[INFO] " + data);
+        }
+    }
+
+    public static void warn(String data, Object... pars) {
+        if (pars.length > 0) {
+            System.out.println("[WARN] " + String.format(data, pars));
+        } else {
+            System.out.println("[WARN] " + data);
+        }
+    }
+
+    public static void errror(String data, Object... pars) {
+        if (pars.length > 0) {
+            System.err.println("[ERROR] " + String.format(data, pars));
+        } else {
+            System.err.println("[ERROR] " + data);
+        }
+    }
+
+    public static void writeProcess(String data) {
         try {
             logs.put(data);
         } catch (InterruptedException e) {
 
         }
     }
+
     private static void writeLogs() {
         var logOnSystemOut = false;
-        if(System.getenv("GLOBAL_LOG_ON_CONSOLE")!=null){
+        if (System.getenv("GLOBAL_LOG_ON_CONSOLE") != null) {
             logOnSystemOut = Boolean.parseBoolean(System.getenv("GLOBAL_LOG_ON_CONSOLE"));
         }
 
-        while(true){
+        while (true) {
             try {
-                while(!logs.isEmpty()){
+                while (!logs.isEmpty()) {
                     var data = logs.poll();
-                    if(data!=null){
-                        data = data.trim()+"\n";
+                    if (data != null) {
+                        data = data.trim() + "\n";
                     }
-                    if(logOnSystemOut) {
+                    if (logOnSystemOut) {
                         System.out.println(data.trim());
-                    }else {
-                        if(!Files.exists(path)){
+                    } else {
+                        if (!Files.exists(path)) {
                             Files.writeString(path, "STARTING REMOVED!");
                         }
                         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
@@ -95,14 +100,14 @@ public class LogWriter {
                     }
                 }
                 Sleeper.sleep(1000);
-            }catch (Exception ex){
+            } catch (Exception ex) {
 
             }
         }
     }
 
     public static void errror(Exception ex) {
-        System.err.println("[ERROR] "+ex.getMessage());
+        System.err.println("[ERROR] " + ex.getMessage());
         System.err.println(ex);
     }
 }

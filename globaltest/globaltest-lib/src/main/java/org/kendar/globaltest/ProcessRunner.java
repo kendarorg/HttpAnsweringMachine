@@ -12,8 +12,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
 public class ProcessRunner {
-    private String command;
     private final List<String> parameters = new ArrayList<>();
+    private String command;
     private String startingPath;
     private BiConsumer<String, Process> errorConsumer;
     private BiConsumer<String, Process> outConsumer;
@@ -22,7 +22,7 @@ public class ProcessRunner {
     private boolean isShell;
     private int maxOut = Integer.MAX_VALUE;
     private Process process;
-
+    private AtomicInteger maxLines = new AtomicInteger(Integer.MAX_VALUE);
 
     public ProcessRunner() {
     }
@@ -31,16 +31,18 @@ public class ProcessRunner {
         this();
         this.env = env;
     }
+
     public void destroyAsync() {
         process.destroy();
     }
-    public void destroy(){
-        process.destroy();
-        for(var i=0;i<100;i++){
-            if(process.isAlive()){
-                    Sleeper.sleep(100);
 
-            }else{
+    public void destroy() {
+        process.destroy();
+        for (var i = 0; i < 100; i++) {
+            if (process.isAlive()) {
+                Sleeper.sleep(100);
+
+            } else {
                 return;
             }
         }
@@ -60,7 +62,6 @@ public class ProcessRunner {
         this.env = env;
         return this;
     }
-
 
     public ProcessRunner withNoOutput() {
         errorConsumer = (a, p) -> {
@@ -128,38 +129,38 @@ public class ProcessRunner {
 
     private ProcessRunner run(boolean background) throws Exception {
         var realCommand = new ArrayList<String>();
-        if(this.isShell){
-            if(SystemUtils.IS_OS_WINDOWS){
+        if (this.isShell) {
+            if (SystemUtils.IS_OS_WINDOWS) {
                 realCommand.add("CMD");
                 realCommand.add("/C");
                 realCommand.add(command);
                 realCommand.addAll(parameters);
-            }else{
-                if(command.toLowerCase(Locale.getDefault()).endsWith(".sh")){
-                    if(command.startsWith("/")){
+            } else {
+                if (command.toLowerCase(Locale.getDefault()).endsWith(".sh")) {
+                    if (command.startsWith("/")) {
                         command = "." + command;
-                    }else {
+                    } else {
                         command = "./" + command;
                     }
-                    if(Files.exists(Path.of(command))){
-                        chooseIfBashOrNot(realCommand,Path.of(command));
-                    }else if(startingPath!=null && Files.exists(Path.of(startingPath,command))){
-                        chooseIfBashOrNot(realCommand,Path.of(startingPath,command));
-                    }else{
-                        throw new Exception("Missing "+command);
+                    if (Files.exists(Path.of(command))) {
+                        chooseIfBashOrNot(realCommand, Path.of(command));
+                    } else if (startingPath != null && Files.exists(Path.of(startingPath, command))) {
+                        chooseIfBashOrNot(realCommand, Path.of(startingPath, command));
+                    } else {
+                        throw new Exception("Missing " + command);
                     }
                     realCommand.add(command);
                     realCommand.addAll(parameters);
-                }else{
+                } else {
                     realCommand.add("bash");
                     realCommand.add("-c");
-                    var fullCommand = command+" "+String.join(" ",parameters);
+                    var fullCommand = command + " " + String.join(" ", parameters);
                     realCommand.add(fullCommand);
                     //realCommand.addAll(parameters);
                 }
 
             }
-        }else{
+        } else {
             realCommand.add(command);
             realCommand.addAll(parameters);
         }
@@ -213,27 +214,24 @@ public class ProcessRunner {
         return this;
     }
 
-    private void chooseIfBashOrNot(ArrayList<String> realCommand,Path path) throws IOException {
+    private void chooseIfBashOrNot(ArrayList<String> realCommand, Path path) throws IOException {
         var txt = Files.readString(path);
         var bashIndex = txt.indexOf("#!/bin/bash");
         var shIndex = txt.indexOf("#!/bin/sh");
-        var isBash=true;
-        if(shIndex>=0){
-            if(bashIndex<0 || bashIndex>shIndex){
-                isBash=false;
+        var isBash = true;
+        if (shIndex >= 0) {
+            if (bashIndex < 0 || bashIndex > shIndex) {
+                isBash = false;
             }
         }
-        if(isBash){
+        if (isBash) {
             realCommand.add("bash");
             realCommand.add("-c");
-        }else{
+        } else {
             realCommand.add("sh");
             realCommand.add("-c");
         }
     }
-
-    private AtomicInteger maxLines = new AtomicInteger(Integer.MAX_VALUE);
-
 
     public ProcessRunner limitOutput(int maxOut) {
         this.maxOut = maxOut;

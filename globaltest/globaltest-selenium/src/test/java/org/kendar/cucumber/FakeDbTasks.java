@@ -5,8 +5,7 @@ import org.kendar.globaltest.Sleeper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-import static org.kendar.cucumber.Utils.doClick;
-import static org.kendar.cucumber.Utils.scrollFind;
+import static org.kendar.cucumber.Utils.*;
 
 public class FakeDbTasks {
     @And("^Prepare db null test '(.+)'$")
@@ -15,33 +14,33 @@ public class FakeDbTasks {
         var driver = (WebDriver) Utils.getCache("driver");
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + gatewayTestId);
         Sleeper.sleep(1000);
-        scrollFind(()->driver.findElement(By.id("scriptstab_0"))).click();
+        scrollFind(() -> driver.findElement(By.id("scriptstab_0"))).click();
         Sleeper.sleep(1000);
-        scrollFind( () -> driver.findElement(By.id("grid-visibility"))).click();
+        scrollFind(() -> driver.findElement(By.id("grid-visibility"))).click();
         Sleeper.sleep(1000);
-        scrollFind( () -> driver.findElement(By.cssSelector("tr:nth-child(6) .form-check-input"))).click();
+        scrollFind(() -> driver.findElement(By.cssSelector("tr:nth-child(6) .form-check-input"))).click();
         Sleeper.sleep(1000);
-        scrollFind( () -> driver.findElement(By.cssSelector("tr:nth-child(4) .form-check-input"))).click();
+        scrollFind(() -> driver.findElement(By.cssSelector("tr:nth-child(4) .form-check-input"))).click();
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("grid-s-c-4")));
         Sleeper.sleep(1000);
-        driver.findElement(By.id("grid-s-c-4")).sendKeys("www");
+        sendKeys(By.id("grid-s-c-4"),"www");
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-delsel")));
         Sleeper.sleep(1000);
-        scrollFind( () -> driver.findElement(By.id("grid-s-c-1")), 100).click();
-        driver.findElement(By.id("grid-s-c-5")).sendKeys("/int/gat");
+        scrollFind(() -> driver.findElement(By.id("grid-s-c-1")), 100).click();
+        sendKeys(By.id("grid-s-c-5"),"/int/gat");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-delsel")));
         Sleeper.sleep(1000);
-        scrollFind( () -> driver.findElement(By.id("grid-s-c-5")), 100).click();
+        scrollFind(() -> driver.findElement(By.id("grid-s-c-5")), 100).click();
         Sleeper.sleep(1000);
-        driver.findElement(By.id("grid-s-c-5")).sendKeys("/int/be");
+        sendKeys(By.id("grid-s-c-5"),"/int/be");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         Sleeper.sleep(1000);
@@ -49,7 +48,7 @@ public class FakeDbTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-saverglobscriptdata")));
         Sleeper.sleep(1000);
-        scrollFind( () -> driver.findElement(By.id("grid-s-c-5")), 100).click();
+        scrollFind(() -> driver.findElement(By.id("grid-s-c-5")), 100).click();
         Sleeper.sleep(1000);
     }
 
@@ -59,33 +58,33 @@ public class FakeDbTasks {
         var driver = (WebDriver) Utils.getCache("driver");
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + gatewayTestId);
         Sleeper.sleep(1000);
-        scrollFind(()->driver.findElement(By.id("scriptstab_0"))).click();
+        scrollFind(() -> driver.findElement(By.id("scriptstab_0"))).click();
         Sleeper.sleep(1000);
-        scrollFind( () -> driver.findElement(By.id("grid-visibility"))).click();
+        scrollFind(() -> driver.findElement(By.id("grid-visibility"))).click();
         Sleeper.sleep(1000);
-        scrollFind( () -> driver.findElement(By.cssSelector("tr:nth-child(6) .form-check-input"))).click();
+        scrollFind(() -> driver.findElement(By.cssSelector("tr:nth-child(6) .form-check-input"))).click();
         Sleeper.sleep(1000);
-        scrollFind( () -> driver.findElement(By.cssSelector("tr:nth-child(4) .form-check-input"))).click();
+        scrollFind(() -> driver.findElement(By.cssSelector("tr:nth-child(4) .form-check-input"))).click();
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("grid-s-c-4")));
         Sleeper.sleep(1000);
-        driver.findElement(By.id("grid-s-c-4")).sendKeys("www");
+        sendKeys(By.id("grid-s-c-4"),"www");
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-delsel")));
         Sleeper.sleep(1000);
-        scrollFind( () -> driver.findElement(By.id("grid-s-c-1")), 100).click();
-        driver.findElement(By.id("grid-s-c-5")).sendKeys("/int/gat");
+        scrollFind(() -> driver.findElement(By.id("grid-s-c-1")), 100).click();
+        sendKeys(By.id("grid-s-c-5"),"/int/gat");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-delsel")));
         Sleeper.sleep(1000);
-        scrollFind( () -> driver.findElement(By.id("grid-s-c-5")), 100).click();
+        scrollFind(() -> driver.findElement(By.id("grid-s-c-5")), 100).click();
         Sleeper.sleep(1000);
-        driver.findElement(By.id("grid-s-c-5")).sendKeys("/int/be");
+        sendKeys(By.id("grid-s-c-5"),"/int/be");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         Sleeper.sleep(1000);
@@ -93,7 +92,7 @@ public class FakeDbTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-saverglobscriptdata")));
         Sleeper.sleep(1000);
-        scrollFind( () -> driver.findElement(By.id("grid-s-c-5")), 100).click();
+        scrollFind(() -> driver.findElement(By.id("grid-s-c-5")), 100).click();
         Sleeper.sleep(1000);
     }
 }

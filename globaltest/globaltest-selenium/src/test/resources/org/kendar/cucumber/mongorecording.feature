@@ -8,6 +8,7 @@ Feature: MongoRecording
     And Selenium initialized
 
   Scenario: Record interaction
+    When Set recording 'mongorecording.record_interaction'
     Given Start mongodb
     And Prepare HAM setup
     And Prepare mongo proxy
@@ -24,6 +25,7 @@ Feature: MongoRecording
     And Stop mongodb
 
   Scenario: Run the ui test
+    When Set recording 'mongorecording.run_ui_test'
     Given Start applications 'gateway,fe'
     Given Prepare HAM setup
     And Prepare mongo proxy
@@ -44,6 +46,7 @@ Feature: MongoRecording
     And Quit selenium
 
   Scenario: Run the be fake mongo test
+    When Set recording 'mongorecording.fake_mongo_test'
     Given Prepare HAM setup
     And Prepare mongo proxy
     And Upload recording 'MainMongo'

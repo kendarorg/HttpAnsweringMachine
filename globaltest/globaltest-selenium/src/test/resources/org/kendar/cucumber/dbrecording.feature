@@ -8,6 +8,7 @@ Feature: DbRecording
     And Selenium initialized
 
   Scenario: Setup proxies
+    When Set recording 'dbrecording.setup_proxies'
     And Initialized calendar rewrite url and H2 Db
     And Adding dns for 'www.sample.test'
     And Adding dns for 'gateway.sample.test'
@@ -17,6 +18,7 @@ Feature: DbRecording
     And Quit selenium
 
   Scenario: Record interaction
+    When Set recording 'dbrecording.record_interaction'
     Given Start h2 db
     And Prepare HAM setup
     And Start applications 'gateway,fe'
@@ -40,6 +42,7 @@ Feature: DbRecording
     And Quit selenium
 
   Scenario: Run the ui test
+    When Set recording 'dbrecording.run_ui_test'
     Given Start applications 'fe'
     And Prepare HAM setup
     And Wait for 'fe' to be ready calling 'http://127.0.0.1:8080/api/v1/health' for '120' seconds
@@ -57,6 +60,7 @@ Feature: DbRecording
     And Quit selenium
 
   Scenario: Run the null gateway test
+    When Set recording 'dbrecording.run_null_gateway'
     Given Start applications 'gateway'
     And Prepare HAM setup
     And Wait for 'gateway' to be ready calling 'http://127.0.0.1:8090/api/v1/health' for '120' seconds
@@ -76,6 +80,7 @@ Feature: DbRecording
     And Quit selenium
 
   Scenario: Run the null gateway failed test
+    When Set recording 'dbrecording.run_null_gateway_failed'
     Given Start applications 'gateway'
     And Prepare HAM setup
     And Wait for 'gateway' to be ready calling 'http://127.0.0.1:8090/api/v1/health' for '120' seconds
@@ -97,6 +102,7 @@ Feature: DbRecording
     And Quit selenium
 
   Scenario: Run the be fake db test
+    When Set recording 'dbrecording.run_fake_db'
     Given Prepare HAM setup
     And Upload recording 'Main'
     And Clone recording 'Main' into 'DbNullTest'

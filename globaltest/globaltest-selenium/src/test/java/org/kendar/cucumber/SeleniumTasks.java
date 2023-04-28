@@ -15,6 +15,10 @@ public class SeleniumTasks {
     private ChromeDriver driver;
     private JavascriptExecutor js;
 
+    private static void setupSize(ChromeDriver driver) {
+        driver.manage().window().setSize(new Dimension(1366, 900));
+    }
+
     @Given("^Selenium initialized$")
     public void seleniumInitialized() throws Exception {
         ChromeDriverManager.getInstance().setup();
@@ -26,7 +30,8 @@ public class SeleniumTasks {
         proxy.setProxyType(Proxy.ProxyType.MANUAL);
         DesiredCapabilities desired = new DesiredCapabilities();
         var options = new ChromeOptions();
-        options.setProxy(proxy);;
+        options.setProxy(proxy);
+        ;
         options.setAcceptInsecureCerts(true);
         options.addArguments("--remote-allow-origins=*");
         //options.addArguments("--disable-dev-shm-usage");
@@ -42,22 +47,18 @@ public class SeleniumTasks {
 
 
         js = (JavascriptExecutor) driver;
-        Utils.setCache("driver",driver);
-        Utils.setCache("js",js);
+        Utils.setCache("driver", driver);
+        Utils.setCache("js", js);
         Sleeper.sleep(1000);
         setupSize(driver);
         Sleeper.sleep(1000);
     }
 
-    private static void setupSize(ChromeDriver driver){
-        driver.manage().window().setSize(new Dimension(1366, 900));
-    }
-
     @When("^Resetting driver$")
     public void resettingDriver() throws Exception {
         driver.quit();
-        Utils.setCache("driver",null);
-        Utils.setCache("js",null);
+        Utils.setCache("driver", null);
+        Utils.setCache("js", null);
         Sleeper.sleep(1000);
         seleniumInitialized();
     }
@@ -65,8 +66,8 @@ public class SeleniumTasks {
     @When("^Quit selenium$")
     public void quitSelenium() throws Exception {
         driver.quit();
-        Utils.setCache("driver",null);
-        Utils.setCache("js",null);
+        Utils.setCache("driver", null);
+        Utils.setCache("js", null);
         Sleeper.sleep(1000);
     }
 }

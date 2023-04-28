@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
 import org.kendar.globaltest.Sleeper;
-import org.kendar.ham.*;
+import org.kendar.ham.HamBuilder;
+import org.kendar.ham.HamException;
+import org.kendar.ham.HamReplayerBuilder;
+import org.kendar.ham.HamRequestBuilder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -20,18 +23,20 @@ import static org.kendar.cucumber.Utils.*;
 
 public class RecordingTasks {
 
+    private static ObjectMapper mapper = new ObjectMapper();
+
     @And("^Navigate calendar ui$")
-    public void navigateCalendarUi() throws Exception{
-        var driver = (WebDriver)Utils.getCache("driver");
+    public void navigateCalendarUi() throws Exception {
+        var driver = (WebDriver) Utils.getCache("driver");
         driver.get("http://www.sample.test/");
         Sleeper.sleep(2000);
         doClick(() -> driver.findElement(By.id("appoint-add")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("role")));
         Sleeper.sleep(1000);
-        driver.findElement(By.id("role")).sendKeys("Doctor");
+        sendKeys(By.id("role"),"Doctor");
         Sleeper.sleep(1000);
-        driver.findElement(By.id("name")).sendKeys("John Doe");
+        sendKeys(By.id("name"),"John Doe");
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(5000);
         doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
@@ -40,28 +45,31 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("description")));
         Sleeper.sleep(1000);
-        driver.findElement(By.id("description")).sendKeys("Visit");
+        sendKeys(By.id("description"),"Visit");
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(2000);
-        waitForItem(()->driver.findElement (By.id ("grid-rowc-0-1")),
-                (item)->{
-            Sleeper.sleep(1000);
-            return item.getText().contains("CREATED");});
+        waitForItem(() -> driver.findElement(By.id("grid-rowc-0-1")),
+                (item) -> {
+                    Sleeper.sleep(1000);
+                    return item.getText().contains("CREATED");
+                });
 
         doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
         Sleeper.sleep(2000);
-        waitForItem(()->driver.findElement (By.id ("grid-rowc-0-1")),
-                (item)->{
+        waitForItem(() -> driver.findElement(By.id("grid-rowc-0-1")),
+                (item) -> {
                     Sleeper.sleep(1000);
-                    return item.getText().contains("DRAFT");});
+                    return item.getText().contains("DRAFT");
+                });
         doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
         Sleeper.sleep(2000);
 
 
-        waitForItem(()->driver.findElement (By.id ("grid-rowc-0-1")),
-                (item)->{
+        waitForItem(() -> driver.findElement(By.id("grid-rowc-0-1")),
+                (item) -> {
                     Sleeper.sleep(1000);
-                    return item.getText().contains("CONFIRMED");});
+                    return item.getText().contains("CONFIRMED");
+                });
         doClick(() -> driver.findElement(By.id("grid-rowe-0-1")));
         Sleeper.sleep(2000);
         doClick(() -> driver.findElement(By.linkText("Employees")));
@@ -71,7 +79,7 @@ public class RecordingTasks {
         doClick(() -> driver.findElement(By.id("name")));
         driver.findElement(By.id("name")).clear();
         Sleeper.sleep(1000);
-        driver.findElement(By.id("name")).sendKeys("Jane Doe");
+        sendKeys(By.id("name"),"Jane Doe");
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("grid-rowe-0-1")));
@@ -79,9 +87,9 @@ public class RecordingTasks {
     }
 
     @And("^Stop action '(.+)'$")
-    public void stopAction(String recordingName) throws Exception{
-        var driver = (WebDriver)Utils.getCache("driver");
-        var recordingId = Utils.getCache("recording_"+recordingName);
+    public void stopAction(String recordingName) throws Exception {
+        var driver = (WebDriver) Utils.getCache("driver");
+        var recordingId = Utils.getCache("recording_" + recordingName);
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + recordingId);
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-stop")));
@@ -91,15 +99,15 @@ public class RecordingTasks {
     }
 
     @And("^Start replaying '(.+)'$")
-    public void startReplaying(String recordingName) throws Exception{
-        var driver = (WebDriver)Utils.getCache("driver");
+    public void startReplaying(String recordingName) throws Exception {
+        var driver = (WebDriver) Utils.getCache("driver");
         doClick(() -> driver.findElement(By.id("recording-play")));
         Sleeper.sleep(1000);
     }
 
     @And("^Start calendar recording '(.+)'$")
-    public void startCalendarRecording(String recordingName) throws Exception{
-        var driver = (WebDriver)Utils.getCache("driver");
+    public void startCalendarRecording(String recordingName) throws Exception {
+        var driver = (WebDriver) Utils.getCache("driver");
 
         driver.get("http://www.local.test/index.html");
         Sleeper.sleep(1000);
@@ -110,7 +118,7 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("createScriptName")));
         Sleeper.sleep(1000);
-        driver.findElement(By.id("createScriptName")).sendKeys(recordingName);
+        sendKeys(By.id("createScriptName"),recordingName);
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("createScriptBt"))).click();
         Sleeper.sleep(2000);
@@ -119,19 +127,19 @@ public class RecordingTasks {
 
         try {
             Sleeper.sleep(1000);
-            scrollFind( () -> driver.findElement(By.id("scriptstab_0"))).click();
-        }catch (Exception ex){
+            scrollFind(() -> driver.findElement(By.id("scriptstab_0"))).click();
+        } catch (Exception ex) {
 
         }
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("extdbname"))).click();
         driver.findElement(By.id("extdbname")).clear();
         Sleeper.sleep(1000);
-        driver.findElement(By.id("extdbname")).sendKeys("be");
+        sendKeys(By.id("extdbname"),"be");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("description")));
         Sleeper.sleep(1000);
-        driver.findElement(By.id("description")).sendKeys("Full recording sample");
+        sendKeys(By.id("description"),"Full recording sample");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-saverglobscriptdata")));
         Sleeper.sleep(1000);
@@ -139,13 +147,12 @@ public class RecordingTasks {
         doClick(() -> driver.findElement(By.id("recording-startrecord")));
         Sleeper.sleep(1000);
         var result = driver.findElement(By.id("id")).getAttribute("value");
-        Utils.setCache("recording_"+recordingName,result);
+        Utils.setCache("recording_" + recordingName, result);
     }
 
-    private static ObjectMapper mapper = new ObjectMapper();
     @And("^Download recording '(.+)'$")
-    public void downloadRecording(String recordingName) throws Exception{
-        var recordingId = Integer.parseInt(Utils.getCache("recording_"+recordingName));
+    public void downloadRecording(String recordingName) throws Exception {
+        var recordingId = Integer.parseInt(Utils.getCache("recording_" + recordingName));
 
         var root = getRootPath(RecordingTasks.class);
         var builder = HamBuilder
@@ -154,40 +161,41 @@ public class RecordingTasks {
                 .withDns("127.0.0.1");
 
         var request = HamRequestBuilder.
-                newRequest("http","www.local.test").
-                withPath("/api/plugins/replayer/recording/"+recordingId+"/full").
+                newRequest("http", "www.local.test").
+                withPath("/api/plugins/replayer/recording/" + recordingId + "/full").
                 withMethod("GET").
                 build();
         var response = builder.call(request);
-        Files.writeString(Path.of(root,"release",recordingName+".json"),response.getResponseText());
+
+        Files.writeString(Path.of(root, "release", recordingName + ".json"), response.getResponseText());
     }
 
     @And("^Upload recording '(.+)'$")
-    public void uploadRecording(String recordingName) throws Exception{
+    public void uploadRecording(String recordingName) throws Exception {
 
         var root = getRootPath(RecordingTasks.class);
-        var toUploadPath = Path.of(root,"release",recordingName+".json");
-        var result ="";
+        var toUploadPath = Path.of(root, "release", recordingName + ".json");
+        var result = "";
         //if(!Files.exists(toUploadPath)){
-            var in = this.getClass().getResourceAsStream("/recordings/"+recordingName+".json");
-            var streamReader = new InputStreamReader(in, StandardCharsets.UTF_8);
-            var reader = new BufferedReader(streamReader);
-            for(String line ;(line = reader.readLine())!=null;){
-                result+=line;
-            }
+        var in = this.getClass().getResourceAsStream("/recordings/" + recordingName + ".json");
+        var streamReader = new InputStreamReader(in, StandardCharsets.UTF_8);
+        var reader = new BufferedReader(streamReader);
+        for (String line; (line = reader.readLine()) != null; ) {
+            result += line;
+        }
         var builder = HamBuilder
                 .newHam("www.local.test")
                 .withSocksProxy("127.0.0.1", 1080)
                 .withDns("127.0.0.1");
         var replayer = builder.pluginBuilder(HamReplayerBuilder.class);
-        var uoloadedRecording = replayer.uploadRecording(recordingName,result);
-        Utils.setCache("recording_"+recordingName,""+uoloadedRecording.getId());
+        var uoloadedRecording = replayer.uploadRecording(recordingName, result);
+        Utils.setCache("recording_" + recordingName, "" + uoloadedRecording.getId());
     }
 
     @And("^Clone recording '(.+)' into '(.+)'$")
-    public void cloneRecording(String source,String destName) throws Exception{
-        var sourceId = (String)Utils.getCache("recording_"+source);
-        var driver = (WebDriver)Utils.getCache("driver");
+    public void cloneRecording(String source, String destName) throws Exception {
+        var sourceId = (String) Utils.getCache("recording_" + source);
+        var driver = (WebDriver) Utils.getCache("driver");
         navigateTo("http://www.local.test/plugins/recording/index.html");
         Sleeper.sleep(1000);
         for (var element : driver.findElements(By.cssSelector("[id^=\"grid-rowc-\"][id$=\"-0\"]"))) {
@@ -201,7 +209,7 @@ public class RecordingTasks {
         }
         doClick(() -> driver.findElement(By.id("newname")));
         Sleeper.sleep(1000);
-        driver.findElement(By.id("newname")).sendKeys(destName);
+        sendKeys(By.id("newname"),destName);
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(5000);
@@ -217,12 +225,12 @@ public class RecordingTasks {
         }
 
         var destId = driver.findElement(By.id("id")).getAttribute("value");
-        Utils.setCache("recording_"+destName,destId);
+        Utils.setCache("recording_" + destName, destId);
     }
 
     @And("^Start null playing '(.+)'$")
-    public void startNullPlaying(String recordingName) throws Exception{
-        var driver = (WebDriver)Utils.getCache("driver");
+    public void startNullPlaying(String recordingName) throws Exception {
+        var driver = (WebDriver) Utils.getCache("driver");
         scrollFind(() -> driver.findElement(By.id("recording-playstim"))).click();
         Sleeper.sleep(1000);
     }
@@ -277,10 +285,10 @@ public class RecordingTasks {
 
 
     @And("^Load results '(.+)' for '(.+)'$")
-    public void startCalendarRecording(String trueFalse,String recordingName) throws Exception{
-        var success= trueFalse.equalsIgnoreCase("true");
-        var driver = (WebDriver)Utils.getCache("driver");
-        var idRecording = (String)Utils.getCache("recording_"+recordingName);
+    public void startCalendarRecording(String trueFalse, String recordingName) throws Exception {
+        var success = trueFalse.equalsIgnoreCase("true");
+        var driver = (WebDriver) Utils.getCache("driver");
+        var idRecording = (String) Utils.getCache("recording_" + recordingName);
 
         doClick(() -> driver.findElement(By.linkText("RESULTS")));
         Sleeper.sleep(1000);
@@ -290,19 +298,19 @@ public class RecordingTasks {
                 .withDns("127.0.0.1");
         var replayer = builder.pluginBuilder(HamReplayerBuilder.class);
         int count = 10;
-        while(count>10) {
-            if(replayer.retrieveRecordings().stream().anyMatch(l-> {
+        while (count > 10) {
+            if (replayer.retrieveRecordings().stream().anyMatch(l -> {
                 try {
                     return !l.isCompleted();
                 } catch (HamException e) {
                     return false;
                 }
-            })){
+            })) {
                 Sleeper.sleep(1000);
             }
             count--;
         }
-        scrollFind(() -> driver.findElement(By.id("recording-grid-result-reload")),100).click();
+        scrollFind(() -> driver.findElement(By.id("recording-grid-result-reload")), 100).click();
         Sleeper.sleep(1000);
 
         replayer = builder.pluginBuilder(HamReplayerBuilder.class);
@@ -312,19 +320,19 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         driver.get("http://www.local.test/api/plugins/replayer/results/" + resultIndex);
         String source = driver.getPageSource();
-        assertTrue(source.contains("successful\":"+(success?"true":"false")));
+        assertTrue(source.contains("successful\":" + (success ? "true" : "false")));
         Sleeper.sleep(2000);
     }
 
 
     @And("^Wait for termination$")
-    public void waitForTermination() throws Exception{
+    public void waitForTermination() throws Exception {
         var builder = HamBuilder
                 .newHam("www.local.test")
                 .withSocksProxy("127.0.0.1", 1080)
                 .withDns("127.0.0.1");
         var replayer = builder.pluginBuilder(HamReplayerBuilder.class);
-        while(true) {
+        while (true) {
             var res = replayer.retrieveRecordings().stream().findFirst();
             if (res.get().isCompleted()) {
                 break;

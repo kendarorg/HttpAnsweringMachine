@@ -21,7 +21,7 @@ public class DbTasks {
 
     @Given("^Start h2 db$")
     public void startH2Db() throws Exception {
-        var driver = (WebDriver)Utils.getCache("driver");
+        var driver = (WebDriver) Utils.getCache("driver");
         var root = getRootPath(DbTasks.class);
         Map<String, String> env = new HashMap<>();
         new ProcessRunner(env).
@@ -35,23 +35,23 @@ public class DbTasks {
 
     @Given("^Prepare mongo proxy$")
     public void prepareMongoProxy() throws Exception {
-        var driver = (WebDriver)Utils.getCache("driver");
+        var driver = (WebDriver) Utils.getCache("driver");
         driver.get("http://www.local.test/index.html");
         Sleeper.sleep(1000);
 
-        doClick(() ->driver.findElement(By.linkText("Mongo proxy")));
+        doClick(() -> driver.findElement(By.linkText("Mongo proxy")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("mongoprx-gird-add")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("connectionStringR")));
         Sleeper.sleep(1000);
-        driver.findElement(By.id("connectionStringR")).sendKeys("mongodb://127.0.0.1:27077");
+        sendKeys(By.id("connectionStringR"),"mongodb://127.0.0.1:27077");
         Sleeper.sleep(1000);
         checkCheckBox(() -> driver.findElement(By.id("active")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("exposedPort")));
         Sleeper.sleep(1000);
-        driver.findElement(By.id("exposedPort")).sendKeys("27078");
+        sendKeys(By.id("exposedPort"),"27078");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(1000);
@@ -60,13 +60,13 @@ public class DbTasks {
     @Given("^Start mongodb$")
     public void startMongodb() throws Exception {
         mongoServer = new MongoServer(new MemoryBackend());
-        mongoServer.bind("127.0.0.1",MONGO_PORT);
+        mongoServer.bind("127.0.0.1", MONGO_PORT);
         org.kendar.utils.Sleeper.sleep(500);
     }
 
     @Given("^Stop mongodb$")
     public void stopMongodb() throws Exception {
-        if(mongoServer==null) return;
+        if (mongoServer == null) return;
         mongoServer.shutdown();
         org.kendar.utils.Sleeper.sleep(500);
     }

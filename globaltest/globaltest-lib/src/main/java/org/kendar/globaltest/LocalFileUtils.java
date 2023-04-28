@@ -26,24 +26,26 @@ public class LocalFileUtils {
     public static String pathOf(String first, String... pars) {
         return Path.of(first, pars).toString();
     }
-    public static void dos2unix(String directoryName, String ... exts) {
-        runOnEveryFile(directoryName, Arrays.stream(exts).collect(Collectors.toList()),LocalFileUtils::dos2unix);
+
+    public static void dos2unix(String directoryName, String... exts) {
+        runOnEveryFile(directoryName, Arrays.stream(exts).collect(Collectors.toList()), LocalFileUtils::dos2unix);
     }
+
     public static void runOnEveryFile(String directoryName, List<String> exts, Consumer<String> handlePath) {
         File directory = new File(directoryName);
         File[] fList = directory.listFiles();
-        if(fList==null) return;
+        if (fList == null) return;
         for (File file : fList) {
             if (file.isFile()) {
                 var lowerName = file.getName().toLowerCase(Locale.ROOT);
-                if(exts.stream().anyMatch(e->lowerName.endsWith("."+e))) {
+                if (exts.stream().anyMatch(e -> lowerName.endsWith("." + e))) {
                     handlePath.accept(file.getAbsolutePath());
                 }
             } else if (file.isDirectory()) {
                 if (file.getName().startsWith(".")) {
                     continue;
                 }
-                runOnEveryFile(file.getAbsolutePath(),exts,handlePath);
+                runOnEveryFile(file.getAbsolutePath(), exts, handlePath);
             }
         }
     }

@@ -10,12 +10,13 @@ public class HttpChecker {
     int proxyPort = -1;
     String proxyUrl = null;
     String url;
-    private Runnable onError=null;
-    private boolean showError=true;
+    private Runnable onError = null;
+    private boolean showError = true;
 
-    protected HttpChecker(){
+    protected HttpChecker() {
 
     }
+
     public static HttpChecker checkForSite(int seconds, String url) {
         var result = new HttpChecker();
         result.seconds = seconds;
@@ -23,19 +24,19 @@ public class HttpChecker {
         return result;
     }
 
-    public HttpChecker noError(){
-        this.showError=false;
+    public HttpChecker noError() {
+        this.showError = false;
         return this;
     }
 
-    public HttpChecker withProxy(String proxyUrl, int proxyPort){
-        this.proxyUrl=proxyUrl;
+    public HttpChecker withProxy(String proxyUrl, int proxyPort) {
+        this.proxyUrl = proxyUrl;
         this.proxyPort = proxyPort;
         return this;
     }
 
-    public HttpChecker onError(Runnable onError){
-        this.onError=onError;
+    public HttpChecker onError(Runnable onError) {
+        this.onError = onError;
         return this;
     }
 
@@ -73,10 +74,10 @@ public class HttpChecker {
             }
             Sleeper.sleep(1000);
         }
-        if(showError) {
+        if (showError) {
             LogWriter.errror("testing " + url);
         }
-        if(onError!=null){
+        if (onError != null) {
             onError.run();
         }
         return false;

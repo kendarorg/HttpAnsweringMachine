@@ -4,13 +4,10 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import org.kendar.globaltest.Sleeper;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.kendar.cucumber.Utils.doClick;
-import static org.kendar.cucumber.Utils.scrollFind;
+import static org.kendar.cucumber.Utils.*;
 
 public class GoogleTasks {
 
@@ -19,21 +16,21 @@ public class GoogleTasks {
             WebElement el = null;
             try {
                 el = scrollFind(() -> driver.findElement(By.xpath("//*[text()='Accetta tutto']")));
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
             if (el == null) {
-                el = scrollFind(()-> driver.findElement(By.xpath("//*[text()='Accept all']")));
+                el = scrollFind(() -> driver.findElement(By.xpath("//*[text()='Accept all']")));
             }
             el.click();
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
     }
 
     @Given("^The google home page$")
     public void theGoogleHomePage() throws Exception {
-        var driver = (WebDriver)Utils.getCache("driver");
+        var driver = (WebDriver) Utils.getCache("driver");
         driver.get("https://www.google.com");
         Sleeper.sleep(1000);
         acceptCookies(driver);
@@ -41,10 +38,9 @@ public class GoogleTasks {
     }
 
 
-
     @When("^Creating filter to change google to bing$")
-    public void creatingFilterToChangeGoogleToBing(){
-        var driver = (WebDriver)Utils.getCache("driver");
+    public void creatingFilterToChangeGoogleToBing() {
+        var driver = (WebDriver) Utils.getCache("driver");
         driver.get("http://www.local.test/index.html");
         org.kendar.globaltest.Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.linkText("JsFilter web")));
@@ -53,7 +49,7 @@ public class GoogleTasks {
         org.kendar.globaltest.Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("createScriptName")));
         org.kendar.globaltest.Sleeper.sleep(1000);
-        driver.findElement(By.id("createScriptName")).sendKeys("GoogleHack");
+        sendKeys(By.id("createScriptName"),"GoogleHack");
         org.kendar.globaltest.Sleeper.sleep(1000);
 
         doClick(() -> driver.findElement(By.id("createScriptBt")));
@@ -74,17 +70,17 @@ public class GoogleTasks {
         doClick(() -> driver.findElement(By.id("hostAddress")));
         org.kendar.globaltest.Sleeper.sleep(1000);
         driver.findElement(By.id("hostAddress")).clear();
-        driver.findElement(By.id("hostAddress")).sendKeys("www.google.com");
+        sendKeys(By.id("hostAddress"),"www.google.com");
         org.kendar.globaltest.Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("pathAddress")));
         org.kendar.globaltest.Sleeper.sleep(1000);
         driver.findElement(By.id("pathAddress")).clear();
-        driver.findElement(By.id("pathAddress")).sendKeys("/");
+        sendKeys(By.id("pathAddress"),"/");
         org.kendar.globaltest.Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("source")));
         org.kendar.globaltest.Sleeper.sleep(1000);
         driver.findElement(By.id("source")).clear();
-        driver.findElement(By.id("source")).sendKeys("var regex=/\\/images\\/branding\\/[_a-zA-Z0-9]+\\/[_a-zA-Z0-9]+\\/[_a-zA-Z0-9]+\\.png/gm;\n" +
+        sendKeys(By.id("source"),"var regex=/\\/images\\/branding\\/[_a-zA-Z0-9]+\\/[_a-zA-Z0-9]+\\/[_a-zA-Z0-9]+\\.png/gm;\n" +
                 "var responseText = response.getResponseText()+\"\";\n" +
                 "var changedText = responseText.replace(regex,'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Bing_logo_%282016%29.svg/320px-Bing_logo_%282016%29.svg.png');\n" +
                 "response.setResponseText(changedText);\n" +
