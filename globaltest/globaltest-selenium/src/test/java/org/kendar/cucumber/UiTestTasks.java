@@ -14,6 +14,7 @@ public class UiTestTasks {
         var driver = (WebDriver) Utils.getCache("driver");
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + uiTestId);
         Sleeper.sleep(1000);
+        takeSnapShot();
         scrollFind(() -> driver.findElement(By.id("scriptstab_0"))).click();
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("grid-visibility")));

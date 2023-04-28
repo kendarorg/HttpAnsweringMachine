@@ -33,6 +33,7 @@ public class GoogleTasks {
         var driver = (WebDriver) Utils.getCache("driver");
         driver.get("https://www.google.com");
         Sleeper.sleep(1000);
+        takeSnapShot();
         acceptCookies(driver);
         Sleeper.sleep(1000);
     }
@@ -43,6 +44,7 @@ public class GoogleTasks {
         var driver = (WebDriver) Utils.getCache("driver");
         driver.get("http://www.local.test/index.html");
         org.kendar.globaltest.Sleeper.sleep(1000);
+        takeSnapShot();
         doClick(() -> driver.findElement(By.linkText("JsFilter web")));
         org.kendar.globaltest.Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("js-grid-addnew")));

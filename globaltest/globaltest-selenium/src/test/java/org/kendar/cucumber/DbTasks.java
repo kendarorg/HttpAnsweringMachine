@@ -38,6 +38,7 @@ public class DbTasks {
         var driver = (WebDriver) Utils.getCache("driver");
         driver.get("http://www.local.test/index.html");
         Sleeper.sleep(1000);
+        takeSnapShot();
 
         doClick(() -> driver.findElement(By.linkText("Mongo proxy")));
         Sleeper.sleep(1000);

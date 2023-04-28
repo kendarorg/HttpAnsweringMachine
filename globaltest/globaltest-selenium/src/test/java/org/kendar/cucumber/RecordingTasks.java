@@ -30,6 +30,7 @@ public class RecordingTasks {
         var driver = (WebDriver) Utils.getCache("driver");
         driver.get("http://www.sample.test/");
         Sleeper.sleep(2000);
+        takeSnapShot();
         doClick(() -> driver.findElement(By.id("appoint-add")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("role")));
@@ -92,6 +93,7 @@ public class RecordingTasks {
         var recordingId = Utils.getCache("recording_" + recordingName);
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + recordingId);
         Sleeper.sleep(1000);
+        takeSnapShot();
         doClick(() -> driver.findElement(By.id("recording-stop")));
         Sleeper.sleep(3000);
         doClick(() -> driver.findElement(By.id("recording-list-reload")));
@@ -111,6 +113,7 @@ public class RecordingTasks {
 
         driver.get("http://www.local.test/index.html");
         Sleeper.sleep(1000);
+        takeSnapShot();
         doClick(() -> driver.findElement(By.linkText("Replayer web")));
         Sleeper.sleep(1000);
 
@@ -127,6 +130,7 @@ public class RecordingTasks {
 
         try {
             Sleeper.sleep(1000);
+            takeSnapShot();
             scrollFind(() -> driver.findElement(By.id("scriptstab_0"))).click();
         } catch (Exception ex) {
 
@@ -322,6 +326,7 @@ public class RecordingTasks {
         String source = driver.getPageSource();
         assertTrue(source.contains("successful\":" + (success ? "true" : "false")));
         Sleeper.sleep(2000);
+        takeSnapShot();
     }
 
 

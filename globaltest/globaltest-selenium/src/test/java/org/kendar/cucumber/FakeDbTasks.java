@@ -14,6 +14,7 @@ public class FakeDbTasks {
         var driver = (WebDriver) Utils.getCache("driver");
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + gatewayTestId);
         Sleeper.sleep(1000);
+        takeSnapShot();
         scrollFind(() -> driver.findElement(By.id("scriptstab_0"))).click();
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("grid-visibility"))).click();
@@ -58,6 +59,7 @@ public class FakeDbTasks {
         var driver = (WebDriver) Utils.getCache("driver");
         driver.get("http://www.local.test/plugins/recording/script.html?id=" + gatewayTestId);
         Sleeper.sleep(1000);
+        takeSnapShot();
         scrollFind(() -> driver.findElement(By.id("scriptstab_0"))).click();
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("grid-visibility"))).click();
