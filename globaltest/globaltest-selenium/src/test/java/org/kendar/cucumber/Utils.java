@@ -51,6 +51,7 @@ public class Utils {
     public static void setRecordingName(String val){
         recordingName=val;
         counter=0;
+        takeMessageSnapshot("Start test "+val);
     }
     public static void takeSnapShot() {
 
