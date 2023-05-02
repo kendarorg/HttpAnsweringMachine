@@ -310,10 +310,13 @@ public class RecordingTasks {
                     return false;
                 }
             })) {
-                Sleeper.sleep(1000);
+
             }
+            Sleeper.sleep(1000);
             count--;
         }
+
+        scrollFind(() -> driver.findElement(By.id("scriptstab_2")), 100).click();
         scrollFind(() -> driver.findElement(By.id("recording-grid-result-reload")), 100).click();
         Sleeper.sleep(1000);
 
