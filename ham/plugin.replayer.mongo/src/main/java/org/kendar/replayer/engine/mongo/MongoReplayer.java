@@ -65,6 +65,7 @@ public class MongoReplayer implements ReplayerEngine {
 
     @Override
     public boolean isValidRoundTrip(Request req, Response res, Map<String, String> specialParams) {
+        if(!isValidPath(req))return false;
         var ports = specialParams.get("ports") == null ? new String[]{"*"} :
                 specialParams.get("ports").trim().split(",");
         var port = req.getPathParameter("port");

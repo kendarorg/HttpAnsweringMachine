@@ -5,7 +5,7 @@ import org.kendar.replayer.ReplayerState;
 import java.util.Map;
 
 public interface BaseDataset {
-    Long getName();
+    Long getRecordingId();
 
     void load(Long name, String description) throws Exception;
 

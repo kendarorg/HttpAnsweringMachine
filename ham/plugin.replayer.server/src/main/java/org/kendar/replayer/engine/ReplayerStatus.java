@@ -116,7 +116,7 @@ public class ReplayerStatus {
     }
 
     public Long getCurrentScript() {
-        if (dataset != null) return dataset.getName();
+        if (dataset != null) return dataset.getRecordingId();
         return null;
     }
 

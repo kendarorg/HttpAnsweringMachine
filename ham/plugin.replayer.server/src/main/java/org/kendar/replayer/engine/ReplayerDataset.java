@@ -38,13 +38,13 @@ public class ReplayerDataset implements BaseDataset {
     private final Cache cache;
     private final SimpleProxyHandler simpleProxyHandler;
     private final AtomicBoolean running = new AtomicBoolean(false);
-    private final JsReplayerExecutor executor = new JsReplayerExecutor();
+    private final JsReplayerExecutor javascriptExecutor = new JsReplayerExecutor();
     private final List<ReplayerEngine> replayerEngines;
     private final AtomicBoolean pause = new AtomicBoolean(false);
     protected final Logger logger;
     protected final Md5Tester md5Tester;
     protected final HibernateSessionFactory sessionFactory;
-    protected Long name;
+    protected Long recordingId;
     protected String description;
     protected ReplayerResult replayerResult;
     private Long id;
@@ -67,13 +67,13 @@ public class ReplayerDataset implements BaseDataset {
         this.replayerEngines = replayerEngines.stream().map(re -> re.create(loggerBuilder)).collect(Collectors.toList());
     }
 
-    public Long getName() {
-        return name;
+    public Long getRecordingId() {
+        return recordingId;
     }
 
     @Override
     public void load(Long name, String description) throws Exception {
-        this.name = name;
+        this.recordingId = name;
         this.description = description;
         for (var engine : replayerEngines) {
             engine.loadDb(name);
@@ -101,7 +101,7 @@ public class ReplayerDataset implements BaseDataset {
         var result = new TestResults();
 
         result.setTimestamp(Timestamp.from(Calendar.getInstance().toInstant()));
-        result.setRecordingId(name);
+        result.setRecordingId(recordingId);
         result.setType("PLAY");
 
 
@@ -157,8 +157,8 @@ public class ReplayerDataset implements BaseDataset {
                         var jsCallback = toCall.getPreScript();
 
                         if (jsCallback != null && jsCallback.trim().length() > 0) {
-                            var script = executor.prepare(jsCallback);
-                            executor.run(this.id, request, obtainedResponse, expectedResponse, script);
+                            var script = javascriptExecutor.prepare(jsCallback);
+                            javascriptExecutor.run(this.id, request, obtainedResponse, expectedResponse, script);
                         }
                     }
                     request = simpleProxyHandler.translate(request);
@@ -172,8 +172,8 @@ public class ReplayerDataset implements BaseDataset {
                         var jsCallback = toCall.getPostScript();
 
                         if (jsCallback != null && jsCallback.trim().length() > 0) {
-                            var script = executor.prepare(jsCallback);
-                            executor.run(this.id, request, obtainedResponse, expectedResponse, script);
+                            var script = javascriptExecutor.prepare(jsCallback);
+                            javascriptExecutor.run(this.id, request, obtainedResponse, expectedResponse, script);
                         }
                     }
                     var resultLine = new TestResultsLine();
@@ -227,6 +227,7 @@ public class ReplayerDataset implements BaseDataset {
                 contentHash = md5Tester.calculateMd5(req.getRequestText());
             }
             for (var engine : replayerEngines) {
+                if(!engine.isValidPath(req))continue;;
                 var mayBeMatch = engine.findRequestMatch(req, contentHash, params);
                 if (mayBeMatch != null) {
                     return mayBeMatch;

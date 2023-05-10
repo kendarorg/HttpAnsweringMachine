@@ -42,7 +42,7 @@ public class RecordingDataset implements BaseDataset {
         this.replayerEngines = replayerEngines;
     }
 
-    public Long getName() {
+    public Long getRecordingId() {
         return this.name;
     }
 

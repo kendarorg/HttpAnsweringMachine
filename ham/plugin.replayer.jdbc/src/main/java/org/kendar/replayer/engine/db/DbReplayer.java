@@ -39,8 +39,6 @@ public class DbReplayer implements ReplayerEngine {
     private final Map<String, List<DbRow>> straightDatabase = new HashMap<>();
     private final JsonTypedSerializer serializer = new JsonTypedSerializer();
     private final Logger logger;
-    private final Map<Long, Long> connectionShadow = new HashMap<>();
-    private final Map<Long, List<DbTreeItem>> connectionRealPath = new HashMap<>();
     private final AtomicLong atomicLong = new AtomicLong(Long.MAX_VALUE);
     protected boolean hasRows = false;
     private boolean useSimEngine;
@@ -56,11 +54,13 @@ public class DbReplayer implements ReplayerEngine {
 
     @Override
     public boolean isValidPath(Request req) {
+
         return req.getPath().startsWith("/api/db/");
     }
 
     @Override
     public boolean isValidRoundTrip(Request req, Response res, Map<String, String> specialParams) {
+        if(!isValidPath(req))return false;
         var recordDbCalls = specialParams.get("recordDbCalls") == null ? false :
                 Boolean.parseBoolean(specialParams.get("recordDbCalls"));
         var recordVoidDbCalls = specialParams.get("recordVoidDbCalls") == null ? false :
