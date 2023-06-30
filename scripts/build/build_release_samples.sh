@@ -90,6 +90,15 @@ echo "#!/bin/bash" > $HAM_RELEASE_TARGET/calendar/bemongo/run.sh
 echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/bemongo/run.sh
 echo "call java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/bemongo/run.bat
 
+echo [INFO] Setup fake mongo server
+cp -f $CALENDAR_DIR/mongodb-server/target/mongodb-server-*.jar $HAM_RELEASE_TARGET/calendar/
+cd $CALENDAR_DIR/mongodb-serve/target/
+ls -lA|grep -oE '[^ ]+$'|grep .jar$ > tmp_txt
+export JAR_NAME=$(head -1 tmp_txt)
+echo "#!/bin/bash" > $HAM_RELEASE_TARGET/calendar/runmongo.sh
+echo "java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/runmongo.sh
+echo "call java -jar $JAR_NAME" >> $HAM_RELEASE_TARGET/calendar/runmongo.bat
+
 # Prepare the compressed file
 echo [INFO] Compress release file
 cd $ROOT_DIR/release/$HAM_VERSION
