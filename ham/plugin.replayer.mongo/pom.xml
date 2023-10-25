@@ -20,7 +20,7 @@
         <dependency>
             <groupId>org.kendar</groupId>
             <artifactId>typedserializer</artifactId>
-            <version>1.1.12-snapshot</version>
+            <version>1.1.12-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.kendar</groupId>
