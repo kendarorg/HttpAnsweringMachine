@@ -49,6 +49,8 @@
         <cucumber.version>7.3.4</cucumber.version>
 
         <junit.platform.version>1.8.0</junit.platform.version>
+        <selenium.version>4.14.1</selenium.version>
+        <webdrivermanager.version>5.5.3</webdrivermanager.version>
     </properties>
 
     <dependencies>
@@ -75,7 +77,7 @@
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
-            <version>5.3.2</version>
+            <version>${webdrivermanager.version}</version>
         </dependency>
     </dependencies>
 
