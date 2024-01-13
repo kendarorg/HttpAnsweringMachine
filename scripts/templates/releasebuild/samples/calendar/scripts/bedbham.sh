@@ -10,6 +10,7 @@ CALENDAR_PATH=$(pwd)
 
 # start fe
 cd $CALENDAR_PATH/be
-java   -cp "be-$HAM_VERSION.jar:janus-driver-$JANUS_DRIVER_VERSION.jar" org.springframework.boot.loader.JarLauncher --spring.config.location=file://$(pwd)/bedbham.application.properties &
+java   -cp "be-$HAM_VERSION.jar:janus-driver-$JANUS_DRIVER_VERSION.jar" org.springframework.boot.loader.JarLauncher \
+  --spring.config.location=file://$(pwd)/bedbham.application.properties &
 cd $START_LOCATION
 

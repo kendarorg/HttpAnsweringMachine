@@ -52,6 +52,10 @@ call %DOCKER_LIB% docker_push "ham.client" "%HAM_VERSION%"
 call %UTILS_LIB% rm_rf data\app
 del /S /Q data\simpledns*.jar
 
+cd %DOCKER_ROOT%\simpleclient
+docker build --rm  -t ham.simple.client .
+call %DOCKER_LIB% docker_push "ham.simple.client" "%HAM_VERSION%"
+
 cd %DOCKER_ROOT%\openvpn
 docker build --rm -t ham.openvpn .
 call %DOCKER_LIB% docker_push "ham.openvpn" "%HAM_VERSION%"

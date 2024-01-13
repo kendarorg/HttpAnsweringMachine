@@ -4,7 +4,7 @@
   "proxies": [
     {
       "id": "72d370b5-fb38-4632-b45f-3cd3325abecf",
-      "when": "http://localhost/int/prova001",
+      "when": "http://localhost/masterdata/prova001",
       "where": "http://fake1.forced",
       "test": "fake1",
       "running": false,

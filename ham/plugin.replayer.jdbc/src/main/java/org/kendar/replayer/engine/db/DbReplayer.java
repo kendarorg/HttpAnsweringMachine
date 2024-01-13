@@ -61,6 +61,7 @@ public class DbReplayer implements ReplayerEngine {
 
     @Override
     public boolean isValidRoundTrip(Request req, Response res, Map<String, String> specialParams) {
+        if(!isValidPath(req))return false;
         var recordDbCalls = specialParams.get("recordDbCalls") == null ? false :
                 Boolean.parseBoolean(specialParams.get("recordDbCalls"));
         var recordVoidDbCalls = specialParams.get("recordVoidDbCalls") == null ? false :
