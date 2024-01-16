@@ -1,9 +1,7 @@
 package org.kendar.http;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.*;
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.HttpWebServerConfig;
@@ -59,24 +57,75 @@ public class HttpsProxy implements AnsweringServer {
                             .withPort(config.getHttpProxyPort())
                     .withAllowLocalOnly(false)
                     .withAllowRequestToOriginServer(true)
+                    .plusActivityTracker(new ActivityTrackerAdapter())
                     .withTransparent(true)
-//                    .withFiltersSource(new HttpFiltersSourceAdapter() {
-//                        public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
-//                            return new HttpFiltersAdapter(originalRequest) {
-//                                @Override
-//                                public HttpResponse clientToProxyRequest(HttpObject httpObject) {
-//                                    // TODO: implement your filtering here
-//                                    return null;
-//                                }
+                    .withFiltersSource(new HttpFiltersSourceAdapter() {
+                        public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+                            return new HttpFiltersAdapter(originalRequest) {
+                                @Override
+                                public HttpResponse clientToProxyRequest(HttpObject httpObject) {
+                                    // TODO: implement your filtering here
+                                    return null;
+                                }
+
+                                @Override
+                                public HttpObject serverToProxyResponse(HttpObject httpObject) {
+                                    // TODO: implement your filtering here
+                                    return httpObject;
+                                }
+
+                                @Override
+                                public InetSocketAddress proxyToServerResolutionStarted(String resolvingServerHostAndPort) {
+                                    var hpp = resolvingServerHostAndPort.split(":");
+                                    var port = 80;
+                                    if(hpp.length==2){
+                                        port = Integer.parseInt(hpp[1]);
+                                    }
+                                    if(config.isInterceptAllHttp()){
+                                        if(intSet.contains(port)){
+                                            InetSocketAddress res = null;
+                                            try {
+                                                res = new InetSocketAddress(
+                                                        InetAddress.getByName("127.0.0.1"),port);
+                                            } catch (UnknownHostException e) {
+                                                return null;
+                                            }
+                                            return res;
+                                        }
+                                    }
+                                    return null;
+                                }
+                                @Override
+                                public HttpResponse proxyToServerRequest(HttpObject httpObject) {
+
+                                    if(httpObject instanceof FullHttpRequest){
+                                        FullHttpRequest request = (FullHttpRequest) httpObject;
+                                        var host = HttpHeaders.getHost(request);
+                                        System.out.println(host);
+
+//                                        if(request.getMethod() == HttpMethod.POST
+//                                                && request.getUri().contains("/post")){
 //
-//                                @Override
-//                                public HttpObject serverToProxyResponse(HttpObject httpObject) {
-//                                    // TODO: implement your filtering here
-//                                    return httpObject;
-//                                }
-//                            };
-//                        }
-//                    })
+//                                            CompositeByteBuf contentBuf = (CompositeByteBuf) request.content();
+//
+//                                            String contentStr = contentBuf.toString(CharsetUtil.UTF_8);
+//
+//                                            System.out.println("Post content for " + request.getUri() + " : " + contentStr);
+//
+//                                            String newBody = contentStr.replace("e", "ei");
+//
+//                                            ByteBuf bodyContent = Unpooled.copiedBuffer(newBody, CharsetUtil.UTF_8);
+//
+//                                            contentBuf.clear().writeBytes(bodyContent);
+//                                            HttpHeaders.setContentLength(request, newBody.length());
+//                                        }
+                                    }
+
+                                    return null;
+                                }
+                            };
+                        }
+                    })
                     .withServerResolver(new HostResolver() {
                         @Override
                         public InetSocketAddress resolve(String address, int port) throws UnknownHostException {
@@ -88,8 +137,6 @@ public class HttpsProxy implements AnsweringServer {
                                 }
                             }
                             var resolved = multiResolver.resolve(address);
-                            System.out.println(address+" => "+resolved);
-
                             if(resolved.isEmpty()){
                                 throw new UnknownHostException(address);
                             }

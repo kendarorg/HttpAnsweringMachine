@@ -92,7 +92,7 @@ public abstract class BaseRequesterImpl implements BaseRequester {
         try {
             String fullAddress = RequestUtils.buildFullAddress(request, true);
             fullRequest = createFullRequest(request, fullAddress);
-            fullRequest.addHeader(BLOCK_RECURSION, fullAddress);
+            //fullRequest.addHeader(BLOCK_RECURSION, fullAddress);
             if (request.getHeaders() != null) {
                 for (var header : request.getHeaders().entrySet()) {
                     if (!header.getKey().equalsIgnoreCase("host")
@@ -182,10 +182,17 @@ public abstract class BaseRequesterImpl implements BaseRequester {
 
             HttpResponse httpResponse = null;
             try {
-
-
+                System.out.println(fullRequest+" CALLA");
                 httpResponse = httpClient.execute(fullRequest);
+                System.out.println(fullRequest+" CALLB");
                 requestResponseBuilder.fromHttpResponse(httpResponse, response);
+                if(response.isBinaryResponse() && response.getResponseBytes()!=null){
+                    System.out.println(fullRequest+" CALLC "+response.getResponseBytes().length);
+                }else if(!response.isBinaryResponse() && response.getResponseText()!=null){
+                    System.out.println(fullRequest+" CALLD "+response.getResponseText().length());
+                }else{
+                    System.out.println(fullRequest+" CALLE");
+                }
             } catch (Exception ex) {
                 response.setStatusCode(404);
                 response.setResponseText(ex.getMessage());

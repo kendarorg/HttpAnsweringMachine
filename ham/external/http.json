@@ -2,7 +2,7 @@
   "id": "http",
   "system": true,
   "active": true,
-  "port": "80",
+  "port": "80;8080",
   "backlog": 50,
   "useCachedExecutor": true
 }
