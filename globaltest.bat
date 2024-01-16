@@ -22,7 +22,7 @@ call mvn clean install package -DskipTests 2>&1 1>NUL
 echo [INFO] starting global test runner
 cd %STARTING_PATH%\globaltest\globaltest-main\target
 
-call java -cp globaltest-main-%HAM_VERSION%.jar org.kendar.globaltest.Main
+call java -cp globaltest-main-%HAM_VERSION%.jar org.kendar.globaltest.Main %*
 cd %STARTING_PATH%
 
 

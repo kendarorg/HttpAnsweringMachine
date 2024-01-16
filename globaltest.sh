@@ -20,7 +20,7 @@ cd $STARTING_PATH/globaltest/globaltest-main/target
 export currentUser=$(logname)
 
 echo Using user $currentUser behind sudo
-java -cp globaltest-main-$HAM_VERSION.jar org.kendar.globaltest.Main
+java -cp globaltest-main-$HAM_VERSION.jar org.kendar.globaltest.Main "$@"
 cd $STARTING_PATH
 chown -R $currentUser $STARTING_PATH
 

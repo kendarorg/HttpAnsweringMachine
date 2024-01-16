@@ -243,6 +243,10 @@ man
 
 SCENARIOS TO TEST
 
+RUN WITHout ALL globaltest.bat -b -j -lh -cs -csf -d -td
+
+
+
 
 
 

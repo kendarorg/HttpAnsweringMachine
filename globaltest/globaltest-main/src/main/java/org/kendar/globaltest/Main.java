@@ -1,5 +1,8 @@
 package org.kendar.globaltest;
 
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -272,7 +275,22 @@ public class Main {
 
     public static void main(String[] args) {
 
+
         try {
+            Scanner scanner = new Scanner(System.in);
+            var options = new Options();
+            options.addOption("b", false, "NOT buildDeploymentArtifacts");
+            options.addOption("j", false, "NOT testAndGenerateJacoco");
+            options.addOption("lh", false, "NOT testLocalHam");
+            options.addOption("cs", false, "NOT testCalendarSample");
+            options.addOption("csf", false, "NOT testCalendarSampleFull");
+            options.addOption("d", false, "NOT buildDockerImages");
+            options.addOption("td", false, "NOT testDockerCalendarAndQuotesSamples");
+
+
+                var parser = new DefaultParser();
+                var cmd = parser.parse(options, args);
+
             if (!SystemUtils.IS_OS_WINDOWS && !SystemUtils.IS_OS_MAC) {
                 var isSudo = CheckSudo.isSudo();
                 if (!isSudo) {
@@ -346,14 +364,16 @@ public class Main {
             var releasePath = pathOf(startingPath, "release");
             var calendarPath = pathOf(releasePath, "calendar");
 
-            buildDeploymentArtifacts(startingPath, hamVersion, buildDir, releasePath);
-            testAndGenerateJacoco(startingPath);
+
+            if(!cmd.hasOption("b"))buildDeploymentArtifacts(startingPath, hamVersion, buildDir, releasePath);
+            if(!cmd.hasOption("j"))testAndGenerateJacoco(startingPath);
             applyReleasePermissions(releasePath);
-            testLocalHam(releasePath);
-            testCalendarSample(calendarPath);
-            testCalendarSampleFull(calendarPath);
-            buildDockerImages(buildDir);
-            testDockerCalendarAndQuotesSamples(dockerIp, samplesDir);
+            if(!cmd.hasOption("lh"))testLocalHam(releasePath);
+            if(!cmd.hasOption("cs"))testCalendarSample(calendarPath);
+            if(!cmd.hasOption("csf"))testCalendarSampleFull(calendarPath);
+            if(!cmd.hasOption("d"))buildDockerImages(buildDir);
+            if(!cmd.hasOption("td"))testDockerCalendarAndQuotesSamples(dockerIp, samplesDir);
+
 
             _processUtils.killProcesses(findHamProcesses);
             exit(0);
