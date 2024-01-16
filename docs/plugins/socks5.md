@@ -11,12 +11,18 @@ everything you need.
 
 The httpProxyPort is the one for the http/s proxy
 
+If needed all http communication can be intercepted without configuring the DNS,
+just setting interceptAllHttp to true. This does not work for https since you
+will need first to [set the certificates](../https.md) . Following this approach
+all http calls will be logged even the ones to plain IP addresses.
+
 Here is the basic configuration
 
     {
     "id": "socks5.server",
     "port": 1080,
     "httpProxyPort": 1081,
+    "interceptAllHttp":false,
     "active": true
     }
     
@@ -26,6 +32,12 @@ Here is the basic configuration
 * Firefox: go to "about:preferences" (in the address bar) and set the socks address (remember to set the DNS option for the socks)
 * Vscode: as chrome!!
 * [On Baeldung for java](https://www.baeldung.com/java-connect-via-proxy-server)
+
+<pre>
+    -Dhttp.proxyHost=127.0.0.1  -Dhttp.proxyPort=1081
+    -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=1081
+</pre>
+
 * [Some C# suggestions](https://dotnetcoretutorials.com/2021/07/11/socks-proxy-support-in-net/?series)
 * For curl just set the environment variables
 <pre>

@@ -27,9 +27,13 @@ If you are running the application into a container (and therefore uses ) or wan
 the interactions from a phone, but you know the hosts
 
 * Add the DNS on the dns Mappings
-* ADd the names on the SSL Websites section
+* Add the names on the SSL Websites section
 
 ### Setup With DNS Hijacking - Unknown hosts
+
+One possibility (for http only) is to set the [proxy module interceptAllHttp to true](../socks5.md)
+And start the application to monitor with an http proxy. Following this approach
+all http calls will be logged even the ones to plain IP addresses.
 
 If you are running the application into a container (and therefore uses ) or wants to record
 the interactions from a phone, and you have no idea of the hosts called
