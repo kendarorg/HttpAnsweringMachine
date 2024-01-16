@@ -79,6 +79,7 @@
         <!-- This is old for a reason :( -->
         <hibernate.version>5.2.6.Final</hibernate.version>
         <mongodb.version>4.9.0</mongodb.version>
+        <littleproxy.version>2.1.1</littleproxy.version>
     </properties>
 
     <modules>

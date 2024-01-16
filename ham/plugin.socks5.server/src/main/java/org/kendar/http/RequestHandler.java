@@ -4,12 +4,8 @@ import org.apache.http.conn.util.InetAddressUtils;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.slf4j.Logger;
 
-import javax.annotation.RegEx;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("HttpUrlsUsage")

@@ -63,18 +63,6 @@ public class HttpsProxy implements AnsweringServer {
                         public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
                             return new HttpFiltersAdapter(originalRequest) {
                                 @Override
-                                public HttpResponse clientToProxyRequest(HttpObject httpObject) {
-                                    // TODO: implement your filtering here
-                                    return null;
-                                }
-
-                                @Override
-                                public HttpObject serverToProxyResponse(HttpObject httpObject) {
-                                    // TODO: implement your filtering here
-                                    return httpObject;
-                                }
-
-                                @Override
                                 public InetSocketAddress proxyToServerResolutionStarted(String resolvingServerHostAndPort) {
                                     var hpp = resolvingServerHostAndPort.split(":");
                                     var port = 80;
@@ -95,34 +83,7 @@ public class HttpsProxy implements AnsweringServer {
                                     }
                                     return null;
                                 }
-                                @Override
-                                public HttpResponse proxyToServerRequest(HttpObject httpObject) {
 
-                                    if(httpObject instanceof FullHttpRequest){
-                                        FullHttpRequest request = (FullHttpRequest) httpObject;
-                                        var host = HttpHeaders.getHost(request);
-                                        System.out.println(host);
-
-//                                        if(request.getMethod() == HttpMethod.POST
-//                                                && request.getUri().contains("/post")){
-//
-//                                            CompositeByteBuf contentBuf = (CompositeByteBuf) request.content();
-//
-//                                            String contentStr = contentBuf.toString(CharsetUtil.UTF_8);
-//
-//                                            System.out.println("Post content for " + request.getUri() + " : " + contentStr);
-//
-//                                            String newBody = contentStr.replace("e", "ei");
-//
-//                                            ByteBuf bodyContent = Unpooled.copiedBuffer(newBody, CharsetUtil.UTF_8);
-//
-//                                            contentBuf.clear().writeBytes(bodyContent);
-//                                            HttpHeaders.setContentLength(request, newBody.length());
-//                                        }
-                                    }
-
-                                    return null;
-                                }
                             };
                         }
                     })
