@@ -9,12 +9,15 @@ public class Socks5Config extends BaseJsonConfig<Socks5Config> {
     private int httpProxyPort;
     private boolean active = false;
 
+    private boolean interceptAllHttp = false;
+
     @Override
     public Socks5Config copy() {
         var result = new Socks5Config();
         result.setId(this.getId());
         result.setPort(this.getPort());
         result.setActive(this.active);
+        result.setInterceptAllHttp(this.interceptAllHttp);
         result.setHttpProxyPort(this.httpProxyPort);
         return result;
     }
@@ -41,5 +44,13 @@ public class Socks5Config extends BaseJsonConfig<Socks5Config> {
 
     public void setHttpProxyPort(int httpProxyPort) {
         this.httpProxyPort = httpProxyPort;
+    }
+
+    public void setInterceptAllHttp(boolean interceptAllHttp) {
+        this.interceptAllHttp = interceptAllHttp;
+    }
+
+    public boolean isInterceptAllHttp() {
+        return interceptAllHttp;
     }
 }

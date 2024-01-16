@@ -63,6 +63,7 @@
     "id": "socks5.server",
     "port": 1080,
     "httpProxyPort": 1081,
+    "interceptAllHttp": false,
     "active": true
   }
 ]

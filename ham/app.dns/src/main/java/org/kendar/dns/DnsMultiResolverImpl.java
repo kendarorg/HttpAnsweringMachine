@@ -356,6 +356,9 @@ public class DnsMultiResolverImpl implements DnsMultiResolver {
 
     @Override
     public List<String> resolve(String requestedDomain) {
+        if(requestedDomain==null || requestedDomain.length()==0){
+            return new ArrayList<>();
+        }
         requestedDomain = requestedDomain.toLowerCase(Locale.ROOT);
 
         var localData = resolveLocal(requestedDomain);
