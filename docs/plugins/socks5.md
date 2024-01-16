@@ -18,6 +18,7 @@ all http calls will be logged even the ones to plain IP addresses.
 
 Here is the basic configuration
 
+<pre>
     {
     "id": "socks5.server",
     "port": 1080,
@@ -25,7 +26,8 @@ Here is the basic configuration
     "interceptAllHttp":false,
     "active": true
     }
-    
+</pre>
+
 ### Connecting
 
 * Chrome: just add the parameters calling chrome --proxy-server="socks5://localhost:1080" or install [Switch Omega](https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif)
