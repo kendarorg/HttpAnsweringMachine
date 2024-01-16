@@ -73,7 +73,7 @@ public class Main {
                 String line = reader.readLine();
                 var hasError = false;
                 while (line != null) {
-                    if (line.toLowerCase(Locale.ROOT).contains("error")) {
+                    if (line.toLowerCase(Locale.ROOT).contains("error") && !line.toLowerCase(Locale.ROOT).contains("warning")) {
                         LogWriter.errror("[%s] %s", script, line);
                         hasError = true;
                     }
@@ -166,7 +166,8 @@ public class Main {
 
 
     private static void handleDockerErrors(String a, Process p) {
-        if (a.toLowerCase(Locale.ROOT).startsWith("error") || a.toLowerCase(Locale.ROOT).startsWith("couldn't connect")) {
+        if (a.toLowerCase(Locale.ROOT).startsWith("error") ||
+                a.toLowerCase(Locale.ROOT).startsWith("couldn't connect")) {
             LogWriter.errror("");
             LogWriter.errror(a);
             p.destroy();
