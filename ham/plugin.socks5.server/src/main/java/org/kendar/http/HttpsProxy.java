@@ -99,7 +99,7 @@ public class HttpsProxy implements AnsweringServer {
                             }
                             var resolved = multiResolver.resolve(address);
                             if(resolved.isEmpty()){
-                                throw new UnknownHostException(address);
+                                return null;
                             }
                             var res = resolved.get(0);
                             return new InetSocketAddress(
