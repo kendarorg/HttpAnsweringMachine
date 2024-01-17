@@ -14,6 +14,14 @@ from a vm to another vm with docker you can use Openvpn (see down in the page)
 
 * For chrome and socks5 you can launch it (as ONLY instance): [chrome location]chrome "--proxy-server=socks5://dockerip:1080"
 
+## Install compose standalone on Windows
+
+* Download docker standard: https://download.docker.com/win/static/stable/x86_64/
+* Download compose: https://github.com/docker/compose/releases (Download the exe and rename it to docker-compose)
+* Move everything on the same dir
+* Add the dir to PATH variable
+* Set in env variables DOCKER_HOST=tcp://[yourdockerip]:[yourdockerport]
+
 ## Base (ham.base)
 
 The basic docker image. With java 11 and all the certificates registered

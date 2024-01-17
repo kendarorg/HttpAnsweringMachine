@@ -1,4 +1,4 @@
-version: "2"
+version: "3.2"
 networks:
   quotessample:
     driver: bridge
@@ -15,15 +15,18 @@ services:
     dns:
       - 127.0.0.1
     ports:
-      - "3000:1194/udp"
+      - target: 3000
+        published: 1194
+        protocol: udp
     networks:
-      - quotessample
+      quotessample: {}
     environment:
       - DNS_HIJACK_SERVER=ham.quotes.master
       - ROOT_PWD=root
     image: kendarorg/ham.openvpn:latest
     depends_on:
-      - ham.quotes.master
+      ham.quotes.master:
+        condition: service_healthy
   ham.quotes.master:
     container_name: ham.quotes.master
     privileged: true
@@ -36,11 +39,14 @@ services:
       - 127.0.0.1
     image: kendarorg/ham.quotes.master:latest
     networks:
-      - quotessample
+      quotessample: {}
     ports:
-      - "5025:5025"
-      - "1080:1080"
-      - "1081:1081"
+      - target: 1080
+        published: 1080
+      - target: 1081
+        published: 1081
+      - target: 5025
+        published: 5025
   ham.quotes.core:
     container_name: ham.quotes.core
     privileged: true
@@ -56,6 +62,7 @@ services:
       - 127.0.0.1
     image: kendarorg/ham.quotes.core:latest
     networks:
-      - quotessample
+      quotessample: {}
     depends_on:
-      - ham.quotes.master
+      ham.quotes.master:
+        condition: service_healthy

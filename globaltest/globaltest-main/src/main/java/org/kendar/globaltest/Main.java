@@ -193,27 +193,32 @@ public class Main {
         start(buildDir, "build_docker_samples", Main::handleDockerErrors, Main::handleDockTagged).run();
     }
 
-    private static void testDockerCalendarAndQuotesSamples(String dockerIp, String samplesDir) throws Exception {
+    private static void testDockerCalendarAndQuotesSamples(String dockerIp, String samplesDir,boolean useComposerLocal) throws Exception {
         LogWriter.info("Starting composer calendar");
-        startComposer(pathOf(samplesDir, "calendar", "hub_composer"), "docker-compose-local.yml", "down").runBackground();
+
+        var useComposer =  ""; //"hub_composer"
+        if(!useComposerLocal){
+            useComposer = "-local";
+        }
+        startComposer(pathOf(samplesDir, "calendar", "hub_composer"), "docker-compose"+useComposer+".yml", "down").runBackground();
         Sleeper.sleep(3000);
-        startComposer(pathOf(samplesDir, "calendar", "hub_composer"), "docker-compose-local.yml", "up", Main::handleDockerErrors).runBackground();
+        startComposer(pathOf(samplesDir, "calendar", "hub_composer"), "docker-compose"+useComposer+".yml", "up", Main::handleDockerErrors).runBackground();
         HttpChecker.checkForSite(60, "http://www.local.test/api/health").withProxy(dockerIp, 1081).onError(() -> doExit(1)).run();
         HttpChecker.checkForSite(60, "http://www.sample.test/api/v1/health").withProxy(dockerIp, 1081).onError(() -> doExit(1)).run();
         HttpChecker.checkForSite(60, "http://gateway.sample.test/api/v1/health").withProxy(dockerIp, 1081).onError(() -> doExit(1)).run();
         HttpChecker.checkForSite(60, "http://be.sample.test/api/v1/health").withProxy(dockerIp, 1081).onError(() -> doExit(1)).run();
-        startComposer(pathOf(samplesDir, "calendar", "hub_composer"), "docker-compose-local.yml", "down").runBackground();
+        startComposer(pathOf(samplesDir, "calendar", "hub_composer"), "docker-compose"+useComposer+".yml", "down").runBackground();
 
 
         LogWriter.info("Starting composer quotes");
-        startComposer(pathOf(samplesDir, "quotes", "hub_composer"), "docker-compose-local.yml", "down").runBackground();
+        startComposer(pathOf(samplesDir, "quotes", "hub_composer"), "docker-compose"+useComposer+".yml", "down").runBackground();
         Sleeper.sleep(3000);
-        startComposer(pathOf(samplesDir, "quotes", "hub_composer"), "docker-compose-local.yml", "up", Main::handleDockerErrors).runBackground();
+        startComposer(pathOf(samplesDir, "quotes", "hub_composer"), "docker-compose"+useComposer+".yml", "up", Main::handleDockerErrors).runBackground();
 
         Sleeper.sleep(3000);
         HttpChecker.checkForSite(60, "http://www.local.test/api/health").withProxy(dockerIp, 1081).onError(() -> doExit(1)).run();
         HttpChecker.checkForSite(60, "http://www.quotes.test/api/health/index.php").withProxy(dockerIp, 1081).onError(() -> doExit(1)).run();
-        startComposer(pathOf(samplesDir, "quotes", "hub_composer"), "docker-compose-local.yml", "down").runBackground();
+        startComposer(pathOf(samplesDir, "quotes", "hub_composer"), "docker-compose"+useComposer+".yml", "down").runBackground();
 
         Sleeper.sleep(3000);
     }
@@ -284,6 +289,7 @@ public class Main {
             options.addOption("lh", false, "NOT testLocalHam");
             options.addOption("cs", false, "NOT testCalendarSample");
             options.addOption("csf", false, "NOT testCalendarSampleFull");
+            options.addOption("lc", false, "Use composer local");
             options.addOption("d", false, "NOT buildDockerImages");
             options.addOption("td", false, "NOT testDockerCalendarAndQuotesSamples");
 
@@ -372,7 +378,9 @@ public class Main {
             if(!cmd.hasOption("cs"))testCalendarSample(calendarPath);
             if(!cmd.hasOption("csf"))testCalendarSampleFull(calendarPath);
             if(!cmd.hasOption("d"))buildDockerImages(buildDir);
-            if(!cmd.hasOption("td"))testDockerCalendarAndQuotesSamples(dockerIp, samplesDir);
+            if(!cmd.hasOption("td")){
+                testDockerCalendarAndQuotesSamples(dockerIp, samplesDir,cmd.hasOption("lc"));
+            }
 
 
             _processUtils.killProcesses(findHamProcesses);

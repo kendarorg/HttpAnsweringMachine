@@ -1,4 +1,4 @@
-version: "2"
+version: "3.2"
 networks:
   sampleappnet:
     driver: bridge
@@ -15,15 +15,18 @@ services:
     dns:
       - 127.0.0.1
     ports:
-      - "3000:1194/udp"
+      - target: 3000
+        published: 1194
+        protocol: udp
     networks:
-      - sampleappnet
+      sampleappnet: {}
     environment:
       - DNS_HIJACK_SERVER=ham.sampleapp.single.master
       - ROOT_PWD=root
     image: ham.openvpn
     depends_on:
-      - ham.sampleapp.single.master
+      ham.sampleapp.single.master:
+        condition: service_healthy
   ham.sampleapp.single.master:
     container_name: ham.sampleapp.single.master
     privileged: true
@@ -36,8 +39,11 @@ services:
       - 127.0.0.1
     image: ham.sampleapp.single
     networks:
-      - sampleappnet
+      sampleappnet: {}
     ports:
-      - "1080:1080"
-      - "1081:1081"
-      - "5025:5025"
+      - target: 1080
+        published: 1080
+      - target: 1081
+        published: 1081
+      - target: 5025
+        published: 5025

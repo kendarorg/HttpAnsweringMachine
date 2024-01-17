@@ -1,4 +1,4 @@
-version: "2"
+version: "3.2"
 networks:
   multisampleappnet:
     driver: bridge
@@ -15,15 +15,18 @@ services:
     dns:
       - 127.0.0.1
     ports:
-      - "3000:1194/udp"
+      - target: 3000
+        published: 1194
+        protocol: udp
     networks:
-      - multisampleappnet
+      multisampleappnet: {}
     environment:
       - DNS_HIJACK_SERVER=ham.sampleapp.multi.master
       - ROOT_PWD=root
     image: ham.openvpn
     depends_on:
-      - ham.sampleapp.multi.master
+      ham.sampleapp.multi.master:
+        condition: service_healthy
   ham.sampleapp.multi.master:
     container_name: ham.sampleapp.multi.master
     privileged: true
@@ -36,11 +39,14 @@ services:
       - 127.0.0.1
     image: ham.sampleapp.multi
     networks:
-      - multisampleappnet
+      multisampleappnet: {}
     ports:
-      - "5025:5025"
-      - "1080:1080"
-      - "1081:1081"
+      - target: 1080
+        published: 1080
+      - target: 1081
+        published: 1081
+      - target: 5025
+        published: 5025
   ham.sampleapp.multi.gateway:
     container_name: gateway.sample.test
     privileged: true
@@ -54,9 +60,10 @@ services:
       - 127.0.0.1
     image: ham.sampleapp.gateway
     networks:
-      - multisampleappnet
+      multisampleappnet: {}
     depends_on:
-      - ham.sampleapp.multi.master
+      ham.sampleapp.multi.master:
+        condition: service_healthy
   ham.sampleapp.multi.be:
     container_name: be.sample.test
     privileged: true
@@ -70,9 +77,10 @@ services:
       - 127.0.0.1
     image: ham.sampleapp.be
     networks:
-      - multisampleappnet
+      multisampleappnet: {}
     depends_on:
-      - ham.sampleapp.multi.master
+      ham.sampleapp.multi.master:
+        condition: service_healthy
   ham.sampleapp.multi.fe:
     container_name: www.sample.test
     privileged: true
@@ -86,6 +94,7 @@ services:
       - 127.0.0.1
     image: ham.sampleapp.fe
     networks:
-      - multisampleappnet
+      multisampleappnet: {}
     depends_on:
-      - ham.sampleapp.multi.master
+      ham.sampleapp.multi.master:
+        condition: service_healthy

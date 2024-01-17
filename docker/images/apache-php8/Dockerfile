@@ -2,38 +2,41 @@ FROM ham.apache
 
 RUN echo ham.apache-php8 version-4.3.0
 
+
 # Setup apache and php
 RUN apk add --no-cache \
-    php8-apache2 \
-    php8-bcmath \
-    php8-bz2 \
-    php8-calendar \
-    php8-common \
-    php8-ctype \
-    php8-curl \
-    php8-dom \
-    php8-gd \
-    php8-iconv \
-    php8-mbstring \
-    php8-mysqli \
-    php8-mysqlnd \
-    php8-openssl \
-    php8-pdo_mysql \
-    php8-pdo_pgsql \
-    php8-pdo_sqlite \
-    php8-phar \
-    php8-session \
-    php8-xml \
-    php8-pear \
-    php8-xdebug --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    libavif --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main/
+RUN apk add --no-cache \
+    php81-apache2 \
+    php81-bcmath \
+    php81-bz2 \
+    php81-calendar \
+    php81-common \
+    php81-ctype \
+    php81-curl \
+    php81-dom \
+    php81-gd \
+    php81-iconv \
+    php81-mbstring \
+    php81-mysqli \
+    php81-mysqlnd \
+    php81-openssl \
+    php81-pdo_mysql \
+    php81-pdo_pgsql \
+    php81-pdo_sqlite \
+    php81-phar \
+    php81-session \
+    php81-xml \
+    php81-pear \
+    php81-xdebug --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community/ \
     && mkdir -p docker/php/conf.d
     
 # WAS ON --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
 
-RUN pear8 config-set php_ini /etc/php8/php.ini
+RUN pear81 config-set php_ini /etc/php81/php.ini
 
 COPY config/setupphp8.sh /etc/setupphp8.sh
-COPY config/error_reporting.ini /etc/php8/conf.d/error_reporting.ini
+COPY config/error_reporting.ini /etc/php81/conf.d/error_reporting.ini
 
 RUN chmod +x /etc/*.sh \
 	&& /etc/setupphp8.sh

@@ -243,7 +243,16 @@ man
 
 SCENARIOS TO TEST
 
-RUN WITHout ALL globaltest.bat -b -j -lh -cs -csf -d -td
+            options.addOption("b", false, "NOT buildDeploymentArtifacts");
+            options.addOption("j", false, "NOT testAndGenerateJacoco");
+            options.addOption("lh", false, "NOT testLocalHam");
+            options.addOption("cs", false, "NOT testCalendarSample");
+            options.addOption("csf", false, "NOT testCalendarSampleFull");
+            options.addOption("lc", false, "Use composer local"); (not published)
+            options.addOption("d", false, "NOT buildDockerImages");
+            options.addOption("td", false, "NOT testDockerCalendarAndQuotesSamples");
+
+RUN WITHout ALL globaltest.bat -b -j -lh -cs -csf -d -td (-lc)
 
 
 
