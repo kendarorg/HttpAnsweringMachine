@@ -1,6 +1,5 @@
 package org.kendar.http;
 
-import org.apache.http.conn.util.InetAddressUtils;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.slf4j.Logger;
 

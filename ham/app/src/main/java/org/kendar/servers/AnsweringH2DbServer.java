@@ -9,7 +9,6 @@ import org.kendar.servers.config.GlobalConfig;
 import org.kendar.servers.config.GlobalConfigDb;
 import org.kendar.servers.db.DbTable;
 import org.kendar.servers.db.HibernateSessionFactory;
-import org.kendar.servers.http.AnsweringHandler;
 import org.kendar.utils.LoggerBuilder;
 import org.kendar.utils.Sleeper;
 import org.slf4j.Logger;

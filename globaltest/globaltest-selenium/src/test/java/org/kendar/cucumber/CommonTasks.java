@@ -11,21 +11,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.kendar.cucumber.Utils.*;
 import static org.kendar.globaltest.LocalFileUtils.pathOf;
-import static org.kendar.ham.HamBuilder.pathId;
-import static org.kendar.ham.HamBuilder.updateMethod;
 
 
 public class CommonTasks {

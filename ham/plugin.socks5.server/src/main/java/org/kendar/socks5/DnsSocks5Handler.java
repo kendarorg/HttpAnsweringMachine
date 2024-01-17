@@ -8,7 +8,6 @@ import sockslib.client.SocksProxy;
 import sockslib.client.SocksSocket;
 import sockslib.common.ProtocolErrorException;
 import sockslib.common.SocksCommand;
-import sockslib.common.SocksException;
 import sockslib.common.methods.SocksMethod;
 import sockslib.server.*;
 import sockslib.server.io.Pipe;

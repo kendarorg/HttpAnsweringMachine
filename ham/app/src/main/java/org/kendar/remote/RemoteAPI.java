@@ -15,7 +15,6 @@ import org.kendar.servers.http.Response;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
