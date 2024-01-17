@@ -1,7 +1,9 @@
 package org.kendar.cucumber;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cucumber.java.bs.A;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.kendar.globaltest.Sleeper;
 import org.kendar.ham.HamBuilder;
@@ -9,9 +11,11 @@ import org.kendar.ham.HamException;
 import org.kendar.ham.HamReplayerBuilder;
 import org.kendar.ham.HamRequestBuilder;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -108,7 +112,7 @@ public class RecordingTasks {
     }
 
     @And("^Start calendar recording '(.+)'$")
-    public void loadResultsFor(String recordingName) throws Exception {
+    public void startCalendarRecording(String recordingName) throws Exception {
         var driver = (WebDriver) Utils.getCache("driver");
 
         driver.get("http://www.local.test/index.html");
@@ -152,6 +156,27 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         var result = driver.findElement(By.id("id")).getAttribute("value");
         Utils.setCache("recording_" + recordingName, result);
+    }
+
+    @Then("^The recording  '(.+)' contains '(.+)'$")
+    public void thePageContains(String recordingName,String what) throws HamException, IOException {
+        var recordingId = Integer.parseInt(Utils.getCache("recording_" + recordingName));
+
+        var root = getRootPath(RecordingTasks.class);
+//        var builder = HamBuilder
+//                .newHam("www.local.test")
+//                .withSocksProxy("127.0.0.1", 1080)
+//                .withDns("127.0.0.1");
+//
+//        var request = HamRequestBuilder.
+//                newRequest("http", "www.local.test").
+//                withPath("/api/plugins/replayer/recording/" + recordingId + "/full").
+//                withMethod("GET").
+//                build();
+//        var response = builder.call(request);
+
+        var data = Files.readString(Path.of(root, "release", recordingName + ".json"));
+        assertTrue(data.contains(what),"Missing "+what+" in recording "+recordingName);
     }
 
     @And("^Download recording '(.+)'$")
@@ -349,6 +374,48 @@ public class RecordingTasks {
             Sleeper.sleep(1000);
         }
         Sleeper.sleep(1000);
+    }
+
+    @And("^Start simple proxy recording '(.+)'$")
+    public void startSimpleProxyRecording(String recordingName) throws Exception {
+        var driver = (WebDriver) Utils.getCache("driver");
+
+        driver.get("http://www.local.test/index.html");
+        Sleeper.sleep(1000);
+        takeSnapShot();
+        doClick(() -> driver.findElement(By.linkText("Replayer web")));
+        Sleeper.sleep(1000);
+
+        doClick(() -> driver.findElement(By.id("main-recording-addnew")));
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("createScriptName")));
+        Sleeper.sleep(1000);
+        sendKeys(By.id("createScriptName"),recordingName);
+        Sleeper.sleep(1000);
+        scrollFind(() -> driver.findElement(By.id("createScriptBt"))).click();
+        Sleeper.sleep(2000);
+
+        driver.get("http://www.local.test/plugins/recording/script.html?id=1");
+
+        try {
+            Sleeper.sleep(1000);
+            takeSnapShot();
+            scrollFind(() -> driver.findElement(By.id("scriptstab_0"))).click();
+        } catch (Exception ex) {
+
+        }
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("description")));
+        Sleeper.sleep(1000);
+        sendKeys(By.id("description"),"Full recording sample");
+        Sleeper.sleep(1000);
+        doClick(() -> driver.findElement(By.id("recording-saverglobscriptdata")));
+        Sleeper.sleep(1000);
+        showMessage("Starting recording");
+        doClick(() -> driver.findElement(By.id("recording-startrecord")));
+        Sleeper.sleep(1000);
+        var result = driver.findElement(By.id("id")).getAttribute("value");
+        Utils.setCache("recording_" + recordingName, result);
     }
 
 }

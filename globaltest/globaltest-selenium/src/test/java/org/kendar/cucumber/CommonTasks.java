@@ -5,17 +5,27 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.kendar.globaltest.*;
+import org.kendar.ham.HamBuilder;
+import org.kendar.ham.HamException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.kendar.cucumber.Utils.*;
 import static org.kendar.globaltest.LocalFileUtils.pathOf;
+import static org.kendar.ham.HamBuilder.pathId;
+import static org.kendar.ham.HamBuilder.updateMethod;
 
 
 public class CommonTasks {
@@ -127,5 +137,41 @@ public class CommonTasks {
         var seconds = Integer.parseInt(secs);
         HttpChecker.checkForSite(seconds, url)
                 .noError().run();
+    }
+
+    @Then("^Capture all http$")
+    public void captureAllHttp() throws IOException, HamException {
+
+       // 'http://localhost/api/socks5/http' 'captureAllHttp=true'
+        var hamBuilder = (HamBuilder)HamBuilder
+                .newHam("www.local.test")
+                .withSocksProxy("127.0.0.1", 1080)
+                .withDns("127.0.0.1");
+        var request = hamBuilder.newRequest()
+                .withMethod("GET")
+                .withPath("/api/socks5/http?captureAllHttp=true")
+                .build();
+
+        var response = hamBuilder.call(request);
+        assertEquals( response.getStatusCode(), 200,"status code incorrect");
+    }
+
+    @Then("^Call '(.+)' '(.+)' '(.+)'$")
+    public void callDirectly(String protocol,String host,String path) throws IOException, HamException {
+
+        // 'http://localhost/api/socks5/http' 'captureAllHttp=true'
+        var hamBuilder = (HamBuilder)HamBuilder
+                .newHam("www.local.test")
+                .withSocksProxy("127.0.0.1", 1080)
+                .withDns("127.0.0.1");
+        var request = hamBuilder.newRequest()
+                .withMethod("GET")
+                .withPath(path)
+                .build();
+        request.setHost(host);
+        request.setProtocol(protocol);
+
+        var response = hamBuilder.call(request);
+        assertEquals( response.getStatusCode(), 200,"status code incorrect");
     }
 }
