@@ -10,12 +10,18 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
+## New!!
+
 * <b>[Automatic recording of http](docs/plugins/socks5.md) without configuration :zap: </b>
-* <b>[MongoDb integration](docs/plugins/mongo.md) :zap: </b>
-* <b>Selenium automated runs :zap: for '[Record/replay db calls in integration tests!](docs/generated/dbtest.md)' and [Hacking google](docs/generated/googlehack.md) (with Selenium working unluckily on Win/Mac only) 
-* <b>:zap: [Quick start](docs/generated/quickstart.md)</b>
+* <b>[Quickstart for any server application](docs/quickstartany.md) :zap: </b>
 <br>
-<br>
+
+## Coming Soon
+
+* Recording MySQL, and Postgres db calls with NATIVE drivers (no need for different jdbc drivers)
+* Automatic recording of httpS calls (just add the HAM root certificate on your machine)
+
+## At glance
 
 * [Contribute](CONTRIBUTING.md) it's easy :)
 * [Docker Images on DockerHUB](https://hub.docker.com/u/kendarorg)
@@ -23,6 +29,9 @@ The AnsweringMachine is built to overcome this troubles
   * [Release](https://maven.kendar.org/maven2/releases)
   * [Snapshot](https://maven.kendar.org/maven2/snapshots)
 * [Swagger](https://www.kendar.org/swagger/?model=https://raw.githubusercontent.com/kendarorg/HttpAnsweringMachine/main/docs/map.json) 
+* [Quick start](docs/generated/quickstart.md)
+* Selenium automated runs :zap: for '[Record/replay db calls in integration tests!](docs/generated/dbtest.md)' and [Hacking google](docs/generated/googlehack.md) (with Selenium working unluckily on Win/Mac only)
+* [MongoDb integration](docs/plugins/mongo.md)
 
 ## Ready-to-run examples
 
