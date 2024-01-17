@@ -138,7 +138,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     }
 
     private Response remoteRequest(ExecuteRemoteRequest e) {
-            var connManager = connectionBuilder.getConnectionManger(true, true);
+        var connManager = connectionBuilder.getConnectionManger(true, true);
         return prepareRequest(e.getRequest(), connManager);
     }
 
@@ -163,7 +163,7 @@ public class AnsweringHandlerImpl implements AnsweringHandler {
     }
 
     private Response localRequest(ExecuteLocalRequest e) {
-            var connManager = connectionBuilder.getConnectionManger(false, true);
+        var connManager = connectionBuilder.getConnectionManger(false, true);
 
         return prepareRequest(e.getRequest(), connManager);
     }

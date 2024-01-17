@@ -39,6 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @HttpTypeFilter(hostAddress = "*"
 )
 public class DbProxyApi implements FilteringClass {
+    final ObjectMapper mapper = new ObjectMapper();
     private final JsonTypedSerializer serializer;
     private final Logger logger;
     private final Logger specialLogger;
@@ -46,7 +47,6 @@ public class DbProxyApi implements FilteringClass {
     private final ResultSetConverter resultSetConverter;
     private final ConcurrentHashMap<String, ServerData> janusEngines = new ConcurrentHashMap<>();
     private final Object syncObject = new Object();
-    final ObjectMapper mapper = new ObjectMapper();
 
     public DbProxyApi(JsonConfiguration configuration, EventQueue eventQueue, LoggerBuilder loggerBuilder,
                       PluginsInitializer pluginsInitializer, ResultSetConverter resultSetConverter) {

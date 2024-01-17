@@ -139,7 +139,7 @@ public class DnsSocks5Handler implements SocksHandler {
             ((Pipe) pipe).start();
 
             while (((Pipe) pipe).isRunning()) {
-                    Sleeper.sleep((long) this.idleTime);
+                Sleeper.sleep((long) this.idleTime);
             }
 
         }
@@ -158,7 +158,7 @@ public class DnsSocks5Handler implements SocksHandler {
         pipe.start();
 
         while (pipe.isRunning()) {
-                Sleeper.sleep((long) this.idleTime);
+            Sleeper.sleep((long) this.idleTime);
         }
 
         serverSocket.close();
@@ -171,7 +171,7 @@ public class DnsSocks5Handler implements SocksHandler {
         session.write(new CommandResponseMessage(5, ServerReply.SUCCEEDED, InetAddress.getLocalHost(), socketAddress.getPort()));
 
         while (udpRelayServer.isRunning()) {
-                Sleeper.sleep((long) this.idleTime);
+            Sleeper.sleep((long) this.idleTime);
 
             if (session.isClose()) {
                 udpRelayServer.stop();

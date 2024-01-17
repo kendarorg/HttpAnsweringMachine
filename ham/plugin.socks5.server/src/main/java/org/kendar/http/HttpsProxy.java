@@ -1,7 +1,7 @@
 package org.kendar.http;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.HttpRequest;
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.HttpWebServerConfig;
@@ -43,7 +43,7 @@ public class HttpsProxy implements AnsweringServer {
         var httpConfig = configuration.getConfiguration(HttpWebServerConfig.class).copy();
         var spl = httpConfig.getPort().split(";");
         var intSet = new HashSet<Integer>();
-        for(var sp:spl){
+        for (var sp : spl) {
             intSet.add(Integer.parseInt(sp));
         }
         if (!config.isActive()) return;
@@ -54,7 +54,7 @@ public class HttpsProxy implements AnsweringServer {
 //            proxyHttp.listen();
 
             server = DefaultHttpProxyServer.bootstrap()
-                            .withPort(config.getHttpProxyPort())
+                    .withPort(config.getHttpProxyPort())
                     .withAllowLocalOnly(false)
                     .withAllowRequestToOriginServer(true)
                     .plusActivityTracker(new ActivityTrackerAdapter())
@@ -67,15 +67,15 @@ public class HttpsProxy implements AnsweringServer {
                                     var config = configuration.getConfiguration(Socks5Config.class).copy();
                                     var hpp = resolvingServerHostAndPort.split(":");
                                     var port = 80;
-                                    if(hpp.length==2){
+                                    if (hpp.length == 2) {
                                         port = Integer.parseInt(hpp[1]);
                                     }
-                                    if(config.isInterceptAllHttp()){
-                                        if(intSet.contains(port)){
+                                    if (config.isInterceptAllHttp()) {
+                                        if (intSet.contains(port)) {
                                             InetSocketAddress res = null;
                                             try {
                                                 res = new InetSocketAddress(
-                                                        InetAddress.getByName("127.0.0.1"),port);
+                                                        InetAddress.getByName("127.0.0.1"), port);
                                             } catch (UnknownHostException e) {
                                                 return null;
                                             }
@@ -92,20 +92,20 @@ public class HttpsProxy implements AnsweringServer {
                         @Override
                         public InetSocketAddress resolve(String address, int port) throws UnknownHostException {
                             var config = configuration.getConfiguration(Socks5Config.class).copy();
-                            if(config.isInterceptAllHttp()){
-                                if(intSet.contains(port)){
-                                    var res =  new InetSocketAddress(
-                                            InetAddress.getByName("127.0.0.1"),port);
+                            if (config.isInterceptAllHttp()) {
+                                if (intSet.contains(port)) {
+                                    var res = new InetSocketAddress(
+                                            InetAddress.getByName("127.0.0.1"), port);
                                     return res;
                                 }
                             }
                             var resolved = multiResolver.resolve(address);
-                            if(resolved.isEmpty()){
+                            if (resolved.isEmpty()) {
                                 return null;
                             }
                             var res = resolved.get(0);
                             return new InetSocketAddress(
-                                    InetAddress.getByName(res),port);
+                                    InetAddress.getByName(res), port);
                         }
                     })
                     .start();
@@ -116,7 +116,7 @@ public class HttpsProxy implements AnsweringServer {
 
             logger.info("Http/s proxy server LOADED, port: " + config.getHttpProxyPort());
             //proxyHttp.listen();
-            while (running){
+            while (running) {
                 Sleeper.sleep(60000);
             }
 

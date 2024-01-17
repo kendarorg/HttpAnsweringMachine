@@ -51,7 +51,7 @@ public class GoogleTasks {
         org.kendar.globaltest.Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("createScriptName")));
         org.kendar.globaltest.Sleeper.sleep(1000);
-        sendKeys(By.id("createScriptName"),"GoogleHack");
+        sendKeys(By.id("createScriptName"), "GoogleHack");
         org.kendar.globaltest.Sleeper.sleep(1000);
 
         doClick(() -> driver.findElement(By.id("createScriptBt")));
@@ -72,17 +72,17 @@ public class GoogleTasks {
         doClick(() -> driver.findElement(By.id("hostAddress")));
         org.kendar.globaltest.Sleeper.sleep(1000);
         driver.findElement(By.id("hostAddress")).clear();
-        sendKeys(By.id("hostAddress"),"www.google.com");
+        sendKeys(By.id("hostAddress"), "www.google.com");
         org.kendar.globaltest.Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("pathAddress")));
         org.kendar.globaltest.Sleeper.sleep(1000);
         driver.findElement(By.id("pathAddress")).clear();
-        sendKeys(By.id("pathAddress"),"/");
+        sendKeys(By.id("pathAddress"), "/");
         org.kendar.globaltest.Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("source")));
         org.kendar.globaltest.Sleeper.sleep(1000);
         driver.findElement(By.id("source")).clear();
-        sendKeys(By.id("source"),"var regex=/\\/images\\/branding\\/[_a-zA-Z0-9]+\\/[_a-zA-Z0-9]+\\/[_a-zA-Z0-9]+\\.png/gm;\n" +
+        sendKeys(By.id("source"), "var regex=/\\/images\\/branding\\/[_a-zA-Z0-9]+\\/[_a-zA-Z0-9]+\\/[_a-zA-Z0-9]+\\.png/gm;\n" +
                 "var responseText = response.getResponseText()+\"\";\n" +
                 "var changedText = responseText.replace(regex,'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Bing_logo_%282016%29.svg/320px-Bing_logo_%282016%29.svg.png');\n" +
                 "response.setResponseText(changedText);\n" +

@@ -25,18 +25,19 @@ public class SeleniumTasks {
         driver.manage().window().setSize(new Dimension(1366, 900));
     }
 
-    private static String retrieveBrowserVersion(){
+    private static String retrieveBrowserVersion() {
         ChromeDriverManager.getInstance().setup();
-        var versionDetector = new VersionDetector(ChromeDriverManager.getInstance().config(),null);
+        var versionDetector = new VersionDetector(ChromeDriverManager.getInstance().config(), null);
         var version = Integer.parseInt(versionDetector.getBrowserVersionFromTheShell("chrome").get());
         var available = ChromeDriverManager.getInstance().getDriverVersions().stream().
-                map(v->Integer.parseInt(v.split("\\.")[0])).sorted().distinct().collect(Collectors.toList());
-        var matching =available.get(available.size()-1);
-        if(available.stream().anyMatch(v->v==(version))){
-            matching=version;
+                map(v -> Integer.parseInt(v.split("\\.")[0])).sorted().distinct().collect(Collectors.toList());
+        var matching = available.get(available.size() - 1);
+        if (available.stream().anyMatch(v -> v == (version))) {
+            matching = version;
         }
         return matching.toString();
     }
+
     @Given("^Selenium initialized$")
     public void seleniumInitialized() throws Exception {
 

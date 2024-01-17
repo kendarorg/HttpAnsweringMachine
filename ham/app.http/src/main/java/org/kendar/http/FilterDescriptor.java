@@ -44,6 +44,7 @@ public class FilterDescriptor {
     private HamDoc doc;
     private Method callback;
     private String id;
+
     public FilterDescriptor(
             CustomFiltersLoader loader,
             HttpTypeFilter typeFilter,

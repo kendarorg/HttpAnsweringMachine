@@ -40,6 +40,7 @@ public class MongoProxyHandlerApi implements FilteringClass {
     private final JsonTypedSerializer serializer = new JsonTypedSerializer();
     private final Map<String, JsonMongoClientHandler> mongoClientHandlers = new ConcurrentHashMap<>();
     private final Map<String, Long> mongoClientHandlersTimeout = new ConcurrentHashMap<>();
+
     public MongoProxyHandlerApi(List<MsgHandler> msgHandlers,
                                 List<CompressionHandler> compressionHandlers,
                                 LoggerBuilder loggerBuilder,

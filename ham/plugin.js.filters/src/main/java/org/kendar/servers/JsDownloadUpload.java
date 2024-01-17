@@ -19,13 +19,14 @@ import java.util.Map;
 
 @Component
 public class JsDownloadUpload implements FullDownloadUpload {
-    private final JsonConfiguration configuration;
-    private final EventQueue eventQueue;
-    private final HibernateSessionFactory sessionFactory;
     final TypeReference<HashMap<String, String>> typeRef
             = new TypeReference<>() {
     };
     final ObjectMapper mapper = new ObjectMapper();
+    private final JsonConfiguration configuration;
+    private final EventQueue eventQueue;
+    private final HibernateSessionFactory sessionFactory;
+
     public JsDownloadUpload(JsonConfiguration configuration,
                             EventQueue eventQueue,
                             HibernateSessionFactory sessionFactory) {

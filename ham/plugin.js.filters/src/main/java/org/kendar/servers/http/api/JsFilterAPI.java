@@ -39,14 +39,14 @@ import java.util.Optional;
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class JsFilterAPI implements FilteringClass {
     final ObjectMapper mapper = new ObjectMapper();
+    final TypeReference<HashMap<String, String>> typeRef
+            = new TypeReference<>() {
+    };
     private final JsonConfiguration configuration;
     private final Logger logger;
     private final FileResourcesUtils fileResourcesUtils;
     private final EventQueue eventQueue;
     private final HibernateSessionFactory sessionFactory;
-    final TypeReference<HashMap<String, String>> typeRef
-            = new TypeReference<>() {
-    };
 
     public JsFilterAPI(JsonConfiguration configuration,
                        FileResourcesUtils fileResourcesUtils,

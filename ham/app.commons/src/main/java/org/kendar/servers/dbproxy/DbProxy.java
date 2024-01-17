@@ -7,6 +7,7 @@ public class DbProxy {
     private DbDescriptor exposed;
     private DbDescriptor remote;
     private boolean active;
+
     public DbProxy() {
 
     }

@@ -33,7 +33,7 @@ public class AnsweringH2DbServer implements AnsweringServer {
     private Server server;
 
     public AnsweringH2DbServer(
-            LoggerBuilder loggerBuilder,  JsonConfiguration configuration,
+            LoggerBuilder loggerBuilder, JsonConfiguration configuration,
             List<DbTable> dbTableList, HibernateSessionFactory sessionFactory, EventQueue eventQueue) {
         this.logger = loggerBuilder.build(AnsweringH2DbServer.class);
         this.configuration = configuration;

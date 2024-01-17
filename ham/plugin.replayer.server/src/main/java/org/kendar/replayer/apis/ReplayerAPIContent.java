@@ -31,11 +31,11 @@ import java.security.NoSuchAlgorithmException;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class ReplayerAPIContent implements FilteringClass {
+    final ObjectMapper mapper = new ObjectMapper();
     private final FileResourcesUtils fileResourcesUtils;
     private final LoggerBuilder loggerBuilder;
     private final Md5Tester md5Tester;
     private final HibernateSessionFactory sessionFactory;
-    final ObjectMapper mapper = new ObjectMapper();
 
     public ReplayerAPIContent(
             FileResourcesUtils fileResourcesUtils,

@@ -26,7 +26,7 @@ public class UiTestTasks {
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("grid-s-c-4")), 100).click();
         Sleeper.sleep(1000);
-        sendKeys(By.id("grid-s-c-4"),"www");
+        sendKeys(By.id("grid-s-c-4"), "www");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         Sleeper.sleep(1000);
@@ -34,7 +34,7 @@ public class UiTestTasks {
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("grid-s-c-5")), 100).click();
         Sleeper.sleep(1000);
-        sendKeys(By.id("grid-s-c-5"),"/int/be");
+        sendKeys(By.id("grid-s-c-5"), "/int/be");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         Sleeper.sleep(1000);
@@ -42,7 +42,7 @@ public class UiTestTasks {
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("grid-s-c-1")), 100).click();
         Sleeper.sleep(1000);
-        sendKeys(By.id("grid-s-c-1"),"db");
+        sendKeys(By.id("grid-s-c-1"), "db");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         Sleeper.sleep(1000);

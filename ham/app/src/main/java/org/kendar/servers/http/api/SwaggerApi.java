@@ -416,9 +416,9 @@ public class SwaggerApi implements FilteringClass {
     }
 
     static class mt {
+        public final Map<String, Header> headers = new HashMap<>();
         public String content;
         public MediaType mediaType;
         public String description;
-        public final Map<String, Header> headers = new HashMap<>();
     }
 }

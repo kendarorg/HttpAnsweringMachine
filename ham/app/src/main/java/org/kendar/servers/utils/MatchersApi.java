@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component;
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class MatchersApi implements FilteringClass {
 
-    private final MatchersRegistry matchersRegistry;
     final ObjectMapper mapper = new ObjectMapper();
+    private final MatchersRegistry matchersRegistry;
 
     public MatchersApi(MatchersRegistry matchersRegistry) {
 

@@ -15,9 +15,9 @@ import java.util.function.Supplier;
 
 public class HamStarter {
 
+    public static final boolean shutdownHookInitialized = false;
     private static final Logger logger = LoggerFactory.getLogger(HamStarter.class);
     private static final ConcurrentHashMap<String, ThreadAndProc> processes = new ConcurrentHashMap<>();
-    public static final boolean shutdownHookInitialized = false;
     private static boolean showTrace = false;
     private static Thread realThread;
 

@@ -14,6 +14,7 @@ public class PluginsInitializerImpl implements PluginsInitializer {
     private final LoggerBuilder loggerBuilder;
     private final HashMap<String, String> plugins = new HashMap<>();
     private final HashMap<String, String> specialLoggers = new HashMap<>();
+
     public PluginsInitializerImpl(LoggerBuilder loggerBuilder) {
         this.loggerBuilder = loggerBuilder;
     }

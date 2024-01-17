@@ -22,8 +22,8 @@ import java.util.HashMap;
 @Component
 @HttpTypeFilter(hostAddress = "${global.localAddress}", blocking = true)
 public class RemoteAPI implements FilteringClass {
-    private final EventQueue eventQueue;
     final ObjectMapper mapper = new ObjectMapper();
+    private final EventQueue eventQueue;
 
     public RemoteAPI(EventQueue eventQueue) {
 

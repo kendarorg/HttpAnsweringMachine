@@ -46,13 +46,13 @@ public class DbTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("connectionStringR")));
         Sleeper.sleep(1000);
-        sendKeys(By.id("connectionStringR"),"mongodb://127.0.0.1:27077");
+        sendKeys(By.id("connectionStringR"), "mongodb://127.0.0.1:27077");
         Sleeper.sleep(1000);
         checkCheckBox(() -> driver.findElement(By.id("active")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("exposedPort")));
         Sleeper.sleep(1000);
-        sendKeys(By.id("exposedPort"),"27078");
+        sendKeys(By.id("exposedPort"), "27078");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(1000);

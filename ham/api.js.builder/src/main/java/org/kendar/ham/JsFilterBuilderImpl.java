@@ -19,6 +19,7 @@ public class JsFilterBuilderImpl implements JsFilterBuilder, JsSourceBuilder {
     private FilterPhase phase;
     private boolean blocking = false;
     private String source;
+
     JsFilterBuilderImpl(HamInternalBuilder hamBuilder, String name) {
 
         this.hamBuilder = hamBuilder;

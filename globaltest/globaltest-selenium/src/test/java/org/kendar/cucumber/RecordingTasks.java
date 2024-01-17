@@ -37,9 +37,9 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("role")));
         Sleeper.sleep(1000);
-        sendKeys(By.id("role"),"Doctor");
+        sendKeys(By.id("role"), "Doctor");
         Sleeper.sleep(1000);
-        sendKeys(By.id("name"),"John Doe");
+        sendKeys(By.id("name"), "John Doe");
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(5000);
         doClick(() -> driver.findElement(By.id("grid-rowe-0-2")));
@@ -48,7 +48,7 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("description")));
         Sleeper.sleep(1000);
-        sendKeys(By.id("description"),"Visit");
+        sendKeys(By.id("description"), "Visit");
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(2000);
         waitForItem(() -> driver.findElement(By.id("grid-rowc-0-1")),
@@ -82,7 +82,7 @@ public class RecordingTasks {
         doClick(() -> driver.findElement(By.id("name")));
         driver.findElement(By.id("name")).clear();
         Sleeper.sleep(1000);
-        sendKeys(By.id("name"),"Jane Doe");
+        sendKeys(By.id("name"), "Jane Doe");
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("grid-rowe-0-1")));
@@ -123,7 +123,7 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("createScriptName")));
         Sleeper.sleep(1000);
-        sendKeys(By.id("createScriptName"),recordingName);
+        sendKeys(By.id("createScriptName"), recordingName);
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("createScriptBt"))).click();
         Sleeper.sleep(2000);
@@ -141,11 +141,11 @@ public class RecordingTasks {
         scrollFind(() -> driver.findElement(By.id("extdbname"))).click();
         driver.findElement(By.id("extdbname")).clear();
         Sleeper.sleep(1000);
-        sendKeys(By.id("extdbname"),"be");
+        sendKeys(By.id("extdbname"), "be");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("description")));
         Sleeper.sleep(1000);
-        sendKeys(By.id("description"),"Full recording sample");
+        sendKeys(By.id("description"), "Full recording sample");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-saverglobscriptdata")));
         Sleeper.sleep(1000);
@@ -157,7 +157,7 @@ public class RecordingTasks {
     }
 
     @Then("^The recording  '(.+)' contains '(.+)'$")
-    public void thePageContains(String recordingName,String what) throws HamException, IOException {
+    public void thePageContains(String recordingName, String what) throws HamException, IOException {
         var recordingId = Integer.parseInt(Utils.getCache("recording_" + recordingName));
 
         var root = getRootPath(RecordingTasks.class);
@@ -174,7 +174,7 @@ public class RecordingTasks {
 //        var response = builder.call(request);
 
         var data = Files.readString(Path.of(root, "release", recordingName + ".json"));
-        assertTrue(data.contains(what),"Missing "+what+" in recording "+recordingName);
+        assertTrue(data.contains(what), "Missing " + what + " in recording " + recordingName);
     }
 
     @And("^Download recording '(.+)'$")
@@ -236,7 +236,7 @@ public class RecordingTasks {
         }
         doClick(() -> driver.findElement(By.id("newname")));
         Sleeper.sleep(1000);
-        sendKeys(By.id("newname"),destName);
+        sendKeys(By.id("newname"), destName);
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(5000);
@@ -388,7 +388,7 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("createScriptName")));
         Sleeper.sleep(1000);
-        sendKeys(By.id("createScriptName"),recordingName);
+        sendKeys(By.id("createScriptName"), recordingName);
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("createScriptBt"))).click();
         Sleeper.sleep(2000);
@@ -405,7 +405,7 @@ public class RecordingTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("description")));
         Sleeper.sleep(1000);
-        sendKeys(By.id("description"),"Full recording sample");
+        sendKeys(By.id("description"), "Full recording sample");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-saverglobscriptdata")));
         Sleeper.sleep(1000);

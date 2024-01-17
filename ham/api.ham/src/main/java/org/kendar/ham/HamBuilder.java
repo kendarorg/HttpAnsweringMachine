@@ -52,8 +52,8 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("resource")
 public class HamBuilder implements HamInternalBuilder {
-    private static final HashMap<String, Function<HamInternalBuilder, Object>> pluginBuilders = new HashMap<>();
     static final ObjectMapper mapper;
+    private static final HashMap<String, Function<HamInternalBuilder, Object>> pluginBuilders = new HashMap<>();
     private static Path certificatePath;
 
     static {

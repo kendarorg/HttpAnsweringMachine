@@ -29,21 +29,21 @@ public class NullGatewayTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("grid-s-c-4")));
         Sleeper.sleep(1000);
-        sendKeys(By.id("grid-s-c-4"),"www");
+        sendKeys(By.id("grid-s-c-4"), "www");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         doClick(() -> driver.findElement(By.id("recording-list-delsel")));
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("grid-s-c-1")), 100).click();
         Sleeper.sleep(1000);
-        sendKeys(By.id("grid-s-c-1"),"db");
+        sendKeys(By.id("grid-s-c-1"), "db");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         doClick(() -> driver.findElement(By.id("recording-list-delsel")));
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("grid-s-c-5")), 100).click();
         Sleeper.sleep(1000);
-        sendKeys(By.id("grid-s-c-5"),"/int/gat");
+        sendKeys(By.id("grid-s-c-5"), "/int/gat");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         Sleeper.sleep(1000);
@@ -66,7 +66,7 @@ public class NullGatewayTasks {
         Sleeper.sleep(1000);
         scrollFind(() -> driver.findElement(By.id("grid-s-c-2")), 100).click();
         Sleeper.sleep(1000);
-        sendKeys(By.id("grid-s-c-2"),"true");
+        sendKeys(By.id("grid-s-c-2"), "true");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("recording-list-checkall")));
         Sleeper.sleep(1000);
@@ -75,7 +75,7 @@ public class NullGatewayTasks {
 
         driver.findElement(By.id("jsScriptPost")).clear();
         scrollFind(() -> driver.findElement(By.id("jsScriptPost")));
-        sendKeys(By.id("jsScriptPost"),"    var diffEngine = new org.kendar.xml.DiffInferrer();\n" +
+        sendKeys(By.id("jsScriptPost"), "    var diffEngine = new org.kendar.xml.DiffInferrer();\n" +
                 "    diffEngine.diff(expectedresponse.getResponseText(),response.getResponseText());\n" +
                 "    if(expectedresponse.getStatusCode()!=response.getStatusCode()){\n" +
                 "        throw \"Expected status code \"+expectedresponse.getStatusCode()+\" but received \"+response.getStatusCode();\n" +
@@ -104,7 +104,7 @@ public class NullGatewayTasks {
         doClick(() -> driver.findElement(By.id("res_free_content")));
         Sleeper.sleep(1000);
         driver.findElement(By.id("res_free_content")).clear();
-        sendKeys(By.id("res_free_content"),"[{\"id\":1,\"name\":\"John Doe\",\"fail\":\"Doctor\"}]");
+        sendKeys(By.id("res_free_content"), "[{\"id\":1,\"name\":\"John Doe\",\"fail\":\"Doctor\"}]");
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("res-savechang")));
         Sleeper.sleep(1000);

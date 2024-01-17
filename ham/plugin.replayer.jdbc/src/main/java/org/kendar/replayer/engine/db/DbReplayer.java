@@ -44,6 +44,7 @@ public class DbReplayer implements ReplayerEngine {
     private final AtomicLong atomicLong = new AtomicLong(Long.MAX_VALUE);
     protected boolean hasRows = false;
     private boolean useSimEngine;
+
     public DbReplayer(HibernateSessionFactory sessionFactory, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
         this.sessionFactory = sessionFactory;
         this.logger = loggerBuilder.build(DbReplayer.class);

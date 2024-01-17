@@ -33,6 +33,9 @@ import java.util.stream.Collectors;
 public class ReplayerDataset implements BaseDataset {
     protected final ObjectMapper mapper = new ObjectMapper();
     protected final ConcurrentHashMap<Long, Object> states = new ConcurrentHashMap<>();
+    protected final Logger logger;
+    protected final Md5Tester md5Tester;
+    protected final HibernateSessionFactory sessionFactory;
     private final EventQueue eventQueue;
     private final InternalRequester internalRequester;
     private final Cache cache;
@@ -41,9 +44,6 @@ public class ReplayerDataset implements BaseDataset {
     private final JsReplayerExecutor executor = new JsReplayerExecutor();
     private final List<ReplayerEngine> replayerEngines;
     private final AtomicBoolean pause = new AtomicBoolean(false);
-    protected final Logger logger;
-    protected final Md5Tester md5Tester;
-    protected final HibernateSessionFactory sessionFactory;
     protected Long name;
     protected String description;
     protected ReplayerResult replayerResult;

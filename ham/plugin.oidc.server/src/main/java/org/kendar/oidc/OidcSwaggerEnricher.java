@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class OidcSwaggerEnricher implements SwaggerEnricher {
     /**
      * According to <a href="https://swagger.io/docs/specification/authentication/#multipl<a href="e">...</a>
-     ">* https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#se</a>curitySchemeObject
+     * ">* https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#se</a>curitySchemeObject
      *
      * @param swagger
      */

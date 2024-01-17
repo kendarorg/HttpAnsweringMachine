@@ -24,6 +24,7 @@ public class RecordFilter implements FilteringClass {
     private final Logger logger;
     private final List<ReplayerEngine> replayerEngines;
     private final ReplayerStatus replayerStatus;
+
     public RecordFilter(ReplayerStatus replayerStatus, LoggerBuilder loggerBuilder, JsonConfiguration configuration,
                         List<ReplayerEngine> replayerEngines) {
         this.replayerStatus = replayerStatus;

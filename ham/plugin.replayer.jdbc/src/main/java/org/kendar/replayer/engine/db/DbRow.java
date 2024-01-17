@@ -12,6 +12,7 @@ public class DbRow {
     private JdbcCommand request;
     private JdbcResult response;
     private boolean visited = false;
+
     public DbRow(ReplayerRow row, JdbcCommand request, JdbcResult response) {
         this.row = row;
         this.request = request;

@@ -11,7 +11,7 @@ import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.utils.LoggerBuilder;
 import org.slf4j.Logger;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -39,11 +39,12 @@ import java.util.concurrent.Executors;
  * <p>
  * export http_proxy="<a href="http://127.0.0.1:1081">...</a>"
  * ex<a href="port">https_proxy="htt</<a href="a>p://127.0.0.1:1081"
- ">* cur</a>l  "https://httpbin.org/anything"
+ * ">* cur</a>l  "https://httpbin.org/anything"
  */
 public class HttpsProxyImpl {
 
 
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(60);
     private final boolean useCache;
     private final DnsMultiResolver resolver;
     private final boolean interceptAllHttp;
@@ -53,7 +54,6 @@ public class HttpsProxyImpl {
      * Semaphore for Proxy and Consolee Management System.
      */
     private volatile boolean running = true;
-
 
     /**
      * Create the Proxy Server
@@ -88,7 +88,6 @@ public class HttpsProxyImpl {
         }
     }
 
-    private static final ExecutorService executorService = Executors.newFixedThreadPool(60);
     /**
      * Listens to port and accepts new socket connections.
      * Creates a new thread to handle the request and passes it the socket connection and continues listening.
@@ -101,7 +100,7 @@ public class HttpsProxyImpl {
                 Socket socket = serverSocket.accept();
 
                 //executorService.submit(new Handler2(socket,resolver, interceptAllHttp));
-                executorService.submit(new RequestHandler(socket, useCache, log, resolver,interceptAllHttp));
+                executorService.submit(new RequestHandler(socket, useCache, log, resolver, interceptAllHttp));
             } catch (SocketException e) {
                 // Socket exception is triggered by management system to shut down the proxy
                 log.debug("Server closed", e);

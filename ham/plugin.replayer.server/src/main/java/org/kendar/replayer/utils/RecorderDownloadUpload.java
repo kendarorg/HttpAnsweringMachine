@@ -20,13 +20,14 @@ import java.util.Map;
 
 @Component
 public class RecorderDownloadUpload implements FullDownloadUpload {
+    final ObjectMapper mapper = new ObjectMapper();
     private final JsonConfiguration configuration;
     private final EventQueue eventQueue;
     private final HibernateSessionFactory sessionFactory;
     TypeReference<HashMap<String, String>> typeRef
             = new TypeReference<>() {
     };
-    final ObjectMapper mapper = new ObjectMapper();
+
     public RecorderDownloadUpload(JsonConfiguration configuration,
                                   EventQueue eventQueue,
                                   HibernateSessionFactory sessionFactory) {

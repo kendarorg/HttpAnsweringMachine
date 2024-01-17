@@ -15,6 +15,7 @@ public class MsgPacket extends MongoPacket<MsgPacket> implements MongoReqResPack
     private int checksum;
     private int requestId;
     private int responseTo;
+
     public MsgPacket() {
         setOpCode(OpCodes.OP_MSG);
     }

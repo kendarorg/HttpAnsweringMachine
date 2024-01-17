@@ -118,7 +118,7 @@ public class HamMongoClientHandler extends MongoClientHandler {
             event.setRequest(req);
             var result = eventQueue.execute(event, Response.class);
             var response = result.getResponseText();
-            logger.debug("RECEIVED "+command);
+            logger.debug("RECEIVED " + command);
             var deser = serializer.newInstance();
             deser.deserialize(response);
             var serverPacket = (MongoPacket) deser.read("data");

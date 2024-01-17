@@ -23,6 +23,7 @@ public class Utils {
     private static HashMap<String, Object> cache = new HashMap<>();
     private static String rootPath;
     private static boolean shutdownHookInitialized = false;
+    private static String recordingName = "none";
 
     public static HashMap<String, Object> getCache() {
         return cache;
@@ -40,57 +41,57 @@ public class Utils {
         }
     }
 
-    public static void sendKeys(By by,String data){
-        var driver = (WebDriver)getCache("driver");
+    public static void sendKeys(By by, String data) {
+        var driver = (WebDriver) getCache("driver");
         driver.findElement(by).clear();
         driver.findElement(by).sendKeys(data);
         takeSnapShot();
     }
 
-    private static String recordingName="none";
-    public static void setRecordingName(String val){
-        recordingName=val;
-        counter=0;
-        takeMessageSnapshot("Start test "+val);
+    public static void setRecordingName(String val) {
+        recordingName = val;
+        counter = 0;
+        takeMessageSnapshot("Start test " + val);
     }
+
     public static void takeSnapShot() {
 
         try {
             var root = getRootPath(RecordingTasks.class);
-            var dest = Path.of(root, "release","recording");
-            if(!Files.exists(dest)){
+            var dest = Path.of(root, "release", "recording");
+            if (!Files.exists(dest)) {
                 Files.createDirectory(dest);
             }
-            dest = Path.of(root, "release","recording",recordingName);
-            if(!Files.exists(dest)){
+            dest = Path.of(root, "release", "recording", recordingName);
+            if (!Files.exists(dest)) {
                 Files.createDirectory(dest);
             }
             counter++;
             TakesScreenshot scrShot = ((TakesScreenshot) getCache("driver"));
             File srcFile = scrShot.getScreenshotAs(OutputType.FILE);
-            var destFilePath = Path.of(root, "release","recording",recordingName,"snap_" + String.format("%03d", counter) + ".png");
+            var destFilePath = Path.of(root, "release", "recording", recordingName, "snap_" + String.format("%03d", counter) + ".png");
             File destFile = new File(destFilePath.toAbsolutePath().toString());
             FileUtils.copyFile(srcFile, destFile);
             Files.delete(srcFile.getAbsoluteFile().toPath());
-        }catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex);
         }
     }
 
-    public static void takeMessageSnapshot(String text ){
+    public static void takeMessageSnapshot(String text) {
         try {
             var root = getRootPath(RecordingTasks.class);
-            var dest = Path.of(root, "release","recording");
-            if(!Files.exists(dest)){
+            var dest = Path.of(root, "release", "recording");
+            if (!Files.exists(dest)) {
                 Files.createDirectory(dest);
             }
-            dest = Path.of(root, "release","recording",recordingName);
-            if(!Files.exists(dest)){
+            dest = Path.of(root, "release", "recording", recordingName);
+            if (!Files.exists(dest)) {
                 Files.createDirectory(dest);
             }
 
             counter++;
-            var destFilePath = Path.of(root, "release","recording",recordingName,"snap_" + String.format("%03d", counter) + ".png");
+            var destFilePath = Path.of(root, "release", "recording", recordingName, "snap_" + String.format("%03d", counter) + ".png");
 
             var img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
             var g2d = img.createGraphics();
@@ -108,11 +109,11 @@ public class Utils {
             g2d.setFont(font);
             fm = g2d.getFontMetrics();
             g2d.setColor(Color.BLACK);
-            g2d.drawString(text, 0+5, 5+fm.getAscent());
+            g2d.drawString(text, 0 + 5, 5 + fm.getAscent());
             g2d.dispose();
 
             ImageIO.write(img, "png", new File(destFilePath.toAbsolutePath().toString()));
-        }catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex);
         }
     }
@@ -256,7 +257,6 @@ public class Utils {
         takeSnapShot();
         return el;
     }
-
 
 
     public static void showMessage(String message) throws InterruptedException {

@@ -17,10 +17,11 @@ import org.springframework.stereotype.Component;
 public class HttpApi implements FilteringClass {
     private final JsonConfiguration configuration;
 
-    public HttpApi(JsonConfiguration configuration){
+    public HttpApi(JsonConfiguration configuration) {
 
         this.configuration = configuration;
     }
+
     @Override
     public String getId() {
         return getClass().getName();
@@ -37,7 +38,7 @@ public class HttpApi implements FilteringClass {
         var socks5Config = configuration.getConfiguration(Socks5Config.class).copy();
         var queryParam = request.getQuery("captureAllHttp");
         var captureAll = false;
-        if(queryParam!=null){
+        if (queryParam != null) {
             captureAll = Boolean.getBoolean(queryParam);
         }
         socks5Config.setInterceptAllHttp(captureAll);

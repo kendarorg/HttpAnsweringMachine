@@ -24,6 +24,7 @@ public class EventQueueImpl implements EventQueue {
     @SuppressWarnings("rawtypes")
     private final HashMap<String, Class> conversions = new HashMap<>();
     private final HashMap<String, Function<Event, Object>> commandHandlers = new HashMap<>();
+
     public EventQueueImpl(LoggerBuilder loggerBuilder) {
         this.logger = loggerBuilder.build(EventQueue.class);
     }

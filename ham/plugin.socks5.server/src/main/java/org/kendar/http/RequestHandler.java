@@ -11,25 +11,23 @@ import java.util.regex.Pattern;
 public class RequestHandler implements Runnable {
 
     public static final int READ_BUFFER_SIZE = 16000;
+    private static Pattern digits = Pattern.compile("\\d+");
+    /**
+     * Socket connected to client passed by Proxy server
+     */
+    final Socket clientSocket;
     private final boolean useCache;
     private final Logger log;
     private final DnsMultiResolver multiResolver;
     private final boolean interceptAllHttp;
     /**
-     * Socket connected to client passed by Proxy server
-     */
-    final Socket clientSocket;
-    /**
      * Read data client sends to proxy
      */
     BufferedReader proxyToClientBr;
-
     /**
      * Send data from proxy to client
      */
     BufferedWriter proxyToClientBw;
-
-
     /**
      * Thread that is used to transmit data read from client to server when using HTTPS
      * Reference to this is required so it can be closed once completed.
@@ -58,7 +56,6 @@ public class RequestHandler implements Runnable {
             e.printStackTrace();
         }
     }
-
 
     /**
      * Reads and examines the requestString and calls the appropriate method based
@@ -111,12 +108,12 @@ public class RequestHandler implements Runnable {
             log.debug("HTTPS Request for : " + urlString + "\n");
 
             System.out.println("HTTPS Request for : " + urlString + "\n");
-            handleHTTPSRequest(urlString,originalRequest,true);
+            handleHTTPSRequest(urlString, originalRequest, true);
         } else {
             System.out.println("HTTP Request for : " + urlString + "\n");
             log.debug("HTTP Request for : " + urlString + "\n");
 
-                handleHTTPSRequest(urlString,originalRequest,false);
+            handleHTTPSRequest(urlString, originalRequest, false);
 
             // Check if we have a cached copy
             /*File file;
@@ -128,10 +125,8 @@ public class RequestHandler implements Runnable {
                 sendNonCachedToClient(urlString);
             }*/
         }
-        System.out.println("END "+urlString);
+        System.out.println("END " + urlString);
     }
-
-    private static Pattern digits = Pattern.compile("\\d+");
 
     /**
      * Handles HTTPS requests between client and remote server
@@ -156,8 +151,8 @@ public class RequestHandler implements Runnable {
         }*/
         var url = uri.getHost();
         int port = uri.getPort();
-        if (port == -1){
-            port = isHttps?443:80;
+        if (port == -1) {
+            port = isHttps ? 443 : 80;
         }
 
         try {
@@ -170,7 +165,7 @@ public class RequestHandler implements Runnable {
             }*/
 
             var resolved = multiResolver.resolve(url);
-            if(resolved.isEmpty()){
+            if (resolved.isEmpty()) {
                 proxyToClientBw.close();
                 return;
             }
@@ -186,7 +181,7 @@ public class RequestHandler implements Runnable {
                     "Proxy-Agent: ProxyServer/1.0\r\n" +
                     "\r\n";
 
-            if(isHttps) {
+            if (isHttps) {
 
                 proxyToClientBw.write(line);
                 proxyToClientBw.flush();
@@ -202,8 +197,8 @@ public class RequestHandler implements Runnable {
             // Create Buffered Reader from proxy and remote
             BufferedReader proxyToServerBR = new BufferedReader(new InputStreamReader(proxyToServerSocket.getInputStream()));
 
-            if(!isHttps){
-                proxyToServerBW.write(originalRequest+"\r\n");
+            if (!isHttps) {
+                proxyToServerBW.write(originalRequest + "\r\n");
                 proxyToServerBW.flush();
             }
 
@@ -217,7 +212,7 @@ public class RequestHandler implements Runnable {
                 byte[] buffer = new byte[4096];
                 int read;
                 do {
-                    if(clientSocket.getInputStream().available()>0) {
+                    if (clientSocket.getInputStream().available() > 0) {
                         read = clientSocket.getInputStream().read(buffer);
                         if (read > 0) {
                             proxyToServerSocket.getOutputStream().write(buffer, 0, read);
@@ -226,7 +221,7 @@ public class RequestHandler implements Runnable {
                             //}
                             System.out.println("Comm " + read);
                         }
-                    }else{
+                    } else {
                         break;
                     }
                 } while (read >= 0);
@@ -249,14 +244,14 @@ public class RequestHandler implements Runnable {
                 proxyToServerSocket.setSoTimeout(1000);
                 do {
                     //if(proxyToServerSocket.getInputStream().available()>0) {
-                        read = proxyToServerSocket.getInputStream().read(buffer);
-                        if (read > 0) {
-                            clientSocket.getOutputStream().write(buffer, 0, read);
-                            //if (proxyToServerSocket.getInputStream().available() < 1) {
-                            clientSocket.getOutputStream().flush();
-                            //}
-                            System.out.println("WRITTEN " + read);
-                        }
+                    read = proxyToServerSocket.getInputStream().read(buffer);
+                    if (read > 0) {
+                        clientSocket.getOutputStream().write(buffer, 0, read);
+                        //if (proxyToServerSocket.getInputStream().available() < 1) {
+                        clientSocket.getOutputStream().flush();
+                        //}
+                        System.out.println("WRITTEN " + read);
+                    }
 //                    }else {
 //                        break;
 //                    }
@@ -298,14 +293,13 @@ public class RequestHandler implements Runnable {
             }
         } catch (Exception e) {
             log.error("Error on HTTPS : " + urlString, e);
-        }finally {
-            try{
+        } finally {
+            try {
                 clientSocket.close();
-            }catch (Exception ex){
+            } catch (Exception ex) {
             }
         }
     }
-
 
 
     /**
@@ -343,7 +337,7 @@ public class RequestHandler implements Runnable {
                         if (proxyToClientIS.available() < 1) {
                             proxyToServerOS.flush();
                         }
-                        System.out.println("Comm "+read);
+                        System.out.println("Comm " + read);
                     }
                 } while (read >= 0);
             } catch (SocketTimeoutException ste) {

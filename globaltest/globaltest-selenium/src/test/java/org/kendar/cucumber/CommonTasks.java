@@ -41,7 +41,7 @@ public class CommonTasks {
         doClick(() -> driver.findElement(By.id("ssl-sites-add")));
         org.kendar.globaltest.Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("address")));
-        sendKeys(By.id("address"),toAdd);
+        sendKeys(By.id("address"), toAdd);
         org.kendar.globaltest.Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("address")));
         Sleeper.sleep(1000);
@@ -64,7 +64,7 @@ public class CommonTasks {
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("dns")));
         Sleeper.sleep(1000);
-        sendKeys(By.id("dns"),toAdd);
+        sendKeys(By.id("dns"), toAdd);
         Sleeper.sleep(1000);
         doClick(() -> driver.findElement(By.id("mod-save")));
         Sleeper.sleep(1000);
@@ -134,8 +134,8 @@ public class CommonTasks {
     @Then("^Capture all http$")
     public void captureAllHttp() throws IOException, HamException {
 
-       // 'http://localhost/api/socks5/http' 'captureAllHttp=true'
-        var hamBuilder = (HamBuilder)HamBuilder
+        // 'http://localhost/api/socks5/http' 'captureAllHttp=true'
+        var hamBuilder = (HamBuilder) HamBuilder
                 .newHam("www.local.test")
                 .withSocksProxy("127.0.0.1", 1080)
                 .withDns("127.0.0.1");
@@ -145,14 +145,14 @@ public class CommonTasks {
                 .build();
 
         var response = hamBuilder.call(request);
-        assertEquals( response.getStatusCode(), 200,"status code incorrect");
+        assertEquals(response.getStatusCode(), 200, "status code incorrect");
     }
 
     @Then("^Call '(.+)' '(.+)' '(.+)'$")
-    public void callDirectly(String protocol,String host,String path) throws IOException, HamException {
+    public void callDirectly(String protocol, String host, String path) throws IOException, HamException {
 
         // 'http://localhost/api/socks5/http' 'captureAllHttp=true'
-        var hamBuilder = (HamBuilder)HamBuilder
+        var hamBuilder = (HamBuilder) HamBuilder
                 .newHam("www.local.test")
                 .withSocksProxy("127.0.0.1", 1080)
                 .withDns("127.0.0.1");
@@ -164,6 +164,6 @@ public class CommonTasks {
         request.setProtocol(protocol);
 
         var response = hamBuilder.call(request);
-        assertEquals( response.getStatusCode(), 200,"status code incorrect");
+        assertEquals(response.getStatusCode(), 200, "status code incorrect");
     }
 }
