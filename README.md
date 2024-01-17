@@ -14,6 +14,8 @@ The AnsweringMachine is built to overcome this troubles
 
 * <b>[Automatic recording of http](docs/plugins/socks5.md) without configuration :zap: </b>
 * <b>[Quickstart for any server application](docs/quickstartany.md) :zap: </b>
+* <b>Migrated to docker-compose 3.2</b>
+* <b>Migrated php sample and php base docker image to php 8.1</b>
 <br>
 
 ## Coming Soon
