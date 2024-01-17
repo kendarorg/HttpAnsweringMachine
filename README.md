@@ -10,6 +10,7 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
+* <b>[Automatic recording of http](docs/plugins/socks5.md) without configuration :zap: </b>
 * <b>[MongoDb integration](docs/plugins/mongo.md) :zap: </b>
 * <b>Selenium automated runs :zap: for '[Record/replay db calls in integration tests!](docs/generated/dbtest.md)' and [Hacking google](docs/generated/googlehack.md) (with Selenium working unluckily on Win/Mac only) 
 * <b>:zap: [Quick start](docs/generated/quickstart.md)</b>
