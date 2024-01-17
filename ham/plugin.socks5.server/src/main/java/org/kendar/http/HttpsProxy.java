@@ -64,6 +64,7 @@ public class HttpsProxy implements AnsweringServer {
                             return new HttpFiltersAdapter(originalRequest) {
                                 @Override
                                 public InetSocketAddress proxyToServerResolutionStarted(String resolvingServerHostAndPort) {
+                                    var config = configuration.getConfiguration(Socks5Config.class).copy();
                                     var hpp = resolvingServerHostAndPort.split(":");
                                     var port = 80;
                                     if(hpp.length==2){
@@ -90,6 +91,7 @@ public class HttpsProxy implements AnsweringServer {
                     .withServerResolver(new HostResolver() {
                         @Override
                         public InetSocketAddress resolve(String address, int port) throws UnknownHostException {
+                            var config = configuration.getConfiguration(Socks5Config.class).copy();
                             if(config.isInterceptAllHttp()){
                                 if(intSet.contains(port)){
                                     var res =  new InetSocketAddress(
