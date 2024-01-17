@@ -1,0 +1,76 @@
+[
+  "#include:external/dns.json",
+  {
+    "id": "staticPage",
+    "system": true,
+    "staticPages": [
+    ]
+  },
+  {
+    "id": "http",
+    "system": true,
+    "active": true,
+    "port": "80",
+    "backlog": 50,
+    "useCachedExecutor": true
+  },
+  "#include:external/proxy.json",
+  "#include:external/dbproxy.json",
+  "#include:external/ssl.json",
+  "#include:external/https.json",
+  "#include:external/mongo.json",
+  {
+    "id": "global",
+    "system": true,
+    "db": {
+      "url": "jdbc:h2:tcp://localhost/ham;MODE=MYSQL;",
+      "login": "sa",
+      "password": "sa",
+      "startInternalH2": true,
+      "driver": "org.h2.Driver",
+      "hibernateDialect": "org.hibernate.dialect.MySQLDialect"
+    },
+    "localAddress": "localhost",
+    "logging": {
+      "logLevel": "INFO",
+      "loggers": {
+        "org.kendar.servers.http.Request": "OFF",
+        "org.kendar.servers.http.Response": "OFF",
+        "org.kendar.servers.http.StaticRequest": "OFF",
+        "org.kendar.servers.http.DynamicRequest": "OFF",
+        "org.kendar.dns.DnsQueries": "OFF",
+        "org.kendar.servers.http.InternalRequest": "OFF",
+        "org.hibernate": "OFF",
+        "org.kendar.mongo.logging.MongoLogClient": "OFF",
+        "org.kendar.mongo.logging.MongoLogServer": "OFF",
+        "org.mongodb.driver": "OFF",
+        "com.sun.net.httpserver": "ERROR"
+      }
+    },
+    "filters": {
+      "12363272": false
+    }
+  },
+  {
+    "id": "oidc.server",
+    "tokenExpiration": 86400,
+    "active": false
+  },
+  {
+    "id": "js.filters",
+    "path": "jsplugins",
+    "active": true
+  },
+  {
+    "id": "replayer.server",
+    "path": "replayerdata",
+    "active": true
+  },
+  {
+    "id": "socks5.server",
+    "port": 1080,
+    "httpProxyPort": 1081,
+    "interceptAllHttp":true,
+    "active": true
+  }
+]
