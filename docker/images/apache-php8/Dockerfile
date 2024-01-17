@@ -1,6 +1,6 @@
 FROM ham.apache
 
-RUN echo ham.apache-php8 version-4.3.0
+RUN echo ham.apache-php8 version-4.3.1
 
 
 # Setup apache and php

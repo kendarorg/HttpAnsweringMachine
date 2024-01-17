@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HAM_VERSION=4.3.0
+HAM_VERSION=4.3.1
 JANUS_DRIVER_VERSION=1.1.12-SNAPSHOT
 START_LOCATION=$(pwd)
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )

@@ -1,6 +1,6 @@
 FROM ham.client
 
-RUN echo ham.apache version-4.3.0
+RUN echo ham.apache version-4.3.1
 
 # Setup apache and php
 RUN apk --no-cache add apache2  apache2-ssl curl \

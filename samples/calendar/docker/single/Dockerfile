@@ -1,7 +1,7 @@
 FROM ham.master:latest
 
 
-RUN echo ham.sample.calendar.single version-4.3.0
+RUN echo ham.sample.calendar.single version-4.3.1
 
 COPY ./docker/single/calendar.single.external.json /etc/app/ham/app/external.json
 

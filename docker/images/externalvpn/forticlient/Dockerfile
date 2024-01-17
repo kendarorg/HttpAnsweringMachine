@@ -31,7 +31,7 @@ RUN \
 #docker run --privileged --cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH --name myvpn myvpn
 FROM ham.base:latest
 
-RUN echo ham.openforti version-4.3.0
+RUN echo ham.openforti version-4.3.1
 
 COPY --from=builder /usr/bin/openfortivpn  /usr/bin/
 #/go/bin/glider
