@@ -1,7 +1,7 @@
 package org.kendar.http;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.*;
 import org.kendar.events.EventQueue;
 import org.kendar.events.events.SSLChangedEvent;
 import org.kendar.servers.AnsweringServer;
@@ -23,9 +23,11 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Component
 public class HttpsProxy implements AnsweringServer {
@@ -87,6 +89,18 @@ public class HttpsProxy implements AnsweringServer {
 
                                 }
 
+                                @Override
+                                public HttpResponse clientToProxyRequest(HttpObject httpObject) {
+                                    if(httpObject instanceof DefaultHttpRequest){
+                                        var r = (DefaultHttpRequest)httpObject;
+                                        if(r.method()== HttpMethod.CONNECT){
+                                            doResolve(r.uri(),config,intSet,intSets,httpsResolved);
+
+                                        }
+                                    }
+                                    return null;
+                                }
+
                             };
                         }
                     })
@@ -129,37 +143,15 @@ public class HttpsProxy implements AnsweringServer {
         }
         if (config.isInterceptAllHttp()) {
             if(intSets.contains(port)){
-                var addHttps = httpsResolved.computeIfAbsent(host,name -> {
-                    var cloned = configuration.getConfiguration(SSLConfig.class).copy();
-                    System.out.println("CERTICATE "+name);
-                    ArrayList<SSLDomain> newList = new ArrayList<>();
-                    var newDomain = new SSLDomain();
-                    newDomain.setId(UUID.randomUUID().toString());
-                    newDomain.setAddress((String) name);
-                    newList.add(newDomain);
-                    for (var item : cloned.getDomains()) {
-                        if (item.getAddress().equalsIgnoreCase(name)) {
-                            continue;
-                        }
-                        newList.add(item);
-                    }
-                    cloned.setDomains(newList);
-                    configuration.setConfiguration(cloned);
-                    eventQueue.handle(new SSLChangedEvent());
-                    var maxTries = 50;
-                    while(maxTries>0) {
-                        Sleeper.sleep(100);
-                        var conf = configuration.getConfiguration(SSLConfig.class);
-                        if(conf.getDomains().stream().anyMatch(a->a.getAddress().equalsIgnoreCase(name))){
-                            break;
-                        }
-                        maxTries--;
-                    }
-                    if(maxTries==0){
-                        System.out.println("AAARRRRRRGH "+name);
-                    }
-                    return host;
-                });
+                var namesp =host.split("\\.");
+                if(namesp.length>2){
+                    tryResolving(httpsResolved,  "*." + namesp[namesp.length - 2] + "." + namesp[namesp.length - 1]);
+                }else if(namesp.length==2){
+                    tryResolving(httpsResolved,  "*." + namesp[namesp.length - 2] + "." + namesp[namesp.length - 1]);
+                    tryResolving(httpsResolved,  namesp[namesp.length - 2] + "." + namesp[namesp.length - 1]);
+
+
+                }
             }
             if(intSet.contains(port)||intSets.contains(port)){
                 try {
@@ -171,6 +163,31 @@ public class HttpsProxy implements AnsweringServer {
             }
         }
         return null;
+    }
+
+    private void tryResolving(ConcurrentHashMap<String, String> httpsResolved, String host) {
+        var addHttps = httpsResolved.computeIfAbsent(host, name -> {
+            var cloned = configuration.getConfiguration(SSLConfig.class).copy();
+
+            System.out.println("CERTICATE "+name);
+            ArrayList<SSLDomain> newList = new ArrayList<>();
+            var newDomain = new SSLDomain();
+            newDomain.setId(UUID.randomUUID().toString());
+            newDomain.setAddress((String) name);
+            newList.add(newDomain);
+            for (var item : cloned.getDomains()) {
+                if (item.getAddress().equalsIgnoreCase(name)) {
+                    continue;
+                }
+                newList.add(item);
+            }
+            cloned.setDomains(newList);
+            configuration.setConfiguration(cloned);
+            eventQueue.handle(new SSLChangedEvent());
+
+            Sleeper.sleep(100);
+            return name;
+        });
     }
 
 
