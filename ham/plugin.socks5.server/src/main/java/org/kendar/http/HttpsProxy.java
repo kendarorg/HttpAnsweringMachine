@@ -83,34 +83,19 @@ public class HttpsProxy implements AnsweringServer {
                                 @Override
                                 public InetSocketAddress proxyToServerResolutionStarted(String resolvingServerHostAndPort) {
 
-                                    return doResolve(resolvingServerHostAndPort,
-                                            config,intSet,intSets,httpsResolved);
+                                    return null;// doResolve(resolvingServerHostAndPort,config,intSet,intSets,httpsResolved);
 
                                 }
 
                             };
                         }
                     })
-//                    .withServerResolver(new HostResolver() {
-//                        @Override
-//                        public InetSocketAddress resolve(String address, int port) throws UnknownHostException {
-//                            var config = configuration.getConfiguration(Socks5Config.class).copy();
-//                            if (config.isInterceptAllHttp()) {
-//                                if (intSet.contains(port)) {
-//                                    var res = new InetSocketAddress(
-//                                            InetAddress.getByName("127.0.0.1"), port);
-//                                    return res;
-//                                }
-//                            }
-//                            var resolved = multiResolver.resolve(address);
-//                            if (resolved.isEmpty()) {
-//                                return null;
-//                            }
-//                            var res = resolved.get(0);
-//                            return new InetSocketAddress(
-//                                    InetAddress.getByName(res), port);
-//                        }
-//                    })
+                    .withServerResolver(new HostResolver() {
+                        @Override
+                        public InetSocketAddress resolve(String address, int port) throws UnknownHostException {
+                            return doResolve(address+":"+port,config,intSet,intSets,httpsResolved);
+                        };
+                    })
                     .start();
 //            var proxyHttp = new HttpsProxyImpl(
 //                    config.getHttpProxyPort(), false,

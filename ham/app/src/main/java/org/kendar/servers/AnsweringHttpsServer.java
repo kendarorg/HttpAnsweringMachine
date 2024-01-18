@@ -96,12 +96,14 @@ public class AnsweringHttpsServer implements AnsweringServer {
             }
             var localConfig = configuration.getConfiguration(HttpsWebServerConfig.class);
             while (running && localConfig.isActive()) {
-                Sleeper.sleep(10);
-                if (restart) break;
+                Sleeper.sleep(1);
+                if (restart) {
+                    break;
+                }
             }
             //if(executor!=null)executor.shutdownNow();
             for (var httpsServer : httpsServers.entrySet()) {
-                httpsServer.getValue().stop(0);
+                httpsServer.getValue().stop(2);
             }
             restart = false;
 
