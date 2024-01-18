@@ -2,9 +2,14 @@ package org.kendar.http;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpRequest;
+import org.kendar.events.EventQueue;
+import org.kendar.events.events.SSLChangedEvent;
 import org.kendar.servers.AnsweringServer;
 import org.kendar.servers.JsonConfiguration;
 import org.kendar.servers.config.HttpWebServerConfig;
+import org.kendar.servers.config.HttpsWebServerConfig;
+import org.kendar.servers.config.SSLConfig;
+import org.kendar.servers.config.SSLDomain;
 import org.kendar.servers.dns.DnsMultiResolver;
 import org.kendar.socks5.Socks5Config;
 import org.kendar.utils.LoggerBuilder;
@@ -17,34 +22,47 @@ import org.springframework.stereotype.Component;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class HttpsProxy implements AnsweringServer {
     private final Logger logger;
     private final LoggerBuilder loggerBuilder;
     private final JsonConfiguration configuration;
+    private final EventQueue eventQueue;
     private final DnsMultiResolver multiResolver;
     private boolean running = false;
     private HttpProxyServer server;
 
-    public HttpsProxy(DnsMultiResolver multiResolver, LoggerBuilder loggerBuilder, JsonConfiguration configuration) {
+    public HttpsProxy(DnsMultiResolver multiResolver, LoggerBuilder loggerBuilder,
+                      JsonConfiguration configuration, EventQueue eventQueue) {
 
         this.multiResolver = multiResolver;
         this.logger = loggerBuilder.build(HttpsProxy.class);
         this.loggerBuilder = loggerBuilder;
         this.configuration = configuration;
+        this.eventQueue = eventQueue;
     }
 
     @Override
     public void run() {
         if (running) return;
+        var httpsResolved = new ConcurrentHashMap<String,String>();
         var config = configuration.getConfiguration(Socks5Config.class).copy();
         var httpConfig = configuration.getConfiguration(HttpWebServerConfig.class).copy();
+        var httpsConfig = configuration.getConfiguration(HttpsWebServerConfig.class).copy();
         var spl = httpConfig.getPort().split(";");
+        var spls = httpsConfig.getPort().split(";");
         var intSet = new HashSet<Integer>();
+        var intSets = new HashSet<Integer>();
         for (var sp : spl) {
             intSet.add(Integer.parseInt(sp));
+        }
+        for (var sp : spls) {
+            intSets.add(Integer.parseInt(sp));
         }
         if (!config.isActive()) return;
         running = true;
@@ -64,50 +82,35 @@ public class HttpsProxy implements AnsweringServer {
                             return new HttpFiltersAdapter(originalRequest) {
                                 @Override
                                 public InetSocketAddress proxyToServerResolutionStarted(String resolvingServerHostAndPort) {
-                                    var config = configuration.getConfiguration(Socks5Config.class).copy();
-                                    var hpp = resolvingServerHostAndPort.split(":");
-                                    var port = 80;
-                                    if (hpp.length == 2) {
-                                        port = Integer.parseInt(hpp[1]);
-                                    }
-                                    if (config.isInterceptAllHttp()) {
-                                        if (intSet.contains(port)) {
-                                            InetSocketAddress res = null;
-                                            try {
-                                                res = new InetSocketAddress(
-                                                        InetAddress.getByName("127.0.0.1"), port);
-                                            } catch (UnknownHostException e) {
-                                                return null;
-                                            }
-                                            return res;
-                                        }
-                                    }
-                                    return null;
+
+                                    return doResolve(resolvingServerHostAndPort,
+                                            config,intSet,intSets,httpsResolved);
+
                                 }
 
                             };
                         }
                     })
-                    .withServerResolver(new HostResolver() {
-                        @Override
-                        public InetSocketAddress resolve(String address, int port) throws UnknownHostException {
-                            var config = configuration.getConfiguration(Socks5Config.class).copy();
-                            if (config.isInterceptAllHttp()) {
-                                if (intSet.contains(port)) {
-                                    var res = new InetSocketAddress(
-                                            InetAddress.getByName("127.0.0.1"), port);
-                                    return res;
-                                }
-                            }
-                            var resolved = multiResolver.resolve(address);
-                            if (resolved.isEmpty()) {
-                                return null;
-                            }
-                            var res = resolved.get(0);
-                            return new InetSocketAddress(
-                                    InetAddress.getByName(res), port);
-                        }
-                    })
+//                    .withServerResolver(new HostResolver() {
+//                        @Override
+//                        public InetSocketAddress resolve(String address, int port) throws UnknownHostException {
+//                            var config = configuration.getConfiguration(Socks5Config.class).copy();
+//                            if (config.isInterceptAllHttp()) {
+//                                if (intSet.contains(port)) {
+//                                    var res = new InetSocketAddress(
+//                                            InetAddress.getByName("127.0.0.1"), port);
+//                                    return res;
+//                                }
+//                            }
+//                            var resolved = multiResolver.resolve(address);
+//                            if (resolved.isEmpty()) {
+//                                return null;
+//                            }
+//                            var res = resolved.get(0);
+//                            return new InetSocketAddress(
+//                                    InetAddress.getByName(res), port);
+//                        }
+//                    })
                     .start();
 //            var proxyHttp = new HttpsProxyImpl(
 //                    config.getHttpProxyPort(), false,
@@ -127,6 +130,62 @@ public class HttpsProxy implements AnsweringServer {
         } finally {
             running = false;
         }
+    }
+
+    private InetSocketAddress doResolve(String resolvingServerHostAndPort,
+                                        Socks5Config config, HashSet<Integer> intSet,
+                                        HashSet<Integer> intSets,
+                                        ConcurrentHashMap<String, String> httpsResolved) {
+        var hpp = resolvingServerHostAndPort.split(":");
+        var host = hpp[0];
+        var port = 80;
+        if (hpp.length == 2) {
+            port = Integer.parseInt(hpp[1]);
+        }
+        if (config.isInterceptAllHttp()) {
+            if(intSets.contains(port)){
+                var addHttps = httpsResolved.computeIfAbsent(host,name -> {
+                    var cloned = configuration.getConfiguration(SSLConfig.class).copy();
+                    System.out.println("CERTICATE "+name);
+                    ArrayList<SSLDomain> newList = new ArrayList<>();
+                    var newDomain = new SSLDomain();
+                    newDomain.setId(UUID.randomUUID().toString());
+                    newDomain.setAddress((String) name);
+                    newList.add(newDomain);
+                    for (var item : cloned.getDomains()) {
+                        if (item.getAddress().equalsIgnoreCase(name)) {
+                            continue;
+                        }
+                        newList.add(item);
+                    }
+                    cloned.setDomains(newList);
+                    configuration.setConfiguration(cloned);
+                    eventQueue.handle(new SSLChangedEvent());
+                    var maxTries = 50;
+                    while(maxTries>0) {
+                        Sleeper.sleep(100);
+                        var conf = configuration.getConfiguration(SSLConfig.class);
+                        if(conf.getDomains().stream().anyMatch(a->a.getAddress().equalsIgnoreCase(name))){
+                            break;
+                        }
+                        maxTries--;
+                    }
+                    if(maxTries==0){
+                        System.out.println("AAARRRRRRGH "+name);
+                    }
+                    return host;
+                });
+            }
+            if(intSet.contains(port)||intSets.contains(port)){
+                try {
+                    return new InetSocketAddress(
+                            InetAddress.getByName("127.0.0.1"), port);
+                } catch (UnknownHostException e) {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 
 
