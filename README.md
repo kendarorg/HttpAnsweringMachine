@@ -10,6 +10,10 @@ errors can arise.
 
 The AnsweringMachine is built to overcome this troubles
 
+## If you like it Buy me a coffe :)
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/paypalme/kendarorg/1)
+
 ## New!!
 
 * <b>[Automatic recording of http](docs/plugins/socks5.md) without configuration :zap: </b>
